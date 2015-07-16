@@ -25,10 +25,14 @@ type APIContext struct {
 }
 
 func main() {
+	// Backend Route Initialization
 	// Initialize the Gocraft Router with the basic context and routes
 	router := web.New(Context{})
 	router.Get("/ping", (*Context).Ping)
-	router.Middleware(web.StaticMiddleware("static"))
+
+	// Frontend Route Initialization
+	// Set up static file serving to load from the static folder.
+	router.Middleware(web.StaticMiddleware("static", web.StaticOption{IndexFile: "index.html"}))
 
 	// Start the server up.
 	http.ListenAndServe("localhost:9999", router)
