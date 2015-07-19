@@ -1,11 +1,31 @@
 {
-	"ImportPath": "github.com/18F/cf-console/backend",
+	"ImportPath": "github.com/18F/cf-console",
 	"GoVersion": "go1.4.2",
 	"Deps": [
 		{
 			"ImportPath": "github.com/gocraft/web",
 			"Comment": "v1.1-16-g934a096",
 			"Rev": "934a096ff6918ed5d4667075794a8d18a88c1576"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
+		},
+		{
+			"ImportPath": "github.com/gorilla/securecookie",
+			"Rev": "aeade84400a85c6875264ae51c7a56ecdcb61751"
+		},
+		{
+			"ImportPath": "github.com/gorilla/sessions",
+			"Rev": "f61c3ec2cf65d69e7efedfd4d060fe128882c951"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "f0cf018861e2b54077eced91659e255072b5f215"
+		},
+		{
+			"ImportPath": "golang.org/x/oauth2",
+			"Rev": "8914e5017ca260f2a3a1575b1e6868874050d95e"
 		}
 	]
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
-	"github.com/gosimple/oauth2"
+	"golang.org/x/oauth2"
 
 	"encoding/gob"
 	"fmt"
@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	// OAuthService is the OAuth client with all the paramters to talk with CF's UAA OAuth Provider.
-	OAuthService *oauth2.OAuth2Service
+	// OAuthConfig is the OAuth client with all the paramters to talk with CF's UAA OAuth Provider.
+	OAuthConfig *oauth2.Config
 	// Sessions is the session store for all connected users.
 	Sessions sessions.Store
 )
@@ -47,7 +47,7 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 	} else {
 		fmt.Println("unable to find")
 		// If no token, need to redirect.
-		http.Redirect(rw, req.Request, OAuthService.GetAuthorizeURL(""), http.StatusFound)
+		http.Redirect(rw, req.Request, OAuthConfig.AuthCodeURL("state", oauth2.AccessTypeOnline), http.StatusFound)
 		return
 	}
 	// Proceed to the next middleware or to the handler if last middleware.
@@ -64,7 +64,7 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 	}
 
 	// Exchange the code for a token.
-	token, err := OAuthService.GetAccessToken(code)
+	token, err := OAuthConfig.Exchange(oauth2.NoContext, code)
 	if err != nil {
 		fmt.Println("Unable to get access token from code " + code + " error " + err.Error())
 		return
@@ -83,6 +83,8 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 		fmt.Println("callback error: " + err.Error())
 	}
 
+	fmt.Println("made it with: " + token.AccessToken)
+
 }
 
 // All is a test function that just returns test to ensure that we can't get here without the OAuth Middleware.
@@ -93,14 +95,21 @@ func (c *APIContext) All(rw web.ResponseWriter, req *web.Request) {
 
 func main() {
 	// Setup OAuth2 Client Service.
-	OAuthService = oauth2.Service("cf", "", "http://login.10.244.0.34.xip.io/oauth/authorize", "http://login.10.244.0.34.xip.io/oauth/token")
-	OAuthService.RedirectURL = "http://localhost:9999/oauth2callback"
-	OAuthService.Scope = "cloud_controller.read"
+	OAuthConfig = &oauth2.Config {
+		ClientID: "oauth_web_client",
+		ClientSecret: "oauth_secret",
+		RedirectURL: "http://localhost:9999/oauth2callback",
+		Scopes: []string{"oauth.admin"},
+		Endpoint: oauth2.Endpoint{
+			AuthURL: "http://login.10.244.0.34.xip.io/oauth/authorize",
+			TokenURL: "http://uaa.10.244.0.34.xip.io/oauth/token",
+		},
+	}
 
 	// Initialize Sessions.
 	Sessions = sessions.NewCookieStore([]byte("secret-key"))
 	// Want to save a struct into the session. Have to register it.
-	gob.Register(&oauth2.Token{})
+	gob.Register(oauth2.Token{})
 
 	// Backend Route Initialization
 	// Initialize the Gocraft Router with the basic context and routes
