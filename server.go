@@ -88,6 +88,7 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 
 	// Redirect to the dashboard.
 	http.Redirect(rw, req.Request, "/#/dashboard", http.StatusFound)
+	// TODO. Redirect to the original route.
 }
 
 // APIContext stores the session info and access token per user.
@@ -99,15 +100,14 @@ type APIContext struct {
 
 // OAuth is a middle ware that checks whether or not the user has a valid token.
 // If the token is present and still valid, it just passes it on.
-// If the token is 1) present and expired or 2) not present, it will redirect to the login page (in AngularJS frontend part).
+// If the token is 1) present and expired or 2) not present, it will return unauthorized.
 func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
 	// Get valid token if it exists from session store.
 	if token := getValidToken(req); token != nil {
 		c.AccessToken = token.AccessToken
 	} else {
-		fmt.Println("unable to find")
-		// If no token, need to redirect.
-		http.Redirect(rw, req.Request, OAuthConfig.AuthCodeURL("state", oauth2.AccessTypeOnline), http.StatusFound)
+		// If no token, return unauthorized.
+		http.Error(rw, "{\"status\": \"unauthorized\"}", http.StatusUnauthorized)
 		return
 	}
 	// Proceed to the next middleware or to the handler if last middleware.
