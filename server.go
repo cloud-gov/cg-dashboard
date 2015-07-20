@@ -115,11 +115,16 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 	next(rw, req)
 }
 
-// All is a test function that just returns test to ensure that we can't get here without the OAuth Middleware.
-// TODO: Remove
-func (c *APIContext) All(rw web.ResponseWriter, req *web.Request) {
-	fmt.Fprintf(rw, "test")
+// A Proxy for all CF API
+//TODO: fix url
+func (c *Context) Proxy(rw web.ResponseWriter, req *web.Request) {
+    req_url := fmt.Sprintf("https://api.%s%s", os.Getenv("API_URL"), req.URL.Path)
+    res := c.AccessToken.make_request(req_url)
+    body, _ := ioutil.ReadAll(res.Body)
+    defer res.Body.Close()
+    fmt.Fprintf(rw, string(body))
 }
+
 
 func main() {
 	// Load the variables from the environment.
@@ -177,9 +182,9 @@ func main() {
 	router.Get("/oauth2callback", (*Context).OAuthCallback)
 
 	// Setup the /api subrouter.
-	apiRouter := router.Subrouter(APIContext{}, "/api")
+	apiRouter := router.Subrouter(APIContext{}, "/v2")
 	apiRouter.Middleware((*APIContext).OAuth)
-	apiRouter.Get("/all", (*APIContext).All)
+	router.Get("/:*", (*APIContext).Proxy)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.
