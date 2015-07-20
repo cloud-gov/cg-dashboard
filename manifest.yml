@@ -1,0 +1,10 @@
+---
+applications:
+- name: cf-console
+  memory: 256M
+  env:
+    CONSOLE_CLIENT_ID: client_id
+    CONSOLE_CLIENT_SECRET: client_secret
+    CONSOLE_HOSTNAME: hostname.domain.com
+    CONSOLE_AUTH_URL: https://login.domain.com/oauth/authorize
+    CONSOLE_TOKEN_URL: https://uaa.domain.com/oauth/token

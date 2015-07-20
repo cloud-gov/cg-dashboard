@@ -14,11 +14,18 @@
 uaac client add <your-client-id> \
  --authorities cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read \
  --authorized_grant_types authorization_code,client_credentials,refresh_token \
- --autoapprove true \
- --scope console.admin,console.user,openid \
+ --scope cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read \
 -s <your-client-secret>
 ```
 - Unable to create an account still? Troubleshoot [here](https://docs.cloudfoundry.org/adminguide/uaa-user-management.html#creating-admin-users)
+
+### Set the environment variables
+If you are testing locally, export these variables. If you are deploying to cloud foundry, modify the manifest.yml
+- CONSOLE_CLIENT_ID: Registered client id with UAA
+- CONSOLE_CLIENT_SECRET: The client secret
+- CONSOLE_HOSTNAME: The URL of the service itself.
+- CONSOLE_AUTH_URL: The URL of the auth service.
+- CONSOLE_TOKEN_URL: The URL of the token service.
 
 ## Running locally
 - Modify the ClientID and ClientSecret in main() to reflect your client id and secret. TODO: Use environment variables.
@@ -27,4 +34,4 @@ uaac client add <your-client-id> \
 - Navigate browser to `http://localhost:9999`
 
 ## Deploying
-- TBD
+- `cf push <optional-app-name>`

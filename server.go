@@ -8,6 +8,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"net/http"
+	"os"
 )
 
 var (
@@ -121,15 +122,42 @@ func (c *APIContext) All(rw web.ResponseWriter, req *web.Request) {
 }
 
 func main() {
+	// Load the variables from the environment.
+	var clientID string
+	var clientSecret string
+	var hostname string
+	var authURL string
+	var tokenURL string
+	if clientID = os.Getenv("CONSOLE_CLIENT_ID"); len(clientID) == 0 {
+		fmt.Printf("Unable to find 'CONSOLE_CLIENT_ID' in environment. Exiting.\n")
+		return
+	}
+	if clientSecret = os.Getenv("CONSOLE_CLIENT_SECRET"); len(clientSecret) == 0 {
+		fmt.Printf("Unable to find 'CONSOLE_CLIENT_SECRET' in environment. Exiting.\n")
+		return
+	}
+	if hostname = os.Getenv("CONSOLE_HOSTNAME"); len(hostname) == 0 {
+		fmt.Printf("Unable to find 'CONSOLE_HOSTNAME' in environment. Exiting.\n")
+		return
+	}
+	if authURL = os.Getenv("CONSOLE_AUTH_URL"); len(authURL) == 0 {
+		fmt.Printf("Unable to find 'CONSOLE_AUTH_URL' in environment. Exiting.\n")
+		return
+	}
+	if tokenURL = os.Getenv("CONSOLE_TOKEN_URL"); len(tokenURL) == 0 {
+		fmt.Printf("Unable to find 'CONSOLE_TOKEN_URL' in environment. Exiting.\n")
+		return
+	}
+
 	// Setup OAuth2 Client Service.
 	OAuthConfig = &oauth2.Config{
-		ClientID:     "your_web_client",
-		ClientSecret: "your_secret",
-		RedirectURL:  "http://localhost:9999/oauth2callback",
-		Scopes:       []string{"console.admin"},
+		ClientID:     clientID,
+		ClientSecret: clientSecret,
+		RedirectURL:  hostname + "/oauth2callback",
+		Scopes:       []string{"cloud_controller.read", "cloud_controller.write", "cloud_controller.admin", "scim.read", "openid"},
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  "http://login.10.244.0.34.xip.io/oauth/authorize",
-			TokenURL: "http://uaa.10.244.0.34.xip.io/oauth/token",
+			AuthURL:  authURL,
+			TokenURL: tokenURL,
 		},
 	}
 
@@ -155,5 +183,9 @@ func main() {
 	router.Middleware(web.StaticMiddleware("static", web.StaticOption{IndexFile: "index.html"}))
 
 	// Start the server up.
-	http.ListenAndServe("localhost:9999", router)
+	var port string
+	if port = os.Getenv("PORT"); len(port) == 0 {
+		port = "9999"
+	}
+	http.ListenAndServe(":" + port, router)
 }
