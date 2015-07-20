@@ -15,7 +15,7 @@ var (
 	// OAuthConfig is the OAuth client with all the paramters to talk with CF's UAA OAuth Provider.
 	OAuthConfig *oauth2.Config
 	// Sessions is the session store for all connected users.
-	Sessions sessions.Store
+	Sessions *sessions.FilesystemStore
 )
 
 // getValidToken is a helper function that returns a token struct only if it finds a non expired token for the session.
@@ -162,7 +162,10 @@ func main() {
 	}
 
 	// Initialize Sessions.
-	Sessions = sessions.NewCookieStore([]byte("secret-key"))
+	// Temp FIXME that fixes the problem of using a cookie store which would cause the secure encoding
+	// of the oauth 2.0 token struct in production to exceed the max size of 4096 bytes.
+	Sessions = sessions.NewFilesystemStore("", []byte("some key"))
+	Sessions.MaxLength(4096 * 4)
 	// Want to save a struct into the session. Have to register it.
 	gob.Register(oauth2.Token{})
 
