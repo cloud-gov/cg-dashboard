@@ -10,44 +10,77 @@ app.controller('HomeCtrl', function($scope, $http) {
     // Otherwise, reload the login page.
 });
 
-app.controller('LoginCtrl', function($scope, $http) {
-    // TODO. Check if logged in. If so, redirect to the "dashboard".
-    // Otherwise, leave at login page.
+app.controller('OrgController', function($scope, $http) {
+    $scope.get_orgs = function () {
+        $http.get('/v2/organizations').success(function(response) {
+            console.log(response)
+            $scope.data = response.resources
+        }).error(function(response) {
+            $scope.data = 'NA'
+        });
+    }
 });
+
+
 
 app.controller('DashboardCtrl', function($scope, $http, $location) {
-    $http.get('/v2/organizations')
-        .success(function(response) {
-            $scope.orgs = response.resources
-        }).error(function(response, status) {
-            if (status == 401) {
-                // If unauthorized, redirect to login.
-                $location.path("/login")
-            }
-            $scope.data = "Error unable to get data with OAuth guarded API. Response: " + JSON.stringify(response) + ". Code: " + status
+
+    load_data = function(endpoint, scope_name) {
+       $http.get(endpoint).success(function(response) {
+            $scope[scope_name] = response.resources
         });
+    }
+
+    load_data('/v2/organizations', 'orgs');
+    load_data('/v2/quota_definitions', 'quotas');
+    load_data('/v2/spaces', 'spaces');
+    //load_data('/v2/apps', 'apps');
+
+    $scope.getOrgs = function() {
+        load_data('/v2/organizations', 'orgs');
+        $scope.show = {'orgs': true};
+    };
+    $scope.getQuotas = function() {
+        load_data('/v2/quota_definitions', 'quotas');
+        $scope.show = {'quotas': true};
+    };
+    $scope.getSpaces = function() {
+        load_data('/v2/spaces', 'spaces');
+        $scope.show = {'spaces': true};
+    };
+    $scope.getApps = function() {
+        load_data('/v2/apps', 'apps');
+        $scope.show = {'apps': true};
+    };
 });
 
-app.controller('QuotaController', function($scope, $http) {
-    $http.get($scope.org.entity.quota_definition_url).success(function(response) {
-        $scope.data = response.entity.name
-    }).error(function(response) {
-        $scope.data = 'NA'
+
+app.controller('OrgController', function($scope, $http) {
+    quota = $scope.quotas.filter(function (element){
+        return element.metadata.guid == $scope.org.entity.quota_definition_guid;
     });
+    $scope.quota = quota[0];
 });
 
-app.controller('SpacesController', function($scope, $http) {
-    $http.get($scope.org.entity.spaces_url).success(function(response) {
-        $scope.spaces = response.resources
-    }).error(function(response) {
-        console.log('No Spaces')
+
+app.controller('SpaceController', function($scope, $http) {
+    org = $scope.orgs.filter(function (element){
+        return element.metadata.guid == $scope.space.entity.organization_guid;
     });
+    $scope.org = org[0];
 });
 
 app.controller('AppController', function($scope, $http) {
-    $http.get($scope.space.entity.apps_url).success(function(response) {
-        $scope.apps = response.resources
-    }).error(function(response) {
-        console.log('No Apps')
+
+    space = $scope.spaces.filter(function (element){
+        return element.metadata.guid == $scope.app.entity.space_guid;
     });
+    $scope.space = space[0];
+
+
+    org = $scope.orgs.filter(function (element){
+        return element.metadata.guid == space[0].entity.organization_guid;
+    });
+    $scope.org = org[0];
+
 });

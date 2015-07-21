@@ -1,39 +1,53 @@
-<table border="4">
-  <tr>
-    <th>Org Name</th>
-    <th>Quotas</th>
-    <th>Spaces</th>
-  </tr>
-  <tr ng-repeat="org in orgs">
-      <td>{{org.entity.name}}</td>
-      <td ng-controller="QuotaController">{{data}}</td>
-      <td ng-controller="SpacesController">
-        <table ng-repeat="space in spaces" border="2">
-          <tr>
-            <th>{{space.entity.name}}</th>
-          </tr>
-          <tr ng-controller="AppController">
-            <td>
-              <table border="1" ng-repeat="app in apps">
-                <tr>
-                  <th>Name</th>
-                  <th>Buildpack</th>
-                  <th>Memory</th>
-                  <th>Instances</th>
-                  <th>State</th>
-                  <th>Disk Quota</th>
-                </tr>
-                <tr>
-                  <td>{{app.entity.name}}</td>
-                  <td>{{app.entity.detected_buildpack}}</td>
-                  <td>{{app.entity.memory}}</td>
-                  <td>{{app.entity.instances}}</td>
-                  <td>{{app.entity.state}}</td>
-                  <td>{{app.entity.disk_quota}}</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </td>
-</table>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Navbar brand -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/dashboard">Cf-Console</a>
+    </div>
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="" ng-click="getOrgs()">Orgs</a></li>
+        <li><a href=""  ng-click="getSpaces()">Spaces</a></li>
+        <li><a href=""  ng-click="getApps()">Apps</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+    <div ng-show="show.orgs" class="row">
+      <div class="col-md-4 box" ng-repeat="org in orgs">
+        <div ng-controller="OrgController">
+          <h3>{{org.entity.name}}</h3>
+          Quota:{{quota.entity.name}}
+        </div>
+      </div>
+    </div>
+
+    <div ng-show="show.spaces" class="row">
+      <div class="col-md-4 box" ng-repeat="space in spaces">
+        <div ng-controller="SpaceController">
+          <h3>{{space.entity.name}}</h3>
+          Org:{{org.entity.name}}
+        </div>
+      </div>
+    </div>
+
+    <div ng-show="show.apps" class="row">
+      <div class="col-md-4 box" ng-repeat="app in apps">
+        <div ng-controller="AppController">
+          <h3>{{app.entity.name}}</h3>
+          Space:{{org.entity.name}}</br>
+          Org:{{space.entity.name}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
