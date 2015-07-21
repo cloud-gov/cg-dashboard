@@ -7,6 +7,7 @@ import (
 
 	"encoding/gob"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -16,6 +17,8 @@ var (
 	OAuthConfig *oauth2.Config
 	// Sessions is the session store for all connected users.
 	Sessions *sessions.FilesystemStore
+	// Console API
+	ConsoleAPI string
 )
 
 // getValidToken is a helper function that returns a token struct only if it finds a non expired token for the session.
@@ -115,10 +118,18 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 	next(rw, req)
 }
 
-// All is a test function that just returns test to ensure that we can't get here without the OAuth Middleware.
-// TODO: Remove
-func (c *APIContext) All(rw web.ResponseWriter, req *web.Request) {
-	fmt.Fprintf(rw, "test")
+// A Proxy for all CF API
+func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
+
+	req_url := fmt.Sprintf("%s%s", ConsoleAPI, req.URL.Path)
+	fmt.Println(req_url)
+	request, _ := http.NewRequest("GET", req_url, nil)
+	request.Header.Set("authorization", fmt.Sprintf("bearer %s", c.AccessToken))
+	client := &http.Client{}
+	res, _ := client.Do(request)
+	body, _ := ioutil.ReadAll(res.Body)
+	defer res.Body.Close()
+	fmt.Fprintf(rw, string(body))
 }
 
 func main() {
@@ -128,6 +139,7 @@ func main() {
 	var hostname string
 	var authURL string
 	var tokenURL string
+
 	if clientID = os.Getenv("CONSOLE_CLIENT_ID"); len(clientID) == 0 {
 		fmt.Printf("Unable to find 'CONSOLE_CLIENT_ID' in environment. Exiting.\n")
 		return
@@ -146,6 +158,10 @@ func main() {
 	}
 	if tokenURL = os.Getenv("CONSOLE_TOKEN_URL"); len(tokenURL) == 0 {
 		fmt.Printf("Unable to find 'CONSOLE_TOKEN_URL' in environment. Exiting.\n")
+		return
+	}
+	if ConsoleAPI = os.Getenv("CONSOLE_API"); len(ConsoleAPI) == 0 {
+		fmt.Printf("Unable to find 'CONSOLE_API' in environment. Exiting.\n")
 		return
 	}
 
@@ -177,9 +193,10 @@ func main() {
 	router.Get("/oauth2callback", (*Context).OAuthCallback)
 
 	// Setup the /api subrouter.
-	apiRouter := router.Subrouter(APIContext{}, "/api")
+	apiRouter := router.Subrouter(APIContext{}, "/v2")
 	apiRouter.Middleware((*APIContext).OAuth)
-	apiRouter.Get("/all", (*APIContext).All)
+	// All routes accepted
+	apiRouter.Get("/:*", (*APIContext).Proxy)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.
@@ -190,5 +207,5 @@ func main() {
 	if port = os.Getenv("PORT"); len(port) == 0 {
 		port = "9999"
 	}
-	http.ListenAndServe(":" + port, router)
+	http.ListenAndServe(":"+port, router)
 }

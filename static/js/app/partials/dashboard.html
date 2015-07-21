@@ -1,7 +1,39 @@
-<h1>Welcome to {{title}}</h1>
-<br>
-Insert API data overview here
-<br>
-The data is: {{data}} </br>
-
-The data should be 'test' which is from the /api/all call in the Go backend. TODO. remove.
+<table border="4">
+  <tr>
+    <th>Org Name</th>
+    <th>Quotas</th>
+    <th>Spaces</th>
+  </tr>
+  <tr ng-repeat="org in orgs">
+      <td>{{org.entity.name}}</td>
+      <td ng-controller="QuotaController">{{data}}</td>
+      <td ng-controller="SpacesController">
+        <table ng-repeat="space in spaces" border="2">
+          <tr>
+            <th>{{space.entity.name}}</th>
+          </tr>
+          <tr ng-controller="AppController">
+            <td>
+              <table border="1" ng-repeat="app in apps">
+                <tr>
+                  <th>Name</th>
+                  <th>Buildpack</th>
+                  <th>Memory</th>
+                  <th>Instances</th>
+                  <th>State</th>
+                  <th>Disk Quota</th>
+                </tr>
+                <tr>
+                  <td>{{app.entity.name}}</td>
+                  <td>{{app.entity.detected_buildpack}}</td>
+                  <td>{{app.entity.memory}}</td>
+                  <td>{{app.entity.instances}}</td>
+                  <td>{{app.entity.state}}</td>
+                  <td>{{app.entity.disk_quota}}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+</table>

@@ -5,6 +5,7 @@ applications:
   env:
     CONSOLE_CLIENT_ID: client_id
     CONSOLE_CLIENT_SECRET: client_secret
-    CONSOLE_HOSTNAME: hostname.domain.com
+    CONSOLE_API: https://api.domain.com
+    CONSOLE_HOSTNAME: http://hostname.domain.com
     CONSOLE_AUTH_URL: https://login.domain.com/oauth/authorize
     CONSOLE_TOKEN_URL: https://uaa.domain.com/oauth/token
