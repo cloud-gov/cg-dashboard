@@ -28,6 +28,13 @@ If you are testing locally, export these variables. If you are deploying to clou
 - CONSOLE_AUTH_URL: The URL of the auth service.
 - CONSOLE_TOKEN_URL: The URL of the token service.
 
+## Front end
+To install the bootstrap front end:
+```
+cd static
+bower install bootstrap
+```
+
 ## Running locally
 - Modify the ClientID and ClientSecret in main() to reflect your client id and secret. TODO: Use environment variables.
 - Modify the AuthURL and TokenURL in main() to reflect the URLs to login and get tokens. TODO: Use environment variables.
