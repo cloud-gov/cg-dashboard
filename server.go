@@ -17,6 +17,8 @@ var (
 	OAuthConfig *oauth2.Config
 	// Sessions is the session store for all connected users.
 	Sessions *sessions.FilesystemStore
+	// Console API
+	ConsoleAPI string
 )
 
 // getValidToken is a helper function that returns a token struct only if it finds a non expired token for the session.
@@ -119,7 +121,7 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 // A Proxy for all CF API
 func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
 
-	req_url := fmt.Sprintf("https://api.%s%s", os.Getenv("CONSOLE_DOMAIN"), req.URL.Path)
+	req_url := fmt.Sprintf("%s%s", ConsoleAPI, req.URL.Path)
 	fmt.Println(req_url)
 	request, _ := http.NewRequest("GET", req_url, nil)
 	request.Header.Set("authorization", fmt.Sprintf("bearer %s", c.AccessToken))
@@ -137,6 +139,7 @@ func main() {
 	var hostname string
 	var authURL string
 	var tokenURL string
+
 	if clientID = os.Getenv("CONSOLE_CLIENT_ID"); len(clientID) == 0 {
 		fmt.Printf("Unable to find 'CONSOLE_CLIENT_ID' in environment. Exiting.\n")
 		return
@@ -155,6 +158,10 @@ func main() {
 	}
 	if tokenURL = os.Getenv("CONSOLE_TOKEN_URL"); len(tokenURL) == 0 {
 		fmt.Printf("Unable to find 'CONSOLE_TOKEN_URL' in environment. Exiting.\n")
+		return
+	}
+	if ConsoleAPI = os.Getenv("CONSOLE_API"); len(ConsoleAPI) == 0 {
+		fmt.Printf("Unable to find 'CONSOLE_API' in environment. Exiting.\n")
 		return
 	}
 
