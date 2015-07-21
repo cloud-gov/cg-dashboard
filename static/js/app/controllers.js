@@ -10,18 +10,6 @@ app.controller('HomeCtrl', function($scope, $http) {
     // Otherwise, reload the login page.
 });
 
-app.controller('OrgController', function($scope, $http) {
-    $scope.get_orgs = function () {
-        $http.get('/v2/organizations').success(function(response) {
-            console.log(response)
-            $scope.data = response.resources
-        }).error(function(response) {
-            $scope.data = 'NA'
-        });
-    }
-});
-
-
 
 app.controller('DashboardCtrl', function($scope, $http, $location) {
 
@@ -30,57 +18,46 @@ app.controller('DashboardCtrl', function($scope, $http, $location) {
             $scope[scope_name] = response.resources
         });
     }
-
-    load_data('/v2/organizations', 'orgs');
     load_data('/v2/quota_definitions', 'quotas');
-    load_data('/v2/spaces', 'spaces');
-    //load_data('/v2/apps', 'apps');
+    load_data('/v2/organizations', 'orgs');
 
-    $scope.getOrgs = function() {
-        load_data('/v2/organizations', 'orgs');
-        $scope.show = {'orgs': true};
-    };
-    $scope.getQuotas = function() {
-        load_data('/v2/quota_definitions', 'quotas');
-        $scope.show = {'quotas': true};
-    };
-    $scope.getSpaces = function() {
-        load_data('/v2/spaces', 'spaces');
-        $scope.show = {'spaces': true};
-    };
-    $scope.getApps = function() {
-        load_data('/v2/apps', 'apps');
-        $scope.show = {'apps': true};
-    };
 });
-
 
 app.controller('OrgController', function($scope, $http) {
+    // Get the quota for the org
     quota = $scope.quotas.filter(function (element){
-        return element.metadata.guid == $scope.org.entity.quota_definition_guid;
-    });
-    $scope.quota = quota[0];
+         return element.metadata.guid == $scope.org.entity.quota_definition_guid;
+     });
+    if (quota.length > 0)
+        $scope.quota = quota[0];
+
+    // Get the spaces and open the div
+    $scope.getSpaces = function(){
+        if($scope.openOrgSpaces) {
+            $scope.openOrgSpaces = false;
+        }
+        else{
+            $http.get($scope.org.entity.spaces_url).success(function(response) {
+                $scope.spaces = response.resources;
+                $scope.openOrgSpaces = true;
+            });
+        }
+
+    }
 });
 
-
 app.controller('SpaceController', function($scope, $http) {
-    org = $scope.orgs.filter(function (element){
-        return element.metadata.guid == $scope.space.entity.organization_guid;
-    });
-    $scope.org = org[0];
+    // Get the apps for spaces
+    $scope.getApps = function(){
+       $http.get($scope.space.entity.apps_url).success(function(response) {
+            var resources = response.resources;
+            if(resources.length > 0)
+                $scope.apps = response.resources;
+        });
+    }
 });
 
 app.controller('AppController', function($scope, $http) {
-
-    space = $scope.spaces.filter(function (element){
-        return element.metadata.guid == $scope.app.entity.space_guid;
-    });
-    $scope.space = space[0];
-
-
-    org = $scope.orgs.filter(function (element){
-        return element.metadata.guid == space[0].entity.organization_guid;
-    });
-    $scope.org = org[0];
+    // For functions like reset
 
 });

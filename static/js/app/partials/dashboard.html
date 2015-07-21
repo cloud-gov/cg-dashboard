@@ -13,23 +13,48 @@
     <!-- Navbar links -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="" ng-click="getOrgs()">Orgs</a></li>
-        <li><a href=""  ng-click="getSpaces()">Spaces</a></li>
-        <li><a href=""  ng-click="getApps()">Apps</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
+  <h3 class="text-center">Organizations</h3>
+
 <div class="container">
-    <div ng-show="show.orgs" class="row">
-      <div class="col-md-4 box" ng-repeat="org in orgs">
-        <div ng-controller="OrgController">
-          <h3>{{org.entity.name}}</h3>
-          Quota:{{quota.entity.name}}
-        </div>
-      </div>
+  <div class="list-group">
+      <div ng-repeat="org in orgs" ng-controller="OrgController">
+        <button class="list-group-item list-group-item-success" ng-click="getSpaces()">
+          <h3 class="list-group-item-heading text-center">{{org.entity.name}}</h3>
+        </button>
+        <div ng-repeat="space in spaces" ng-controller="SpaceController" ng-show="openOrgSpaces">
+          <button class="list-group-item list-group-item-info" ng-show="space" ng-click="getApps()">
+            <h3 class="list-group-item-heading text-center">{{space.entity.name}}</h3>
+          </button>
+          <table class="table table-bordered" ng-show="apps">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Buildpack</th>
+                <th>Memory</th>
+                <th>Instances</th>
+                <th>State</th>
+                <th>Disk Quota</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="app in apps">
+                <td>{{app.entity.name}}</td>
+                <td>{{app.entity.detected_buildpack}}</td>
+                <td>{{app.entity.memory}}</td>
+                <td>{{app.entity.instances}}</td>
+                <td>{{app.entity.state}}</td>
+                <td>{{app.entity.disk_quota}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div></br>
     </div>
+  </div>
 
     <div ng-show="show.spaces" class="row">
       <div class="col-md-4 box" ng-repeat="space in spaces">
