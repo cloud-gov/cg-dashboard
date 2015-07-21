@@ -21,8 +21,9 @@ uaac client add <your-client-id> \
 
 ### Set the environment variables
 If you are testing locally, export these variables. If you are deploying to cloud foundry, modify the manifest.yml
-- CONSOLE_CLIENT_ID: Registered client id with UAA
-- CONSOLE_CLIENT_SECRET: The client secret
+- CONSOLE_CLIENT_ID: Registered client id with UAA.
+- CONSOLE_CLIENT_SECRET: The client secret.
+- CONSOLE_API: The URL of the API service.
 - CONSOLE_HOSTNAME: The URL of the service itself.
 - CONSOLE_AUTH_URL: The URL of the auth service.
 - CONSOLE_TOKEN_URL: The URL of the token service.
