@@ -7,6 +7,7 @@ import (
 
 	"encoding/gob"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -116,15 +117,18 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 }
 
 // A Proxy for all CF API
-//TODO: fix url
-func (c *Context) Proxy(rw web.ResponseWriter, req *web.Request) {
-    req_url := fmt.Sprintf("https://api.%s%s", os.Getenv("API_URL"), req.URL.Path)
-    res := c.AccessToken.make_request(req_url)
-    body, _ := ioutil.ReadAll(res.Body)
-    defer res.Body.Close()
-    fmt.Fprintf(rw, string(body))
-}
+func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
 
+	req_url := fmt.Sprintf("https://api.%s%s", os.Getenv("CONSOLE_DOMAIN"), req.URL.Path)
+	fmt.Println(req_url)
+	request, _ := http.NewRequest("GET", req_url, nil)
+	request.Header.Set("authorization", fmt.Sprintf("bearer %s", c.AccessToken))
+	client := &http.Client{}
+	res, _ := client.Do(request)
+	body, _ := ioutil.ReadAll(res.Body)
+	defer res.Body.Close()
+	fmt.Fprintf(rw, string(body))
+}
 
 func main() {
 	// Load the variables from the environment.
@@ -184,7 +188,8 @@ func main() {
 	// Setup the /api subrouter.
 	apiRouter := router.Subrouter(APIContext{}, "/v2")
 	apiRouter.Middleware((*APIContext).OAuth)
-	router.Get("/:*", (*APIContext).Proxy)
+	// All routes accepted
+	apiRouter.Get("/:*", (*APIContext).Proxy)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.
@@ -195,5 +200,5 @@ func main() {
 	if port = os.Getenv("PORT"); len(port) == 0 {
 		port = "9999"
 	}
-	http.ListenAndServe(":" + port, router)
+	http.ListenAndServe(":"+port, router)
 }
