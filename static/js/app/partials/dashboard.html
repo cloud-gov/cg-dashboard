@@ -6,13 +6,13 @@
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
       </button>
-      <a class="navbar-brand" href="#/dashboard" ng-click="clearDashboard()">Cf-Console</a>
+      <a class="navbar-brand" href="#/dashboard" ng-click="clearDashboard()">CF-Console</a>
     </div>
     <!-- Navbar links -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Organizations<span class="caret"></span></a>
+        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ orgDropDownName || "Organizations" }}&nbsp;<span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li ng-repeat="org in orgs" ng-click="showOrg(org)">
             <a>{{org.entity.name}}</a>
@@ -24,41 +24,12 @@
   </div>
 </nav>
 
-<div class="container" ng-show="orgVisible">
-  <div class="row">
-    <div class="panel panel-success">
-      <div class="panel-heading">
-        <h1 class="panel-title text-center">{{activeOrg.entity.name}} organization</h1>
-      </div>
-      <ul class="list-group">
-       <li class="list-group-item list-group-item-warning text-center" ng-show="noSpaces">This organization has no spaces</li>
-       <li class="list-group-item text-center" ng-repeat="space in activeSpaces" ng-controller="SpaceController">
-        <h5>{{space.entity.name}} space</h5>
-        <h6 ng-show="noApps">This space has no apps</h6>
-          <table class="table table-bordered" ng-show="apps">
-            <thead>
-              <tr>
-                <th>App Name</th>
-                <th>Buildpack</th>
-                <th>Memory</th>
-                <th>Instances</th>
-                <th>State</th>
-                <th>Disk Quota</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="app in apps">
-                <td>{{app.entity.name}}</td>
-                <td>{{app.entity.detected_buildpack}}</td>
-                <td>{{app.entity.memory}}</td>
-                <td>{{app.entity.instances}}</td>
-                <td>{{app.entity.state}}</td>
-                <td>{{app.entity.disk_quota}}</td>
-              </tr>
-            </tbody>
-          </table>
-       </li>
-     </ul>
+<!-- Tab Views -->
+<div ng-switch="visibleTab">
+    <div ng-switch-when="organizations">
+        <ng-include src="'js/app/partials/organizations.html'"></ng-include>
     </div>
-  </div>
+    <div class="jumbotron text-center" ng-switch-default="null">
+        <h3>Welcome to CF-Console</h3>
+    </div>
 </div>

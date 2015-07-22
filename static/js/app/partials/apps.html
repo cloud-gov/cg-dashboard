@@ -1,0 +1,22 @@
+<table class="table table-bordered" ng-show="activeApps">
+  <thead>
+    <tr>
+      <th>App Name</th>
+      <th>Buildpack</th>
+      <th>Memory</th>
+      <th>Instances</th>
+      <th>State</th>
+      <th>Disk Quota</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="app in activeApps">
+      <td>{{app.entity.name}}</td>
+      <td>{{app.entity.detected_buildpack}}</td>
+      <td>{{app.entity.memory}}</td>
+      <td>{{app.entity.instances}}</td>
+      <td>{{app.entity.state}}</td>
+      <td>{{app.entity.disk_quota}}</td>
+    </tr>
+  </tbody>
+</table>
