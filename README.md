@@ -41,5 +41,8 @@ bower install bootstrap
 - `go run server.go`
 - Navigate browser to `http://localhost:9999`
 
+## Testing
+`go test ./...`
+
 ## Deploying
 - `cf push <optional-app-name>`
