@@ -29,7 +29,7 @@ If you are testing locally, export these variables. If you are deploying to clou
 - CONSOLE_TOKEN_URL: The URL of the token service.
 
 ## Front end
-To install the bootstrap front end:
+Bootstrap is already included. To update Bootstrap library for the front end:
 ```
 cd static
 bower install bootstrap
