@@ -1,39 +1,44 @@
+  <!-- Navbar -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Navbar brand -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#/dashboard">Cf-Console</a>
+      <a class="navbar-brand" href="#/dashboard" ng-click="clearDashboard()">Cf-Console</a>
     </div>
     <!-- Navbar links -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
+        <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Organizations<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li ng-repeat="org in orgs" ng-click="showOrg(org)">
+            <a>{{org.entity.name}}</a>
+          </li>
+        </ul>
+      </li>
       </ul>
     </div>
   </div>
 </nav>
 
-  <h3 class="text-center">Organizations</h3>
-
-<div class="container">
-  <div class="list-group">
-      <div ng-repeat="org in orgs" ng-controller="OrgController">
-        <button class="list-group-item list-group-item-success" ng-click="getSpaces()">
-          <h3 class="list-group-item-heading text-center">{{org.entity.name}}</h3>
-        </button>
-        <div ng-repeat="space in spaces" ng-controller="SpaceController" ng-show="openOrgSpaces">
-          <button class="list-group-item list-group-item-info" ng-show="space" ng-click="getApps()">
-            <h3 class="list-group-item-heading text-center">{{space.entity.name}}</h3>
-          </button>
+<div class="container" ng-show="orgVisible">
+  <div class="row">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <h1 class="panel-title text-center">{{activeOrg.entity.name}} organization</h1>
+      </div>
+      <ul class="list-group">
+       <li class="list-group-item list-group-item-warning text-center" ng-show="noSpaces">This organization has no spaces</li>
+       <li class="list-group-item text-center" ng-repeat="space in activeSpaces" ng-controller="SpaceController">
+        <h5>{{space.entity.name}} space</h5>
+        <h6 ng-show="noApps">This space has no apps</h6>
           <table class="table table-bordered" ng-show="apps">
             <thead>
               <tr>
-                <th>Name</th>
+                <th>App Name</th>
                 <th>Buildpack</th>
                 <th>Memory</th>
                 <th>Instances</th>
@@ -52,27 +57,8 @@
               </tr>
             </tbody>
           </table>
-        </div></br>
-    </div>
-  </div>
-
-    <div ng-show="show.spaces" class="row">
-      <div class="col-md-4 box" ng-repeat="space in spaces">
-        <div ng-controller="SpaceController">
-          <h3>{{space.entity.name}}</h3>
-          Org:{{org.entity.name}}
-        </div>
-      </div>
-    </div>
-
-    <div ng-show="show.apps" class="row">
-      <div class="col-md-4 box" ng-repeat="app in apps">
-        <div ng-controller="AppController">
-          <h3>{{app.entity.name}}</h3>
-          Space:{{org.entity.name}}</br>
-          Org:{{space.entity.name}}
-        </div>
-      </div>
+       </li>
+     </ul>
     </div>
   </div>
 </div>
