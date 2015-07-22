@@ -11,7 +11,6 @@ app.controller('HomeCtrl', function($scope, $http) {
     // Otherwise, reload the login page.
 });
 
-
 app.controller('DashboardCtrl', function($scope, $http) {
     'use strict';
     $http.get('/v2/organizations').success(function(response) {
@@ -19,22 +18,25 @@ app.controller('DashboardCtrl', function($scope, $http) {
     });
     $scope.showOrg = function(org) {
         $scope.activeOrg = org;
-        $scope.orgVisible = true;
+        $scope.visibleTab = "organizations";
         $http.get(org.entity.spaces_url).success(function(response) {
             var resources = response.resources;
+            $scope.orgDropDownName = org.entity.name
             if (resources.length > 0) {
                 $scope.activeSpaces = response.resources;
-                $scope.noSpaces = false;
             } else {
-                $scope.noSpaces = true;
-                $scope.activeSpaces = false;
+                $scope.activeSpaces = null;
             }
         });
     };
     $scope.clearDashboard = function() {
-        $scope.orgVisible = false;
-        $scope.activeOrg = false;
+        $scope.visibleTab = null;
+        $scope.activeOrg = null;
+        $scope.orgDropDownName = null;
     };
+    $scope.$on('emitActiveSpace', function(event, apps) {
+       $scope.activeApps =  apps;
+    });
 });
 
 app.controller('SpaceController', function($scope, $http) {
@@ -45,7 +47,18 @@ app.controller('SpaceController', function($scope, $http) {
         if (resources.length > 0) {
             $scope.apps = response.resources;
         } else {
-            $scope.noApps = true;
+            $scope.apps = null;
         }
     });
+    $scope.setActiveSpace = function() {
+        $scope.$emit('emitActiveSpace', $scope.apps);
+        var pills = document.querySelector('#space-pills').children;
+        for (var i = 0, len= pills.length; i < len; i++){
+            pills[i].classList.remove("active");
+        };
+        $scope.activePill = document.querySelector('#space-' + $scope.space.entity.name);
+        if ($scope.activePill){
+            $scope.activePill.parentElement.classList.add("active");
+        };
+    }
 });
