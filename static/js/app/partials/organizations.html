@@ -1,0 +1,12 @@
+<div class="page-header">
+  <h3 class="text-center">{{activeOrg.entity.name}} organization</h3>
+</div>
+
+<div ng-switch="activeSpaces">
+    <div ng-switch-default>
+        <ng-include src="'js/app/partials/spaces.html'"></ng-include>
+    </div>
+    <div class="well" ng-switch-when="null">
+        <h4>This organization has no spaces</h4>
+    </div>
+</div>

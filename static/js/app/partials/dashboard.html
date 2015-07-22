@@ -1,39 +1,32 @@
-<table border="4">
-  <tr>
-    <th>Org Name</th>
-    <th>Quotas</th>
-    <th>Spaces</th>
-  </tr>
-  <tr ng-repeat="org in orgs">
-      <td>{{org.entity.name}}</td>
-      <td ng-controller="QuotaController">{{data}}</td>
-      <td ng-controller="SpacesController">
-        <table ng-repeat="space in spaces" border="2">
-          <tr>
-            <th>{{space.entity.name}}</th>
-          </tr>
-          <tr ng-controller="AppController">
-            <td>
-              <table border="1" ng-repeat="app in apps">
-                <tr>
-                  <th>Name</th>
-                  <th>Buildpack</th>
-                  <th>Memory</th>
-                  <th>Instances</th>
-                  <th>State</th>
-                  <th>Disk Quota</th>
-                </tr>
-                <tr>
-                  <td>{{app.entity.name}}</td>
-                  <td>{{app.entity.detected_buildpack}}</td>
-                  <td>{{app.entity.memory}}</td>
-                  <td>{{app.entity.instances}}</td>
-                  <td>{{app.entity.state}}</td>
-                  <td>{{app.entity.disk_quota}}</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </td>
-</table>
+  <!-- Navbar -->
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Navbar brand -->
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#/dashboard" ng-click="clearDashboard()">CF-Console</a>
+    </div>
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ orgDropDownName || "Organizations" }}&nbsp;<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li ng-repeat="org in orgs" ng-click="showOrg(org)">
+            <a>{{org.entity.name}}</a>
+          </li>
+        </ul>
+      </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Tab Views -->
+<div ng-switch="visibleTab">
+    <div ng-switch-when="organizations">
+        <ng-include src="'js/app/partials/organizations.html'"></ng-include>
+    </div>
+    <div class="jumbotron text-center" ng-switch-default="null">
+        <h3>Welcome to CF-Console</h3>
+    </div>
+</div>
