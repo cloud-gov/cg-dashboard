@@ -6,10 +6,11 @@
 
 <!-- Apps -->
 <div ng-switch="activeApps">
+  <div ng-switch-when="null"></div>
+  <div class="well" ng-switch-when="noApps">
+      <h4 class="text-center">This space has no apps</h4>
+  </div>
   <div ng-switch-default>
     <ng-include src="'js/app/partials/apps.html'"></ng-include>
-  </div>
-  <div class="well" ng-switch-when="null">
-      <h4 class="text-center">This space has no apps</h4>
   </div>
 <div>

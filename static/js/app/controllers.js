@@ -19,6 +19,7 @@ app.controller('DashboardCtrl', function($scope, $http) {
     $scope.showOrg = function(org) {
         $scope.activeOrg = org;
         $scope.visibleTab = "organizations";
+        $scope.activeApps = null;
         $http.get(org.entity.spaces_url).success(function(response) {
             var resources = response.resources;
             $scope.orgDropDownName = org.entity.name
@@ -47,7 +48,7 @@ app.controller('SpaceController', function($scope, $http) {
         if (resources.length > 0) {
             $scope.apps = response.resources;
         } else {
-            $scope.apps = null;
+            $scope.apps = "noApps";
         }
     });
     $scope.setActiveSpace = function() {
