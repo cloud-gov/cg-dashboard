@@ -16,11 +16,9 @@ func TestCfConsole(t *testing.T) {
 var agoutiDriver *agouti.WebDriver
 
 var _ = BeforeSuite(func() {
-	// Choose a WebDriver:
 
+	// MAKE SURE YOU INSTALL PhantomJS. `brew install phantomjs`
 	agoutiDriver = agouti.PhantomJS()
-	// agoutiDriver = agouti.Selenium()
-	// agoutiDriver = agouti.ChromeDriver()
 
 	Expect(agoutiDriver.Start()).To(Succeed())
 })
