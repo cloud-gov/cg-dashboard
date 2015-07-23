@@ -6,7 +6,6 @@ import (
 
 	"encoding/gob"
 	"errors"
-	"os"
 )
 
 // Settings is the object to hold global values and objects for the service.
@@ -21,42 +20,36 @@ type Settings struct {
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
 // otherwise it returns nil for success.
-func (s *Settings) InitSettings() error {
-	// Load the variables from the environment.
-	var clientID string
-	var clientSecret string
-	var hostname string
-	var authURL string
-	var tokenURL string
-
-	if clientID = os.Getenv("CONSOLE_CLIENT_ID"); len(clientID) == 0 {
-		return errors.New("Unable to find 'CONSOLE_CLIENT_ID' in environment. Exiting.\n")
+func (s *Settings) InitSettings(envVars EnvVars) error {
+	if len(envVars.ClientID) == 0 {
+		return errors.New("Unable to find '" + ClientIDEnvVar + "' in environment. Exiting.\n")
 	}
-	if clientSecret = os.Getenv("CONSOLE_CLIENT_SECRET"); len(clientSecret) == 0 {
-		return errors.New("Unable to find 'CONSOLE_CLIENT_SECRET' in environment. Exiting.\n")
+	if len(envVars.ClientSecret) == 0 {
+		return errors.New("Unable to find '" + ClientSecretEnvVar + "' in environment. Exiting.\n")
 	}
-	if hostname = os.Getenv("CONSOLE_HOSTNAME"); len(hostname) == 0 {
-		return errors.New("Unable to find 'CONSOLE_HOSTNAME' in environment. Exiting.\n")
+	if len(envVars.Hostname) == 0 {
+		return errors.New("Unable to find '" + HostnameEnvVar + "' in environment. Exiting.\n")
 	}
-	if authURL = os.Getenv("CONSOLE_AUTH_URL"); len(authURL) == 0 {
-		return errors.New("Unable to find 'CONSOLE_AUTH_URL' in environment. Exiting.\n")
+	if len(envVars.AuthURL) == 0 {
+		return errors.New("Unable to find '" + AuthURLEnvVar + "' in environment. Exiting.\n")
 	}
-	if tokenURL = os.Getenv("CONSOLE_TOKEN_URL"); len(tokenURL) == 0 {
-		return errors.New("Unable to find 'CONSOLE_TOKEN_URL' in environment. Exiting.\n")
+	if len(envVars.TokenURL) == 0 {
+		return errors.New("Unable to find '" + TokenURLEnvVar + "' in environment. Exiting.\n")
 	}
-	if s.ConsoleAPI = os.Getenv("CONSOLE_API"); len(s.ConsoleAPI) == 0 {
-		return errors.New("Unable to find 'CONSOLE_API' in environment. Exiting.\n")
+	if len(envVars.APIURL) == 0 {
+		return errors.New("Unable to find '" + APIEnvVar + "' in environment. Exiting.\n")
 	}
+	s.ConsoleAPI = envVars.APIURL
 
 	// Setup OAuth2 Client Service.
 	s.OAuthConfig = &oauth2.Config{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
-		RedirectURL:  hostname + "/oauth2callback",
+		ClientID:     envVars.ClientID,
+		ClientSecret: envVars.ClientSecret,
+		RedirectURL:  envVars.Hostname + "/oauth2callback",
 		Scopes:       []string{"cloud_controller.read", "cloud_controller.write", "cloud_controller.admin", "scim.read", "openid"},
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  authURL,
-			TokenURL: tokenURL,
+			AuthURL:  envVars.AuthURL,
+			TokenURL: envVars.TokenURL,
 		},
 	}
 

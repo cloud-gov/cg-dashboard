@@ -11,9 +11,13 @@ import (
 
 type MockSessionStore struct {
 	session sessions.Session
+	currentSessionName string
 }
 
 func (store MockSessionStore) Get(r *http.Request, name string) (*sessions.Session, error) {
+	if store.currentSessionName == "nilSession"{
+		return nil, nil
+	}
 	return &store.session, nil
 }
 
@@ -25,12 +29,13 @@ func (store MockSessionStore) Save(r *http.Request, w http.ResponseWriter, s *se
 	return nil
 }
 
-func (store *MockSessionStore) ResetSessionData(data map[string]interface{}) {
+func (store *MockSessionStore) ResetSessionData(data map[string]interface{}, sessionName string) {
 	// Initialize the map to empty.
 	store.session.Values = make(map[interface{}]interface{})
 	for key, value := range data {
 		store.session.Values[key] = value
 	}
+	store.currentSessionName = sessionName
 }
 
 func NewTestRequest(method, path string) (*httptest.ResponseRecorder, *http.Request) {

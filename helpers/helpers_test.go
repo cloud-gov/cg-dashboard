@@ -11,6 +11,7 @@ import (
 
 type tokenTestData struct {
 	testName string
+	sessionName string
 	sessionData map[string]interface{}
 	returnValueNull bool
 }
@@ -26,6 +27,12 @@ var getValidTokenTests = []tokenTestData{
 		sessionData: testhelpers.InvalidTokenData,
 		returnValueNull: true,
 	},
+	{
+		testName: "Nil Session Check",
+		sessionName: "nilSession",
+		returnValueNull: true,
+	},
+
 }
 
 func TestGetValidToken(t *testing.T) {
@@ -34,7 +41,7 @@ func TestGetValidToken(t *testing.T) {
 	for _, test := range getValidTokenTests {
 		// Initialize a new session store.
 		store := testhelpers.MockSessionStore{}
-		store.ResetSessionData(test.sessionData)
+		store.ResetSessionData(test.sessionData, test.sessionName)
 		mockSettings.Sessions = store
 
 		value := GetValidToken(mockRequest, &mockSettings)

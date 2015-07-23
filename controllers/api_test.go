@@ -38,7 +38,7 @@ func TestOAuth(t *testing.T) {
 	for _, test := range oauthTests {
 		// Initialize a new session store.
 		store := testhelpers.MockSessionStore{}
-		store.ResetSessionData(test.sessionData)
+		store.ResetSessionData(test.sessionData, "")
 		mockSettings.Sessions = store
 
 		// Setup a test route on the API router (which is guarded by OAuth)
