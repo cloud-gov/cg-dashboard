@@ -42,7 +42,18 @@ bower install bootstrap
 - Navigate browser to `http://localhost:9999`
 
 ## Testing
-`go test ./...`
+### Running unit tests
+- `go test ./...`
+
+### Running acceptance tests
+#### Setup
+- Make sure you have PhantomJS installed: `brew install phantomjs`
+- Install aogut: `go get github.com/sclevine/agouti`
+- Install ginkgo `go get github.com/onsi/ginkgo/ginkgo`
+- Install gomega `go get github.com/onsi/gomega`
+
+#### Acceptance tests
+- `go test ./... -tags acceptance`
 
 ## Deploying
 - `cf push <optional-app-name>`
