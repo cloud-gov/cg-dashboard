@@ -7,14 +7,14 @@ app.controller('HomeCtrl', function($scope, $http) {
         }).error(function(response) {
             $scope.backendStatus = "offline";
         });
-    // TODO. Check if logged in. If so, redirect to the "dashboard".
-    // Otherwise, reload the login page.
 });
 
-app.controller('DashboardCtrl', function($scope, $http) {
+app.controller('DashboardCtrl', function($scope, $http, $location) {
     'use strict';
     $http.get('/v2/organizations').success(function(response) {
         $scope.orgs = response.resources;
+    }).error(function(response) {
+        $location.path("/");
     });
     $scope.showOrg = function(org) {
         $scope.activeOrg = org;
