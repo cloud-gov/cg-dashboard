@@ -11,7 +11,7 @@ import (
 	"os"
 )
 
-func loadEnvVars() helpers.EnvVars {
+func LoadEnvVars() helpers.EnvVars {
 	envVars := helpers.EnvVars{}
 
 	envVars.ClientID = os.Getenv(helpers.ClientIDEnvVar)
@@ -25,7 +25,7 @@ func loadEnvVars() helpers.EnvVars {
 
 func main() {
 	// Load environment variables
-	envVars := loadEnvVars()
+	envVars := LoadEnvVars()
 	// Initialize the settings.
 	settings := helpers.Settings{}
 	if err := settings.InitSettings(envVars); err != nil {
