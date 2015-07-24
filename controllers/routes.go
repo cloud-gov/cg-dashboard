@@ -12,8 +12,8 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 
 	// A closure that effectively loads the Settings into every request.
 	router.Middleware(func(c *Context, resp web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
-	    c.Settings = settings
-	    next(resp, req)
+		c.Settings = settings
+		next(resp, req)
 	})
 
 	// Backend Route Initialization
