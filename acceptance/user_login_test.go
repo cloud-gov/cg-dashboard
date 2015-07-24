@@ -8,7 +8,9 @@ import (
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
 
+	"fmt"
 	"os"
+	"net/http/httptest"
 )
 
 type AcceptanceTestEnvVars struct {
@@ -20,23 +22,41 @@ type AcceptanceTestEnvVars struct {
 func (ev *AcceptanceTestEnvVars) loadTestEnvVars() {
 	ev.Username = os.Getenv("CONSOLE_TEST_USERNAME")
 	ev.Password = os.Getenv("CONSOLE_TEST_PASSWORD")
+
+	if len(ev.Username) < 1 {
+		fmt.Println("Please set CONSOLE_TEST_USERNAME")
+		os.Exit(1)
+	}
+
+	if len(ev.Password) < 1 {
+		fmt.Println("Please set CONSOLE_TEST_PASSWORD")
+		os.Exit(1)
+	}
 }
 
 var _ = Describe("UserLogin", func() {
-	var page *agouti.Page
+	var (
+		page *agouti.Page
+		server *httptest.Server
+	)
 
 	testEnvVars := AcceptanceTestEnvVars{LoadEnvVars(), "", ""}
 	testEnvVars.loadTestEnvVars()
 
 	BeforeEach(func() {
 		var err error
+		app, err := InitApp()
+		if err != nil {
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+		server = httptest.NewServer(app)
 		page, err = agoutiDriver.NewPage()
-		StartApp("3000")
 		Expect(err).NotTo(HaveOccurred())
 	})
 	It("should manage user authentication", func() {
 		By("redirecting the user to the login form from the home page", func() {
-			Expect(page.Navigate("http://localhost:3000/")).To(Succeed())
+			Expect(page.Navigate(testEnvVars.Hostname)).To(Succeed())
 		})
 
 		By("allowing the user to fill out the login form and submit it", func() {
@@ -44,11 +64,11 @@ var _ = Describe("UserLogin", func() {
 			// Expect(page.FindByLabel("E-mail").Fill("spud@example.com")).To(Succeed())
 			// Expect(page.FindByLabel("Password").Fill("secret-password")).To(Succeed())
 			Expect(page.Find("#login-btn").Click()).To(Succeed())
-			Eventually(Expect(page).To(HaveURL("https://login.18f.gov/login")))
+			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL)))
 			Expect(page.FindByName("username").Fill(testEnvVars.Username)).To(Succeed())
 			Expect(page.FindByName("password").Fill(testEnvVars.Password)).To(Succeed())
 			Expect(page.FindByButton("Sign in").Click()).To(Succeed())
-			Eventually(Expect(page).To(HaveURL("http://console.18f.gov/#/dashboard")))
+			Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/dashboard"))
 		})
 
 		/*
@@ -71,12 +91,13 @@ var _ = Describe("UserLogin", func() {
 
 	It("should redirect users to login page if accessing privileged dashboard page without first logining in.", func() {
 		By("redirecting the user to the login form", func() {
-			Expect(page.Navigate("http://console.18f.gov/#/dashboard")).To(Succeed())
-			Eventually(Expect(page).To(HaveURL("http://console.18f.gov/#/")), 2.0, 1.0)
+			Expect(page.Navigate(testEnvVars.Hostname+"/#/dashboard")).To(Succeed())
+			Expect(page).To(HaveURL(testEnvVars.Hostname+"/#/"))
 		})
 
 	})
 	AfterEach(func() {
 		Expect(page.Destroy()).To(Succeed())
+		server.Close()
 	})
 })

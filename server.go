@@ -23,27 +23,41 @@ func LoadEnvVars() helpers.EnvVars {
 	return envVars
 }
 
+var DefaultPort = "9999"
+
 func main() {
 	// Start the server up.
 	var port string
 	if port = os.Getenv("PORT"); len(port) == 0 {
-		port = "9999"
+		port = DefaultPort
 	}
 	StartApp(port)
 }
 
-func StartApp(port string) {
+func InitApp() (http.Handler, error) {
 	// Load environment variables
 	envVars := LoadEnvVars()
 	// Initialize the settings.
 	settings := helpers.Settings{}
 	if err := settings.InitSettings(envVars); err != nil {
-		fmt.Println(err.Error())
-		return
+		return nil, err
 	}
 
 	// Initialize the router
 	router := controllers.InitRouter(&settings)
 
-	http.ListenAndServe(":"+port, router)
+	return router, nil
+}
+
+func StartApp(port string) {
+	app, err := InitApp()
+	if err != nil {
+		// Print the error.
+		fmt.Println(err.Error())
+		// Terminate the program with a non-zero value number.
+		// Need this for testing purposes. 
+		os.Exit(1)
+	}
+
+	http.ListenAndServe(":"+port, app)
 }
