@@ -7,32 +7,29 @@ import (
 	"testing"
 )
 
-
-
 type tokenTestData struct {
-	testName string
-	sessionName string
-	sessionData map[string]interface{}
+	testName        string
+	sessionName     string
+	sessionData     map[string]interface{}
 	returnValueNull bool
 }
 
 var getValidTokenTests = []tokenTestData{
 	{
-		testName: "Basic Valid Token Check",
-		sessionData: testhelpers.ValidTokenData,
+		testName:        "Basic Valid Token Check",
+		sessionData:     testhelpers.ValidTokenData,
 		returnValueNull: false,
 	},
 	{
-		testName: "Basic Invalid Token Check",
-		sessionData: testhelpers.InvalidTokenData,
+		testName:        "Basic Invalid Token Check",
+		sessionData:     testhelpers.InvalidTokenData,
 		returnValueNull: true,
 	},
 	{
-		testName: "Nil Session Check",
-		sessionName: "nilSession",
+		testName:        "Nil Session Check",
+		sessionName:     "nilSession",
 		returnValueNull: true,
 	},
-
 }
 
 func TestGetValidToken(t *testing.T) {

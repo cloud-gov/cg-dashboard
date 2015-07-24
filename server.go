@@ -17,9 +17,9 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.ClientID = os.Getenv(helpers.ClientIDEnvVar)
 	envVars.ClientSecret = os.Getenv(helpers.ClientSecretEnvVar)
 	envVars.Hostname = os.Getenv(helpers.HostnameEnvVar)
-	envVars.AuthURL = os.Getenv(helpers.AuthURLEnvVar)
-	envVars.TokenURL = os.Getenv(helpers.TokenURLEnvVar)
-	envVars.APIURL = os.Getenv(helpers.APIEnvVar)
+	envVars.LoginURL = os.Getenv(helpers.LoginURLEnvVar)
+	envVars.UAAURL = os.Getenv(helpers.UAAURLEnvVar)
+	envVars.APIURL = os.Getenv(helpers.APIURLEnvVar)
 	return envVars
 }
 
