@@ -1,4 +1,4 @@
-package main_test
+package acceptance_test
 
 import (
 	. "github.com/18F/cf-console"
