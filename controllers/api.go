@@ -35,7 +35,6 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
 
 	req_url := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL.Path)
-	fmt.Println(req_url)
 	request, _ := http.NewRequest("GET", req_url, nil)
 	request.Header.Set("authorization", fmt.Sprintf("bearer %s", c.AccessToken))
 	client := &http.Client{}
@@ -43,4 +42,17 @@ func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
 	body, _ := ioutil.ReadAll(res.Body)
 	defer res.Body.Close()
 	fmt.Fprintf(rw, string(body))
+}
+
+func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
+	session, _ := c.Settings.Sessions.Get(req.Request, "session")
+	// Clear the token
+	session.Values["token"] = nil
+	// Force the session to expire
+	session.Options.MaxAge = -1
+	err := session.Save(req.Request, rw)
+	if err != nil {
+		fmt.Println("callback error: " + err.Error())
+	}
+	http.Redirect(rw, req.Request, c.Settings.LoginURL, http.StatusFound)
 }

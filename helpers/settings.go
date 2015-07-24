@@ -14,6 +14,8 @@ type Settings struct {
 	OAuthConfig *oauth2.Config
 	// Console API
 	ConsoleAPI string
+	// Login URL - used to redirect users to the logout page
+	LoginURL string
 	// Sessions is the session store for all connected users.
 	Sessions sessions.Store
 }
@@ -30,16 +32,17 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	if len(envVars.Hostname) == 0 {
 		return errors.New("Unable to find '" + HostnameEnvVar + "' in environment. Exiting.\n")
 	}
-	if len(envVars.AuthURL) == 0 {
-		return errors.New("Unable to find '" + AuthURLEnvVar + "' in environment. Exiting.\n")
+	if len(envVars.LoginURL) == 0 {
+		return errors.New("Unable to find '" + LoginURLEnvVar + "' in environment. Exiting.\n")
 	}
-	if len(envVars.TokenURL) == 0 {
-		return errors.New("Unable to find '" + TokenURLEnvVar + "' in environment. Exiting.\n")
+	if len(envVars.UAAURL) == 0 {
+		return errors.New("Unable to find '" + UAAURLEnvVar + "' in environment. Exiting.\n")
 	}
 	if len(envVars.APIURL) == 0 {
-		return errors.New("Unable to find '" + APIEnvVar + "' in environment. Exiting.\n")
+		return errors.New("Unable to find '" + APIURLEnvVar + "' in environment. Exiting.\n")
 	}
 	s.ConsoleAPI = envVars.APIURL
+	s.LoginURL = envVars.LoginURL
 
 	// Setup OAuth2 Client Service.
 	s.OAuthConfig = &oauth2.Config{
@@ -48,8 +51,8 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 		RedirectURL:  envVars.Hostname + "/oauth2callback",
 		Scopes:       []string{"cloud_controller.read", "cloud_controller.write", "cloud_controller.admin", "scim.read", "openid"},
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  envVars.AuthURL,
-			TokenURL: envVars.TokenURL,
+			AuthURL:  envVars.LoginURL + "/oauth/authorize",
+			TokenURL: envVars.UAAURL + "/oauth/token",
 		},
 	}
 

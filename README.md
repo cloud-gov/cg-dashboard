@@ -23,10 +23,10 @@ uaac client add <your-client-id> \
 If you are testing locally, export these variables. If you are deploying to cloud foundry, modify the manifest.yml
 - CONSOLE_CLIENT_ID: Registered client id with UAA.
 - CONSOLE_CLIENT_SECRET: The client secret.
-- CONSOLE_API: The URL of the API service.
 - CONSOLE_HOSTNAME: The URL of the service itself.
-- CONSOLE_AUTH_URL: The URL of the auth service.
-- CONSOLE_TOKEN_URL: The URL of the token service.
+- CONSOLE_LOGIN_URL: The base URL of the auth service. i.e. `https://login.domain.com`
+- CONSOLE_UAA_URL: The URL of the UAA service. i.e. `https://uaa.domain.com`
+- CONSOLE_API: The URL of the API service. i.e. `http://api.domain.com`
 
 ## Front end
 Bootstrap is already included. To update Bootstrap library for the front end:
