@@ -4,6 +4,7 @@ import (
 	"github.com/18F/cf-console/helpers"
 	"github.com/18F/cf-console/helpers/testhelpers"
 	"github.com/gocraft/web"
+	"golang.org/x/net/context"
 
 	"fmt"
 	"strings"
@@ -35,6 +36,8 @@ func (c *APIContext) Test(rw web.ResponseWriter, req *web.Request) {
 
 func TestOAuth(t *testing.T) {
 	mockSettings := helpers.Settings{}
+	mockSettings.TokenContext = context.TODO()
+
 	for _, test := range oauthTests {
 		// Initialize a new session store.
 		store := testhelpers.MockSessionStore{}
