@@ -54,7 +54,7 @@ func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
 	if err != nil {
 		fmt.Println("callback error: " + err.Error())
 	}
-	http.Redirect(rw, req.Request, "/#", http.StatusFound)
+	http.Redirect(rw, req.Request, c.Settings.LoginURL, http.StatusFound)
 }
 
 func (c *APIContext) AuthStatus(rw web.ResponseWriter, req *web.Request) {

@@ -10,12 +10,12 @@ import (
 )
 
 type MockSessionStore struct {
-	session sessions.Session
+	session            sessions.Session
 	currentSessionName string
 }
 
 func (store MockSessionStore) Get(r *http.Request, name string) (*sessions.Session, error) {
-	if store.currentSessionName == "nilSession"{
+	if store.currentSessionName == "nilSession" {
 		return nil, nil
 	}
 	return &store.session, nil
@@ -45,10 +45,10 @@ func NewTestRequest(method, path string) (*httptest.ResponseRecorder, *http.Requ
 	return recorder, request
 }
 
-var InvalidTokenData = map[string]interface{} {
+var InvalidTokenData = map[string]interface{}{
 	"token": oauth2.Token{Expiry: (time.Now()).Add(-1 * time.Minute), AccessToken: "invalidsampletoken"},
 }
 
-var ValidTokenData = map[string]interface{} {
+var ValidTokenData = map[string]interface{}{
 	"token": oauth2.Token{Expiry: time.Time{}, AccessToken: "sampletoken"},
 }
