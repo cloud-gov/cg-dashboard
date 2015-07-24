@@ -3,6 +3,7 @@ package helpers
 import (
 	"golang.org/x/oauth2"
 
+	"fmt"
 	"net/http"
 )
 
@@ -20,9 +21,17 @@ func GetValidToken(req *http.Request, settings *Settings) *oauth2.Token {
 		// If valid, just return.
 		if token.Valid() {
 			return &token
+		} else {
+			// Attempt to refresh token using oauth2 Client
+			// https://godoc.org/golang.org/x/oauth2#Config.Client
+			req_url := fmt.Sprintf("%s%s", settings.ConsoleAPI, "/v2/info")
+			request, _ := http.NewRequest("GET", req_url, nil)
+			client := settings.OAuthConfig.Client(settings.TokenContext, &token)
+			if _, err := client.Do(request); err != nil {
+				return nil
+			}
+			return &token
 		}
-		// If not valid, try to refresh the accesstoken with the refresh token.
-		// TODO
 	}
 
 	// If couldn't find token or if it's expired, return nil
