@@ -49,7 +49,7 @@ func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
 	// Clear the token
 	session.Values["token"] = nil
 	// Force the session to expire
-	//session.Options.MaxAge = -1
+	session.Options.MaxAge = -1
 	err := session.Save(req.Request, rw)
 	if err != nil {
 		fmt.Println("callback error: " + err.Error())
