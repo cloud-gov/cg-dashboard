@@ -56,3 +56,7 @@ func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
 	}
 	http.Redirect(rw, req.Request, "/#", http.StatusFound)
 }
+
+func (c *APIContext) AuthStatus(rw web.ResponseWriter, req *web.Request) {
+	fmt.Fprintf(rw, "{\"status\": \"authorized\"}")
+}
