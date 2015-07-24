@@ -1,8 +1,10 @@
 <div class="container">
     <div class="text-center">
         <h1>Welcome to {{title}}</h1>
-            <h5>Backend status: {{backendStatus}}</h5>
-        <a href="/handshake" class="btn btn-primary btn-md">Login</a>
+        <div ng-switch="backendStatus">
+          <a href="/handshake" class="btn btn-primary btn-md" ng-switch-when="alive">Login</a>
+          <a href="/#/dashboard" class="btn btn-success btn-md" ng-switch-when="authorized">Welcome</a>
+          <h3 ng-switch-when="offline"><span class="label label-danger">{{backendStatus}}</span></h3>
+        </div>
     </div>
 </div>
-

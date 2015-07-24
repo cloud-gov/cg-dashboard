@@ -1,9 +1,14 @@
-app.controller('HomeCtrl', function($scope, $http) {
+app.controller('HomeCtrl', function($scope, $http, $location) {
     'use strict';
     $scope.title = "Cf-Console";
     $http.get('/ping') // Just attempt to use the test route in the Go backend server.
         .success(function(response) {
-            $scope.backendStatus = response;
+          $http.get('/v2/authstatus')
+            .success(function(apiResponse) {
+              $scope.backendStatus = apiResponse.status;
+            }).error(function(apiResponse){
+              $scope.backendStatus = response.status;
+            });
         }).error(function(response) {
             $scope.backendStatus = "offline";
         });
