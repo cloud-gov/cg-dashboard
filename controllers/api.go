@@ -35,7 +35,6 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
 
 	req_url := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL.Path)
-	fmt.Println(req_url)
 	request, _ := http.NewRequest("GET", req_url, nil)
 	request.Header.Set("authorization", fmt.Sprintf("bearer %s", c.AccessToken))
 	client := &http.Client{}
