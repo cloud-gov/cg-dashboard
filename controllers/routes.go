@@ -26,6 +26,7 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	apiRouter := router.Subrouter(APIContext{}, "/v2")
 	apiRouter.Middleware((*APIContext).OAuth)
 	// All routes accepted
+	apiRouter.Get("/logout", (*APIContext).Logout)
 	apiRouter.Get("/:*", (*APIContext).Proxy)
 
 	// Frontend Route Initialization

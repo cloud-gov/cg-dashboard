@@ -43,3 +43,16 @@ func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
 	defer res.Body.Close()
 	fmt.Fprintf(rw, string(body))
 }
+
+func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
+	session, _ := c.Settings.Sessions.Get(req.Request, "session")
+	// Clear the token
+	session.Values["token"] = nil
+	// Force the session to expire
+	//session.Options.MaxAge = -1
+	err := session.Save(req.Request, rw)
+	if err != nil {
+		fmt.Println("callback error: " + err.Error())
+	}
+	http.Redirect(rw, req.Request, "/#", http.StatusFound)
+}
