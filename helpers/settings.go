@@ -14,6 +14,8 @@ type Settings struct {
 	OAuthConfig *oauth2.Config
 	// Console API
 	ConsoleAPI string
+	// Login URL - used to redirect users to the logout page
+	LoginURL string
 	// Sessions is the session store for all connected users.
 	Sessions sessions.Store
 }
@@ -40,6 +42,7 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 		return errors.New("Unable to find '" + APIURLEnvVar + "' in environment. Exiting.\n")
 	}
 	s.ConsoleAPI = envVars.APIURL
+	s.LoginURL = envVars.LoginURL
 
 	// Setup OAuth2 Client Service.
 	s.OAuthConfig = &oauth2.Config{
