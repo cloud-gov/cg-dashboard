@@ -24,6 +24,15 @@ func LoadEnvVars() helpers.EnvVars {
 }
 
 func main() {
+	// Start the server up.
+	var port string
+	if port = os.Getenv("PORT"); len(port) == 0 {
+		port = "9999"
+	}
+	StartApp(port)
+}
+
+func StartApp(port string) {
 	// Load environment variables
 	envVars := LoadEnvVars()
 	// Initialize the settings.
@@ -36,10 +45,5 @@ func main() {
 	// Initialize the router
 	router := controllers.InitRouter(&settings)
 
-	// Start the server up.
-	var port string
-	if port = os.Getenv("PORT"); len(port) == 0 {
-		port = "9999"
-	}
 	http.ListenAndServe(":"+port, router)
 }

@@ -31,11 +31,12 @@ var _ = Describe("UserLogin", func() {
 	BeforeEach(func() {
 		var err error
 		page, err = agoutiDriver.NewPage()
+		StartApp("3000")
 		Expect(err).NotTo(HaveOccurred())
 	})
 	It("should manage user authentication", func() {
 		By("redirecting the user to the login form from the home page", func() {
-			Expect(page.Navigate("http://console.18f.gov/")).To(Succeed())
+			Expect(page.Navigate("http://localhost:3000/")).To(Succeed())
 		})
 
 		By("allowing the user to fill out the login form and submit it", func() {
