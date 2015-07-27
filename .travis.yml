@@ -4,6 +4,9 @@ go:
 script:
 - go test ./...
 - cd acceptance && go test -tags acceptance
+branches:
+  only:
+    - master
 env:
   global:
   - secure: xn/EXShpj51D9TTQgwrOj5H3c7gr41i+KnoOesfJDc1twY4reS8bWIBZU1zq2xaMsA8sus97Byk5MSXKifIzO5Gk6nyKzBo1z0HIXhpAVBy8RwNpLvUZrjrtz/24FmeQWs7McIfPZ92UWsGTI0BGVsSbIeAzeAkwIXb0/M1HUG4r7wgEOF+dlr3pYOtQBJ45wsst+n1RzUbWyHP7UPCcNHSrI7Q1y4odtK0MLMIozWBm5TbhpJnN4ylQCVPg2077Bsb5emg0G1K2Gfplhzvsu2+1BOekBHBsA4MJIPA1Y4dB2rkHeRvWgIyjg+w+wDyq0Kd4yP5Kku/N1U2b1llaOOLNABGYmfkteFgugHv73xfPoN2uLRIrWOpxywp+r/7qVDO8s5ZjjAGQfnFql53JBxD7/eAKH4sqaR5uW1uSpwpAmjaNAa7wcmgFKi0nyFovIBgbTH37M8nSDIS6/YfYYRiGMQA3piiUvBqVFpguSDrgup8/O8KsMn2SfPLvk7GG5bb8JOO0dWzXFuq1CWSzU4cIvcYfVkwmOKjpvKXYX1ebZz3T7i+ZL1fijQKFMlzpQGNPqHZJ/QwjH45G+Nw8Cz4waxP8l4C4ros5rIgR6CdYoRqfrhGMODum/JmoChM85hVbZbRw0AMJ+mRgprqDkru1AGSeBrxxSnwmX6eS0bs=
