@@ -73,15 +73,21 @@ var _ = Describe("UserLogin", func() {
 		testEnvVars.Hostname = server.URL
 		settings.OAuthConfig.RedirectURL = server.URL + "/oauth2callback"
 	})
+
+	It("should redirect users to login page if accessing privileged dashboard page without first logining in.", func() {
+		By("redirecting the user to the login form", func() {
+			Expect(page.Navigate(testEnvVars.Hostname + "/#/dashboard")).To(Succeed())
+			Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/"))
+		})
+
+	})
+
 	It("should manage user authentication", func() {
 		By("redirecting the user to the login form from the home page", func() {
 			Expect(page.Navigate(testEnvVars.Hostname)).To(Succeed())
 		})
 
 		By("allowing the user to fill out the login form and submit it", func() {
-			// Eventually(page.FindyByLabel("E-mail")).Should(BeFound())
-			// Expect(page.FindByLabel("E-mail").Fill("spud@example.com")).To(Succeed())
-			// Expect(page.FindByLabel("Password").Fill("secret-password")).To(Succeed())
 			Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
 			time.Sleep(100 * time.Millisecond)
 			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "/login")))
@@ -93,14 +99,6 @@ var _ = Describe("UserLogin", func() {
 		})
 
 		/*
-			By("allowing the user to view their profile", func() {
-				Eventually(page.FindByLink("Profile Page")).Should(BeFound())
-				Expect(page.FindByLink("Profile Page").Click()).To(Succeed())
-				profile := page.Find("section.profile")
-				Eventually(profile.Find(".greeting")).Should(HaveText("Hello Spud!"))
-				Expect(profile.Find("img#profile_pic")).To(BeVisible())
-			})
-
 			By("allowing the user to log out", func() {
 				Expect(page.Find("#logout").Click()).To(Succeed())
 				Expect(page).To(HavePopupText("Are you sure?"))
@@ -110,13 +108,6 @@ var _ = Describe("UserLogin", func() {
 		*/
 	})
 
-	It("should redirect users to login page if accessing privileged dashboard page without first logining in.", func() {
-		By("redirecting the user to the login form", func() {
-			Expect(page.Navigate(testEnvVars.Hostname + "/#/dashboard")).To(Succeed())
-			Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/"))
-		})
-
-	})
 	AfterEach(func() {
 		Expect(page.Destroy()).To(Succeed())
 		server.Close()
