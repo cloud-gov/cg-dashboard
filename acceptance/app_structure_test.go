@@ -28,6 +28,10 @@ var _ = Describe("AppStructure", func() {
 
 		// Create a fresh page to navigate.
 		page, err = agoutiDriver.NewPage()
+		page, err = agoutiDriver.NewPage(agouti.Browser("firefox"))
+		Expect(err).NotTo(HaveOccurred())
+		// PhantomJS makes the window really small. For now, these tests will be for desktop sizes.
+		page.Size(1024, 768)
 		Expect(err).NotTo(HaveOccurred())
 		page.ClearCookies()
 	})
@@ -43,24 +47,25 @@ var _ = Describe("AppStructure", func() {
 			Expect(page.FindByName("username").Fill(testEnvVars.Username)).To(Succeed())
 			Expect(page.FindByName("password").Fill(testEnvVars.Password)).To(Succeed())
 			Expect(page.FindByButton("Sign in").Click()).To(Succeed())
-			Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/dashboard"))
+			Eventually(Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/dashboard")))
 		})
 
 		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
-			Expect(page.Find("#org-dropdown").Text()).To(Equal("Organizations "))
+			Expect(page.Find("#org-dropdown")).To(BeFound())
+			// Expect(page.Find("#org-dropdown").Text()).To(Equal("Organizations "))
 			Expect(page.Find("#org-dropdown").Click()).To(Succeed())
 		})
 
 		By("allowing the user to click on an organization in the dropdown menu", func() {
-			Expect(page.First(".org-name").Click()).To(Succeed())
+			Eventually(Expect(page.First(".org-name").Click()).To(Succeed()))
 		})
 
 		By("allowing the user to click on a space in the tab views", func() {
-			Expect(page.First(".space-name").Click()).To(Succeed())
+			Eventually(Expect(page.First(".space-name").DoubleClick()).To(Succeed()))
 		})
 
 		By("showing app name and quota information (along with other information)", func() {
-			Expect(page.Find("#app-name-heading")).To(BeFound())
+			Eventually(Expect(page.Find("#app-name-heading")).To(BeFound()))
 			Expect(page.Find("#buildpack-heading")).To(BeFound())
 			Expect(page.Find("#memory-heading")).To(BeFound())
 			Expect(page.Find("#instances-heading")).To(BeFound())

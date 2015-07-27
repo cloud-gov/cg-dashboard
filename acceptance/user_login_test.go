@@ -29,6 +29,9 @@ var _ = Describe("UserLogin", func() {
 		// Create a fresh page to navigate.
 		page, err = agoutiDriver.NewPage()
 		Expect(err).NotTo(HaveOccurred())
+		// PhantomJS makes the window really small. For now, these tests will be for regular desktop sizes.
+		err = page.Size(1024, 768)
+		Expect(err).NotTo(HaveOccurred())
 		page.ClearCookies()
 	})
 
