@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"github.com/gorilla/sessions"
+	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
 	"encoding/gob"
@@ -18,6 +19,8 @@ type Settings struct {
 	LoginURL string
 	// Sessions is the session store for all connected users.
 	Sessions sessions.Store
+	// context.Context var from golang.org/x/net/context to make token Client work
+	TokenContext context.Context
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -43,6 +46,7 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	}
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
+	s.TokenContext = context.TODO()
 
 	// Setup OAuth2 Client Service.
 	s.OAuthConfig = &oauth2.Config{

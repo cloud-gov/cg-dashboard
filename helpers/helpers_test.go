@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"github.com/18F/cf-console/helpers/testhelpers"
+	"golang.org/x/net/context"
 
 	"net/http"
 	"testing"
@@ -35,6 +36,8 @@ var getValidTokenTests = []tokenTestData{
 func TestGetValidToken(t *testing.T) {
 	mockRequest, _ := http.NewRequest("GET", "", nil)
 	mockSettings := Settings{}
+	mockSettings.TokenContext = context.TODO()
+
 	for _, test := range getValidTokenTests {
 		// Initialize a new session store.
 		store := testhelpers.MockSessionStore{}

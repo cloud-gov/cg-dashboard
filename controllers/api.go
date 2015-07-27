@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/18F/cf-console/helpers"
 	"github.com/gocraft/web"
+	"golang.org/x/oauth2"
 	"io/ioutil"
 	"net/http"
 )
@@ -11,8 +12,8 @@ import (
 // APIContext stores the session info and access token per user.
 // All routes within APIContext represent the API routes
 type APIContext struct {
-	*Context    // Required.
-	AccessToken string
+	*Context // Required.
+	Token    oauth2.Token
 }
 
 // OAuth is a middle ware that checks whether or not the user has a valid token.
@@ -20,8 +21,9 @@ type APIContext struct {
 // If the token is 1) present and expired or 2) not present, it will return unauthorized.
 func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
 	// Get valid token if it exists from session store.
+
 	if token := helpers.GetValidToken(req.Request, c.Settings); token != nil {
-		c.AccessToken = token.AccessToken
+		c.Token = *token
 	} else {
 		// If no token, return unauthorized.
 		http.Error(rw, "{\"status\": \"unauthorized\"}", http.StatusUnauthorized)
@@ -34,10 +36,11 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 // A Proxy for all CF API
 func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
 
+	// Get client and refresh token if needed
+	// https://godoc.org/golang.org/x/oauth2#Config.Client
 	req_url := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL.Path)
 	request, _ := http.NewRequest("GET", req_url, nil)
-	request.Header.Set("authorization", fmt.Sprintf("bearer %s", c.AccessToken))
-	client := &http.Client{}
+	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
 	res, _ := client.Do(request)
 	body, _ := ioutil.ReadAll(res.Body)
 	defer res.Body.Close()
