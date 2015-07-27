@@ -1,17 +1,21 @@
-//+build !test
-
 package main
 
 import (
 	"github.com/18F/cf-console/controllers"
 	"github.com/18F/cf-console/helpers"
 
+	_ "github.com/onsi/ginkgo"     // Needed for acceptance package.
+	_ "github.com/onsi/gomega"     // Needed for acceptance package.
+	_ "github.com/sclevine/agouti" // Needed for acceptance package.
+
 	"fmt"
 	"net/http"
 	"os"
 )
 
-func LoadEnvVars() helpers.EnvVars {
+var defaultPort = "9999"
+
+func loadEnvVars() helpers.EnvVars {
 	envVars := helpers.EnvVars{}
 
 	envVars.ClientID = os.Getenv(helpers.ClientIDEnvVar)
@@ -23,39 +27,25 @@ func LoadEnvVars() helpers.EnvVars {
 	return envVars
 }
 
-var DefaultPort = "9999"
-
 func main() {
 	// Start the server up.
 	var port string
 	if port = os.Getenv("PORT"); len(port) == 0 {
-		port = DefaultPort
+		port = defaultPort
 	}
-	StartApp(port)
+	startApp(port)
 }
 
-func InitApp() (http.Handler, error) {
+func startApp(port string) {
 	// Load environment variables
-	envVars := LoadEnvVars()
-	// Initialize the settings.
-	settings := helpers.Settings{}
-	if err := settings.InitSettings(envVars); err != nil {
-		return nil, err
-	}
+	envVars := loadEnvVars()
 
-	// Initialize the router
-	router := controllers.InitRouter(&settings)
-
-	return router, nil
-}
-
-func StartApp(port string) {
-	app, err := InitApp()
+	app, _, err := controllers.InitApp(envVars)
 	if err != nil {
 		// Print the error.
 		fmt.Println(err.Error())
 		// Terminate the program with a non-zero value number.
-		// Need this for testing purposes. 
+		// Need this for testing purposes.
 		os.Exit(1)
 	}
 

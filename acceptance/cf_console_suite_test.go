@@ -1,6 +1,6 @@
 // +build acceptance
 
-package acceptance_test
+package acceptance
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -21,6 +21,7 @@ var _ = BeforeSuite(func() {
 
 	// MAKE SURE YOU INSTALL PhantomJS. `brew install phantomjs`
 	agoutiDriver = agouti.PhantomJS()
+	//agoutiDriver = agouti.Selenium()
 
 	Expect(agoutiDriver.Start()).To(Succeed())
 })

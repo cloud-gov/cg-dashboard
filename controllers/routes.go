@@ -36,3 +36,17 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 
 	return router
 }
+
+// InitApp takes in envars and sets up the router and settings that will be used for the unstarted server.
+func InitApp(envVars helpers.EnvVars) (*web.Router, *helpers.Settings, error) {
+	// Initialize the settings.
+	settings := helpers.Settings{}
+	if err := settings.InitSettings(envVars); err != nil {
+		return nil, nil, err
+	}
+
+	// Initialize the router
+	router := InitRouter(&settings)
+
+	return router, &settings, nil
+}

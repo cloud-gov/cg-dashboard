@@ -6,4 +6,4 @@ go:
 script:
   # Run unit tests.
   - go test ./...
-  - go test ./... -tags acceptance
+  - cd acceptance && go test -tags acceptance

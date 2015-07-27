@@ -1,16 +1,20 @@
-package acceptance_test
+// +build acceptance
+
+package acceptance
 
 import (
-	. "github.com/18F/cf-console"
+	"github.com/18F/cf-console/controllers"
 	"github.com/18F/cf-console/helpers"
+	"github.com/gocraft/web"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
 
 	"fmt"
-	"os"
 	"net/http/httptest"
+	"os"
+	"time"
 )
 
 type AcceptanceTestEnvVars struct {
@@ -32,27 +36,42 @@ func (ev *AcceptanceTestEnvVars) loadTestEnvVars() {
 		fmt.Println("Please set CONSOLE_TEST_PASSWORD")
 		os.Exit(1)
 	}
+	// The app will catch the rest of these
+	ev.ClientID = os.Getenv(helpers.ClientIDEnvVar)
+	ev.ClientSecret = os.Getenv(helpers.ClientSecretEnvVar)
+	ev.Hostname = os.Getenv(helpers.HostnameEnvVar)
+	ev.LoginURL = os.Getenv(helpers.LoginURLEnvVar)
+	ev.UAAURL = os.Getenv(helpers.UAAURLEnvVar)
+	ev.APIURL = os.Getenv(helpers.APIURLEnvVar)
+
 }
 
 var _ = Describe("UserLogin", func() {
 	var (
-		page *agouti.Page
+		page   *agouti.Page
 		server *httptest.Server
 	)
 
-	testEnvVars := AcceptanceTestEnvVars{LoadEnvVars(), "", ""}
+	testEnvVars := AcceptanceTestEnvVars{}
 	testEnvVars.loadTestEnvVars()
 
 	BeforeEach(func() {
 		var err error
-		app, err := InitApp()
+		app, settings, err := controllers.InitApp(testEnvVars.EnvVars)
 		if err != nil {
 			fmt.Println(err.Error())
 			os.Exit(1)
 		}
-		server = httptest.NewServer(app)
+		app.Middleware(web.StaticMiddleware("../static", web.StaticOption{IndexFile: "index.html"}))
 		page, err = agoutiDriver.NewPage()
+		//page, err = agoutiDriver.NewPage(agouti.Browser("chrome"))
+
 		Expect(err).NotTo(HaveOccurred())
+		page.ClearCookies()
+		server = httptest.NewUnstartedServer(app)
+		server.Start()
+		testEnvVars.Hostname = server.URL
+		settings.OAuthConfig.RedirectURL = server.URL + "/oauth2callback"
 	})
 	It("should manage user authentication", func() {
 		By("redirecting the user to the login form from the home page", func() {
@@ -63,11 +82,13 @@ var _ = Describe("UserLogin", func() {
 			// Eventually(page.FindyByLabel("E-mail")).Should(BeFound())
 			// Expect(page.FindByLabel("E-mail").Fill("spud@example.com")).To(Succeed())
 			// Expect(page.FindByLabel("Password").Fill("secret-password")).To(Succeed())
-			Expect(page.Find("#login-btn").Click()).To(Succeed())
-			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL)))
+			Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
+			time.Sleep(100 * time.Millisecond)
+			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "/login")))
 			Expect(page.FindByName("username").Fill(testEnvVars.Username)).To(Succeed())
 			Expect(page.FindByName("password").Fill(testEnvVars.Password)).To(Succeed())
 			Expect(page.FindByButton("Sign in").Click()).To(Succeed())
+			time.Sleep(100 * time.Millisecond)
 			Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/dashboard"))
 		})
 
@@ -91,8 +112,8 @@ var _ = Describe("UserLogin", func() {
 
 	It("should redirect users to login page if accessing privileged dashboard page without first logining in.", func() {
 		By("redirecting the user to the login form", func() {
-			Expect(page.Navigate(testEnvVars.Hostname+"/#/dashboard")).To(Succeed())
-			Expect(page).To(HaveURL(testEnvVars.Hostname+"/#/"))
+			Expect(page.Navigate(testEnvVars.Hostname + "/#/dashboard")).To(Succeed())
+			Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/"))
 		})
 
 	})
