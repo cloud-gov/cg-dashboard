@@ -20,6 +20,21 @@
 			"Rev": "f61c3ec2cf65d69e7efedfd4d060fe128882c951"
 		},
 		{
+			"ImportPath": "github.com/onsi/ginkgo",
+			"Comment": "v1.2.0-8-g25380c6",
+			"Rev": "25380c62e61d3f90436be125b8127dbae578fdef"
+		},
+		{
+			"ImportPath": "github.com/onsi/gomega",
+			"Comment": "v1.0-50-gd6c945f",
+			"Rev": "d6c945f9fdbf6cad99e85b0feff591caa268e0db"
+		},
+		{
+			"ImportPath": "github.com/sclevine/agouti",
+			"Comment": "v2-latest-27-g547867f",
+			"Rev": "547867f76f1c76d9d5380db4bf27deedd12ec367"
+		},
+		{
 			"ImportPath": "golang.org/x/net/context",
 			"Rev": "f0cf018861e2b54077eced91659e255072b5f215"
 		},

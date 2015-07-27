@@ -1,15 +1,19 @@
-//+build !test
-
 package main
 
 import (
 	"github.com/18F/cf-console/controllers"
 	"github.com/18F/cf-console/helpers"
 
+	_ "github.com/onsi/ginkgo"     // Needed for acceptance package.
+	_ "github.com/onsi/gomega"     // Needed for acceptance package.
+	_ "github.com/sclevine/agouti" // Needed for acceptance package.
+
 	"fmt"
 	"net/http"
 	"os"
 )
+
+var defaultPort = "9999"
 
 func loadEnvVars() helpers.EnvVars {
 	envVars := helpers.EnvVars{}
@@ -24,22 +28,26 @@ func loadEnvVars() helpers.EnvVars {
 }
 
 func main() {
-	// Load environment variables
-	envVars := loadEnvVars()
-	// Initialize the settings.
-	settings := helpers.Settings{}
-	if err := settings.InitSettings(envVars); err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	// Initialize the router
-	router := controllers.InitRouter(&settings)
-
 	// Start the server up.
 	var port string
 	if port = os.Getenv("PORT"); len(port) == 0 {
-		port = "9999"
+		port = defaultPort
 	}
-	http.ListenAndServe(":"+port, router)
+	startApp(port)
+}
+
+func startApp(port string) {
+	// Load environment variables
+	envVars := loadEnvVars()
+
+	app, _, err := controllers.InitApp(envVars)
+	if err != nil {
+		// Print the error.
+		fmt.Println(err.Error())
+		// Terminate the program with a non-zero value number.
+		// Need this for testing purposes.
+		os.Exit(1)
+	}
+
+	http.ListenAndServe(":"+port, app)
 }
