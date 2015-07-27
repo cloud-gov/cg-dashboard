@@ -3,75 +3,33 @@
 package acceptance
 
 import (
-	"github.com/18F/cf-console/controllers"
-	"github.com/18F/cf-console/helpers"
-	"github.com/gocraft/web"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
 
-	"fmt"
 	"net/http/httptest"
-	"os"
-	"time"
 )
-
-type AcceptanceTestEnvVars struct {
-	helpers.EnvVars
-	Username string
-	Password string
-}
-
-func (ev *AcceptanceTestEnvVars) loadTestEnvVars() {
-	ev.Username = os.Getenv("CONSOLE_TEST_USERNAME")
-	ev.Password = os.Getenv("CONSOLE_TEST_PASSWORD")
-
-	if len(ev.Username) < 1 {
-		fmt.Println("Please set CONSOLE_TEST_USERNAME")
-		os.Exit(1)
-	}
-
-	if len(ev.Password) < 1 {
-		fmt.Println("Please set CONSOLE_TEST_PASSWORD")
-		os.Exit(1)
-	}
-	// The app will catch the rest of these
-	ev.ClientID = os.Getenv(helpers.ClientIDEnvVar)
-	ev.ClientSecret = os.Getenv(helpers.ClientSecretEnvVar)
-	ev.Hostname = os.Getenv(helpers.HostnameEnvVar)
-	ev.LoginURL = os.Getenv(helpers.LoginURLEnvVar)
-	ev.UAAURL = os.Getenv(helpers.UAAURLEnvVar)
-	ev.APIURL = os.Getenv(helpers.APIURLEnvVar)
-
-}
 
 var _ = Describe("UserLogin", func() {
 	var (
 		page   *agouti.Page
 		server *httptest.Server
+		testEnvVars acceptanceTestEnvVars
 	)
 
-	testEnvVars := AcceptanceTestEnvVars{}
+	testEnvVars = acceptanceTestEnvVars{}
 	testEnvVars.loadTestEnvVars()
 
 	BeforeEach(func() {
 		var err error
-		app, settings, err := controllers.InitApp(testEnvVars.EnvVars)
-		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
-		app.Middleware(web.StaticMiddleware("../static", web.StaticOption{IndexFile: "index.html"}))
-		page, err = agoutiDriver.NewPage()
-		//page, err = agoutiDriver.NewPage(agouti.Browser("chrome"))
+		// Start a test server
+		server, testEnvVars = startServer()
 
+		// Create a fresh page to navigate.
+		page, err = agoutiDriver.NewPage()
 		Expect(err).NotTo(HaveOccurred())
 		page.ClearCookies()
-		server = httptest.NewUnstartedServer(app)
-		server.Start()
-		testEnvVars.Hostname = server.URL
-		settings.OAuthConfig.RedirectURL = server.URL + "/oauth2callback"
 	})
 
 	It("should redirect users to login page if accessing privileged dashboard page without first logining in.", func() {
@@ -89,12 +47,10 @@ var _ = Describe("UserLogin", func() {
 
 		By("allowing the user to fill out the login form and submit it", func() {
 			Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
-			time.Sleep(100 * time.Millisecond)
 			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "/login")))
 			Expect(page.FindByName("username").Fill(testEnvVars.Username)).To(Succeed())
 			Expect(page.FindByName("password").Fill(testEnvVars.Password)).To(Succeed())
 			Expect(page.FindByButton("Sign in").Click()).To(Succeed())
-			time.Sleep(100 * time.Millisecond)
 			Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/dashboard"))
 		})
 
@@ -109,7 +65,9 @@ var _ = Describe("UserLogin", func() {
 	})
 
 	AfterEach(func() {
+		// Destroy the page
 		Expect(page.Destroy()).To(Succeed())
+		// Close the server.
 		server.Close()
 	})
 })

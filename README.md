@@ -1,5 +1,7 @@
 # 18F Cloud Foundry Console
 
+[![Build Status](https://travis-ci.org/18F/cf-console.svg?branch=master)](https://travis-ci.org/18F/cf-console)
+
 ## Tech Stack
 - `Go` for the backend server.
 - `AngularJS` for the frontend.
@@ -21,12 +23,12 @@ uaac client add <your-client-id> \
 
 ### Set the environment variables
 If you are testing locally, export these variables. If you are deploying to cloud foundry, modify the manifest.yml
-- CONSOLE_CLIENT_ID: Registered client id with UAA.
-- CONSOLE_CLIENT_SECRET: The client secret.
-- CONSOLE_HOSTNAME: The URL of the service itself.
-- CONSOLE_LOGIN_URL: The base URL of the auth service. i.e. `https://login.domain.com`
-- CONSOLE_UAA_URL: The URL of the UAA service. i.e. `https://uaa.domain.com`
-- CONSOLE_API: The URL of the API service. i.e. `http://api.domain.com`
+- `CONSOLE_CLIENT_ID`: Registered client id with UAA.
+- `CONSOLE_CLIENT_SECRET`: The client secret.
+- `CONSOLE_HOSTNAME`: The URL of the service itself.
+- `CONSOLE_LOGIN_URL`: The base URL of the auth service. i.e. `https://login.domain.com`
+- `CONSOLE_UAA_URL`: The URL of the UAA service. i.e. `https://uaa.domain.com`
+- `CONSOLE_API`: The URL of the API service. i.e. `http://api.domain.com`
 
 ## Front end
 Bootstrap is already included. To update Bootstrap library for the front end:
@@ -41,19 +43,38 @@ bower install bootstrap
 - `go run server.go`
 - Navigate browser to `http://localhost:9999`
 
-## Testing
+## Unit Testing
 ### Running unit tests
 - `go test ./...`
 
-### Running acceptance tests
+### Acceptance Tests
+This project currently uses a combination of [Agouti](http://agouti.org/) + [Ginkgo](http://onsi.github.io/ginkgo/) + [Gomega](http://onsi.github.io/gomega/) to provide BDD acceptance testing.
+All the acceptance tests are in the 'acceptance' folder.
+
+
 #### Setup
 - Make sure you have PhantomJS installed: `brew install phantomjs`
 - Install aogut: `go get github.com/sclevine/agouti`
 - Install ginkgo `go get github.com/onsi/ginkgo/ginkgo`
 - Install gomega `go get github.com/onsi/gomega`
+- To run locally, in addition to the variables in the "Set the environmnent variables" section, you will need to set two more variables in your environment
+- `CONSOLE_TEST_USERNAME`: The username of the account you want the tests to use to login into your `CONSOLE_LOGIN_URL`
+- `CONSOLE_TEST_PASSWORD`: The password of the account you want the tests to use to login into your `CONSOLE_LOGIN_URL`
 
-#### Acceptance tests
-- `go test ./... -tags acceptance`
+#### Running acceptance tests
+- `cd acceptance && go test -tags acceptance`
 
 ## Deploying
 - `cf push <optional-app-name>`
+
+## CI
+This project uses Travis-CI
+In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the Travis-CI CLI tool to re-encrypt all the environment variables.
+- `travis encrypt CONSOLE_CLIENT_ID='<your client id>' --add env.global`
+- `travis encrypt CONSOLE_CLIENT_SECRET='<your client secret>' --add env.global`
+- `travis encrypt CONSOLE_API_URL='<your public api url>' --add env.global`
+- `travis encrypt CONSOLE_UAA_URL='<your public uaa url>' --add env.global`
+- `travis encrypt CONSOLE_LOGIN_URL='<your public login url>' --add env.global`
+- `travis encrypt CONSOLE_TEST_PASSWORD='<your user account password>' --add env.global`
+- `travis encrypt CONSOLE_TEST_USERNAME='<your user account username>' --add env.global`
+- `travis encrypt CONSOLE_HOSTNAME="http://localhost:9999" --add env.global`
