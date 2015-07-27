@@ -14,6 +14,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 )
 
 // Helper composite struct to store all the regular env variables as well as the ones for this test suite.
@@ -45,6 +46,10 @@ func (ev *acceptanceTestEnvVars) loadTestEnvVars() {
 	ev.UAAURL = os.Getenv(helpers.UAAURLEnvVar)
 	ev.APIURL = os.Getenv(helpers.APIURLEnvVar)
 
+}
+
+func delayForRendering() {
+	time.Sleep(2 * time.Second)
 }
 
 // Helper function to handle all the weird work of creating a test server.

@@ -29,7 +29,7 @@ var _ = Describe("UserLogin", func() {
 		// Create a fresh page to navigate.
 		page, err = agoutiDriver.NewPage()
 		Expect(err).NotTo(HaveOccurred())
-		// PhantomJS makes the window really small. For now, these tests will be for regular desktop sizes.
+		// PhantomJS makes the window really small. For now, these tests will be for desktop sizes.
 		err = page.Size(1024, 768)
 		Expect(err).NotTo(HaveOccurred())
 		page.ClearCookies()
@@ -49,6 +49,7 @@ var _ = Describe("UserLogin", func() {
 		})
 
 		By("allowing the user to fill out the login form and submit it", func() {
+			delayForRendering()
 			Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
 			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "/login")))
 			Expect(page.FindByName("username").Fill(testEnvVars.Username)).To(Succeed())

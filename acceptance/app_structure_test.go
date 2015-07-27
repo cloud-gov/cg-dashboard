@@ -42,6 +42,7 @@ var _ = Describe("AppStructure", func() {
 		})
 
 		By("allowing the user to fill out the login form and submit it", func() {
+			delayForRendering()
 			Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
 			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "/login")))
 			Expect(page.FindByName("username").Fill(testEnvVars.Username)).To(Succeed())
@@ -51,20 +52,24 @@ var _ = Describe("AppStructure", func() {
 		})
 
 		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
+			delayForRendering()
 			Expect(page.Find("#org-dropdown")).To(BeFound())
-			// Expect(page.Find("#org-dropdown").Text()).To(Equal("Organizations "))
+			Expect(page.Find("#org-dropdown").Text()).To(Equal("Organizations "))
 			Expect(page.Find("#org-dropdown").Click()).To(Succeed())
 		})
 
 		By("allowing the user to click on an organization in the dropdown menu", func() {
+			delayForRendering()
 			Eventually(Expect(page.First(".org-name").Click()).To(Succeed()))
 		})
 
 		By("allowing the user to click on a space in the tab views", func() {
+			delayForRendering()
 			Eventually(Expect(page.First(".space-name").DoubleClick()).To(Succeed()))
 		})
 
 		By("showing app name and quota information (along with other information)", func() {
+			delayForRendering()
 			Eventually(Expect(page.Find("#app-name-heading")).To(BeFound()))
 			Expect(page.Find("#buildpack-heading")).To(BeFound())
 			Expect(page.Find("#memory-heading")).To(BeFound())
