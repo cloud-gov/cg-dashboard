@@ -19,6 +19,7 @@ module.exports = function(config) {
             'bower_components/angular-route/angular-route.js',
             'bower_components/angular-mocks/angular-mocks.js',
             'js/app/main.js',
+            'js/app/cloudfoundry.js',
             'js/app/controllers.js',
             'tests/*.js'
         ],
