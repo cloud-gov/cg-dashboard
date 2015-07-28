@@ -48,12 +48,45 @@ done
 echo
 echo
 echo '---------------------------------------------------------'
-echo 'Doing a format  / style check on go code'
+echo 'Doing a format / style check on go code'
 echo '---------------------------------------------------------'
 for pkg in $pkgs
 do
 	testCmd go fmt $pkg
 done
 
+# Coverage Check
+go get code.google.com/p/go.tools/cmd/cover
+echo
+echo
+echo '---------------------------------------------------------'
+echo 'Doing a code coverage check on go code'
+echo '---------------------------------------------------------'
+echo "mode: count" > profile.cov
+for pkg in $pkgs
+do
+	go test -short -covermode=count $pkg -coverprofile=tmp.cov
+	if [ -f tmp.cov ]
+	then
+		cat tmp.cov | tail -n +2 >> profile.cov
+		rm tmp.cov
+	fi
+done
+
+go tool cover -func profile.cov
+
+# Determine whether to upload to coveralls
+while getopts ":u" opt; do
+  case $opt in
+    u)
+      echo "-u was triggered!" >&2
+      go get github.com/mattn/goveralls
+      $HOME/gopath/bin/goveralls -service=travis-ci
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+  esac
+done
 
 exit $scriptreturn
