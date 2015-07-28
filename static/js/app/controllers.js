@@ -58,7 +58,7 @@
         $scope.setActiveSpace = function() {
                 $scope.$emit('emitActiveSpace', $scope.apps);
                 $scope.activeSpaces.forEach(function(space) {
-                    if($scope.space.entity.name == space.entity.name)
+                    if($scope.space.metadata.guid == space.metadata.guid)
                         space.selected = true;
                     else
                         space.selected = false;

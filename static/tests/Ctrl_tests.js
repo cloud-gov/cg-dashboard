@@ -148,13 +148,16 @@ describe('SpaceController', function() {
                 return {
                     then: function(callback) {
                         return callback([{
-                            entity: {name: 'app1'}
+                            entity: {
+                                name: 'app1'
+                            }
                         }, {
-                             entity: {name: 'app2'}
+                            entity: {
+                                name: 'app2'
+                            }
                         }]);
                     }
                 }
-
             }
         }
 
@@ -169,12 +172,38 @@ describe('SpaceController', function() {
 
     }));
 
-    it('should return a space\'s apps', function () {
+    it('should return a space\'s apps', function() {
         expect(scope.apps).toEqual([{
-                            entity: {name: 'app1'}
-                        }, {
-                             entity: {name: 'app2'}
-                        }])
+            entity: {
+                name: 'app1'
+            }
+        }, {
+            entity: {
+                name: 'app2'
+            }
+        }])
+    });
+
+    it('should set an active space if selected', function() {
+        // Create a mock active space
+        scope.activeSpaces = [{
+            metadata: {
+                guid: 'app1'
+            }
+        }, {
+            metadata: {
+                guid: 'app2'
+            }
+        }]
+        scope.space = {
+            metadata: {
+                guid: 'app1'
+            },
+            selected: false
+        }
+        scope.setActiveSpace()
+        expect(scope.activeSpaces[0].selected).toEqual(true);
+
     });
 
 });
