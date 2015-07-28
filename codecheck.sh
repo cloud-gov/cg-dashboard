@@ -16,6 +16,9 @@ function testCmd() {
 go get github.com/GeertJohan/fgt
 go install github.com/GeertJohan/fgt
 
+# Golint install
+go get -u github.com/golang/lint/golint
+
 # Get the list of packages.
 pkgs=`go list ./...`
 
