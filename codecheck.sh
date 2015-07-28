@@ -80,6 +80,7 @@ while getopts ":u" opt; do
   case $opt in
     u)
       echo "-u was triggered!" >&2
+      go get -u github.com/axw/gocov/gocov
       go get -u github.com/mattn/goveralls
       goveralls -service=travis-ci
       ;;
