@@ -80,8 +80,8 @@ while getopts ":u" opt; do
   case $opt in
     u)
       echo "-u was triggered!" >&2
-      go get github.com/mattn/goveralls
-      $HOME/gopath/bin/goveralls -service=travis-ci
+      go get -u github.com/mattn/goveralls
+      goveralls -service=travis-ci
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
