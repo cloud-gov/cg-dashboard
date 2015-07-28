@@ -53,18 +53,16 @@
         });
     });
 
-    app.controller('SpaceController', function($scope, $cloudfoundry, $location, $document) {
+    app.controller('SpaceController', function($scope, $cloudfoundry, $location) {
         // Set the current active spaces 
         $scope.setActiveSpace = function() {
                 $scope.$emit('emitActiveSpace', $scope.apps);
-                var pills = $document.querySelector('#space-pills').children;
-                for (var i = 0, len = pills.length; i < len; i++) {
-                    pills[i].classList.remove("active");
-                };
-                $scope.activePill = $document.querySelector('#space-' + $scope.space.entity.name);
-                if ($scope.activePill) {
-                    $scope.activePill.parentElement.classList.add("active");
-                };
+                $scope.activeSpaces.forEach(function(space) {
+                    if($scope.space.entity.name == space.entity.name)
+                        space.selected = true;
+                    else
+                        space.selected = false;
+                });
             }
             // Render apps
         var renderApps = function(apps) {
