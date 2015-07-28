@@ -56,7 +56,7 @@ do
 done
 
 # Coverage Check
-go get code.google.com/p/go.tools/cmd/cover
+go get golang.org/x/tools/cmd/cover
 echo
 echo
 echo '---------------------------------------------------------'
@@ -65,7 +65,7 @@ echo '---------------------------------------------------------'
 echo "mode: count" > profile.cov
 for pkg in $pkgs
 do
-	go test -short -covermode=count $pkg -coverprofile=tmp.cov
+	go test -v -covermode=count $pkg -coverprofile=tmp.cov
 	if [ -f tmp.cov ]
 	then
 		cat tmp.cov | tail -n +2 >> profile.cov
