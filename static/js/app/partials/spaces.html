@@ -1,16 +1,17 @@
 <ul id="space-pills" class="nav nav-pills">
-  <li ng-class="{active: space.selected}" ng-repeat="space in activeSpaces" ng-controller="SpaceController">
-      <a  id="space-{{space.entity.name}}" href="" ng-click="setActiveSpace()"><h3>{{space.entity.name}}</h3></a>
-  </li>
-</ul></br>
+    <li ng-class="{active: space.selected}" ng-repeat="space in activeSpaces" ng-controller="SpaceController">
+        <a class="space-name" href="" ng-click="setActiveSpace()"><h3>{{space.entity.name}}</h3></a>
+    </li>
+</ul>
+</br>
 
 <!-- Apps -->
 <div ng-switch="activeApps">
-  <div ng-switch-when="null"></div>
-  <div class="well" ng-switch-when="noApps">
-      <h4 class="text-center">This space has no apps</h4>
-  </div>
-  <div ng-switch-default>
-    <ng-include src="'js/app/partials/apps.html'"></ng-include>
-  </div>
-<div>
+    <div ng-switch-when="null"></div>
+    <div class="well" ng-switch-when="noApps">
+        <h4 class="text-center">This space has no apps</h4>
+    </div>
+    <div ng-switch-default>
+        <ng-include src="'js/app/partials/apps.html'"></ng-include>
+    </div>
+    <div>
