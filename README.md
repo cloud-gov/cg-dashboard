@@ -49,20 +49,16 @@ bower update
 ## Unit Testing
 ### Running Go unit tests
 - `go test ./...`
+
 ### Running Angular unit tests
 To install AngularJS test dependencies
 ```
-cd static
-sudo npm install -g karma-cli
-npm install karma --save-dev
-npm install karma-jasmine --save-dev
-npm install karma-phantomjs-launcher --save-dev
+npm install
 ```
-Test can then be run inside the static folder
+Test can then be run with the command:
 ```
-karma start
+npm test
 ```
-
 
 ### Acceptance Tests
 This project currently uses a combination of [Agouti](http://agouti.org/) + [Ginkgo](http://onsi.github.io/ginkgo/) + [Gomega](http://onsi.github.io/gomega/) to provide BDD acceptance testing.
