@@ -15,10 +15,10 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ orgDropDownName || "Organizations" }}&nbsp;<span class="caret"></span></a>
+        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="org-dropdown">{{ orgDropDownName || "Organizations" }}&nbsp;<span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li ng-repeat="org in orgs" ng-click="showOrg(org)">
-            <a>{{org.entity.name}}</a>
+            <a class="org-name">{{org.entity.name}}</a>
           </li>
         </ul>
       </li>
