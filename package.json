@@ -4,13 +4,13 @@
   "description": "test suite",
   "main": "null",
   "scripts": {
-    "test": "./node_modules/.bin/karma start static/karma.conf.js --single-run"
+    "test": "./node_modules/.bin/karma start karma.conf.js --single-run"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jasmine-core": "^2.3.4",
     "karma": "^0.13.3",
+    "karma-coverage": "^0.4.2",
     "karma-jasmine": "^0.3.6",
     "karma-phantomjs-launcher": "^0.2.0",
     "phantomjs": "^1.9.17"
