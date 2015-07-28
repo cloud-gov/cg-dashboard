@@ -14,6 +14,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 )
 
 // Helper composite struct to store all the regular env variables as well as the ones for this test suite.
@@ -47,6 +48,11 @@ func (ev *acceptanceTestEnvVars) loadTestEnvVars() {
 
 }
 
+// delayForRendering is to allow for test platforms to catch up and render.
+func delayForRendering() {
+	time.Sleep(1 * time.Second)
+}
+
 // Helper function to handle all the weird work of creating a test server.
 func startServer() (*httptest.Server, acceptanceTestEnvVars) {
 	// Load the environment variables to conduct the tests.
@@ -74,6 +80,17 @@ func startServer() (*httptest.Server, acceptanceTestEnvVars) {
 
 
 	return server, testEnvVars
+}
+
+func createPage() (*agouti.Page) {
+	// Create a fresh page to navigate.
+	page, err := agoutiDriver.NewPage()
+	Expect(err).NotTo(HaveOccurred())
+	// PhantomJS makes the window really small. For now, these tests will be for desktop sizes.
+	page.Size(1024, 768)
+	Expect(err).NotTo(HaveOccurred())
+	page.ClearCookies()
+	return page
 }
 
 func TestCfConsole(t *testing.T) {
