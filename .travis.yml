@@ -7,7 +7,7 @@ before_install:
   - sudo rm -rf /usr/local/phantomjs/bin/phantomjs
   - sudo mv phantomjs /usr/local/phantomjs/bin/phantomjs
 script:
-        - ./codecheck.sh -u
+- ./codecheck.sh -u
 - go test ./...
 - cd acceptance && go test -tags acceptance
 branches:
