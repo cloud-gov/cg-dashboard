@@ -2,14 +2,14 @@
     // CloudFoundry Service
     var cloudfoundry = function($http) {
 
+        var returnAuthStatus = function(response) {
+                return response.data.status
+            }
+        
         // Get current authentication status from server
         var getAuthStatus = function() {
             return $http.get('/v2/authstatus')
-                .then(function(response) {
-                    return response.data.status;
-                }, function(response) {
-                    return response.data.status;
-                });
+                .then(returnAuthStatus, returnAuthStatus);
         };
 
         // Get organizations
