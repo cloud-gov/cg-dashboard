@@ -21,7 +21,6 @@
             $scope.orgDropDownName = data.org_name;
             var spaces = data.resources;
             if (spaces.length > 0) {
-                console.log(spaces);
                 $scope.activeSpaces = spaces;
             } else {
                 $scope.activeSpaces = null;
