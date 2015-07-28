@@ -53,15 +53,15 @@
         });
     });
 
-    app.controller('SpaceController', function($scope, $cloudfoundry, $location) {
+    app.controller('SpaceController', function($scope, $cloudfoundry, $location, $document) {
         // Set the current active spaces 
         $scope.setActiveSpace = function() {
                 $scope.$emit('emitActiveSpace', $scope.apps);
-                var pills = document.querySelector('#space-pills').children;
+                var pills = $document.querySelector('#space-pills').children;
                 for (var i = 0, len = pills.length; i < len; i++) {
                     pills[i].classList.remove("active");
                 };
-                $scope.activePill = document.querySelector('#space-' + $scope.space.entity.name);
+                $scope.activePill = $document.querySelector('#space-' + $scope.space.entity.name);
                 if ($scope.activePill) {
                     $scope.activePill.parentElement.classList.add("active");
                 };

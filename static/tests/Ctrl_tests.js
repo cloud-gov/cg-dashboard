@@ -22,7 +22,7 @@ describe('HomeCtrl', function() {
         ctrl = $controller('HomeCtrl', {
             $scope: scope,
             $cloudfoundry: cloudfoundry
-        })
+        });
 
     }));
 
@@ -131,5 +131,50 @@ describe('DashboardCtrl', function() {
 
     });
 
+
+});
+
+
+describe('SpaceController', function() {
+
+    var scope, cloudfoundry;
+
+    beforeEach(module('cfconsole'));
+    beforeEach(inject(function($rootScope, $controller) {
+
+        //Mock Cf service
+        cloudfoundry = {
+            getSpaceDetails: function() {
+                return {
+                    then: function(callback) {
+                        return callback([{
+                            entity: {name: 'app1'}
+                        }, {
+                             entity: {name: 'app2'}
+                        }]);
+                    }
+                }
+
+            }
+        }
+
+        spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
+
+        // Load Ctrl and scope
+        scope = $rootScope.$new();
+        ctrl = $controller('SpaceController', {
+            $scope: scope,
+            $cloudfoundry: cloudfoundry
+        });
+
+    }));
+
+    it('should return a space\'s apps', function () {
+        expect(scope.apps).toEqual([{
+                            entity: {name: 'app1'}
+                        }, {
+                             entity: {name: 'app2'}
+                        }])
+    });
 
 });
