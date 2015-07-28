@@ -5,10 +5,10 @@ package acceptance
 import (
 	"github.com/18F/cf-console/controllers"
 	"github.com/18F/cf-console/helpers"
+	"github.com/gocraft/web"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
-	"github.com/gocraft/web"
 
 	"fmt"
 	"net/http/httptest"
@@ -78,11 +78,10 @@ func startServer() (*httptest.Server, acceptanceTestEnvVars) {
 	testEnvVars.Hostname = server.URL
 	settings.OAuthConfig.RedirectURL = server.URL + "/oauth2callback"
 
-
 	return server, testEnvVars
 }
 
-func createPage() (*agouti.Page) {
+func createPage() *agouti.Page {
 	// Create a fresh page to navigate.
 	page, err := agoutiDriver.NewPage()
 	Expect(err).NotTo(HaveOccurred())

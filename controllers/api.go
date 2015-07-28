@@ -33,13 +33,14 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 	next(rw, req)
 }
 
-// A Proxy for all CF API
+// Proxy is a handler that serves as a proxy for all the CF API. Any route that comes in the /v2/* route
+// that has not been specified, will just come here.
 func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
 
 	// Get client and refresh token if needed
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
-	req_url := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL.Path)
-	request, _ := http.NewRequest("GET", req_url, nil)
+	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL.Path)
+	request, _ := http.NewRequest("GET", reqURL, nil)
 	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
 	res, _ := client.Do(request)
 	body, _ := ioutil.ReadAll(res.Body)
@@ -47,6 +48,7 @@ func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
 	fmt.Fprintf(rw, string(body))
 }
 
+// Logout is a handler that will attempt to clear the session information for the current user.
 func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
 	session, _ := c.Settings.Sessions.Get(req.Request, "session")
 	// Clear the token
@@ -60,6 +62,8 @@ func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
 	http.Redirect(rw, req.Request, c.Settings.LoginURL, http.StatusFound)
 }
 
+// AuthStatus simply returns authorized. This endpoint is just a quick endpoint to indicate that if a
+// user can reach here after passing through the OAuth Middleware, they are authorized.
 func (c *APIContext) AuthStatus(rw web.ResponseWriter, req *web.Request) {
 	fmt.Fprintf(rw, "{\"status\": \"authorized\"}")
 }

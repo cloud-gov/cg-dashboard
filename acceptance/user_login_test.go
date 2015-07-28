@@ -13,8 +13,8 @@ import (
 
 var _ = Describe("UserLogin", func() {
 	var (
-		page   *agouti.Page
-		server *httptest.Server
+		page        *agouti.Page
+		server      *httptest.Server
 		testEnvVars acceptanceTestEnvVars
 	)
 
