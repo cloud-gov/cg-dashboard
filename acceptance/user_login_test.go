@@ -22,17 +22,11 @@ var _ = Describe("UserLogin", func() {
 	testEnvVars.loadTestEnvVars()
 
 	BeforeEach(func() {
-		var err error
 		// Start a test server
 		server, testEnvVars = startServer()
 
 		// Create a fresh page to navigate.
-		page, err = agoutiDriver.NewPage()
-		Expect(err).NotTo(HaveOccurred())
-		// PhantomJS makes the window really small. For now, these tests will be for desktop sizes.
-		err = page.Size(1024, 768)
-		Expect(err).NotTo(HaveOccurred())
-		page.ClearCookies()
+		page = createPage()
 	})
 
 	It("should redirect users to login page if accessing privileged dashboard page without first logining in.", func() {
@@ -44,11 +38,11 @@ var _ = Describe("UserLogin", func() {
 	})
 
 	It("should manage user authentication", func() {
-		By("redirecting the user to the login form from the home page", func() {
+		By("directing the user to a landing page", func() {
 			Expect(page.Navigate(testEnvVars.Hostname)).To(Succeed())
 		})
 
-		By("allowing the user to fill out the login form and submit it", func() {
+		By("allowing the user to click the login button and redirected to fill out the login form and submit it", func() {
 			delayForRendering()
 			Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
 			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "/login")))
