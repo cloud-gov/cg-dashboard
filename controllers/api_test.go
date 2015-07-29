@@ -58,3 +58,52 @@ func TestOAuth(t *testing.T) {
 		}
 	}
 }
+
+type authStatusTest struct {
+	testName    string
+	envVars     helpers.EnvVars
+	sessionData map[string]interface{}
+	returnValue string
+}
+
+var authStatusTests = []authStatusTest{
+	{
+		testName: "Basic Valid Settings",
+		envVars: helpers.EnvVars{
+			ClientID:     "ID",
+			ClientSecret: "Secret",
+			Hostname:     "hostname",
+			LoginURL:     "loginurl",
+			UAAURL:       "uaaurl",
+			APIURL:       "apiurl",
+		},
+		sessionData: testhelpers.ValidTokenData,
+		returnValue: "{\"status\": \"authorized\"}",
+	},
+}
+
+func TestAuthStatus(t *testing.T) {
+	for _, test := range authStatusTests {
+		// Create request
+		response, request := testhelpers.NewTestRequest("GET", "/v2/authstatus")
+
+		// Initialize settings.
+		settings := helpers.Settings{}
+		settings.InitSettings(test.envVars)
+
+		// Initialize a new session store.
+		store := testhelpers.MockSessionStore{}
+		store.ResetSessionData(test.sessionData, "")
+
+		// Override the session store.
+		settings.Sessions = store
+
+		// Create the router.
+		router := InitRouter(&settings)
+
+		router.ServeHTTP(response, request)
+		if response.Body.String() != test.returnValue {
+			t.Errorf("Expected %s. Found %s\n", test.returnValue, response.Body.String())
+		}
+	}
+}
