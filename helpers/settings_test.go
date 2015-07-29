@@ -1,19 +1,20 @@
-package helpers
+package helpers_test
 
 import (
+	"github.com/18F/cf-console/helpers"
 	"testing"
 )
 
 type initSettingsTest struct {
 	testName        string
-	envVars         EnvVars
+	envVars         helpers.EnvVars
 	returnValueNull bool
 }
 
 var initSettingsTests = []initSettingsTest{
 	{
 		testName: "Basic Valid Settings",
-		envVars: EnvVars{
+		envVars: helpers.EnvVars{
 			ClientID:     "ID",
 			ClientSecret: "Secret",
 			Hostname:     "hostname",
@@ -25,7 +26,7 @@ var initSettingsTests = []initSettingsTest{
 	},
 	{
 		testName: "Missing Client ID check",
-		envVars: EnvVars{
+		envVars: helpers.EnvVars{
 			ClientSecret: "Secret",
 			Hostname:     "hostname",
 			LoginURL:     "loginurl",
@@ -36,7 +37,7 @@ var initSettingsTests = []initSettingsTest{
 	},
 	{
 		testName: "Missing Client Secret check",
-		envVars: EnvVars{
+		envVars: helpers.EnvVars{
 			ClientID: "ID",
 			Hostname: "hostname",
 			LoginURL: "loginurl",
@@ -47,7 +48,7 @@ var initSettingsTests = []initSettingsTest{
 	},
 	{
 		testName: "Missing Hostname check",
-		envVars: EnvVars{
+		envVars: helpers.EnvVars{
 			ClientID:     "ID",
 			ClientSecret: "Secret",
 			LoginURL:     "loginurl",
@@ -58,7 +59,7 @@ var initSettingsTests = []initSettingsTest{
 	},
 	{
 		testName: "Missing Auth URL check",
-		envVars: EnvVars{
+		envVars: helpers.EnvVars{
 			ClientID:     "ID",
 			ClientSecret: "Secret",
 			Hostname:     "hostname",
@@ -69,7 +70,7 @@ var initSettingsTests = []initSettingsTest{
 	},
 	{
 		testName: "Missing Token URL check",
-		envVars: EnvVars{
+		envVars: helpers.EnvVars{
 			ClientID:     "ID",
 			ClientSecret: "Secret",
 			Hostname:     "hostname",
@@ -80,7 +81,7 @@ var initSettingsTests = []initSettingsTest{
 	},
 	{
 		testName: "Missing API URL check",
-		envVars: EnvVars{
+		envVars: helpers.EnvVars{
 			ClientID:     "ID",
 			ClientSecret: "Secret",
 			Hostname:     "hostname",
@@ -92,7 +93,7 @@ var initSettingsTests = []initSettingsTest{
 }
 
 func TestInitSettings(t *testing.T) {
-	s := Settings{}
+	s := helpers.Settings{}
 	for _, test := range initSettingsTests {
 		ret := s.InitSettings(test.envVars)
 		if (ret == nil) != test.returnValueNull {

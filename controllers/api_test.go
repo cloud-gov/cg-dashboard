@@ -1,6 +1,7 @@
-package controllers
+package controllers_test
 
 import (
+	"github.com/18F/cf-console/controllers"
 	"github.com/18F/cf-console/helpers"
 	"github.com/18F/cf-console/helpers/testhelpers"
 	"github.com/gocraft/web"
@@ -30,10 +31,6 @@ var oauthTests = []oauthTestData{
 	},
 }
 
-func (c *APIContext) Test(rw web.ResponseWriter, req *web.Request) {
-	fmt.Fprintf(rw, "test")
-}
-
 func TestOAuth(t *testing.T) {
 	mockSettings := helpers.Settings{}
 	mockSettings.TokenContext = context.TODO()
@@ -46,15 +43,53 @@ func TestOAuth(t *testing.T) {
 
 		// Setup a test route on the API router (which is guarded by OAuth)
 		response, request := testhelpers.NewTestRequest("GET", "/v2/test")
-		router := InitRouter(&mockSettings)
-		apiRouter := router.Subrouter(APIContext{}, "/v2")
-		apiRouter.Middleware((*APIContext).OAuth)
-		apiRouter.Get("/test", (*APIContext).Test)
+		router := controllers.InitRouter(&mockSettings)
+		apiRouter := router.Subrouter(controllers.APIContext{}, "/v2")
+		apiRouter.Middleware((*controllers.APIContext).OAuth)
+		apiRouter.Get("/test", func(c *controllers.APIContext, rw web.ResponseWriter, r *web.Request) {
+			fmt.Fprintf(rw, "test")
+		})
 
 		// Make the request and check.
 		router.ServeHTTP(response, request)
 		if strings.TrimSpace(response.Body.String()) != test.expectedText {
 			t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.testName, test.expectedText, response.Body.String())
+		}
+	}
+}
+
+type authStatusTest struct {
+	testName    string
+	envVars     helpers.EnvVars
+	sessionData map[string]interface{}
+	returnValue string
+}
+
+var authStatusTests = []authStatusTest{
+	{
+		testName: "Basic Valid Settings",
+		envVars: helpers.EnvVars{
+			ClientID:     "ID",
+			ClientSecret: "Secret",
+			Hostname:     "hostname",
+			LoginURL:     "loginurl",
+			UAAURL:       "uaaurl",
+			APIURL:       "apiurl",
+		},
+		sessionData: testhelpers.ValidTokenData,
+		returnValue: "{\"status\": \"authorized\"}",
+	},
+}
+
+func TestAuthStatus(t *testing.T) {
+	for _, test := range authStatusTests {
+		// Create request
+		response, request := testhelpers.NewTestRequest("GET", "/v2/authstatus")
+
+		router := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
+		router.ServeHTTP(response, request)
+		if response.Body.String() != test.returnValue {
+			t.Errorf("Expected %s. Found %s\n", test.returnValue, response.Body.String())
 		}
 	}
 }
