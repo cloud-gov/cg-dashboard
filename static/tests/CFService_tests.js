@@ -8,6 +8,11 @@ describe('CloudFoundry Service Tests', function() {
         httpBackend = $httpBackend;
     }));
 
+    afterEach(function() {
+        httpBackend.verifyNoOutstandingExpectation();
+        httpBackend.verifyNoOutstandingRequest();
+    });
+
     describe('getAuthStatus', function() {
 
         describe('Authenticated', function() {
@@ -50,12 +55,56 @@ describe('CloudFoundry Service Tests', function() {
                 }]
             });
             $cloudfoundry.getOrgs().then(function(orgs) {
-                expect(status).toEqual([{
-                    name: 'org1'
-                }, {
-                    name: 'org2'
-                }]);
+                expect(orgs).toEqual(
+                    [{
+                        name: 'org1'
+                    }, {
+                        name: 'org2'
+                    }])
             });
+            httpBackend.flush();
+        });
+    });
+
+    describe('getOrgSpaceDetails', function() {
+
+        it('should return space details with the org_name appended to the return array', function() {
+
+            var single_org = {
+                entity: {
+                    name: 'org1',
+                    spaces_url: '/v2/organization/123/spaces'
+                }
+            }
+            httpBackend.whenGET(single_org.entity.spaces_url).respond({
+                resources: ['mockspace1', 'mockspace2']
+            });
+            $cloudfoundry.getOrgSpaceDetails(single_org).then(function(data) {
+                expect(data.org_name).toEqual('org1');
+                expect(data.resources).toEqual(['mockspace1', 'mockspace2']);
+            });
+            httpBackend.flush();
+        });
+    });
+
+    describe('getSpaceDetails', function() {
+
+        it('should return details for a space\'s apps when there are apps', function() {
+
+            var single_space = {
+                entity: {
+                    name: 'mockspace1',
+                    apps_url: '/v2/spaces/123/apps'
+                }
+            }
+            httpBackend.whenGET(single_space.entity.apps_url).respond({
+                resources: ['mockapp1', 'mockapp2']
+            });
+            $cloudfoundry.getSpaceDetails(single_space).then(function(data) {
+                expect(data).toEqual(['mockapp1', 'mockapp2']);
+            });
+        
+            httpBackend.flush();
         });
     });
 
