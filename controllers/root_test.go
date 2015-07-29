@@ -67,7 +67,7 @@ func TestLoginHandshake(t *testing.T) {
 		}
 		// Check the location of where we relocated to.
 		if !strings.Contains(response.Header().Get("Location"), test.returnLocation) {
-			t.Errorf("Expected http location %d, Found http code %d\n", test.returnLocation, response.Header().Get("Location"))
+			t.Errorf("Expected http location %s, Found http code %s\n", test.returnLocation, response.Header().Get("Location"))
 		}
 	}
 
