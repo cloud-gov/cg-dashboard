@@ -28,6 +28,11 @@ var getValidTokenTests = []tokenTestData{
 		returnValueNull: true,
 	},
 	{
+		testName:        "No Session Data Check",
+		sessionName:     "",
+		returnValueNull: true,
+	},
+	{
 		testName:        "Nil Session Check",
 		sessionName:     "nilSession",
 		returnValueNull: true,
