@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.org/18F/cf-console.svg?branch=master)](https://travis-ci.org/18F/cf-console)
 
-[![Coverage Status](https://coveralls.io/repos/18F/cf-console/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cf-console?branch=master)
+[![Go Code Coverage Status](https://coveralls.io/repos/18F/cf-console/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cf-console?branch=master)
+
+[![JS Code Coverage Status](http://codecov.io/github/18F/cf-console/coverage.svg?branch=master)](http://codecov.io/github/18F/cf-console?branch=master)
 
 ## Tech Stack
 - `Go` for the backend server.
@@ -33,10 +35,10 @@ If you are testing locally, export these variables. If you are deploying to clou
 - `CONSOLE_API`: The URL of the API service. i.e. `http://api.domain.com`
 
 ## Front end
-Bootstrap is already included. To update Bootstrap library for the front end:
+Front end dependencies included
 ```
 cd static
-bower install bootstrap
+bower update
 ```
 
 ## Running locally
@@ -45,9 +47,20 @@ bower install bootstrap
 - `go run server.go`
 - Navigate browser to `http://localhost:9999`
 
+
 ## Unit Testing
-### Running unit tests
+### Running Go unit tests
 - `go test ./...`
+
+### Running Angular unit tests
+To install AngularJS test dependencies
+```
+npm install
+```
+Test can then be run with the command:
+```
+npm test
+```
 
 ### Acceptance Tests
 This project currently uses a combination of [Agouti](http://agouti.org/) + [Ginkgo](http://onsi.github.io/ginkgo/) + [Gomega](http://onsi.github.io/gomega/) to provide BDD acceptance testing.
