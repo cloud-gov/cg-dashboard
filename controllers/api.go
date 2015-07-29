@@ -63,6 +63,12 @@ func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
 	http.Redirect(rw, req.Request, logoutURL, http.StatusFound)
 }
 
+// UserProfile redirects users to the `/profile` page
+func (c *APIContext) UserProfile(rw web.ResponseWriter, req *web.Request) {
+	profileURL := fmt.Sprintf("%s%s", c.Settings.LoginURL, "/profile")
+	http.Redirect(rw, req.Request, profileURL, http.StatusFound)
+}
+
 // AuthStatus simply returns authorized. This endpoint is just a quick endpoint to indicate that if a
 // user can reach here after passing through the OAuth Middleware, they are authorized.
 func (c *APIContext) AuthStatus(rw web.ResponseWriter, req *web.Request) {
