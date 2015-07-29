@@ -1,6 +1,7 @@
-package helpers
+package helpers_test
 
 import (
+	"github.com/18F/cf-console/helpers"
 	"github.com/18F/cf-console/helpers/testhelpers"
 	"golang.org/x/net/context"
 
@@ -35,7 +36,7 @@ var getValidTokenTests = []tokenTestData{
 
 func TestGetValidToken(t *testing.T) {
 	mockRequest, _ := http.NewRequest("GET", "", nil)
-	mockSettings := Settings{}
+	mockSettings := helpers.Settings{}
 	mockSettings.TokenContext = context.TODO()
 
 	for _, test := range getValidTokenTests {
@@ -44,7 +45,7 @@ func TestGetValidToken(t *testing.T) {
 		store.ResetSessionData(test.sessionData, test.sessionName)
 		mockSettings.Sessions = store
 
-		value := GetValidToken(mockRequest, &mockSettings)
+		value := helpers.GetValidToken(mockRequest, &mockSettings)
 		if (value == nil) == test.returnValueNull {
 		} else {
 			t.Errorf("Test %s did not meet expected value. Expected: %t. Actual: %t\n", test.testName, test.returnValueNull, (value == nil))

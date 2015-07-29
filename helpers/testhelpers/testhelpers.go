@@ -1,6 +1,9 @@
 package testhelpers
 
 import (
+	"github.com/18F/cf-console/controllers"
+	"github.com/18F/cf-console/helpers"
+	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
 
@@ -61,4 +64,23 @@ var InvalidTokenData = map[string]interface{}{
 // ValidTokenData is a dataset which represents a valid token. Useful for unit tests.
 var ValidTokenData = map[string]interface{}{
 	"token": oauth2.Token{Expiry: time.Time{}, AccessToken: "sampletoken"},
+}
+
+// CreateRouterWithMockSession will create a settings with the appropriate envVars and load the mock session with the session data.
+func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars helpers.EnvVars) *web.Router {
+	// Initialize settings.
+	settings := helpers.Settings{}
+	settings.InitSettings(envVars)
+
+	// Initialize a new session store.
+	store := MockSessionStore{}
+	store.ResetSessionData(sessionData, "")
+
+	// Override the session store.
+	settings.Sessions = store
+
+	// Create the router.
+	router := controllers.InitRouter(&settings)
+
+	return router
 }
