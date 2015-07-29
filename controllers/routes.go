@@ -28,6 +28,7 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	// All routes accepted
 	apiRouter.Get("/authstatus", (*APIContext).AuthStatus)
 	apiRouter.Get("/logout", (*APIContext).Logout)
+	apiRouter.Get("/profile", (*APIContext).UserProfile)
 	apiRouter.Get("/:*", (*APIContext).Proxy)
 
 	// Frontend Route Initialization
