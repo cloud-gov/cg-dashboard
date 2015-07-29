@@ -90,7 +90,6 @@ describe('CloudFoundry Service Tests', function() {
     describe('getSpaceDetails', function() {
 
         it('should return details for a space\'s apps when there are apps', function() {
-
             var single_space = {
                 entity: {
                     name: 'mockspace1',
@@ -103,9 +102,25 @@ describe('CloudFoundry Service Tests', function() {
             $cloudfoundry.getSpaceDetails(single_space).then(function(data) {
                 expect(data).toEqual(['mockapp1', 'mockapp2']);
             });
-        
             httpBackend.flush();
         });
+    });
+
+    it('should return "noApps" for a space\'s when a space has no apps', function() {
+
+        var single_space = {
+            entity: {
+                name: 'mockspace1',
+                apps_url: '/v2/spaces/123/apps'
+            }
+        }
+        httpBackend.whenGET(single_space.entity.apps_url).respond({
+            resources: []
+        });
+        $cloudfoundry.getSpaceDetails(single_space).then(function(data) {
+            expect(data).toEqual('noApps');
+        });
+        httpBackend.flush();
     });
 
 });
