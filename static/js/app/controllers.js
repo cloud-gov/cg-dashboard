@@ -2,7 +2,7 @@
     'use strict';
 
     var app = angular.module('cfconsole');
-    app.controller('HomeCtrl', function($scope, $location, $cloudfoundry) {
+    app.controller('HomeCtrl', function($scope, $cloudfoundry) {
         //Render the auth status of the backend
         var renderStatus = function(status) {
             $scope.backendStatus = status;
@@ -11,7 +11,7 @@
             .then(renderStatus);
     });
 
-    app.controller('DashboardCtrl', function($scope, $location, $cloudfoundry) {
+    app.controller('DashboardCtrl', function($scope, $cloudfoundry) {
         // Render the orgs on the page
         var renderOrgs = function(orgs) {
             $scope.orgs = orgs;
@@ -32,9 +32,7 @@
             $scope.visibleTab = "organizations";
             $scope.activeApps = null;
             $cloudfoundry.getOrgSpaceDetails(org)
-                .then(renderOrgDetails, function() {
-                    $location.path("/")
-                });
+                .then(renderOrgDetails);
         };
         // Clear the dashboard
         $scope.clearDashboard = function() {
@@ -44,16 +42,14 @@
         };
         // Get Orgs or return to login page
         $cloudfoundry.getOrgs()
-            .then(renderOrgs, function() {
-                $location.path('/');
-            });
+            .then(renderOrgs);
         // Catch the active space from SpaceController
         $scope.$on('emitActiveSpace', function(event, apps) {
             $scope.activeApps = apps;
         });
     });
 
-    app.controller('SpaceController', function($scope, $cloudfoundry, $location) {
+    app.controller('SpaceController', function($scope, $cloudfoundry) {
         // Set the current active spaces 
         $scope.setActiveSpace = function() {
                 $scope.$emit('emitActiveSpace', $scope.apps);
@@ -69,8 +65,7 @@
             $scope.apps = apps;
         };
         // Get individual app deatils
-        $cloudfoundry.getSpaceDetails($scope.space).then(renderApps, function() {
-            $location.path('/')
-        });
+        $cloudfoundry.getSpaceDetails($scope.space)
+            .then(renderApps);
     });
 }());
