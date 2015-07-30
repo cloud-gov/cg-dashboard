@@ -53,6 +53,14 @@
                 .then(function(response) {
                     return response.data;
                 });
+        }
+
+        // Get services
+        this.getAllServices = function() {
+            return $http.get("/v2/services")
+                .then(function(response) {
+                    return response.data.resources;
+                });
         };
 
         // Declare variables for passing data via this service
