@@ -55,10 +55,7 @@ func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
 	session.Values["token"] = nil
 	// Force the session to expire
 	session.Options.MaxAge = -1
-	err := session.Save(req.Request, rw)
-	if err != nil {
-		fmt.Println("callback error: " + err.Error())
-	}
+	session.Save(req.Request, rw)
 	logoutURL := fmt.Sprintf("%s%s", c.Settings.LoginURL, "/logout.do")
 	http.Redirect(rw, req.Request, logoutURL, http.StatusFound)
 }

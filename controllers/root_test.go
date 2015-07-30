@@ -2,15 +2,14 @@ package controllers_test
 
 import (
 	"github.com/18F/cf-console/controllers"
-	"github.com/18F/cf-console/helpers"
-	"github.com/18F/cf-console/helpers/testhelpers"
+	. "github.com/18F/cf-console/helpers/testhelpers"
 
 	"strings"
 	"testing"
 )
 
 func TestPing(t *testing.T) {
-	response, request := testhelpers.NewTestRequest("GET", "/ping")
+	response, request := NewTestRequest("GET", "/ping")
 	router := controllers.InitRouter(nil)
 	router.ServeHTTP(response, request)
 	if response.Body.String() != "{\"status\": \"alive\"}" {
@@ -18,56 +17,34 @@ func TestPing(t *testing.T) {
 	}
 }
 
-type loginHandshakeTest struct {
-	testName       string
-	envVars        helpers.EnvVars
-	sessionData    map[string]interface{}
-	returnCode     int
-	returnLocation string
-}
-
-var loginHandshakeTests = []loginHandshakeTest{
+var loginHandshakeTests = []BasicConsoleUnitTest{
 	{
-		testName: "Login Handshake With Already Authenticated User",
-		envVars: helpers.EnvVars{
-			ClientID:     "ID",
-			ClientSecret: "Secret",
-			Hostname:     "hostname",
-			LoginURL:     "loginurl",
-			UAAURL:       "uaaurl",
-			APIURL:       "apiurl",
-		},
-		sessionData:    testhelpers.ValidTokenData,
-		returnCode:     302,
-		returnLocation: "/#/dashboard",
+		TestName:    "Login Handshake With Already Authenticated User",
+		EnvVars:     MockCompleteEnvVars,
+		Code:        302,
+		Location:    "/#/dashboard",
+		SessionData: ValidTokenData,
 	},
 	{
-		testName: "Login Handshake With Already Authenticated User",
-		envVars: helpers.EnvVars{
-			ClientID:     "ID",
-			ClientSecret: "Secret",
-			Hostname:     "hostname",
-			LoginURL:     "loginurl",
-			UAAURL:       "uaaurl",
-			APIURL:       "apiurl",
-		},
-		returnCode:     302,
-		returnLocation: "/oauth/authorize",
+		TestName: "Login Handshake With Non Authenticated User",
+		EnvVars:  MockCompleteEnvVars,
+		Code:     302,
+		Location: "/oauth/authorize",
 	},
 }
 
 func TestLoginHandshake(t *testing.T) {
-	response, request := testhelpers.NewTestRequest("GET", "/handshake")
+	response, request := NewTestRequest("GET", "/handshake")
 	for _, test := range loginHandshakeTests {
-		router, _ := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
+		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		router.ServeHTTP(response, request)
 		// Check the return code.
-		if response.Code != test.returnCode {
-			t.Errorf("Expected http code %d, Found http code %d\n", test.returnCode, response.Code)
+		if response.Code != test.Code {
+			t.Errorf("Expected http code %d, Found http code %d\n", test.Code, response.Code)
 		}
 		// Check the location of where we relocated to.
-		if !strings.Contains(response.Header().Get("Location"), test.returnLocation) {
-			t.Errorf("Expected http location %s, Found http code %s\n", test.returnLocation, response.Header().Get("Location"))
+		if !strings.Contains(response.Header().Get("Location"), test.Location) {
+			t.Errorf("Expected http location %s, Found http code %s\n", test.Location, response.Header().Get("Location"))
 		}
 	}
 

@@ -91,3 +91,22 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars hel
 
 	return router, &store
 }
+
+// BasicConsoleUnitTest is Basic Unit Test Information.
+type BasicConsoleUnitTest struct {
+	TestName    string
+	EnvVars     helpers.EnvVars
+	Location    string
+	Code        int
+	SessionData map[string]interface{}
+}
+
+// MockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
+var MockCompleteEnvVars = helpers.EnvVars{
+	ClientID:     "ID",
+	ClientSecret: "Secret",
+	Hostname:     "hostname",
+	LoginURL:     "loginurl",
+	UAAURL:       "uaaurl",
+	APIURL:       "apiurl",
+}
