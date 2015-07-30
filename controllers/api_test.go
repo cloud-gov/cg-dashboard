@@ -93,3 +93,32 @@ func TestAuthStatus(t *testing.T) {
 		}
 	}
 }
+
+var profileTests = []authStatusTest{
+	{
+		testName: "Basic Valid Settings",
+		envVars: helpers.EnvVars{
+			ClientID:     "ID",
+			ClientSecret: "Secret",
+			Hostname:     "hostname",
+			LoginURL:     "loginurl",
+			UAAURL:       "uaaurl",
+			APIURL:       "apiurl",
+		},
+		sessionData: testhelpers.ValidTokenData,
+		returnValue: "/v2/loginurl/profile",
+	},
+}
+
+func TestLogout(t *testing.T) {
+	for _, test := range profileTests {
+		// Create request
+		response, request := testhelpers.NewTestRequest("GET", "/v2/profile")
+
+		router := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
+		router.ServeHTTP(response, request)
+		if response.Header().Get("location") != test.returnValue {
+			t.Errorf("Profile route does not redirect to loginurl profile page")
+		}
+	}
+}
