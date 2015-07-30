@@ -15,6 +15,10 @@
                 templateUrl: 'js/app/partials/dashboard.html',
                 controller: 'DashboardCtrl'
             })
+            .when('/dashboard/org/:guid', {
+                templateUrl: 'js/app/partials/dashboard.html',
+                controller: 'OrgCtrl'
+            })
             .otherwise({
                 redirectTo: "/"
             });
