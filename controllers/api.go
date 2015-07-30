@@ -55,11 +55,15 @@ func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
 	session.Values["token"] = nil
 	// Force the session to expire
 	session.Options.MaxAge = -1
-	err := session.Save(req.Request, rw)
-	if err != nil {
-		fmt.Println("callback error: " + err.Error())
-	}
-	http.Redirect(rw, req.Request, c.Settings.LoginURL, http.StatusFound)
+	session.Save(req.Request, rw)
+	logoutURL := fmt.Sprintf("%s%s", c.Settings.LoginURL, "/logout.do")
+	http.Redirect(rw, req.Request, logoutURL, http.StatusFound)
+}
+
+// UserProfile redirects users to the `/profile` page
+func (c *APIContext) UserProfile(rw web.ResponseWriter, req *web.Request) {
+	profileURL := fmt.Sprintf("%s%s", c.Settings.LoginURL, "/profile")
+	http.Redirect(rw, req.Request, profileURL, http.StatusFound)
 }
 
 // AuthStatus simply returns authorized. This endpoint is just a quick endpoint to indicate that if a

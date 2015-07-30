@@ -3,7 +3,7 @@ package controllers_test
 import (
 	"github.com/18F/cf-console/controllers"
 	"github.com/18F/cf-console/helpers"
-	"github.com/18F/cf-console/helpers/testhelpers"
+	. "github.com/18F/cf-console/helpers/testhelpers"
 	"github.com/gocraft/web"
 	"golang.org/x/net/context"
 
@@ -12,22 +12,25 @@ import (
 	"testing"
 )
 
-type oauthTestData struct {
-	testName     string
-	sessionData  map[string]interface{}
-	expectedText string
+type basicAPITest struct {
+	BasicConsoleUnitTest
+	expectedResponse string
 }
 
-var oauthTests = []oauthTestData{
+var oauthTests = []basicAPITest{
 	{
-		testName:     "Basic Valid OAuth Session",
-		sessionData:  testhelpers.ValidTokenData,
-		expectedText: "test",
+		BasicConsoleUnitTest: BasicConsoleUnitTest{
+			TestName:    "Basic Valid OAuth Session",
+			SessionData: ValidTokenData,
+		},
+		expectedResponse: "test",
 	},
 	{
-		testName:     "Basic Invalid OAuth Session",
-		sessionData:  testhelpers.InvalidTokenData,
-		expectedText: "{\"status\": \"unauthorized\"}",
+		BasicConsoleUnitTest: BasicConsoleUnitTest{
+			TestName:    "Basic Invalid OAuth Session",
+			SessionData: InvalidTokenData,
+		},
+		expectedResponse: "{\"status\": \"unauthorized\"}",
 	},
 }
 
@@ -37,12 +40,12 @@ func TestOAuth(t *testing.T) {
 
 	for _, test := range oauthTests {
 		// Initialize a new session store.
-		store := testhelpers.MockSessionStore{}
-		store.ResetSessionData(test.sessionData, "")
+		store := MockSessionStore{}
+		store.ResetSessionData(test.SessionData, "")
 		mockSettings.Sessions = store
 
 		// Setup a test route on the API router (which is guarded by OAuth)
-		response, request := testhelpers.NewTestRequest("GET", "/v2/test")
+		response, request := NewTestRequest("GET", "/v2/test")
 		router := controllers.InitRouter(&mockSettings)
 		apiRouter := router.Subrouter(controllers.APIContext{}, "/v2")
 		apiRouter.Middleware((*controllers.APIContext).OAuth)
@@ -52,44 +55,86 @@ func TestOAuth(t *testing.T) {
 
 		// Make the request and check.
 		router.ServeHTTP(response, request)
-		if strings.TrimSpace(response.Body.String()) != test.expectedText {
-			t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.testName, test.expectedText, response.Body.String())
+		if strings.TrimSpace(response.Body.String()) != test.expectedResponse {
+			t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.TestName, test.expectedResponse, response.Body.String())
 		}
 	}
 }
 
-type authStatusTest struct {
-	testName    string
-	envVars     helpers.EnvVars
-	sessionData map[string]interface{}
-	returnValue string
-}
-
-var authStatusTests = []authStatusTest{
+var authStatusTests = []basicAPITest{
 	{
-		testName: "Basic Valid Settings",
-		envVars: helpers.EnvVars{
-			ClientID:     "ID",
-			ClientSecret: "Secret",
-			Hostname:     "hostname",
-			LoginURL:     "loginurl",
-			UAAURL:       "uaaurl",
-			APIURL:       "apiurl",
+		BasicConsoleUnitTest: BasicConsoleUnitTest{
+			TestName:    "Basic Authorized Status Session",
+			EnvVars:     MockCompleteEnvVars,
+			SessionData: ValidTokenData,
 		},
-		sessionData: testhelpers.ValidTokenData,
-		returnValue: "{\"status\": \"authorized\"}",
+		expectedResponse: "{\"status\": \"authorized\"}",
 	},
 }
 
 func TestAuthStatus(t *testing.T) {
 	for _, test := range authStatusTests {
 		// Create request
-		response, request := testhelpers.NewTestRequest("GET", "/v2/authstatus")
+		response, request := NewTestRequest("GET", "/v2/authstatus")
 
-		router := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
+		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		router.ServeHTTP(response, request)
-		if response.Body.String() != test.returnValue {
-			t.Errorf("Expected %s. Found %s\n", test.returnValue, response.Body.String())
+		if response.Body.String() != test.expectedResponse {
+			t.Errorf("Expected %s. Found %s\n", test.expectedResponse, response.Body.String())
+		}
+	}
+}
+
+var profileTests = []basicAPITest{
+	{
+		BasicConsoleUnitTest: BasicConsoleUnitTest{
+			TestName:    "Basic Authorized Profile",
+			EnvVars:     MockCompleteEnvVars,
+			SessionData: ValidTokenData,
+		},
+		expectedResponse: "/v2/loginurl/profile",
+	},
+}
+
+func TestProfile(t *testing.T) {
+	for _, test := range profileTests {
+		// Create request
+		response, request := NewTestRequest("GET", "/v2/profile")
+
+		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
+		router.ServeHTTP(response, request)
+		if response.Header().Get("location") != test.expectedResponse {
+			t.Errorf("Profile route does not redirect to loginurl profile page")
+		}
+	}
+}
+
+var logoutTests = []basicAPITest{
+	{
+		BasicConsoleUnitTest: BasicConsoleUnitTest{
+			TestName:    "Basic Authorized Profile To Logout",
+			EnvVars:     MockCompleteEnvVars,
+			SessionData: ValidTokenData,
+		},
+		expectedResponse: "/v2/loginurl/logout.do",
+	},
+}
+
+func TestLogout(t *testing.T) {
+	for _, test := range logoutTests {
+		// Create request
+		response, request := NewTestRequest("GET", "/v2/logout")
+
+		router, store := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
+		router.ServeHTTP(response, request)
+		if response.Header().Get("location") != test.expectedResponse {
+			t.Errorf("Logout route does not redirect to logout page")
+		}
+		if store.Session.Options.MaxAge != -1 {
+			t.Errorf("Logout does not change MaxAge to -1")
+		}
+		if store.Session.Values["token"] != nil {
+			t.Errorf("Logout does not clear the token stored in the session")
 		}
 	}
 }

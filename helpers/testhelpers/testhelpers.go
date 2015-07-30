@@ -15,8 +15,9 @@ import (
 // MockSessionStore represents an easily fillable session store that implements
 // gorilla's session store interface.
 type MockSessionStore struct {
-	session            sessions.Session
+	Session            *sessions.Session
 	currentSessionName string
+	Options            *sessions.Options
 }
 
 // Get simply returns the session that has pre populated beforehand with ResetSessionData
@@ -25,12 +26,12 @@ func (store MockSessionStore) Get(r *http.Request, name string) (*sessions.Sessi
 	if store.currentSessionName == "nilSession" {
 		return nil, nil
 	}
-	return &store.session, nil
+	return store.Session, nil
 }
 
 // New returns the current session. Does not create a new one. Not needed for mock sessions.
 func (store MockSessionStore) New(r *http.Request, name string) (*sessions.Session, error) {
-	return &store.session, nil
+	return store.Session, nil
 }
 
 // Save returns nil error. We save session data by using ResetSessionData
@@ -40,12 +41,18 @@ func (store MockSessionStore) Save(r *http.Request, w http.ResponseWriter, s *se
 
 // ResetSessionData zero initializes the MockSessionStore and then will copy the input session data into it.
 func (store *MockSessionStore) ResetSessionData(data map[string]interface{}, sessionName string) {
+	store.Options = &sessions.Options{
+		Path:   "/",
+		MaxAge: 86400 * 30,
+	}
 	// Initialize the map to empty.
-	store.session.Values = make(map[interface{}]interface{})
+	store.Session = sessions.NewSession(store, sessionName)
 	for key, value := range data {
-		store.session.Values[key] = value
+		store.Session.Values[key] = value
 	}
 	store.currentSessionName = sessionName
+	opts := *store.Options
+	store.Session.Options = &opts
 }
 
 // NewTestRequest is a helper function that creates a sample request with the given input parameters.
@@ -67,7 +74,7 @@ var ValidTokenData = map[string]interface{}{
 }
 
 // CreateRouterWithMockSession will create a settings with the appropriate envVars and load the mock session with the session data.
-func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars helpers.EnvVars) *web.Router {
+func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars helpers.EnvVars) (*web.Router, *MockSessionStore) {
 	// Initialize settings.
 	settings := helpers.Settings{}
 	settings.InitSettings(envVars)
@@ -82,5 +89,24 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars hel
 	// Create the router.
 	router := controllers.InitRouter(&settings)
 
-	return router
+	return router, &store
+}
+
+// BasicConsoleUnitTest is Basic Unit Test Information.
+type BasicConsoleUnitTest struct {
+	TestName    string
+	EnvVars     helpers.EnvVars
+	Location    string
+	Code        int
+	SessionData map[string]interface{}
+}
+
+// MockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
+var MockCompleteEnvVars = helpers.EnvVars{
+	ClientID:     "ID",
+	ClientSecret: "Secret",
+	Hostname:     "hostname",
+	LoginURL:     "loginurl",
+	UAAURL:       "uaaurl",
+	APIURL:       "apiurl",
 }
