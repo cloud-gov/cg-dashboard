@@ -2,7 +2,6 @@
     // CloudFoundry Service
     angular.module('cfdeck').service('$cloudfoundry', function($http, $location, $log) {
 
-
         // Redirects back to home page
         var returnHome = function(response) {
             $location.path('/');
