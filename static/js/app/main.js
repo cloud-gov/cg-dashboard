@@ -21,6 +21,9 @@
             .when('/dashboard/org/:orgguid/spaces/:spaceguid', {
                 templateUrl: 'js/app/partials/dashboard.html',
                 controller: 'SpaceCtrl'
+            .when('/marketplace', {
+                templateUrl: 'js/app/partials/dashboard.html',
+                controller: 'MarketCtrl'
             })
             .otherwise({
                 redirectTo: "/"
