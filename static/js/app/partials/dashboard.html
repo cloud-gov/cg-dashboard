@@ -26,12 +26,14 @@
                     </ul>
                 </li>
                 <li>
+                    <a href="/#/marketplace">Service Marketplace</a>
+                </li>
+                <li>
                     <a href="/v2/profile">User Profile</a>
                 </li>
                 <li>
                     <a href="/v2/logout">Logout</a>
                 </li>
-
             </ul>
         </div>
     </div>
@@ -44,6 +46,9 @@
     </div>
     <div ng-switch-when="spaces">
         <ng-include src="'js/app/partials/spaces.html'"></ng-include>
+    </div>
+    <div ng-switch-when="marketplace">
+        <ng-include src="'js/app/partials/marketplace.html'"></ng-include>
     </div>
     <div class="jumbotron text-center" ng-switch-default="null">
         <h3>Welcome to CF-Deck</h3>
