@@ -15,8 +15,9 @@ import (
 // MockSessionStore represents an easily fillable session store that implements
 // gorilla's session store interface.
 type MockSessionStore struct {
-	session            sessions.Session
+	session            *sessions.Session
 	currentSessionName string
+	options            *sessions.Options
 }
 
 // Get simply returns the session that has pre populated beforehand with ResetSessionData
@@ -25,12 +26,12 @@ func (store MockSessionStore) Get(r *http.Request, name string) (*sessions.Sessi
 	if store.currentSessionName == "nilSession" {
 		return nil, nil
 	}
-	return &store.session, nil
+	return store.session, nil
 }
 
 // New returns the current session. Does not create a new one. Not needed for mock sessions.
 func (store MockSessionStore) New(r *http.Request, name string) (*sessions.Session, error) {
-	return &store.session, nil
+	return store.session, nil
 }
 
 // Save returns nil error. We save session data by using ResetSessionData
@@ -40,12 +41,18 @@ func (store MockSessionStore) Save(r *http.Request, w http.ResponseWriter, s *se
 
 // ResetSessionData zero initializes the MockSessionStore and then will copy the input session data into it.
 func (store *MockSessionStore) ResetSessionData(data map[string]interface{}, sessionName string) {
+	store.options = &sessions.Options{
+		Path:   "/",
+		MaxAge: 86400 * 30,
+	}
 	// Initialize the map to empty.
-	store.session.Values = make(map[interface{}]interface{})
+	store.session = sessions.NewSession(store, sessionName)
 	for key, value := range data {
 		store.session.Values[key] = value
 	}
 	store.currentSessionName = sessionName
+	opts := *store.options
+	store.session.Options = &opts
 }
 
 // NewTestRequest is a helper function that creates a sample request with the given input parameters.
