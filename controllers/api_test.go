@@ -110,7 +110,7 @@ var profileTests = []authStatusTest{
 	},
 }
 
-func TestLogout(t *testing.T) {
+func TestProfile(t *testing.T) {
 	for _, test := range profileTests {
 		// Create request
 		response, request := testhelpers.NewTestRequest("GET", "/v2/profile")
