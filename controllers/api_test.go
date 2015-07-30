@@ -86,7 +86,7 @@ func TestAuthStatus(t *testing.T) {
 		// Create request
 		response, request := testhelpers.NewTestRequest("GET", "/v2/authstatus")
 
-		router := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
+		router, _ := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
 		router.ServeHTTP(response, request)
 		if response.Body.String() != test.returnValue {
 			t.Errorf("Expected %s. Found %s\n", test.returnValue, response.Body.String())
@@ -115,7 +115,7 @@ func TestProfile(t *testing.T) {
 		// Create request
 		response, request := testhelpers.NewTestRequest("GET", "/v2/profile")
 
-		router := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
+		router, _ := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
 		router.ServeHTTP(response, request)
 		if response.Header().Get("location") != test.returnValue {
 			t.Errorf("Profile route does not redirect to loginurl profile page")
@@ -144,10 +144,16 @@ func TestLogout(t *testing.T) {
 		// Create request
 		response, request := testhelpers.NewTestRequest("GET", "/v2/logout")
 
-		router := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
+		router, store := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
 		router.ServeHTTP(response, request)
 		if response.Header().Get("location") != test.returnValue {
 			t.Errorf("Logout route does not redirect to logout page")
+		}
+		if store.Session.Options.MaxAge != -1 {
+			t.Errorf("Logout does not change MaxAge to -1")
+		}
+		if store.Session.Values["token"] != nil {
+			t.Errorf("Logout does not clear the token stored in the session")
 		}
 	}
 }

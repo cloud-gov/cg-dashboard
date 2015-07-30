@@ -59,7 +59,7 @@ var loginHandshakeTests = []loginHandshakeTest{
 func TestLoginHandshake(t *testing.T) {
 	response, request := testhelpers.NewTestRequest("GET", "/handshake")
 	for _, test := range loginHandshakeTests {
-		router := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
+		router, _ := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
 		router.ServeHTTP(response, request)
 		// Check the return code.
 		if response.Code != test.returnCode {
