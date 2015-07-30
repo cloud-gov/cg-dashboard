@@ -1,0 +1,48 @@
+<div class="page-header">
+    <h3 class="text-center">Service Marketplace</h3>
+</div>
+
+<form>
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </div>
+
+            <input type="text" class="form-control" placeholder="Search for a service" ng-model="searchService">
+
+        </div>
+    </div>
+</form>
+
+<table id="servicesTable" class="table table-hover">
+    <thead>
+        <th>
+            <a ng-click="sortType = 'entity.label'; sortReverse = !sortReverse">
+                Name
+            <span ng-show="sortType == 'entity.label' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
+            <span ng-show="sortType == 'entity.label' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
+        </a>
+        </th>
+        <th>
+            <a ng-click="sortType = 'entity.description'; sortReverse = !sortReverse">
+                Description
+            <span ng-show="sortType == 'entity.description' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
+            <span ng-show="sortType == 'entity.description' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
+        </a>
+        </th>
+        <th>
+            <a ng-click="sortType = 'metadata.created_at'; sortReverse = !sortReverse">
+                Date Created
+            <span ng-show="sortType == 'metadata.created_at' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
+            <span ng-show="sortType == 'metadata.created_at' && sortReverse" class="glyphicon glyphicon-arrow-down"</span>
+        </a>
+        </th>
+    </thead>
+    <tbody>
+        <tr ng-click="showService(service)" ng-repeat="service in services | orderBy:sortType:sortReverse | filter:searchService">
+            <td>{{service.entity.label}}</td>
+            <td>{{service.entity.description}}</td>
+            <td>{{service.metadata.created_at | date:'yyyy-MM-dd'}}</td>
+        </tr>
+    </tbody>
+</table>
