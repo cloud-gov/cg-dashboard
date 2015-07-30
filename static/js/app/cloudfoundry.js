@@ -1,6 +1,7 @@
 (function() {
     // CloudFoundry Service
-    var cloudfoundry = function($http, $location) {
+    angular.module('cfdeck').service('$cloudfoundry', function($http, $location, $log) {
+
 
         // Redirects back to home page
         var returnHome = function(response) {
@@ -13,20 +14,22 @@
         }
 
         // Get current authentication status from server
-        var getAuthStatus = function() {
+        this.getAuthStatus = function() {
             return $http.get('/v2/authstatus')
                 .then(returnAuthStatus, returnAuthStatus);
         };
 
         // Get organizations
-        var getOrgs = function() {
+        this.getOrgs = function() {
             return $http.get('/v2/organizations')
                 .then(function(response) {
                     return response.data.resources;
                 }, returnHome);
         };
+
         // Get organization spaces details
-        var getOrgSpaceDetails = function(org) {
+        this.getOrgSpaceDetails = function(org) {
+            console.log(org.entity.spaces_url);
             return $http.get(org.entity.spaces_url)
                 .then(function(response) {
                     var data = response.data;
@@ -34,29 +37,32 @@
                     return data;
                 }, returnHome);
         };
-        // Get space details
-        var getSpaceDetails = function(space) {
-            return $http.get(space.entity.apps_url)
+
+        // Get org details
+        this.getOrgDetails = function(orgGuid) {
+            return $http.get('/v2/organizations/' + orgGuid + '/summary')
                 .then(function(response) {
-                    if (response.data.resources.length > 0) {
-                        return response.data.resources;
-                    }
-                    return "noApps";
-                }, returnHome);
+                    return response.data;
+                });
         };
 
-        return {
-            getAuthStatus: getAuthStatus,
-            getOrgs: getOrgs,
-            getOrgSpaceDetails: getOrgSpaceDetails,
-            getSpaceDetails: getSpaceDetails
+        // Declare variables for passing data via this service
+        var orgs;
+        var spaces;
+        var apps;
+
+        // Functions for getting passed data
+        this.setOrgsData = function(newOrgs) {
+            orgs = newOrgs
         };
-
-    };
-
-    // Register Service
-    var module = angular.module('cfdeck');
-    module.factory('$cloudfoundry', cloudfoundry);
-
+        this.getOrgsData = function(callback) {
+            if (!orgs) {
+                $log.info('Downloaded New Org Data');
+                return this.getOrgs().then(callback);
+            }
+            $log.info('Used cached data');
+            return callback(orgs);
+        }
+    });
 
 }());
