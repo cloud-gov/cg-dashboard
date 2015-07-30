@@ -122,3 +122,32 @@ func TestProfile(t *testing.T) {
 		}
 	}
 }
+
+var logoutTests = []authStatusTest{
+	{
+		testName: "Basic Valid Settings",
+		envVars: helpers.EnvVars{
+			ClientID:     "ID",
+			ClientSecret: "Secret",
+			Hostname:     "hostname",
+			LoginURL:     "loginurl",
+			UAAURL:       "uaaurl",
+			APIURL:       "apiurl",
+		},
+		sessionData: testhelpers.ValidTokenData,
+		returnValue: "/v2/loginurl/logout.do",
+	},
+}
+
+func TestLogout(t *testing.T) {
+	for _, test := range logoutTests {
+		// Create request
+		response, request := testhelpers.NewTestRequest("GET", "/v2/logout")
+
+		router := testhelpers.CreateRouterWithMockSession(test.sessionData, test.envVars)
+		router.ServeHTTP(response, request)
+		if response.Header().Get("location") != test.returnValue {
+			t.Errorf("Logout route does not redirect to logout page")
+		}
+	}
+}
