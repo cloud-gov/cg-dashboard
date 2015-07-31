@@ -2,7 +2,7 @@ describe('HomeCtrl', function() {
 
     var scope, cloudfoundry;
 
-    beforeEach(module('cfconsole'));
+    beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
         // Mock Cf service
         cloudfoundry = {
@@ -36,7 +36,7 @@ describe('DashboardCtrl', function() {
 
     var scope, cloudfoundry;
 
-    beforeEach(module('cfconsole'));
+    beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
         // Mock cf service
         cloudfoundry = {
@@ -139,7 +139,7 @@ describe('SpaceController', function() {
 
     var scope, cloudfoundry;
 
-    beforeEach(module('cfconsole'));
+    beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
 
         //Mock Cf service

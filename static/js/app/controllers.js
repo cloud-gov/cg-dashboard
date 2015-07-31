@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('cfconsole');
+    var app = angular.module('cfdeck');
     app.controller('HomeCtrl', function($scope, $cloudfoundry) {
         //Render the auth status of the backend
         var renderStatus = function(status) {

@@ -2,7 +2,7 @@ describe('CloudFoundry Service Tests', function() {
 
     var $cloudfoundry, httpBackend;
 
-    beforeEach(module('cfconsole'));
+    beforeEach(module('cfdeck'));
     beforeEach(inject(function(_$cloudfoundry_, $httpBackend) {
         $cloudfoundry = _$cloudfoundry_;
         httpBackend = $httpBackend;
