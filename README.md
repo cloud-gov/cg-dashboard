@@ -1,4 +1,4 @@
-# 18F Cloud Foundry Console
+# 18F Cloud Foundry Deck
 
 [![Build Status](https://travis-ci.org/18F/cf-deck.svg?branch=master)](https://travis-ci.org/18F/cf-deck)
 
