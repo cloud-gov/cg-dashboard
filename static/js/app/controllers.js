@@ -53,14 +53,17 @@
         // Set the current active spaces 
         $scope.setActiveSpace = function() {
 		// Create a recurring interval to emit to the screen for updates.
-		$interval(function() {
+		var emitActiveSpaceApps = function() {
 			$scope.$emit('emitActiveSpace', $scope.apps);
 			$scope.activeSpaces.forEach(function(space) {
 			    if($scope.space.metadata.guid == space.metadata.guid)
 				space.selected = true;
 			    else
 				space.selected = false;
-                })},5000);
+			});
+		};
+		emitActiveSpaceApps();
+		$interval(emitActiveSpaceApps,5000);
             }
 	// Render apps
         var renderApps = function(apps) {
