@@ -102,4 +102,21 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    describe('getOrgDetails', function () {
+    
+        it('should return summary data for a specific org', function () {
+           var orgSummary = {
+               name: 'sandbox',
+               spaces: [{name: 'space1'}, {name: 'space2'}] 
+           }; 
+           httpBackend.whenGET('/v2/organizations/mockguid/summary').respond(orgSummary);
+           $cloudfoundry.getOrgDetails('mockguid').then(function(data) {
+                expect(data.name).toEqual('sandbox');
+                expect(data.spaces.length).toEqual(2);
+           });
+           httpBackend.flush();
+        });
+
+    });
+
 });
