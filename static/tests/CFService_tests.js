@@ -102,21 +102,57 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
-    describe('getOrgDetails', function () {
-    
-        it('should return summary data for a specific org', function () {
-           var orgSummary = {
-               name: 'sandbox',
-               spaces: [{name: 'space1'}, {name: 'space2'}] 
-           }; 
-           httpBackend.whenGET('/v2/organizations/mockguid/summary').respond(orgSummary);
-           $cloudfoundry.getOrgDetails('mockguid').then(function(data) {
+    describe('getOrgDetails', function() {
+
+        it('should return summary data for a specific org', function() {
+            var orgSummary = {
+                name: 'sandbox',
+                spaces: [{
+                    name: 'space1'
+                }, {
+                    name: 'space2'
+                }]
+            };
+            httpBackend.whenGET('/v2/organizations/mockguid/summary').respond(orgSummary);
+            $cloudfoundry.getOrgDetails('mockguid').then(function(data) {
                 expect(data.name).toEqual('sandbox');
                 expect(data.spaces.length).toEqual(2);
-           });
-           httpBackend.flush();
+            });
+            httpBackend.flush();
         });
 
+    });
+
+    describe('getOrgsData', function() {
+
+        it('should return org data when `orgs` is undefined', function() {
+
+            // Setting up mock response
+            httpBackend.whenGET('/v2/organizations').respond({
+                pages: 1,
+                resources: [{
+                    name: 'org1'
+                }, {
+                    name: 'org2'
+                }]
+            });
+
+            var callbackSpy = function(data) {
+                expect(data.length).toEqual(2);
+                describe('When new data is inserted into the $cloudfoundry ctrl', function() {
+                    data.push({
+                        name: 'spyOrg'
+                    });
+                    $cloudfoundry.setOrgsData(data);
+                    $cloudfoundry.getOrgsData(function(storedData) {
+                        expect(storedData.length).toEqual(3);
+                    });
+                });
+            }
+            $cloudfoundry.getOrgsData(callbackSpy);
+            httpBackend.flush();
+
+        });
     });
 
 });
