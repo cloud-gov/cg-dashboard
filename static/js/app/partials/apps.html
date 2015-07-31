@@ -7,6 +7,7 @@
       <th id="instances-heading">Instances</th>
       <th id="state-heading">State</th>
       <th id="disk-quota-heading">Disk Quota</th>
+      <th id="actions-heading">Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -17,6 +18,17 @@
       <td class="instances-data">{{app.entity.instances}}</td>
       <td class="state-data">{{app.entity.state}}</td>
       <td class="disk-quota-data">{{app.entity.disk_quota}}</td>
+      <td class="actions-data">
+	      <div ng-switch="app.entity.state">
+		      <div ng-switch-when='STARTED'>
+			      <button type="button" class="btn btn-warning" ng-click="restartApp">Restart</button>
+			      <button type="button" class="btn btn-danger" ng-click="stopApp">Stop</button>
+		      </div>
+		      <div ng-switch-when='STOPPED'>
+			      <button type="button" class="btn btn-success"ng-click="startApp">Start</button>
+		      </div>
+	      </div>
+      </td>
     </tr>
   </tbody>
 </table>

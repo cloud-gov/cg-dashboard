@@ -64,7 +64,7 @@
 		};
 		emitActiveSpaceApps();
 		$interval(emitActiveSpaceApps,5000);
-            }
+        }
 	// Render apps
         var renderApps = function(apps) {
             $scope.apps = apps;
