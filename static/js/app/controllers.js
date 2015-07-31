@@ -49,23 +49,30 @@
         });
     });
 
-    app.controller('SpaceController', function($scope, $cloudfoundry) {
+    app.controller('SpaceController', function($scope, $cloudfoundry, $interval) {
         // Set the current active spaces 
         $scope.setActiveSpace = function() {
-                $scope.$emit('emitActiveSpace', $scope.apps);
-                $scope.activeSpaces.forEach(function(space) {
-                    if($scope.space.metadata.guid == space.metadata.guid)
-                        space.selected = true;
-                    else
-                        space.selected = false;
-                });
+		// Create a recurring interval to emit to the screen for updates.
+		$interval(function() {
+			$scope.$emit('emitActiveSpace', $scope.apps);
+			$scope.activeSpaces.forEach(function(space) {
+			    if($scope.space.metadata.guid == space.metadata.guid)
+				space.selected = true;
+			    else
+				space.selected = false;
+                })},5000);
             }
-            // Render apps
+	// Render apps
         var renderApps = function(apps) {
             $scope.apps = apps;
         };
         // Get individual app deatils
         $cloudfoundry.getSpaceDetails($scope.space)
             .then(renderApps);
+	// Create a recurring interval to download updates.
+	$interval(function() {
+		$cloudfoundry.getSpaceDetails($scope.space)
+			.then(renderApps);
+	}, 5000);
     });
 }());
