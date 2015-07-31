@@ -13,6 +13,7 @@ describe('CloudFoundry Service Tests', function() {
         httpBackend.verifyNoOutstandingRequest();
     });
 
+
     describe('getAuthStatus', function() {
 
         describe('Authenticated', function() {
@@ -64,6 +65,20 @@ describe('CloudFoundry Service Tests', function() {
             });
             httpBackend.flush();
         });
+
+        it('should return user to home page if call fails', function() {
+
+            httpBackend.whenGET('/v2/organizations').respond(401, {
+                'status': 'unathorized'
+            });
+            $cloudfoundry.getOrgs().then(function(orgs) {
+                expect(orgs).toEqual({
+                    status: 'unauthorized'
+                });
+            });
+            httpBackend.flush();
+        });
+
     });
 
     describe('getOrgSpaceDetails', function() {
@@ -85,42 +100,6 @@ describe('CloudFoundry Service Tests', function() {
             });
             httpBackend.flush();
         });
-    });
-
-    describe('getSpaceDetails', function() {
-
-        it('should return details for a space\'s apps when there are apps', function() {
-            var single_space = {
-                entity: {
-                    name: 'mockspace1',
-                    apps_url: '/v2/spaces/123/apps'
-                }
-            }
-            httpBackend.whenGET(single_space.entity.apps_url).respond({
-                resources: ['mockapp1', 'mockapp2']
-            });
-            $cloudfoundry.getSpaceDetails(single_space).then(function(data) {
-                expect(data).toEqual(['mockapp1', 'mockapp2']);
-            });
-            httpBackend.flush();
-        });
-    });
-
-    it('should return "noApps" for a space\'s when a space has no apps', function() {
-
-        var single_space = {
-            entity: {
-                name: 'mockspace1',
-                apps_url: '/v2/spaces/123/apps'
-            }
-        }
-        httpBackend.whenGET(single_space.entity.apps_url).respond({
-            resources: []
-        });
-        $cloudfoundry.getSpaceDetails(single_space).then(function(data) {
-            expect(data).toEqual('noApps');
-        });
-        httpBackend.flush();
     });
 
 });

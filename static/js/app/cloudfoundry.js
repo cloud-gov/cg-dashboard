@@ -5,6 +5,7 @@
         // Redirects back to home page
         var returnHome = function(response) {
             $location.path('/');
+            return {'status': 'unauthorized'};
         }
 
         // returns the authentication status from promise
