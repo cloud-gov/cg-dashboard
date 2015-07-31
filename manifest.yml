@@ -1,6 +1,6 @@
 ---
 applications:
-- name: cf-console
+- name: cf-deck
   memory: 256M
   env:
     CONSOLE_CLIENT_ID: client_id

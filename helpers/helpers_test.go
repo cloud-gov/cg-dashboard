@@ -1,8 +1,8 @@
 package helpers_test
 
 import (
-	"github.com/18F/cf-console/helpers"
-	"github.com/18F/cf-console/helpers/testhelpers"
+	"github.com/18F/cf-deck/helpers"
+	"github.com/18F/cf-deck/helpers/testhelpers"
 	"golang.org/x/net/context"
 
 	"net/http"
