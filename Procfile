@@ -1,1 +1,1 @@
-web: cf-console -port=$PORT
+web: cf-deck -port=$PORT

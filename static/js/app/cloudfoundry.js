@@ -55,7 +55,7 @@
     };
 
     // Register Service
-    var module = angular.module('cfconsole');
+    var module = angular.module('cfdeck');
     module.factory('$cloudfoundry', cloudfoundry);
 
 

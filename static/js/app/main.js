@@ -1,5 +1,5 @@
 (function() {
-    var app = angular.module('cfconsole', ['ngRoute']);
+    var app = angular.module('cfdeck', ['ngRoute']);
 
     app.config(function($routeProvider) {
         $routeProvider

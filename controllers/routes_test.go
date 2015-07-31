@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/18F/cf-console/helpers"
+	"github.com/18F/cf-deck/helpers"
 	"testing"
 )
 

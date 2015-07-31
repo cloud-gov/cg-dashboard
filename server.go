@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/18F/cf-console/controllers"
-	"github.com/18F/cf-console/helpers"
+	"github.com/18F/cf-deck/controllers"
+	"github.com/18F/cf-deck/helpers"
 
 	_ "github.com/onsi/ginkgo"     // Needed for acceptance package.
 	_ "github.com/onsi/gomega"     // Needed for acceptance package.

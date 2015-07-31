@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/18F/cf-console/helpers"
+	"github.com/18F/cf-deck/helpers"
 	"github.com/gocraft/web"
 	"golang.org/x/oauth2"
 	"net/http"

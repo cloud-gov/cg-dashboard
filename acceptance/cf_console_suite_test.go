@@ -3,8 +3,8 @@
 package acceptance
 
 import (
-	"github.com/18F/cf-console/controllers"
-	"github.com/18F/cf-console/helpers"
+	"github.com/18F/cf-deck/controllers"
+	"github.com/18F/cf-deck/helpers"
 	"github.com/gocraft/web"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

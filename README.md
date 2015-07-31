@@ -1,12 +1,12 @@
-# 18F Cloud Foundry Console
+# 18F Cloud Foundry Deck
 
-[![Build Status](https://travis-ci.org/18F/cf-console.svg?branch=master)](https://travis-ci.org/18F/cf-console)
+[![Build Status](https://travis-ci.org/18F/cf-deck.svg?branch=master)](https://travis-ci.org/18F/cf-deck)
 
 
 ## Tech Stack
-- `Go` for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cf-console/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cf-console?branch=master)
+- `Go` for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cf-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cf-deck?branch=master)
 
-- `AngularJS` for the frontend. [![JS Code Coverage Status](http://codecov.io/github/18F/cf-console/coverage.svg?branch=master)](http://codecov.io/github/18F/cf-console?branch=master)
+- `AngularJS` for the frontend. [![JS Code Coverage Status](http://codecov.io/github/18F/cf-deck/coverage.svg?branch=master)](http://codecov.io/github/18F/cf-deck?branch=master)
 
 
 ## Setup
