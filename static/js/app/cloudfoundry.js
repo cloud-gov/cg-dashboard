@@ -46,6 +46,18 @@
                 });
         };
 
+        // Get space details
+        this.getSpaceDetails = function(space) {
+            console.log(space)
+            return $http.get(space.entity.apps_url)
+                .then(function(response) {
+                    if (response.data.resources.length > 0) {
+                        return response.data.resources;
+                    }
+                    return "noApps";
+                }, returnHome);
+        };
+
         // Declare variables for passing data via this service
         var orgs;
         var spaces;

@@ -52,7 +52,7 @@
             </a>
                     </th>
                     <th>
-                        <a ng-click="sortType = 'entity.mem_prod_total'; sortReverse = !sortReverse">
+                        <a ng-click="sortType = 'mem_prod_total'; sortReverse = !sortReverse">
                 Total Production Memory
                 <span ng-show="sortType == 'mem_prod_total' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
                 <span ng-show="sortType == 'mem_prod_total' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
@@ -69,5 +69,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="text-center" ng-show="spaces.length == 0"><h2>This org has no spaces</h2></div>
+        <div class="text-center" ng-show="spaces.length == 0">
+            <h2>This org has no spaces</h2>
+        </div>
     </div>

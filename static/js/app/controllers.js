@@ -37,7 +37,8 @@
         };
         // TODO: Display Space
         $scope.showSpace = function(space) {
-            console.log("show space :" + space.name);
+            console.log(space);
+            $scope.activeSpace = space;
         };
         // Render the org information on the page
         var renderOrg = function(orgData) {
@@ -71,8 +72,9 @@
         var renderApps = function(apps) {
             $scope.apps = apps;
         };
-        // Get individual app deatils
-        $cloudfoundry.getSpaceDetails($scope.space)
+        //Get individual app deatils
+        $cloudfoundry.getSpaceDetails()
             .then(renderApps);
+         
     });
 }());
