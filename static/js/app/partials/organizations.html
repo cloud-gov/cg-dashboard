@@ -60,7 +60,7 @@
                     </th>
                 </thead>
                 <tbody>
-                    <tr ng-click="showSpace(space)" ng-repeat="space in spaces | orderBy:sortType:sortReverse | filter:searchSpace">
+                    <tr class='space-info' ng-click="showSpace(space)" ng-repeat="space in spaces | orderBy:sortType:sortReverse | filter:searchSpace">
                         <td>{{space.name}}</td>
                         <td>{{space.app_count}}</td>
                         <td>{{space.mem_dev_total}}</td>

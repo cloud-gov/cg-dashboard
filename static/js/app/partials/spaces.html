@@ -16,42 +16,42 @@
 
 <table id="appTable" class="table table-hover">
     <thead>
-        <th>
+        <th id="app-name-heading">
             <a ng-click="sortType = 'name'; sortReverse = !sortReverse">
                 Name
                 <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
                 <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
             </a>
         </th>
-        <th>
+        <th id="buildpack-heading">
             <a ng-click="sortType = 'detected_buildpack'; sortReverse = !sortReverse">
                 Buildpack
                 <span ng-show="sortType == 'detected_buildpack' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
                 <span ng-show="sortType == 'detected_buildpack' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
             </a>
         </th>
-        <th>
+        <th id="memory-heading">
             <a ng-click="sortType = 'memory'; sortReverse = !sortReverse">
                 Memory
                 <span ng-show="sortType == 'memory' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
                 <span ng-show="sortType == 'memory' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
             </a>
         </th>
-        <th>
+        <th id="instances-heading">
             <a ng-click="sortType = 'instances'; sortReverse = !sortReverse">
                 Instances
                 <span ng-show="sortType == 'instances' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
                 <span ng-show="sortType == 'instances' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
             </a>
         </th>
-        <th>
+        <th id="state-heading">
             <a ng-click="sortType = 'state'; sortReverse = !sortReverse">
                 State
                 <span ng-show="sortType == 'state' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
                 <span ng-show="sortType == 'state' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
             </a>
         </th>
-        <th>
+        <th id="disk-quota-heading">
             <a ng-click="sortType = 'disk_quota'; sortReverse = !sortReverse">
                 Disk Quota
                 <span ng-show="sortType == 'disk_quota' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
@@ -61,7 +61,7 @@
 
     </thead>
     <tbody>
-        <tr ng-click="showApp(app)" ng-repeat="app in space.apps | orderBy:sortType:sortReverse | filter:searchApp">
+        <tr class="app-info" ng-click="showApp(app)" ng-repeat="app in space.apps | orderBy:sortType:sortReverse | filter:searchApp">
             <td class="app-name-data">{{app.name}}</td>
             <td class="buildpack-data">{{app.detected_buildpack}}</td>
             <td class="memory-data">{{app.memory}}</td>
