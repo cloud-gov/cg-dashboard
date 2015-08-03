@@ -113,7 +113,7 @@ var _ = Describe("AppStructure", func() {
 		By("allowing the user to search for a service", func() {
 			delayForRendering()
 			rowCountPreSearch, _ := page.All(".service-name-data").Count()
-			Expect(page.Find("#serviceSearch").Fill("rds")).To(Succeed())
+			Expect(page.Find("#serviceSearch").Fill("zzzzzzzzz1111zzz")).To(Succeed())
 			Expect(page.All(".service-name-data")).NotTo(HaveCount(rowCountPreSearch))
 		})
 
