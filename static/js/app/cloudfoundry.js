@@ -5,7 +5,9 @@
         // Redirects back to home page
         var returnHome = function(response) {
             $location.path('/');
-            return {'status': 'unauthorized'};
+            return {
+                'status': 'unauthorized'
+            };
         }
 
         // returns the authentication status from promise
@@ -47,21 +49,15 @@
         };
 
         // Get space details
-        this.getSpaceDetails = function(space) {
-            console.log(space)
-            return $http.get(space.entity.apps_url)
+        this.getSpaceDetails = function(spaceGuid) {
+            return $http.get('/v2/spaces/' + spaceGuid + '/summary')
                 .then(function(response) {
-                    if (response.data.resources.length > 0) {
-                        return response.data.resources;
-                    }
-                    return "noApps";
-                }, returnHome);
+                    return response.data;
+                });
         };
 
         // Declare variables for passing data via this service
         var orgs;
-        var spaces;
-        var apps;
 
         // Functions for getting passed data
         this.setOrgsData = function(newOrgs) {

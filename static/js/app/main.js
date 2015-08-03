@@ -19,6 +19,10 @@
                 templateUrl: 'js/app/partials/dashboard.html',
                 controller: 'OrgCtrl'
             })
+            .when('/dashboard/org/:orgguid/spaces/:spaceguid', {
+                templateUrl: 'js/app/partials/dashboard.html',
+                controller: 'SpaceCtrl'
+            })
             .otherwise({
                 redirectTo: "/"
             });
