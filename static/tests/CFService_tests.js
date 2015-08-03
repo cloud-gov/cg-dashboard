@@ -155,4 +155,24 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    describe('getSpaceDetails', function() {
+
+        it('should return space details when given a spaceGuid', function() {
+            var spaceSummary = {
+                name: 'spacename',
+                apps: [{
+                    name: 'app1'
+                }, {
+                    name: 'app2'
+                }]
+            };
+            httpBackend.whenGET('/v2/spaces/spaceguid/summary').respond(spaceSummary);
+            $cloudfoundry.getSpaceDetails('spaceguid').then(function(data) {
+                expect(data.name).toEqual('spacename');
+                expect(data.apps.length).toEqual(2);
+            });
+            httpBackend.flush();
+        });
+    });
+
 });

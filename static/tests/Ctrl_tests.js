@@ -8,11 +8,22 @@ getAuthStatus = function() {
 };
 
 var getOrgsData = function(callback) {
-    return callback([{
-        name: 'org1',
-    }, {
-        name: 'org2'
-    }]);
+    return callback(
+        [{
+            entity: {
+                name: 'org1'
+            },
+            metadata: {
+                guid: 'org1guid'
+            }
+        }, {
+            entity: {
+                name: 'org1'
+            },
+            metadata: {
+                guid: 'org2guid'
+            }
+        }]);
 };
 
 var setOrgsData = function() {};
@@ -29,6 +40,22 @@ var getOrgDetails = function() {
     }
 }
 
+var getSpaceDetails = function(spaceguid) {
+    return {
+        then: function(callback) {
+            return callback({
+                guid: 'spaceguid',
+                name: 'spacename',
+                apps: [{
+                    name: 'mockname1'
+                }, {
+                    name: 'mockname2'
+                }]
+            });
+        }
+    }
+
+};
 
 // Location path mock
 var path = function(callback) {
@@ -88,11 +115,23 @@ describe('DashboardCtrl', function() {
     }));
 
     it('should place orgs into the scope', function() {
-        expect(scope.orgs).toEqual([{
-            name: 'org1'
-        }, {
-            name: 'org2'
-        }]);
+        expect(scope.orgs).toEqual(
+            [{
+                entity: {
+                    name: 'org1'
+                },
+                metadata: {
+                    guid: 'org1guid'
+                }
+            }, {
+                entity: {
+                    name: 'org1'
+                },
+                metadata: {
+                    guid: 'org2guid'
+                }
+            }]
+        );
     });
 
     it('should send the user to the org view', function() {
@@ -115,8 +154,6 @@ describe('OrgCtrl', function() {
 
         beforeEach(inject(function($rootScope, $controller) {
             cloudfoundry = {
-                getOrgsData: getOrgsData,
-                setOrgsData: setOrgsData,
                 getOrgDetails: getOrgDetails
             };
             location = {
@@ -135,27 +172,9 @@ describe('OrgCtrl', function() {
             });
         }));
 
-        it('should place orgs into the scope', function() {
-            expect(scope.orgs).toEqual([{
-                name: 'org1'
-            }, {
-                name: 'org2'
-            }]);
-        });
-
         it('should place the active org into the scope', function() {
             expect(scope.activeOrg).toEqual('mockname');
             expect(scope.spaces).toEqual([]);
-        });
-
-        it('should send the user to the org view', function() {
-            spyOn(location, 'path');
-            scope.showOrg({
-                metadata: {
-                    guid: 'mockguid'
-                }
-            });
-            expect(location.path).toHaveBeenCalledWith('/dashboard/org/mockguid');
         });
 
     });
@@ -171,7 +190,9 @@ describe('OrgCtrl', function() {
                 getOrgDetails: function() {
                     return {
                         then: function(callback) {
-                            return callback({'code': 30003});
+                            return callback({
+                                'code': 30003
+                            });
                         }
                     }
                 }
@@ -199,14 +220,17 @@ describe('OrgCtrl', function() {
             expect(scope.spaces).toEqual(undefined);
         });
 
-    })
-
-
-
+        it('should send the user to the space view', function() {
+            spyOn(location, 'path');
+            scope.showSpace({
+                guid: 'spaceguid'
+            });
+            expect(location.path).toHaveBeenCalledWith('undefined/spaces/spaceguid');
+        });
+    });
 });
 
-// TODO: fix spaces
-describe('SpaceController', function() {
+describe('SpaceCtrl', function() {
 
     var scope, cloudfoundry;
 
@@ -215,66 +239,34 @@ describe('SpaceController', function() {
 
         //Mock Cf service
         cloudfoundry = {
-            getSpaceDetails: function() {
-                return {
-                    then: function(callback) {
-                        return callback([{
-                            entity: {
-                                name: 'app1'
-                            }
-                        }, {
-                            entity: {
-                                name: 'app2'
-                            }
-                        }]);
-                    }
-                }
-            }
+            getOrgsData: getOrgsData,
+            getSpaceDetails: getSpaceDetails
         }
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
 
         // Load Ctrl and scope
         scope = $rootScope.$new();
-        ctrl = $controller('SpaceController', {
+        ctrl = $controller('SpaceCtrl', {
             $scope: scope,
-            $cloudfoundry: cloudfoundry
+            $cloudfoundry: cloudfoundry,
+            $routeParams: {
+                orgguid: 'org1guid',
+                spaceguid: 'spaceguid'
+            }
         });
 
     }));
 
-    it('should return a space\'s apps', function() {
-        expect(scope.apps).toEqual([{
-            entity: {
-                name: 'app1'
-            }
-        }, {
-            entity: {
-                name: 'app2'
-            }
-        }])
+    it('should return a space\'s summary info', function() {
+        expect(scope.space).toEqual({
+            guid: 'spaceguid',
+            name: 'spacename',
+            apps: [{
+                name: 'mockname1'
+            }, {
+                name: 'mockname2'
+            }]
+        })
     });
-
-    it('should set an active space if selected', function() {
-        // Create a mock active space
-        scope.activeSpaces = [{
-            metadata: {
-                guid: 'app1'
-            }
-        }, {
-            metadata: {
-                guid: 'app2'
-            }
-        }]
-        scope.space = {
-            metadata: {
-                guid: 'app1'
-            },
-            selected: false
-        }
-        scope.setActiveSpace()
-        expect(scope.activeSpaces[0].selected).toEqual(true);
-
-    });
-
 });

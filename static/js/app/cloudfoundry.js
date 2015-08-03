@@ -31,7 +31,6 @@
 
         // Get organization spaces details
         this.getOrgSpaceDetails = function(org) {
-            console.log(org.entity.spaces_url);
             return $http.get(org.entity.spaces_url)
                 .then(function(response) {
                     var data = response.data;
