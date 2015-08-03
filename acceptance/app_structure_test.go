@@ -8,6 +8,7 @@ import (
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
 
+	//"fmt"
 	"net/http/httptest"
 )
 
@@ -43,7 +44,6 @@ var _ = Describe("AppStructure", func() {
 			Expect(page.FindByButton("Sign in").Click()).To(Succeed())
 			Eventually(Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/dashboard")))
 		})
-
 		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
 			delayForRendering()
 			Expect(page.Find("#org-dropdown")).To(BeFound())
@@ -91,6 +91,32 @@ var _ = Describe("AppStructure", func() {
 
 			Expect(page.First(".disk-quota-data")).To(BeFound())
 		})
+
+		/*
+			MARKETPLACE TESTS
+		*/
+		By("allowing the user to click on the marketplace tab", func() {
+			delayForRendering()
+			Expect(page.Find("#marketplace").Click()).To(Succeed())
+		})
+
+		By("showing the user a table with all the services", func() {
+			delayForRendering()
+			Expect(page.Find("#service-name-heading")).To(BeFound())
+			Expect(page.Find("#service-description-heading")).To(BeFound())
+			Expect(page.Find("#service-date-created-heading")).To(BeFound())
+			Expect(page.First(".service-name-data")).To(BeFound())
+			Expect(page.First(".service-description-data")).To(BeFound())
+			Expect(page.First(".service-date-created-data")).To(BeFound())
+		})
+
+		By("allowing the user to search for a service", func() {
+			delayForRendering()
+			rowCountPreSearch, _ := page.All(".service-name-data").Count()
+			Expect(page.Find("#serviceSearch").Fill("rds")).To(Succeed())
+			Expect(page.All(".service-name-data")).NotTo(HaveCount(rowCountPreSearch))
+		})
+
 	})
 
 	AfterEach(func() {

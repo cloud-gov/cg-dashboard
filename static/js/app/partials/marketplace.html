@@ -8,7 +8,7 @@
             <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
             </div>
 
-            <input type="text" class="form-control" placeholder="Search for a service" ng-model="searchService">
+            <input id="serviceSearch" type="text" class="form-control" placeholder="Search for a service" ng-model="searchService">
 
         </div>
     </div>
@@ -16,21 +16,21 @@
 
 <table id="servicesTable" class="table table-hover">
     <thead>
-        <th>
+        <th id='service-name-heading'>
             <a ng-click="sortType = 'entity.label'; sortReverse = !sortReverse">
                 Name
             <span ng-show="sortType == 'entity.label' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
             <span ng-show="sortType == 'entity.label' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
         </a>
         </th>
-        <th>
+        <th id='service-description-heading'>
             <a ng-click="sortType = 'entity.description'; sortReverse = !sortReverse">
                 Description
             <span ng-show="sortType == 'entity.description' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
             <span ng-show="sortType == 'entity.description' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
         </a>
         </th>
-        <th>
+        <th id='service-date-created-heading'>
             <a ng-click="sortType = 'metadata.created_at'; sortReverse = !sortReverse">
                 Date Created
             <span ng-show="sortType == 'metadata.created_at' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
@@ -40,9 +40,9 @@
     </thead>
     <tbody>
         <tr ng-click="showService(service)" ng-repeat="service in services | orderBy:sortType:sortReverse | filter:searchService">
-            <td>{{service.entity.label}}</td>
-            <td>{{service.entity.description}}</td>
-            <td>{{service.metadata.created_at | date:'yyyy-MM-dd'}}</td>
+            <td class="service-name-data">{{service.entity.label}}</td>
+            <td class="service-description-data">{{service.entity.description}}</td>
+            <td class="service-date-created-data">{{service.metadata.created_at | date:'yyyy-MM-dd'}}</td>
         </tr>
     </tbody>
 </table>
