@@ -175,4 +175,22 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    describe('getAllServices', function() {
+        it('should return all the services the user has access to', function() {
+            var services = {
+                name: 'all',
+                resources: [{
+                    name: 'service1'
+                }, {
+                    name: 'service2'
+                }]
+            };
+            httpBackend.whenGET('/v2/services').respond(services);
+            $cloudfoundry.getAllServices().then(function(services) {
+                expect(services.length).toEqual(2);
+            });
+        httpBackend.flush();
+        });
+    })
+
 });
