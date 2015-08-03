@@ -67,7 +67,6 @@
         $scope.visibleTab = "spaces";
     });
 
-
     app.controller('MarketCtrl', function($scope, $cloudfoundry) {
         $scope.showService = function(service) {
             console.log(service);

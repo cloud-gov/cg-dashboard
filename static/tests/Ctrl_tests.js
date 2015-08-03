@@ -62,7 +62,19 @@ var findActiveOrg = function(orgguid, callback) {
             name: 'org1'
         }
     })
+}
+var getAllServices = function() {
+    return {
+        then: function(callback) {
+            return callback([{
+                name: 'service1'
+            }, {
+                name: 'service2'
+            }])
+        }
+    }
 };
+
 
 // Location path mock
 var path = function(callback) {
@@ -278,4 +290,32 @@ describe('SpaceCtrl', function() {
     it('should return the active org', function() {
         expect(scope.activeOrg).toEqual('org1')
     });
+});
+
+describe('MarketCtrl', function() {
+    var scope, cloudfoundry;
+    beforeEach(module('cfdeck'));
+    beforeEach(inject(function($rootScope, $controller) {
+        //Mock CF service
+        cloudfoundry = {
+            getAllServices: getAllServices
+        }
+        spyOn(cloudfoundry, 'getAllServices').and.callThrough();
+        // Load Ctrl and scope
+        scope = $rootScope.$new()
+        ctrl = $controller('MarketCtrl', {
+            $scope: scope,
+            $cloudfoundry: cloudfoundry
+        });
+    }));
+
+    it('should put all the services into the space', function() {
+        expect(scope.services.length).toEqual(2);
+    });
+
+
+    it('should open the services tab as the visible one', function() {
+        expect(scope.visibleTab).toEqual('marketplace');
+    });
+
 });
