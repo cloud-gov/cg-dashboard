@@ -45,11 +45,58 @@
                 }, returnHome);
         };
 
+	// Tells whether the web app should poll for newer app statuses.
+	// Useful for when we are in the middle of updating the app status ourselves and we don't
+	// want a poll to interrupt the UI.
+	var pollAppStatus = true;
+	// Getter function for pollAppStatus.
+	var getPollAppStatusProperty = function() {
+		return pollAppStatus;
+	};
+	// Setter function for pollAppStatus.
+	var setPollAppStatusProperty = function(value) {
+		pollAppStatus = value;
+	}
+	// Generic function that actually submits the request to backend to change the app.
+	var changeAppState = function(app, desired_state) {
+		setPollAppStatusProperty(false); // prevent UI from refreshing.
+		return $http.put("/v2/apps/" + app.metadata.guid + "?async=false&inline-relations-depth=1", {"state":desired_state})
+			.then(function(response) {
+				// Success
+				console.log("succeeded to change to " + desired_state);
+				// Set the state immediately to stop so that UI will force a load of the new options.
+				// UI will change the buttons based on the state.
+				app.entity.state = desired_state;
+			}, function(response) {
+				// Failure
+				console.log("failed to change to " + desired_state);
+			}).finally(function() {
+				setPollAppStatusProperty(true); // allow UI to refresh via polling again.
+			});
+	}
+	// Wrapper function that will submit a request to start an app.
+	var startApp = function(app) {
+		return changeAppState(app, "STARTED");
+	};
+	// Wrapper function that will submit a request to stop an app.
+	var stopApp = function(app) {
+		return changeAppState(app, "STOPPED");
+	};
+	// Wrapper function that will submit a request to restart an app.
+	var restartApp = function(app) {
+		return changeAppState(app, "STOPPED")
+			.then(changeAppState(app, "STARTED"));
+	};
         return {
             getAuthStatus: getAuthStatus,
             getOrgs: getOrgs,
             getOrgSpaceDetails: getOrgSpaceDetails,
-            getSpaceDetails: getSpaceDetails
+            getSpaceDetails: getSpaceDetails,
+            startApp: startApp,
+            restartApp: restartApp,
+            stopApp: stopApp,
+            getPollAppStatusProperty: getPollAppStatusProperty,
+            setPollAppStatusProperty: setPollAppStatusProperty
         };
 
     };

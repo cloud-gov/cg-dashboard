@@ -30,6 +30,7 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	apiRouter.Get("/logout", (*APIContext).Logout)
 	apiRouter.Get("/profile", (*APIContext).UserProfile)
 	apiRouter.Get("/:*", (*APIContext).Proxy)
+	apiRouter.Put("/:*", (*APIContext).Proxy)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.

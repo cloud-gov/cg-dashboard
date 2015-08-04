@@ -49,23 +49,77 @@
         });
     });
 
-    app.controller('SpaceController', function($scope, $cloudfoundry) {
+    app.controller('SpaceController', function($scope, $cloudfoundry, $interval) {
         // Set the current active spaces 
         $scope.setActiveSpace = function() {
-                $scope.$emit('emitActiveSpace', $scope.apps);
-                $scope.activeSpaces.forEach(function(space) {
-                    if($scope.space.metadata.guid == space.metadata.guid)
-                        space.selected = true;
-                    else
-                        space.selected = false;
-                });
-            }
-            // Render apps
+		// Create a recurring interval to emit to the screen for updates.
+		var emitActiveSpaceApps = function() {
+			$scope.$emit('emitActiveSpace', $scope.apps);
+			$scope.activeSpaces.forEach(function(space) {
+			    if($scope.space.metadata.guid == space.metadata.guid)
+				space.selected = true;
+			    else
+				space.selected = false;
+			});
+		};
+		emitActiveSpaceApps();
+		$interval(emitActiveSpaceApps, 5000);
+        };
+	// Render apps
         var renderApps = function(apps) {
-            $scope.apps = apps;
+		// Only render while we are not updating an app ourselves.
+		if ($cloudfoundry.getPollAppStatusProperty() === true) {
+			$scope.apps = apps;
+		}
         };
         // Get individual app deatils
         $cloudfoundry.getSpaceDetails($scope.space)
             .then(renderApps);
+	// Create a recurring interval to download updates.
+	$interval(function() {
+		// Only render while we are not updating an app.
+		if ($cloudfoundry.getPollAppStatusProperty() === true) {
+			$cloudfoundry.getSpaceDetails($scope.space)
+				.then(renderApps);
+		}
+	}, 5000);
+    });
+    app.controller('AppCtrl', function($scope, $cloudfoundry, $interval, $http) {
+	// Stop a specified app
+	$scope.stopApp = function(app) {
+		// Only stop if we are currently not restarting.
+		if ($scope.restarting != true) {
+			// Grey out the UI buttons while waiting.
+			$scope.stopping = true;
+			$cloudfoundry.stopApp(app)
+				.then(function() {
+					// Re-enable the UI buttons.
+					$scope.stopping = false;
+			});
+		}
+	};
+	// Restart a specified app
+	$scope.restartApp = function(app) {
+		// Only restart if we are currently not stopping.
+		if ($scope.stopping != true) {
+			// Grey out the UI buttons while waiting.
+			$scope.restarting = true;
+			$cloudfoundry.restartApp(app)
+				.then(function() {
+					// Re-enable the UI buttons.
+					$scope.restarting = false;
+			});
+		}
+	};
+	// Start a specified app
+	$scope.startApp = function(guid) {
+		// Grey out the UI buttons while waiting.
+		$scope.starting = true;
+		$cloudfoundry.startApp(guid)
+			.then(function() {
+				// Re-enable the UI buttons.
+				$scope.starting = false;
+			});
+	};
     });
 }());
