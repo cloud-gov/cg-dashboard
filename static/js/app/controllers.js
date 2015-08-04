@@ -78,14 +78,47 @@
         $scope.visibleTab = "spaces";
     });
 
-    app.controller('MarketCtrl', function($scope, $cloudfoundry) {
-        $scope.showService = function(service) {
-            console.log(service);
+    app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
+        // Render an org data, but look for orgGuid instead of loading all org data
+        var renderOrgs = function(orgs) {
+            var activeOrg = orgs.filter(function(org) {
+                return org.metadata.guid === $routeParams['orgguid'];
+            });
+            $scope.activeOrg = activeOrg[0];
         };
-        $cloudfoundry.getAllServices().then(function(services) {
+        $scope.showService = function(service) {
+            $location.path($location.path() + '/' + service.metadata.guid);
+        };
+        $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
             $scope.services = services;
-            $scope.visibleTab = 'marketplace';
         });
+
+        $cloudfoundry.getOrgsData(renderOrgs);
+        $scope.visibleTab = 'marketplace';
+    });
+
+    app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams) {
+        // Render an org data, but look for orgGuid instead of loading all org data
+        var renderOrgs = function(orgs) {
+            var activeOrg = orgs.filter(function(org) {
+                return org.metadata.guid === $routeParams['orgguid'];
+            });
+            $scope.activeOrg = activeOrg[0];
+        };
+        var renderServicePlans = function(servicePlans) {
+            $scope.plans = servicePlans;
+        };
+
+        var renderService = function(service) {
+            $scope.service = service;
+            $scope.visibleTab = 'service';
+            $cloudfoundry.getServicePlans(service.entity.service_plans_url).then(renderServicePlans);
+        };
+
+        $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
+        // Get Orgs or return to login page
+        $cloudfoundry.getOrgsData(renderOrgs);
+        $scope.visibleTab = "spaces";
     });
 
 }());
