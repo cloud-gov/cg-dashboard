@@ -40,9 +40,11 @@ func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
 	// Get client and refresh token if needed
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
 	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL.Path)
-	request, _ := http.NewRequest("GET", reqURL, nil)
+	request, _ := http.NewRequest(req.Method, reqURL, req.Body)
 	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
 	res, _ := client.Do(request)
+	// Should return the same status.
+	rw.WriteHeader(res.StatusCode)
 	body, _ := ioutil.ReadAll(res.Body)
 	defer res.Body.Close()
 	fmt.Fprintf(rw, string(body))

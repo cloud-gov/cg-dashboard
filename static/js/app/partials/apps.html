@@ -18,14 +18,14 @@
       <td class="instances-data">{{app.entity.instances}}</td>
       <td class="state-data">{{app.entity.state}}</td>
       <td class="disk-quota-data">{{app.entity.disk_quota}}</td>
-      <td class="actions-data">
+      <td class="actions-data" ng-controller="AppCtrl">
 	      <div ng-switch="app.entity.state">
 		      <div ng-switch-when='STARTED'>
-			      <button type="button" class="btn btn-warning" ng-click="restartApp">Restart</button>
-			      <button type="button" class="btn btn-danger" ng-click="stopApp">Stop</button>
+			      <button type="button" ladda="restarting" class="btn btn-warning" ng-disabled="stopping" ng-click="restartApp(app.metadata.guid)">Restart</button>
+			      <button type="button" ladda="stopping" class="btn btn-danger" ng-disabled="restarting" ng-click="stopApp(app.metadata.guid)">Stop</button>
 		      </div>
 		      <div ng-switch-when='STOPPED'>
-			      <button type="button" class="btn btn-success"ng-click="startApp">Start</button>
+			      <button type="button" ladda="starting" class="btn btn-success" ng-click="startApp(app.metadata.guid)">Start</button>
 		      </div>
 	      </div>
       </td>

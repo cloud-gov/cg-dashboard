@@ -63,19 +63,56 @@
 			});
 		};
 		emitActiveSpaceApps();
-		$interval(emitActiveSpaceApps,5000);
-        }
+		$interval(emitActiveSpaceApps, 5000);
+        };
 	// Render apps
         var renderApps = function(apps) {
-            $scope.apps = apps;
+		// Only render while we are not updating an app.
+		if ($cloudfoundry.getUserChangingAppStatusProperty() === false) {
+			$scope.apps = apps;
+		}
         };
         // Get individual app deatils
         $cloudfoundry.getSpaceDetails($scope.space)
             .then(renderApps);
 	// Create a recurring interval to download updates.
 	$interval(function() {
-		$cloudfoundry.getSpaceDetails($scope.space)
-			.then(renderApps);
+		// Only render while we are not updating an app.
+		if ($cloudfoundry.getUserChangingAppStatusProperty() === false) {
+			$cloudfoundry.getSpaceDetails($scope.space)
+				.then(renderApps);
+		}
 	}, 5000);
+    });
+    app.controller('AppCtrl', function($scope, $cloudfoundry, $interval, $http, $timeout) {
+	// StopApp
+	$scope.stopApp = function(guid) {
+		// Only stop if we are currently not restarting.
+		if ($scope.restarting != true) {
+			$scope.stopping = true; // start stopping
+			$cloudfoundry.stopApp(guid, $scope)
+			.then(function() {
+				$scope.stopping = false;
+			});
+		}
+	};
+	$scope.restartApp = function(guid) {
+		// Only restart if we are currently not stopping.
+		if ($scope.stopping != true) {
+			$scope.restarting = true; // start restarting
+			$cloudfoundry.setUserChangingAppStatusProperty(true);
+			$timeout(function() {
+			$cloudfoundry.setUserChangingAppStatusProperty(false);
+			$scope.restarting = false; // stop restarting
+			}, 2000);
+		}
+	};
+	$scope.startApp = function(guid) {
+		$scope.starting = true; // start starting
+		$cloudfoundry.startApp(guid)
+			.then(function() {
+				$scope.starting = false;
+			});
+	};
     });
 }());

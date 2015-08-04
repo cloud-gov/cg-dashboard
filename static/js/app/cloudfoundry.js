@@ -45,11 +45,41 @@
                 }, returnHome);
         };
 
+	var userChangingAppStatus = false;
+	var getUserChangingAppStatusProperty = function() {
+		return userChangingAppStatus;
+	};
+	var setUserChangingAppStatusProperty = function(value) {
+		userChangingAppStatus = value;
+	}
+	var changeAppState = function(app_guid, desired_state) {
+		setUserChangingAppStatusProperty(true); // prevent UI from refreshing.
+		return $http.put("/v2/apps/" +app_guid + "?async=false&inline-relations-depth=1", desired_state)
+			.then(function(response) {
+				// Success
+				console.log("succeeded to change to " + desired_state);
+			}, function(response) {
+				// Failure
+				console.log("failed to change to " + desired_state);
+			}).finally(function() {
+				setUserChangingAppStatusProperty(false); // allow UI to refresh.
+			});
+	}
+	var startApp = function(app_guid, $scope) {
+		return changeAppState(app_guid, {"state":"STARTED"});
+	};
+	var stopApp = function(app_guid) {
+		return changeAppState(app_guid, {"state":"STOPPED"});
+	};
         return {
             getAuthStatus: getAuthStatus,
             getOrgs: getOrgs,
             getOrgSpaceDetails: getOrgSpaceDetails,
-            getSpaceDetails: getSpaceDetails
+            getSpaceDetails: getSpaceDetails,
+            startApp: startApp,
+            stopApp: stopApp,
+            getUserChangingAppStatusProperty: getUserChangingAppStatusProperty,
+            setUserChangingAppStatusProperty: setUserChangingAppStatusProperty
         };
 
     };
