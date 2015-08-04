@@ -21,11 +21,11 @@
       <td class="actions-data" ng-controller="AppCtrl">
 	      <div ng-switch="app.entity.state">
 		      <div ng-switch-when='STARTED'>
-			      <button type="button" ladda="restarting" class="btn btn-warning" ng-disabled="stopping" ng-click="restartApp(app.metadata.guid)">Restart</button>
-			      <button type="button" ladda="stopping" class="btn btn-danger" ng-disabled="restarting" ng-click="stopApp(app.metadata.guid)">Stop</button>
+			      <button type="button" ladda="restarting" class="btn btn-warning" ng-disabled="stopping" ng-click="restartApp(app)">Restart</button>
+			      <button type="button" ladda="stopping" class="btn btn-danger" ng-disabled="restarting" ng-click="stopApp(app)">Stop</button>
 		      </div>
 		      <div ng-switch-when='STOPPED'>
-			      <button type="button" ladda="starting" class="btn btn-success" ng-click="startApp(app.metadata.guid)">Start</button>
+			      <button type="button" ladda="starting" class="btn btn-success" ng-disabled="restarting" ng-click="startApp(app)">Start</button>
 		      </div>
 	      </div>
       </td>

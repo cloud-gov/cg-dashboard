@@ -67,8 +67,8 @@
         };
 	// Render apps
         var renderApps = function(apps) {
-		// Only render while we are not updating an app.
-		if ($cloudfoundry.getUserChangingAppStatusProperty() === false) {
+		// Only render while we are not updating an app ourselves.
+		if ($cloudfoundry.getPollAppStatusProperty() === true) {
 			$scope.apps = apps;
 		}
         };
@@ -78,39 +78,46 @@
 	// Create a recurring interval to download updates.
 	$interval(function() {
 		// Only render while we are not updating an app.
-		if ($cloudfoundry.getUserChangingAppStatusProperty() === false) {
+		if ($cloudfoundry.getPollAppStatusProperty() === true) {
 			$cloudfoundry.getSpaceDetails($scope.space)
 				.then(renderApps);
 		}
 	}, 5000);
     });
-    app.controller('AppCtrl', function($scope, $cloudfoundry, $interval, $http, $timeout) {
-	// StopApp
-	$scope.stopApp = function(guid) {
+    app.controller('AppCtrl', function($scope, $cloudfoundry, $interval, $http) {
+	// Stop a specified app
+	$scope.stopApp = function(app) {
 		// Only stop if we are currently not restarting.
 		if ($scope.restarting != true) {
-			$scope.stopping = true; // start stopping
-			$cloudfoundry.stopApp(guid, $scope)
-			.then(function() {
-				$scope.stopping = false;
+			// Grey out the UI buttons while waiting.
+			$scope.stopping = true;
+			$cloudfoundry.stopApp(app)
+				.then(function() {
+					// Re-enable the UI buttons.
+					$scope.stopping = false;
 			});
 		}
 	};
-	$scope.restartApp = function(guid) {
+	// Restart a specified app
+	$scope.restartApp = function(app) {
 		// Only restart if we are currently not stopping.
 		if ($scope.stopping != true) {
-			$scope.restarting = true; // start restarting
-			$cloudfoundry.setUserChangingAppStatusProperty(true);
-			$timeout(function() {
-			$cloudfoundry.setUserChangingAppStatusProperty(false);
-			$scope.restarting = false; // stop restarting
-			}, 2000);
+			// Grey out the UI buttons while waiting.
+			$scope.restarting = true;
+			$cloudfoundry.restartApp(app)
+				.then(function() {
+					// Re-enable the UI buttons.
+					$scope.restarting = false;
+			});
 		}
 	};
+	// Start a specified app
 	$scope.startApp = function(guid) {
-		$scope.starting = true; // start starting
+		// Grey out the UI buttons while waiting.
+		$scope.starting = true;
 		$cloudfoundry.startApp(guid)
 			.then(function() {
+				// Re-enable the UI buttons.
 				$scope.starting = false;
 			});
 	};

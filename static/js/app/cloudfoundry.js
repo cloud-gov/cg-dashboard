@@ -45,31 +45,47 @@
                 }, returnHome);
         };
 
-	var userChangingAppStatus = false;
-	var getUserChangingAppStatusProperty = function() {
-		return userChangingAppStatus;
+	// Tells whether the web app should poll for newer app statuses.
+	// Useful for when we are in the middle of updating the app status ourselves and we don't
+	// want a poll to interrupt the UI.
+	var pollAppStatus = true;
+	// Getter function for pollAppStatus.
+	var getPollAppStatusProperty = function() {
+		return pollAppStatus;
 	};
-	var setUserChangingAppStatusProperty = function(value) {
-		userChangingAppStatus = value;
+	// Setter function for pollAppStatus.
+	var setPollAppStatusProperty = function(value) {
+		pollAppStatus = value;
 	}
-	var changeAppState = function(app_guid, desired_state) {
-		setUserChangingAppStatusProperty(true); // prevent UI from refreshing.
-		return $http.put("/v2/apps/" +app_guid + "?async=false&inline-relations-depth=1", desired_state)
+	// Generic function that actually submits the request to backend to change the app.
+	var changeAppState = function(app, desired_state) {
+		setPollAppStatusProperty(false); // prevent UI from refreshing.
+		return $http.put("/v2/apps/" + app.metadata.guid + "?async=false&inline-relations-depth=1", {"state":desired_state})
 			.then(function(response) {
 				// Success
 				console.log("succeeded to change to " + desired_state);
+				// Set the state immediately to stop so that UI will force a load of the new options.
+				// UI will change the buttons based on the state.
+				app.entity.state = desired_state;
 			}, function(response) {
 				// Failure
 				console.log("failed to change to " + desired_state);
 			}).finally(function() {
-				setUserChangingAppStatusProperty(false); // allow UI to refresh.
+				setPollAppStatusProperty(true); // allow UI to refresh via polling again.
 			});
 	}
-	var startApp = function(app_guid, $scope) {
-		return changeAppState(app_guid, {"state":"STARTED"});
+	// Wrapper function that will submit a request to start an app.
+	var startApp = function(app) {
+		return changeAppState(app, "STARTED");
 	};
-	var stopApp = function(app_guid) {
-		return changeAppState(app_guid, {"state":"STOPPED"});
+	// Wrapper function that will submit a request to stop an app.
+	var stopApp = function(app) {
+		return changeAppState(app, "STOPPED");
+	};
+	// Wrapper function that will submit a request to restart an app.
+	var restartApp = function(app) {
+		return changeAppState(app, "STOPPED")
+			.then(changeAppState(app, "STARTED"));
 	};
         return {
             getAuthStatus: getAuthStatus,
@@ -77,9 +93,10 @@
             getOrgSpaceDetails: getOrgSpaceDetails,
             getSpaceDetails: getSpaceDetails,
             startApp: startApp,
+            restartApp: restartApp,
             stopApp: stopApp,
-            getUserChangingAppStatusProperty: getUserChangingAppStatusProperty,
-            setUserChangingAppStatusProperty: setUserChangingAppStatusProperty
+            getPollAppStatusProperty: getPollAppStatusProperty,
+            setPollAppStatusProperty: setPollAppStatusProperty
         };
 
     };
