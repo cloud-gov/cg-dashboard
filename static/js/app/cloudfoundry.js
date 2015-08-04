@@ -56,10 +56,31 @@
         }
 
         // Get services
-        this.getAllServices = function() {
-            return $http.get("/v2/services")
+        this.getOrgServices = function(guid) {
+            return $http.get('/v2//organizations/' + guid + '/services')
                 .then(function(response) {
                     return response.data.resources;
+                });
+        };
+
+        // Get service plans for a service
+        this.getServicePlans = function(servicePlanUrl) {
+            return $http.get(servicePlanUrl)
+                .then(function(response) {
+                    return response.data.resources.map(function(plan) {
+                        if(plan.entity.extra){
+                            plan.entity.extra = JSON.parse(plan.entity.extra);                            
+                        }
+                        return plan
+                    });
+                });
+        };
+
+        // Get service details for a service
+        this.getServiceDetails = function(serviceGuid) {
+            return $http.get('/v2/services/' + serviceGuid)
+                .then(function(response) {
+                    return response.data;
                 });
         };
 
