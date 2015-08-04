@@ -69,7 +69,24 @@
             }
             $log.info('Used cached data');
             return callback(orgs);
-        }
+        };
+        var filterOrg = function(storedOrgs, orgGuid) {
+                return storedOrgs.filter(function(storedOrgs) {
+                    return storedOrgs.metadata.guid === orgGuid;
+                })[0]
+            }
+            // Given an org guid attempts to find the active org data stored in the service
+        this.findActiveOrg = function(orgGuid, callback) {
+            if (orgs) {
+                return callback(filterOrg(orgs, orgGuid));
+            } else {
+                return this.getOrgs().then(function(orgs) {
+                    callback(filterOrg(orgs, orgGuid));
+                });
+            }
+        };
+
+
     });
 
 }());

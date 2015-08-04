@@ -47,13 +47,10 @@
     });
 
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
-        // Render an org data, but look for orgGuid instead of loading all org data
-        var renderOrgs = function(orgs) {
-            var activeOrg = orgs.filter(function(org) {
-                return org.metadata.guid === $routeParams['orgguid'];
-            });
-            $scope.activeOrg = activeOrg[0].entity.name;
-        };
+        // Render the active org
+        var renderActiveOrg = function(org) {
+            $scope.activeOrg = org.entity.name;
+        }
         // Render a space in the view
         var renderSpace = function(space) {
             $scope.space = space;
@@ -65,8 +62,8 @@
         // Get the orgs data from cache or load new data
         $cloudfoundry.getSpaceDetails($routeParams['spaceguid'])
             .then(renderSpace);
-        // Get Orgs or return to login page
-        $cloudfoundry.getOrgsData(renderOrgs);
+        // Return the active org 
+        $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
         $scope.visibleTab = "spaces";
     });
 }());
