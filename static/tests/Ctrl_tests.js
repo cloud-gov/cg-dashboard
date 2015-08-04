@@ -54,7 +54,14 @@ var getSpaceDetails = function(spaceguid) {
             });
         }
     }
+};
 
+var findActiveOrg = function(orgguid, callback) {
+    return callback({
+        entity: {
+            name: 'org1'
+        }
+    })
 };
 
 // Location path mock
@@ -196,7 +203,6 @@ describe('OrgCtrl', function() {
                         }
                     }
                 }
-
             };
             location = {
                 path: path
@@ -239,8 +245,8 @@ describe('SpaceCtrl', function() {
 
         //Mock Cf service
         cloudfoundry = {
-            getOrgsData: getOrgsData,
-            getSpaceDetails: getSpaceDetails
+            getSpaceDetails: getSpaceDetails,
+            findActiveOrg: findActiveOrg
         }
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
@@ -255,7 +261,6 @@ describe('SpaceCtrl', function() {
                 spaceguid: 'spaceguid'
             }
         });
-
     }));
 
     it('should return a space\'s summary info', function() {
@@ -268,5 +273,9 @@ describe('SpaceCtrl', function() {
                 name: 'mockname2'
             }]
         })
+    });
+
+    it('should return the active org', function() {
+        expect(scope.activeOrg).toEqual('org1')
     });
 });
