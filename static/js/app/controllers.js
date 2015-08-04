@@ -19,8 +19,19 @@
         };
         // Get data for a specific org
         $scope.showOrg = function(org) {
-            $location.path('/dashboard/org/' + org.metadata.guid);
+            if (org.metadata)
+                $location.path('/dashboard/org/' + org.metadata.guid);
+            else
+                $location.path('/dashboard/org/' + org.guid);
         };
+        $scope.showOrgMarketplace = function(org) {
+            if (org.metadata)
+                $location.path('/dashboard/org/' + org.metadata.guid + '/marketplace');
+            else
+                $location.path('/dashboard/org/' + org.guid + '/marketplace');
+
+        };
+
         // Get Orgs or return to login page
         $cloudfoundry.getOrgsData(renderOrgs);
     });

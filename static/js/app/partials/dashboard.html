@@ -26,7 +26,10 @@
                     </ul>
                 </li>
                 <li>
-                    <a id='marketplace' href="/#/marketplace">Service Marketplace</a>
+                    <a id='orgspaces' ng-click="showOrg(activeOrg)" ng-show="activeOrg">Spaces</a>
+                </li>
+                <li>
+                    <a id='marketplace' ng-click="showOrgMarketplace(activeOrg)" ng-show="activeOrg">Service Marketplace</a>
                 </li>
                 <li>
                     <a href="/v2/profile">User Profile</a>
