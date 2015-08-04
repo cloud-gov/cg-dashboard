@@ -192,7 +192,7 @@ describe('OrgCtrl', function() {
         }));
 
         it('should place the active org into the scope', function() {
-            expect(scope.activeOrg).toEqual('mockname');
+            expect(scope.activeOrg.name).toEqual('mockname');
             expect(scope.spaces).toEqual([]);
         });
 

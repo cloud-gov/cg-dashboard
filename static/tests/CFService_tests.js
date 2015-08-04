@@ -175,7 +175,7 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
-    describe('getAllServices', function() {
+    describe('getOrgServices', function() {
         it('should return all the services the user has access to', function() {
             var services = {
                 name: 'all',
@@ -185,8 +185,8 @@ describe('CloudFoundry Service Tests', function() {
                     name: 'service2'
                 }]
             };
-            httpBackend.whenGET('/v2/services').respond(services);
-            $cloudfoundry.getAllServices().then(function(services) {
+            httpBackend.whenGET('/v2/organizations/testorgguid/services').respond(services);
+            $cloudfoundry.getOrgServices('testorgguid').then(function(services) {
                 expect(services.length).toEqual(2);
             });
         httpBackend.flush();

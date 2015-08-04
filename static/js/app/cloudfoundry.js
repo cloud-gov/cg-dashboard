@@ -57,7 +57,7 @@
 
         // Get services
         this.getOrgServices = function(guid) {
-            return $http.get('/v2//organizations/' + guid + '/services')
+            return $http.get('/v2/organizations/' + guid + '/services')
                 .then(function(response) {
                     return response.data.resources;
                 });

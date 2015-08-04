@@ -47,7 +47,7 @@
                 $scope.activeOrg = "404";
 
             } else {
-                $scope.activeOrg = orgData.name;
+                $scope.activeOrg = orgData;
                 $scope.spaces = orgData.spaces
             }
         };
