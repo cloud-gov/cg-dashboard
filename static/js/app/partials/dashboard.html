@@ -18,12 +18,18 @@
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                    aria-expanded="false" id="org-dropdown">{{ activeOrg || "Organizations" }}&nbsp;<span class="caret"></span></a>
+                    aria-expanded="false" id="org-dropdown">{{ (activeOrg | orgNameFilter) || "Organizations" }}&nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li ng-repeat="org in orgs" ng-click="showOrg(org)">
-                            <a class="org-name">{{org.entity.name}}</a>
+                            <a class="org-name">{{org | orgNameFilter}}</a>
                         </li>
                     </ul>
+                </li>
+                <li>
+                    <a id='orgspaces' ng-click="showOrg(activeOrg)" ng-show="activeOrg">Spaces</a>
+                </li>
+                <li>
+                    <a id='marketplace' ng-click="showOrgMarketplace(activeOrg)" ng-show="activeOrg">Service Marketplace</a>
                 </li>
                 <li>
                     <a href="/v2/profile">User Profile</a>
@@ -31,7 +37,6 @@
                 <li>
                     <a href="/v2/logout">Logout</a>
                 </li>
-
             </ul>
         </div>
     </div>
@@ -44,6 +49,12 @@
     </div>
     <div ng-switch-when="spaces">
         <ng-include src="'js/app/partials/spaces.html'"></ng-include>
+    </div>
+    <div ng-switch-when="marketplace">
+        <ng-include src="'js/app/partials/marketplace.html'"></ng-include>
+    </div>
+    <div ng-switch-when="service">
+        <ng-include src="'js/app/partials/service.html'"></ng-include>
     </div>
     <div class="jumbotron text-center" ng-switch-default="null">
         <h3>Welcome to CF-Deck</h3>

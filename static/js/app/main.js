@@ -18,6 +18,14 @@
                 templateUrl: 'js/app/partials/dashboard.html',
                 controller: 'OrgCtrl'
             })
+            .when('/dashboard/org/:orgguid/marketplace', {
+                templateUrl: 'js/app/partials/dashboard.html',
+                controller: 'MarketCtrl'
+            })
+        .when('/dashboard/org/:orgguid/marketplace/:serviceguid', {
+                templateUrl: 'js/app/partials/dashboard.html',
+                controller: 'ServiceCtrl'
+            })
             .when('/dashboard/org/:orgguid/spaces/:spaceguid', {
                 templateUrl: 'js/app/partials/dashboard.html',
                 controller: 'SpaceCtrl'
