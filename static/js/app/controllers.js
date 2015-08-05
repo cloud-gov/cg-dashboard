@@ -123,17 +123,31 @@
         // Find the active org from an org guid        
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
     });
-    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams) {
+    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval) {
         console.log("hello");
 
         var renderAppSummary = function(appSummary) {
-            $scope.appSummary = appSummary;
-	    console.log(appSummary);
+            // Only render while we are not updating an app ourselves.
+            if ($cloudfoundry.getPollAppStatusProperty() === true) {
+                $scope.appSummary = appSummary;
+	        console.log(appSummary);
+            }
         }
         var renderAppStats = function(appStats) {
-            $scope.appStats = appStats;
-	    console.log(appStats);
+            // Only render while we are not updating an app ourselves.
+            if ($cloudfoundry.getPollAppStatusProperty() === true) {
+                $scope.appStats = appStats;
+	        console.log(appStats);
+            }
         }
+	var resetAppStatsPoll = function() {
+            $scope.statsPromise = $interval(function() {
+                $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
+            }, 5000);
+            // Make sure to clean up afterwards when the page is naviageted away.
+            $scope.$on('$destroy', function () { $interval.cancel($scope.statsPromise); });
+	}
 	// Stop a specified app
 	$scope.stopApp = function(app) {
 		// Only stop if we are currently not restarting.
@@ -171,7 +185,9 @@
 			});
 	};
         $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+	// TODO: Make it so it won't request stats if the state in the summary is not STARTED.
         $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
+        resetAppStatsPoll();
         // Show the `service.html` view
         $scope.visibleTab = 'app';
     });
