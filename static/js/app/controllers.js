@@ -142,6 +142,22 @@
         // Find the active org from an org guid        
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
     });
+    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams) {
+        console.log("hello");
+
+        var renderAppSummary = function(appSummary) {
+            $scope.appSummary = appSummary;
+	    console.log(appSummary);
+        }
+        var renderAppStats = function(appStats) {
+            $scope.appStats = appStats;
+	    console.log(appStats);
+        }
+        $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+        $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
+        // Show the `service.html` view
+        $scope.visibleTab = 'app';
+    });
 
     app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval) {
         var renderAppSummary = function(appSummary) {
