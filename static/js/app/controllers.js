@@ -29,7 +29,6 @@
                 $location.path('/dashboard/org/' + org.metadata.guid + '/marketplace');
             else
                 $location.path('/dashboard/org/' + org.guid + '/marketplace');
-
         };
 
         // Get Orgs or return to login page
@@ -60,9 +59,9 @@
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
         // Render the active org
         var renderActiveOrg = function(org) {
-            $scope.activeOrg = org.entity.name;
-        }
-        // Render a space in the view
+                $scope.activeOrg = org;
+            }
+            // Render a space in the view
         var renderSpace = function(space) {
             $scope.space = space;
         };
@@ -79,13 +78,10 @@
     });
 
     app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
-        // Render an org data, but look for orgGuid instead of loading all org data
-        var renderOrgs = function(orgs) {
-            var activeOrg = orgs.filter(function(org) {
-                return org.metadata.guid === $routeParams['orgguid'];
-            });
-            $scope.activeOrg = activeOrg[0];
-        };
+        // Render the active org
+        var renderActiveOrg = function(org) {
+            $scope.activeOrg = org;
+        }
         $scope.showService = function(service) {
             $location.path($location.path() + '/' + service.metadata.guid);
         };
@@ -93,18 +89,15 @@
             $scope.services = services;
         });
 
-        $cloudfoundry.getOrgsData(renderOrgs);
+        $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
         $scope.visibleTab = 'marketplace';
     });
 
     app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams) {
-        // Render an org data, but look for orgGuid instead of loading all org data
-        var renderOrgs = function(orgs) {
-            var activeOrg = orgs.filter(function(org) {
-                return org.metadata.guid === $routeParams['orgguid'];
-            });
-            $scope.activeOrg = activeOrg[0];
-        };
+        // Render the active org
+        var renderActiveOrg = function(org) {
+            $scope.activeOrg = org;
+        }
         var renderServicePlans = function(servicePlans) {
             $scope.plans = servicePlans;
         };
@@ -116,8 +109,7 @@
         };
 
         $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
-        // Get Orgs or return to login page
-        $cloudfoundry.getOrgsData(renderOrgs);
+        $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
         $scope.visibleTab = "spaces";
     });
 
