@@ -36,11 +36,11 @@
       <div class="panel-body">
         <div ng-switch="appSummary.state">
           <div ng-switch-when='STARTED'>
-            <button type="button" ladda="restarting" class="btn btn-warning" ng-disabled="stopping" ng-click="restartApp(app)">Restart</button>
-            <button type="button" ladda="stopping" class="btn btn-danger" ng-disabled="restarting" ng-click="stopApp(app)">Stop</button>
+            <button type="button" ladda="restarting" class="btn btn-warning" ng-disabled="stopping" ng-click="restartApp(appSummary)">Restart</button>
+            <button type="button" ladda="stopping" class="btn btn-danger" ng-disabled="restarting" ng-click="stopApp(appSummary)">Stop</button>
           </div>
           <div ng-switch-when='STOPPED'>
-            <button type="button" ladda="starting" class="btn btn-success" ng-disabled="restarting" ng-click="startApp(app)">Start</button>
+            <button type="button" ladda="starting" class="btn btn-success" ng-disabled="restarting" ng-click="startApp(appSummary)">Start</button>
           </div>
         </div>
       </div>

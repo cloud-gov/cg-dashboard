@@ -155,6 +155,42 @@
             $scope.appStats = appStats;
 	    console.log(appStats);
         }
+	// Stop a specified app
+	$scope.stopApp = function(app) {
+		// Only stop if we are currently not restarting.
+		if ($scope.restarting != true) {
+			// Grey out the UI buttons while waiting.
+			$scope.stopping = true;
+			$cloudfoundry.stopApp(app)
+				.then(function() {
+					// Re-enable the UI buttons.
+					$scope.stopping = false;
+			});
+		}
+	};
+	// Restart a specified app
+	$scope.restartApp = function(app) {
+		// Only restart if we are currently not stopping.
+		if ($scope.stopping != true) {
+			// Grey out the UI buttons while waiting.
+			$scope.restarting = true;
+			$cloudfoundry.restartApp(app)
+				.then(function() {
+					// Re-enable the UI buttons.
+					$scope.restarting = false;
+			});
+		}
+	};
+	// Start a specified app
+	$scope.startApp = function(guid) {
+		// Grey out the UI buttons while waiting.
+		$scope.starting = true;
+		$cloudfoundry.startApp(guid)
+			.then(function() {
+				// Re-enable the UI buttons.
+				$scope.starting = false;
+			});
+	};
         $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
         $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
         // Show the `service.html` view
