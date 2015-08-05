@@ -12,8 +12,15 @@
                 controller: 'LoginCtrl'
             })
             .when('/dashboard', {
+                templateUrl: 'js/app/partials/dashboard.html'
+            })
+            .when('/dashboard/org/:guid', {
                 templateUrl: 'js/app/partials/dashboard.html',
-                controller: 'DashboardCtrl'
+                controller: 'OrgCtrl'
+            })
+            .when('/dashboard/org/:orgguid/spaces/:spaceguid', {
+                templateUrl: 'js/app/partials/dashboard.html',
+                controller: 'SpaceCtrl'
             })
             .otherwise({
                 redirectTo: "/"

@@ -13,6 +13,7 @@ describe('CloudFoundry Service Tests', function() {
         httpBackend.verifyNoOutstandingRequest();
     });
 
+
     describe('getAuthStatus', function() {
 
         describe('Authenticated', function() {
@@ -64,6 +65,20 @@ describe('CloudFoundry Service Tests', function() {
             });
             httpBackend.flush();
         });
+
+        it('should return user to home page if call fails', function() {
+
+            httpBackend.whenGET('/v2/organizations').respond(401, {
+                'status': 'unathorized'
+            });
+            $cloudfoundry.getOrgs().then(function(orgs) {
+                expect(orgs).toEqual({
+                    status: 'unauthorized'
+                });
+            });
+            httpBackend.flush();
+        });
+
     });
 
     describe('getOrgSpaceDetails', function() {
@@ -87,40 +102,77 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
-    describe('getSpaceDetails', function() {
+    describe('getOrgDetails', function() {
 
-        it('should return details for a space\'s apps when there are apps', function() {
-            var single_space = {
-                entity: {
-                    name: 'mockspace1',
-                    apps_url: '/v2/spaces/123/apps'
-                }
-            }
-            httpBackend.whenGET(single_space.entity.apps_url).respond({
-                resources: ['mockapp1', 'mockapp2']
-            });
-            $cloudfoundry.getSpaceDetails(single_space).then(function(data) {
-                expect(data).toEqual(['mockapp1', 'mockapp2']);
+        it('should return summary data for a specific org', function() {
+            var orgSummary = {
+                name: 'sandbox',
+                spaces: [{
+                    name: 'space1'
+                }, {
+                    name: 'space2'
+                }]
+            };
+            httpBackend.whenGET('/v2/organizations/mockguid/summary').respond(orgSummary);
+            $cloudfoundry.getOrgDetails('mockguid').then(function(data) {
+                expect(data.name).toEqual('sandbox');
+                expect(data.spaces.length).toEqual(2);
             });
             httpBackend.flush();
         });
+
     });
 
-    it('should return "noApps" for a space\'s when a space has no apps', function() {
+    describe('getOrgsData', function() {
 
-        var single_space = {
-            entity: {
-                name: 'mockspace1',
-                apps_url: '/v2/spaces/123/apps'
+        it('should return org data when `orgs` is undefined', function() {
+
+            // Setting up mock response
+            httpBackend.whenGET('/v2/organizations').respond({
+                pages: 1,
+                resources: [{
+                    name: 'org1'
+                }, {
+                    name: 'org2'
+                }]
+            });
+
+            var callbackSpy = function(data) {
+                expect(data.length).toEqual(2);
+                describe('When new data is inserted into the $cloudfoundry ctrl', function() {
+                    data.push({
+                        name: 'spyOrg'
+                    });
+                    $cloudfoundry.setOrgsData(data);
+                    $cloudfoundry.getOrgsData(function(storedData) {
+                        expect(storedData.length).toEqual(3);
+                    });
+                });
             }
-        }
-        httpBackend.whenGET(single_space.entity.apps_url).respond({
-            resources: []
+            $cloudfoundry.getOrgsData(callbackSpy);
+            httpBackend.flush();
+
         });
-        $cloudfoundry.getSpaceDetails(single_space).then(function(data) {
-            expect(data).toEqual('noApps');
+    });
+
+    describe('getSpaceDetails', function() {
+
+        it('should return space details when given a spaceGuid', function() {
+            var spaceSummary = {
+                name: 'spacename',
+                apps: [{
+                    name: 'app1'
+                }, {
+                    name: 'app2'
+                }]
+            };
+            httpBackend.whenGET('/v2/spaces/spaceguid/summary').respond(spaceSummary);
+            $cloudfoundry.getSpaceDetails('spaceguid').then(function(data) {
+                expect(data.name).toEqual('spacename');
+                expect(data.apps.length).toEqual(2);
+            });
+            httpBackend.flush();
         });
-        httpBackend.flush();
     });
 
 });

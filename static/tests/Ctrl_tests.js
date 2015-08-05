@@ -1,3 +1,74 @@
+// CF service method mocks
+getAuthStatus = function() {
+    return {
+        then: function(callback) {
+            return callback('authenticated');
+        }
+    }
+};
+
+var getOrgsData = function(callback) {
+    return callback(
+        [{
+            entity: {
+                name: 'org1'
+            },
+            metadata: {
+                guid: 'org1guid'
+            }
+        }, {
+            entity: {
+                name: 'org1'
+            },
+            metadata: {
+                guid: 'org2guid'
+            }
+        }]);
+};
+
+var setOrgsData = function() {};
+
+var getOrgDetails = function() {
+    return {
+        then: function(callback) {
+            return callback({
+                guid: 'mockguid',
+                name: 'mockname',
+                spaces: []
+            });
+        }
+    }
+}
+
+var getSpaceDetails = function(spaceguid) {
+    return {
+        then: function(callback) {
+            return callback({
+                guid: 'spaceguid',
+                name: 'spacename',
+                apps: [{
+                    name: 'mockname1'
+                }, {
+                    name: 'mockname2'
+                }]
+            });
+        }
+    }
+};
+
+var findActiveOrg = function(orgguid, callback) {
+    return callback({
+        entity: {
+            name: 'org1'
+        }
+    })
+};
+
+// Location path mock
+var path = function(callback) {
+    return callback()
+}
+
 describe('HomeCtrl', function() {
 
     var scope, cloudfoundry;
@@ -6,13 +77,7 @@ describe('HomeCtrl', function() {
     beforeEach(inject(function($rootScope, $controller) {
         // Mock Cf service
         cloudfoundry = {
-            getAuthStatus: function() {
-                return {
-                    then: function(callback) {
-                        return callback('authenticated');
-                    }
-                }
-            },
+            getAuthStatus: getAuthStatus
         };
         // Spyon and return promise
         spyOn(cloudfoundry, 'getAuthStatus').and.callThrough();
@@ -31,111 +96,147 @@ describe('HomeCtrl', function() {
     })
 });
 
-
 describe('DashboardCtrl', function() {
 
-    var scope, cloudfoundry;
+    var scope, cloudfoundry, location;
 
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
-        // Mock cf service
+        // Mock cloudfoundry service 
         cloudfoundry = {
-            getOrgs: function() {
-                return {
-                    then: function(callback) {
-                        return callback([{
-                            name: 'org1'
-                        }, {
-                            name: 'org2'
-                        }]);
-                    }
-                }
-            },
-            getOrgSpaceDetails: function(org) {
-
-                return {
-                    then: function(callback) {
-                        if (org.name == 'org1') {
-                            spaces = [];
-                        } else if (org.name == 'org2') {
-                            spaces = ['space1', 'space2'];
-                        }
-                        return callback({
-                            org_name: 'org1',
-                            resources: spaces
-                        })
-                    }
-                }
+                getOrgsData: getOrgsData,
+                setOrgsData: setOrgsData
             }
-
-        };
-        // Spyon and return promise
-        spyOn(cloudfoundry, 'getOrgs').and.callThrough();
-        spyOn(cloudfoundry, 'getOrgSpaceDetails').and.callThrough();
-
-        //Load Ctrl and scope with mock service
+            // Mock location service
+        location = {
+                path: path
+            }
+            //Load Ctrl and scope with mock service
         scope = $rootScope.$new();
+
         ctrl = $controller('DashboardCtrl', {
             $scope: scope,
-            $cloudfoundry: cloudfoundry
+            $cloudfoundry: cloudfoundry,
+            $location: location
         });
-
     }));
 
-    it('should return the user\'s orgs from the cloudfoundry service', function() {
-        expect(scope.orgs).toEqual([{
-            name: 'org1'
-        }, {
-            name: 'org2'
-        }]);
+    it('should place orgs into the scope', function() {
+        expect(scope.orgs).toEqual(
+            [{
+                entity: {
+                    name: 'org1'
+                },
+                metadata: {
+                    guid: 'org1guid'
+                }
+            }, {
+                entity: {
+                    name: 'org1'
+                },
+                metadata: {
+                    guid: 'org2guid'
+                }
+            }]
+        );
     });
 
-    describe('showOrgs and renderOrgDetails', function() {
-
-        it('should return a specific org\'s details without spaces', function() {
-
-            // Call showOrg function
-            scope.showOrg({
-                name: 'org1'
-            });
-            expect(scope.orgDropDownName).toEqual('org1');
-            expect(scope.activeSpaces).toEqual(null);
-        })
-
-        it('should return a specific org\'s details with spaces', function() {
-
-            scope.showOrg({
-                name: 'org2'
-            });
-            expect(scope.orgDropDownName).toEqual('org1');
-            expect(scope.activeSpaces).toEqual(['space1', 'space2']);
-
-        })
+    it('should send the user to the org view', function() {
+        spyOn(location, 'path');
+        scope.showOrg({
+            metadata: {
+                guid: 'mockguid'
+            }
+        });
+        expect(location.path).toHaveBeenCalledWith('/dashboard/org/mockguid');
     });
+});
 
-    describe('clearDashboard', function() {
+describe('OrgCtrl', function() {
 
-        it('should clear the visible tab, active org, and org dropdown name', function() {
-            // Set the variables to be cleared
-            scope.visibleTab = 'tab1';
-            scope.activeOrg = 'org1';
-            scope.orgDropDownName = 'org1';
-            // Clear the variables
-            scope.clearDashboard();
-            // Show vars cleared
-            expect(scope.visibleTab).toEqual(null);
-            expect(scope.activeOrg).toEqual(null);
-            expect(scope.orgDropDownName).toEqual(null);
+    var scope, cloudfoundry, location;
 
+    beforeEach(module('cfdeck'))
+    describe('when the org is avaiable', function() {
+
+        beforeEach(inject(function($rootScope, $controller) {
+            cloudfoundry = {
+                getOrgDetails: getOrgDetails
+            };
+            location = {
+                path: path
+            };
+
+            // Spyon and return promise
+            spyOn(cloudfoundry, 'getOrgDetails').and.callThrough();
+
+            // Load Ctrl and scope
+            scope = $rootScope.$new();
+            ctrl = $controller('OrgCtrl', {
+                $scope: scope,
+                $cloudfoundry: cloudfoundry,
+                $location: location
+            });
+        }));
+
+        it('should place the active org into the scope', function() {
+            expect(scope.activeOrg).toEqual('mockname');
+            expect(scope.spaces).toEqual([]);
         });
 
     });
 
+    describe('when the org is not avaiable', function() {
 
+        beforeEach(inject(function($rootScope, $controller) {
+
+
+            cloudfoundry = {
+                getOrgsData: getOrgsData,
+                setOrgsData: setOrgsData,
+                getOrgDetails: function() {
+                    return {
+                        then: function(callback) {
+                            return callback({
+                                'code': 30003
+                            });
+                        }
+                    }
+                }
+            };
+            location = {
+                path: path
+            };
+
+            // Spyon and return promise
+            spyOn(cloudfoundry, 'getOrgDetails').and.callThrough();
+
+            // Load Ctrl and scope
+            scope = $rootScope.$new();
+            ctrl = $controller('OrgCtrl', {
+                $scope: scope,
+                $cloudfoundry: cloudfoundry,
+                $location: location
+            });
+        }));
+
+
+        it('should place the active org into the scope', function() {
+            expect(scope.activeOrg).toEqual('404');
+            expect(scope.spaces).toEqual(undefined);
+        });
+
+        it('should send the user to the space view', function() {
+            spyOn(location, 'path');
+            scope.showSpace({
+                guid: 'spaceguid'
+            });
+            expect(location.path).toHaveBeenCalledWith('undefined/spaces/spaceguid');
+        });
+    });
 });
 
-
-describe('SpaceController', function() {
+describe('SpaceCtrl', function() {
 
     var scope, cloudfoundry;
 
@@ -144,66 +245,37 @@ describe('SpaceController', function() {
 
         //Mock Cf service
         cloudfoundry = {
-            getSpaceDetails: function() {
-                return {
-                    then: function(callback) {
-                        return callback([{
-                            entity: {
-                                name: 'app1'
-                            }
-                        }, {
-                            entity: {
-                                name: 'app2'
-                            }
-                        }]);
-                    }
-                }
-            }
+            getSpaceDetails: getSpaceDetails,
+            findActiveOrg: findActiveOrg
         }
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
 
         // Load Ctrl and scope
         scope = $rootScope.$new();
-        ctrl = $controller('SpaceController', {
+        ctrl = $controller('SpaceCtrl', {
             $scope: scope,
-            $cloudfoundry: cloudfoundry
+            $cloudfoundry: cloudfoundry,
+            $routeParams: {
+                orgguid: 'org1guid',
+                spaceguid: 'spaceguid'
+            }
         });
-
     }));
 
-    it('should return a space\'s apps', function() {
-        expect(scope.apps).toEqual([{
-            entity: {
-                name: 'app1'
-            }
-        }, {
-            entity: {
-                name: 'app2'
-            }
-        }])
+    it('should return a space\'s summary info', function() {
+        expect(scope.space).toEqual({
+            guid: 'spaceguid',
+            name: 'spacename',
+            apps: [{
+                name: 'mockname1'
+            }, {
+                name: 'mockname2'
+            }]
+        })
     });
 
-    it('should set an active space if selected', function() {
-        // Create a mock active space
-        scope.activeSpaces = [{
-            metadata: {
-                guid: 'app1'
-            }
-        }, {
-            metadata: {
-                guid: 'app2'
-            }
-        }]
-        scope.space = {
-            metadata: {
-                guid: 'app1'
-            },
-            selected: false
-        }
-        scope.setActiveSpace()
-        expect(scope.activeSpaces[0].selected).toEqual(true);
-
+    it('should return the active org', function() {
+        expect(scope.activeOrg).toEqual('org1')
     });
-
 });

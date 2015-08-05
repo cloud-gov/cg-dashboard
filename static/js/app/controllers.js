@@ -11,61 +11,59 @@
             .then(renderStatus);
     });
 
-    app.controller('DashboardCtrl', function($scope, $cloudfoundry) {
+    app.controller('DashboardCtrl', function($scope, $cloudfoundry, $location) {
         // Render the orgs on the page
         var renderOrgs = function(orgs) {
             $scope.orgs = orgs;
-        };
-        // Render a specific org to the page
-        var renderOrgDetails = function(data) {
-            $scope.orgDropDownName = data.org_name;
-            var spaces = data.resources;
-            if (spaces.length > 0) {
-                $scope.activeSpaces = spaces;
-            } else {
-                $scope.activeSpaces = null;
-            }
+            $cloudfoundry.setOrgsData(orgs);
         };
         // Get data for a specific org
         $scope.showOrg = function(org) {
-            $scope.activeOrg = org;
-            $scope.visibleTab = "organizations";
-            $scope.activeApps = null;
-            $cloudfoundry.getOrgSpaceDetails(org)
-                .then(renderOrgDetails);
-        };
-        // Clear the dashboard
-        $scope.clearDashboard = function() {
-            $scope.visibleTab = null;
-            $scope.activeOrg = null;
-            $scope.orgDropDownName = null;
+            $location.path('/dashboard/org/' + org.metadata.guid);
         };
         // Get Orgs or return to login page
-        $cloudfoundry.getOrgs()
-            .then(renderOrgs);
-        // Catch the active space from SpaceController
-        $scope.$on('emitActiveSpace', function(event, apps) {
-            $scope.activeApps = apps;
-        });
+        $cloudfoundry.getOrgsData(renderOrgs);
     });
 
-    app.controller('SpaceController', function($scope, $cloudfoundry) {
-        // Set the current active spaces 
-        $scope.setActiveSpace = function() {
-                $scope.$emit('emitActiveSpace', $scope.apps);
-                $scope.activeSpaces.forEach(function(space) {
-                    if($scope.space.metadata.guid == space.metadata.guid)
-                        space.selected = true;
-                    else
-                        space.selected = false;
-                });
-            }
-            // Render apps
-        var renderApps = function(apps) {
-            $scope.apps = apps;
+    app.controller('OrgCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
+        // Display Space
+        $scope.showSpace = function(space) {
+            $location.path($location.path() + '/spaces/' + space.guid)
         };
-        // Get individual app deatils
-        $cloudfoundry.getSpaceDetails($scope.space)
-            .then(renderApps);
+        // Render the org information on the page
+        var renderOrg = function(orgData) {
+            if (orgData['code'] == 30003) {
+                $scope.activeOrg = "404";
+
+            } else {
+                $scope.activeOrg = orgData.name;
+                $scope.spaces = orgData.spaces;
+            }
+        };
+        // Get Orgs or return to login page
+        $cloudfoundry.getOrgDetails($routeParams['guid']).then(renderOrg)
+        $scope.visibleTab = "organizations";
+
+    });
+
+    app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
+        // Render the active org
+        var renderActiveOrg = function(org) {
+            $scope.activeOrg = org.entity.name;
+        }
+        // Render a space in the view
+        var renderSpace = function(space) {
+            $scope.space = space;
+        };
+        //TODO: show an app
+        $scope.showApp = function(app) {
+            console.log("show app: " + app.name);
+        };
+        // Get the orgs data from cache or load new data
+        $cloudfoundry.getSpaceDetails($routeParams['spaceguid'])
+            .then(renderSpace);
+        // Return the active org 
+        $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
+        $scope.visibleTab = "spaces";
     });
 }());

@@ -1,3 +1,4 @@
+<div ng-controller="DashboardCtrl">
 <!-- Navbar -->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -17,7 +18,7 @@
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                    aria-expanded="false" id="org-dropdown">{{ orgDropDownName || "Organizations" }}&nbsp;<span class="caret"></span></a>
+                    aria-expanded="false" id="org-dropdown">{{ activeOrg || "Organizations" }}&nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li ng-repeat="org in orgs" ng-click="showOrg(org)">
                             <a class="org-name">{{org.entity.name}}</a>
@@ -41,7 +42,11 @@
     <div ng-switch-when="organizations">
         <ng-include src="'js/app/partials/organizations.html'"></ng-include>
     </div>
+    <div ng-switch-when="spaces">
+        <ng-include src="'js/app/partials/spaces.html'"></ng-include>
+    </div>
     <div class="jumbotron text-center" ng-switch-default="null">
         <h3>Welcome to CF-Deck</h3>
     </div>
+</div>
 </div>

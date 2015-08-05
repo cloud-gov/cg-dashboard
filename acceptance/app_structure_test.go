@@ -56,9 +56,18 @@ var _ = Describe("AppStructure", func() {
 			Eventually(Expect(page.First(".org-name").Click()).To(Succeed()))
 		})
 
+		By("showing the table containing spaces", func() {
+			delayForRendering()
+			Expect(page.Find("#spacesTable")).To(BeFound())
+			Expect(page.FindByXPath("//*[@id='spacesTable']/thead/tr/th[1]").Text()).To(Equal("Name"))
+			Expect(page.FindByXPath("//*[@id='spacesTable']/thead/tr/th[2]").Text()).To(Equal("Number of Apps"))
+			Expect(page.FindByXPath("//*[@id='spacesTable']/thead/tr/th[3]").Text()).To(Equal("Total Development Memory"))
+			Expect(page.FindByXPath("//*[@id='spacesTable']/thead/tr/th[4]").Text()).To(Equal("Total Production Memory"))
+		})
+
 		By("allowing the user to click on a space in the tab views", func() {
 			delayForRendering()
-			Eventually(Expect(page.First(".space-name").DoubleClick()).To(Succeed()))
+			Eventually(Expect(page.First(".space-info").DoubleClick()).To(Succeed()))
 		})
 
 		By("showing app name and quota information (along with other information)", func() {

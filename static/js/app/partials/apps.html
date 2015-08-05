@@ -1,4 +1,4 @@
-<table class="table table-bordered" ng-show="activeApps">
+<table class="table table-bordered" ng-show="space.apps">
   <thead>
     <tr>
       <th id="app-name-heading">App Name</th>
@@ -10,13 +10,13 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="app in activeApps">
-      <td class="app-name-data">{{app.entity.name}}</td>
-      <td class="buildpack-data">{{app.entity.detected_buildpack}}</td>
-      <td class="memory-data">{{app.entity.memory}}</td>
-      <td class="instances-data">{{app.entity.instances}}</td>
-      <td class="state-data">{{app.entity.state}}</td>
-      <td class="disk-quota-data">{{app.entity.disk_quota}}</td>
+    <tr ng-repeat="app in space.apps">
+      <td class="app-name-data">{{app.name}}</td>
+      <td class="buildpack-data">{{app.detected_buildpack}}</td>
+      <td class="memory-data">{{app.memory}}</td>
+      <td class="instances-data">{{app.instances}}</td>
+      <td class="state-data">{{app.state}}</td>
+      <td class="disk-quota-data">{{app.disk_quota}}</td>
     </tr>
   </tbody>
 </table>
