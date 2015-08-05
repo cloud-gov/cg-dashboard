@@ -288,7 +288,7 @@ describe('SpaceCtrl', function() {
     });
 
     it('should return the active org', function() {
-        expect(scope.activeOrg).toEqual('org1')
+        expect(scope.activeOrg.entity.name).toEqual('org1')
     });
 });
 
@@ -299,9 +299,12 @@ describe('MarketCtrl', function() {
         //Mock CF service
         cloudfoundry = {
             getOrgServices: getOrgServices,
-            getOrgsData: getOrgsData,
+            findActiveOrg: findActiveOrg
         }
+
+        spyOn(cloudfoundry, 'findActiveOrg').and.callThrough();
         spyOn(cloudfoundry, 'getOrgServices').and.callThrough();
+
         // Load Ctrl and scope
         scope = $rootScope.$new()
         ctrl = $controller('MarketCtrl', {
@@ -317,6 +320,10 @@ describe('MarketCtrl', function() {
 
     it('should open the services tab as the visible one', function() {
         expect(scope.visibleTab).toEqual('marketplace');
+    });
+
+    it('should return the active org', function() {
+        expect(scope.activeOrg.entity.name).toEqual('org1')
     });
 
 });
