@@ -189,8 +189,92 @@ describe('CloudFoundry Service Tests', function() {
             $cloudfoundry.getOrgServices('testorgguid').then(function(services) {
                 expect(services.length).toEqual(2);
             });
-        httpBackend.flush();
+            httpBackend.flush();
         });
     })
+
+    describe('findActiveOrg', function() {
+        it('should find the active org given an org guid', function() {
+            // Setting up mock response
+            httpBackend.whenGET('/v2/organizations').respond({
+                pages: 1,
+                resources: [{
+                    metadata: {
+                        guid: 'org1'
+                    }
+                }, {
+                    metadata: {
+                        guid: 'org2'
+                    }
+                }]
+            });
+
+            // Callback spy to check if the method can get the org when the org data exists 
+            var getActiveOrgSpyExists = function(org) {
+                    expect(org.metadata.guid).toEqual('org2');
+                }
+                // Now that orgs have been set check if the function can find another org
+                // Callback spy to check if the method can get the org when the org data isn't there 
+            var getActiveOrgSpyNew = function(org) {
+                expect(org.metadata.guid).toEqual('org1');
+                // Now that orgs have been set check if the function can find another org
+                $cloudfoundry.findActiveOrg('org2', getActiveOrgSpyExists);
+            };
+            $cloudfoundry.findActiveOrg('org1', getActiveOrgSpyNew);
+            httpBackend.flush();
+        });
+    });
+
+    describe('getServiceDetails', function() {
+        it('should collect a specific service\'s details', function() {
+
+            httpBackend.whenGET('/v2/services/serviceguid').respond({});
+            $cloudfoundry.getServiceDetails('serviceguid').then(function(data) {
+                expect(data).toEqual({});
+            });
+            httpBackend.flush();
+        });
+    });
+
+    describe('getServicePlans', function() {
+        it('should collect a specific service\'s plans but not break when there are no plans', function() {
+
+            httpBackend.whenGET('/v2/services/serviceguid/service_plans').respond({
+                resources: []
+            });
+            $cloudfoundry.getServicePlans('/v2/services/serviceguid/service_plans').then(function(data) {
+                expect(data).toEqual([]);
+            });
+            httpBackend.flush();
+        });
+        it('should collect a specific service\'s plans and not break when there is no extra', function() {
+
+            httpBackend.whenGET('/v2/services/serviceguid/service_plans').respond({
+                resources: [{
+                    entity: 'other data'
+                }]
+            });
+            $cloudfoundry.getServicePlans('/v2/services/serviceguid/service_plans').then(function(data) {
+                expect(data).toEqual([{
+                    entity: 'other data'
+                }]);
+            });
+            httpBackend.flush();
+        });
+        it('should collect a specific service\'s plans and covert extra to json', function() {
+
+            httpBackend.whenGET('/v2/services/serviceguid/service_plans').respond({
+                resources: [{
+                    entity: {
+                        extra: '{"costs": 1}'
+                    }
+                }]
+            });
+            $cloudfoundry.getServicePlans('/v2/services/serviceguid/service_plans').then(function(data) {
+                expect(data[0].entity.extra).toEqual({ costs: 1 });
+            });
+            httpBackend.flush();
+        });
+    });
 
 });
