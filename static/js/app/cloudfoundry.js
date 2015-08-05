@@ -139,6 +139,21 @@
             }
         };
 
+	// Get app summary
+        this.getAppSummary = function(appGuid) {
+            return $http.get('/v2/apps/' + appGuid + '/summary')
+                .then(function(response) {
+                    return response.data;
+                });
+        };
+
+	// Get detailed app stats
+        this.getAppStats = function(appGuid) {
+            return $http.get('/v2/apps/' + appGuid + '/stats')
+                .then(function(response) {
+                    return response.data;
+                });
+        };
 
     });
 
