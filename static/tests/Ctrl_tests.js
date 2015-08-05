@@ -63,7 +63,7 @@ var findActiveOrg = function(orgguid, callback) {
         }
     })
 }
-var getAllServices = function() {
+var getOrgServices = function() {
     return {
         then: function(callback) {
             return callback([{
@@ -298,9 +298,10 @@ describe('MarketCtrl', function() {
     beforeEach(inject(function($rootScope, $controller) {
         //Mock CF service
         cloudfoundry = {
-            getAllServices: getAllServices
+            getOrgServices: getOrgServices,
+            getOrgsData: getOrgsData,
         }
-        spyOn(cloudfoundry, 'getAllServices').and.callThrough();
+        spyOn(cloudfoundry, 'getOrgServices').and.callThrough();
         // Load Ctrl and scope
         scope = $rootScope.$new()
         ctrl = $controller('MarketCtrl', {
