@@ -2,6 +2,10 @@
     // CloudFoundry Service
     angular.module('cfdeck').service('$cloudfoundry', function($http, $location, $log) {
 
+        
+        // Declare variables for passing data via this service
+        var orgs;
+
         // Redirects back to home page
         var returnHome = function(response) {
             $location.path('/');
@@ -10,10 +14,17 @@
             };
         }
 
-        // returns the authentication status from promise
+        // Returns the authentication status from promise
         var returnAuthStatus = function(response) {
             return response.data.status
         }
+
+        // Filter through a list of orgs to find the org with a specific guid
+        var filterOrg = function(storedOrgs, orgGuid) {
+                return storedOrgs.filter(function(storedOrgs) {
+                    return storedOrgs.metadata.guid === orgGuid;
+                })[0]
+            }
 
         // Get current authentication status from server
         this.getAuthStatus = function() {
@@ -84,9 +95,6 @@
                 });
         };
 
-        // Declare variables for passing data via this service
-        var orgs;
-
         // Functions for getting passed data
         this.setOrgsData = function(newOrgs) {
             orgs = newOrgs
@@ -99,12 +107,8 @@
             $log.info('Used cached data');
             return callback(orgs);
         };
-        var filterOrg = function(storedOrgs, orgGuid) {
-                return storedOrgs.filter(function(storedOrgs) {
-                    return storedOrgs.metadata.guid === orgGuid;
-                })[0]
-            }
-            // Given an org guid attempts to find the active org data stored in the service
+        
+        // Given an org guid attempts to find the active org data stored in the service
         this.findActiveOrg = function(orgGuid, callback) {
             if (orgs) {
                 return callback(filterOrg(orgs, orgGuid));

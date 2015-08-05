@@ -82,14 +82,17 @@
         var renderActiveOrg = function(org) {
             $scope.activeOrg = org;
         }
+        // Show a specific service details by going to service landing page
         $scope.showService = function(service) {
             $location.path($location.path() + '/' + service.metadata.guid);
         };
+        // Get all the services associated with an org
         $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
             $scope.services = services;
         });
-
+        // Find the active org from an org guid
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
+        // Show the `marketplace.html` view 
         $scope.visibleTab = 'marketplace';
     });
 
@@ -98,19 +101,21 @@
         var renderActiveOrg = function(org) {
             $scope.activeOrg = org;
         }
+        // Send service plans to the view
         var renderServicePlans = function(servicePlans) {
             $scope.plans = servicePlans;
         };
-
+        // Render service details and request service plans
         var renderService = function(service) {
             $scope.service = service;
+            // Show the `service.html` view
             $scope.visibleTab = 'service';
             $cloudfoundry.getServicePlans(service.entity.service_plans_url).then(renderServicePlans);
         };
-
+        // Get service details 
         $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
+        // Find the active org from an org guid        
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
-        $scope.visibleTab = "spaces";
     });
 
 }());
