@@ -75,6 +75,40 @@ var getOrgServices = function() {
     }
 };
 
+var getServiceDetails = function(serviceGuid) {
+    return {
+        then: function(callback) {
+            return callback([{
+                name: 'service1'
+            }])
+        }
+    }
+};
+
+var getServiceDetails = function(serviceGuid) {
+    return {
+        then: function(callback) {
+            return callback({
+                entity: {
+                    name: 'service1',
+                    service_plans_url: '/v2/...'
+                }
+            })
+        }
+    }
+};
+
+var getServicePlans = function(serviceGuid) {
+    return {
+        then: function(callback) {
+            return callback([{
+                name: 'plan1'
+            }])
+        }
+    }
+};
+
+
 
 // Location path mock
 var path = function(callback) {
@@ -320,6 +354,46 @@ describe('MarketCtrl', function() {
 
     it('should open the services tab as the visible one', function() {
         expect(scope.visibleTab).toEqual('marketplace');
+    });
+
+    it('should return the active org', function() {
+        expect(scope.activeOrg.entity.name).toEqual('org1')
+    });
+
+});
+
+
+describe('ServiceCtrl', function() {
+    var scope, cloudfoundry;
+    beforeEach(module('cfdeck'));
+    beforeEach(inject(function($rootScope, $controller) {
+        //Mock CF service
+        cloudfoundry = {
+            getServiceDetails: getServiceDetails,
+            getServicePlans: getServicePlans,
+            findActiveOrg: findActiveOrg
+        }
+
+        spyOn(cloudfoundry, 'findActiveOrg').and.callThrough();
+        spyOn(cloudfoundry, 'getServiceDetails').and.callThrough();
+        spyOn(cloudfoundry, 'getServicePlans').and.callThrough();
+
+        // Load Ctrl and scope
+        scope = $rootScope.$new()
+        ctrl = $controller('ServiceCtrl', {
+            $scope: scope,
+            $cloudfoundry: cloudfoundry
+        });
+    }));
+
+    it('should put the service details into the space', function() {
+        expect(scope.service.entity.name).toEqual('service1');
+    });
+
+    it('should put the service plans data', function() {
+        expect(scope.plans[0]).toEqual({
+            name: 'plan1'
+        });
     });
 
     it('should return the active org', function() {
