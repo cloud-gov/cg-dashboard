@@ -116,6 +116,16 @@
             $scope.visibleTab = 'service';
             $cloudfoundry.getServicePlans(service.entity.service_plans_url).then(renderServicePlans);
         };
+        // Checks if the service was created and display message 
+        var checkIfCreated = function (response) {
+            $scope.disableSubmit = false;
+            if (response.status == 400) {
+                $scope.message = response.data.description;
+            }
+            else{
+                $scope.message = "Service Created!";
+            }
+        };
 
         // Show maker and populate with space info
         $scope.showServiceMaker = function(plan) {
@@ -126,9 +136,12 @@
                     $scope.activePlan = plan;
                 });
         };
+
         // Send request to create service instance
         $scope.createServiceInstance = function(serviceInstance) {
-            console.log(serviceInstance);
+            $scope.disableSubmit = true
+            serviceInstance.service_plan_guid = $scope.activePlan.metadata.guid;
+            $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
         }
 
         // Get service details 

@@ -2,7 +2,6 @@
     <h4 class="text-center">Create Service Instance for <u>{{service.entity.label}}</u> service using the <u>{{activePlan.entity.name}}</u> plan </h4>
     </br>
     <form class="form-horizontal">
-
         <div class="form-group">
             <label>Choose a name for the service</label>
             </br>
@@ -11,13 +10,15 @@
         <div class="form-group">
             <label>Select the space for the service instance</label>
 
- <select name="space_guid" class="form-control" ng-model="serviceInstance.space_guid" 
-      ng-options="space.metadata.guid as space.entity.name for space in spaces"
-      required> 
-  <option value=""></option> 
- </select> 
+            <select name="space_guid" class="form-control" ng-model="serviceInstance.space_guid"
+            ng-options="space.metadata.guid as space.entity.name for space in spaces"
+            required>
+                <option value=""></option>
+            </select>
         </div>
-        <input class="btn btn-primary" type="submit" value="Create Service Instance"
-         ng-click="createServiceInstance(serviceInstance)" />
+        <input ng-disabled="{{disableSubmit}}" class="btn btn-primary" type="submit" value="Create Service Instance"
+        ng-click="createServiceInstance(serviceInstance)" />
+        <br/>
+        <b>{{message}}</b>
     </form>
 </div>
