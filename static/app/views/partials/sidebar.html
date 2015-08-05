@@ -1,0 +1,18 @@
+<ul class="nav nav-sidebar">
+  <ul class="nav navbar-nav">
+      <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+          aria-expanded="false" id="org-dropdown">{{ ($root.currentOrg | orgNameFilter) || "Organizations" }}&nbsp;<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+              <li ng-repeat="org in $parent.orgs">
+                  <a class="org-name" ng-href="#/org/{{ org.metadata.guid }}">{{org | orgNameFilter}}</a>
+              </li>
+          </ul>
+      </li>
+  </ul>
+</ul>
+<ul class="nav nav-sidebar">
+  <li ng-repeat="space in $root.currentOrg.spaces">
+    <a ng-href="#/org/{{ $root.currentOrg.guid }}/spaces/{{ space.guid }}">{{ space.name }}</a>
+  </li>
+</ul>

@@ -11,23 +11,15 @@
             .then(renderStatus);
     });
 
-    app.controller('DashboardCtrl', function($scope, $cloudfoundry, $location) {
+    app.controller('MainCtrl', function($scope, $cloudfoundry, $location, $rootScope) {
         // Render the orgs on the page
         var renderOrgs = function(orgs) {
             $scope.orgs = orgs;
             $cloudfoundry.setOrgsData(orgs);
         };
-        // Get data for a specific org
-        $scope.showOrg = function(org) {
-            // If the org data is collected from the OrgCtrl it will 
-            // not have a metadata attribute
-            if (org.metadata)
-                $location.path('/dashboard/org/' + org.metadata.guid);
-            else
-                $location.path('/dashboard/org/' + org.guid);
-        };
+
         $scope.showOrgMarketplace = function(org) {
-            // If the org data is collected from the OrgCtrl it will 
+            // If the org data is collected from the OrgCtrl it will
             // not have a metadata attribute
             if (org.metadata)
                 $location.path('/dashboard/org/' + org.metadata.guid + '/marketplace');
@@ -39,24 +31,22 @@
         $cloudfoundry.getOrgsData(renderOrgs);
     });
 
-    app.controller('OrgCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
-        // Display Space
-        $scope.showSpace = function(space) {
-            $location.path($location.path() + '/spaces/' + space.guid)
-        };
+    app.controller('OrgCtrl', function($scope, $cloudfoundry, $location, $routeParams, $rootScope) {
         // Render the org information on the page
         var renderOrg = function(orgData) {
             if (orgData['code'] == 30003) {
                 $scope.activeOrg = "404";
-
             } else {
-                $scope.activeOrg = orgData;
-                $scope.spaces = orgData.spaces
+              $rootScope.currentOrg = orgData;
+
+              $scope.activeOrg = orgData;
+              $scope.spaces = orgData.spaces;
             }
         };
         // Get Orgs or return to login page
         $cloudfoundry.getOrgDetails($routeParams['guid']).then(renderOrg)
         $scope.visibleTab = "organizations";
+
 
     });
 
@@ -76,7 +66,7 @@
         // Get the orgs data from cache or load new data
         $cloudfoundry.getSpaceDetails($routeParams['spaceguid'])
             .then(renderSpace);
-        // Return the active org 
+        // Return the active org
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
         $scope.visibleTab = "spaces";
     });
@@ -96,7 +86,7 @@
         });
         // Find the active org from an org guid
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
-        // Show the `marketplace.html` view 
+        // Show the `marketplace.html` view
         $scope.visibleTab = 'marketplace';
     });
 
@@ -116,9 +106,9 @@
             $scope.visibleTab = 'service';
             $cloudfoundry.getServicePlans(service.entity.service_plans_url).then(renderServicePlans);
         };
-        // Get service details 
+        // Get service details
         $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
-        // Find the active org from an org guid        
+        // Find the active org from an org guid
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
     });
 
