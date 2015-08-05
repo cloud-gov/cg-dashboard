@@ -8,7 +8,6 @@ import (
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
 
-	//"fmt"
 	"net/http/httptest"
 )
 

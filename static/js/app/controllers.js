@@ -19,12 +19,16 @@
         };
         // Get data for a specific org
         $scope.showOrg = function(org) {
+            // If the org data is collected from the OrgCtrl it will 
+            // not have a metadata attribute
             if (org.metadata)
                 $location.path('/dashboard/org/' + org.metadata.guid);
             else
                 $location.path('/dashboard/org/' + org.guid);
         };
         $scope.showOrgMarketplace = function(org) {
+            // If the org data is collected from the OrgCtrl it will 
+            // not have a metadata attribute
             if (org.metadata)
                 $location.path('/dashboard/org/' + org.metadata.guid + '/marketplace');
             else
