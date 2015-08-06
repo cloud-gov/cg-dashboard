@@ -34,7 +34,6 @@
             else
                 $location.path('/dashboard/org/' + org.guid + '/marketplace');
         };
-
         // Get Orgs or return to login page
         $cloudfoundry.getOrgsData(renderOrgs);
     });
@@ -48,7 +47,6 @@
         var renderOrg = function(orgData) {
             if (orgData['code'] == 30003) {
                 $scope.activeOrg = "404";
-
             } else {
                 $scope.activeOrg = orgData;
                 $scope.spaces = orgData.spaces
@@ -85,7 +83,7 @@
         // Render the active org
         var renderActiveOrg = function(org) {
             $scope.activeOrg = org;
-        }
+        };
         // Show a specific service details by going to service landing page
         $scope.showService = function(service) {
             $location.path($location.path() + '/' + service.metadata.guid);
@@ -103,9 +101,9 @@
     app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams) {
         // Render the active org
         var renderActiveOrg = function(org) {
-            $scope.activeOrg = org;
-        }
-        // Send service plans to the view
+                $scope.activeOrg = org;
+            }
+            // Send service plans to the view
         var renderServicePlans = function(servicePlans) {
             $scope.plans = servicePlans;
         };
@@ -116,6 +114,29 @@
             $scope.visibleTab = 'service';
             $cloudfoundry.getServicePlans(service.entity.service_plans_url).then(renderServicePlans);
         };
+        // Checks if the service was created and display message 
+        var checkIfCreated = function(response) {
+            $scope.disableSubmit = false;
+            if (response.status == 400) {
+                $scope.message = response.data.description;
+            } else {
+                $scope.message = "Service Created!";
+            }
+        };
+        // Show maker and populate with space info
+        $scope.showServiceMaker = function(plan) {
+            $cloudfoundry.getOrgSpaces($scope.activeOrg.entity.spaces_url)
+                .then(function(spaces) {
+                    $scope.spaces = spaces;
+                    $scope.activePlan = plan;
+                });
+        };
+        // Send request to create service instance
+        $scope.createServiceInstance = function(serviceInstance) {
+            $scope.disableSubmit = true
+            serviceInstance.service_plan_guid = $scope.activePlan.metadata.guid;
+            $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
+        }
         // Get service details 
         $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
         // Find the active org from an org guid        

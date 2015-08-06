@@ -2,7 +2,7 @@
     // CloudFoundry Service
     angular.module('cfdeck').service('$cloudfoundry', function($http, $location, $log) {
 
-        
+
         // Declare variables for passing data via this service
         var orgs;
 
@@ -21,10 +21,10 @@
 
         // Filter through a list of orgs to find the org with a specific guid
         var filterOrg = function(storedOrgs, orgGuid) {
-                return storedOrgs.filter(function(storedOrgs) {
-                    return storedOrgs.metadata.guid === orgGuid;
-                })[0]
-            }
+            return storedOrgs.filter(function(storedOrgs) {
+                return storedOrgs.metadata.guid === orgGuid;
+            })[0]
+        }
 
         // Get current authentication status from server
         this.getAuthStatus = function() {
@@ -58,6 +58,14 @@
                 });
         };
 
+        // Get the spaces for an org 
+        this.getOrgSpaces = function(orgSpaceUrl) {
+            return $http.get(orgSpaceUrl)
+                .then(function(response) {
+                    return response.data.resources;
+                });
+        };
+
         // Get space details
         this.getSpaceDetails = function(spaceGuid) {
             return $http.get('/v2/spaces/' + spaceGuid + '/summary')
@@ -79,8 +87,8 @@
             return $http.get(servicePlanUrl)
                 .then(function(response) {
                     return response.data.resources.map(function(plan) {
-                        if(plan.entity.extra){
-                            plan.entity.extra = JSON.parse(plan.entity.extra);                            
+                        if (plan.entity.extra) {
+                            plan.entity.extra = JSON.parse(plan.entity.extra);
                         }
                         return plan
                     });
@@ -99,6 +107,8 @@
         this.setOrgsData = function(newOrgs) {
             orgs = newOrgs
         };
+
+        // Get specific org data
         this.getOrgsData = function(callback) {
             if (!orgs) {
                 $log.info('Downloaded New Org Data');
@@ -107,7 +117,17 @@
             $log.info('Used cached data');
             return callback(orgs);
         };
-        
+
+        // Create and app instance
+        this.createServiceInstance = function(requestBody) {
+            return $http.post("/v2/service_instances?accepts_incomplete=true", requestBody)
+                .then(function(response) {
+                    return response;
+                }, function(response) {
+                    return response;
+                });
+        };
+
         // Given an org guid attempts to find the active org data stored in the service
         this.findActiveOrg = function(orgGuid, callback) {
             if (orgs) {

@@ -191,7 +191,25 @@ describe('CloudFoundry Service Tests', function() {
             });
             httpBackend.flush();
         });
-    })
+    });
+
+    describe('getOrgSpaces', function() {
+        it('should return all the spaces under an org', function() {
+            var spaces = {
+                name: 'all',
+                resources: [{
+                    name: 'service1'
+                }, {
+                    name: 'service2'
+                }]
+            };
+            httpBackend.whenGET('/v2/organizations/testorgguid/spaces').respond(spaces);
+            $cloudfoundry.getOrgSpaces('/v2/organizations/testorgguid/spaces').then(function(services) {
+                expect(services.length).toEqual(2);
+            });
+            httpBackend.flush();
+        });
+    });
 
     describe('findActiveOrg', function() {
         it('should find the active org given an org guid', function() {
@@ -272,6 +290,26 @@ describe('CloudFoundry Service Tests', function() {
             });
             $cloudfoundry.getServicePlans('/v2/services/serviceguid/service_plans').then(function(data) {
                 expect(data[0].entity.extra).toEqual({ costs: 1 });
+            });
+            httpBackend.flush();
+        });
+    });
+
+    describe('createServiceInstance', function() {
+        it('should great a service instance via post request', function() {
+            var created = {space_url: '/v2/spaces/123'};
+            httpBackend.whenPOST('/v2/service_instances?accepts_incomplete=true', {data: 'test'}).respond(created);
+            $cloudfoundry.createServiceInstance({data: 'test'}).then(function(response) {
+                expect(response.data.space_url).toEqual('/v2/spaces/123');
+            });
+            httpBackend.flush();
+        });
+
+        it('should return an error message when creation fails', function() {
+            var created = {description: 'Duplicate Name'};
+            httpBackend.whenPOST('/v2/service_instances?accepts_incomplete=true', {data: 'test'}).respond(400, created);
+            $cloudfoundry.createServiceInstance({data: 'test'}).then(function(response) {
+                expect(response.data.description).toEqual('Duplicate Name');
             });
             httpBackend.flush();
         });
