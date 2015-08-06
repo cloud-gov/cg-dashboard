@@ -108,7 +108,25 @@ var getServicePlans = function(serviceGuid) {
     }
 };
 
+var getOrgSpaces = function(spacesUrl) {
+    return {
+        then: function(callback) {
+            return callback([{
+                name: 'space1'
+            }])
+        }
+    }
+};
 
+var createServiceInstance = function(serviceInstance) {
+    return {
+        then: function(callback) {
+            return callback({
+                status: 202
+            })
+        }
+    }
+};
 
 // Location path mock
 var path = function(callback) {
@@ -371,7 +389,9 @@ describe('ServiceCtrl', function() {
         cloudfoundry = {
             getServiceDetails: getServiceDetails,
             getServicePlans: getServicePlans,
-            findActiveOrg: findActiveOrg
+            findActiveOrg: findActiveOrg,
+            getOrgSpaces: getOrgSpaces,
+            createServiceInstance: createServiceInstance
         }
 
         spyOn(cloudfoundry, 'findActiveOrg').and.callThrough();
@@ -400,4 +420,29 @@ describe('ServiceCtrl', function() {
         expect(scope.activeOrg.entity.name).toEqual('org1')
     });
 
+    it('should show the service maker when showServiceMaker invoked by passing spaces, activePlan, and show serviceMaker', function() {
+        scope.activeOrg = {
+            entity: 'testurl'
+        };
+        scope.showServiceMaker({
+            name: 'plan1'
+        });
+        expect(scope.spaces).toEqual([{
+            name: 'space1'
+        }]);
+        expect(scope.activePlan).toEqual({
+            name: 'plan1'
+        })
+    });
+
+    it('should create an service instance when prompted and show create message', function() {
+        scope.activePlan = {
+            metadata: 'plan1guid'
+        };
+        scope.createServiceInstance({
+            name: 'service1'
+        });
+        expect(scope.message).ToEqual('Service Created!');
+        // TODO extrat message
+    });
 });
