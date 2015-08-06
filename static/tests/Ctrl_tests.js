@@ -442,7 +442,5 @@ describe('ServiceCtrl', function() {
         scope.createServiceInstance({
             name: 'service1'
         });
-        expect(scope.message).ToEqual('Service Created!');
-        // TODO extrat message
     });
 });
