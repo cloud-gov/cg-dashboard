@@ -129,7 +129,6 @@
 
         // Show maker and populate with space info
         $scope.showServiceMaker = function(plan) {
-            $scope.serviceMaker = true;
             $cloudfoundry.getOrgSpaces($scope.activeOrg.entity.spaces_url)
                 .then(function(spaces) {
                     $scope.spaces = spaces;
