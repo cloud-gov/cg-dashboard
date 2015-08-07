@@ -227,12 +227,12 @@ describe('CloudFoundry Service Tests', function() {
                 }]
             });
 
-            // Callback spy to check if the method can get the org when the org data exists 
+            // Callback spy to check if the method can get the org when the org data exists
             var getActiveOrgSpyExists = function(org) {
                     expect(org.metadata.guid).toEqual('org2');
                 }
                 // Now that orgs have been set check if the function can find another org
-                // Callback spy to check if the method can get the org when the org data isn't there 
+                // Callback spy to check if the method can get the org when the org data isn't there
             var getActiveOrgSpyNew = function(org) {
                 expect(org.metadata.guid).toEqual('org1');
                 // Now that orgs have been set check if the function can find another org
@@ -295,6 +295,43 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    describe('getAppSummary', function() {
+       it('should return summary data for a specific app', function() {
+            var appSummary = {
+                name: 'sampleapp',
+                guid: 'appguid',
+                memory: 1024,
+                disk_quota: 1024,
+                instances: 1
+            };
+            httpBackend.whenGET('/v2/apps/appguid/summary').respond(appSummary);
+            $cloudfoundry.getAppSummary('appguid').then(function(data) {
+                expect(data.name).toEqual('sampleapp');
+                expect(data.guid).toEqual('appguid');
+                expect(data.instances).toEqual(1);
+                expect(data.memory).toEqual(1024);
+                expect(data.disk_quota).toEqual(1024);
+            });
+            httpBackend.flush();
+        });
+    });
+
+    describe('getAppStats', function() {
+       it('should return detailed data for a specific STARTED app', function() {
+            var appStats = [{
+                name: 'sampleapp',
+                guid: 'appguid',
+                stats: {
+                    usage: {
+                        disk: 66392064
+                    }
+                }
+            }];
+            httpBackend.whenGET('/v2/apps/appguid/stats').respond(appStats);
+            $cloudfoundry.getAppStats('appguid').then(function(data) {
+                expect(data[0].name).toEqual('sampleapp');
+                expect(data[0].guid).toEqual('appguid');
+                expect(data[0].stats.usage.disk).toEqual(66392064);
     describe('createServiceInstance', function() {
         it('should great a service instance via post request', function() {
             var created = {space_url: '/v2/spaces/123'};

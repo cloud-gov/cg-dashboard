@@ -6,28 +6,36 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<title>CF-Deck</title>
+		<title>18F Cloud Deck</title>
 
-		 <!-- Bootstrap -->
-    	<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+		<!-- Bootstrap -->
+		<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="bower_components/ladda/dist/ladda-themeless.min.css" />
+
+		<link href="assets/css/app.css" rel="stylesheet">
 
 		<script src="bower_components/angularjs/angular.js"></script>
 		<script src="bower_components/angular-route/angular-route.js"></script>
-		<script src="js/app/main.js"></script>
-		<script src="js/app/cloudfoundry.js"></script>
-		<script src="js/app/controllers.js"></script>
-		<script src="js/app/filters.js"></script>
+		<script src="bower_components/ladda/dist/spin.min.js"></script>
+		<script src="bower_components/ladda/dist/ladda.min.js"></script>
+		<script src="bower_components/angular-ladda/dist/angular-ladda.min.js"></script>
+
+		<script src="app/main.js"></script>
+		<script src="app/cloudfoundry.js"></script>
+		<script src="app/services.js"></script>
+		<script src="app/factories.js"></script>
+		<script src="app/controllers.js"></script>
+		<script src="app/filters.js"></script>
 	</head>
-	<body>
-		<div class="site-wrapper">
-			<div class="site-wrapper-inner">
-				<div class="container">
-				<!-- Where our view will load -->
-	    		<div ng-view></div>
+	<body ng-controller="MainCtrl">
+		<ng-include src="'app/views/partials/header.html'"></ng-include>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-3 col-md-2 sidebar" ng-include="'app/views/partials/sidebar.html'"></div>
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ng-view>
 				</div>
-	    	</div>
-	    </div>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+			</div>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	</body>
 </html>

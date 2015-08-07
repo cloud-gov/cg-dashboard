@@ -1,0 +1,143 @@
+<h3 class="text-center">{{appSummary.name}}</h3>
+<br/>
+<h4 class="text-center">Summary</h4>
+<div class="row row-height text-center">
+  <div class="col-xs-6 col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">State</h3>
+      </div>
+      <div class="panel-body">
+        {{appSummary.state}}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-6 col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Running Instances</h3>
+      </div>
+      <div class="panel-body">
+        <div class="progress">
+          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{appSummary.running_instances}}" aria-valuemin="0" aria-valuemax="{{appSummary.instances}}" style="min-width: 5em; width:{{(appSummary.running_instances/appSummary.instances*100)}}%">
+              {{appSummary.running_instances}} 
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-6 col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Actions</h3>
+      </div>
+      <div class="panel-body">
+        <div ng-switch="appSummary.state">
+          <div ng-switch-when='STARTED'>
+            <button type="button" ladda="restarting" class="btn btn-warning" ng-disabled="stopping" ng-click="restartApp(appSummary)">Restart</button>
+            <button type="button" ladda="stopping" class="btn btn-danger" ng-disabled="restarting" ng-click="stopApp(appSummary)">Stop</button>
+          </div>
+          <div ng-switch-when='STOPPED'>
+            <button type="button" ladda="starting" class="btn btn-success" ng-disabled="restarting" ng-click="startApp(appSummary)">Start</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row row-height text-center">
+  <div class="col-xs-6 col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Memory Quota</h3>
+      </div>
+      <div class="panel-body">
+        {{appSummary.memory}}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-6 col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Disk Quota</h3>
+      </div>
+      <div class="panel-body">
+        {{appSummary.disk_quota}}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-6 col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Package State</h3>
+      </div>
+      <div class="panel-body">
+        {{appSummary.package_state}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+
+<h4 class="text-center">Live</h4>
+
+<div ng-switch="appSummary.state">
+  <div ng-switch-when="STARTED">
+    <div class="row row-height text-center">
+      <div class="col-xs-6 col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Memory</h3>
+          </div>
+          <div class="panel-body">
+            <div class="progress">
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{appStats[0].stats.usage.mem}}" aria-valuemin="0" aria-valuemax="{{appStats[0].stats.mem_quota}}" style="min-width: 2em; width:{{(appStats[0].stats.usage.mem/appStats[0].stats.mem_quota*100)}}%">
+                  {{(appStats[0].stats.usage.mem/appStats[0].stats.mem_quota*100 | number:0)}}% 
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-6 col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Disk</h3>
+          </div>
+          <div class="panel-body">
+            <div class="progress">
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{appStats[0].stats.usage.disk}}" aria-valuemin="0" aria-valuemax="{{appStats[0].stats.disk_quota}}" style="min-width: 2em; width:{{(appStats[0].stats.usage.disk/appStats[0].stats.disk_quota*100)}}%">
+                  {{(appStats[0].stats.usage.disk/appStats[0].stats.disk_quota*100 | number:0)}}% 
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-6 col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">CPU</h3>
+          </div>
+          <div class="panel-body">
+            <div class="progress">
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{appStats[0].stats.usage.cpu}}" aria-valuemin="0" aria-valuemax="1" style="min-width: 5em; width:{{(appStats[0].stats.usage.cpu/1*100)}}%">
+                  {{(appStats[0].stats.usage.cpu/1*100 | number:3)}}% 
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div ng-switch-default class="text-center">
+    No Live Data Available
+  </div>
+</div>
