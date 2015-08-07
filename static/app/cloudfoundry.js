@@ -4,7 +4,7 @@
 
 
         // Declare variables for passing data via this service
-        var orgs;
+        var orgs, activeOrg;
 
         // Redirects back to home page
         var returnHome = function(response) {
@@ -20,10 +20,11 @@
         }
 
         // Filter through a list of orgs to find the org with a specific guid
-        var filterOrg = function(storedOrgs, orgGuid) {
-            return storedOrgs.filter(function(storedOrgs) {
+        var filterActiveOrg = function(storedOrgs, orgGuid) {
+            activeOrg = storedOrgs.filter(function(storedOrgs) {
                 return storedOrgs.metadata.guid === orgGuid;
             })[0]
+            return activeOrg;
         }
 
         // Get current authentication status from server
@@ -130,11 +131,19 @@
 
         // Given an org guid attempts to find the active org data stored in the service
         this.findActiveOrg = function(orgGuid, callback) {
-            if (orgs) {
-                return callback(filterOrg(orgs, orgGuid));
-            } else {
-                return this.getOrgs().then(function(orgs) {
-                    callback(filterOrg(orgs, orgGuid));
+            // If the requested org is the same one stored, return it
+            if (activeOrg && orgGuid === activeOrg.guid) {
+                if (orgGuid === activeOrg.guid) {
+                    $log.info('return the cached active org');
+                    return callback(activeOrg);
+                }
+            }
+            // If the orgs data hasn't been downloaded yet, get the active org from the api
+            else {
+                $log.info('get org data from api');
+                return this.getOrgDetails(orgGuid).then(function(org) {
+                    activeOrg = org;
+                    callback(org);
                 });
             }
         };
