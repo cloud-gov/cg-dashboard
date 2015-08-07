@@ -133,11 +133,11 @@
         };
         // Send request to create service instance
         $scope.createServiceInstance = function(serviceInstance) {
-            $scope.disableSubmit = true
-            serviceInstance.service_plan_guid = $scope.activePlan.metadata.guid;
-            $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
-        }
-        // Get service details
+                $scope.disableSubmit = true
+                serviceInstance.service_plan_guid = $scope.activePlan.metadata.guid;
+                $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
+            }
+            // Get service details
         $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
         // Find the active org from an org guid
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
@@ -147,11 +147,11 @@
 
         var renderAppSummary = function(appSummary) {
             $scope.appSummary = appSummary;
-	    console.log(appSummary);
+            console.log(appSummary);
         }
         var renderAppStats = function(appStats) {
             $scope.appStats = appStats;
-	    console.log(appStats);
+            console.log(appStats);
         }
         $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
         $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
@@ -186,53 +186,55 @@
             }
         };
         var resetAppStatsPoll = function() {
-            $scope.statsPromise = $interval(function() {
-                $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
-                $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
-            }, 500000);
-            // Make sure to clean up afterwards when the page is naviageted away.
-            $scope.$on('$destroy', function () { $interval.cancel($scope.statsPromise); });
-	}
-	// Stop a specified app
-	$scope.stopApp = function(app) {
-		// Only stop if we are currently not restarting.
-		if ($scope.restarting != true) {
-			// Grey out the UI buttons while waiting.
-			$scope.stopping = true;
-			$cloudfoundry.stopApp(app)
-				.then(function() {
-					// Re-enable the UI buttons.
-					$scope.stopping = false;
-			});
-		}
-	};
-	// Restart a specified app
-	$scope.restartApp = function(app) {
-		// Only restart if we are currently not stopping.
-		if ($scope.stopping != true) {
-			// Grey out the UI buttons while waiting.
-			$scope.restarting = true;
-			$cloudfoundry.restartApp(app)
-				.then(function() {
-					// Re-enable the UI buttons.
-					$scope.restarting = false;
-			});
-		}
-	};
-	// Start a specified app
-	$scope.startApp = function(app) {
-		// Grey out the UI buttons while waiting.
-		$scope.starting = true;
-		$cloudfoundry.startApp(app)
-			.then(function() {
-				// Re-enable the UI buttons.
-				$scope.starting = false;
-			});
-	};
-            $scope.$on('$destroy', function() {
-                $interval.cancel($scope.statsPromise);
-            });
+                $scope.statsPromise = $interval(function() {
+                    $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                    $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
+                }, 500000);
+                // Make sure to clean up afterwards when the page is naviageted away.
+                $scope.$on('$destroy', function() {
+                    $interval.cancel($scope.statsPromise);
+                });
+            }
+            // Stop a specified app
+        $scope.stopApp = function(app) {
+            // Only stop if we are currently not restarting.
+            if ($scope.restarting != true) {
+                // Grey out the UI buttons while waiting.
+                $scope.stopping = true;
+                $cloudfoundry.stopApp(app)
+                    .then(function() {
+                        // Re-enable the UI buttons.
+                        $scope.stopping = false;
+                    });
+            }
         };
+        // Restart a specified app
+        $scope.restartApp = function(app) {
+            // Only restart if we are currently not stopping.
+            if ($scope.stopping != true) {
+                // Grey out the UI buttons while waiting.
+                $scope.restarting = true;
+                $cloudfoundry.restartApp(app)
+                    .then(function() {
+                        // Re-enable the UI buttons.
+                        $scope.restarting = false;
+                    });
+            }
+        };
+        // Start a specified app
+        $scope.startApp = function(app) {
+            // Grey out the UI buttons while waiting.
+            $scope.starting = true;
+            $cloudfoundry.startApp(app)
+                .then(function() {
+                    // Re-enable the UI buttons.
+                    $scope.starting = false;
+                });
+        };
+        $scope.$on('$destroy', function() {
+            $interval.cancel($scope.statsPromise);
+        });
+
         // Stop a specified app
         $scope.stopApp = function(app) {
             // Only stop if we are currently not restarting.
