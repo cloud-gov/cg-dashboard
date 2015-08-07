@@ -167,6 +167,30 @@ var getAppStats = function(appGuid) {
     }
 };
 
+var restartApp = function(app) {
+    return {
+        then: function(callback) {
+            return callback('');
+        }
+    }
+};
+
+var stopApp = function(app) {
+    return {
+        then: function(callback) {
+            return callback('');
+        }
+    }
+};
+
+var startApp = function(app) {
+    return {
+        then: function(callback) {
+            return callback('');
+        }
+    }
+};
+
 // Location path mock
 var path = function(callback) {
     return callback()
@@ -490,9 +514,9 @@ describe('AppCtrl', function() {
     beforeEach(inject(function($rootScope, $controller) {
         //Mock CF service
         cloudfoundry = {
-            // stopApp: stopApp,
-            // startApp: startApp,
-            // restartApp: restartApp
+            stopApp: stopApp,
+            startApp: startApp,
+            restartApp: restartApp,
             getPollAppStatusProperty: getPollAppStatusProperty,
             getAppSummary: getAppSummary,
             getAppStats: getAppStats
@@ -533,6 +557,24 @@ describe('AppCtrl', function() {
 
     it('should open the app tab as the visible one', function() {
         expect(scope.visibleTab).toEqual('app');
+    });
+
+    it('should re-enable the buttons after starting', function() {
+        expect(scope.starting).toBeUndefined();
+	scope.startApp();
+        expect(scope.starting).toEqual(false);
+    });
+
+    it('should re-enable the buttons after restarting', function() {
+        expect(scope.restarting).toBeUndefined();
+	scope.restartApp();
+        expect(scope.restarting).toEqual(false);
+    });
+
+    it('should re-enable the buttons after stopping', function() {
+        expect(scope.stopping).toBeUndefined();
+	scope.stopApp();
+        expect(scope.stopping).toEqual(false);
     });
 
 });
