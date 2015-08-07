@@ -20,11 +20,11 @@
                 controller: 'OrgCtrl'
             })
             .when('/org/:orgguid/marketplace', {
-                templateUrl: 'app/views/dashboard.html',
+                templateUrl: 'app/views/marketplace.html',
                 controller: 'MarketCtrl'
             })
             .when('/org/:orgguid/marketplace/:serviceguid', {
-                templateUrl: 'app/views/dashboard.html',
+                templateUrl: 'app/views/service.html',
                 controller: 'ServiceCtrl'
             })
             .when('/org/:orgguid/spaces/:spaceguid', {
