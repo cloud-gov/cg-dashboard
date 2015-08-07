@@ -168,7 +168,7 @@
 		pollAppStatus = value;
 	}
 	// Internal generic function that actually submits the request to backend to change the app.
-	var changeAppState = function(app, desired_state) {
+	this.changeAppState = function(app, desired_state) {
 		setPollAppStatusProperty(false); // prevent UI from refreshing.
 		return $http.put("/v2/apps/" + app.guid + "?async=false&inline-relations-depth=1", {"state":desired_state})
 			.then(function(response) {
@@ -184,17 +184,17 @@
 	}
 	// Wrapper function that will submit a request to start an app.
 	this.startApp = function(app) {
-		return changeAppState(app, "STARTED");
+		return this.changeAppState(app, "STARTED");
 	};
 	// Wrapper function that will submit a request to stop an app.
 	this.stopApp = function(app) {
-		return changeAppState(app, "STOPPED");
+		return this.changeAppState(app, "STOPPED");
 	};
 	// Wrapper function that will submit a request to restart an app.
 	this.restartApp = function(app) {
-		return changeAppState(app, "STOPPED")
+		return this.changeAppState(app, "STOPPED")
 			.then(function() {
-				return changeAppState(app, "STARTED")
+				return changeAppState(app, "STARTED");
 			});
 	};
 

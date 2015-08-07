@@ -519,12 +519,10 @@ describe('AppCtrl', function() {
             restartApp: restartApp,
             getPollAppStatusProperty: getPollAppStatusProperty,
             getAppSummary: getAppSummary,
+            getAppSummary: getAppSummary,
             getAppStats: getAppStats
         }
 
-        // spyOn(cloudfoundry, 'stopApp').and.callThrough();
-        // spyOn(cloudfoundry, 'startApp').and.callThrough();
-        // spyOn(cloudfoundry, 'restartApp').and.callThrough();
         spyOn(cloudfoundry, 'getAppSummary').and.callThrough();
 
         // Load Ctrl and scope

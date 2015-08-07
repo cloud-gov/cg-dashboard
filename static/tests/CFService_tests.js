@@ -357,5 +357,43 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    describe('startApp', function() {
+       it('should send a request to start an app', function() {
+            spyOn($cloudfoundry, 'changeAppState');
+            $cloudfoundry.startApp(null);
+            expect($cloudfoundry.changeAppState).toHaveBeenCalledWith(null, "STARTED");
+        });
+    });
 
+    describe('startApp', function() {
+       it('should send a request to stop an app', function() {
+            spyOn($cloudfoundry, 'changeAppState');
+            $cloudfoundry.stopApp(null);
+            expect($cloudfoundry.changeAppState).toHaveBeenCalledWith(null, "STOPPED");
+        });
+    });
+
+    describe('changeAppState', function() {
+       it('should send a request to change the state of an app and change the app object state if successful', function() {
+            var app = {}
+            app.state = "STARTED";
+            app.guid = "appguid";
+            httpBackend.whenPUT('/v2/apps/' + app.guid + '?async=false&inline-relations-depth=1').respond({});
+            $cloudfoundry.changeAppState(app, "STOPPED").then(function() {
+                expect(app.state).toEqual("STOPPED");
+            });
+            httpBackend.flush();
+        });
+
+       it('should send a request to change the state of an app and NOT change the app object state if it failsl', function() {
+            var app = {}
+            app.state = "STARTED";
+            app.guid = "appguid";
+            httpBackend.whenPUT('/v2/apps/' + app.guid + '?async=false&inline-relations-depth=1').respond(401, {});
+            $cloudfoundry.changeAppState(app, "STOPPED").then(function() {
+                expect(app.state).toEqual("STARTED");
+            });
+            httpBackend.flush();
+        });
+    });
 });
