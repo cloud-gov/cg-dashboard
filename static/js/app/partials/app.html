@@ -143,3 +143,22 @@
     No Live Data Available
   </div>
 </div>
+
+<h4 class="text-center">Services</h4>
+
+<div class="row row-height text-center">
+  
+
+<div class="col-xs-6 col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Available Services</h3>
+          </div>
+          <div class="panel-body" ng-repeat="service in availableServices">
+              {{service.entity.name}} 
+                <button type="button" class="btn btn-xs btn-info" ng-disabled="disableServiceBinder" ng-show="!service.boundService"  ng-click="bindService(service)">Bind Service to App</button>  
+                <button type="button" class="btn btn-xs btn-warning" ng-disabled="disableServiceBinder" ng-show="service.boundService"  ng-click="unbindService(service)">Unbind Service to App</button>  
+            </div>
+        </div>
+      </div>
+  </div>
