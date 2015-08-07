@@ -225,13 +225,68 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    describe('getSpaceServices', function() {
+        it('should return all the service instances avaiable to the space apps', function() {
+            httpBackend.whenGET('/v2/spaces/spaceguid/service_instances').respond({
+                page: 1,
+                resources: [{
+                    name: 'fakename'
+                }]
+            });
+
+            $cloudfoundry.getSpaceServices('spaceguid').then(function(data) {
+                expect(data).toEqual([{
+                    name: 'fakename'
+                }]);
+            });
+            httpBackend.flush();
+
+        });
+    });
+
+    describe('bindService', function() {
+        it('should send a post request to bind app and return a success message', function() {
+            httpBackend.whenPOST('/v2/service_bindings', {}).respond({guid: 'newbindingguid'});
+
+            $cloudfoundry.bindService({}).then(function(response) {
+                expect(response.data.guid).toEqual('newbindingguid');
+            });
+            httpBackend.flush();
+
+        });
+
+        it('should send a post request to bind app and if the binding fails it should return a failure message', function() {
+            httpBackend.whenPOST('/v2/service_bindings', {}).respond(400, {message: 'error'});
+
+            $cloudfoundry.bindService({}).then(function(response) {
+                expect(response.data.message).toEqual('error');
+            });
+            httpBackend.flush();
+
+        });
+
+    });
+
+    describe('unbindService', function() {
+        it('should find the correct service binding instance and then unbind it', function() {
+            httpBackend.whenGET('/v2/apps/appguid/service_bindings')
+                .respond({resources: [{entity: {service_instance_guid: 'serviceInstanceGuid'}, metadata: {url: '/v2/bindingurl'}}]});
+            httpBackend.whenDELETE('/v2/bindingurl').respond(201, {succeeded: true});
+            var data = {app_guid: 'appguid', service_instance_guid: 'serviceInstanceGuid'}
+            var callbackSpy = function (response) {
+                expect(response.status).toEqual(201);
+            };
+            $cloudfoundry.unbindService(data, callbackSpy)
+            httpBackend.flush();
+
+        });
+    });
+
     describe('getServiceDetails', function() {
         it('should collect a specific service\'s details', function() {
 
             httpBackend.whenGET('/v2/services/serviceguid').respond({});
-            $cloudfoundry.getServiceDetails('serviceguid').then(function(data) {
-                expect(data).toEqual({});
-            });
+            $cloudfoundry.getServiceDetails('serviceguid')
             httpBackend.flush();
         });
     });
@@ -271,7 +326,9 @@ describe('CloudFoundry Service Tests', function() {
                 }]
             });
             $cloudfoundry.getServicePlans('/v2/services/serviceguid/service_plans').then(function(data) {
-                expect(data[0].entity.extra).toEqual({ costs: 1 });
+                expect(data[0].entity.extra).toEqual({
+                    costs: 1
+                });
             });
             httpBackend.flush();
         });
