@@ -58,7 +58,15 @@ npm install
 ```
 Test can then be run with the command:
 ```
-npm test
+npm run tests
+```
+To get a viewable coverage report change the `coverageReport` object in `karma.conf.js` from `json` to `html` 
+```
+coverageReporter: {
+    type: 'html',
+    dir: 'coverage',
+    subdir: '.'
+}
 ```
 
 ### Acceptance Tests
