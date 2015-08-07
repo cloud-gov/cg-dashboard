@@ -23,13 +23,17 @@
                 templateUrl: 'app/views/dashboard.html',
                 controller: 'MarketCtrl'
             })
-        .when('/org/:orgguid/marketplace/:serviceguid', {
+            .when('/org/:orgguid/marketplace/:serviceguid', {
                 templateUrl: 'app/views/dashboard.html',
                 controller: 'ServiceCtrl'
             })
             .when('/org/:orgguid/spaces/:spaceguid', {
                 templateUrl: 'app/views/spaces.html',
                 controller: 'SpaceCtrl'
+            })
+            .when('/org/:orgguid/spaces/:spaceguid/apps/:appguid', {
+                templateUrl: 'app/partials/app.html',
+                controller: 'AppCtrl'
             })
             .otherwise({
                 redirectTo: "/"
