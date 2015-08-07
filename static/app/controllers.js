@@ -71,9 +71,9 @@
     app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
         // Render the active org
         var renderActiveOrg = function(org) {
-            $scope.activeOrg = org;
-        }
-        // Show a specific service details by going to service landing page
+                $scope.activeOrg = org;
+            }
+            // Show a specific service details by going to service landing page
         $scope.showService = function(service) {
             $location.path($location.path() + '/' + service.metadata.guid);
         };
@@ -134,68 +134,104 @@
 
     app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData) {
       loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-        console.log("hello");
 
         var renderAppSummary = function(appSummary) {
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
                 $scope.appSummary = appSummary;
-	        console.log(appSummary);
-            }
-        }
+                // Show the available services
+                $cloudfoundry.getSpaceServices($routeParams['spaceguid']).then(function(services) {
+                    // Add a tag to services if they are bound
+                    $scope.availableServices = services.map(function(service) {
+                        $scope.appSummary.services.forEach(function(boundService) {
+                            if (boundService.guid == service.metadata.guid) {
+                                service.boundService = boundService;
+                            };
+                        });
+                        return service;
+                    });
+                });
+            };
+        };
+
         var renderAppStats = function(appStats) {
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
                 $scope.appStats = appStats;
-	        console.log(appStats);
             }
-        }
-	var resetAppStatsPoll = function() {
+        };
+        var resetAppStatsPoll = function() {
             $scope.statsPromise = $interval(function() {
                 $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
                 $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
-            }, 5000);
+            }, 500000);
             // Make sure to clean up afterwards when the page is naviageted away.
-            $scope.$on('$destroy', function () { $interval.cancel($scope.statsPromise); });
-	}
-	// Stop a specified app
-	$scope.stopApp = function(app) {
-		// Only stop if we are currently not restarting.
-		if ($scope.restarting != true) {
-			// Grey out the UI buttons while waiting.
-			$scope.stopping = true;
-			$cloudfoundry.stopApp(app)
-				.then(function() {
-					// Re-enable the UI buttons.
-					$scope.stopping = false;
-			});
-		}
-	};
-	// Restart a specified app
-	$scope.restartApp = function(app) {
-		// Only restart if we are currently not stopping.
-		if ($scope.stopping != true) {
-			// Grey out the UI buttons while waiting.
-			$scope.restarting = true;
-			$cloudfoundry.restartApp(app)
-				.then(function() {
-					// Re-enable the UI buttons.
-					$scope.restarting = false;
-			});
-		}
-	};
-	// Start a specified app
-	$scope.startApp = function(guid) {
-		// Grey out the UI buttons while waiting.
-		$scope.starting = true;
-		$cloudfoundry.startApp(guid)
-			.then(function() {
-				// Re-enable the UI buttons.
-				$scope.starting = false;
-			});
-	};
+            $scope.$on('$destroy', function() {
+                $interval.cancel($scope.statsPromise);
+            });
+        };
+        // Stop a specified app
+        $scope.stopApp = function(app) {
+            // Only stop if we are currently not restarting.
+            if ($scope.restarting != true) {
+                // Grey out the UI buttons while waiting.
+                $scope.stopping = true;
+                $cloudfoundry.stopApp(app)
+                    .then(function() {
+                        // Re-enable the UI buttons.
+                        $scope.stopping = false;
+                    });
+            }
+        };
+        // Restart a specified app
+        $scope.restartApp = function(app) {
+            // Only restart if we are currently not stopping.
+            if ($scope.stopping != true) {
+                // Grey out the UI buttons while waiting.
+                $scope.restarting = true;
+                $cloudfoundry.restartApp(app)
+                    .then(function() {
+                        // Re-enable the UI buttons.
+                        $scope.restarting = false;
+                    });
+            }
+        };
+        // Start a specified app
+        $scope.startApp = function(guid) {
+            // Grey out the UI buttons while waiting.
+            $scope.starting = true;
+            $cloudfoundry.startApp(guid)
+                .then(function() {
+                    // Re-enable the UI buttons.
+                    $scope.starting = false;
+                });
+        };
+        // Bind a service
+        $scope.bindService = function(service) {
+            $scope.disableServiceBinder = true;
+            $cloudfoundry.bindService({
+                service_instance_guid: service.metadata.guid,
+                app_guid: $routeParams['appguid']
+            }).then(function(response) {
+
+                $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                $scope.disableServiceBinder = false;
+            });
+        };
+        // Unbind a service
+        $scope.unbindService = function(service) {
+            $scope.disableServiceBinder = true;
+            $cloudfoundry.unbindService({
+                service_instance_guid: service.boundService.guid,
+                app_guid: $routeParams['appguid']
+            }, function(response) {
+                $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                $scope.disableServiceBinder = false;
+            });
+        };
+        // Get summary of apps
         $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
-	// TODO: Make it so it won't request stats if the state in the summary is not STARTED.
+        // TODO: Make it so it won't request stats if the state in the summary is not STARTED.
         $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
         resetAppStatsPoll();
         // Show the `service.html` view
