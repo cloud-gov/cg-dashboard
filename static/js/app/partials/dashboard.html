@@ -46,6 +46,7 @@
         </div>
     </nav>
 
+
     <!-- Tab Views -->
     <div ng-switch="visibleTab">
         <div ng-switch-when="organizations">
@@ -60,11 +61,10 @@
         <div ng-switch-when="service">
             <ng-include src="'js/app/partials/service.html'"></ng-include>
         </div>
-        <div class="jumbotron text-center" ng-switch-default="null">
-            <h3>Welcome to CF-Deck</h3>
-        </div>
         <div ng-switch-when="app">
             <ng-include src="'js/app/partials/app.html'"></ng-include>
         </div>
+        <div class="jumbotron text-center" ng-switch-default="null">
+            <h3>Welcome to CF-Deck</h3>
+        </div>
     </div>
-</div>

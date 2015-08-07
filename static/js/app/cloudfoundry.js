@@ -58,7 +58,7 @@
                 });
         };
 
-        // Get the spaces for an org 
+        // Get the spaces for an org
         this.getOrgSpaces = function(orgSpaceUrl) {
             return $http.get(orgSpaceUrl)
                 .then(function(response) {
@@ -128,6 +128,7 @@
                 });
         };
 
+
         // Given an org guid attempts to find the active org data stored in the service
         this.findActiveOrg = function(orgGuid, callback) {
             if (orgs) {
@@ -139,7 +140,7 @@
             }
         };
 
-	// Get app summary
+        // Get app summary
         this.getAppSummary = function(appGuid) {
             return $http.get('/v2/apps/' + appGuid + '/summary')
                 .then(function(response) {
@@ -147,7 +148,7 @@
                 });
         };
 
-	// Get detailed app stats
+        // Get detailed app stats
         this.getAppStats = function(appGuid) {
             return $http.get('/v2/apps/' + appGuid + '/stats')
                 .then(function(response) {
@@ -155,48 +156,88 @@
                 });
         };
 
-	// Tells whether the web app should poll for newer app statuses.
-	// Useful for when we are in the middle of updating the app status ourselves and we don't
-	// want a poll to interrupt the UI.
-	var pollAppStatus = true;
-	// Getter function for pollAppStatus.
-	this.getPollAppStatusProperty = function() {
-		return pollAppStatus;
-	};
-	// Setter function for pollAppStatus.
-	var setPollAppStatusProperty = function(value) {
-		pollAppStatus = value;
-	}
-	// Internal generic function that actually submits the request to backend to change the app.
-	this.changeAppState = function(app, desired_state) {
-		setPollAppStatusProperty(false); // prevent UI from refreshing.
-		return $http.put("/v2/apps/" + app.guid + "?async=false&inline-relations-depth=1", {"state":desired_state})
-			.then(function(response) {
-				// Success
-				// Set the state immediately to stop so that UI will force a load of the new options.
-				// UI will change the buttons based on the state.
-				app.state = desired_state;
-			}, function(response) {
-				// Failure
-			}).finally(function() {
-				setPollAppStatusProperty(true); // allow UI to refresh via polling again.
-			});
-	}
-	// Wrapper function that will submit a request to start an app.
-	this.startApp = function(app) {
-		return this.changeAppState(app, "STARTED");
-	};
-	// Wrapper function that will submit a request to stop an app.
-	this.stopApp = function(app) {
-		return this.changeAppState(app, "STOPPED");
-	};
-	// Wrapper function that will submit a request to restart an app.
-	this.restartApp = function(app) {
-		return this.changeAppState(app, "STOPPED")
-			.then(function() {
-				return changeAppState(app, "STARTED");
-			});
-	};
+        // Get all the services available to a space
+        this.getSpaceServices = function(spaceGuid) {
+            return $http.get('/v2/spaces/' + spaceGuid + '/service_instances')
+                .then(function(response) {
+                    return response.data.resources;
+                });
+        };
+
+        // Bind a service instance to an app
+        this.bindService = function(body) {
+            return $http.post('/v2/service_bindings', body)
+                .then(function(response) {
+                    return response;
+                }, function(response) {
+                    return response;
+                });
+        };
+
+        // Unbind a service instance from an app
+        this.unbindService = function(data, callback) {
+            // Look for service binding guid
+            $http.get('/v2/apps/' + data.app_guid + '/service_bindings')
+                .then(function(response) {
+                    // Find the service binding that is attached to the current space
+                    response.data.resources.forEach(function(boundService) {
+                        if (boundService.entity.service_instance_guid === data.service_instance_guid) {
+                            // Unbind the service and send back a message
+                            return $http.delete(boundService.metadata.url)
+                                .then(function(response) {
+                                    callback(response);
+                                });
+                        };
+                    });
+                });
+        };
+
+
+        // Tells whether the web app should poll for newer app statuses.
+        // Useful for when we are in the middle of updating the app status ourselves and we don't
+        // want a poll to interrupt the UI.
+        var pollAppStatus = true;
+        // Getter function for pollAppStatus.
+        this.getPollAppStatusProperty = function() {
+            return pollAppStatus;
+        };
+        // Setter function for pollAppStatus.
+        var setPollAppStatusProperty = function(value) {
+                pollAppStatus = value;
+            }
+            // Internal generic function that actually submits the request to backend to change the app.
+
+        var changeAppState = function(app, desired_state) {
+                setPollAppStatusProperty(false); // prevent UI from refreshing.
+                return $http.put("/v2/apps/" + app.guid + "?async=false&inline-relations-depth=1", {
+                        "state": desired_state
+                    })
+                    .then(function(response) {
+                        // Success
+                        console.log("succeeded to change to " + desired_state);
+                        // Set the state immediately to stop so that UI will force a load of the new options.
+                        // UI will change the buttons based on the state.
+                        app.state = desired_state;
+                    }, function(response) {
+                        // Failure
+                        console.log("failed to change to " + desired_state);
+                    }).finally(function() {
+                        setPollAppStatusProperty(true); // allow UI to refresh via polling again.
+                    });
+            }
+            // Wrapper function that will submit a request to start an app.
+        this.startApp = function(app) {
+            return changeAppState(app, "STARTED");
+        };
+        // Wrapper function that will submit a request to stop an app.
+        this.stopApp = function(app) {
+            return changeAppState(app, "STOPPED");
+        };
+        // Wrapper function that will submit a request to restart an app.
+        this.restartApp = function(app) {
+            return changeAppState(app, "STOPPED")
+                .then(changeAppState(app, "STARTED"));
+        };
 
     });
 
