@@ -1,6 +1,7 @@
 ---
 applications:
 - name: cf-deck
+  buildpack: https://github.com/cloudfoundry/go-buildpack.git
   memory: 256M
   env:
     CONSOLE_CLIENT_ID: client_id
