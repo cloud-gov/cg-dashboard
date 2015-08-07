@@ -385,7 +385,7 @@ describe('CloudFoundry Service Tests', function() {
             httpBackend.flush();
         });
 
-       it('should send a request to change the state of an app and NOT change the app object state if it failsl', function() {
+       it('should send a request to change the state of an app and NOT change the app object state if it fails', function() {
             var app = {}
             app.state = "STARTED";
             app.guid = "appguid";
