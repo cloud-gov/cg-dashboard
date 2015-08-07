@@ -69,8 +69,6 @@
         };
         //TODO: show an app
         $scope.showApp = function(app) {
-            console.log("show app: " + app.name);
-            console.log("show app: " + app.guid);
             $location.path($location.path() + '/apps/' + app.guid)
         };
         // Get the orgs data from cache or load new data
@@ -144,21 +142,18 @@
         // Find the active org from an org guid        
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
     });
-    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval) {
-        console.log("hello");
 
+    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval) {
         var renderAppSummary = function(appSummary) {
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
                 $scope.appSummary = appSummary;
-	        console.log(appSummary);
             }
         }
         var renderAppStats = function(appStats) {
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
                 $scope.appStats = appStats;
-	        console.log(appStats);
             }
         }
 	var resetAppStatsPoll = function() {
@@ -196,10 +191,10 @@
 		}
 	};
 	// Start a specified app
-	$scope.startApp = function(guid) {
+	$scope.startApp = function(app) {
 		// Grey out the UI buttons while waiting.
 		$scope.starting = true;
-		$cloudfoundry.startApp(guid)
+		$cloudfoundry.startApp(app)
 			.then(function() {
 				// Re-enable the UI buttons.
 				$scope.starting = false;

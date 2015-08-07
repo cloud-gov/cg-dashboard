@@ -173,13 +173,11 @@
 		return $http.put("/v2/apps/" + app.guid + "?async=false&inline-relations-depth=1", {"state":desired_state})
 			.then(function(response) {
 				// Success
-				console.log("succeeded to change to " + desired_state);
 				// Set the state immediately to stop so that UI will force a load of the new options.
 				// UI will change the buttons based on the state.
 				app.state = desired_state;
 			}, function(response) {
 				// Failure
-				console.log("failed to change to " + desired_state);
 			}).finally(function() {
 				setPollAppStatusProperty(true); // allow UI to refresh via polling again.
 			});
@@ -195,7 +193,9 @@
 	// Wrapper function that will submit a request to restart an app.
 	this.restartApp = function(app) {
 		return changeAppState(app, "STOPPED")
-			.then(changeAppState(app, "STARTED"));
+			.then(function() {
+				return changeAppState(app, "STARTED")
+			});
 	};
 
     });
