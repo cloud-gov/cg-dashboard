@@ -21,10 +21,10 @@ module.exports = function(config) {
             'static/bower_components/ladda/dist/spin.min.js',
             'static/bower_components/ladda/dist/ladda.min.js',
             'static/bower_components/angular-ladda/dist/angular-ladda.min.js',
-            'static/js/app/main.js',
-            'static/js/app/filters.js',
-            'static/js/app/cloudfoundry.js',
-            'static/js/app/controllers.js',
+            'static/app/main.js',
+            'static/app/filters.js',
+            'static/app/cloudfoundry.js',
+            'static/app/controllers.js',
             'static/tests/*.js'
         ],
 
