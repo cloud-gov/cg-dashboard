@@ -32,7 +32,7 @@
                 controller: 'SpaceCtrl'
             })
             .when('/org/:orgguid/spaces/:spaceguid/apps/:appguid', {
-                templateUrl: 'app/partials/app.html',
+                templateUrl: 'app/views/app.html',
                 controller: 'AppCtrl'
             })
             .otherwise({

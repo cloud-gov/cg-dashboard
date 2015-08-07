@@ -61,8 +61,10 @@
 
     </thead>
     <tbody>
-        <tr class="app-info" ng-click="showApp(app)" ng-repeat="app in space.apps | orderBy:sortType:sortReverse | filter:searchApp">
-            <td class="app-name-data">{{app.name}}</td>
+        <tr class="app-info" ng-repeat="app in space.apps | orderBy:sortType:sortReverse | filter:searchApp">
+            <td class="app-name-data">
+              <a ng-href="#/org/{{ activeOrg.metadata.guid }}/spaces/{{ app.space_guid }}/apps/{{ app.guid }}">{{app.name}}</a>
+            </td>
             <td class="buildpack-data">{{app.detected_buildpack}}</td>
             <td class="memory-data">{{app.memory}}</td>
             <td class="instances-data">{{app.instances}}</td>

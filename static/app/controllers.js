@@ -39,15 +39,13 @@
     }
 
     app.controller('OrgCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
-        // Render the org information on the page
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-
-
-        $scope.visibleTab = "organizations";
-
+      // Render the org information on the page
+      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+      $scope.visibleTab = "organizations";
     });
 
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
         // Render the active org
         var renderActiveOrg = function(org) {
                 $scope.activeOrg = org;
@@ -110,7 +108,8 @@
         // Find the active org from an org guid
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
     });
-    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval) {
+    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData) {
+      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
         console.log("hello");
 
         var renderAppSummary = function(appSummary) {
