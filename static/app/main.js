@@ -12,9 +12,10 @@
                 controller: 'LoginCtrl'
             })
             .when('/dashboard', {
-                templateUrl: 'app/views/dashboard.html'
+                templateUrl: 'app/views/dashboard.html',
+                controller: 'HomeCtrl'
             })
-            .when('/org/:guid', {
+            .when('/org/:orgguid', {
                 templateUrl: 'app/views/organizations.html',
                 controller: 'OrgCtrl'
             })

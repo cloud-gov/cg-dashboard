@@ -11,42 +11,39 @@
             .then(renderStatus);
     });
 
-    app.controller('MainCtrl', function($scope, $cloudfoundry, $location, $rootScope) {
-        // Render the orgs on the page
-        var renderOrgs = function(orgs) {
-            $scope.orgs = orgs;
-            $cloudfoundry.setOrgsData(orgs);
-        };
+    app.controller('MainCtrl', function($scope, $cloudfoundry, $location, MenuData) {
+      // Render the orgs on the page
+      var renderOrgs = function(orgs) {
+          $scope.orgs = orgs;
+          $cloudfoundry.setOrgsData(orgs);
+      };
 
-        $scope.showOrgMarketplace = function(org) {
-            // If the org data is collected from the OrgCtrl it will
-            // not have a metadata attribute
-            if (org.metadata)
-                $location.path('/dashboard/org/' + org.metadata.guid + '/marketplace');
-            else
-                $location.path('/dashboard/org/' + org.guid + '/marketplace');
-        };
+      // Get Orgs or return to login page
+      $cloudfoundry.getOrgsData(renderOrgs);
 
-        // Get Orgs or return to login page
-        $cloudfoundry.getOrgsData(renderOrgs);
+
+      $scope.MenuData = MenuData;
     });
 
-    app.controller('OrgCtrl', function($scope, $cloudfoundry, $location, $routeParams, $rootScope) {
+    function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope) {
+      var renderOrg = function(orgData) {
+          if (orgData['code'] == 30003) {
+            MenuData.data.currentOrg = "404";
+          } else {
+            MenuData.data.currentOrg = orgData;
+            $scope.activeOrg = MenuData.data.currentOrg;
+            $scope.spaces = $scope.activeOrg.spaces;
+          }
+      };
+      $cloudfoundry.getOrgDetails($routeParams['orgguid']).then(renderOrg);
+    }
+
+    app.controller('OrgCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
         // Render the org information on the page
-        var renderOrg = function(orgData) {
-            if (orgData['code'] == 30003) {
-                $scope.activeOrg = "404";
-            } else {
-              $rootScope.currentOrg = orgData;
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
 
-              $scope.activeOrg = orgData;
-              $scope.spaces = orgData.spaces;
-            }
-        };
-        // Get Orgs or return to login page
-        $cloudfoundry.getOrgDetails($routeParams['guid']).then(renderOrg)
+
         $scope.visibleTab = "organizations";
-
 
     });
 
