@@ -15,4 +15,10 @@
   <li ng-repeat="space in MenuData.data.currentOrg.spaces">
     <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}">{{ space.name }}</a>
   </li>
+
+  <li ng-show="MenuData.data.currentOrg">
+    <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/marketplace">
+      Marketplace
+    </a>
+  </li>
 </ul>

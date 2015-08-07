@@ -18,7 +18,7 @@
             $cloudfoundry.setOrgsData(orgs);
         };
 
-        $scope.clearDashboard = function () {
+        $scope.clearDashboard = function() {
             $scope.MenuData.data = {}
         };
 
@@ -48,28 +48,16 @@
 
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-        // Render the active org
-        var renderActiveOrg = function(org) {
-                $scope.activeOrg = org;
-            }
-            // Render a space in the view
         var renderSpace = function(space) {
             $scope.space = space;
-        };
-        //TODO: show an app
-        $scope.showApp = function(app) {
-            console.log("show app: " + app.name);
-            console.log("show app: " + app.guid);
-            $location.path($location.path() + '/apps/' + app.guid)
         };
         // Get the orgs data from cache or load new data
         $cloudfoundry.getSpaceDetails($routeParams['spaceguid'])
             .then(renderSpace);
-        // Return the active org
-        $scope.visibleTab = "spaces";
     });
 
-    app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
+    app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
         // Render the active org
         var renderActiveOrg = function(org) {
                 $scope.activeOrg = org;
@@ -88,7 +76,8 @@
         $scope.visibleTab = 'marketplace';
     });
 
-    app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams) {
+    app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
         // Render the active org
         var renderActiveOrg = function(org) {
                 $scope.activeOrg = org;
@@ -115,11 +104,7 @@
         };
         // Show maker and populate with space info
         $scope.showServiceMaker = function(plan) {
-            $cloudfoundry.getOrgSpaces($scope.activeOrg.entity.spaces_url)
-                .then(function(spaces) {
-                    $scope.spaces = spaces;
-                    $scope.activePlan = plan;
-                });
+            $scope.activePlan = plan;
         };
         // Send request to create service instance
         $scope.createServiceInstance = function(serviceInstance) {

@@ -58,15 +58,7 @@
                     return response.data;
                 });
         };
-
-        // Get the spaces for an org 
-        this.getOrgSpaces = function(orgSpaceUrl) {
-            return $http.get(orgSpaceUrl)
-                .then(function(response) {
-                    return response.data.resources;
-                });
-        };
-
+        
         // Get space details
         this.getSpaceDetails = function(spaceGuid) {
             return $http.get('/v2/spaces/' + spaceGuid + '/summary')

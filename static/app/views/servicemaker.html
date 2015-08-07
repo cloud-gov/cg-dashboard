@@ -11,7 +11,7 @@
             <label>Select the space for the service instance</label>
 
             <select name="space_guid" class="form-control" ng-model="serviceInstance.space_guid"
-            ng-options="space.metadata.guid as space.entity.name for space in spaces"
+            ng-options="space.guid as space.name for space in spaces"
             required>
                 <option value=""></option>
             </select>
