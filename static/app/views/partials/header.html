@@ -21,9 +21,9 @@
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                    aria-expanded="false" id="org-dropdown">{{ (activeOrg | orgNameFilter) || "Organizations" }}&nbsp;<span class="caret"></span></a>
+                    aria-expanded="false" id="org-dropdown">{{ (MenuData.data.currentOrg | orgNameFilter) || "Organizations" }}&nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li ng-repeat="org in $parent.orgs">
+                        <li ng-repeat="org in orgs">
                             <a class="org-name" ng-href="#/org/{{ org.metadata.guid }}">{{org | orgNameFilter}}</a>
                         </li>
                     </ul>

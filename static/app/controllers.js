@@ -12,39 +12,41 @@
     });
 
     app.controller('MainCtrl', function($scope, $cloudfoundry, $location, MenuData) {
-      // Render the orgs on the page
-      var renderOrgs = function(orgs) {
-          $scope.orgs = orgs;
-          $cloudfoundry.setOrgsData(orgs);
-      };
+        // Render the orgs on the page
+        var renderOrgs = function(orgs) {
+            $scope.orgs = orgs;
+            $cloudfoundry.setOrgsData(orgs);
+        };
 
-      // Get Orgs or return to login page
-      $cloudfoundry.getOrgsData(renderOrgs);
+        $scope.clearDashboard = function () {
+            $scope.MenuData.data = {}
+        };
 
-
-      $scope.MenuData = MenuData;
+        // Get Orgs or return to login page
+        $cloudfoundry.getOrgsData(renderOrgs);
+        $scope.MenuData = MenuData;
     });
 
     function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope) {
-      var renderOrg = function(orgData) {
-          if (orgData['code'] == 30003) {
-            MenuData.data.currentOrg = "404";
-          } else {
-            MenuData.data.currentOrg = orgData;
-            $scope.activeOrg = MenuData.data.currentOrg;
-            $scope.spaces = $scope.activeOrg.spaces;
-          }
-      };
-      $cloudfoundry.getOrgDetails($routeParams['orgguid']).then(renderOrg);
+        var renderOrg = function(orgData) {
+            if (orgData['code'] == 30003) {
+                MenuData.data.currentOrg = "404";
+            } else {
+                MenuData.data.currentOrg = orgData;
+                $scope.activeOrg = orgData;
+                $scope.spaces = $scope.activeOrg.spaces;
+            }
+        };
+        $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
     }
 
     app.controller('OrgCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
-      // Render the org information on the page
-      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-      $scope.visibleTab = "organizations";
+        // Render the org information on the page
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+        $scope.visibleTab = "organizations";
     });
 
-    app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams) {
+    app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
         // Render the active org
         var renderActiveOrg = function(org) {
@@ -64,7 +66,6 @@
         $cloudfoundry.getSpaceDetails($routeParams['spaceguid'])
             .then(renderSpace);
         // Return the active org
-        $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
         $scope.visibleTab = "spaces";
     });
 
@@ -122,18 +123,18 @@
         };
         // Send request to create service instance
         $scope.createServiceInstance = function(serviceInstance) {
-            $scope.disableSubmit = true
-            serviceInstance.service_plan_guid = $scope.activePlan.metadata.guid;
-            $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
-        }
-        // Get service details
+                $scope.disableSubmit = true
+                serviceInstance.service_plan_guid = $scope.activePlan.metadata.guid;
+                $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
+            }
+            // Get service details
         $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
         // Find the active org from an org guid
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
     });
 
     app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData) {
-      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
 
         var renderAppSummary = function(appSummary) {
             // Only render while we are not updating an app ourselves.
