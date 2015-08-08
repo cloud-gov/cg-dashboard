@@ -1,5 +1,5 @@
 (function() {
-    var app = angular.module('cfdeck', ['ngRoute']);
+    var app = angular.module('cfdeck', ['ngRoute', 'angular-ladda']);
 
     app.config(function($routeProvider) {
         $routeProvider
@@ -22,13 +22,17 @@
                 templateUrl: 'js/app/partials/dashboard.html',
                 controller: 'MarketCtrl'
             })
-        .when('/dashboard/org/:orgguid/marketplace/:serviceguid', {
+            .when('/dashboard/org/:orgguid/marketplace/:serviceguid', {
                 templateUrl: 'js/app/partials/dashboard.html',
                 controller: 'ServiceCtrl'
             })
             .when('/dashboard/org/:orgguid/spaces/:spaceguid', {
                 templateUrl: 'js/app/partials/dashboard.html',
                 controller: 'SpaceCtrl'
+            })
+            .when('/dashboard/org/:orgguid/spaces/:spaceguid/apps/:appguid', {
+                templateUrl: 'js/app/partials/dashboard.html',
+                controller: 'AppCtrl'
             })
             .otherwise({
                 redirectTo: "/"

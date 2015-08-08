@@ -69,7 +69,7 @@
         };
         //TODO: show an app
         $scope.showApp = function(app) {
-            console.log("show app: " + app.name);
+            $location.path($location.path() + '/apps/' + app.guid)
         };
         // Get the orgs data from cache or load new data
         $cloudfoundry.getSpaceDetails($routeParams['spaceguid'])
@@ -141,6 +141,73 @@
         $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
         // Find the active org from an org guid        
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
+    });
+
+    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval) {
+        // Inject Math functions into the view.
+        $scope.Math = window.Math;
+        var renderAppSummary = function(appSummary) {
+            // Only render while we are not updating an app ourselves.
+            if ($cloudfoundry.getPollAppStatusProperty() === true) {
+                $scope.appSummary = appSummary;
+            }
+        }
+        var renderAppStats = function(appStats) {
+            // Only render while we are not updating an app ourselves.
+            if ($cloudfoundry.getPollAppStatusProperty() === true) {
+                $scope.appStats = appStats;
+            }
+        }
+	var resetAppStatsPoll = function() {
+            $scope.statsPromise = $interval(function() {
+                $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
+            }, 5000);
+            // Make sure to clean up afterwards when the page is naviageted away.
+            $scope.$on('$destroy', function () { $interval.cancel($scope.statsPromise); });
+	}
+	// Stop a specified app
+	$scope.stopApp = function(app) {
+		// Only stop if we are currently not restarting.
+		if ($scope.restarting != true) {
+			// Grey out the UI buttons while waiting.
+			$scope.stopping = true;
+			$cloudfoundry.stopApp(app)
+				.then(function() {
+					// Re-enable the UI buttons.
+					$scope.stopping = false;
+			});
+		}
+	};
+	// Restart a specified app
+	$scope.restartApp = function(app) {
+		// Only restart if we are currently not stopping.
+		if ($scope.stopping != true) {
+			// Grey out the UI buttons while waiting.
+			$scope.restarting = true;
+			$cloudfoundry.restartApp(app)
+				.then(function() {
+					// Re-enable the UI buttons.
+					$scope.restarting = false;
+			});
+		}
+	};
+	// Start a specified app
+	$scope.startApp = function(app) {
+		// Grey out the UI buttons while waiting.
+		$scope.starting = true;
+		$cloudfoundry.startApp(app)
+			.then(function() {
+				// Re-enable the UI buttons.
+				$scope.starting = false;
+			});
+	};
+        $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+	// TODO: Make it so it won't request stats if the state in the summary is not STARTED.
+        $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
+        resetAppStatsPoll();
+        // Show the `service.html` view
+        $scope.visibleTab = 'app';
     });
 
 }());

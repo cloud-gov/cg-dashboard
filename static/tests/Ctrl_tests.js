@@ -128,6 +128,69 @@ var createServiceInstance = function(serviceInstance) {
     }
 };
 
+var getPollAppStatusProperty = function() {
+    return true;
+}
+
+var getAppSummary = function(appGuid) {
+    return {
+        then: function(callback) {
+            return callback({
+                name: 'app1',
+                state: 'STARTED',
+                running_instances: 1,
+                instances: 1,
+                memory: 1024,
+                disk_quota: 1024,
+                package_state: 'STAGED'
+            })
+        }
+    }
+};
+
+var getAppStats = function(appGuid) {
+    return {
+        then: function(callback) {
+            return callback([{
+                name: 'app1',
+                stats: {
+                    usage: {
+                        mem: 12345678,
+                        mem_quota: 1234567890,
+                        disk: 12345678,
+                        disk_quota: 1234567890,
+                        cpu: 0.1
+                    }
+                }
+            }])
+        }
+    }
+};
+
+var restartApp = function(app) {
+    return {
+        then: function(callback) {
+            return callback('');
+        }
+    }
+};
+
+var stopApp = function(app) {
+    return {
+        then: function(callback) {
+            return callback('');
+        }
+    }
+};
+
+var startApp = function(app) {
+    return {
+        then: function(callback) {
+            return callback('');
+        }
+    }
+};
+
 // Location path mock
 var path = function(callback) {
     return callback()
@@ -443,4 +506,73 @@ describe('ServiceCtrl', function() {
             name: 'service1'
         });
     });
+});
+
+describe('AppCtrl', function() {
+    var scope, cloudfoundry;
+    beforeEach(module('cfdeck'));
+    beforeEach(inject(function($rootScope, $controller) {
+        //Mock CF service
+        cloudfoundry = {
+            stopApp: stopApp,
+            startApp: startApp,
+            restartApp: restartApp,
+            getPollAppStatusProperty: getPollAppStatusProperty,
+            getAppSummary: getAppSummary,
+            getAppSummary: getAppSummary,
+            getAppStats: getAppStats
+        }
+
+        spyOn(cloudfoundry, 'getAppSummary').and.callThrough();
+
+        // Load Ctrl and scope
+        scope = $rootScope.$new()
+        ctrl = $controller('AppCtrl', {
+            $scope: scope,
+            $cloudfoundry: cloudfoundry
+        });
+
+    }));
+
+    it('should put the app summary into the app', function() {
+        expect(scope.appSummary.name).toEqual('app1');
+        expect(scope.appSummary.state).toEqual('STARTED');
+        expect(scope.appSummary.running_instances).toEqual(1);
+        expect(scope.appSummary.instances).toEqual(1);
+        expect(scope.appSummary.memory).toEqual(1024);
+        expect(scope.appSummary.disk_quota).toEqual(1024);
+        expect(scope.appSummary.package_state).toEqual('STAGED');
+    });
+
+    it('should put the app stats into the app', function() {
+        expect(scope.appStats[0].name).toEqual('app1');
+        expect(scope.appStats[0].stats.usage.mem).toEqual(12345678);
+        expect(scope.appStats[0].stats.usage.mem_quota).toEqual(1234567890);
+        expect(scope.appStats[0].stats.usage.disk).toEqual(12345678);
+        expect(scope.appStats[0].stats.usage.disk_quota).toEqual(1234567890);
+        expect(scope.appStats[0].stats.usage.cpu).toEqual(0.1);
+    });
+
+    it('should open the app tab as the visible one', function() {
+        expect(scope.visibleTab).toEqual('app');
+    });
+
+    it('should re-enable the buttons after starting', function() {
+        expect(scope.starting).toBeUndefined();
+	scope.startApp();
+        expect(scope.starting).toEqual(false);
+    });
+
+    it('should re-enable the buttons after restarting', function() {
+        expect(scope.restarting).toBeUndefined();
+	scope.restartApp();
+        expect(scope.restarting).toEqual(false);
+    });
+
+    it('should re-enable the buttons after stopping', function() {
+        expect(scope.stopping).toBeUndefined();
+	scope.stopApp();
+        expect(scope.stopping).toEqual(false);
+    });
+
 });

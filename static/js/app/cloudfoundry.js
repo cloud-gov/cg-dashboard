@@ -139,6 +139,66 @@
             }
         };
 
+	// Get app summary
+        this.getAppSummary = function(appGuid) {
+            return $http.get('/v2/apps/' + appGuid + '/summary')
+                .then(function(response) {
+                    return response.data;
+                });
+        };
+
+	// Get detailed app stats
+        this.getAppStats = function(appGuid) {
+            return $http.get('/v2/apps/' + appGuid + '/stats')
+                .then(function(response) {
+                    return response.data;
+                });
+        };
+
+	// Tells whether the web app should poll for newer app statuses.
+	// Useful for when we are in the middle of updating the app status ourselves and we don't
+	// want a poll to interrupt the UI.
+	var pollAppStatus = true;
+	// Getter function for pollAppStatus.
+	this.getPollAppStatusProperty = function() {
+		return pollAppStatus;
+	};
+	// Setter function for pollAppStatus.
+	var setPollAppStatusProperty = function(value) {
+		pollAppStatus = value;
+	}
+	// Internal generic function that actually submits the request to backend to change the app.
+	this.changeAppState = function(app, desired_state) {
+		setPollAppStatusProperty(false); // prevent UI from refreshing.
+		return $http.put("/v2/apps/" + app.guid + "?async=false&inline-relations-depth=1", {"state":desired_state})
+			.then(function(response) {
+				// Success
+				// Set the state immediately to stop so that UI will force a load of the new options.
+				// UI will change the buttons based on the state.
+				app.state = desired_state;
+			}, function(response) {
+				// Failure
+			}).finally(function() {
+				setPollAppStatusProperty(true); // allow UI to refresh via polling again.
+			});
+	}
+	// Wrapper function that will submit a request to start an app.
+	this.startApp = function(app) {
+		return this.changeAppState(app, "STARTED");
+	};
+	// Wrapper function that will submit a request to stop an app.
+	this.stopApp = function(app) {
+		return this.changeAppState(app, "STOPPED");
+	};
+	// Wrapper function that will submit a request to restart an app.
+	this.restartApp = function(app) {
+                // _this = this allows us to access another service method again within a promise.
+                _this = this;
+		return this.changeAppState(app, "STOPPED")
+			.then(function() {
+				return _this.changeAppState(app, "STARTED");
+			});
+	};
 
     });
 
