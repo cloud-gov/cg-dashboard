@@ -1,24 +1,32 @@
 <ul class="nav nav-sidebar">
-  <ul class="nav navbar-nav">
-      <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-          aria-expanded="false" id="org-dropdown">Organization: {{ (MenuData.data.currentOrg | orgNameFilter) || "Select one" }}&nbsp;<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-              <li ng-repeat="org in orgs">
-                  <a class="org-name" ng-href="#/org/{{ org.metadata.guid }}">{{org | orgNameFilter}}</a>
-              </li>
-          </ul>
-      </li>
-  </ul>
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+        aria-expanded="false" id="org-dropdown">Organization: {{ (MenuData.data.currentOrg | orgNameFilter) || "Select one" }}&nbsp;<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li ng-repeat="org in orgs">
+                <a class="org-name" ng-href="#/org/{{ org.metadata.guid }}">{{org | orgNameFilter}}</a>
+            </li>
+        </ul>
+    </li>
 </ul>
+
+<ul class="nav nav-sidebar" ng-show="MenuData.data.currentOrg">
+    <li>
+        <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/marketplace">
+      {{MenuData.data.currentOrg | orgNameFilter}} Marketplace
+    </a>
+    </li>
+</ul>
+
+
 <ul class="nav nav-sidebar">
   <li ng-repeat="space in MenuData.data.currentOrg.spaces">
     <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}">{{ space.name }}</a>
   </li>
-
-  <li ng-show="MenuData.data.currentOrg">
-    <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/marketplace">
-      Marketplace
-    </a>
-  </li>
 </ul>
+
+
+
+
+
+
