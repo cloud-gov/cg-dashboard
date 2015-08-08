@@ -1,32 +1,11 @@
 (function() {
     'use strict';
-
+    // Get the app
     var app = angular.module('cfdeck');
-    app.controller('HomeCtrl', function($scope, $cloudfoundry) {
-        //Render the auth status of the backend
-        var renderStatus = function(status) {
-            $scope.backendStatus = status;
-        };
-        $cloudfoundry.getAuthStatus()
-            .then(renderStatus);
-    });
 
-    app.controller('MainCtrl', function($scope, $cloudfoundry, $location, MenuData) {
-        // Render the orgs on the page
-        var renderOrgs = function(orgs) {
-            $scope.orgs = orgs;
-            $cloudfoundry.setOrgsData(orgs);
-        };
-
-        $scope.clearDashboard = function() {
-            $scope.MenuData.data = {}
-        };
-
-        // Get Orgs or return to login page
-        $cloudfoundry.getOrgsData(renderOrgs);
-        $scope.MenuData = MenuData;
-    });
-
+    // Function for loadng the active org at each page
+    // findActiveOrg will attempt to get the active org from cache before
+    // downloading new data.
     function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope) {
         var renderOrg = function(orgData) {
             if (orgData['code'] == 30003) {
@@ -38,12 +17,35 @@
             }
         };
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
-    }
+    };
+
+    app.controller('HomeCtrl', function($scope, $cloudfoundry, MenuData) {
+        //Render the auth status of the backend
+        var renderStatus = function(status) {
+            $scope.backendStatus = status;
+        };
+        //Get the auth status of the backend
+        $cloudfoundry.getAuthStatus()
+            .then(renderStatus);
+    });
+
+    app.controller('MainCtrl', function($scope, $cloudfoundry, $location, MenuData) {
+        // Render the orgs on the page
+        var renderOrgs = function(orgs) {
+            $scope.orgs = orgs;
+            $cloudfoundry.setOrgsData(orgs);
+        };
+        // Clean menu data to return home
+        $scope.clearDashboard = function() {
+            $scope.MenuData.data = {}
+        };
+        // Load the org data
+        $cloudfoundry.getOrgsData(renderOrgs);
+        $scope.MenuData = MenuData;
+    });
 
     app.controller('OrgCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
-        // Render the org information on the page
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-        $scope.visibleTab = "organizations";
     });
 
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
@@ -70,27 +72,17 @@
         $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
             $scope.services = services;
         });
-        // Find the active org from an org guid
-        $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
-        // Show the `marketplace.html` view
-        $scope.visibleTab = 'marketplace';
     });
 
     app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-        // Render the active org
-        var renderActiveOrg = function(org) {
-                $scope.activeOrg = org;
-            }
-            // Send service plans to the view
+        // Send service plans to the view
         var renderServicePlans = function(servicePlans) {
             $scope.plans = servicePlans;
         };
         // Render service details and request service plans
         var renderService = function(service) {
             $scope.service = service;
-            // Show the `service.html` view
-            $scope.visibleTab = 'service';
             $cloudfoundry.getServicePlans(service.entity.service_plans_url).then(renderServicePlans);
         };
         // Checks if the service was created and display message
@@ -108,14 +100,12 @@
         };
         // Send request to create service instance
         $scope.createServiceInstance = function(serviceInstance) {
-                $scope.disableSubmit = true
-                serviceInstance.service_plan_guid = $scope.activePlan.metadata.guid;
-                $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
-            }
-            // Get service details
+            $scope.disableSubmit = true
+            serviceInstance.service_plan_guid = $scope.activePlan.metadata.guid;
+            $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
+        };
+        // Get service details
         $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
-        // Find the active org from an org guid
-        $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderActiveOrg);
     });
 
     app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData) {
@@ -139,7 +129,6 @@
                 });
             };
         };
-
         var renderAppStats = function(appStats) {
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
@@ -167,7 +156,7 @@
                         // Re-enable the UI buttons.
                         $scope.stopping = false;
                     });
-            }
+            };
         };
         // Restart a specified app
         $scope.restartApp = function(app) {
@@ -180,7 +169,7 @@
                         // Re-enable the UI buttons.
                         $scope.restarting = false;
                     });
-            }
+            };
         };
         // Start a specified app
         $scope.startApp = function(guid) {
@@ -220,8 +209,6 @@
         // TODO: Make it so it won't request stats if the state in the summary is not STARTED.
         $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
         resetAppStatsPoll();
-        // Show the `service.html` view
-        $scope.visibleTab = 'app';
     });
 
 }());
