@@ -192,9 +192,11 @@
 	};
 	// Wrapper function that will submit a request to restart an app.
 	this.restartApp = function(app) {
+                // _this = this allows us to access another service method again within a promise.
+                _this = this;
 		return this.changeAppState(app, "STOPPED")
 			.then(function() {
-				return changeAppState(app, "STARTED");
+				return _this.changeAppState(app, "STARTED");
 			});
 	};
 

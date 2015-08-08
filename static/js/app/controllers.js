@@ -144,6 +144,8 @@
     });
 
     app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval) {
+        // Inject Math functions into the view.
+        $scope.Math = window.Math;
         var renderAppSummary = function(appSummary) {
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
