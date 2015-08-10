@@ -46,7 +46,7 @@ var _ = Describe("AppStructure", func() {
 		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
 			delayForRendering()
 			Expect(page.Find("#org-dropdown")).To(BeFound())
-			Expect(page.Find("#org-dropdown").Text()).To(Equal("Organizations "))
+			Expect(page.Find("#org-dropdown").Text()).To(Equal("Organization: Select one "))
 			Expect(page.Find("#org-dropdown").Click()).To(Succeed())
 		})
 
