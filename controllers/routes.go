@@ -29,10 +29,10 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	apiRouter.Get("/authstatus", (*APIContext).AuthStatus)
 	apiRouter.Get("/logout", (*APIContext).Logout)
 	apiRouter.Get("/profile", (*APIContext).UserProfile)
-	apiRouter.Get("/:*", (*APIContext).Proxy)
-	apiRouter.Put("/:*", (*APIContext).Proxy)
-	apiRouter.Post("/:*", (*APIContext).Proxy)
-	apiRouter.Delete("/:*", (*APIContext).Proxy)
+	apiRouter.Get("/:*", (*APIContext).APIProxy)
+	apiRouter.Put("/:*", (*APIContext).APIProxy)
+	apiRouter.Post("/:*", (*APIContext).APIProxy)
+	apiRouter.Delete("/:*", (*APIContext).APIProxy)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.

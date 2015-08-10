@@ -33,20 +33,29 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 	next(rw, req)
 }
 
-// Proxy is a handler that serves as a proxy for all the CF API. Any route that comes in the /v2/* route
+// APIProxy is a handler that serves as a proxy for all the CF API. Any route that comes in the /v2/* route
 // that has not been specified, will just come here.
-func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
-
-	// Get client and refresh token if needed
-	// https://godoc.org/golang.org/x/oauth2#Config.Client
+func (c *APIContext) APIProxy(rw web.ResponseWriter, req *web.Request) {
 	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL.Path)
-	request, _ := http.NewRequest(req.Method, reqURL, req.Body)
+	c.proxy(rw, req, reqURL)
+}
+
+// proxy is an internal function that will construct the client with the token in the headers and
+// then send a request.
+func (c *APIContext) proxy(rw web.ResponseWriter, req *web.Request, url string) {
+	// Make the request.
+	request, _ := http.NewRequest(req.Method, url, req.Body)
+	// Acquire the http client and the refresh token if needed
+	// https://godoc.org/golang.org/x/oauth2#Config.Client
 	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
+	// Send the request.
 	res, _ := client.Do(request)
 	// Should return the same status.
 	rw.WriteHeader(res.StatusCode)
+	// Read the body.
 	body, _ := ioutil.ReadAll(res.Body)
 	defer res.Body.Close()
+	// Write the body into response that is going back to the frontend.
 	fmt.Fprintf(rw, string(body))
 }
 
@@ -72,4 +81,17 @@ func (c *APIContext) UserProfile(rw web.ResponseWriter, req *web.Request) {
 // user can reach here after passing through the OAuth Middleware, they are authorized.
 func (c *APIContext) AuthStatus(rw web.ResponseWriter, req *web.Request) {
 	fmt.Fprintf(rw, "{\"status\": \"authorized\"}")
+}
+
+// uaaProxy is an equiavalent to the API Proxy.
+// TODO: It should be under its own subrouter eg. server.com/uaa/some-route.
+// However, for now, we will use it under the API subrouter eg. server.com/v2/uaa/some-route.
+func (c *APIContext) uaaProxy(rw web.ResponseWriter, req *web.Request, uaaEndpoint string) {
+	reqURL := fmt.Sprintf("%s%s", c.Settings.UaaURL, uaaEndpoint)
+	c.proxy(rw, req, reqURL)
+}
+
+// UserInfo returns the UAA_API/userinfo information for the logged in user.
+func (c *APIContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
+	c.uaaProxy(rw, req, "/userinfo")
 }
