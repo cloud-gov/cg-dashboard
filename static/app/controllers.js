@@ -29,11 +29,15 @@
             .then(renderStatus);
     });
 
-    app.controller('MainCtrl', function($scope, $cloudfoundry, MenuData) {
+    app.controller('MainCtrl', function($scope, $cloudfoundry, MenuData, $uaa) {
         // Render the orgs on the page
         var renderOrgs = function(orgs) {
             $scope.orgs = orgs;
             $cloudfoundry.setOrgsData(orgs);
+        };
+        // Render the given name of the user on the page
+        var renderName = function(name) {
+            $scope.givenName = name;
         };
         // Clean menu data to return home
         $scope.clearDashboard = function() {
@@ -42,6 +46,8 @@
         // Load the org data
         $cloudfoundry.getOrgsData(renderOrgs);
         $scope.MenuData = MenuData;
+	// Load the given name of the logged in user.
+	$uaa.getUserInfoGivenName().then(renderName);
     });
 
     app.controller('OrgCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {

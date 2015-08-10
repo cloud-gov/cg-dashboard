@@ -33,6 +33,7 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	apiRouter.Put("/:*", (*APIContext).APIProxy)
 	apiRouter.Post("/:*", (*APIContext).APIProxy)
 	apiRouter.Delete("/:*", (*APIContext).APIProxy)
+	apiRouter.Get("/uaa/userinfo", (*APIContext).UserInfo)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.
