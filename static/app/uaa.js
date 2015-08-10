@@ -12,7 +12,7 @@
 			return 'User';
 		}
 		this.getUserInfoGivenName = function() {
-			return $http.get('/v2/uaa/userinfo')
+			return $http.get('/uaa/userinfo')
 				.then(parseUserInfoGivenName, handleNoGivenName);
 		};
 	});
