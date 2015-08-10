@@ -117,6 +117,18 @@
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
                 $scope.appSummary = appSummary;
+                // Show the available services
+                $cloudfoundry.getSpaceServices($routeParams['spaceguid']).then(function(services) {
+                    // Add a tag to services if they are bound
+                    $scope.availableServices = services.map(function(service) {
+                        $scope.appSummary.services.forEach(function(boundService) {
+                            if (boundService.guid == service.metadata.guid) {
+                                service.boundService = boundService;
+                            };
+                        });
+                        return service;
+                    });
+                });
             }
         };
         var renderAppStats = function(appStats) {
