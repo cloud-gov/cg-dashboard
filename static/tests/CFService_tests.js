@@ -81,27 +81,6 @@ describe('CloudFoundry Service Tests', function() {
 
     });
 
-    describe('getOrgSpaceDetails', function() {
-
-        it('should return space details with the org_name appended to the return array', function() {
-
-            var single_org = {
-                entity: {
-                    name: 'org1',
-                    spaces_url: '/v2/organization/123/spaces'
-                }
-            }
-            httpBackend.whenGET(single_org.entity.spaces_url).respond({
-                resources: ['mockspace1', 'mockspace2']
-            });
-            $cloudfoundry.getOrgSpaceDetails(single_org).then(function(data) {
-                expect(data.org_name).toEqual('org1');
-                expect(data.resources).toEqual(['mockspace1', 'mockspace2']);
-            });
-            httpBackend.flush();
-        });
-    });
-
     describe('getOrgDetails', function() {
 
         it('should return summary data for a specific org', function() {
@@ -193,53 +172,78 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
-    describe('getOrgSpaces', function() {
-        it('should return all the spaces under an org', function() {
-            var spaces = {
-                name: 'all',
+    describe('getSpaceServices', function() {
+        it('should return all the service instances avaiable to the space apps', function() {
+            httpBackend.whenGET('/v2/spaces/spaceguid/service_instances').respond({
+                page: 1,
                 resources: [{
-                    name: 'service1'
-                }, {
-                    name: 'service2'
+                    name: 'fakename'
                 }]
-            };
-            httpBackend.whenGET('/v2/organizations/testorgguid/spaces').respond(spaces);
-            $cloudfoundry.getOrgSpaces('/v2/organizations/testorgguid/spaces').then(function(services) {
-                expect(services.length).toEqual(2);
+            });
+
+            $cloudfoundry.getSpaceServices('spaceguid').then(function(data) {
+                expect(data).toEqual([{
+                    name: 'fakename'
+                }]);
             });
             httpBackend.flush();
+
         });
     });
 
-    describe('findActiveOrg', function() {
-        it('should find the active org given an org guid', function() {
-            // Setting up mock response
-            httpBackend.whenGET('/v2/organizations').respond({
-                pages: 1,
-                resources: [{
-                    metadata: {
-                        guid: 'org1'
-                    }
-                }, {
-                    metadata: {
-                        guid: 'org2'
-                    }
-                }]
+    describe('bindService', function() {
+        it('should send a post request to bind app and return a success message', function() {
+            httpBackend.whenPOST('/v2/service_bindings', {}).respond({
+                guid: 'newbindingguid'
             });
 
-            // Callback spy to check if the method can get the org when the org data exists 
-            var getActiveOrgSpyExists = function(org) {
-                    expect(org.metadata.guid).toEqual('org2');
-                }
-                // Now that orgs have been set check if the function can find another org
-                // Callback spy to check if the method can get the org when the org data isn't there 
-            var getActiveOrgSpyNew = function(org) {
-                expect(org.metadata.guid).toEqual('org1');
-                // Now that orgs have been set check if the function can find another org
-                $cloudfoundry.findActiveOrg('org2', getActiveOrgSpyExists);
-            };
-            $cloudfoundry.findActiveOrg('org1', getActiveOrgSpyNew);
+            $cloudfoundry.bindService({}).then(function(response) {
+                expect(response.data.guid).toEqual('newbindingguid');
+            });
             httpBackend.flush();
+
+        });
+
+        it('should send a post request to bind app and if the binding fails it should return a failure message', function() {
+            httpBackend.whenPOST('/v2/service_bindings', {}).respond(400, {
+                message: 'error'
+            });
+
+            $cloudfoundry.bindService({}).then(function(response) {
+                expect(response.data.message).toEqual('error');
+            });
+            httpBackend.flush();
+
+        });
+
+    });
+
+    describe('unbindService', function() {
+        it('should find the correct service binding instance and then unbind it', function() {
+            httpBackend.whenGET('/v2/apps/appguid/service_bindings')
+                .respond({
+                    resources: [{
+                        entity: {
+                            service_instance_guid: 'serviceInstanceGuid'
+                        },
+                        metadata: {
+                            url: '/v2/bindingurl'
+                        }
+                    }]
+                });
+            httpBackend.whenDELETE('/v2/bindingurl').respond(201, {
+                succeeded: true
+            });
+            var data = {
+                app_guid: 'appguid',
+                service_instance_guid: 'serviceInstanceGuid'
+            }
+            var callbackSpy = function(response) {
+                expect(response.status).toEqual(201);
+            };
+            $cloudfoundry.unbindService(data, callbackSpy)
+            httpBackend.flush();
+
         });
     });
 
@@ -247,9 +251,7 @@ describe('CloudFoundry Service Tests', function() {
         it('should collect a specific service\'s details', function() {
 
             httpBackend.whenGET('/v2/services/serviceguid').respond({});
-            $cloudfoundry.getServiceDetails('serviceguid').then(function(data) {
-                expect(data).toEqual({});
-            });
+            $cloudfoundry.getServiceDetails('serviceguid')
             httpBackend.flush();
         });
     });
@@ -289,7 +291,9 @@ describe('CloudFoundry Service Tests', function() {
                 }]
             });
             $cloudfoundry.getServicePlans('/v2/services/serviceguid/service_plans').then(function(data) {
-                expect(data[0].entity.extra).toEqual({ costs: 1 });
+                expect(data[0].entity.extra).toEqual({
+                    costs: 1
+                });
             });
             httpBackend.flush();
         });
@@ -297,19 +301,142 @@ describe('CloudFoundry Service Tests', function() {
 
     describe('createServiceInstance', function() {
         it('should great a service instance via post request', function() {
-            var created = {space_url: '/v2/spaces/123'};
-            httpBackend.whenPOST('/v2/service_instances?accepts_incomplete=true', {data: 'test'}).respond(created);
-            $cloudfoundry.createServiceInstance({data: 'test'}).then(function(response) {
+            var created = {
+                space_url: '/v2/spaces/123'
+            };
+            httpBackend.whenPOST('/v2/service_instances?accepts_incomplete=true', {
+                data: 'test'
+            }).respond(created);
+            $cloudfoundry.createServiceInstance({
+                data: 'test'
+            }).then(function(response) {
                 expect(response.data.space_url).toEqual('/v2/spaces/123');
             });
             httpBackend.flush();
         });
 
         it('should return an error message when creation fails', function() {
-            var created = {description: 'Duplicate Name'};
-            httpBackend.whenPOST('/v2/service_instances?accepts_incomplete=true', {data: 'test'}).respond(400, created);
-            $cloudfoundry.createServiceInstance({data: 'test'}).then(function(response) {
+            var created = {
+                description: 'Duplicate Name'
+            };
+            httpBackend.whenPOST('/v2/service_instances?accepts_incomplete=true', {
+                data: 'test'
+            }).respond(400, created);
+            $cloudfoundry.createServiceInstance({
+                data: 'test'
+            }).then(function(response) {
                 expect(response.data.description).toEqual('Duplicate Name');
+            });
+            httpBackend.flush();
+        });
+    });
+
+    describe('getAppSummary', function() {
+        it('should return summary data for a specific app', function() {
+            var appSummary = {
+                name: 'sampleapp',
+                guid: 'appguid',
+                memory: 1024,
+                disk_quota: 1024,
+                instances: 1
+            };
+            httpBackend.whenGET('/v2/apps/appguid/summary').respond(appSummary);
+            $cloudfoundry.getAppSummary('appguid').then(function(data) {
+                expect(data.name).toEqual('sampleapp');
+                expect(data.guid).toEqual('appguid');
+                expect(data.instances).toEqual(1);
+                expect(data.memory).toEqual(1024);
+                expect(data.disk_quota).toEqual(1024);
+            });
+            httpBackend.flush();
+        });
+    });
+
+    describe('findActiveOrg', function() {
+        it('should find the active org given an org guid', function() {
+            // Setting up mock response
+            httpBackend.whenGET('/v2/organizations/org1/summary').respond({
+                guid: 'org1'
+            });
+
+            // Callback spy to check if the method can get the org when the org data exists
+            var getActiveOrgSpyExists = function(org) {
+                    expect(org.guid).toEqual('org1');
+                }
+                // Now that orgs have been set check if the function can find another org
+                // Callback spy to check if the method can get the org when the org data isn't there
+            var getActiveOrgSpyNew = function(org) {
+                expect(org.guid).toEqual('org1');
+                // Now that orgs have been set check if the function can find another org
+                $cloudfoundry.findActiveOrg('org1', getActiveOrgSpyExists);
+            };
+            $cloudfoundry.findActiveOrg('org1', getActiveOrgSpyNew);
+            httpBackend.flush();
+        });
+    });
+
+    describe('getAppStats', function() {
+        it('should return detailed data for a specific STARTED app', function() {
+            var appStats = [{
+                name: 'sampleapp',
+                guid: 'appguid',
+                stats: {
+                    usage: {
+                        disk: 66392064
+                    }
+                }
+            }];
+            httpBackend.whenGET('/v2/apps/appguid/stats').respond(appStats);
+            $cloudfoundry.getAppStats('appguid').then(function(data) {
+                expect(data[0].name).toEqual('sampleapp');
+                expect(data[0].guid).toEqual('appguid');
+                expect(data[0].stats.usage.disk).toEqual(66392064);
+            });
+            httpBackend.flush();
+        });
+    });
+
+    describe('startApp', function() {
+        it('should send a request to start an app', function() {
+            var app = {}
+            app.state = "STOPPED";
+            app.guid = "appguid";
+            spyOn($cloudfoundry, 'changeAppState');
+            $cloudfoundry.startApp(app);
+            expect($cloudfoundry.changeAppState).toHaveBeenCalledWith(app, "STARTED");
+        });
+    });
+
+    describe('stopApp', function() {
+        it('should send a request to stop an app', function() {
+            var app = {}
+            app.state = "STARTED";
+            app.guid = "appguid";
+            spyOn($cloudfoundry, 'changeAppState');
+            $cloudfoundry.stopApp(app);
+            expect($cloudfoundry.changeAppState).toHaveBeenCalledWith(app, "STOPPED");
+        });
+    });
+
+    describe('changeAppState', function() {
+        it('should send a request to change the state of an app and change the app object state if successful', function() {
+            var app = {}
+            app.state = "STARTED";
+            app.guid = "appguid";
+            httpBackend.whenPUT('/v2/apps/' + app.guid + '?async=false&inline-relations-depth=1').respond({});
+            $cloudfoundry.changeAppState(app, "STOPPED").then(function() {
+                expect(app.state).toEqual("STOPPED");
+            });
+            httpBackend.flush();
+        });
+
+        it('should send a request to change the state of an app and NOT change the app object state if it fails', function() {
+            var app = {}
+            app.state = "STARTED";
+            app.guid = "appguid";
+            httpBackend.whenPUT('/v2/apps/' + app.guid + '?async=false&inline-relations-depth=1').respond(401, {});
+            $cloudfoundry.changeAppState(app, "STOPPED").then(function() {
+                expect(app.state).toEqual("STARTED");
             });
             httpBackend.flush();
         });

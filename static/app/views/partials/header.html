@@ -1,0 +1,37 @@
+<!-- Navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Navbar brand -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+            aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+	    <a class="navbar-brand" href="#/dashboard" ng-click="clearDashboard()">
+        <i class="glyphicon glyphicon-cloud"></i>
+        Deck
+        <span class="label label-info">Alpha</span>
+      </a>
+        </div>
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a id='orgspaces' ng-click="showOrg(activeOrg)" ng-show="activeOrg">Spaces</a>
+                </li>
+                <li>
+                    <a id='marketplace' ng-click="showOrgMarketplace(activeOrg)" ng-show="activeOrg">Service Marketplace</a>
+                </li>
+                <li>
+                    <a href="/v2/profile">User Profile</a>
+                </li>
+                <li>
+                    <a href="/v2/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
