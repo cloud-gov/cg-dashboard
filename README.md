@@ -34,33 +34,26 @@ If you are testing locally, export these variables. If you are deploying to clou
 - `CONSOLE_API`: The URL of the API service. i.e. `http://api.domain.com`
 
 ## Front end
-Front end dependencies included
+Install front end dependencies
 ```
-cd static
-bower update
+npm install
 ```
-
 ## Running locally
 - Modify the ClientID and ClientSecret in main() to reflect your client id and secret. TODO: Use environment variables.
 - Modify the AuthURL and TokenURL in main() to reflect the URLs to login and get tokens. TODO: Use environment variables.
 - `go run server.go`
 - Navigate browser to `http://localhost:9999`
 
-
 ## Unit Testing
 ### Running Go unit tests
 - `go test ./...`
 
 ### Running Angular unit tests
-To install AngularJS test dependencies
-```
-npm install
-```
 Test can then be run with the command:
 ```
 npm run tests
 ```
-To get a viewable coverage report change the `coverageReport` object in `karma.conf.js` from `json` to `html` 
+To get a viewable coverage report change the `coverageReport` object in `karma.conf.js` from `json` to `html`
 ```
 coverageReporter: {
     type: 'html',
