@@ -2,35 +2,14 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/18F/cf-deck/helpers"
 	"github.com/gocraft/web"
-	"golang.org/x/oauth2"
-	"io/ioutil"
 	"net/http"
 )
 
 // APIContext stores the session info and access token per user.
 // All routes within APIContext represent the API routes
 type APIContext struct {
-	*Context // Required.
-	Token    oauth2.Token
-}
-
-// OAuth is a middle ware that checks whether or not the user has a valid token.
-// If the token is present and still valid, it just passes it on.
-// If the token is 1) present and expired or 2) not present, it will return unauthorized.
-func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
-	// Get valid token if it exists from session store.
-
-	if token := helpers.GetValidToken(req.Request, c.Settings); token != nil {
-		c.Token = *token
-	} else {
-		// If no token, return unauthorized.
-		http.Error(rw, "{\"status\": \"unauthorized\"}", http.StatusUnauthorized)
-		return
-	}
-	// Proceed to the next middleware or to the handler if last middleware.
-	next(rw, req)
+	*SecureContext // Required.
 }
 
 // APIProxy is a handler that serves as a proxy for all the CF API. Any route that comes in the /v2/* route
@@ -38,25 +17,6 @@ func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.Nex
 func (c *APIContext) APIProxy(rw web.ResponseWriter, req *web.Request) {
 	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL.Path)
 	c.proxy(rw, req, reqURL)
-}
-
-// proxy is an internal function that will construct the client with the token in the headers and
-// then send a request.
-func (c *APIContext) proxy(rw web.ResponseWriter, req *web.Request, url string) {
-	// Make the request.
-	request, _ := http.NewRequest(req.Method, url, req.Body)
-	// Acquire the http client and the refresh token if needed
-	// https://godoc.org/golang.org/x/oauth2#Config.Client
-	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
-	// Send the request.
-	res, _ := client.Do(request)
-	// Should return the same status.
-	rw.WriteHeader(res.StatusCode)
-	// Read the body.
-	body, _ := ioutil.ReadAll(res.Body)
-	defer res.Body.Close()
-	// Write the body into response that is going back to the frontend.
-	fmt.Fprintf(rw, string(body))
 }
 
 // Logout is a handler that will attempt to clear the session information for the current user.
@@ -81,17 +41,4 @@ func (c *APIContext) UserProfile(rw web.ResponseWriter, req *web.Request) {
 // user can reach here after passing through the OAuth Middleware, they are authorized.
 func (c *APIContext) AuthStatus(rw web.ResponseWriter, req *web.Request) {
 	fmt.Fprintf(rw, "{\"status\": \"authorized\"}")
-}
-
-// uaaProxy is an equiavalent to the API Proxy.
-// TODO: It should be under its own subrouter eg. server.com/uaa/some-route.
-// However, for now, we will use it under the API subrouter eg. server.com/v2/uaa/some-route.
-func (c *APIContext) uaaProxy(rw web.ResponseWriter, req *web.Request, uaaEndpoint string) {
-	reqURL := fmt.Sprintf("%s%s", c.Settings.UaaURL, uaaEndpoint)
-	c.proxy(rw, req, reqURL)
-}
-
-// UserInfo returns the UAA_API/userinfo information for the logged in user.
-func (c *APIContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
-	c.uaaProxy(rw, req, "/userinfo")
 }
