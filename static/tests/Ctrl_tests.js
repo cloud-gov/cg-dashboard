@@ -13,18 +13,6 @@ var getOrgDetails = function() {
 }
 
 
-var getOrgServices = function() {
-    return {
-        then: function(callback) {
-            return callback([{
-                name: 'service1'
-            }, {
-                name: 'service2'
-            }])
-        }
-    }
-};
-
 var getServiceDetails = function(serviceGuid) {
     return {
         then: function(callback) {
@@ -198,6 +186,17 @@ var findActiveOrg = function(orgguid, callback) {
 };
 
 
+var getOrgServices = function() {
+    return {
+        then: function(callback) {
+            return callback([{
+                name: 'service1'
+            }, {
+                name: 'service2'
+            }])
+        }
+    }
+};
 
 
 // Location path mock
@@ -225,7 +224,6 @@ describe('HomeCtrl', function() {
             $scope: scope,
             $cloudfoundry: cloudfoundry
         });
-
     }));
 
     it('should return the authentication status from the cf service', function() {
@@ -235,11 +233,11 @@ describe('HomeCtrl', function() {
 
 describe('MainCtrl', function() {
 
-    var scope, cloudfoundry, location, MenuData = {};
+    var scope, cloudfoundry, MenuData = {};
 
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
-        // Mock cloudfoundry service 
+        // Mock cloudfoundry service
         cloudfoundry = {
             getOrgsData: getOrgsData,
             setOrgsData: setOrgsData
@@ -250,7 +248,6 @@ describe('MainCtrl', function() {
         ctrl = $controller('MainCtrl', {
             $scope: scope,
             $cloudfoundry: cloudfoundry,
-            $location: location,
             MenuData: MenuData
         });
     }));
@@ -358,9 +355,9 @@ describe('SpaceCtrl', function() {
         })
     });
 });
-/*
+
 describe('MarketCtrl', function() {
-    var scope, cloudfoundry;
+    var scope, cloudfoundry, location, MenuData = {data: {}};
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
         //Mock CF service
@@ -368,15 +365,23 @@ describe('MarketCtrl', function() {
             getOrgServices: getOrgServices,
             findActiveOrg: findActiveOrg
         }
+        // Mock location service
+        location = {
+            path: path
+        }
 
-        spyOn(cloudfoundry, 'findActiveOrg').and.callThrough();
         spyOn(cloudfoundry, 'getOrgServices').and.callThrough();
 
         // Load Ctrl and scope
         scope = $rootScope.$new()
         ctrl = $controller('MarketCtrl', {
             $scope: scope,
-            $cloudfoundry: cloudfoundry
+            $cloudfoundry: cloudfoundry,
+            $routeParams: {
+                orgguid: 'org1guid',
+            },
+            MenuData: MenuData,
+            $location: location
         });
     }));
 
@@ -384,18 +389,19 @@ describe('MarketCtrl', function() {
         expect(scope.services.length).toEqual(2);
     });
 
-
-    it('should open the services tab as the visible one', function() {
-        expect(scope.visibleTab).toEqual('marketplace');
-    });
-
     it('should return the active org', function() {
         expect(scope.activeOrg.entity.name).toEqual('org1')
     });
 
+    it('should go to the specific service details', function() {
+      spyOn(location, 'path');
+      scope.showService({metadata: {guid: 'serviceguid'}})
+        expect(location.path).toHaveBeenCalledWith('undefined/serviceguid');
+    });
+
 });
 
-
+/*
 describe('ServiceCtrl', function() {
     var scope, cloudfoundry;
     beforeEach(module('cfdeck'));

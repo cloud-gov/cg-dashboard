@@ -60,11 +60,7 @@
 
     app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-        // Render the active org
-        var renderActiveOrg = function(org) {
-                $scope.activeOrg = org;
-            }
-            // Show a specific service details by going to service landing page
+        // Show a specific service details by going to service landing page
         $scope.showService = function(service) {
             $location.path($location.path() + '/' + service.metadata.guid);
         };
