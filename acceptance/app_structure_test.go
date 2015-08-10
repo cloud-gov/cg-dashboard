@@ -31,7 +31,7 @@ var _ = Describe("AppStructure", func() {
 
 	It("should show app structure for an authenticated user", func() {
 		// TODO remove skip once requirement is redone.
-		Skip("app page changed");
+		Skip("app page changed")
 		By("directing the user to a landing page", func() {
 			Expect(page.Navigate(testEnvVars.Hostname)).To(Succeed())
 		})
