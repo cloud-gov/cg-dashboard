@@ -167,7 +167,7 @@ var getSpaceServices = function(spaceguid) {
           return callback([{metadata: {guid: 'serviceguid'}}]);
       }
   }
-}
+};
 
 var generalBindFunctions = function(service) {
   return  {
@@ -175,7 +175,17 @@ var generalBindFunctions = function(service) {
         return callback({});
     }
   }
-}
+};
+
+var getUserInfoGivenName = function() {
+    return {
+        then: function(callback) {
+            return callback(
+                'givenName1'
+            )
+        }
+    }
+};
 
 // Location path mock
 var path = function(callback) {
@@ -210,7 +220,7 @@ describe('HomeCtrl', function() {
 
 describe('MainCtrl', function() {
 
-    var scope, cloudfoundry, MenuData = {};
+    var scope, cloudfoundry, MenuData = {}, uaa;
 
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
@@ -219,13 +229,17 @@ describe('MainCtrl', function() {
             getOrgsData: getOrgsData,
             setOrgsData: setOrgsData
         };
+        uaa = {
+            getUserInfoGivenName: getUserInfoGivenName
+        };
         //Load Ctrl and scope with mock service
         scope = $rootScope.$new();
 
         ctrl = $controller('MainCtrl', {
             $scope: scope,
             $cloudfoundry: cloudfoundry,
-            MenuData: MenuData
+            MenuData: MenuData,
+            $uaa: uaa,
         });
     }));
 
@@ -257,6 +271,9 @@ describe('MainCtrl', function() {
         expect(scope.MenuData.data).toEqual({});
     });
 
+    it('should place some given name to be displayed', function() {
+        expect(scope.givenName).toEqual('givenName1');
+    });
 });
 
 describe('OrgCtrl', function() {
