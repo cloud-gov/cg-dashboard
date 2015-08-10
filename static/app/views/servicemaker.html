@@ -1,7 +1,11 @@
 <div class="well">
     <h4 class="text-center">Create Service Instance for <u>{{service.entity.label}}</u> service using the <u>{{activePlan.entity.name}}</u> plan </h4>
     </br>
-    <form class="form-horizontal">
+    <div ng-switch='message.type'>
+      <div ng-switch-when='error' class="alert alert-danger" role="alert">{{message.message}}</div>
+      <div ng-switch-when='success' class="alert alert-success" role="alert">{{message.message}}</div>
+    </div>
+    <form>
         <div class="form-group">
             <label>Choose a name for the service</label>
             </br>
@@ -16,9 +20,7 @@
                 <option value=""></option>
             </select>
         </div>
-        <input ng-disabled="{{disableSubmit}}" class="btn btn-primary" type="submit" value="Create Service Instance"
-        ng-click="createServiceInstance(serviceInstance)" />
-        <br/>
-        <b>{{message}}</b>
+        <button ng-disabled="disableSubmit" class="btn btn-primary" type="submit" value="Create Service Instance"
+        ng-click="createServiceInstance(serviceInstance)" >Create Service Instance</button>
     </form>
 </div>
