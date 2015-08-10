@@ -20,8 +20,8 @@
       </div>
       <div class="panel-body">
         <div class="progress">
-          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{appSummary.running_instances}}" aria-valuemin="0" aria-valuemax="{{appSummary.instances}}" style="min-width: 5em; width:{{(appSummary.running_instances/appSummary.instances*100)}}%">
-              {{appSummary.running_instances}} 
+          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{Math.max(0,appSummary.running_instances)}}" aria-valuemin="0" aria-valuemax="{{appSummary.instances}}" style="min-width: 5em; width:{{(Math.max(0,appSummary.running_instances)/appSummary.instances*100)}}%">
+              {{Math.max(0, appSummary.running_instances)}}
           </div>
         </div>
       </div>

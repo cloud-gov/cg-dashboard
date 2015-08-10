@@ -453,17 +453,23 @@ describe('CloudFoundry Service Tests', function() {
 
     describe('startApp', function() {
        it('should send a request to start an app', function() {
+            var app = {}
+            app.state = "STOPPED";
+            app.guid = "appguid";
             spyOn($cloudfoundry, 'changeAppState');
-            $cloudfoundry.startApp(null);
-            expect($cloudfoundry.changeAppState).toHaveBeenCalledWith(null, "STARTED");
+            $cloudfoundry.startApp(app);
+            expect($cloudfoundry.changeAppState).toHaveBeenCalledWith(app, "STARTED");
         });
     });
 
-    describe('startApp', function() {
+    describe('stopApp', function() {
        it('should send a request to stop an app', function() {
+            var app = {}
+            app.state = "STARTED";
+            app.guid = "appguid";
             spyOn($cloudfoundry, 'changeAppState');
-            $cloudfoundry.stopApp(null);
-            expect($cloudfoundry.changeAppState).toHaveBeenCalledWith(null, "STOPPED");
+            $cloudfoundry.stopApp(app);
+            expect($cloudfoundry.changeAppState).toHaveBeenCalledWith(app, "STOPPED");
         });
     });
 
