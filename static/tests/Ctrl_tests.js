@@ -1,32 +1,4 @@
-// CF service method mocks
-getAuthStatus = function() {
-    return {
-        then: function(callback) {
-            return callback('authenticated');
-        }
-    }
-};
-
-var getOrgsData = function(callback) {
-    return callback(
-        [{
-            entity: {
-                name: 'org1'
-            },
-            metadata: {
-                guid: 'org1guid'
-            }
-        }, {
-            entity: {
-                name: 'org1'
-            },
-            metadata: {
-                guid: 'org2guid'
-            }
-        }]);
-};
-
-var setOrgsData = function() {};
+/*
 
 var getOrgDetails = function() {
     return {
@@ -40,29 +12,7 @@ var getOrgDetails = function() {
     }
 }
 
-var getSpaceDetails = function(spaceguid) {
-    return {
-        then: function(callback) {
-            return callback({
-                guid: 'spaceguid',
-                name: 'spacename',
-                apps: [{
-                    name: 'mockname1'
-                }, {
-                    name: 'mockname2'
-                }]
-            });
-        }
-    }
-};
 
-var findActiveOrg = function(orgguid, callback) {
-    return callback({
-        entity: {
-            name: 'org1'
-        }
-    })
-}
 var getOrgServices = function() {
     return {
         then: function(callback) {
@@ -191,10 +141,70 @@ var startApp = function(app) {
     }
 };
 
+*/
+
+// CF service method mocks
+getAuthStatus = function() {
+    return {
+        then: function(callback) {
+            return callback('authenticated');
+        }
+    }
+};
+
+var getOrgsData = function(callback) {
+    return callback(
+        [{
+            entity: {
+                name: 'org1'
+            },
+            metadata: {
+                guid: 'org1guid'
+            }
+        }, {
+            entity: {
+                name: 'org1'
+            },
+            metadata: {
+                guid: 'org2guid'
+            }
+        }]);
+};
+
+var setOrgsData = function() {};
+
+var getSpaceDetails = function(spaceguid) {
+    return {
+        then: function(callback) {
+            return callback({
+                guid: 'spaceguid',
+                name: 'spacename',
+                apps: [{
+                    name: 'mockname1'
+                }, {
+                    name: 'mockname2'
+                }]
+            });
+        }
+    }
+};
+
+var findActiveOrg = function(orgguid, callback) {
+    return callback({
+        entity: {
+            name: 'org1'
+        }
+    })
+};
+
+
+
+
 // Location path mock
 var path = function(callback) {
     return callback()
 }
+
 
 describe('HomeCtrl', function() {
 
@@ -223,28 +233,25 @@ describe('HomeCtrl', function() {
     })
 });
 
-describe('DashboardCtrl', function() {
+describe('MainCtrl', function() {
 
-    var scope, cloudfoundry, location;
+    var scope, cloudfoundry, location, MenuData = {};
 
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
         // Mock cloudfoundry service 
         cloudfoundry = {
-                getOrgsData: getOrgsData,
-                setOrgsData: setOrgsData
-            }
-            // Mock location service
-        location = {
-                path: path
-            }
-            //Load Ctrl and scope with mock service
+            getOrgsData: getOrgsData,
+            setOrgsData: setOrgsData
+        };
+        //Load Ctrl and scope with mock service
         scope = $rootScope.$new();
 
-        ctrl = $controller('DashboardCtrl', {
+        ctrl = $controller('MainCtrl', {
             $scope: scope,
             $cloudfoundry: cloudfoundry,
-            $location: location
+            $location: location,
+            MenuData: MenuData
         });
     }));
 
@@ -268,104 +275,52 @@ describe('DashboardCtrl', function() {
         );
     });
 
-    it('should send the user to the org view', function() {
-        spyOn(location, 'path');
-        scope.showOrg({
-            metadata: {
-                guid: 'mockguid'
-            }
-        });
-        expect(location.path).toHaveBeenCalledWith('/dashboard/org/mockguid');
+    it('should clear the menu data', function() {
+        scope.MenuData.data = {
+            test: 'data'
+        }
+        scope.clearDashboard();
+        expect(scope.MenuData.data).toEqual({});
     });
+
 });
 
 describe('OrgCtrl', function() {
+    var scope, cloudfoundry, MenuData = {
+        data: {}
+    };
 
-    var scope, cloudfoundry, location;
+    beforeEach(module('cfdeck'));
+    beforeEach(inject(function($rootScope, $controller) {
 
-    beforeEach(module('cfdeck'))
-    describe('when the org is avaiable', function() {
+        //Mock Cf service
+        cloudfoundry = {
+            findActiveOrg: findActiveOrg
+        }
+        spyOn(cloudfoundry, 'findActiveOrg');
 
-        beforeEach(inject(function($rootScope, $controller) {
-            cloudfoundry = {
-                getOrgDetails: getOrgDetails
-            };
-            location = {
-                path: path
-            };
-
-            // Spyon and return promise
-            spyOn(cloudfoundry, 'getOrgDetails').and.callThrough();
-
-            // Load Ctrl and scope
-            scope = $rootScope.$new();
-            ctrl = $controller('OrgCtrl', {
-                $scope: scope,
-                $cloudfoundry: cloudfoundry,
-                $location: location
-            });
-        }));
-
-        it('should place the active org into the scope', function() {
-            expect(scope.activeOrg.name).toEqual('mockname');
-            expect(scope.spaces).toEqual([]);
+        // Load Ctrl and scope
+        scope = $rootScope.$new();
+        ctrl = $controller('OrgCtrl', {
+            $scope: scope,
+            $cloudfoundry: cloudfoundry,
+            $routeParams: {
+                orgguid: 'org1guid',
+            },
+            MenuData: MenuData
         });
+    }));
 
+    it('should return a space\'s summary info', function() {
+        expect(cloudfoundry.findActiveOrg).toHaveBeenCalled();
     });
-
-    describe('when the org is not avaiable', function() {
-
-        beforeEach(inject(function($rootScope, $controller) {
-
-
-            cloudfoundry = {
-                getOrgsData: getOrgsData,
-                setOrgsData: setOrgsData,
-                getOrgDetails: function() {
-                    return {
-                        then: function(callback) {
-                            return callback({
-                                'code': 30003
-                            });
-                        }
-                    }
-                }
-            };
-            location = {
-                path: path
-            };
-
-            // Spyon and return promise
-            spyOn(cloudfoundry, 'getOrgDetails').and.callThrough();
-
-            // Load Ctrl and scope
-            scope = $rootScope.$new();
-            ctrl = $controller('OrgCtrl', {
-                $scope: scope,
-                $cloudfoundry: cloudfoundry,
-                $location: location
-            });
-        }));
-
-
-        it('should place the active org into the scope', function() {
-            expect(scope.activeOrg).toEqual('404');
-            expect(scope.spaces).toEqual(undefined);
-        });
-
-        it('should send the user to the space view', function() {
-            spyOn(location, 'path');
-            scope.showSpace({
-                guid: 'spaceguid'
-            });
-            expect(location.path).toHaveBeenCalledWith('undefined/spaces/spaceguid');
-        });
-    });
-});
+})
 
 describe('SpaceCtrl', function() {
 
-    var scope, cloudfoundry;
+    var scope, cloudfoundry, MenuData = {
+        data: {}
+    };
 
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
@@ -386,7 +341,8 @@ describe('SpaceCtrl', function() {
             $routeParams: {
                 orgguid: 'org1guid',
                 spaceguid: 'spaceguid'
-            }
+            },
+            MenuData: MenuData
         });
     }));
 
@@ -401,12 +357,8 @@ describe('SpaceCtrl', function() {
             }]
         })
     });
-
-    it('should return the active org', function() {
-        expect(scope.activeOrg.entity.name).toEqual('org1')
-    });
 });
-
+/*
 describe('MarketCtrl', function() {
     var scope, cloudfoundry;
     beforeEach(module('cfdeck'));
@@ -559,20 +511,21 @@ describe('AppCtrl', function() {
 
     it('should re-enable the buttons after starting', function() {
         expect(scope.starting).toBeUndefined();
-	scope.startApp();
+        scope.startApp();
         expect(scope.starting).toEqual(false);
     });
 
     it('should re-enable the buttons after restarting', function() {
         expect(scope.restarting).toBeUndefined();
-	scope.restartApp();
+        scope.restartApp();
         expect(scope.restarting).toEqual(false);
     });
 
     it('should re-enable the buttons after stopping', function() {
         expect(scope.stopping).toBeUndefined();
-	scope.stopApp();
+        scope.stopApp();
         expect(scope.stopping).toEqual(false);
     });
 
 });
+*/
