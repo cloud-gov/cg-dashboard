@@ -1,0 +1,6 @@
+*.swp
+*.swo
+*.cov
+.env
+static/bower_components/
+node_modules/
