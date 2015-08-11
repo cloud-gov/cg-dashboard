@@ -21,6 +21,8 @@ type Settings struct {
 	Sessions sessions.Store
 	// context.Context var from golang.org/x/net/context to make token Client work
 	TokenContext context.Context
+	// UAA API
+	UaaURL string
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -47,6 +49,7 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
 	s.TokenContext = context.TODO()
+	s.UaaURL = envVars.UAAURL
 
 	// Setup OAuth2 Client Service.
 	s.OAuthConfig = &oauth2.Config{

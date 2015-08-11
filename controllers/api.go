@@ -2,52 +2,21 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/18F/cf-deck/helpers"
 	"github.com/gocraft/web"
-	"golang.org/x/oauth2"
-	"io/ioutil"
 	"net/http"
 )
 
 // APIContext stores the session info and access token per user.
 // All routes within APIContext represent the API routes
 type APIContext struct {
-	*Context // Required.
-	Token    oauth2.Token
+	*SecureContext // Required.
 }
 
-// OAuth is a middle ware that checks whether or not the user has a valid token.
-// If the token is present and still valid, it just passes it on.
-// If the token is 1) present and expired or 2) not present, it will return unauthorized.
-func (c *APIContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
-	// Get valid token if it exists from session store.
-
-	if token := helpers.GetValidToken(req.Request, c.Settings); token != nil {
-		c.Token = *token
-	} else {
-		// If no token, return unauthorized.
-		http.Error(rw, "{\"status\": \"unauthorized\"}", http.StatusUnauthorized)
-		return
-	}
-	// Proceed to the next middleware or to the handler if last middleware.
-	next(rw, req)
-}
-
-// Proxy is a handler that serves as a proxy for all the CF API. Any route that comes in the /v2/* route
+// APIProxy is a handler that serves as a proxy for all the CF API. Any route that comes in the /v2/* route
 // that has not been specified, will just come here.
-func (c *APIContext) Proxy(rw web.ResponseWriter, req *web.Request) {
-
-	// Get client and refresh token if needed
-	// https://godoc.org/golang.org/x/oauth2#Config.Client
+func (c *APIContext) APIProxy(rw web.ResponseWriter, req *web.Request) {
 	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL.Path)
-	request, _ := http.NewRequest(req.Method, reqURL, req.Body)
-	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
-	res, _ := client.Do(request)
-	// Should return the same status.
-	rw.WriteHeader(res.StatusCode)
-	body, _ := ioutil.ReadAll(res.Body)
-	defer res.Body.Close()
-	fmt.Fprintf(rw, string(body))
+	c.Proxy(rw, req.Request, reqURL)
 }
 
 // Logout is a handler that will attempt to clear the session information for the current user.
