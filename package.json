@@ -5,7 +5,7 @@
   "main": "null",
   "scripts": {
     "codecov": "cat ./coverage/coverage-final.json | ./node_modules/codecov.io/bin/codecov.io.js",
-    "postinstall" : "cd static && ../node_modules/bower/bin/bower install",
+    "postinstall" : "./node_modules/bower/bin/bower install",
     "tests": "./node_modules/.bin/karma start karma.conf.js --single-run",
     "test": "npm run tests && npm run codecov"
   },
