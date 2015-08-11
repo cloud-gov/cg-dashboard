@@ -104,7 +104,6 @@
 
         // Delete a service instance
         this.deleteServiceInstance = function(service) {
-            console.log(service.metadata.url);
             return $http.delete(service.metadata.url)
                 .then(function(response) {
                     return response.data;

@@ -16,8 +16,6 @@
                     status: 'unconfirmed',
                 };
                 $scope.view.showDestroyer = function(state) {
-                    console.log(state);
-
                     $scope.view.status = state;
                 };
                 $scope.view.deleteService = function(service) {
