@@ -31,9 +31,9 @@ func (c *SecureContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.
 	next(rw, req)
 }
 
-// proxy is an internal function that will construct the client with the token in the headers and
+// Proxy is an internal function that will construct the client with the token in the headers and
 // then send a request.
-func (c *SecureContext) proxy(rw web.ResponseWriter, req *web.Request, url string) {
+func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url string) {
 	// Make the request.
 	request, _ := http.NewRequest(req.Method, url, req.Body)
 	// Acquire the http client and the refresh token if needed

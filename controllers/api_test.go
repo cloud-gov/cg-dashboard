@@ -6,12 +6,7 @@ import (
 	"testing"
 )
 
-type basicAPITest struct {
-	BasicConsoleUnitTest
-	expectedResponse string
-}
-
-var authStatusTests = []basicAPITest{
+var authStatusTests = []basicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Authorized Status Session",
@@ -35,7 +30,7 @@ func TestAuthStatus(t *testing.T) {
 	}
 }
 
-var profileTests = []basicAPITest{
+var profileTests = []basicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Authorized Profile",
@@ -59,7 +54,7 @@ func TestProfile(t *testing.T) {
 	}
 }
 
-var logoutTests = []basicAPITest{
+var logoutTests = []basicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Authorized Profile To Logout",
