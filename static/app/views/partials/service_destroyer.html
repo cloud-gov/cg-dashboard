@@ -1,0 +1,15 @@
+<div ng-switch="view.status">
+    <button type="button" class="btn btn-xs btn-primary" ng-click="view.showDestroyer('confirmed')"
+    ng-switch-when="unconfirmed">Delete Service Instance</button>
+    <div ng-switch-when="confirmed">
+        Delete Service?
+        <button type="button" class="btn btn-xs btn-danger" ng-click="view.deleteService(service)">Yes</button>
+        <button class="btn btn-xs btn-info" ng-click="view.showDestroyer('unconfirmed')">No</button>
+    </div>
+    <div ng-switch-when="error">
+        <span class="label label-danger">{{view.message}}</span>
+    </div>
+    <div ng-switch-when="success">
+        <span class="label label-success">{{view.message}}</span>
+    </div>
+</div>

@@ -45,7 +45,7 @@
                 {{service.entity.last_operation.type}}
             </td>
             <td>
-                {{service.entity.last_operation.updated_at}}
+                {{service.entity.last_operation.updated_at | date:'medium'}}
             </td>
             <td>
                 <div service='service' service-destroyer></div>
