@@ -1,150 +1,5 @@
-/*
-
-var getOrgDetails = function() {
-    return {
-        then: function(callback) {
-            return callback({
-                guid: 'mockguid',
-                name: 'mockname',
-                spaces: []
-            });
-        }
-    }
-}
-
-
-var getOrgServices = function() {
-    return {
-        then: function(callback) {
-            return callback([{
-                name: 'service1'
-            }, {
-                name: 'service2'
-            }])
-        }
-    }
-};
-
-var getServiceDetails = function(serviceGuid) {
-    return {
-        then: function(callback) {
-            return callback([{
-                name: 'service1'
-            }])
-        }
-    }
-};
-
-var getServiceDetails = function(serviceGuid) {
-    return {
-        then: function(callback) {
-            return callback({
-                entity: {
-                    name: 'service1',
-                    service_plans_url: '/v2/...'
-                }
-            })
-        }
-    }
-};
-
-var getServicePlans = function(serviceGuid) {
-    return {
-        then: function(callback) {
-            return callback([{
-                name: 'plan1'
-            }])
-        }
-    }
-};
-
-var getOrgSpaces = function(spacesUrl) {
-    return {
-        then: function(callback) {
-            return callback([{
-                name: 'space1'
-            }])
-        }
-    }
-};
-
-var createServiceInstance = function(serviceInstance) {
-    return {
-        then: function(callback) {
-            return callback({
-                status: 202
-            })
-        }
-    }
-};
-
-var getPollAppStatusProperty = function() {
-    return true;
-}
-
-var getAppSummary = function(appGuid) {
-    return {
-        then: function(callback) {
-            return callback({
-                name: 'app1',
-                state: 'STARTED',
-                running_instances: 1,
-                instances: 1,
-                memory: 1024,
-                disk_quota: 1024,
-                package_state: 'STAGED'
-            })
-        }
-    }
-};
-
-var getAppStats = function(appGuid) {
-    return {
-        then: function(callback) {
-            return callback([{
-                name: 'app1',
-                stats: {
-                    usage: {
-                        mem: 12345678,
-                        mem_quota: 1234567890,
-                        disk: 12345678,
-                        disk_quota: 1234567890,
-                        cpu: 0.1
-                    }
-                }
-            }])
-        }
-    }
-};
-
-var restartApp = function(app) {
-    return {
-        then: function(callback) {
-            return callback('');
-        }
-    }
-};
-
-var stopApp = function(app) {
-    return {
-        then: function(callback) {
-            return callback('');
-        }
-    }
-};
-
-var startApp = function(app) {
-    return {
-        then: function(callback) {
-            return callback('');
-        }
-    }
-};
-
-*/
-
 // CF service method mocks
-getAuthStatus = function() {
+var getAuthStatus = function() {
     return {
         then: function(callback) {
             return callback('authenticated');
@@ -197,14 +52,135 @@ var findActiveOrg = function(orgguid, callback) {
     })
 };
 
+var getOrgServices = function() {
+    return {
+        then: function(callback) {
+            return callback([{
+                name: 'service1'
+            }, {
+                name: 'service2'
+            }])
+        }
+    }
+};
 
+var getServiceDetails = function(serviceGuid) {
+    return {
+        then: function(callback) {
+            return callback({
+                entity: {
+                    name: 'service1',
+                    service_plans_url: '/v2/...'
+                }
+            })
+        }
+    }
+};
 
+var getServicePlans = function(serviceGuid) {
+    return {
+        then: function(callback) {
+            return callback([{
+                name: 'plan1'
+            }])
+        }
+    }
+};
+
+var createServiceInstance = function(serviceInstance) {
+    return {
+        then: function(callback) {
+            return callback({
+                status: 202
+            })
+        }
+    }
+};
+
+var getPollAppStatusProperty = function() {
+    return true;
+}
+
+var getAppSummary = function(appGuid) {
+    return {
+        then: function(callback) {
+            return callback({
+                name: 'app1',
+                state: 'STARTED',
+                running_instances: 1,
+                instances: 1,
+                memory: 1024,
+                disk_quota: 1024,
+                package_state: 'STAGED',
+                services: [{guid: 'serviceguid'}]
+            })
+        }
+    }
+};
+
+var getAppStats = function(appGuid) {
+    return {
+        then: function(callback) {
+            return callback([{
+                name: 'app1',
+                stats: {
+                    usage: {
+                        mem: 12345678,
+                        mem_quota: 1234567890,
+                        disk: 12345678,
+                        disk_quota: 1234567890,
+                        cpu: 0.1
+                    }
+                }
+            }])
+        }
+    }
+};
+
+var restartApp = function(app) {
+    return {
+        then: function(callback) {
+            return callback('');
+        }
+    }
+};
+
+var stopApp = function(app) {
+    return {
+        then: function(callback) {
+            return callback('');
+        }
+    }
+};
+
+var startApp = function(app) {
+    return {
+        then: function(callback) {
+            return callback('');
+        }
+    }
+};
+
+var getSpaceServices = function(spaceguid) {
+  return {
+      then: function(callback) {
+          return callback([{metadata: {guid: 'serviceguid'}}]);
+      }
+  }
+}
+
+var generalBindFunctions = function(service) {
+  return  {
+    then : function(callback) {
+        return callback({});
+    }
+  }
+}
 
 // Location path mock
 var path = function(callback) {
     return callback()
 }
-
 
 describe('HomeCtrl', function() {
 
@@ -225,7 +201,6 @@ describe('HomeCtrl', function() {
             $scope: scope,
             $cloudfoundry: cloudfoundry
         });
-
     }));
 
     it('should return the authentication status from the cf service', function() {
@@ -235,11 +210,11 @@ describe('HomeCtrl', function() {
 
 describe('MainCtrl', function() {
 
-    var scope, cloudfoundry, location, MenuData = {};
+    var scope, cloudfoundry, MenuData = {};
 
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
-        // Mock cloudfoundry service 
+        // Mock cloudfoundry service
         cloudfoundry = {
             getOrgsData: getOrgsData,
             setOrgsData: setOrgsData
@@ -250,7 +225,6 @@ describe('MainCtrl', function() {
         ctrl = $controller('MainCtrl', {
             $scope: scope,
             $cloudfoundry: cloudfoundry,
-            $location: location,
             MenuData: MenuData
         });
     }));
@@ -358,9 +332,9 @@ describe('SpaceCtrl', function() {
         })
     });
 });
-/*
+
 describe('MarketCtrl', function() {
-    var scope, cloudfoundry;
+    var scope, cloudfoundry, location, MenuData = {data: {}};
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
         //Mock CF service
@@ -368,15 +342,22 @@ describe('MarketCtrl', function() {
             getOrgServices: getOrgServices,
             findActiveOrg: findActiveOrg
         }
-
-        spyOn(cloudfoundry, 'findActiveOrg').and.callThrough();
+        // Mock location service
+        location = {
+            path: path
+        }
         spyOn(cloudfoundry, 'getOrgServices').and.callThrough();
 
         // Load Ctrl and scope
         scope = $rootScope.$new()
         ctrl = $controller('MarketCtrl', {
             $scope: scope,
-            $cloudfoundry: cloudfoundry
+            $cloudfoundry: cloudfoundry,
+            $routeParams: {
+                orgguid: 'org1guid',
+            },
+            MenuData: MenuData,
+            $location: location
         });
     }));
 
@@ -384,20 +365,20 @@ describe('MarketCtrl', function() {
         expect(scope.services.length).toEqual(2);
     });
 
-
-    it('should open the services tab as the visible one', function() {
-        expect(scope.visibleTab).toEqual('marketplace');
-    });
-
     it('should return the active org', function() {
         expect(scope.activeOrg.entity.name).toEqual('org1')
     });
 
+    it('should go to the specific service details', function() {
+      spyOn(location, 'path');
+      scope.showService({metadata: {guid: 'serviceguid'}})
+        expect(location.path).toHaveBeenCalledWith('undefined/serviceguid');
+    });
+
 });
 
-
 describe('ServiceCtrl', function() {
-    var scope, cloudfoundry;
+    var scope, cloudfoundry, MenuData = {data: {}};
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
         //Mock CF service
@@ -405,7 +386,6 @@ describe('ServiceCtrl', function() {
             getServiceDetails: getServiceDetails,
             getServicePlans: getServicePlans,
             findActiveOrg: findActiveOrg,
-            getOrgSpaces: getOrgSpaces,
             createServiceInstance: createServiceInstance
         }
 
@@ -417,7 +397,8 @@ describe('ServiceCtrl', function() {
         scope = $rootScope.$new()
         ctrl = $controller('ServiceCtrl', {
             $scope: scope,
-            $cloudfoundry: cloudfoundry
+            $cloudfoundry: cloudfoundry,
+            MenuData: MenuData
         });
     }));
 
@@ -431,20 +412,11 @@ describe('ServiceCtrl', function() {
         });
     });
 
-    it('should return the active org', function() {
-        expect(scope.activeOrg.entity.name).toEqual('org1')
-    });
-
     it('should show the service maker when showServiceMaker invoked by passing spaces, activePlan, and show serviceMaker', function() {
-        scope.activeOrg = {
-            entity: 'testurl'
-        };
+
         scope.showServiceMaker({
             name: 'plan1'
         });
-        expect(scope.spaces).toEqual([{
-            name: 'space1'
-        }]);
         expect(scope.activePlan).toEqual({
             name: 'plan1'
         })
@@ -457,11 +429,12 @@ describe('ServiceCtrl', function() {
         scope.createServiceInstance({
             name: 'service1'
         });
+        // TODO: add a spy to check on message
     });
 });
 
 describe('AppCtrl', function() {
-    var scope, cloudfoundry;
+    var scope, cloudfoundry, MenuData = {data: {}};
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
         //Mock CF service
@@ -472,7 +445,11 @@ describe('AppCtrl', function() {
             getPollAppStatusProperty: getPollAppStatusProperty,
             getAppSummary: getAppSummary,
             getAppSummary: getAppSummary,
-            getAppStats: getAppStats
+            getAppStats: getAppStats,
+            findActiveOrg: findActiveOrg,
+            getSpaceServices: getSpaceServices,
+            bindService: generalBindFunctions,
+            unbindService: generalBindFunctions
         }
 
         spyOn(cloudfoundry, 'getAppSummary').and.callThrough();
@@ -481,7 +458,9 @@ describe('AppCtrl', function() {
         scope = $rootScope.$new()
         ctrl = $controller('AppCtrl', {
             $scope: scope,
-            $cloudfoundry: cloudfoundry
+            $cloudfoundry: cloudfoundry,
+            $routeParams: {appguid: 'appguid'},
+            MenuData: MenuData
         });
 
     }));
@@ -505,9 +484,10 @@ describe('AppCtrl', function() {
         expect(scope.appStats[0].stats.usage.cpu).toEqual(0.1);
     });
 
-    it('should open the app tab as the visible one', function() {
-        expect(scope.visibleTab).toEqual('app');
-    });
+
+        it('hould put the available services into the app along with the boundService obj if it\'s bound', function() {
+            expect(scope.availableServices).toEqual([{metadata: { guid: 'serviceguid' }, boundService: { guid: 'serviceguid' }}]);
+        });
 
     it('should re-enable the buttons after starting', function() {
         expect(scope.starting).toBeUndefined();
@@ -527,5 +507,19 @@ describe('AppCtrl', function() {
         expect(scope.stopping).toEqual(false);
     });
 
+    it('should bind service when called', function () {
+        spyOn(cloudfoundry, 'bindService').and.callThrough()
+        scope.bindService({metadata: {guid: 'serviceguid'}});
+        expect(cloudfoundry.bindService).toHaveBeenCalledWith({service_instance_guid: 'serviceguid', app_guid: 'appguid'})
+    });
+
+    it('should bind service when called', function () {
+        spyOn(cloudfoundry, 'unbindService').and.callThrough()
+        scope.unbindService({boundService: {guid: 'serviceguid2'}});
+        expect(cloudfoundry.unbindService).toHaveBeenCalledWith({ service_instance_guid: 'serviceguid2', app_guid: 'appguid'}, jasmine.any(Function))
+    });
+    it('should bind service when called and then refresh appSummary', function () {
+        scope.unbindService({boundService: {guid: 'serviceguid2'}});
+    });
+
 });
-*/

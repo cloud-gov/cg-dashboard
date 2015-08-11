@@ -4,5 +4,3 @@
 .env
 static/bower_components/
 node_modules/
-coverage
-.godeps/

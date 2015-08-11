@@ -1,0 +1,25 @@
+{
+  "name": "cfdeck",
+  "version": "0.0.0",
+  "authors": [
+    "jamesc.scott@gsa.gov",
+    "gabriel.ramirez@gsa.gov",
+    "diego.lapiduz@gsa.gov"
+  ],
+  "description": "Cloudfoundry UI",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-ladda": "~0.3.1",
+    "angular-route": "~1.4.3",
+    "angular-mocks": "~1.4.3",
+    "angularjs": "~1.4.3",
+    "bootstrap": "~3.3.5"
+  }
+}
