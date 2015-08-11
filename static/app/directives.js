@@ -4,23 +4,36 @@
     var app = angular.module('cfdeck');
 
 
-app.directive('serviceDestroyer', function($cloudfoundry) {
-        var template = '<div><button type="button" class="btn btn-xs btn-primary" ng-click="view.showDestroyer(true)" ng-hide="view.confirmed">Delete Service Instance</button><div ng-show="view.confirmed"> Delete Service? <button type="button" class="btn btn-xs btn-danger" ng-click="view.deleteService(service)">Yes</button><button class="btn btn-xs btn-info" ng-click="view.showDestroyer(false)">No</button></div></div>'
+    app.directive('serviceDestroyer', function($cloudfoundry) {
         return {
-            template: template,
+            templateUrl: 'app/views/partials/service_destroyer.html',
             restrict: 'A',
             scope: {
                 service: "=service",
             },
             controller: function($scope) {
                 $scope.view = {
-                    confirmed: false,
+                    status: 'unconfirmed',
                 };
                 $scope.view.showDestroyer = function(state) {
-                    $scope.view.confirmed = state;
+                    console.log(state);
+
+                    $scope.view.status = state;
                 };
                 $scope.view.deleteService = function(service) {
-                    console.log(service);
+                    $cloudfoundry.deleteServiceInstance(service)
+                        .then(function(response) {
+                            if (response.code === undefined) {
+                                $scope.view.status = "success";
+                                $scope.view.message = "Deleted!";
+                            } else if (response.code === 10006) {
+                                $scope.view.status = "error";
+                                $scope.view.message = "This service is bound to one or more apps";
+                            } else {
+                                $scope.view.status = "error";
+                                $scope.view.message = "Unknown error, try refreshing."
+                            }                             
+                        })
                 };
             }
         };
