@@ -93,11 +93,13 @@
             if (response.status == 400) {
                 $scope.message = {type: 'error', message: response.data.description}
             } else {
-                $scope.message = {type: 'success', message: "Service Created!"};
+                 $scope.activePlan = null;
+                 $scope.message = {type: 'success', message: "Service Created!"};
             }
         };
         // Show maker and populate with space info
         $scope.showServiceMaker = function(plan) {
+            $scope.message = null;
             $scope.activePlan = plan;
         };
         // Send request to create service instance
