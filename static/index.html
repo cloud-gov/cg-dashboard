@@ -29,13 +29,12 @@
 		<script src="app/directives.js"></script>
 	</head>
 	<body ng-controller="MainCtrl">
-		<ng-include src="'app/views/partials/header.html'"></ng-include>
+		<div deck-header></div>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-sm-3 col-md-2 sidebar" ng-include="'app/views/partials/sidebar.html'"></div>
-				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ng-view>
-				</div>
-			</div>
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ng-view></div>
+		</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	</body>

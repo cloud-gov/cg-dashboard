@@ -16,22 +16,22 @@
         <span class="label label-info">Alpha</span>
       </a>
         </div>
-        <!-- Navbar links -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a id='orgspaces' ng-click="showOrg(activeOrg)" ng-show="activeOrg">Spaces</a>
-                </li>
-                <li>
-                    <a id='marketplace' ng-click="showOrgMarketplace(activeOrg)" ng-show="activeOrg">Service Marketplace</a>
-                </li>
-                <li>
-                    <a href="/v2/profile">{{ givenName }}'s Profile</a>
-                </li>
-                <li>
-                    <a href="/v2/logout">Logout</a>
-                </li>
-            </ul>
+        <div ng-switch="authorized">
+            <div ng-switch-when="true">
+                <!-- Navbar links -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="/v2/profile">{{ givenName }}'s Profile</a>
+                        </li>
+                        <li>
+                            <a href="/v2/logout">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div ng-switch-default>
+            </div>
         </div>
     </div>
 </nav>

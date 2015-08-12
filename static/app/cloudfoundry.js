@@ -16,13 +16,23 @@
         // Returns the authentication status from promise
         var returnAuthStatus = function(response) {
             return response.data.status
-        }
+        };
 
         // Get current authentication status from server
         this.getAuthStatus = function() {
             return $http.get('/v2/authstatus')
                 .then(returnAuthStatus, returnAuthStatus);
         };
+
+	this.isAuthorized = function() {
+            return this.getAuthStatus()
+		    .then(function(status) {
+			    if (status == "authorized") {
+				    return true;
+			    }
+			    return false;
+		    });
+	};
 
         // Get organizations
         this.getOrgs = function() {
