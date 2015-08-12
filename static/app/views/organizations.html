@@ -61,7 +61,7 @@
                 </thead>
                 <tbody>
                     <tr class='space-info' ng-click="showSpace(space)" ng-repeat="space in activeOrg.spaces | orderBy:sortType:sortReverse | filter:searchSpace">
-                        <td>{{space.name}}</td>
+                        <td><a href="#/org/{{ MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}">{{space.name}}</a></td>
                         <td>{{space.app_count}}</td>
                         <td>{{space.mem_dev_total}}</td>
                         <td>{{space.mem_prod_total}}</td>

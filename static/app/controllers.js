@@ -35,10 +35,7 @@
             $scope.orgs = orgs;
             $cloudfoundry.setOrgsData(orgs);
         };
-        // Render the given name of the user on the page
-        var renderName = function(name) {
-            $scope.givenName = name;
-        };
+
         // Clean menu data to return home
         $scope.clearDashboard = function() {
             $scope.MenuData.data = {}
@@ -46,8 +43,6 @@
         // Load the org data
         $cloudfoundry.getOrgsData(renderOrgs);
         $scope.MenuData = MenuData;
-	// Load the given name of the logged in user.
-	$uaa.getUserInfoGivenName().then(renderName);
     });
 
     app.controller('OrgCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {

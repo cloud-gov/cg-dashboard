@@ -9,6 +9,9 @@
 			return response.data.given_name;
 		};
 		var handleNoGivenName = function(response) {
+			if (response.status == 401 && response.data.status == "unauthorized") {
+				return "noUser";
+			}
 			return 'User';
 		}
 		this.getUserInfoGivenName = function() {

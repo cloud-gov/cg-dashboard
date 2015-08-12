@@ -36,4 +36,24 @@
             }
         };
     });
+    app.directive('deckHeader', function($cloudfoundry, $uaa) {
+        return {
+            templateUrl: 'app/views/partials/header.html',
+            restrict: 'A',
+            controller: function($scope) {
+               // Render the given name of the user on the page
+                var renderName = function(name) {
+                    $scope.givenName = name;
+                };
+		$cloudfoundry.isAuthorized()
+			.then(function(authorized) {
+				$scope.authorized = authorized;
+				if (authorized == true) {
+					// Load the given name of the logged in user.
+					$uaa.getUserInfoGivenName().then(renderName);
+				}
+			});
+            }
+        };
+    });
 }());
