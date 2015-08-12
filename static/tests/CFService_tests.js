@@ -331,6 +331,35 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    describe('deleteServiceInstance', function() {
+        it('should delete a service instance via a delete request', function() {
+            httpBackend.whenDELETE('/v2/service_instance/serviceguid').respond({message: 'created'})
+            $cloudfoundry.deleteServiceInstance({
+                metadata: {
+                    url: '/v2/service_instance/serviceguid'
+                }
+            }).then(function(response) {
+                expect(response).toEqual({message: 'created'});
+            });
+            httpBackend.flush();
+
+        });
+
+        it('should pass on errors', function() {
+            httpBackend.whenDELETE('/v2/service_instance/serviceguid').respond(400, {message: 'service in use'})
+            $cloudfoundry.deleteServiceInstance({
+                metadata: {
+                    url: '/v2/service_instance/serviceguid'
+                }
+            }).then(function(response) {
+                expect(response).toEqual({message: 'service in use'});
+            });
+            httpBackend.flush();
+
+        });
+
+    });
+
     describe('getAppSummary', function() {
         it('should return summary data for a specific app', function() {
             var appSummary = {

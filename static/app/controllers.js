@@ -59,9 +59,25 @@
         var renderSpace = function(space) {
             $scope.space = space;
         };
+        var renderServices = function(services) {
+            console.log(services);
+            $scope.services = services;
+        };
+        // Show a specific tab
+        $scope.showTab = function(tab) {
+            // If the tab is the service instances tab load data
+            if (tab == "serviceInstances") {
+                // Get the spaces service instances
+                $cloudfoundry.getSpaceServices($routeParams['spaceguid'])
+                    .then(renderServices);
+            }
+            $scope.activeTab = tab;
+        };
         // Get the orgs data from cache or load new data
         $cloudfoundry.getSpaceDetails($routeParams['spaceguid'])
             .then(renderSpace);
+        // Make the apps tab the default active tab
+        $scope.activeTab = 'apps';
     });
 
     app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
@@ -216,5 +232,4 @@
         $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
         resetAppStatsPoll();
     });
-
 }());

@@ -92,7 +92,7 @@
             return callback(orgs);
         };
 
-        // Create and app instance
+        // Create a service instance
         this.createServiceInstance = function(requestBody) {
             return $http.post("/v2/service_instances?accepts_incomplete=true", requestBody)
                 .then(function(response) {
@@ -100,6 +100,16 @@
                 }, function(response) {
                     return response;
                 });
+        };
+
+        // Delete a service instance
+        this.deleteServiceInstance = function(service) {
+            return $http.delete(service.metadata.url)
+                .then(function(response) {
+                    return response.data;
+                }, function(response) {
+                    return response.data;
+                }); 
         };
 
         // Given an org guid attempts to find the active org data stored in the service
