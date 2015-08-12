@@ -182,6 +182,10 @@
                 $interval.cancel($scope.statsPromise);
             });
         };
+        // Create new Route
+        $scope.createRoute = function (newRoute) {
+            console.log(newRoute);
+        };
         // Stop a specified app
         $scope.stopApp = function(app) {
             // Only stop if we are currently not restarting.

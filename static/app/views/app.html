@@ -160,10 +160,44 @@
     </div>
 </div>
 
+
+<h4 class="text-center">Routes</h4>
+<table class="table table-hover text-left" ng-show='appSummary.routes'>
+    <thead>
+        <tr>
+            <th>Host</th>
+            <th>Domain</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat='route in appSummary.routes'>
+            <td>{{route.host}}</td>
+            <td>{{route.domain.name}}</td>
+            <td>
+                <button type="button" class="btn btn-xs btn-danger">Delete Route</button>
+            </td>
+        </tr>
+        <tr ng-form>
+            <td>
+                <input class="form-control" name="host" ng-model="newRoute.host" required/>
+            </td>
+            <td>
+            <select name="domain" class="form-control" ng-model="newRoute.domain"
+            ng-options="dom.guid as dom.name for dom in appSummary.available_domains"
+            required/>
+                <option value="">Select Domain</option>
+            </select> 
+            </td>
+            <td>
+                <button type="button" type="submit" class="btn btn-xs btn-info" ng-click="createRoute(newRoute)">Create Route</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
 <h4 class="text-center">Services</h4>
-
 <div class="row row-height text-center">
-
     <div class="col-xs-12 col-md-4" ng-repeat="service in availableServices">
         <div class="panel panel-default">
             <div class="panel-heading">
