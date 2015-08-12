@@ -1,5 +1,5 @@
 (function() {
-    var app = angular.module('cfdeck', ['ngRoute']);
+    var app = angular.module('cfdeck', ['ngRoute', 'angular-ladda']);
 
     app.config(function($routeProvider) {
         $routeProvider
