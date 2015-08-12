@@ -10,24 +10,41 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-	    <a class="navbar-brand" href="#/dashboard" ng-click="clearDashboard()">
-        <i class="glyphicon glyphicon-cloud"></i>
-        Deck
-        <span class="label label-info">Alpha</span>
-      </a>
+            <a class="navbar-brand" href="#/dashboard" ng-click="clearDashboard()">
+                <i class="glyphicon glyphicon-cloud"></i>
+                Deck
+                <span class="label label-info">Alpha</span>
+            </a>
         </div>
         <!-- Navbar links -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a id='orgspaces' ng-click="showOrg(activeOrg)" ng-show="activeOrg">Spaces</a>
+
+                <li class="dropdown visible-xs" ng-show="MenuData.data.currentOrg">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                    aria-expanded="false" id="org-dropdown">{{ MenuData.data.currentOrg | orgNameFilter }} &nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}">Spaces </a>
+                            <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/marketplace">Marketplace</a>
+                        </li>
+                    </ul>
                 </li>
-                <li>
-                    <a id='marketplace' ng-click="showOrgMarketplace(activeOrg)" ng-show="activeOrg">Service Marketplace</a>
+
+                <li class="dropdown visible-xs" ng-show="MenuData.data.currentOrg.spaces.length > 0">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                    aria-expanded="false" id="org-dropdown">Spaces&nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="space in MenuData.data.currentOrg.spaces">
+                            <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}">{{ space.name }}</a>
+                        </li>
+                    </ul>
                 </li>
+
                 <li>
                     <a href="/v2/profile">{{ givenName }}'s Profile</a>
                 </li>
+
                 <li>
                     <a href="/v2/logout">Logout</a>
                 </li>
