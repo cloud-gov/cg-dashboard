@@ -38,6 +38,16 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
 
+                <li class="dropdown visible-xs">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                    aria-expanded="false" id="org-dropdown">Organization&nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="org in orgs">
+                            <a class="org-name" ng-href="#/org/{{ org.metadata.guid }}">{{org | orgNameFilter}}</a>
+                        </li>
+                    </ul>
+                </li>
+
                 <li class="dropdown visible-xs" ng-show="MenuData.data.currentOrg">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                     aria-expanded="false" id="org-dropdown">{{ MenuData.data.currentOrg | orgNameFilter }} &nbsp;<span class="caret"></span></a>
