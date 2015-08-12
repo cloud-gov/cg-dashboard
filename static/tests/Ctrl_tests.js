@@ -271,9 +271,11 @@ describe('MainCtrl', function() {
         expect(scope.MenuData.data).toEqual({});
     });
 
+    /*
     it('should place some given name to be displayed', function() {
         expect(scope.givenName).toEqual('givenName1');
     });
+    */
 });
 
 describe('OrgCtrl', function() {
