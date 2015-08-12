@@ -40,9 +40,6 @@
         return {
             templateUrl: 'app/views/partials/header.html',
             restrict: 'A',
-            scope: {
-                user: "=",
-            },
             controller: function($scope) {
                // Render the given name of the user on the page
                 var renderName = function(name) {
