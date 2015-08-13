@@ -19,6 +19,8 @@ branches:
 deploy:
   edge: true
   provider: cloudfoundry
+  on:
+    all_branches: true
   api: https://api.18f.gov
   organization: sandbox
   space: jamesc.scott
