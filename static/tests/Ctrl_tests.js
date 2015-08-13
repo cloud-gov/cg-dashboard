@@ -112,7 +112,9 @@ var getAppSummary = function(appGuid) {
                 memory: 1024,
                 disk_quota: 1024,
                 package_state: 'STAGED',
-                services: [{guid: 'serviceguid'}]
+                services: [{
+                    guid: 'serviceguid'
+                }]
             })
         }
     }
@@ -162,19 +164,23 @@ var startApp = function(app) {
 };
 
 var getSpaceServices = function(spaceguid) {
-  return {
-      then: function(callback) {
-          return callback([{metadata: {guid: 'serviceguid'}}]);
-      }
-  }
+    return {
+        then: function(callback) {
+            return callback([{
+                metadata: {
+                    guid: 'serviceguid'
+                }
+            }]);
+        }
+    }
 };
 
 var generalBindFunctions = function(service) {
-  return  {
-    then : function(callback) {
-        return callback({});
+    return {
+        then: function(callback) {
+            return callback({});
+        }
     }
-  }
 };
 
 var getUserInfoGivenName = function() {
@@ -215,7 +221,8 @@ describe('HomeCtrl', function() {
 
 describe('MainCtrl', function() {
 
-    var scope, cloudfoundry, MenuData = {}, uaa;
+    var scope, cloudfoundry, MenuData = {},
+        uaa;
 
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
@@ -316,7 +323,8 @@ describe('SpaceCtrl', function() {
         //Mock Cf service
         cloudfoundry = {
             getSpaceDetails: getSpaceDetails,
-            findActiveOrg: findActiveOrg
+            findActiveOrg: findActiveOrg,
+            getSpaceServices: getSpaceServices
         }
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
@@ -345,15 +353,30 @@ describe('SpaceCtrl', function() {
             }]
         })
     });
+
+    it('should render the app tab via the activeTab var when showTab function is run with "app"', function() {
+        scope.showTab('app')
+        expect(scope.activeTab).toEqual('app')
+    });
+
+    it('should render the services tab and service instances when showTab function is run with "serviceInstances"', function() {
+        scope.showTab('serviceInstances')
+        expect(scope.activeTab).toEqual('serviceInstances')
+        expect(scope.services.length).toEqual(1)
+
+    });
+
 });
 
 describe('MarketCtrl', function() {
-    var scope, cloudfoundry, location, MenuData = {data: {}};
+    var scope, cloudfoundry, location, MenuData = {
+        data: {}
+    };
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
         //Mock CF service
         cloudfoundry = {
-            getOrgServices: getOrgServices,
+        getOrgServices: getOrgServices,
             findActiveOrg: findActiveOrg
         }
         spyOn(cloudfoundry, 'getOrgServices').and.callThrough();
@@ -377,11 +400,13 @@ describe('MarketCtrl', function() {
 
     it('should return the active org', function() {
         expect(scope.activeOrg.entity.name).toEqual('org1')
-    });
+    }); 
 });
 
 describe('ServiceCtrl', function() {
-    var scope, cloudfoundry, MenuData = {data: {}};
+    var scope, cloudfoundry, MenuData = {
+        data: {}
+    };
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
         //Mock CF service
@@ -437,7 +462,9 @@ describe('ServiceCtrl', function() {
 });
 
 describe('AppCtrl', function() {
-    var scope, cloudfoundry, MenuData = {data: {}};
+    var scope, cloudfoundry, MenuData = {
+        data: {}
+    };
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
         //Mock CF service
@@ -462,7 +489,9 @@ describe('AppCtrl', function() {
         ctrl = $controller('AppCtrl', {
             $scope: scope,
             $cloudfoundry: cloudfoundry,
-            $routeParams: {appguid: 'appguid'},
+            $routeParams: {
+                appguid: 'appguid'
+            },
             MenuData: MenuData
         });
 
@@ -488,9 +517,16 @@ describe('AppCtrl', function() {
     });
 
 
-        it('hould put the available services into the app along with the boundService obj if it\'s bound', function() {
-            expect(scope.availableServices).toEqual([{metadata: { guid: 'serviceguid' }, boundService: { guid: 'serviceguid' }}]);
-        });
+    it('hould put the available services into the app along with the boundService obj if it\'s bound', function() {
+        expect(scope.availableServices).toEqual([{
+            metadata: {
+                guid: 'serviceguid'
+            },
+            boundService: {
+                guid: 'serviceguid'
+            }
+        }]);
+    });
 
     it('should re-enable the buttons after starting', function() {
         expect(scope.starting).toBeUndefined();
@@ -510,19 +546,37 @@ describe('AppCtrl', function() {
         expect(scope.stopping).toEqual(false);
     });
 
-    it('should bind service when called', function () {
+    it('should bind service when called', function() {
         spyOn(cloudfoundry, 'bindService').and.callThrough()
-        scope.bindService({metadata: {guid: 'serviceguid'}});
-        expect(cloudfoundry.bindService).toHaveBeenCalledWith({service_instance_guid: 'serviceguid', app_guid: 'appguid'})
+        scope.bindService({
+            metadata: {
+                guid: 'serviceguid'
+            }
+        });
+        expect(cloudfoundry.bindService).toHaveBeenCalledWith({
+            service_instance_guid: 'serviceguid',
+            app_guid: 'appguid'
+        })
     });
 
-    it('should bind service when called', function () {
+    it('should bind service when called', function() {
         spyOn(cloudfoundry, 'unbindService').and.callThrough()
-        scope.unbindService({boundService: {guid: 'serviceguid2'}});
-        expect(cloudfoundry.unbindService).toHaveBeenCalledWith({ service_instance_guid: 'serviceguid2', app_guid: 'appguid'}, jasmine.any(Function))
+        scope.unbindService({
+            boundService: {
+                guid: 'serviceguid2'
+            }
+        });
+        expect(cloudfoundry.unbindService).toHaveBeenCalledWith({
+            service_instance_guid: 'serviceguid2',
+            app_guid: 'appguid'
+        }, jasmine.any(Function))
     });
-    it('should bind service when called and then refresh appSummary', function () {
-        scope.unbindService({boundService: {guid: 'serviceguid2'}});
+    it('should bind service when called and then refresh appSummary', function() {
+        scope.unbindService({
+            boundService: {
+                guid: 'serviceguid2'
+            }
+        });
     });
 
 });

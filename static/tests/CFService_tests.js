@@ -333,30 +333,75 @@ describe('CloudFoundry Service Tests', function() {
 
     describe('deleteServiceInstance', function() {
         it('should delete a service instance via a delete request', function() {
-            httpBackend.whenDELETE('/v2/service_instance/serviceguid').respond({message: 'created'})
+            httpBackend.whenDELETE('/v2/service_instance/serviceguid').respond({
+                message: 'deleted'
+            })
             $cloudfoundry.deleteServiceInstance({
                 metadata: {
                     url: '/v2/service_instance/serviceguid'
                 }
-            }).then(function(response) {
-                expect(response).toEqual({message: 'created'});
+            }, false).then(function(response) {
+                expect(response).toEqual({
+                    message: 'deleted'
+                });
             });
             httpBackend.flush();
 
         });
 
         it('should pass on errors', function() {
-            httpBackend.whenDELETE('/v2/service_instance/serviceguid').respond(400, {message: 'service in use'})
+            httpBackend.whenDELETE('/v2/service_instance/serviceguid').respond(400, {
+                message: 'service in use'
+            })
             $cloudfoundry.deleteServiceInstance({
                 metadata: {
                     url: '/v2/service_instance/serviceguid'
                 }
-            }).then(function(response) {
-                expect(response).toEqual({message: 'service in use'});
+            }, false).then(function(response) {
+                expect(response).toEqual({
+                    message: 'service in use'
+                });
             });
             httpBackend.flush();
-
         });
+
+        it('should delete all bound instances when the bound parameter is true', function() {
+            httpBackend.whenDELETE('/v2/service_instance/serviceguid').respond({
+                message: 'service instance deleted'
+            })
+            // These two requests should be flushed when call is finished
+            httpBackend.whenDELETE('/v2/bindingurl1').respond({
+                message: 'deleted'
+            })
+            httpBackend.whenDELETE('/v2/bindingurl2').respond({
+                message: 'deleted'
+            })
+            httpBackend.whenGET('/v2/service_instance/serviceguid/bound_instances').respond({
+                resources: [{
+                    metadata: {
+                        url: '/v2/bindingurl1'
+                    }
+                }, {
+                    metadata: {
+                        url: '/v2/bindingurl2'
+                    }
+                }]
+            })
+            $cloudfoundry.deleteServiceInstance({
+                metadata: {
+                    url: '/v2/service_instance/serviceguid'
+                },
+                entity: {
+                    service_bindings_url: '/v2/service_instance/serviceguid/bound_instances'
+                }
+            }, true).then(function(response) {
+                expect(response).toEqual({
+                    message: 'service instance deleted'
+                });
+            });
+            httpBackend.flush();
+        });
+
 
     });
 
