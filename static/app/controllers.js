@@ -55,7 +55,6 @@
             $scope.space = space;
         };
         var renderServices = function(services) {
-            console.log(services);
             $scope.services = services;
         };
         // Show a specific tab

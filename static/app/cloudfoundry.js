@@ -1,6 +1,6 @@
 (function() {
     // CloudFoundry Service
-    angular.module('cfdeck').service('$cloudfoundry', function($http, $location, $log) {
+    angular.module('cfdeck').service('$cloudfoundry', function($http, $location, $log, $q) {
 
         // Declare variables for passing data via this service
         var orgs, activeOrg;
@@ -24,15 +24,15 @@
                 .then(returnAuthStatus, returnAuthStatus);
         };
 
-	this.isAuthorized = function() {
+        this.isAuthorized = function() {
             return this.getAuthStatus()
-		    .then(function(status) {
-			    if (status == "authorized") {
-				    return true;
-			    }
-			    return false;
-		    });
-	};
+                .then(function(status) {
+                    if (status == "authorized") {
+                        return true;
+                    }
+                    return false;
+                });
+        };
 
         // Get organizations
         this.getOrgs = function() {
@@ -112,14 +112,40 @@
                 });
         };
 
-        // Delete a service instance
-        this.deleteServiceInstance = function(service) {
+        // Delete unbound service Instance
+        var deleteUnboundServiceInstance = function(service) {
             return $http.delete(service.metadata.url)
                 .then(function(response) {
                     return response.data;
                 }, function(response) {
                     return response.data;
-                }); 
+                });
+        };
+
+
+        // Delete bound service instance, by undinding all services first
+        var deleteBoundServiceInstance = function(service) {
+            return $http.get(service.entity.service_bindings_url)
+                .then(function(response) {
+                    // Collect promises
+                    var requestsPromises = response.data.resources.map(function(boundService) {
+                        return $http.delete(boundService.metadata.url)
+                    });
+                    // Run promises and then delete service instance
+                    return $q.all(requestsPromises)
+                        .then(function() {
+                            return deleteUnboundServiceInstance(service)
+                        });
+                });
+        };
+
+        // Delete a service instance
+        this.deleteServiceInstance = function(service, bound) {
+            if (!bound) {
+                return deleteUnboundServiceInstance(service);
+            } else {
+                return deleteBoundServiceInstance(service);
+            }
         };
 
         // Given an org guid attempts to find the active org data stored in the service
