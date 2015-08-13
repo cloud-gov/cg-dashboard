@@ -187,11 +187,6 @@ var getUserInfoGivenName = function() {
     }
 };
 
-// Location path mock
-var path = function(callback) {
-    return callback()
-}
-
 describe('HomeCtrl', function() {
 
     var scope, cloudfoundry;
@@ -361,10 +356,6 @@ describe('MarketCtrl', function() {
             getOrgServices: getOrgServices,
             findActiveOrg: findActiveOrg
         }
-        // Mock location service
-        location = {
-            path: path
-        }
         spyOn(cloudfoundry, 'getOrgServices').and.callThrough();
 
         // Load Ctrl and scope
@@ -387,13 +378,6 @@ describe('MarketCtrl', function() {
     it('should return the active org', function() {
         expect(scope.activeOrg.entity.name).toEqual('org1')
     });
-
-    it('should go to the specific service details', function() {
-      spyOn(location, 'path');
-      scope.showService({metadata: {guid: 'serviceguid'}})
-        expect(location.path).toHaveBeenCalledWith('undefined/serviceguid');
-    });
-
 });
 
 describe('ServiceCtrl', function() {

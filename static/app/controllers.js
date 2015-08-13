@@ -77,10 +77,6 @@
 
     app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-        // Show a specific service details by going to service landing page
-        $scope.showService = function(service) {
-            $location.path($location.path() + '/' + service.metadata.guid);
-        };
         // Get all the services associated with an org
         $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
             $scope.services = services;
@@ -102,10 +98,16 @@
         var checkIfCreated = function(response) {
             $scope.disableSubmit = false;
             if (response.status == 400) {
-                $scope.message = {type: 'error', message: response.data.description}
+                $scope.message = {
+                    type: 'error',
+                    message: response.data.description
+                }
             } else {
-                 $scope.activePlan = null;
-                 $scope.message = {type: 'success', message: "Service Created!"};
+                $scope.activePlan = null;
+                $scope.message = {
+                    type: 'success',
+                    message: "Service Created!"
+                };
             }
         };
         // Show maker and populate with space info
