@@ -219,6 +219,19 @@
                 });
         };
 
+        // Get service credentials
+        this.getServiceCredentials = function(service) {
+            // Look for service binding guid
+            return $http.get(service.entity.service_bindings_url)
+                .then(function(response) {
+                    // Find the service binding that is attached to the current space
+                    return response.data.resources.filter(function(boundService) {
+                        return boundService.entity.space_guid === service.space_guid;
+                    })[0].entity.credentials;
+                });
+        };
+
+
         // Tells whether the web app should poll for newer app statuses.
         // Useful for when we are in the middle of updating the app status ourselves and we don't
         // want a poll to interrupt the UI.

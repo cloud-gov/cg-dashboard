@@ -193,6 +193,14 @@ var getUserInfoGivenName = function() {
     }
 };
 
+var getServiceCredentials = function(service) {
+    return {
+        then: function(callback) {
+            return callback({})
+        }
+    }
+};
+
 describe('HomeCtrl', function() {
 
     var scope, cloudfoundry;
@@ -479,7 +487,8 @@ describe('AppCtrl', function() {
             findActiveOrg: findActiveOrg,
             getSpaceServices: getSpaceServices,
             bindService: generalBindFunctions,
-            unbindService: generalBindFunctions
+            unbindService: generalBindFunctions,
+            getServiceCredentials: getServiceCredentials
         }
 
         spyOn(cloudfoundry, 'getAppSummary').and.callThrough();
@@ -517,14 +526,15 @@ describe('AppCtrl', function() {
     });
 
 
-    it('hould put the available services into the app along with the boundService obj if it\'s bound', function() {
+    it('hould put the available services into the app along with the boundService and credentials obj if it\'s bound', function() {
         expect(scope.availableServices).toEqual([{
             metadata: {
                 guid: 'serviceguid'
             },
             boundService: {
                 guid: 'serviceguid'
-            }
+            },
+            credentials: {}
         }]);
     });
 
@@ -558,9 +568,9 @@ describe('AppCtrl', function() {
             app_guid: 'appguid'
         })
     });
-
+    // TODO test callback
     it('should bind service when called', function() {
-        spyOn(cloudfoundry, 'unbindService').and.callThrough()
+        spyOn(cloudfoundry, 'unbindService')
         scope.unbindService({
             boundService: {
                 guid: 'serviceguid2'
