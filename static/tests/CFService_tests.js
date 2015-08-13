@@ -53,7 +53,10 @@ describe('CloudFoundry Service Tests', function() {
             })
             httpBackend.flush();
         });
+    });
 
+
+    describe('getOrgs', function() {
         it('should return false if not authenticated', function() {
             httpBackend.whenGET('/v2/authstatus').respond({
                 status: 'unauthorized'
@@ -343,6 +346,41 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    describe('getServiceCredentials', function() {
+        it('it should return service credentials for a bound app by searching through and finding the instances that matches', function() {
+            httpBackend.whenGET('/v2/services_instances/serviceguid/service_bindings')
+                .respond({
+                    resources: [{
+                        entity: {
+                            space_guid: 'spaceguid2',
+                            credentials: {}
+                        }
+                    }, {
+                        entity: {
+                            space_guid: 'spaceguid1',
+                            credentials: {
+                                secret: 'a'
+                            }
+                        }
+                    }]
+                })
+            var service = {
+                entity: {
+                    service_bindings_url: '/v2/services_instances/serviceguid/service_bindings'
+                },
+                space_guid: 'spaceguid1'
+            }
+            $cloudfoundry.getServiceCredentials(service)
+                .then(function(data) {
+                    expect(data).toEqual({
+                        secret: 'a'
+                    })
+                });
+            httpBackend.flush();
+        })
+
+    })
+
     describe('getServiceDetails', function() {
         it('should collect a specific service\'s details', function() {
 
@@ -464,9 +502,9 @@ describe('CloudFoundry Service Tests', function() {
 
         it('should delete all bound instances when the bound parameter is true', function() {
             httpBackend.whenDELETE('/v2/service_instance/serviceguid').respond({
-                message: 'service instance deleted'
-            })
-            // These two requests should be flushed when call is finished
+                    message: 'service instance deleted'
+                })
+                // These two requests should be flushed when call is finished
             httpBackend.whenDELETE('/v2/bindingurl1').respond({
                 message: 'deleted'
             })
