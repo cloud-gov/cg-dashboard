@@ -2,19 +2,29 @@ language: go
 go:
 - 1.4.2
 before_install:
-  - wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
-  - tar -xjf phantomjs-2.0.0-ubuntu-12.04.tar.bz2
-  - sudo rm -rf /usr/local/phantomjs/bin/phantomjs
-  - sudo mv phantomjs /usr/local/phantomjs/bin/phantomjs
-  - npm install
+- wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
+- tar -xjf phantomjs-2.0.0-ubuntu-12.04.tar.bz2
+- sudo rm -rf /usr/local/phantomjs/bin/phantomjs
+- sudo mv phantomjs /usr/local/phantomjs/bin/phantomjs
+- npm install
 script:
-- ./codecheck.sh -u
+- "./codecheck.sh -u"
 - npm test
 - go test ./...
 - cd acceptance && go test -tags acceptance
 branches:
   only:
     - master
+deploy:
+  edge: true
+  provider: cloudfoundry
+  api: https://api.18f.gov
+  organization: sandbox
+  space: jamesc.scott
+  password:
+    secure: X3RYcEmqfbUp67dLfS1UOxGZTRC1XsiBxQ4OjE2sxNuAkm0TvTKDgUJMUjns20LA7TdtTXakTPoXEeoI/B3iGeYamiuv9oNEw36h6Mqg1LRQi+60bfE3Iz60uksK8DedKTJZT+S9RWnW3lvvmaeFMjPDXtO2o6zGQz3AwlDjh6H+67sv6a7o7hExFFmnB4kuDkozC/267oVKl79HJp1Tt9NCuksy3ZV+zJHjlZIFB+6L6Aips1ESeg/FXb3bzc/BCJU235s1sMTDu15/cZrDzTXkvGqlknTt8/mehNQEK4pvREjkxntpuwgUDRz0kb/BaCkXf0x4K583gowHlsHHuu6JO4I6/Qba0jcxipw2fr/SP3l5E69jrMBnPz5/sWBtsSnkpMlwUKj7WNH1H1aqJaiwpiO3KtdiBqF2SV3+1m/Ocgi92gqpezmX0y/dhAZ5kVeVmxp4ltu7j5yig1/MsVYHD2p+UpvcZK+59bi5D3QPo84OeTFsuM4VCNtSYoJLRsW/c+YChrWWkM5+8ri/WME5O8ZrFGjR2jEtPx1EXmFjknFdwuc/6b0yzH9FCkAAgCcTm14yObs22FVn41b0S4TFag3BL6/9yScMXjzfWEoLIMcy8UXimlAkd2mn3Xtp50liq/OX0Mftwh5yIgsGVfAGOOFz7NJC8M46JFt+wTY=
+  username:
+    secure: cGL9UtamTtcxurEY1/YM6moIaNZA1IqWeXN7Ah4ioOHr80IPHnsADtbo4M6tnx+D8Xv/zzJ5LH2JSITnRIDyVVsuArlQNjN3xfAsRZ8aZm31O6CafUKpCvz1qsJqbshS/N1kX6ywEDblpxd9MYaGbtIps+4lKBcVJEJy/Al0e3Lp38QFxdFnlsuk+oIUdaLq2eCOYa1wvlXPnPiIUDMIMdreJJZtRPj5eHed/foM1IOr+yJMXFu0V+5N/NJS7wnPD49PtlvbgjCx5h5Vi4VNEwJvEcY8Mfp0eh7A8ENn6YSW57210lMRHDx0OHmvKHo66qbt0RHyY0wPOgv5lnwFIfr/kUPM6HaX+RDUc/qgzs3FhZLbZGezMqV3zlff0W6OiVI/eibTWNle7l0uyQ/FDxtm08kZgqDVSRPfWqew6xQSlHcNAcuPDbd/utu5lq3yE8PWUcPy07Qf1I9xP+Mk5HcBnbZ6NQwH42tElJhgN9IFS0F0J1T8h22yAieLjA0yZf55ZS425K1IqcN2x+jGV6XE17SCrra8uFYw9XCzLJ17ElOb2uXS6alEX/sz4iXRYvbZpMN/FRyUWGmatV5EOw14teNSCtyEyvEYoKfg9ixsl/iDP45H77LG6VpSvZ+yktx41oFrp8MPBMImULZ4jhuHv2+LinXQSpu7HMFPZw4=
 env:
   global:
   - secure: xn/EXShpj51D9TTQgwrOj5H3c7gr41i+KnoOesfJDc1twY4reS8bWIBZU1zq2xaMsA8sus97Byk5MSXKifIzO5Gk6nyKzBo1z0HIXhpAVBy8RwNpLvUZrjrtz/24FmeQWs7McIfPZ92UWsGTI0BGVsSbIeAzeAkwIXb0/M1HUG4r7wgEOF+dlr3pYOtQBJ45wsst+n1RzUbWyHP7UPCcNHSrI7Q1y4odtK0MLMIozWBm5TbhpJnN4ylQCVPg2077Bsb5emg0G1K2Gfplhzvsu2+1BOekBHBsA4MJIPA1Y4dB2rkHeRvWgIyjg+w+wDyq0Kd4yP5Kku/N1U2b1llaOOLNABGYmfkteFgugHv73xfPoN2uLRIrWOpxywp+r/7qVDO8s5ZjjAGQfnFql53JBxD7/eAKH4sqaR5uW1uSpwpAmjaNAa7wcmgFKi0nyFovIBgbTH37M8nSDIS6/YfYYRiGMQA3piiUvBqVFpguSDrgup8/O8KsMn2SfPLvk7GG5bb8JOO0dWzXFuq1CWSzU4cIvcYfVkwmOKjpvKXYX1ebZz3T7i+ZL1fijQKFMlzpQGNPqHZJ/QwjH45G+Nw8Cz4waxP8l4C4ros5rIgR6CdYoRqfrhGMODum/JmoChM85hVbZbRw0AMJ+mRgprqDkru1AGSeBrxxSnwmX6eS0bs=
