@@ -15,6 +15,7 @@ script:
 branches:
   only:
     - master
+    - deploy
 deploy:
   edge: true
   provider: cloudfoundry
