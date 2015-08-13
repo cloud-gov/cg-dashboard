@@ -39,9 +39,15 @@
                 <div ng-switch="appSummary.state">
                     <div ng-switch-when='STARTED'>
                         <button type="button" ladda="restarting" class="btn btn-warning" ng-disabled="stopping"
-                        ng-click="restartApp(appSummary)">Restart</button>
+                            mwl-confirm title="Warning!" message="Are you sure you want to interrupt connectivity to the application?"
+                            on-confirm="restartApp(appSummary)" confirm-button-type="danger" cancel-button-type="default">
+                            Restart
+                        </button>
                         <button type="button" ladda="stopping" class="btn btn-danger" ng-disabled="restarting"
-                        ng-click="stopApp(appSummary)">Stop</button>
+                            mwl-confirm title="Warning!" message="Are you sure you want to stop connectivity to the application?"
+                            on-confirm="stopApp(appSummary)" confirm-button-type="danger" cancel-button-type="default">
+                            Stop
+                        </button>
                     </div>
                     <div ng-switch-when='STOPPED'>
                         <button type="button" ladda="starting" class="btn btn-success" ng-disabled="restarting"

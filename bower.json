@@ -20,6 +20,8 @@
     "angular-route": "~1.4.3",
     "angular-mocks": "~1.4.3",
     "angularjs": "~1.4.3",
-    "bootstrap": "~3.3.5"
+    "bootstrap": "~3.3.5",
+    "angular-bootstrap-confirm": "~0.3.0",
+    "angular-sanitize": "~1.4.3"
   }
 }
