@@ -390,6 +390,7 @@ describe('SpaceCtrl', function() {
 
     });
 
+
 });
 
 describe('MarketCtrl', function() {
@@ -425,6 +426,7 @@ describe('MarketCtrl', function() {
     it('should return the active org', function() {
         expect(scope.activeOrg.entity.name).toEqual('org1')
     });
+
 });
 
 describe('ServiceCtrl', function() {
@@ -558,6 +560,7 @@ describe('AppCtrl', function() {
 
 
     it('should put the available services into the app along with the boundService and credentials obj if it\'s bound', function() {
+
         expect(scope.availableServices).toEqual([{
             metadata: {
                 guid: 'serviceguid'
@@ -566,6 +569,7 @@ describe('AppCtrl', function() {
                 guid: 'serviceguid'
             },
             credentials: {}
+
         }]);
     });
 
@@ -599,9 +603,9 @@ describe('AppCtrl', function() {
             app_guid: 'appguid'
         })
     });
-    // TODO test callback
+    
     it('should bind service when called', function() {
-        spyOn(cloudfoundry, 'unbindService')
+        spyOn(cloudfoundry, 'unbindService').and.callThrough()
         scope.unbindService({
             boundService: {
                 guid: 'serviceguid2'
@@ -612,6 +616,7 @@ describe('AppCtrl', function() {
             app_guid: 'appguid'
         }, jasmine.any(Function))
     });
+    
     it('should bind service when called and then refresh appSummary', function() {
         scope.unbindService({
             boundService: {
