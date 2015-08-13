@@ -1,0 +1,6 @@
+---
+inherit: manifest-base.yml
+applications:
+- name: cf-deck
+  memory: 256M
+  host: deck
