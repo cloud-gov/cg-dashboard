@@ -18,8 +18,7 @@ branches:
     - master
     - staging
     - production
-after-success:
-  - python travis-vars-to-manifest.py
+before_deploy: python travis-vars-to-manifest.py
 deploy:
   edge: true
   skip_cleanup: true
