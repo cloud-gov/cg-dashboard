@@ -201,6 +201,22 @@ var getServiceCredentials = function(service) {
     }
 };
 
+var createRoute = function(newRoute, appGuid) {
+    return {
+        then: function(callback) {
+            return callback({})
+        }
+    }
+};
+
+var deleteRoute = function(oldRoute) {
+    return {
+        then: function(callback) {
+            return callback({})
+        }
+    }
+};
+
 describe('HomeCtrl', function() {
 
     var scope, cloudfoundry;
@@ -359,7 +375,7 @@ describe('SpaceCtrl', function() {
             }, {
                 name: 'mockname2'
             }]
-        })
+        });
     });
 
     it('should render the app tab via the activeTab var when showTab function is run with "app"', function() {
@@ -384,7 +400,7 @@ describe('MarketCtrl', function() {
     beforeEach(inject(function($rootScope, $controller) {
         //Mock CF service
         cloudfoundry = {
-        getOrgServices: getOrgServices,
+            getOrgServices: getOrgServices,
             findActiveOrg: findActiveOrg
         }
         spyOn(cloudfoundry, 'getOrgServices').and.callThrough();
@@ -408,7 +424,7 @@ describe('MarketCtrl', function() {
 
     it('should return the active org', function() {
         expect(scope.activeOrg.entity.name).toEqual('org1')
-    }); 
+    });
 });
 
 describe('ServiceCtrl', function() {
@@ -488,13 +504,14 @@ describe('AppCtrl', function() {
             getSpaceServices: getSpaceServices,
             bindService: generalBindFunctions,
             unbindService: generalBindFunctions,
-            getServiceCredentials: getServiceCredentials
-        }
-
+            getServiceCredentials: getServiceCredentials,
+            createRoute: createRoute,
+            deleteRoute: deleteRoute
+        };
         spyOn(cloudfoundry, 'getAppSummary').and.callThrough();
 
         // Load Ctrl and scope
-        scope = $rootScope.$new()
+        scope = $rootScope.$new() 
         ctrl = $controller('AppCtrl', {
             $scope: scope,
             $cloudfoundry: cloudfoundry,
@@ -505,6 +522,21 @@ describe('AppCtrl', function() {
         });
 
     }));
+
+    it('should call the create route method and update the app while disabling the other route buttons', function() {
+        expect(scope.blockRoutes).toEqual(undefined)
+        scope.createRoute({})
+        expect(scope.blockRoutes).toEqual(false)
+    })
+
+
+    it('should call the delete route method and update the app while disabling the other route buttons', function() {
+        expect(scope.blockRoutes).toEqual(undefined)
+        scope.deleteRoute({})
+        expect(scope.blockRoutes).toEqual(false)
+    })
+
+
 
     it('should put the app summary into the app', function() {
         expect(scope.appSummary.name).toEqual('app1');
