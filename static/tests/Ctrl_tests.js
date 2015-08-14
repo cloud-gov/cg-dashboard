@@ -523,20 +523,19 @@ describe('AppCtrl', function() {
 
     }));
 
-    it('should call the create route method and update the app while disabling the other route buttons', function() {
-        expect(scope.blockRoutes).toEqual(undefined)
-        scope.createRoute({})
-        expect(scope.blockRoutes).toEqual(false)
+    it('should call the create route method and update the app while disabling the other route buttons', function () {
+        expect(scope.blockRoutes).toEqual(undefined);
+        scope.createRoute({});
+        expect(scope.blockRoutes).toEqual(false);
+        expect(cloudfoundry.getAppSummary).toHaveBeenCalledWith('appguid');
     })
 
-
-    it('should call the delete route method and update the app while disabling the other route buttons', function() {
-        expect(scope.blockRoutes).toEqual(undefined)
-        scope.deleteRoute({})
-        expect(scope.blockRoutes).toEqual(false)
+    it('should call the delete route method and update the app while disabling the other route buttons', function () {
+        expect(scope.blockRoutes).toEqual(undefined);
+        scope.deleteRoute({});
+        expect(scope.blockRoutes).toEqual(false);
+        expect(cloudfoundry.getAppSummary).toHaveBeenCalledWith('appguid');    
     })
-
-
 
     it('should put the app summary into the app', function() {
         expect(scope.appSummary.name).toEqual('app1');
