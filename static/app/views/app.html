@@ -195,8 +195,11 @@
             </td>
             <td>
                 <button type="button" type="submit" class="btn btn-xs btn-info" ng-disabled="blockRoutes"
-                ng-click="createRoute(newRoute)">Create Route</button>
-            </td>
+                mwl-confirm title="Notice!" message="Please allow a few minutes for route to be finalized"
+                on-confirm="createRoute(newRoute)" confirm-button-type="info" cancel-button-type="default">
+                    Create Route
+                </button>
+        </td>
         </tr>
     </tbody>
 </table>
