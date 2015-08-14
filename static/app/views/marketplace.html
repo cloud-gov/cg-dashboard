@@ -8,7 +8,8 @@
             <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
             </div>
 
-            <input id="serviceSearch" type="text" class="form-control" placeholder="Search for a service" ng-model="searchService">
+            <input id="serviceSearch" type="text" class="form-control" placeholder="Search for a service"
+            ng-model="searchService">
 
         </div>
     </div>
@@ -39,8 +40,10 @@
         </th>
     </thead>
     <tbody>
-        <tr ng-click="showService(service)" ng-repeat="service in services | orderBy:sortType:sortReverse | filter:searchService">
-            <td class="service-name-data">{{service.entity.label}}</td>
+        <tr ng-repeat="service in services | orderBy:sortType:sortReverse | filter:searchService">
+            <td class="service-name-data">
+                <a href='#/org/{{ activeOrg.guid }}/marketplace/{{ service.metadata.guid }}'>{{service.entity.label}}</a>
+            </td>
             <td class="service-description-data">{{service.entity.description}}</td>
             <td class="service-date-created-data">{{service.metadata.created_at | date:'yyyy-MM-dd'}}</td>
         </tr>
