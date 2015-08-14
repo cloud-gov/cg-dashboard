@@ -1,0 +1,9 @@
+---
+buildpack: https://github.com/ddollar/heroku-buildpack-multi.git
+domain: 18f.gov
+env:
+  CONSOLE_CLIENT_ID: CLIENT_ID
+  CONSOLE_CLIENT_SECRET: CLIENT_SECRET
+  CONSOLE_LOGIN_URL: https://login.18f.gov/
+  CONSOLE_UAA_URL: https://uaa.18f.gov/
+  CONSOLE_API_URL: https://api.18f.gov/
