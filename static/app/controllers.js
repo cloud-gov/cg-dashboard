@@ -183,8 +183,23 @@
             });
         };
         // Create new Route
-        $scope.createRoute = function (newRoute) {
-            console.log(newRoute);
+        $scope.createRoute = function(newRoute) {
+            $scope.blockRoutes = true;
+            newRoute.space_guid = $routeParams['spaceguid']
+            $cloudfoundry.createRoute(newRoute, $routeParams['appguid'])
+                .then(function(response) {
+                    $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                    $scope.blockRoutes = false;
+                })
+        };
+        // Delete Route
+        $scope.deleteRoute = function(oldRoute) {
+            $scope.blockRoutes = true;
+            $cloudfoundry.deleteRoute(oldRoute)
+                .then(function(response) {
+                    $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                    $scope.blockRoutes = false;
+                })
         };
         // Stop a specified app
         $scope.stopApp = function(app) {

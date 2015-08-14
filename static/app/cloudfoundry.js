@@ -34,6 +34,32 @@
                 });
         };
 
+        // Delete Route
+        this.deleteRoute = function(oldRoute) {
+            return $http.delete('/v2/routes/' + oldRoute.guid)
+                .then(function(response) {
+
+                });
+        };
+
+        // Delete Route
+        this.createRoute = function(newRoute, appGuid) {
+            // Create the route
+            return $http.post('/v2/routes', newRoute)
+                .then(function(response) {
+                    // Map the route to the app
+                    return $http.put(response.data.metadata.url + '/apps/' + appGuid)
+                        .then(function(response) {
+                            return response.data;
+                        }, function(response) {
+                            return response.data;
+                        });
+                }, function(response) {
+                    return response.data;
+                });
+        };
+
+
         // Get organizations
         this.getOrgs = function() {
             return $http.get('/v2/organizations')
