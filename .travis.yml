@@ -16,7 +16,6 @@ script:
 branches:
   only:
     - master
-    - staging
     - production
 before_deploy: python travis-vars-to-manifest.py
 deploy:
@@ -25,7 +24,7 @@ deploy:
   manifest: manifest-$TRAVIS_BRANCH.yml
   on:
     branch:
-      - staging
+      - master
       - production
   api: https://api.18f.gov
   organization: sandbox

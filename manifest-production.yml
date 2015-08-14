@@ -2,6 +2,6 @@
 applications:
 - name: cf-deck
   memory: 256M
-  host: console
+  host: 18f-deck
   env:
-    CONSOLE_HOSTNAME: https://console.18f.gov
+    CONSOLE_HOSTNAME: https://18f-deck.18f.gov
