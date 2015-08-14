@@ -24,8 +24,8 @@ with open('manifest-base.yml', 'r') as base_manifest:
         sys.exit(1)
 
     # Put the environment vars into place.
-    yaml_data['applications'][0]['env'][CONSOLE_CLIENT_ID] = client_id
-    yaml_data['applications'][0]['env'][CONSOLE_CLIENT_SECRET] = client_secret
+    yaml_data['env'][CONSOLE_CLIENT_ID] = client_id
+    yaml_data['env'][CONSOLE_CLIENT_SECRET] = client_secret
 
 # Overwrite the manifest file.
 with open('manifest-base.yml', 'w') as base_manifest:
