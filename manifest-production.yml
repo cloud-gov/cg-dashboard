@@ -1,0 +1,5 @@
+---
+applications:
+- name: cf-deck
+  memory: 256M
+  host: console
