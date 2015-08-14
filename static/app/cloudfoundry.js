@@ -38,7 +38,7 @@
         this.deleteRoute = function(oldRoute) {
             return $http.delete('/v2/routes/' + oldRoute.guid)
                 .then(function(response) {
-
+                    return response.data;
                 });
         };
 
