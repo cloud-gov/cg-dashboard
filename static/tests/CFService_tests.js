@@ -331,6 +331,7 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    // TODO test directive controller functions
     describe('deleteServiceInstance', function() {
         it('should delete a service instance via a delete request', function() {
             httpBackend.whenDELETE('/v2/service_instance/serviceguid').respond({

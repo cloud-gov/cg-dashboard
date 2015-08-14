@@ -526,7 +526,7 @@ describe('AppCtrl', function() {
     });
 
 
-    it('hould put the available services into the app along with the boundService and credentials obj if it\'s bound', function() {
+    it('should put the available services into the app along with the boundService and credentials obj if it\'s bound', function() {
         expect(scope.availableServices).toEqual([{
             metadata: {
                 guid: 'serviceguid'
