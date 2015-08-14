@@ -16,15 +16,18 @@ script:
 branches:
   only:
     - master
-    - deploy
+    - staging
+    - production
 after-success:
   - python travis-vars-to-manifest.py
 deploy:
   edge: true
   provider: cloudfoundry
-  manifest: manifest-staging.yml
+  manifest: manifest-$TRAVIS_BRANCH.yml
   on:
-    all_branches: true
+    branch:
+      - staging
+      - production
   api: https://api.18f.gov
   organization: sandbox
   space: jamesc.scott
