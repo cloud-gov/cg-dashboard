@@ -21,7 +21,6 @@ branches:
 before_deploy: python travis-vars-to-manifest.py
 deploy:
   edge: true
-  skip_cleanup: true
   provider: cloudfoundry
   manifest: manifest-$TRAVIS_BRANCH.yml
   on:
