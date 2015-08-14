@@ -4,3 +4,5 @@ applications:
 - name: cf-deck
   memory: 256M
   host: staging-deck
+  env:
+    CONSOLE_HOSTNAME: https://staging-deck.18f.gov

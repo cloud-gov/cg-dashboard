@@ -3,3 +3,5 @@ applications:
 - name: cf-deck
   memory: 256M
   host: console
+  env:
+    CONSOLE_HOSTNAME: https://console.18f.gov
