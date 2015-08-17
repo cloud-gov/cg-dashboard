@@ -109,6 +109,14 @@
                 });
         };
 
+	// Get org users
+        this.getOrgUsers = function(orgGuid) {
+            return $http.get('/v2/organizations/' + orgGuid + '/users')
+                .then(function(response) {
+                    return response.data.resources;
+                });
+        };
+
         // Get space details
         this.getSpaceDetails = function(spaceGuid) {
             return $http.get('/v2/spaces/' + spaceGuid + '/summary')

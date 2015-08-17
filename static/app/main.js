@@ -27,6 +27,10 @@
                 templateUrl: 'app/views/service.html',
                 controller: 'ServiceCtrl'
             })
+            .when('/org/:orgguid/manage-org', {
+                templateUrl: 'app/views/manage_org.html',
+                controller: 'OrgManagementCtrl'
+            })
             .when('/org/:orgguid/spaces/:spaceguid', {
                 templateUrl: 'app/views/spaces.html',
                 controller: 'SpaceCtrl'
