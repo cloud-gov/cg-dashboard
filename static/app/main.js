@@ -1,5 +1,5 @@
 (function() {
-    var app = angular.module('cfdeck', ['ngRoute', 'angular-ladda', 'ngSanitize', 'mwl.confirm']);
+    var app = angular.module('cfdeck', ['ngRoute', 'angular-ladda', 'ngSanitize', 'mwl.confirm', 'toggle-switch']);
 
     app.config(function($routeProvider) {
         $routeProvider
@@ -30,6 +30,10 @@
             .when('/org/:orgguid/manage-org', {
                 templateUrl: 'app/views/manage_org.html',
                 controller: 'OrgManagementCtrl'
+            })
+            .when('/org/:orgguid/manage-org/:userguid', {
+                templateUrl: 'app/views/manage_org_user.html',
+                controller: 'OrgUserManagementCtrl'
             })
             .when('/org/:orgguid/spaces/:spaceguid', {
                 templateUrl: 'app/views/spaces.html',

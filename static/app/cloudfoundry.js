@@ -117,7 +117,32 @@
                 });
         };
 
-        // Get space details
+	// Get particular org user
+        this.getOrgUser = function(orgGuid, userGuid) {
+            // return $http.get('/v2/users/' + userGuid + '/organizations?organization_guid='+ orgGuid)
+            return $http.get('/v2/organizations/' + orgGuid + '/users?user_guid='+ userGuid)
+                .then(function(response) {
+                    return response.data.resources;
+                });
+        };
+
+	// Generic function to get different org user categories
+        this.getOrgUserCategory = function(orgGuid, userGuid, category, queryString) {
+            return $http.get('/v2/organizations/' + orgGuid + '/'+category+'?'+queryString+'=' +userGuid)
+                .then(function(response) {
+                    return response.data.resources;
+                });
+        };
+
+	// Generic function to set different org user categories
+        this.setOrgUserCategory = function(orgGuid, userGuid, category) {
+            return $http.post('/v2/organizations/' + orgGuid + '/'+category+'/'+ userGuid)
+                .then(function(response) {
+                    return response.data.resources;
+                });
+        };
+
+	// Get space details
         this.getSpaceDetails = function(spaceGuid) {
             return $http.get('/v2/spaces/' + spaceGuid + '/summary')
                 .then(function(response) {

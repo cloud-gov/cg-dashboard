@@ -58,10 +58,43 @@
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
         var renderOrgUsers = function(users) {
             console.log(users);
-            $scope.users = users;
+            $scope.org_users = users;
         };
         // Get all the users associated with an org
         $cloudfoundry.getOrgUsers($routeParams['orgguid']).then(renderOrgUsers);
+    });
+
+    app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+        var renderOrgUser = function(response) {
+		console.log(response);
+	    $scope.user = response;
+        };
+        var renderOrgUserBillingManagerState = function(response) {
+		console.log(response);
+	    $scope.billing_manager = response;
+        };
+        var renderOrgUserOrgManagerState = function(response) {
+		console.log(response);
+	    $scope.org_manager = response;
+        };
+        var renderOrgUserOrgAuditorState = function(response) {
+		console.log(response);
+	    $scope.org_auditor = response;
+        };
+        $cloudfoundry.getOrgUser($routeParams['orgguid'], $routeParams['userguid']).then(renderOrgUser);
+
+	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', 'billing_manager_guid').then(renderOrgUserBillingManagerState);
+
+	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', 'auditor_guid').then(renderOrgUserOrgAuditorState);
+
+	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', 'manager_guid').then(renderOrgUserOrgManagerState);
+
+	/*
+	$scope.watch('orgManagerStatus', function() {
+		console.log($scope.orgManagerStatus);
+	});
+	*/
     });
 
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
