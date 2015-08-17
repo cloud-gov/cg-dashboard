@@ -7,31 +7,29 @@
     app.directive('serviceDestroyer', function($cloudfoundry) {
         return {
             templateUrl: 'app/views/partials/service_destroyer.html',
-            restrict: 'A',
-            scope: {
-                service: "=service",
-            },
             controller: function($scope) {
                 $scope.view = {
                     status: 'unconfirmed',
+                    disableButton: false,
+                    
                 };
                 $scope.view.showDestroyer = function(state) {
                     $scope.view.status = state;
                 };
-                $scope.view.deleteService = function(service) {
-                    $cloudfoundry.deleteServiceInstance(service)
+                $scope.view.deleteService = function(service, bound) {
+                    $scope.view.disableButton = true;
+                    $cloudfoundry.deleteServiceInstance(service, bound)
                         .then(function(response) {
                             if (response.code === undefined) {
                                 $scope.view.status = "success";
-                                $scope.view.message = "Deleted!";
+                                $scope.showTab('serviceInstances')
                             } else if (response.code === 10006) {
-                                $scope.view.status = "error";
-                                $scope.view.message = "This service is bound to one or more apps";
+                                $scope.view.status = "boundError";
                             } else {
                                 $scope.view.status = "error";
-                                $scope.view.message = "Unknown error, try refreshing."
-                            }                             
-                        })
+                            }
+                             $scope.view.disableButton = false;
+                        });
                 };
             }
         };
@@ -41,18 +39,18 @@
             templateUrl: 'app/views/partials/header.html',
             restrict: 'A',
             controller: function($scope) {
-               // Render the given name of the user on the page
+                // Render the given name of the user on the page
                 var renderName = function(name) {
                     $scope.givenName = name;
                 };
-		$cloudfoundry.isAuthorized()
-			.then(function(authorized) {
-				$scope.authorized = authorized;
-				if (authorized == true) {
-					// Load the given name of the logged in user.
-					$uaa.getUserInfoGivenName().then(renderName);
-				}
-			});
+                $cloudfoundry.isAuthorized()
+                    .then(function(authorized) {
+                        $scope.authorized = authorized;
+                        if (authorized == true) {
+                            // Load the given name of the logged in user.
+                            $uaa.getUserInfoGivenName().then(renderName);
+                        }
+                    });
             }
         };
     });

@@ -1,15 +1,15 @@
 <div ng-switch="view.status">
-    <button type="button" class="btn btn-xs btn-primary" ng-click="view.showDestroyer('confirmed')"
-    ng-switch-when="unconfirmed">Delete Service Instance</button>
-    <div ng-switch-when="confirmed">
-        Delete Service?
-        <button type="button" class="btn btn-xs btn-danger" ng-click="view.deleteService(service)">Yes</button>
-        <button class="btn btn-xs btn-info" ng-click="view.showDestroyer('unconfirmed')">No</button>
-    </div>
-    <div ng-switch-when="error">
-        <span class="label label-danger">{{view.message}}</span>
-    </div>
-    <div ng-switch-when="success">
-        <span class="label label-success">{{view.message}}</span>
-    </div>
+    <button type="button" class="btn btn-xs btn-warning" mwl-confirm title="Warning!"
+    message="Are you sure you want to delete this service instance?" on-confirm="view.deleteService(service, false)"
+    confirm-button-type="danger" cancel-button-type="default" ng-switch-when="unconfirmed" ng-disabled='view.disableButton'>
+        Delete Service Instance
+    </button>
+    <button type="button" class="btn btn-xs btn-danger" mwl-confirm title="Warning!"
+    message="This service instance is bound to one or more apps!" on-confirm="view.deleteService(service, true)"
+    confirm-button-type="danger" cancel-button-type="default" ng-switch-when="boundError" ng-disabled='view.disableButton'>
+        Delete Bound Service Instance
+    </button>
+    <button  type="button" class="btn btn-xs btn-info" ng-click="showTab('serviceInstances')"  ng-switch-when="error" ng-disabled='view.disableButton'>
+        Unknown Error, Click to Refresh.
+    </button>
 </div>

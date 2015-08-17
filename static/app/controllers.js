@@ -55,7 +55,6 @@
             $scope.space = space;
         };
         var renderServices = function(services) {
-            console.log(services);
             $scope.services = services;
         };
         // Show a specific tab
@@ -128,24 +127,43 @@
     app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
 
+        var getServiceCredentials = function(service) {
+            $cloudfoundry.getServiceCredentials(service)
+                .then(function (credentials) {
+                    service.credentials = credentials;
+                });
+        }
+        
+
+        //Show the available services
+        var loadServices = function(boundSevices) {
+            $cloudfoundry.getSpaceServices($routeParams['spaceguid']).then(function(services) {
+                // Add additional info to the services if they are bound
+                $scope.availableServices = services.map(function(service) {
+                    boundSevices.forEach(function(boundService) {
+                        if (boundService.guid == service.metadata.guid) {
+                            // Add the bound service info to services
+                            service.boundService = boundService;
+                            getServiceCredentials(service)
+                        };
+                    });
+                    return service;
+                });
+                $scope.servicesLoaded = true;
+            });
+        };
+
+
         // Inject Math functions into the view.
         $scope.Math = window.Math;
         var renderAppSummary = function(appSummary) {
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
                 $scope.appSummary = appSummary;
-                // Show the available services
-                $cloudfoundry.getSpaceServices($routeParams['spaceguid']).then(function(services) {
-                    // Add a tag to services if they are bound
-                    $scope.availableServices = services.map(function(service) {
-                        $scope.appSummary.services.forEach(function(boundService) {
-                            if (boundService.guid == service.metadata.guid) {
-                                service.boundService = boundService;
-                            };
-                        });
-                        return service;
-                    });
-                });
+                // Load services only when, they haven't been collected
+                if (!$scope.servicesLoaded) {
+                    loadServices($scope.appSummary.services);
+                }
             }
         };
         var renderAppStats = function(appStats) {
@@ -207,7 +225,7 @@
                 service_instance_guid: service.metadata.guid,
                 app_guid: $routeParams['appguid']
             }).then(function(response) {
-
+                $scope.servicesLoaded = false;
                 $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
                 $scope.disableServiceBinder = false;
             });
@@ -219,6 +237,7 @@
                 service_instance_guid: service.boundService.guid,
                 app_guid: $routeParams['appguid']
             }, function(response) {
+                $scope.servicesLoaded = false;
                 $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
                 $scope.disableServiceBinder = false;
             });

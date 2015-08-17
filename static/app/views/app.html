@@ -39,13 +39,15 @@
                 <div ng-switch="appSummary.state">
                     <div ng-switch-when='STARTED'>
                         <button type="button" ladda="restarting" class="btn btn-warning" ng-disabled="stopping"
-                            mwl-confirm title="Warning!" message="Are you sure you want to interrupt connectivity to the application?"
-                            on-confirm="restartApp(appSummary)" confirm-button-type="danger" cancel-button-type="default">
+                        mwl-confirm title="Warning!" message="Are you sure you want to interrupt connectivity to the application?"
+                        on-confirm="restartApp(appSummary)" confirm-button-type="danger"
+                        cancel-button-type="default">
                             Restart
                         </button>
                         <button type="button" ladda="stopping" class="btn btn-danger" ng-disabled="restarting"
-                            mwl-confirm title="Warning!" message="Are you sure you want to stop connectivity to the application?"
-                            on-confirm="stopApp(appSummary)" confirm-button-type="danger" cancel-button-type="default">
+                        mwl-confirm title="Warning!" message="Are you sure you want to stop connectivity to the application?"
+                        on-confirm="stopApp(appSummary)" confirm-button-type="danger"
+                        cancel-button-type="default">
                             Stop
                         </button>
                     </div>
@@ -169,10 +171,26 @@
             </div>
             <div class="panel-body">
                 <button type="button" class="btn btn-xs btn-info" ng-disabled="disableServiceBinder"
-                ng-show="!service.boundService" ng-click="bindService(service)">Bind Service to App</button>
-                <button type="button" class="btn btn-xs btn-warning" ng-disabled="disableServiceBinder"
-                ng-show="service.boundService" ng-click="unbindService(service)">Unbind Service to App</button>
+                ng-show="!service.boundService" mwl-confirm title="Notice!" message="You will need to <b>restage</b> this application before this service is available."
+                on-confirm="bindService(service)" confirm-button-type="info" cancel-button-type="default">Bind Service</button>
+                <button type="button" class="btn btn-xs btn-danger" ng-disabled="disableServiceBinder"
+                ng-show="service.boundService" mwl-confirm title="Warning!" message="Are you sure you want to unbind this service?"
+                on-confirm="unbindService(service)" confirm-button-type="danger"
+                cancel-button-type="default">Unbind Service</button>
             </div>
+            <div class="panel-heading" ng-show='service.credentials'>
+                <h3 class="panel-title">VCAP Info</h3>
+            </div>
+            <div class="panel-body" ng-show='service.credentials' ng-init='showCredentials=false'>
+                <button type="button" class="btn btn-xs btn-danger" ng-hide="showCredentials" mwl-confirm
+                title="Warning!" message="These are senstive data DO NOT SHARE!"
+                on-confirm="showCredentials=true" confirm-button-type="danger"
+                cancel-button-type="default">Show Credentials</button>
+                <button type="button" class="btn btn-xs btn-info" ng-show="showCredentials" ng-click="showCredentials=false">Hide Credentials</button>
+                <div ng-show='showCredentials'>{{service.credentials | json}}</div>
+
+            </div>
+
         </div>
     </div>
 </div>
