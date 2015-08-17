@@ -225,7 +225,7 @@
             </div>
             <div class="panel-body" ng-show='service.credentials' ng-init='showCredentials=false'>
                 <button type="button" class="btn btn-xs btn-danger" ng-hide="showCredentials" mwl-confirm
-                title="Warning!" message="These are senstive data DO NOT SHARE!"
+                title="Warning!" message="Look behind you! This info may contain sensitive data such as passwords. DO NOT SHARE!"
                 on-confirm="showCredentials=true" confirm-button-type="danger"
                 cancel-button-type="default">Show Credentials</button>
                 <button type="button" class="btn btn-xs btn-info" ng-show="showCredentials" ng-click="showCredentials=false">Hide Credentials</button>
