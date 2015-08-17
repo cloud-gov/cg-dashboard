@@ -15,7 +15,7 @@ type APIContext struct {
 // APIProxy is a handler that serves as a proxy for all the CF API. Any route that comes in the /v2/* route
 // that has not been specified, will just come here.
 func (c *APIContext) APIProxy(rw web.ResponseWriter, req *web.Request) {
-	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL.Path)
+	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL)
 	c.Proxy(rw, req.Request, reqURL)
 }
 
