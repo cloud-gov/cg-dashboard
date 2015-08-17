@@ -54,6 +54,16 @@
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
     });
 
+    app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+        var renderOrgUsers = function(users) {
+            console.log(users);
+            $scope.users = users;
+        };
+        // Get all the users associated with an org
+        $cloudfoundry.getOrgUsers($routeParams['orgguid']).then(renderOrgUsers);
+    });
+
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
         var renderSpace = function(space) {
