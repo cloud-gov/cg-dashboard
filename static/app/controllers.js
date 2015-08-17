@@ -41,7 +41,6 @@
             $scope.orgs = orgs;
             $cloudfoundry.setOrgsData(orgs);
         };
-
         // Clean menu data to return home
         $scope.clearDashboard = function() {
             $scope.MenuData.data = {}

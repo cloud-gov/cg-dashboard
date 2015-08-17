@@ -201,6 +201,21 @@ describe('CloudFoundry Service Tests', function() {
 
     });
 
+    describe('getOrgDetails', function() {
+        
+        var org = {guid: 'orgguid'}
+    
+        it('should make multiple calls to get org info', function() {
+            httpBackend.whenGET('/v2/organizations/orgguid/memory_usage').respond({memory_usage_in_mb: 99});
+            httpBackend.whenGET('/v2/organizations/orgguid').respond({entity: {quota_definition_url: '/quota_definition_url'}});
+            httpBackend.whenGET('/quota_definition_url').respond({entity: {}});
+            $cloudfoundry.getQuotaUsage(org)
+            httpBackend.flush();
+            expect(org.quota).toEqual({entity: { used_memory: 99 }});
+        });    
+    });
+
+
     describe('getOrgsData', function() {
 
         it('should return org data when `orgs` is undefined', function() {
