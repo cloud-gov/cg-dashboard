@@ -10,20 +10,7 @@
         </ul>
     </li>
 
-    <li>
-        <a>
-          {{MenuData.data.currentOrg | orgNameFilter}} Quota Usage
-           <div class="progress">
-               <div class="progress-bar progress-bar-info" role="progressbar" 
-                   aria-valuenow="{{MenuData.data.currentOrg.quota.entity.used_memory}}" 
-                   aria-valuemin="0" 
-                   aria-valuemax="{{MenuData.data.currentOrg.quota.entity.memory_limit}}" 
-                   style="min-width: 2em; width:{{(MenuData.data.currentOrg.quota.entity.used_memory/MenuData.data.currentOrg.quota.entity.memory_limit*100)}}%">
-                   {{(MenuData.data.currentOrg.quota.entity.used_memory/MenuData.data.currentOrg.quota.entity.memory_limit*100 | number:0)}}% 
-               </div>
-           </div>
-          </a>
-    </li>
+
 
 
     <li class="dropdown" ng-show="MenuData.data.currentOrg">
@@ -40,13 +27,21 @@
             </li>
         </ul>
     </li>
-    <li class="dropdown" ng-show="MenuData.data.currentOrg.spaces.length > 0">
-        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-        aria-expanded="false" id="org-dropdown">Spaces&nbsp;<span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            <li ng-repeat="space in MenuData.data.currentOrg.spaces">
-                <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}">{{ space.name }}</a>
-            </li>
-        </ul>
+
+
+    <li ng-show="MenuData.data.currentOrg.quota">
+        <a>
+          Quota Usage
+           <div class="progress">
+               <div class="progress-bar progress-bar-info" role="progressbar" 
+                   aria-valuenow="{{MenuData.data.currentOrg.quota.entity.used_memory}}" 
+                   aria-valuemin="0" 
+                   aria-valuemax="{{MenuData.data.currentOrg.quota.entity.memory_limit}}" 
+                   style="min-width: 2em; width:{{(MenuData.data.currentOrg.quota.entity.used_memory/MenuData.data.currentOrg.quota.entity.memory_limit*100)}}%">
+                   {{(MenuData.data.currentOrg.quota.entity.used_memory/MenuData.data.currentOrg.quota.entity.memory_limit*100 | number:0)}}% 
+               </div>
+           </div>
+          </a>
     </li>
+
 </ul>
