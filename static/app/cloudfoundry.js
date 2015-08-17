@@ -72,6 +72,23 @@
                 });
         };
 
+        // Get quota usage data
+        this.getQuotaUsage = function(org) {
+            return $http.get('/v2/organizations/' + org.guid + '/memory_usage')
+                .then(function(response) {
+                    var used_memory = response.data.memory_usage_in_mb;
+                    return $http.get('/v2/organizations/' + org.guid)
+                        .then(function (response) {
+                            return $http.get(response.data.entity.quota_definition_url)
+                                .then(function (response) {
+                                   org.quota = response.data;
+                                   org.quota.entity.used_memory = used_memory;          
+                                });
+                        });
+                 });
+        };
+
+
         // Get space details
         this.getSpaceDetails = function(spaceGuid) {
             return $http.get('/v2/spaces/' + spaceGuid + '/summary')
