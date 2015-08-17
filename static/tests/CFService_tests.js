@@ -21,7 +21,7 @@ describe('CloudFoundry Service Tests', function() {
             it('should get the current auth status from the backend when authenticated', function() {
                 httpBackend.whenGET('/v2/authstatus').respond({
                     status: 'authenticated'
-                })
+                });
                 $cloudfoundry.getAuthStatus().then(function(status) {
                     expect(status).toEqual('authenticated');
                 });
@@ -34,7 +34,7 @@ describe('CloudFoundry Service Tests', function() {
             it('should get the current auth status from the backend when not authenticated', function() {
                 httpBackend.whenGET('/v2/authstatus').respond(401, {
                     'status': 'unathorized'
-                })
+                });
                 $cloudfoundry.getAuthStatus().then(function(status) {
                     expect(status).toEqual('unathorized');
                 });
@@ -43,10 +43,106 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    describe('isAuthorized', function() {
+        it('should return true if authenticated', function() {
+            httpBackend.whenGET('/v2/authstatus').respond({
+                status: 'authorized'
+            });
+            $cloudfoundry.isAuthorized().then(function(status) {
+                expect(status).toEqual(true);
+            })
+            httpBackend.flush();
+        });
+
+        it('should return false if not authenticated', function() {
+            httpBackend.whenGET('/v2/authstatus').respond({
+                status: 'unauthorized'
+            });
+            $cloudfoundry.isAuthorized().then(function(status) {
+                expect(status).toEqual(false);
+            })
+            httpBackend.flush();
+        });
+
+    });
+
+    describe('deleteRoute', function() {
+        it('should delete the route and return the data', function() {
+            httpBackend.whenDELETE('/v2/routes/routeguid').respond({
+                status: 'deleted'
+            });
+            $cloudfoundry.deleteRoute({
+                    guid: 'routeguid'
+                })
+                .then(function(response) {
+                    expect(response.status).toEqual('deleted');
+                });
+            httpBackend.flush();
+        });
+    });
+
+    describe('createRoute', function() {
+        it('should create a route and then map it to the app', function() {
+            var newRoute = {
+                domain_guid: 'domainguid',
+                host: 'host'
+            };
+            httpBackend.whenPOST('/v2/routes', newRoute).respond({
+                metadata: {
+                    url: '/v2/routes/routeguid'
+                }
+            })
+            httpBackend.whenPUT('/v2/routes/routeguid/apps/appguid').respond({
+                status: 'put'
+            });
+            $cloudfoundry.createRoute(newRoute, 'appguid').then(function(response) {
+                expect(response).toEqual({
+                    status: 'put'
+                });
+            });
+            httpBackend.flush();
+        });
+
+        it('should return a message on failure of first call', function() {
+            var newRoute = {
+                domain_guid: 'domainguid',
+                host: 'host'
+            };
+            httpBackend.whenPOST('/v2/routes', newRoute).respond(400, {
+                status: 'failed'
+            });
+            $cloudfoundry.createRoute(newRoute, 'appguid').then(function(response) {
+                expect(response).toEqual({
+                    status: 'failed'
+                });
+            });
+            httpBackend.flush();
+        });
+   
+        it('should return a message on failure of second call', function() {
+            var newRoute = {
+                domain_guid: 'domainguid',
+                host: 'host'
+            };
+            httpBackend.whenPOST('/v2/routes', newRoute).respond({
+                metadata: {
+                    url: '/v2/routes/routeguid'
+                }
+            })
+            httpBackend.whenPUT('/v2/routes/routeguid/apps/appguid').respond(400, {
+                status: 'put_failed'
+            });
+            $cloudfoundry.createRoute(newRoute, 'appguid').then(function(response) {
+                expect(response).toEqual({
+                    status: 'put_failed'
+                });
+            });
+            httpBackend.flush();
+        });
+    });
+
     describe('getOrgs', function() {
-
         it('should return only the organizations\' array from the /v2/organization endpoint', function() {
-
             httpBackend.whenGET('/v2/organizations').respond({
                 pages: 1,
                 resources: [{
