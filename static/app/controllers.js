@@ -62,34 +62,86 @@
     app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
         var renderOrgUser = function(response) {
-		console.log(response);
 	    $scope.user = response;
         };
+
+	var initBillingManagerState = false;
         var renderOrgUserBillingManagerState = function(response) {
 		console.log(response);
 	    $scope.billing_manager = response;
+	    $scope.billingManagerStatus = (response[0]) &&(response[0].metadata.guid == $routeParams['userguid']);
+	    // No need to set up watching again if we have already.
+	    if (initBillingManagerState == true) {
+                return;
+	    }
+            $scope.$watch('billingManagerStatus', function(newValue, oldValue) {
+               // Only update when there is an actual change in value. This prevents unnecessary calls from
+               // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
+	       // is undefined. That means we are initializing for the first time.
+	       console.log(newValue);
+               if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
+                   return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', newValue)
+                       .then(function() {
+                       });
+               }
+            });
+            initBillingManagerState = true;
         };
+
+	var initOrgManagerState = false;
         var renderOrgUserOrgManagerState = function(response) {
-		console.log(response);
 	    $scope.org_manager = response;
+	    $scope.orgManagerStatus = (response[0]) &&(response[0].metadata.guid == $routeParams['userguid']);
+	    // No need to set up watching again if we have already.
+	    if (initOrgManagerState == true) {
+                return;
+	    }
+            $scope.$watch('orgManagerStatus', function(newValue, oldValue) {
+               // Only update when there is an actual change in value. This prevents unnecessary calls from
+               // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
+	       // is undefined. That means we are initializing for the first time.
+               if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
+                   return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', newValue)
+                       .then(function() {
+                       });
+               }
+            });
+            initOrgManagerState = true;
         };
+
+	var initOrgAuditorState = false;
         var renderOrgUserOrgAuditorState = function(response) {
-		console.log(response);
 	    $scope.org_auditor = response;
+	    $scope.orgAuditorStatus = (response[0]) &&(response[0].metadata.guid == $routeParams['userguid']);
+
+	    // No need to set up watching again if we have already.
+	    if (initOrgAuditorState == true) {
+                return;
+	    }
+            $scope.$watch('orgAuditorStatus', function(newValue, oldValue) {
+               // Only update when there is an actual change in value. This prevents unnecessary calls from
+               // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
+	       // is undefined. That means we are initializing for the first time.
+               if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
+                   return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', newValue)
+                       .then(function() {
+                       });
+               }
+            });
+            initOrgAuditorState = true;
         };
         $cloudfoundry.getOrgUser($routeParams['orgguid'], $routeParams['userguid']).then(renderOrgUser);
 
 	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', 'billing_manager_guid').then(renderOrgUserBillingManagerState);
 
+
 	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', 'auditor_guid').then(renderOrgUserOrgAuditorState);
+
 
 	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', 'manager_guid').then(renderOrgUserOrgManagerState);
 
-	/*
-	$scope.watch('orgManagerStatus', function() {
-		console.log($scope.orgManagerStatus);
-	});
-	*/
+
+
     });
 
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
