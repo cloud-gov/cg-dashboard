@@ -51,11 +51,7 @@
                     return $http.put(response.data.metadata.url + '/apps/' + appGuid)
                         .then(function(response) {
                             return response.data;
-                        }, function(response) {
-                            return response.data;
                         });
-                }, function(response) {
-                    return response.data;
                 });
         };
 
