@@ -11,7 +11,7 @@
             </div>
             <div class="panel-body">
                 <toggle-switch
-                  ng-disabled="!initOrgManagerState"
+                  ng-disabled="!initOrgManagerState || orgManagerStateChanging"
                   ng-model="orgManagerStatus">
                 </toggle-switch>
             </div>
