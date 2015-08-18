@@ -11,6 +11,7 @@
             </div>
             <div class="panel-body">
                 <toggle-switch
+                  ng-disabled="!initOrgManagerState"
                   ng-model="orgManagerStatus">
                 </toggle-switch>
             </div>
@@ -24,6 +25,7 @@
             </div>
             <div class="panel-body">
                 <toggle-switch
+                  ng-disabled="!initBillingManagerState"
                   ng-model="billingManagerStatus">
                 </toggle-switch>
             </div>
@@ -37,6 +39,7 @@
             </div>
             <div class="panel-body">
                 <toggle-switch
+                  ng-disabled="!initOrgAuditorState"
                   ng-model="orgAuditorStatus">
                 </toggle-switch>
             </div>
