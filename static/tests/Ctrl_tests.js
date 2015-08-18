@@ -207,13 +207,13 @@ var createRoute = function(newRoute, appGuid) {
     if (newRoute.host === "usedHost") {
         return {
             then: function(callback) {
-                return Promise.reject(callback({}));
+                return callback({status: 400, data: {description: 'error'}});
             }
         }
     };
     return {
         then: function(callback) {
-            return Promise.resolve(callback({}));
+            return callback({});
         }
     }
 };
@@ -546,7 +546,6 @@ describe('AppCtrl', function() {
 
     it('should call the create route method and update the app while disabling the other route buttons', function() {
         expect(scope.blockRoutes).toEqual(undefined);
-        //spyOn(cloudfoundry, 'createRoute').and.callThrough();
         scope.createRoute({
             host: 'host',
             domain_guid: 'domain_guid'
@@ -555,6 +554,17 @@ describe('AppCtrl', function() {
         expect(scope.routeErrorMsg).toEqual(null);
         expect(cloudfoundry.getAppSummary).toHaveBeenCalledWith('appguid');
     })
+
+    it('should return an error message if route exists', function() {
+        expect(scope.blockRoutes).toEqual(undefined);
+        scope.createRoute({
+            host: 'usedHost',
+            domain_guid: 'domain_guid'
+        });
+        expect(scope.routeErrorMsg).toEqual('error');
+        expect(scope.blockRoutes).toEqual(false);
+    })
+
 
     it('should call the delete route method and update the app while disabling the other route buttons', function() {
         expect(scope.blockRoutes).toEqual(undefined);
