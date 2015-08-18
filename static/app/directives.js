@@ -4,14 +4,13 @@
     var app = angular.module('cfdeck');
 
 
-    app.directive('serviceDestroyer', function($cloudfoundry) {
+    app.directive('serviceDestroyer', function($cloudfoundry, $route) {
         return {
             templateUrl: 'app/views/partials/service_destroyer.html',
             controller: function($scope) {
                 $scope.view = {
                     status: 'unconfirmed',
                     disableButton: false,
-                    
                 };
                 $scope.view.showDestroyer = function(state) {
                     $scope.view.status = state;
@@ -22,7 +21,7 @@
                         .then(function(response) {
                             if (response.code === undefined) {
                                 $scope.view.status = "success";
-                                $scope.showTab('serviceInstances')
+                                $route.reload();
                             } else if (response.code === 10006) {
                                 $scope.view.status = "boundError";
                             } else {

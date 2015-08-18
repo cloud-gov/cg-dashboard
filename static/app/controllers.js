@@ -17,6 +17,13 @@
             }
         };
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
+        // Render a space if there is a spaceguid
+        if ($routeParams.spaceguid){
+          $cloudfoundry.getSpaceDetails($routeParams['spaceguid']).then(function (space) {
+              $scope.space = space;
+          })
+      }
+
     };
 
     app.controller('HomeCtrl', function($scope, $cloudfoundry) {
@@ -168,27 +175,22 @@
 
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-        var renderSpace = function(space) {
-            $scope.space = space;
-        };
-        var renderServices = function(services) {
-            $scope.services = services;
-        };
-        // Show a specific tab
-        $scope.showTab = function(tab) {
-            // If the tab is the service instances tab load data
-            if (tab == "serviceInstances") {
-                // Get the spaces service instances
-                $cloudfoundry.getSpaceServices($routeParams['spaceguid'])
-                    .then(renderServices);
-            }
-            $scope.activeTab = tab;
-        };
-        // Get the orgs data from cache or load new data
-        $cloudfoundry.getSpaceDetails($routeParams['spaceguid'])
-            .then(renderSpace);
-        // Make the apps tab the default active tab
         $scope.activeTab = 'apps';
+    });
+
+    app.controller('SpaceServicesCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
+      var renderServices = function(services) {
+          $scope.services = services;
+      };
+      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+      $cloudfoundry.getSpaceServices($routeParams['spaceguid'])
+          .then(renderServices);
+      $scope.activeTab = "services"
+    });
+
+    app.controller('SpaceUserCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
+      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+      $scope.activeTab = "users"
     });
 
     app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
