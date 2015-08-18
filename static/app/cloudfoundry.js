@@ -97,9 +97,9 @@
                 });
         };
 
-	// Generic function to set different org user categories
+	// Generic function to add different org user categories
         this.addOrgUserCategory = function(orgGuid, userGuid, category) {
-            return $http.post('/v2/organizations/' + orgGuid + '/'+category+'/'+ userGuid)
+            return $http.put('/v2/organizations/' + orgGuid + '/'+category+'/'+ userGuid)
                 .then(function(response) {
                     return response.data.resources;
                 });
@@ -113,13 +113,12 @@
                 });
         };
 
-	// Generic function to set different org user categories
+	// Generic function to set different org user categories.
+	// Will add the category if 'adding' is true, otherwise, will delete.
         this.setOrgUserCategory = function(orgGuid, userGuid, category, adding) {
             if (adding) {
-		    console.log("james");
                 return this.addOrgUserCategory(orgGuid, userGuid, category);
             } else {
-		    console.log("scott");
                 return this.deleteOrgUserCategory(orgGuid, userGuid, category);
             }
         };
