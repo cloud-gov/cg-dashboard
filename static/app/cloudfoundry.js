@@ -50,8 +50,11 @@
                     // Map the route to the app
                     return $http.put(response.data.metadata.url + '/apps/' + appGuid)
                         .then(function(response) {
-                            return response.data;
+                            return response;
                         });
+                })
+                .catch(function (response) {
+                    return response;
                 });
         };
 

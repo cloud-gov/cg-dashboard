@@ -99,7 +99,7 @@ describe('CloudFoundry Service Tests', function() {
                 status: 'put'
             });
             $cloudfoundry.createRoute(newRoute, 'appguid').then(function(response) {
-                expect(response).toEqual({
+                expect(response.data).toEqual({
                     status: 'put'
                 });
             });
@@ -115,13 +115,13 @@ describe('CloudFoundry Service Tests', function() {
                 status: 'failed'
             });
             $cloudfoundry.createRoute(newRoute, 'appguid').then(function(response) {
-                expect(response).toEqual({
+                expect(response.data).toEqual({
                     status: 'failed'
                 });
             });
             httpBackend.flush();
         });
-   
+
         it('should return a message on failure of second call', function() {
             var newRoute = {
                 domain_guid: 'domainguid',
@@ -136,7 +136,7 @@ describe('CloudFoundry Service Tests', function() {
                 status: 'put_failed'
             });
             $cloudfoundry.createRoute(newRoute, 'appguid').then(function(response) {
-                expect(response).toEqual({
+                expect(response.data).toEqual({
                     status: 'put_failed'
                 });
             });
