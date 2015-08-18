@@ -5,13 +5,14 @@
   "main": "null",
   "scripts": {
     "codecov": "cat ./coverage/coverage-final.json | ./node_modules/codecov.io/bin/codecov.io.js",
-    "postinstall" : "./node_modules/bower/bin/bower install",
+    "postinstall": "./node_modules/bower/bin/bower install",
     "tests": "./node_modules/.bin/karma start karma.conf.js --single-run",
     "test": "npm run tests && npm run codecov"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-core": "^5.8.22",
     "bower": "^1.4.1",
     "codecov.io": "^0.1.5",
     "istanbul": "^0.3.5",

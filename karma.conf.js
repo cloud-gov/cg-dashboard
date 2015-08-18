@@ -24,6 +24,7 @@ module.exports = function(config) {
             'static/bower_components/angular-sanitize/angular-sanitize.js',
             'static/bower_components/angular-bootstrap-confirm/src/ui-bootstrap-position.js',
             'static/bower_components/angular-bootstrap-confirm/dist/angular-bootstrap-confirm.min.js',
+            'node_modules/babel-core/browser-polyfill.js',
             'static/app/main.js',
             'static/app/filters.js',
             'static/app/cloudfoundry.js',
