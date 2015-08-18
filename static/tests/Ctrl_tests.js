@@ -356,7 +356,6 @@ describe('SpaceCtrl', function() {
         cloudfoundry = {
             getSpaceDetails: getSpaceDetails,
             findActiveOrg: findActiveOrg,
-            getSpaceServices: getSpaceServices
         }
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
@@ -386,20 +385,112 @@ describe('SpaceCtrl', function() {
         });
     });
 
-    it('should render the app tab via the activeTab var when showTab function is run with "app"', function() {
-        scope.showTab('app')
-        expect(scope.activeTab).toEqual('app')
+    it('should render the app tab via the activeTab var on load', function() {
+        expect(scope.activeTab).toEqual('apps')
     });
-
-    it('should render the services tab and service instances when showTab function is run with "serviceInstances"', function() {
-        scope.showTab('serviceInstances')
-        expect(scope.activeTab).toEqual('serviceInstances')
-        expect(scope.services.length).toEqual(1)
-
-    });
-
 
 });
+
+
+describe('SpaceServicesCtrl', function() {
+
+    var scope, cloudfoundry, MenuData = {
+        data: {}
+    };
+
+    beforeEach(module('cfdeck'));
+    beforeEach(inject(function($rootScope, $controller) {
+
+        //Mock Cf service
+        cloudfoundry = {
+            getSpaceDetails: getSpaceDetails,
+            findActiveOrg: findActiveOrg,
+            getSpaceServices: getSpaceServices
+        }
+
+        spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
+
+        // Load Ctrl and scope
+        scope = $rootScope.$new();
+        ctrl = $controller('SpaceServicesCtrl', {
+            $scope: scope,
+            $cloudfoundry: cloudfoundry,
+            $routeParams: {
+                orgguid: 'org1guid',
+                spaceguid: 'spaceguid'
+            },
+            MenuData: MenuData
+        });
+    }));
+
+    it('should return a space\'s summary info', function() {
+        expect(scope.space).toEqual({
+            guid: 'spaceguid',
+            name: 'spacename',
+            apps: [{
+                name: 'mockname1'
+            }, {
+                name: 'mockname2'
+            }]
+        });
+    });
+
+    it('should render the app tab via the activeTab var on load along with the services', function() {
+        expect(scope.activeTab).toEqual('services');
+        expect(scope.services).toEqual([{ metadata: { guid: 'serviceguid' }}] );
+    });
+
+});
+
+
+describe('SpaceUserCtrl', function() {
+
+    var scope, cloudfoundry, MenuData = {
+        data: {}
+    };
+
+    beforeEach(module('cfdeck'));
+    beforeEach(inject(function($rootScope, $controller) {
+
+        //Mock Cf service
+        cloudfoundry = {
+            getSpaceDetails: getSpaceDetails,
+            findActiveOrg: findActiveOrg,
+        }
+
+        spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
+
+        // Load Ctrl and scope
+        scope = $rootScope.$new();
+        ctrl = $controller('SpaceUserCtrl', {
+            $scope: scope,
+            $cloudfoundry: cloudfoundry,
+            $routeParams: {
+                orgguid: 'org1guid',
+                spaceguid: 'spaceguid'
+            },
+            MenuData: MenuData
+        });
+    }));
+
+    it('should return a space\'s summary info', function() {
+        expect(scope.space).toEqual({
+            guid: 'spaceguid',
+            name: 'spacename',
+            apps: [{
+                name: 'mockname1'
+            }, {
+                name: 'mockname2'
+            }]
+        });
+    });
+
+    it('should render the app tab via the activeTab var on load along with the services', function() {
+        expect(scope.activeTab).toEqual('users');
+    });
+
+});
+
 
 describe('MarketCtrl', function() {
     var scope, cloudfoundry, location, MenuData = {
