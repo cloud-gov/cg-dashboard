@@ -307,17 +307,18 @@
         // Create new Route
         $scope.createRoute = function(newRoute) {
             $scope.routeErrorMsg = null;
-            if (newRoute && newRoute.domain_guid && newRoute.host ) { 
+            if (newRoute && newRoute.domain_guid && newRoute.host ) {
                 $scope.blockRoutes = true;
-                newRoute.space_guid = $routeParams['spaceguid']; 
+                newRoute.space_guid = $routeParams['spaceguid'];
                 $cloudfoundry.createRoute(newRoute, $routeParams['appguid'])
                     .then(function(response) {
-                        $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                        console.log(response);
+                        if(response.status === 400) {
+                            $scope.routeErrorMsg = response.data.description;
+                        } else {
+                            $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                        };
                         $scope.blockRoutes = false;
-                    })
-                    .catch(function(response) {
-                        $scope.blockRoutes = false;
-                        $scope.routeErrorMsg = response.data.description;
                     });
             } else {
                 $scope.routeErrorMsg = "Please provide both host and domain."
