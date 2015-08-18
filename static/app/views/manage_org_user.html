@@ -25,7 +25,7 @@
             </div>
             <div class="panel-body">
                 <toggle-switch
-                  ng-disabled="!initBillingManagerState"
+                  ng-disabled="!initBillingManagerState || billingManagerStateChanging"
                   ng-model="billingManagerStatus">
                 </toggle-switch>
             </div>
@@ -39,7 +39,7 @@
             </div>
             <div class="panel-body">
                 <toggle-switch
-                  ng-disabled="!initOrgAuditorState"
+                  ng-disabled="!initOrgAuditorState || orgAuditorStateChanging"
                   ng-model="orgAuditorStatus">
                 </toggle-switch>
             </div>
