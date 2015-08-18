@@ -208,10 +208,10 @@ describe('CloudFoundry Service Tests', function() {
         it('should make multiple calls to get org info', function() {
             httpBackend.whenGET('/v2/organizations/orgguid/memory_usage').respond({memory_usage_in_mb: 99});
             httpBackend.whenGET('/v2/organizations/orgguid').respond({entity: {quota_definition_url: '/quota_definition_url'}});
-            httpBackend.whenGET('/quota_definition_url').respond({entity: {}});
+            httpBackend.whenGET('/quota_definition_url').respond({entity: {memory_limit: 99}});
             $cloudfoundry.getQuotaUsage(org)
             httpBackend.flush();
-            expect(org.quota).toEqual({entity: { used_memory: 99 }});
+            expect(org.quota).toEqual({ memory_limit: 99, used_memory: 99 });
         });    
     });
 

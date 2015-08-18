@@ -34,11 +34,11 @@
           Quota Usage
            <div class="progress">
                <div class="progress-bar progress-bar-info" role="progressbar" 
-                   aria-valuenow="{{MenuData.data.currentOrg.quota.entity.used_memory}}" 
+                   aria-valuenow="{{MenuData.data.currentOrg.quota.used_memory}}" 
                    aria-valuemin="0" 
-                   aria-valuemax="{{MenuData.data.currentOrg.quota.entity.memory_limit}}" 
-                   style="min-width: 2em; width:{{(MenuData.data.currentOrg.quota.entity.used_memory/MenuData.data.currentOrg.quota.entity.memory_limit*100)}}%">
-                   {{(MenuData.data.currentOrg.quota.entity.used_memory/MenuData.data.currentOrg.quota.entity.memory_limit*100 | number:0)}}% 
+                   aria-valuemax="{{MenuData.data.currentOrg.quota.memory_limit}}" 
+                   style="min-width: 2em; width:{{(MenuData.data.currentOrg.quota.used_memory/MenuData.data.currentOrg.quota.memory_limit*100)}}%">
+                   {{(MenuData.data.currentOrg.quota.used_memory/MenuData.data.currentOrg.quota.memory_limit*100 | number:0)}}% 
                </div>
            </div>
           </a>

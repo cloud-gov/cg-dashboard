@@ -72,22 +72,40 @@
                 });
         };
 
-        // Get quota usage data
-        this.getQuotaUsage = function(org) {
-            $http.get('/v2/organizations/' + org.guid + '/memory_usage')
-                .then(function(response) {
-                    var used_memory = response.data.memory_usage_in_mb;
-                    $http.get('/v2/organizations/' + org.guid)
-                        .then(function(response) {
-                            $http.get(response.data.entity.quota_definition_url)
-                                .then(function(response) {
-                                    org.quota = response.data;
-                                    org.quota.entity.used_memory = used_memory;
-                                });
-                        });
-                });
+        // Get an org's links
+        this.getOrgLinks = function(org) {
+            return $http.get('/v2/organizations/' + org.guid)
         };
 
+        // Get quota usage data
+        this.getQuotaUsage = function(org) {
+            
+            var quotadata = {};
+            // Get a quota's memory limit
+            var getMemoryLimit = function(response) {
+                return $http.get(response.data.entity.quota_definition_url)
+                    .then(function(response) {
+                        quotadata.memory_limit = response.data.entity.memory_limit;
+                    });
+            };
+            // Get a quota's memory usage
+            var getOrgMemoryUsage = function() {
+                return $http.get('/v2/organizations/' + org.guid + '/memory_usage')
+                    .then(function(response) {
+                        quotadata.used_memory = response.data.memory_usage_in_mb;
+                    });
+            };
+            // Attached quota data, only if all promises succeed
+            this.getOrgLinks(org)
+                .then(getMemoryLimit)
+                .then(getOrgMemoryUsage)
+                .then(function () {
+                    org.quota = quotadata;
+                })
+                .catch(function () {
+                    $log.info('Failed to get quota usage');
+                });
+        };
 
         // Get space details
         this.getSpaceDetails = function(spaceGuid) {
