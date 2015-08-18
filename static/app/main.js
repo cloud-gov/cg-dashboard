@@ -39,6 +39,14 @@
                 templateUrl: 'app/views/spaces.html',
                 controller: 'SpaceCtrl'
             })
+            .when('/org/:orgguid/spaces/:spaceguid/services', {
+                templateUrl: 'app/views/spaces_services.html',
+                controller: 'SpaceServicesCtrl'
+            })
+            .when('/org/:orgguid/spaces/:spaceguid/users', {
+                templateUrl: 'app/views/spaces_users.html',
+                controller: 'SpaceUserCtrl'
+            })
             .when('/org/:orgguid/spaces/:spaceguid/apps/:appguid', {
                 templateUrl: 'app/views/app.html',
                 controller: 'AppCtrl'
