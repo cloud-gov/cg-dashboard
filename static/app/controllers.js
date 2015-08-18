@@ -82,8 +82,11 @@
                // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
 	       // is undefined. That means we are initializing for the first time.
                if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
+                   $scope.orgManagerStateChanging = true;
                    return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', newValue)
                        .then(function() {
+                           // Re-enable toggle switch;
+                           $scope.orgManagerStateChanging = false;
                        });
                }
             });
@@ -104,8 +107,11 @@
                // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
 	       // is undefined. That means we are initializing for the first time.
                if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
+                   $scope.billingManagerStateChanging = true;
                    return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', newValue)
                        .then(function() {
+                           // Re-enable toggle switch;
+                           $scope.billingManagerStateChanging = false;
                        });
                }
             });
@@ -128,8 +134,11 @@
                // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
 	       // is undefined. That means we are initializing for the first time.
                if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
+                   $scope.orgAuditorStateChanging = true;
                    return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', newValue)
                        .then(function() {
+                           // Re-enable toggle switch;
+                           $scope.orgAuditorStateChanging = false;
                        });
                }
             });
