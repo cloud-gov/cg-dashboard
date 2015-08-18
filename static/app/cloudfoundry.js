@@ -133,12 +133,32 @@
         };
 
 	// Generic function to set different org user categories
-        this.setOrgUserCategory = function(orgGuid, userGuid, category) {
+        this.addOrgUserCategory = function(orgGuid, userGuid, category) {
             return $http.post('/v2/organizations/' + orgGuid + '/'+category+'/'+ userGuid)
                 .then(function(response) {
                     return response.data.resources;
                 });
         };
+
+	// Generic function to delete different org user categories
+        this.deleteOrgUserCategory = function(orgGuid, userGuid, category) {
+            return $http.delete('/v2/organizations/' + orgGuid + '/'+category+'/'+ userGuid)
+                .then(function(response) {
+                    return response.data.resources;
+                });
+        };
+
+	// Generic function to set different org user categories
+        this.setOrgUserCategory = function(orgGuid, userGuid, category, adding) {
+            if (adding) {
+		    console.log("james");
+                return this.addOrgUserCategory(orgGuid, userGuid, category);
+            } else {
+		    console.log("scott");
+                return this.deleteOrgUserCategory(orgGuid, userGuid, category);
+            }
+        };
+
 
 	// Get space details
         this.getSpaceDetails = function(spaceGuid) {
