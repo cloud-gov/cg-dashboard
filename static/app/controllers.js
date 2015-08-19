@@ -66,6 +66,9 @@
         $scope.addUserToOrg = function(userGuid) {
             return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], userGuid, 'users', true);
         };
+        $scope.removeUserFromOrg = function(userGuid) {
+            return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], userGuid, 'users', false);
+        };
         // Show a specific tab
         $scope.showTab = function(tab) {
             // If the tab is the add users tab load data
