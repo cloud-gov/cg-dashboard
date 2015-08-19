@@ -59,9 +59,27 @@
         var renderOrgUsers = function(users) {
             $scope.org_users = users;
         };
+        var renderNewUsers = function(users) {
+            $scope.new_users = users;
+	    console.log(users);
+        };
+        $scope.addUserToOrg = function(userGuid) {
+            return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], userGuid, 'users', true);
+        };
+        // Show a specific tab
+        $scope.showTab = function(tab) {
+            // If the tab is the add users tab load data
+            if (tab == "add_org_user") {
+                // Get all possible users
+                $uaa.getAllUsers()
+                .then(renderNewUsers);
+            }
+            $scope.activeTab = tab;
+        };
+        // Make the current org users tab the default active tab
+        $scope.activeTab = 'current_org_users';
         // Get all the users associated with an org
         $cloudfoundry.getOrgUsers($routeParams['orgguid']).then(renderOrgUsers);
-        $uaa.getAllUsers();
 
     });
 
