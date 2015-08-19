@@ -34,20 +34,10 @@ func (c *SecureContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.
 // Proxy is an internal function that will construct the client with the token in the headers and
 // then send a request.
 func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url string) {
-	// Make the request.
-	request, _ := http.NewRequest(req.Method, url, req.Body)
 	// Acquire the http client and the refresh token if needed
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
 	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
-	// Send the request.
-	res, _ := client.Do(request)
-	// Should return the same status.
-	rw.WriteHeader(res.StatusCode)
-	// Read the body.
-	body, _ := ioutil.ReadAll(res.Body)
-	defer res.Body.Close()
-	// Write the body into response that is going back to the frontend.
-	fmt.Fprintf(rw, string(body))
+	c.submitRequest(rw, req, url, client)
 }
 
 // PrivilegedProxy is an internal function that will construct the client using
