@@ -202,12 +202,20 @@ var getServiceCredentials = function(service) {
 };
 
 var createRoute = function(newRoute, appGuid) {
+    if (newRoute.host === "usedHost") {
+        return {
+            then: function(callback) {
+                return Promise.reject(callback({}));
+            }
+        }
+    };
     return {
         then: function(callback) {
-            return callback({})
+            return Promise.resolve(callback({}));
         }
     }
 };
+
 
 var deleteRoute = function(oldRoute) {
     return {
@@ -513,30 +521,62 @@ describe('AppCtrl', function() {
         spyOn(cloudfoundry, 'getAppSummary').and.callThrough();
 
         // Load Ctrl and scope
-        scope = $rootScope.$new() 
+        scope = $rootScope.$new()
         ctrl = $controller('AppCtrl', {
             $scope: scope,
             $cloudfoundry: cloudfoundry,
             $routeParams: {
-                appguid: 'appguid'
+                appguid: 'appguid',
+                spaceguid: 'spaceguid',
             },
             MenuData: MenuData
         });
 
     }));
 
-    it('should call the create route method and update the app while disabling the other route buttons', function () {
-        expect(scope.blockRoutes).toEqual(undefined);
+    it('should will show error message if host or domain not present', function() {
+        expect(scope.routeErrorMsg).toEqual(undefined);
         scope.createRoute({});
+        expect(scope.routeErrorMsg).toEqual('Please provide both host and domain.');
+        scope.createRoute({
+            host: 'newhost'
+        });
+        expect(scope.routeErrorMsg).toEqual('Please provide both host and domain.');
+        scope.createRoute({
+            domain_guid: 'domain_guid'
+        });
+        expect(scope.routeErrorMsg).toEqual('Please provide both host and domain.');
+
+    })
+
+    it('should call the create route method and update the app while disabling the other route buttons', function() {
+        expect(scope.blockRoutes).toEqual(undefined);
+        //spyOn(cloudfoundry, 'createRoute').and.callThrough();
+        scope.createRoute({
+            host: 'host',
+            domain_guid: 'domain_guid'
+        });
         expect(scope.blockRoutes).toEqual(false);
+        expect(scope.routeErrorMsg).toEqual(null);
         expect(cloudfoundry.getAppSummary).toHaveBeenCalledWith('appguid');
     })
 
-    it('should call the delete route method and update the app while disabling the other route buttons', function () {
+    it('should return an error message if route exists', function() {
+        //TODO: force the rejection to go through
+        expect(scope.blockRoutes).toEqual(undefined);
+        scope.createRoute({
+            host: 'usedHost',
+            domain_guid: 'domain_guid'
+        });
+        expect(scope.blockRoutes).toEqual(false);
+    })
+
+
+    it('should call the delete route method and update the app while disabling the other route buttons', function() {
         expect(scope.blockRoutes).toEqual(undefined);
         scope.deleteRoute({});
         expect(scope.blockRoutes).toEqual(false);
-        expect(cloudfoundry.getAppSummary).toHaveBeenCalledWith('appguid');    
+        expect(cloudfoundry.getAppSummary).toHaveBeenCalledWith('appguid');
     })
 
     it('should put the app summary into the app', function() {
@@ -603,7 +643,7 @@ describe('AppCtrl', function() {
             app_guid: 'appguid'
         })
     });
-    
+
     it('should bind service when called', function() {
         spyOn(cloudfoundry, 'unbindService').and.callThrough()
         scope.unbindService({
@@ -616,7 +656,7 @@ describe('AppCtrl', function() {
             app_guid: 'appguid'
         }, jasmine.any(Function))
     });
-    
+
     it('should bind service when called and then refresh appSummary', function() {
         scope.unbindService({
             boundService: {

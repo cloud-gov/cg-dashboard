@@ -129,11 +129,11 @@
 
         var getServiceCredentials = function(service) {
             $cloudfoundry.getServiceCredentials(service)
-                .then(function (credentials) {
+                .then(function(credentials) {
                     service.credentials = credentials;
                 });
         }
-        
+
 
         //Show the available services
         var loadServices = function(boundSevices) {
@@ -184,13 +184,22 @@
         };
         // Create new Route
         $scope.createRoute = function(newRoute) {
-            $scope.blockRoutes = true;
-            newRoute.space_guid = $routeParams['spaceguid']
-            $cloudfoundry.createRoute(newRoute, $routeParams['appguid'])
-                .then(function(response) {
-                    $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
-                    $scope.blockRoutes = false;
-                })
+            $scope.routeErrorMsg = null;
+            if (newRoute && newRoute.domain_guid && newRoute.host ) { 
+                $scope.blockRoutes = true;
+                newRoute.space_guid = $routeParams['spaceguid']; 
+                $cloudfoundry.createRoute(newRoute, $routeParams['appguid'])
+                    .then(function(response) {
+                        $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                        $scope.blockRoutes = false;
+                    })
+                    .catch(function(response) {
+                        $scope.blockRoutes = false;
+                        $scope.routeErrorMsg = response.data.description;
+                    });
+            } else {
+                $scope.routeErrorMsg = "Please provide both host and domain."
+            };
         };
         // Delete Route
         $scope.deleteRoute = function(oldRoute) {
