@@ -18,5 +18,11 @@
 			return $http.get('/uaa/userinfo')
 				.then(parseUserInfoGivenName, handleNoGivenName);
 		};
+		this.getAllUsers = function() {
+			return $http.get('/uaa/Users/')
+				.then(function(response){
+					console.log(response);
+				});
+		};
 	});
 }());
