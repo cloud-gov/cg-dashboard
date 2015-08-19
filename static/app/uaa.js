@@ -18,10 +18,16 @@
 			return $http.get('/uaa/userinfo')
 				.then(parseUserInfoGivenName, handleNoGivenName);
 		};
+		this.getUserGuidFromEmail = function(email) {
+			return $http.get('/uaa/Users?email='+email)
+				.then(function(response) {
+					return response.data.id;
+				});
+		};
 		this.getAllUsers = function() {
 			return $http.get('/uaa/Users/')
 				.then(function(response){
-					console.log(response);
+					return response.data.resources;
 				});
 		};
 	});

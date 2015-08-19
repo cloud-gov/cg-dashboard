@@ -2,50 +2,25 @@
     <h3 class="text-center">{{activeOrg | orgNameFilter}} Management</h3>
 </div>
 
-<form>
-    <div class="form-group">
-        <div class="input-group">
-            <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            </div>
+<div>
 
-            <input id="orgUserSearch" type="text" class="form-control" placeholder="Search for an org user"
-            ng-model="orgUsersMgmtService">
-
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a aria-controls="current_org_users" role="tab" data-toggle="tab" ng-click="showTab('current_org_users')">Organization Users</a>
+        </li>
+        <li role="presentation"><a aria-controls="add_org_user" role="tab" data-toggle="tab" ng-click="showTab('add_org_user')">Add User to Organization</a>
+        </li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content" ng-switch='activeTab'>
+        <!-- Apps Tab -->
+        <div role="tabpanel" class="tab-pane active" id="current_org_users" ng-switch-when='current_org_users'>
+            <ng-include src="'app/views/partials/org_users_table.html'"></ng-include>
+        </div>
+        <!-- services tab -->
+        <div role="tabpanel" class="tab-pane active" id="add_org_user" ng-switch-when='add_org_user'>
+            <ng-include src="'app/views/partials/add_org_user.html'"></ng-include>
         </div>
     </div>
-</form>
 
-<table id="orgUsersTable" class="table table-hover table-condensed">
-    <thead>
-        <th id='org-user-name-heading'>
-            <a ng-click="sortType = 'entity.username'; sortReverse = !sortReverse">
-                Name
-            <span ng-show="sortType == 'entity.username' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
-            <span ng-show="sortType == 'entity.username' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
-        </a>
-        </th>
-        <th id='org-user-description-heading'>
-            <a ng-click="sortType = 'entity.admin'; sortReverse = !sortReverse">
-               Admin 
-            <span ng-show="sortType == 'entity.admin' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
-            <span ng-show="sortType == 'entity.admin' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
-        </a>
-        </th>
-        <th id='org-user-created-heading'>
-            <a ng-click="sortType = 'metadata.created_at'; sortReverse = !sortReverse">
-                Date Created
-            <span ng-show="sortType == 'metadata.created_at' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
-            <span ng-show="sortType == 'metadata.created_at' && sortReverse" class="glyphicon glyphicon-arrow-down"</span>
-        </a>
-        </th>
-    </thead>
-    <tbody>
-        <tr ng-repeat="user in org_users | orderBy:sortType:sortReverse | filter:orgUsersMgmtService">
-            <td class="org-user-name-data">
-                <a href='#/org/{{ activeOrg.guid }}/manage-org/{{ user.metadata.guid }}'>{{user.entity.username}}</a>
-            </td>
-            <td class="org-user-description-data">{{user.entity.admin}}</td>
-            <td class="org-user-date-created-data">{{user.metadata.created_at | date:'yyyy-MM-dd'}}</td>
-        </tr>
-    </tbody>
-</table>
+</div>
