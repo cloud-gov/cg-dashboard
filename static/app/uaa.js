@@ -18,17 +18,15 @@
 			return $http.get('/uaa/userinfo')
 				.then(parseUserInfoGivenName, handleNoGivenName);
 		};
-		this.getUserGuidFromEmail = function(email) {
-			return $http.get('/uaa/Users?email='+email)
+		this.getUserGuidFromEmail = function(user) {
+			return $http.post('/uaa/Users', {"email": user.email})
 				.then(function(response) {
-					return response.data.id;
+					console.log(response.data.resources);
+					user.id = response.data.resources[0].id;
+					console.log(user);
+					return user;
 				});
 		};
-		this.getAllUsers = function() {
-			return $http.get('/uaa/Users/')
-				.then(function(response){
-					return response.data.resources;
-				});
-		};
+
 	});
 }());
