@@ -29,7 +29,7 @@
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
         // Render a space if there is a spaceguid
         if ($routeParams.spaceguid){
-            $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace)      
+            $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace)
         };
 
         $uaa.getUserInfoGuid()
@@ -95,7 +95,6 @@
         $scope.activeTab = 'current_org_users';
         // Get all the users associated with an org
         $cloudfoundry.getOrgUsers($routeParams['orgguid']).then(renderOrgUsers);
-
     });
 
     app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
