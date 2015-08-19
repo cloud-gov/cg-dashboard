@@ -1,39 +1,21 @@
-<form>
-    <div class="form-group">
-        <div class="input-group">
-            <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            </div>
-
-            <input id="orgNewUserSearch" type="text" class="form-control" placeholder="Search for a new user to add"
-            ng-model="orgNewUsersMgmtService">
-
-        </div>
-    </div>
-</form>
-
-<table id="orgNewUsersTable" class="table table-hover table-condensed">
+<table class="table table-hover text-left">
     <thead>
-        <th id='org-new-user-name-heading'>
-            <a ng-click="sortType = 'userName'; sortReverse = !sortReverse">
-               User Name
-            <span ng-show="sortType == 'userName' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
-            <span ng-show="sortType == 'userName' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
-        </a>
-        </th>
-        <th id='org-new-user-actions'>
-            Actions
-	</th>
+        <tr>
+            <th>E-mail</th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="user in new_users | orderBy:sortType:sortReverse | filter:orgNewUsersMgmtService">
-            <td class="org-new-user-name-data">
-                {{user.userName}}
+        <tr ng-form>
+            <td>
+                <input class="form-control" placeholder="Invite user by e-mail" name="email" ng-model="newUser.email" required/>
             </td>
-            <td class="org-new-user-actions">
-
-               <button type="button" ladda="starting" class="btn btn-success"
-                ng-click="addUserToOrg(user.id)">Start</button>
+            <td>
+                <button type="button" type="submit" class="btn btn-success" ng-disabled="blockRoutes" ng-click="addUserToOrg(newUser)">
+                    Add User to Org
+                </button>
             </td>
         </tr>
     </tbody>
 </table>
+
