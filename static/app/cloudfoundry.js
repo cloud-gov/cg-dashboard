@@ -115,15 +115,6 @@
                 });
         };
 
-	// Get particular org user
-        this.getOrgUser = function(orgGuid, userGuid) {
-            // return $http.get('/v2/users/' + userGuid + '/organizations?organization_guid='+ orgGuid)
-            return $http.get('/v2/organizations/' + orgGuid + '/users?user_guid='+ userGuid)
-                .then(function(response) {
-                    return response.data.resources;
-                });
-        };
-
 	// Generic function to get different org user categories
         this.getOrgUserCategory = function(orgGuid, userGuid, category, queryString) {
             return $http.get('/v2/organizations/' + orgGuid + '/'+category+'?'+queryString+'=' +userGuid)

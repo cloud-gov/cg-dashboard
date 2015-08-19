@@ -54,21 +54,19 @@
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
     });
 
-    app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
+    app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $uaa, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
         var renderOrgUsers = function(users) {
             $scope.org_users = users;
         };
         // Get all the users associated with an org
         $cloudfoundry.getOrgUsers($routeParams['orgguid']).then(renderOrgUsers);
+        $uaa.getAllUsers();
+
     });
 
     app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-        var renderOrgUser = function(response) {
-	    $scope.user = response;
-        };
-
 	$scope.initOrgManagerState = false;
         var renderOrgUserOrgManagerState = function(response) {
 	    $scope.org_manager = response;
@@ -145,8 +143,6 @@
 	    // This also enables the button after initial loading.
             $scope.initOrgAuditorState = true;
         };
-        $cloudfoundry.getOrgUser($routeParams['orgguid'], $routeParams['userguid']).then(renderOrgUser);
-
 	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', 'manager_guid').then(renderOrgUserOrgManagerState);
 
 	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', 'billing_manager_guid').then(renderOrgUserBillingManagerState);

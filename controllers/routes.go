@@ -41,6 +41,7 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	uaaRouter := secureRouter.Subrouter(UAAContext{}, "/uaa")
 	uaaRouter.Middleware((*UAAContext).OAuth)
 	uaaRouter.Get("/userinfo", (*UAAContext).UserInfo)
+	uaaRouter.Get("/Users", (*UAAContext).QueryUser)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.

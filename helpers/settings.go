@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/sessions"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
 
 	"encoding/gob"
 	"errors"
@@ -23,6 +24,8 @@ type Settings struct {
 	TokenContext context.Context
 	// UAA API
 	UaaURL string
+	// High Privileged OauthConfig
+	HighPrivilegedOauthConfig *clientcredentials.Config
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -71,6 +74,13 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	s.Sessions = filesystemStore
 	// Want to save a struct into the session. Have to register it.
 	gob.Register(oauth2.Token{})
+
+	s.HighPrivilegedOauthConfig = &clientcredentials.Config{
+		ClientID:     envVars.ClientID,
+		ClientSecret: envVars.ClientSecret,
+		Scopes:       []string{"scim.read"},
+		TokenURL:     envVars.UAAURL + "/oauth/token",
+	}
 
 	return nil
 }
