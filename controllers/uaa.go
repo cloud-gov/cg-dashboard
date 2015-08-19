@@ -85,7 +85,7 @@ func (c *UAAContext) QueryUser(rw web.ResponseWriter, req *web.Request) {
 	for filter, value := range filters {
 		// TODO make sure there's no wildcard value.
 		// TODO support other operators besides eq.
-		query += url.QueryEscape(filter + " eq '" + value+"'")
+		query += url.QueryEscape(filter + " eq '" + value + "'")
 		filtersAdded++
 		if filtersAdded != numOfFilters {
 			// TODO support more than just "and"
