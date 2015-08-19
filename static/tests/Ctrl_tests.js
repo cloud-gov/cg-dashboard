@@ -225,6 +225,14 @@ var deleteRoute = function(oldRoute) {
     }
 };
 
+var getUsersGeneric = function(guid) {
+  return {
+    then: function(callback) {
+      return callback([{entity: {name: 'user1'}}])
+    }
+  }
+};
+
 describe('HomeCtrl', function() {
 
     var scope, cloudfoundry;
@@ -456,6 +464,8 @@ describe('SpaceUserCtrl', function() {
         cloudfoundry = {
             getSpaceDetails: getSpaceDetails,
             findActiveOrg: findActiveOrg,
+            getSpaceUsers: getUsersGeneric,
+            getOrgUsers: getUsersGeneric
         }
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
