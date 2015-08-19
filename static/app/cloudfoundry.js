@@ -161,6 +161,28 @@
                 });
         }
 
+        // Get org users
+        this.getSpaceUsers = function(spaceGuid) {
+            return $http.get('/v2/spaces/' + spaceGuid + '/user_roles')
+                .then(function(response) {
+                    return response.data.resources;
+                });
+        };
+
+        // Toggle user permissions
+        this.toggleSpaceUserPermissions = function (user, permissions, spaceGuid) {
+          var returnResponse = function (response) {
+            return response;
+          };
+          var url = '/v2/spaces/' + spaceGuid + '/' + permissions + '/' + user.metadata.guid;
+          if (user[permissions]){
+            return $http.put(url).then(returnResponse);
+          }
+          else {
+            return $http.delete(url).then(returnResponse);
+          }
+        };
+
         // Get services
         this.getOrgServices = function(guid) {
             return $http.get('/v2/organizations/' + guid + '/services')

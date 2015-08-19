@@ -195,6 +195,47 @@
 
     app.controller('SpaceUserCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
       loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+      var spaceUsersStorage;
+      var renderUsers = function(spaceUsers) {
+        spaceUsersStorage = spaceUsers;
+        $cloudfoundry.getOrgUsers($routeParams['orgguid'])
+            .then(function(users) {
+              $scope.users = users;
+            });
+      };
+      $scope.setActiveUser = function(user) {
+        $scope.disableSwitches = true;
+        var activeUser = spaceUsersStorage.filter(function (spaceuser) {
+            return spaceuser.metadata.guid === user.metadata.guid
+        });
+        if (activeUser.length === 1) {
+          activeUser = activeUser[0]
+          $scope.activeUser = activeUser;
+          $scope.activeUser.managers = activeUser.entity.space_roles.indexOf('space_manager') >= 0;
+          $scope.activeUser.auditors = activeUser.entity.space_roles.indexOf('space_auditor') >= 0;
+          $scope.activeUser.developers = activeUser.entity.space_roles.indexOf('space_developer') >= 0;
+        }
+        else {
+          $scope.activeUser = user;
+          $scope.activeUser.managers = false;
+          $scope.activeUser.auditors = false;
+          $scope.activeUser.developers = false;
+        }
+        $scope.disableSwitches = false;
+      };
+      $scope.toggleSpaceUserPermissions = function(permission) {
+        $scope.disableSwitches = true;
+        $cloudfoundry.toggleSpaceUserPermissions($scope.activeUser, permission, $routeParams['spaceguid'])
+            .then(function (response) {
+              console.log(response.status)
+              if (response.status !== 201){
+                $scope.activeUser[permission] = !$scope.activeUser[permission]
+              };
+              $scope.disableSwitches = false;
+            });
+      };
+      $cloudfoundry.getSpaceUsers($routeParams['spaceguid'])
+          .then(renderUsers);
       $scope.activeTab = "users"
     });
 
