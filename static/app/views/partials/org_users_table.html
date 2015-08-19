@@ -34,6 +34,10 @@
             <span ng-show="sortType == 'metadata.created_at' && sortReverse" class="glyphicon glyphicon-arrow-down"</span>
         </a>
         </th>
+        <th id='org-user-actions-heading'>
+                Actions
+        </a>
+        </th>
     </thead>
     <tbody>
         <tr ng-repeat="user in org_users | orderBy:sortType:sortReverse | filter:orgUsersMgmtService">
@@ -42,6 +46,15 @@
             </td>
             <td class="org-user-description-data">{{user.entity.admin}}</td>
             <td class="org-user-date-created-data">{{user.metadata.created_at | date:'yyyy-MM-dd'}}</td>
+            <td class="org-user-actions-data">
+
+                 <button type="button" class="btn btn-danger" ng-disabled="restarting"
+                  mwl-confirm title="Warning!" message="Are you sure you want to remove the user from the org??"
+                  on-confirm="removeUserFromOrg(user.metadata.guid)" confirm-button-type="danger"
+                  cancel-button-type="default">
+                      Remove User From Org
+                  </button>
+            </td>
         </tr>
     </tbody>
 </table>
