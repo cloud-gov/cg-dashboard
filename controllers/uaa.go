@@ -51,6 +51,5 @@ func (c *UAAContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
 // More info about these filters can be found here:
 // https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#query-for-information-get-users
 func (c *UAAContext) QueryUser(rw web.ResponseWriter, req *web.Request) {
-	fmt.Println(req.URL.RawQuery)
-	c.uaaPrivilegedProxy(rw, req, "/Users?attributes=id&&attributes=userName&"+req.URL.RawQuery)
+	c.uaaPrivilegedProxy(rw, req, "/Users?attributes=id&attributes=userName&"+req.URL.RawQuery)
 }
