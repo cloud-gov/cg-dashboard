@@ -18,12 +18,10 @@
 			return $http.get('/uaa/userinfo')
 				.then(parseUserInfoGivenName, handleNoGivenName);
 		};
-		this.getUserGuidFromEmail = function(user) {
-			return $http.post('/uaa/Users', {"email": user.email})
+		this.getUserGuidFromUserName = function(user) {
+			return $http.post('/uaa/Users', {"userName": user.userName})
 				.then(function(response) {
-					console.log(response.data.resources);
 					user.id = response.data.resources[0].id;
-					console.log(user);
 					return user;
 				});
 		};

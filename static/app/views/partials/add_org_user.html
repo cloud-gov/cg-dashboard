@@ -1,14 +1,14 @@
 <table class="table table-hover text-left">
     <thead>
         <tr>
-            <th>E-mail</th>
+            <th>User Name</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         <tr ng-form>
             <td>
-                <input class="form-control" placeholder="Invite user by e-mail" name="email" ng-model="newUser.email" required/>
+                <input class="form-control" placeholder="Invite user by user name" name="userName" ng-model="newUser.userName" required/>
             </td>
             <td>
                 <button type="button" type="submit" class="btn btn-success" ng-disabled="blockRoutes" ng-click="addUserToOrg(newUser)">

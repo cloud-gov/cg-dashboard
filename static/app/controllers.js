@@ -61,14 +61,14 @@
         };
         $scope.addUserToOrg = function(user) {
             user.id = undefined;
-	    console.log(user);
-            return $uaa.getUserGuidFromEmail(user)
+            return $uaa.getUserGuidFromUserName(user)
                    .then(function(user){$cloudfoundry.setOrgUserCategory($routeParams['orgguid'], user.id, 'users', true)})
                    .catch(function(error){
                        console.log('Unable to add the user');
                    });
         };
         $scope.removeUserFromOrg = function(userGuid) {
+            // TODO: remove all roles before removing from org so that if the user is re-added, the user will have no roles.
             return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], userGuid, 'users', false);
         };
         // Show a specific tab
