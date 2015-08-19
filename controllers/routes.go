@@ -41,7 +41,7 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	uaaRouter := secureRouter.Subrouter(UAAContext{}, "/uaa")
 	uaaRouter.Middleware((*UAAContext).OAuth)
 	uaaRouter.Get("/userinfo", (*UAAContext).UserInfo)
-	uaaRouter.Get("/Users", (*UAAContext).QueryUser)
+	uaaRouter.Post("/Users", (*UAAContext).QueryUser)
 
 	if settings != nil && settings.PProfEnabled {
 		// Setup the /pprof subrouter.
