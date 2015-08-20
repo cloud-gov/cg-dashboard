@@ -2,8 +2,8 @@
   <!-- Tabs -->
   <ng-include src="'app/views/partials/space_tabs.html'"></ng-include>
   <!-- Tab panes -->
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" ng-hide="activeUser">
+    <div class="tab-content" ng-show="users">
+      <div role="tabpanel" class="tab-pane active" ng-hide="activeUser">
           <form>
               <div class="form-group">
                   <div class="input-group">
@@ -52,7 +52,7 @@
               </tbody>
           </table>
         </div>
-      </div>
+
       <div role="tabpanel" class="tab-pane active" ng-show="activeUser">
         <div class="page-header">
         	<h3 class="text-center">{{activeUser.entity.username}}</h3>
@@ -103,7 +103,10 @@
                     </div>
                 </div>
             </div>
-
         </div>
       </div>
+    </div>
+    <div class="tab-content" ng-hide="users">
+      Loading...
+    </div>
 </div>
