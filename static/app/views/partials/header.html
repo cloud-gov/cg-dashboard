@@ -20,6 +20,7 @@
             <div ng-switch-when="true">
                 <!-- Navbar links -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
                     <ul class="nav navbar-nav navbar-right">
 
                         <li class="dropdown visible-xs">
@@ -42,17 +43,6 @@
                                 </li>
                             </ul>
                         </li>
-
-                        <li class="dropdown visible-xs" ng-show="MenuData.data.currentOrg.spaces.length > 0">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                            aria-expanded="false" id="org-dropdown">Spaces&nbsp;<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li ng-repeat="space in MenuData.data.currentOrg.spaces">
-                                    <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}">{{ space.name }}</a>
-                                </li>
-                            </ul>
-                        </li>
-
                         <li>
                             <a href="/v2/profile">{{ givenName }}'s Profile</a>
                         </li>
@@ -65,5 +55,5 @@
             </div>
             <div ng-switch-default>
             </div>
-    </div>
+        </div>
 </nav>

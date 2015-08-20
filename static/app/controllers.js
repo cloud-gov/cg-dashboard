@@ -8,6 +8,12 @@
     // downloading new data.
     function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope) {
         var renderOrg = function(orgData) {
+
+            // Load org memory usage and quota usage
+            if (!orgData.quota) {
+                $cloudfoundry.getQuotaUsage(orgData);
+            };
+
             if (orgData['code'] == 30003) {
                 MenuData.data.currentOrg = "404";
             } else {
@@ -35,7 +41,6 @@
             $scope.orgs = orgs;
             $cloudfoundry.setOrgsData(orgs);
         };
-
         // Clean menu data to return home
         $scope.clearDashboard = function() {
             $scope.MenuData.data = {}

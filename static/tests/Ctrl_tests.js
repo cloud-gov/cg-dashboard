@@ -26,7 +26,9 @@ var getOrgsData = function(callback) {
         }]);
 };
 
-var setOrgsData = function() {};
+var setOrgsData = function(org) {
+    org.quota = {}
+};
 
 var getSpaceDetails = function(spaceguid) {
     return {
@@ -225,6 +227,10 @@ var deleteRoute = function(oldRoute) {
     }
 };
 
+var getQuotaUsage = function(org) {
+    //org.quota = 'data';
+};
+
 describe('HomeCtrl', function() {
 
     var scope, cloudfoundry;
@@ -261,7 +267,7 @@ describe('MainCtrl', function() {
         // Mock cloudfoundry service
         cloudfoundry = {
             getOrgsData: getOrgsData,
-            setOrgsData: setOrgsData
+            setOrgsData: setOrgsData,
         };
         uaa = {
             getUserInfoGivenName: getUserInfoGivenName
@@ -277,24 +283,9 @@ describe('MainCtrl', function() {
         });
     }));
 
+
     it('should place orgs into the scope', function() {
-        expect(scope.orgs).toEqual(
-            [{
-                entity: {
-                    name: 'org1'
-                },
-                metadata: {
-                    guid: 'org1guid'
-                }
-            }, {
-                entity: {
-                    name: 'org1'
-                },
-                metadata: {
-                    guid: 'org2guid'
-                }
-            }]
-        );
+        expect(scope.orgs.length).toEqual(2);
     });
 
     it('should clear the menu data', function() {
@@ -305,11 +296,6 @@ describe('MainCtrl', function() {
         expect(scope.MenuData.data).toEqual({});
     });
 
-    /*
-    it('should place some given name to be displayed', function() {
-        expect(scope.givenName).toEqual('givenName1');
-    });
-    */
 });
 
 describe('OrgCtrl', function() {
@@ -322,9 +308,11 @@ describe('OrgCtrl', function() {
 
         //Mock Cf service
         cloudfoundry = {
-            findActiveOrg: findActiveOrg
+            findActiveOrg: findActiveOrg,
+            getQuotaUsage: getQuotaUsage
         }
-        spyOn(cloudfoundry, 'findActiveOrg');
+        spyOn(cloudfoundry, 'findActiveOrg').and.callThrough();
+        spyOn(cloudfoundry, 'getQuotaUsage');
 
         // Load Ctrl and scope
         scope = $rootScope.$new();
@@ -338,8 +326,9 @@ describe('OrgCtrl', function() {
         });
     }));
 
-    it('should return a space\'s summary info', function() {
+    it('should return a space\'s summary info and get quota info', function() {
         expect(cloudfoundry.findActiveOrg).toHaveBeenCalled();
+        expect(cloudfoundry.getQuotaUsage).toHaveBeenCalledWith({entity: {name: 'org1'}});
     });
 })
 
@@ -356,7 +345,8 @@ describe('SpaceCtrl', function() {
         cloudfoundry = {
             getSpaceDetails: getSpaceDetails,
             findActiveOrg: findActiveOrg,
-            getSpaceServices: getSpaceServices
+            getSpaceServices: getSpaceServices,
+            getQuotaUsage: getQuotaUsage
         }
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
@@ -410,7 +400,9 @@ describe('MarketCtrl', function() {
         //Mock CF service
         cloudfoundry = {
             getOrgServices: getOrgServices,
-            findActiveOrg: findActiveOrg
+            findActiveOrg: findActiveOrg,
+            getQuotaUsage: getQuotaUsage
+
         }
         spyOn(cloudfoundry, 'getOrgServices').and.callThrough();
 
@@ -448,7 +440,8 @@ describe('ServiceCtrl', function() {
             getServiceDetails: getServiceDetails,
             getServicePlans: getServicePlans,
             findActiveOrg: findActiveOrg,
-            createServiceInstance: createServiceInstance
+            createServiceInstance: createServiceInstance,
+            getQuotaUsage: getQuotaUsage
         }
 
         spyOn(cloudfoundry, 'findActiveOrg').and.callThrough();
@@ -516,7 +509,8 @@ describe('AppCtrl', function() {
             unbindService: generalBindFunctions,
             getServiceCredentials: getServiceCredentials,
             createRoute: createRoute,
-            deleteRoute: deleteRoute
+            deleteRoute: deleteRoute,
+            getQuotaUsage: getQuotaUsage
         };
         spyOn(cloudfoundry, 'getAppSummary').and.callThrough();
 
@@ -534,8 +528,9 @@ describe('AppCtrl', function() {
 
     }));
 
-    it('should will show error message if host or domain not present', function() {
-        expect(scope.routeErrorMsg).toEqual(undefined);
+
+    it('should call the create route method and update the app while disabling the other route buttons', function() {
+        expect(scope.blockRoutes).toEqual(undefined);
         scope.createRoute({});
         expect(scope.routeErrorMsg).toEqual('Please provide both host and domain.');
         scope.createRoute({
@@ -560,17 +555,6 @@ describe('AppCtrl', function() {
         expect(scope.routeErrorMsg).toEqual(null);
         expect(cloudfoundry.getAppSummary).toHaveBeenCalledWith('appguid');
     })
-
-    it('should return an error message if route exists', function() {
-        //TODO: force the rejection to go through
-        expect(scope.blockRoutes).toEqual(undefined);
-        scope.createRoute({
-            host: 'usedHost',
-            domain_guid: 'domain_guid'
-        });
-        expect(scope.blockRoutes).toEqual(false);
-    })
-
 
     it('should call the delete route method and update the app while disabling the other route buttons', function() {
         expect(scope.blockRoutes).toEqual(undefined);
