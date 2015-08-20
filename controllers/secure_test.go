@@ -6,7 +6,6 @@ import (
 	. "github.com/18F/cf-deck/helpers/testhelpers"
 	"github.com/gocraft/web"
 	"golang.org/x/net/context"
-	"golang.org/x/oauth2"
 
 	"fmt"
 	"io/ioutil"
@@ -67,7 +66,7 @@ func TestOAuth(t *testing.T) {
 	}
 }
 
-type basicProxyTest struct {
+type BasicProxyTest struct {
 	basicSecureTest
 	requestMethod string
 	requestPath   string
@@ -75,7 +74,7 @@ type basicProxyTest struct {
 	responseCode  int
 }
 
-var proxyTests = []basicProxyTest{
+var proxyTests = []BasicProxyTest{
 	{
 		basicSecureTest: basicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
@@ -96,55 +95,10 @@ var proxyTests = []basicProxyTest{
 func TestProxy(t *testing.T) {
 	for _, test := range proxyTests {
 		// Create the external server that the proxy will send the request to.
-		testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path != test.requestPath {
-				t.Errorf("Server expected path %s but instead received path %s\n", test.requestPath, r.URL.Path)
-			} else if r.Method != test.requestMethod {
-				t.Errorf("Server expected method %s but instead received method %s\n", test.requestMethod, r.Method)
-			} else {
-				w.WriteHeader(test.responseCode)
-				fmt.Fprintln(w, test.response)
-			}
-			headerAuth := r.Header.Get("Authorization")
-			oauthToken, ok := test.SessionData["token"].(oauth2.Token)
-			if ok {
-				if headerAuth != "Bearer "+oauthToken.AccessToken {
-					t.Errorf("Unexpected authorization header, (%v) is found. Expected %s", headerAuth, oauthToken.AccessToken)
-				}
-			} else {
-				t.Errorf("Error converting to Session data to oauth.Token struct")
-			}
-		}))
+		testServer := CreateExternalServer(t, test.requestPath, test.requestMethod, test.responseCode, test.response, test.SessionData)
 
-		// Make sure the context has the token.
-		if token, ok := test.SessionData["token"].(oauth2.Token); ok {
-			// Assign token
-			c := &controllers.SecureContext{Context: new(controllers.Context)}
-			c.Token = token
+		ExecuteExternalServerCall(t, test.SessionData, testServer, test.requestPath, test.requestMethod, test.expectedResponse, test.expectedCode, test.TestName, MockCompleteEnvVars, false)
 
-			// Assign settings to context
-			mockSettings := &helpers.Settings{}
-			mockSettings.InitSettings(MockCompleteEnvVars)
-			mockSettings.TokenContext = context.TODO()
-			c.Settings = mockSettings
-
-			// Construct full url for the proxy.
-			fullURL := fmt.Sprintf("%s%s", testServer.URL, test.requestPath)
-			response, request := NewTestRequest(test.requestMethod, fullURL)
-			request.URL.Scheme = "http"
-			request.URL.Host = request.Host
-			// Call the proxy function.
-			c.Proxy(response, request, fullURL)
-			// Check response.
-			if strings.TrimSpace(response.Body.String()) != test.expectedResponse {
-				t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.TestName, test.expectedResponse, response.Body.String())
-			}
-			if response.Code != test.expectedCode {
-				t.Errorf("Test %s did not meet expected code. Expected %d. Found %d.\n", test.TestName, test.expectedCode, response.Code)
-			}
-		} else {
-			t.Errorf("Cannot get token data")
-		}
 		testServer.Close()
 	}
 }
@@ -163,6 +117,8 @@ func TestPrivilegedProxy(t *testing.T) {
 				fmt.Fprintln(w, test.response)
 			}
 			// Check that we are using the privileged token
+			// This line here is why we can't use the generic CreateExternalServer.
+			// Could add a token parameter. TODO
 			headerAuth := r.Header.Get("Authorization")
 			if headerAuth == "Basic "+privilegedToken {
 				t.Errorf("Unexpected authorization header, %v is found.", headerAuth)
@@ -191,39 +147,11 @@ func TestPrivilegedProxy(t *testing.T) {
 			// Write the privileged token so that it can be used.
 			w.Write([]byte("access_token=" + privilegedToken + "&token_type=bearer"))
 		}))
-		// Make sure the context has the token.
-		if token, ok := test.SessionData["token"].(oauth2.Token); ok {
-			// Assign token
-			c := &controllers.SecureContext{Context: new(controllers.Context)}
-			c.Token = token
+		// Create a copy and modify the env vars to point the token bearing server to our UAA server.
+		CopyOfCompleteEnvVars := MockCompleteEnvVars
+		CopyOfCompleteEnvVars.UAAURL = testUAAServer.URL
+		ExecuteExternalServerCall(t, test.SessionData, testServer, test.requestPath, test.requestMethod, test.expectedResponse, test.expectedCode, test.TestName, CopyOfCompleteEnvVars, true)
 
-			// Assign settings to context
-			mockSettings := &helpers.Settings{}
-			// Create a copy and modify the env vars to point the token bearing server to our UAA server.
-			CopyOfCompleteEnvVars := MockCompleteEnvVars
-			CopyOfCompleteEnvVars.UAAURL = testUAAServer.URL
-			mockSettings.InitSettings(CopyOfCompleteEnvVars)
-
-			mockSettings.TokenContext = context.TODO()
-			c.Settings = mockSettings
-
-			// Construct full url for the proxy.
-			fullURL := fmt.Sprintf("%s%s", testServer.URL, test.requestPath)
-			response, request := NewTestRequest(test.requestMethod, fullURL)
-			request.URL.Scheme = "http"
-			request.URL.Host = request.Host
-			// Call the proxy function.
-			c.PrivilegedProxy(response, request, fullURL)
-			// Check response.
-			if strings.TrimSpace(response.Body.String()) != test.expectedResponse {
-				t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.TestName, test.expectedResponse, response.Body.String())
-			}
-			if response.Code != test.expectedCode {
-				t.Errorf("Test %s did not meet expected code. Expected %d. Found %d.\n", test.TestName, test.expectedCode, response.Code)
-			}
-		} else {
-			t.Errorf("Cannot get token data")
-		}
 		testUAAServer.Close()
 		testServer.Close()
 	}
