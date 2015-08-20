@@ -161,7 +161,7 @@
                 });
         }
 
-        // Get org users
+        // Get space users
         this.getSpaceUsers = function(spaceGuid) {
             return $http.get('/v2/spaces/' + spaceGuid + '/user_roles')
                 .then(function(response) {
@@ -176,10 +176,10 @@
           };
           var url = '/v2/spaces/' + spaceGuid + '/' + permissions + '/' + user.metadata.guid;
           if (user[permissions]){
-            return $http.put(url).then(returnResponse);
+            return $http.put(url).then(returnResponse).catch(returnResponse);
           }
           else {
-            return $http.delete(url).then(returnResponse);
+            return $http.delete(url).then(returnResponse).catch(returnResponse);
           }
         };
 
