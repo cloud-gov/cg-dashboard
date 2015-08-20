@@ -234,7 +234,14 @@ var getQuotaUsage = function(org) {
 var getUsersGeneric = function(guid) {
   return {
     then: function(callback) {
-      return callback([{entity: {name: 'user1'}}])
+      return callback(
+        [
+          {
+            metadata: {guid: 'user1'},
+            entity: {space_roles: ['space_auditor']}
+          }
+        ]
+      )
     }
   }
 };
@@ -458,8 +465,21 @@ describe('SpaceUserCtrl', function() {
             findActiveOrg: findActiveOrg,
             getQuotaUsage: getQuotaUsage,
             getSpaceUsers: getUsersGeneric,
-            getOrgUsers: getUsersGeneric
-        }
+            getOrgUsers: getUsersGeneric,
+            toggleSpaceUserPermissions: function(user, permission, spaceGuid) {
+                return {
+                    then: function(callback) {
+                      if (permission === 'managers'){
+                        user[permission] = false;
+                        return callback({status: 201});
+                      }
+                      else{
+                        return callback({status: 400, data: {description: 'error'}});
+                      }
+                    }
+                }
+            }
+        };
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
 
@@ -491,6 +511,52 @@ describe('SpaceUserCtrl', function() {
     it('should render the app tab via the activeTab var on load along with the services', function() {
         expect(scope.activeTab).toEqual('users');
     });
+
+    it('it should remove the active user', function() {
+        scope.activeUser = 'user';
+        expect(scope.activeUser).toBe('user')
+        scope.unsetActiveUser()
+        expect(scope.activeUser).toBe(null)
+    });
+
+    it('should check if a org user is in the space user object and return thier roles', function() {
+      // Test user that does exist in org, this user was set in a space for this ctrl.
+      expect(scope.disableSwitches).toBe(undefined);
+      var user = {metadata: {guid: 'user1'}};
+      scope.setActiveUser(user);
+      expect(scope.activeUser.metadata.guid).toBe('user1');
+      expect(scope.activeUser.managers).toBe(false);
+      expect(scope.activeUser.auditors).toBe(true);
+      expect(scope.activeUser.developers).toBe(false);
+      expect(scope.disableSwitches).toBe(false);
+      // Test user that does not exist in org
+      var user = {metadata: {guid: 'user2'}};
+      scope.setActiveUser(user);
+      expect(scope.activeUser.metadata.guid).toBe('user2');
+      expect(scope.activeUser.managers).toBe(false);
+      expect(scope.activeUser.auditors).toBe(false);
+      expect(scope.activeUser.developers).toBe(false);
+    });
+
+    it('should allow a space manager to toggle the space user permissions', function () {
+        // Space manager setting permissions
+        scope.activeUser = {managers: true, auditors: true};
+        expect(scope.disableSwitches).toBe(undefined);
+        // Flip the user manager permission to false
+        scope.activeUser.managers = false;
+        scope.toggleSpaceUserPermissions('managers');
+        expect(scope.activeUser.managers).toBe(false);
+        expect(scope.disableSwitches).toBe(false);
+
+        // Space if the permission setting fails
+        // Flip the user manager permission to false
+        scope.activeUser.auditors = false;
+        scope.toggleSpaceUserPermissions('auditors');
+        // The method will reject the switch and return the permissions to the original state
+        expect(scope.activeUser.auditors).toBe(true);
+        // Show error message
+        expect(scope.spaceUserError).toBe('error');
+    })
 
 });
 

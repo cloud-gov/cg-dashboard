@@ -248,7 +248,7 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
-    describe('getSpaceDetails', function() {
+      describe('getSpaceDetails', function() {
 
         it('should return space details when given a spaceGuid', function() {
             var spaceSummary = {
@@ -266,6 +266,38 @@ describe('CloudFoundry Service Tests', function() {
             });
             httpBackend.flush();
         });
+    });
+
+    describe('getSpaceUsers', function() {
+      it('should return all the space users in the specific space', function() {
+        httpBackend.whenGET('/v2/spaces/spaceguid/user_roles').respond({resources: []});
+        $cloudfoundry.getSpaceUsers('spaceguid').then(function(response) {
+          expect(response).toEqual([]);
+        });
+        httpBackend.flush();
+      });
+    });
+
+    describe('toggleSpaceUserPermissions', function() {
+      it('should covert data to a request to delete or put a user in a space', function () {
+        var user = {
+          metadata: {guid: 'userguid'},
+          auditors: true,
+        };
+        var permissions = 'auditors';
+        var spaceGuid = 'spaceguid';
+        httpBackend.whenPUT('/v2/spaces/spaceguid/auditors/userguid').respond({action: 'put'})
+        httpBackend.whenDELETE('/v2/spaces/spaceguid/auditors/userguid').respond({action: 'delete'})
+        $cloudfoundry.toggleSpaceUserPermissions(user, permissions, spaceGuid).then(function(respond) {
+          expect(respond.data.action).toEqual('put');
+        });
+        user.auditors = false;
+        $cloudfoundry.toggleSpaceUserPermissions(user, permissions, spaceGuid).then(function(respond) {
+          expect(respond.data.action).toEqual('delete');
+        });
+        httpBackend.flush();
+      });
+
     });
 
     describe('getOrgServices', function() {
