@@ -195,9 +195,8 @@
 
     app.controller('SpaceUserCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
       loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-      var spaceUsersStorage;
       var renderUsers = function(spaceUsers) {
-        spaceUsersStorage = spaceUsers;
+        $scope.spaceUsers = spaceUsers;
         $cloudfoundry.getOrgUsers($routeParams['orgguid'])
             .then(function(users) {
               $scope.users = users;
@@ -210,7 +209,7 @@
       };
       $scope.setActiveUser = function(user) {
         $scope.disableSwitches = true;
-        var activeUser = spaceUsersStorage.filter(function (spaceuser) {
+        var activeUser = $scope.spaceUsers.filter(function (spaceuser) {
             return spaceuser.metadata.guid === user.metadata.guid
         });
         if (activeUser.length === 1) {
@@ -237,7 +236,10 @@
                 $scope.activeUser[permission] = !$scope.activeUser[permission];
                 $scope.spaceUserError = response.data.description;
               }
-
+              else {
+                 $cloudfoundry.getSpaceUsers($routeParams['spaceguid'])
+                    .then(renderUsers);
+              }
               $scope.disableSwitches = false;
             });
       };
@@ -362,7 +364,6 @@
                 newRoute.space_guid = $routeParams['spaceguid'];
                 $cloudfoundry.createRoute(newRoute, $routeParams['appguid'])
                     .then(function(response) {
-                        console.log(response);
                         if(response.status === 400) {
                             $scope.routeErrorMsg = response.data.description;
                         } else {
