@@ -203,6 +203,9 @@
               $scope.users = users;
             });
       };
+      $scope.unsetActiveUser = function() {
+        $scope.activeUser = null;
+      };
       $scope.setActiveUser = function(user) {
         $scope.disableSwitches = true;
         var activeUser = spaceUsersStorage.filter(function (spaceuser) {
