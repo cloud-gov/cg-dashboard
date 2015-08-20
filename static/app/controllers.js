@@ -205,6 +205,8 @@
       };
       $scope.unsetActiveUser = function() {
         $scope.activeUser = null;
+        $scope.disableSwitches = null;
+        $scope.spaceUserError = null;
       };
       $scope.setActiveUser = function(user) {
         $scope.disableSwitches = true;
@@ -228,12 +230,14 @@
       };
       $scope.toggleSpaceUserPermissions = function(permission) {
         $scope.disableSwitches = true;
+        $scope.spaceUserError = null;
         $cloudfoundry.toggleSpaceUserPermissions($scope.activeUser, permission, $routeParams['spaceguid'])
             .then(function (response) {
-              console.log(response.status)
               if (response.status !== 201){
-                $scope.activeUser[permission] = !$scope.activeUser[permission]
-              };
+                $scope.activeUser[permission] = !$scope.activeUser[permission];
+                $scope.spaceUserError = response.data.description;
+              }
+
               $scope.disableSwitches = false;
             });
       };
