@@ -202,17 +202,32 @@ describe('CloudFoundry Service Tests', function() {
     });
 
     describe('getOrgDetails', function() {
-        
-        var org = {guid: 'orgguid'}
-    
+
+        var org = {
+            guid: 'orgguid'
+        }
+
         it('should make multiple calls to get org info', function() {
-            httpBackend.whenGET('/v2/organizations/orgguid/memory_usage').respond({memory_usage_in_mb: 99});
-            httpBackend.whenGET('/v2/organizations/orgguid').respond({entity: {quota_definition_url: '/quota_definition_url'}});
-            httpBackend.whenGET('/quota_definition_url').respond({entity: {memory_limit: 99}});
+            httpBackend.whenGET('/v2/organizations/orgguid/memory_usage').respond({
+                memory_usage_in_mb: 99
+            });
+            httpBackend.whenGET('/v2/organizations/orgguid').respond({
+                entity: {
+                    quota_definition_url: '/quota_definition_url'
+                }
+            });
+            httpBackend.whenGET('/quota_definition_url').respond({
+                entity: {
+                    memory_limit: 99
+                }
+            });
             $cloudfoundry.getQuotaUsage(org)
             httpBackend.flush();
-            expect(org.quota).toEqual({ memory_limit: 99, used_memory: 99 });
-        });    
+            expect(org.quota).toEqual({
+                memory_limit: 99,
+                used_memory: 99
+            });
+        });
     });
 
 
@@ -248,7 +263,7 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
-      describe('getSpaceDetails', function() {
+    describe('getSpaceDetails', function() {
 
         it('should return space details when given a spaceGuid', function() {
             var spaceSummary = {
@@ -268,35 +283,73 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
-    describe('getSpaceUsers', function() {
-      it('should return all the space users in the specific space', function() {
-        httpBackend.whenGET('/v2/spaces/spaceguid/user_roles').respond({resources: []});
-        $cloudfoundry.getSpaceUsers('spaceguid').then(function(response) {
-          expect(response).toEqual([]);
+
+    describe('findActiveSpace', function() {
+
+        it('should return space details when given a spaceGuid either from the store or from a request', function() {
+            var spaceSummary = {
+                name: 'spacename',
+                guid: 'spaceguid',
+                apps: [{
+                    name: 'app1'
+                }, {
+                    name: 'app2'
+                }]
+            };
+            httpBackend.whenGET('/v2/spaces/spaceguid/summary').respond(spaceSummary);            
+            var callbackSpy2 = function(data) {
+                expect(data.name).toEqual('spacename');
+                expect(data.apps.length).toEqual(2);
+            };
+            var callbackSpy = function(data) {
+                expect(data.name).toEqual('spacename');
+                expect(data.apps.length).toEqual(2);
+                // Now that data is stored, we can find it in the store, 
+                // it will not require another mock request
+                $cloudfoundry.findActiveSpace('spaceguid', callbackSpy2)
+            };
+            $cloudfoundry.findActiveSpace('spaceguid', callbackSpy)
+            httpBackend.flush();
         });
-        httpBackend.flush();
-      });
+    });
+
+    describe('getSpaceUsers', function() {
+        it('should return all the space users in the specific space', function() {
+            httpBackend.whenGET('/v2/spaces/spaceguid/user_roles').respond({
+                resources: []
+            });
+            $cloudfoundry.getSpaceUsers('spaceguid').then(function(response) {
+                expect(response).toEqual([]);
+            });
+            httpBackend.flush();
+        });
     });
 
     describe('toggleSpaceUserPermissions', function() {
-      it('should covert data to a request to delete or put a user in a space', function () {
-        var user = {
-          metadata: {guid: 'userguid'},
-          auditors: true,
-        };
-        var permissions = 'auditors';
-        var spaceGuid = 'spaceguid';
-        httpBackend.whenPUT('/v2/spaces/spaceguid/auditors/userguid').respond({action: 'put'})
-        httpBackend.whenDELETE('/v2/spaces/spaceguid/auditors/userguid').respond({action: 'delete'})
-        $cloudfoundry.toggleSpaceUserPermissions(user, permissions, spaceGuid).then(function(respond) {
-          expect(respond.data.action).toEqual('put');
+        it('should covert data to a request to delete or put a user in a space', function() {
+            var user = {
+                metadata: {
+                    guid: 'userguid'
+                },
+                auditors: true,
+            };
+            var permissions = 'auditors';
+            var spaceGuid = 'spaceguid';
+            httpBackend.whenPUT('/v2/spaces/spaceguid/auditors/userguid').respond({
+                action: 'put'
+            })
+            httpBackend.whenDELETE('/v2/spaces/spaceguid/auditors/userguid').respond({
+                action: 'delete'
+            })
+            $cloudfoundry.toggleSpaceUserPermissions(user, permissions, spaceGuid).then(function(respond) {
+                expect(respond.data.action).toEqual('put');
+            });
+            user.auditors = false;
+            $cloudfoundry.toggleSpaceUserPermissions(user, permissions, spaceGuid).then(function(respond) {
+                expect(respond.data.action).toEqual('delete');
+            });
+            httpBackend.flush();
         });
-        user.auditors = false;
-        $cloudfoundry.toggleSpaceUserPermissions(user, permissions, spaceGuid).then(function(respond) {
-          expect(respond.data.action).toEqual('delete');
-        });
-        httpBackend.flush();
-      });
 
     });
 

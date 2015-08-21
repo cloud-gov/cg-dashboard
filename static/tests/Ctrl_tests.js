@@ -46,6 +46,18 @@ var getSpaceDetails = function(spaceguid) {
     }
 };
 
+var findActiveSpace = function(spaceguid, callback) {
+    callback({
+        guid: 'spaceguid',
+        name: 'spacename',
+        apps: [{
+            name: 'mockname1'
+        }, {
+            name: 'mockname2'
+        }]
+    });
+};
+
 var findActiveOrg = function(orgguid, callback) {
     return callback({
         entity: {
@@ -207,7 +219,12 @@ var createRoute = function(newRoute, appGuid) {
     if (newRoute.host === "usedHost") {
         return {
             then: function(callback) {
-                return callback({status: 400, data: {description: 'error'}});
+                return callback({
+                    status: 400,
+                    data: {
+                        description: 'error'
+                    }
+                });
             }
         }
     };
@@ -232,18 +249,20 @@ var getQuotaUsage = function(org) {
 };
 
 var getUsersGeneric = function(guid) {
-  return {
-    then: function(callback) {
-      return callback(
-        [
-          {
-            metadata: {guid: 'user1'},
-            entity: {space_roles: ['space_auditor']}
-          }
-        ]
-      )
+    return {
+        then: function(callback) {
+            return callback(
+                [{
+                    metadata: {
+                        guid: 'user1'
+                    },
+                    entity: {
+                        space_roles: ['space_auditor']
+                    }
+                }]
+            )
+        }
     }
-  }
 };
 
 describe('HomeCtrl', function() {
@@ -343,7 +362,11 @@ describe('OrgCtrl', function() {
 
     it('should return a space\'s summary info and get quota info', function() {
         expect(cloudfoundry.findActiveOrg).toHaveBeenCalled();
-        expect(cloudfoundry.getQuotaUsage).toHaveBeenCalledWith({entity: {name: 'org1'}});
+        expect(cloudfoundry.getQuotaUsage).toHaveBeenCalledWith({
+            entity: {
+                name: 'org1'
+            }
+        });
     });
 })
 
@@ -361,7 +384,8 @@ describe('SpaceCtrl', function() {
             getSpaceDetails: getSpaceDetails,
             findActiveOrg: findActiveOrg,
             getSpaceServices: getSpaceServices,
-            getQuotaUsage: getQuotaUsage
+            getQuotaUsage: getQuotaUsage,
+            findActiveSpace: findActiveSpace
         }
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
@@ -412,7 +436,8 @@ describe('SpaceServicesCtrl', function() {
             getSpaceDetails: getSpaceDetails,
             findActiveOrg: findActiveOrg,
             getQuotaUsage: getQuotaUsage,
-            getSpaceServices: getSpaceServices
+            getSpaceServices: getSpaceServices,
+            findActiveSpace: findActiveSpace
         }
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
@@ -444,7 +469,11 @@ describe('SpaceServicesCtrl', function() {
 
     it('should render the app tab via the activeTab var on load along with the services', function() {
         expect(scope.activeTab).toEqual('services');
-        expect(scope.services).toEqual([{ metadata: { guid: 'serviceguid' }}] );
+        expect(scope.services).toEqual([{
+            metadata: {
+                guid: 'serviceguid'
+            }
+        }]);
     });
 
 });
@@ -466,16 +495,23 @@ describe('SpaceUserCtrl', function() {
             getQuotaUsage: getQuotaUsage,
             getSpaceUsers: getUsersGeneric,
             getOrgUsers: getUsersGeneric,
+            findActiveSpace: findActiveSpace,
             toggleSpaceUserPermissions: function(user, permission, spaceGuid) {
                 return {
                     then: function(callback) {
-                      if (permission === 'managers'){
-                        user[permission] = false;
-                        return callback({status: 201});
-                      }
-                      else{
-                        return callback({status: 400, data: {description: 'error'}});
-                      }
+                        if (permission === 'managers') {
+                            user[permission] = false;
+                            return callback({
+                                status: 201
+                            });
+                        } else {
+                            return callback({
+                                status: 400,
+                                data: {
+                                    description: 'error'
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -520,27 +556,38 @@ describe('SpaceUserCtrl', function() {
     });
 
     it('should check if a org user is in the space user object and return thier roles', function() {
-      // Test user that does exist in org, this user was set in a space for this ctrl.
-      expect(scope.disableSwitches).toBe(undefined);
-      var user = {metadata: {guid: 'user1'}};
-      scope.setActiveUser(user);
-      expect(scope.activeUser.metadata.guid).toBe('user1');
-      expect(scope.activeUser.managers).toBe(false);
-      expect(scope.activeUser.auditors).toBe(true);
-      expect(scope.activeUser.developers).toBe(false);
-      expect(scope.disableSwitches).toBe(false);
-      // Test user that does not exist in org
-      var user = {metadata: {guid: 'user2'}};
-      scope.setActiveUser(user);
-      expect(scope.activeUser.metadata.guid).toBe('user2');
-      expect(scope.activeUser.managers).toBe(false);
-      expect(scope.activeUser.auditors).toBe(false);
-      expect(scope.activeUser.developers).toBe(false);
+        // Test user that does exist in org, this user was set in a space for this ctrl.
+        expect(scope.disableSwitches).toBe(undefined);
+        var user = {
+            metadata: {
+                guid: 'user1'
+            }
+        };
+        scope.setActiveUser(user);
+        expect(scope.activeUser.metadata.guid).toBe('user1');
+        expect(scope.activeUser.managers).toBe(false);
+        expect(scope.activeUser.auditors).toBe(true);
+        expect(scope.activeUser.developers).toBe(false);
+        expect(scope.disableSwitches).toBe(false);
+        // Test user that does not exist in org
+        var user = {
+            metadata: {
+                guid: 'user2'
+            }
+        };
+        scope.setActiveUser(user);
+        expect(scope.activeUser.metadata.guid).toBe('user2');
+        expect(scope.activeUser.managers).toBe(false);
+        expect(scope.activeUser.auditors).toBe(false);
+        expect(scope.activeUser.developers).toBe(false);
     });
 
-    it('should allow a space manager to toggle the space user permissions', function () {
+    it('should allow a space manager to toggle the space user permissions', function() {
         // Space manager setting permissions
-        scope.activeUser = {managers: true, auditors: true};
+        scope.activeUser = {
+            managers: true,
+            auditors: true
+        };
         expect(scope.disableSwitches).toBe(undefined);
         // Flip the user manager permission to false
         scope.activeUser.managers = false;
@@ -681,7 +728,8 @@ describe('AppCtrl', function() {
             getServiceCredentials: getServiceCredentials,
             createRoute: createRoute,
             deleteRoute: deleteRoute,
-            getQuotaUsage: getQuotaUsage
+            getQuotaUsage: getQuotaUsage,
+            findActiveSpace: getSpaceDetails
         };
         spyOn(cloudfoundry, 'getAppSummary').and.callThrough();
 
