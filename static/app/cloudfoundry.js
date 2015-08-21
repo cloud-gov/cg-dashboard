@@ -3,7 +3,7 @@
     angular.module('cfdeck').service('$cloudfoundry', function($http, $location, $log, $q) {
 
         // Declare variables for passing data via this service
-        var orgs, activeOrg;
+        var orgs, activeOrg, activeSpace = {guid: undefined};
 
         // Redirects back to home page
         var returnHome = function(response) {
@@ -159,7 +159,21 @@
                 .then(function(response) {
                     return response.data;
                 });
-        }
+        };
+
+        this.findActiveSpace = function(spaceGuid, callback) {
+            if (activeSpace.guid === spaceGuid) {
+                $log.info('Use stored space data');
+                callback(activeSpace);
+            }
+            else {
+                this.getSpaceDetails(spaceGuid).then(function (spaceData) {
+                    $log.info('Fetch new space data');
+                    activeSpace = spaceData;
+                    callback(spaceData);
+                });
+            }
+        };
 
         // Get space users
         this.getSpaceUsers = function(spaceGuid) {

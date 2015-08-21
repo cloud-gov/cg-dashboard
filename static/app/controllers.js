@@ -22,13 +22,15 @@
                 $scope.spaces = $scope.activeOrg.spaces;
             }
         };
+        var renderSpace = function(spaceData) {
+             MenuData.data.currentSpace = spaceData;
+             $scope.space = spaceData;
+        };
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
         // Render a space if there is a spaceguid
         if ($routeParams.spaceguid){
-          $cloudfoundry.getSpaceDetails($routeParams['spaceguid']).then(function (space) {
-              $scope.space = space;
-          })
-      }
+            $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace)      
+        };
 
     };
 
