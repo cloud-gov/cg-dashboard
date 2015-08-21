@@ -72,9 +72,6 @@
 
     app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $uaa, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
-        var renderOrgUsers = function(users) {
-            $scope.org_users = users;
-        };
         $scope.addUserToOrg = function(user) {
             user.id = undefined;
             return $uaa.getUserGuidFromUserName(user)
@@ -94,7 +91,9 @@
         // Make the current org users tab the default active tab
         $scope.activeTab = 'current_org_users';
         // Get all the users associated with an org
-        $cloudfoundry.getOrgUsers($routeParams['orgguid']).then(renderOrgUsers);
+        $scope.org_users = [];
+        $scope.loadComplete = {status: false};
+        $cloudfoundry.getOrgUsers($routeParams['orgguid'], $scope.org_users, $scope.loadComplete);
     });
 
     app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
@@ -205,10 +204,10 @@
       loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
       var renderUsers = function(spaceUsers) {
         $scope.spaceUsers = spaceUsers;
-        $cloudfoundry.getOrgUsers($routeParams['orgguid'])
-            .then(function(users) {
-              $scope.users = users;
-            });
+        // Get all the users associated with an org
+        $scope.users = [];
+        $scope.loadComplete = {status: false};
+        $cloudfoundry.getOrgUsers($routeParams['orgguid'], $scope.users, $scope.loadComplete);
       };
       $scope.unsetActiveUser = function() {
         $scope.activeUser = null;

@@ -4,6 +4,33 @@
 
         // Declare variables for passing data via this service
         var orgs, activeOrg, activeSpace = {guid: undefined};
+        
+        // Paging function for endpoints that require more than one page
+        var httpPager = function(url, resources, loadComplete) {
+            // Prevent JS scope bug
+            var self = this;
+            // Get the next url
+            var get = function(nextUrl) {
+                return $http.get(nextUrl).then(this.receive).catch(this.returnError);
+            };
+            // Receive response and add data 
+            self.receive = function(response) {
+                resources.push.apply(resources, response.data.resources);
+                if (response.data.next_url) {
+                    return get(response.data.next_url);
+                }
+                self.setLoadComplete();
+            };
+            // Return error if needed 
+            self.returnError = function(response) {
+                return response;
+            };
+            // Show that load has finished
+            self.setLoadComplete = function() {
+                loadComplete.status = true;
+            }
+            return get(url);
+         };
 
         // Redirects back to home page
         var returnHome = function(response) {
@@ -110,11 +137,8 @@
         };
 
 	// Get org users
-        this.getOrgUsers = function(orgGuid) {
-            return $http.get('/v2/organizations/' + orgGuid + '/users')
-                .then(function(response) {
-                    return response.data.resources;
-                });
+        this.getOrgUsers = function(orgGuid, resources, loadComplete) {
+            return httpPager('/v2/organizations/' + orgGuid + '/users', resources, loadComplete)
         };
 
 	// Generic function to get different org user categories
