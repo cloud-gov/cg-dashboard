@@ -263,6 +263,76 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
+    describe('getOrgUserUsers', function() {
+
+        it('should return the list of current org users', function() {
+
+            var orgGuid = 'orgguid';
+            httpBackend.whenGET('/v2/organizations/'+orgGuid+'/users').respond({
+                resources: {
+                    action: 'get'
+                }
+            });
+            $cloudfoundry.getOrgUsers(orgGuid).then(function(data) {
+                expect(data.action).toEqual('get');
+            });
+            httpBackend.flush();
+        });
+    });
+
+    describe('getOrgUserCategory', function() {
+
+        it('should return if the current user has the given org category role', function() {
+            var user = {
+                metadata: {
+                    guid: 'userguid'
+                },
+            };
+            var permissions = 'auditors';
+            var orgGuid = 'orgguid';
+            var queryString = 'auditor_guid';
+            httpBackend.whenGET('/v2/organizations/'+orgGuid+'/'+permissions+'?'+queryString+'=' +user.metadata.guid).respond({
+                resources: {
+                    action: 'get'
+                }
+            });
+            $cloudfoundry.getOrgUserCategory(orgGuid, user.metadata.guid, permissions, queryString).then(function(data) {
+                expect(data.action).toEqual('get');
+            });
+            httpBackend.flush();
+        });
+    });
+
+    describe('setOrgUserCategory', function() {
+        it('should convert data to a request to delete or put a user in an org', function() {
+            var user = {
+                metadata: {
+                    guid: 'userguid'
+                },
+            };
+            var permissions = 'auditors';
+            var orgGuid = 'orgguid';
+            httpBackend.whenPUT('/v2/organizations/'+orgGuid+'/'+permissions+'/userguid').respond({
+                resources: {
+                    action: 'put'
+                }
+            })
+            httpBackend.whenDELETE('/v2/organizations/'+orgGuid+'/'+permissions+'/userguid').respond({
+                resources: {
+                    action: 'delete'
+                }
+            })
+            $cloudfoundry.setOrgUserCategory(orgGuid, user.metadata.guid, permissions, true).then(function(respond) {
+                expect(respond.action).toEqual('put');
+            });
+            $cloudfoundry.setOrgUserCategory(orgGuid, user.metadata.guid, permissions, false).then(function(respond) {
+                expect(respond.action).toEqual('delete');
+            });
+            httpBackend.flush();
+        });
+
+    });
+
     describe('getSpaceDetails', function() {
 
         it('should return space details when given a spaceGuid', function() {
