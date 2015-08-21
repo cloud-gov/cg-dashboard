@@ -30,6 +30,38 @@ var setOrgsData = function(org) {
     org.quota = {}
 };
 
+var setOrgUserCategory = function(orgGuid, userGuid, category, adding) {
+    return {
+        then: function(callback) {
+            return callback();
+        }
+    }
+};
+
+var getOrgUserCategory = function(orgGuid, userGuid, category, queryString) {
+    return {
+        then: function(callback) {
+            return callback([{
+                    metadata: {
+                        guid: 'guiduser1'
+                    },
+                    entity: {
+                        username: 'user1',
+                        admin: false,
+                    }
+            }])
+        }
+    }
+};
+
+var getUserGuidFromUserName = function(user) {
+    user.id = 'guid';
+    return {
+        then: function(callback){
+        }
+    }
+};
+
 var getSpaceDetails = function(spaceguid) {
     return {
         then: function(callback) {
@@ -248,6 +280,24 @@ var getQuotaUsage = function(org) {
     //org.quota = 'data';
 };
 
+var getOrgUsersGeneric = function(guid) {
+    return {
+        then: function(callback) {
+            return callback(
+                [{
+                    metadata: {
+                        guid: 'guiduser1'
+                    },
+                    entity: {
+                        username: 'user1',
+                        admin: false,
+                    }
+                }]
+            )
+        }
+    }
+}
+
 var getUsersGeneric = function(guid) {
     return {
         then: function(callback) {
@@ -369,6 +419,135 @@ describe('OrgCtrl', function() {
         });
     });
 })
+
+describe('OrgManagementCtrl', function() {
+
+    var scope, cloudfoundry, uaa, MenuData = {
+        data: {}
+    };
+
+    beforeEach(module('cfdeck'));
+    beforeEach(inject(function($rootScope, $controller) {
+
+        //Mock Cf service
+        cloudfoundry = {
+            setOrgUserCategory: setOrgUserCategory,
+            getOrgUsers: getOrgUsersGeneric,
+            findActiveOrg: findActiveOrg,
+            getQuotaUsage: getQuotaUsage,
+        }
+
+        // Mock UAA service
+        uaa = {
+            getUserGuidFromUserName: getUserGuidFromUserName
+        };
+
+        // Load Ctrl and scope
+        scope = $rootScope.$new();
+        ctrl = $controller('OrgManagementCtrl', {
+            $scope: scope,
+            $cloudfoundry: cloudfoundry,
+            $uaa: uaa,
+            $routeParams: {
+                orgguid: 'org1guid',
+            },
+            MenuData: MenuData
+        });
+    }));
+
+    it('should return the list of current org users', function() {
+        expect(scope.org_users).toEqual([{
+                metadata:
+                {
+                    guid: 'guiduser1',
+                },
+                entity:
+                {
+                    username: 'user1',
+                    admin: false,
+                },
+
+        }]);
+    });
+
+    it('should render the current Org Users tab via the activeTab var on load', function() {
+        expect(scope.activeTab).toEqual('current_org_users')
+    });
+
+});
+
+describe('OrgUserManagementCtrl', function() {
+
+    var scope, cloudfoundry, uaa, MenuData = {
+        data: {}
+    };
+
+    beforeEach(module('cfdeck'));
+    beforeEach(inject(function($rootScope, $controller) {
+
+        //Mock Cf service
+        cloudfoundry = {
+            setOrgUserCategory: setOrgUserCategory,
+            getOrgUserCategory: getOrgUserCategory,
+            getOrgUsers: getOrgUsersGeneric,
+            findActiveOrg: findActiveOrg,
+            getQuotaUsage: getQuotaUsage,
+        }
+
+
+        // Load Ctrl and scope
+        scope = $rootScope.$new();
+        ctrl = $controller('OrgUserManagementCtrl', {
+            $scope: scope,
+            $cloudfoundry: cloudfoundry,
+            $uaa: uaa,
+            $routeParams: {
+                orgguid: 'org1guid',
+                userguid: 'user1guid',
+            },
+            MenuData: MenuData
+        });
+    }));
+
+    it('should initialize all the correct values to the user\'s roles', function() {
+        expect(scope.initOrgManagerState).toEqual(true);
+        expect(scope.initBillingManagerState).toEqual(true);
+        expect(scope.initOrgAuditorState).toEqual(true);
+    });
+
+    it('should send a new value if different from previous', function() {
+        scope.$digest();
+        spyOn(cloudfoundry, 'setOrgUserCategory').and.callThrough();
+        expect(scope.initOrgManagerState).toEqual(true);
+        expect(scope.orgManagerStatus).toEqual(false);
+        expect(scope.orgManagerStateChanging).toEqual(undefined);
+        scope.orgManagerStatus = true;
+        scope.$digest();
+        expect(cloudfoundry.setOrgUserCategory).toHaveBeenCalled();
+        expect(scope.orgManagerStatus).toEqual(true);
+        expect(scope.orgManagerStateChanging).toEqual(false);
+
+        scope.$digest();
+        expect(scope.initBillingManagerState).toEqual(true);
+        expect(scope.billingManagerStatus).toEqual(false);
+        expect(scope.billingManagerStateChanging).toEqual(undefined);
+        scope.billingManagerStatus = true;
+        scope.$digest();
+        expect(cloudfoundry.setOrgUserCategory).toHaveBeenCalled();
+        expect(scope.billingManagerStatus).toEqual(true);
+        expect(scope.billingManagerStateChanging).toEqual(false);
+
+	scope.$digest();
+        expect(scope.initOrgAuditorState).toEqual(true);
+        expect(scope.orgAuditorStateChanging).toEqual(undefined);
+        expect(scope.orgAuditorStatus).toEqual(false);
+        scope.orgAuditorStatus = true;
+        scope.$digest();
+        expect(cloudfoundry.setOrgUserCategory).toHaveBeenCalled();
+        expect(scope.orgAuditorStatus).toEqual(true);
+        expect(scope.orgAuditorStateChanging).toEqual(false);
+    });
+});
 
 describe('SpaceCtrl', function() {
 
