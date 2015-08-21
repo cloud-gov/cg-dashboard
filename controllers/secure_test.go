@@ -15,26 +15,20 @@ import (
 	"testing"
 )
 
-type basicSecureTest struct {
-	BasicConsoleUnitTest
-	expectedCode     int
-	expectedResponse string
-}
-
-var oauthTests = []basicSecureTest{
+var oauthTests = []BasicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Valid OAuth Session",
 			SessionData: ValidTokenData,
 		},
-		expectedResponse: "test",
+		ExpectedResponse: "test",
 	},
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Invalid OAuth Session",
 			SessionData: InvalidTokenData,
 		},
-		expectedResponse: "{\"status\": \"unauthorized\"}",
+		ExpectedResponse: "{\"status\": \"unauthorized\"}",
 	},
 }
 
@@ -60,45 +54,41 @@ func TestOAuth(t *testing.T) {
 
 		// Make the request and check.
 		router.ServeHTTP(response, request)
-		if strings.TrimSpace(response.Body.String()) != test.expectedResponse {
-			t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.TestName, test.expectedResponse, response.Body.String())
+		if strings.TrimSpace(response.Body.String()) != test.ExpectedResponse {
+			t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.TestName, test.ExpectedResponse, response.Body.String())
 		}
 	}
 }
 
-type BasicProxyTest struct {
-	basicSecureTest
-	requestMethod string
-	requestPath   string
-	response      string
-	responseCode  int
-}
-
 var proxyTests = []BasicProxyTest{
 	{
-		basicSecureTest: basicSecureTest{
+		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Ok Proxy call",
 				SessionData: ValidTokenData,
 			},
-			expectedResponse: "test",
-			expectedCode:     http.StatusOK,
+			ExpectedResponse: "test",
+			ExpectedCode:     http.StatusOK,
 		},
 		// What the "external" server will send back to the proxy.
-		requestMethod: "GET",
-		requestPath:   "/test",
-		response:      "test",
-		responseCode:  http.StatusOK,
+		RequestMethod: "GET",
+		RequestPath:   "/test",
+		ExpectedPath:  "/test",
+		Response:      "test",
+		ResponseCode:  http.StatusOK,
 	},
 }
 
 func TestProxy(t *testing.T) {
 	for _, test := range proxyTests {
 		// Create the external server that the proxy will send the request to.
-		testServer := CreateExternalServer(t, test.requestPath, test.requestMethod, test.responseCode, test.response, test.SessionData)
-
-		ExecuteExternalServerCall(t, test.SessionData, testServer, test.requestPath, test.requestMethod, test.expectedResponse, test.expectedCode, test.TestName, MockCompleteEnvVars, false)
-
+		testServer := CreateExternalServer(t, &test)
+		// Construct full url for the proxy.
+		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
+		c := &controllers.SecureContext{Context: new(controllers.Context)}
+		response, request, _ := PrepareExternalServerCall(t, test.SessionData, c, MockCompleteEnvVars, testServer, fullURL, test.RequestMethod)
+		c.Proxy(response, request, fullURL)
+		VerifyExternalCallResponse(t, response, &test)
 		testServer.Close()
 	}
 }
@@ -108,13 +98,13 @@ func TestPrivilegedProxy(t *testing.T) {
 		privilegedToken := "90d64460d14870c08c81352a05dedd3465940a7c"
 		// Create the external server that the proxy will send the request to.
 		testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path != test.requestPath {
-				t.Errorf("Server expected path %s but instead received path %s\n", test.requestPath, r.URL.Path)
-			} else if r.Method != test.requestMethod {
-				t.Errorf("Server expected method %s but instead received method %s\n", test.requestMethod, r.Method)
+			if r.URL.Path != test.RequestPath {
+				t.Errorf("Server expected path %s but instead received path %s\n", test.RequestPath, r.URL.Path)
+			} else if r.Method != test.RequestMethod {
+				t.Errorf("Server expected method %s but instead received method %s\n", test.RequestMethod, r.Method)
 			} else {
-				w.WriteHeader(test.responseCode)
-				fmt.Fprintln(w, test.response)
+				w.WriteHeader(test.ResponseCode)
+				fmt.Fprintln(w, test.Response)
 			}
 			// Check that we are using the privileged token
 			// This line here is why we can't use the generic CreateExternalServer.
@@ -150,7 +140,12 @@ func TestPrivilegedProxy(t *testing.T) {
 		// Create a copy and modify the env vars to point the token bearing server to our UAA server.
 		CopyOfCompleteEnvVars := MockCompleteEnvVars
 		CopyOfCompleteEnvVars.UAAURL = testUAAServer.URL
-		ExecuteExternalServerCall(t, test.SessionData, testServer, test.requestPath, test.requestMethod, test.expectedResponse, test.expectedCode, test.TestName, CopyOfCompleteEnvVars, true)
+		// Construct full url for the proxy.
+		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
+		c := &controllers.SecureContext{Context: &controllers.Context{}}
+		response, request, _ := PrepareExternalServerCall(t, test.SessionData, c, CopyOfCompleteEnvVars, testServer, fullURL, test.RequestMethod)
+		c.PrivilegedProxy(response, request, fullURL)
+		VerifyExternalCallResponse(t, response, &test)
 
 		testUAAServer.Close()
 		testServer.Close()

@@ -66,7 +66,12 @@ func (c *UAAContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
 //	}
 func (c *UAAContext) QueryUser(rw web.ResponseWriter, req *web.Request) {
 	// Read JSON body of filters
-	body, _ := ioutil.ReadAll(req.Body)
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(rw, "{\"status\": \"error\", \"message\": \"unable to read body\"}")
+		return
+	}
 	// TODO check error.
 	var filters map[string]string
 	json.Unmarshal(body, &filters)

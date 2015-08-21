@@ -6,14 +6,14 @@ import (
 	"testing"
 )
 
-var authStatusTests = []basicSecureTest{
+var authStatusTests = []BasicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Authorized Status Session",
 			EnvVars:     MockCompleteEnvVars,
 			SessionData: ValidTokenData,
 		},
-		expectedResponse: "{\"status\": \"authorized\"}",
+		ExpectedResponse: "{\"status\": \"authorized\"}",
 	},
 }
 
@@ -24,20 +24,20 @@ func TestAuthStatus(t *testing.T) {
 
 		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		router.ServeHTTP(response, request)
-		if response.Body.String() != test.expectedResponse {
-			t.Errorf("Expected %s. Found %s\n", test.expectedResponse, response.Body.String())
+		if response.Body.String() != test.ExpectedResponse {
+			t.Errorf("Expected %s. Found %s\n", test.ExpectedResponse, response.Body.String())
 		}
 	}
 }
 
-var profileTests = []basicSecureTest{
+var profileTests = []BasicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Authorized Profile",
 			EnvVars:     MockCompleteEnvVars,
 			SessionData: ValidTokenData,
 		},
-		expectedResponse: "/v2/loginurl/profile",
+		ExpectedResponse: "/v2/loginurl/profile",
 	},
 }
 
@@ -48,20 +48,20 @@ func TestProfile(t *testing.T) {
 
 		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		router.ServeHTTP(response, request)
-		if response.Header().Get("location") != test.expectedResponse {
+		if response.Header().Get("location") != test.ExpectedResponse {
 			t.Errorf("Profile route does not redirect to loginurl profile page")
 		}
 	}
 }
 
-var logoutTests = []basicSecureTest{
+var logoutTests = []BasicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Authorized Profile To Logout",
 			EnvVars:     MockCompleteEnvVars,
 			SessionData: ValidTokenData,
 		},
-		expectedResponse: "/v2/loginurl/logout.do",
+		ExpectedResponse: "/v2/loginurl/logout.do",
 	},
 }
 
@@ -72,7 +72,7 @@ func TestLogout(t *testing.T) {
 
 		router, store := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		router.ServeHTTP(response, request)
-		if response.Header().Get("location") != test.expectedResponse {
+		if response.Header().Get("location") != test.ExpectedResponse {
 			t.Errorf("Logout route does not redirect to logout page")
 		}
 		if store.Session.Options.MaxAge != -1 {
