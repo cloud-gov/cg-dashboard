@@ -105,6 +105,21 @@ type BasicConsoleUnitTest struct {
 	SessionData map[string]interface{}
 }
 
+type BasicSecureTest struct {
+	BasicConsoleUnitTest
+	ExpectedCode     int
+	ExpectedResponse string
+}
+
+type BasicProxyTest struct {
+	BasicSecureTest
+	RequestMethod string
+	RequestPath   string
+	ExpectedPath  string
+	Response      string
+	ResponseCode  int
+}
+
 // MockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
 var MockCompleteEnvVars = helpers.EnvVars{
 	ClientID:     "ID",
@@ -117,18 +132,18 @@ var MockCompleteEnvVars = helpers.EnvVars{
 }
 
 // CreateExternalServer creates a test server that should reply with the given parameters assuming that the incoming request matches what we want.
-func CreateExternalServer(t *testing.T, specifiedPath string, specifiedMethod string, specifiedCode int, testResponse string, sessionData map[string]interface{}) *httptest.Server {
+func CreateExternalServer(t *testing.T, test *BasicProxyTest) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != specifiedPath {
-			t.Errorf("Server expected path %s but instead received path %s\n", specifiedPath, r.URL.Path)
-		} else if r.Method != specifiedMethod {
-			t.Errorf("Server expected method %s but instead received method %s\n", specifiedMethod, r.Method)
+		if r.URL.Path != test.ExpectedPath {
+			t.Errorf("Server expected path %s but instead received path %s\n", test.ExpectedPath, r.URL.Path)
+		} else if r.Method != test.RequestMethod {
+			t.Errorf("Server expected method %s but instead received method %s\n", test.RequestMethod, r.Method)
 		} else {
-			w.WriteHeader(specifiedCode)
-			fmt.Fprintln(w, testResponse)
+			w.WriteHeader(test.ResponseCode)
+			fmt.Fprintln(w, test.Response)
 		}
 		headerAuth := r.Header.Get("Authorization")
-		oauthToken, ok := sessionData["token"].(oauth2.Token)
+		oauthToken, ok := test.SessionData["token"].(oauth2.Token)
 		if ok {
 			if headerAuth != "Bearer "+oauthToken.AccessToken {
 				t.Errorf("Unexpected authorization header, (%v) is found. Expected %s", headerAuth, oauthToken.AccessToken)
@@ -139,12 +154,10 @@ func CreateExternalServer(t *testing.T, specifiedPath string, specifiedMethod st
 	}))
 }
 
-// ExecuteExternalServerCall will
-func ExecuteExternalServerCall(t *testing.T, sessionData map[string]interface{}, testServer *httptest.Server, requestPath string, requestMethod string, expectedResponse string, expectedCode int, testName string, envVars helpers.EnvVars, privileged bool) {
-	// Make sure the context has the token.
+// PrepareExternalServerCall
+func PrepareExternalServerCall(t *testing.T, sessionData map[string]interface{}, c *controllers.SecureContext, envVars helpers.EnvVars, testServer *httptest.Server, fullURL string, requestMethod string) (*httptest.ResponseRecorder, *http.Request, *web.Router) {
 	if token, ok := sessionData["token"].(oauth2.Token); ok {
 		// Assign token
-		c := &controllers.SecureContext{Context: new(controllers.Context)}
 		c.Token = token
 
 		// Assign settings to context
@@ -153,25 +166,26 @@ func ExecuteExternalServerCall(t *testing.T, sessionData map[string]interface{},
 		mockSettings.TokenContext = context.TODO()
 		c.Settings = mockSettings
 
-		// Construct full url for the proxy.
-		fullURL := fmt.Sprintf("%s%s", testServer.URL, requestPath)
 		response, request := NewTestRequest(requestMethod, fullURL)
 		request.URL.Scheme = "http"
 		request.URL.Host = request.Host
-		// Call the proxy function.
-		if privileged {
-			c.PrivilegedProxy(response, request, fullURL)
-		} else {
-			c.Proxy(response, request, fullURL)
-		}
-		// Check response.
-		if strings.TrimSpace(response.Body.String()) != expectedResponse {
-			t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", testName, expectedResponse, response.Body.String())
-		}
-		if response.Code != expectedCode {
-			t.Errorf("Test %s did not meet expected code. Expected %d. Found %d.\n", testName, expectedCode, response.Code)
-		}
+		envVars.APIURL = testServer.URL
+		envVars.UAAURL = testServer.URL
+		router, _ := CreateRouterWithMockSession(sessionData, envVars)
+		return response, request, router
 	} else {
 		t.Errorf("Cannot get token data")
+		return nil, nil, nil
+	}
+}
+
+// VerifyExternalCallResponse
+func VerifyExternalCallResponse(t *testing.T, response *httptest.ResponseRecorder, test *BasicProxyTest) {
+	// Check response.
+	if strings.TrimSpace(response.Body.String()) != test.ExpectedResponse {
+		t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.TestName, test.ExpectedResponse, response.Body.String())
+	}
+	if response.Code != test.ExpectedCode {
+		t.Errorf("Test %s did not meet expected code. Expected %d. Found %d.\n", test.TestName, test.ExpectedCode, response.Code)
 	}
 }
