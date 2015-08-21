@@ -20,7 +20,7 @@ var authStatusTests = []BasicSecureTest{
 func TestAuthStatus(t *testing.T) {
 	for _, test := range authStatusTests {
 		// Create request
-		response, request := NewTestRequest("GET", "/v2/authstatus")
+		response, request := NewTestRequest("GET", "/v2/authstatus", nil)
 
 		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		router.ServeHTTP(response, request)
@@ -44,7 +44,7 @@ var profileTests = []BasicSecureTest{
 func TestProfile(t *testing.T) {
 	for _, test := range profileTests {
 		// Create request
-		response, request := NewTestRequest("GET", "/v2/profile")
+		response, request := NewTestRequest("GET", "/v2/profile", nil)
 
 		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		router.ServeHTTP(response, request)
@@ -68,7 +68,7 @@ var logoutTests = []BasicSecureTest{
 func TestLogout(t *testing.T) {
 	for _, test := range logoutTests {
 		// Create request
-		response, request := NewTestRequest("GET", "/v2/logout")
+		response, request := NewTestRequest("GET", "/v2/logout", nil)
 
 		router, store := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		router.ServeHTTP(response, request)

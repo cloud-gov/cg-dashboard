@@ -9,7 +9,7 @@ import (
 )
 
 func TestPing(t *testing.T) {
-	response, request := NewTestRequest("GET", "/ping")
+	response, request := NewTestRequest("GET", "/ping", nil)
 	router := controllers.InitRouter(nil)
 	router.ServeHTTP(response, request)
 	if response.Body.String() != "{\"status\": \"alive\"}" {
@@ -34,7 +34,7 @@ var loginHandshakeTests = []BasicConsoleUnitTest{
 }
 
 func TestLoginHandshake(t *testing.T) {
-	response, request := NewTestRequest("GET", "/handshake")
+	response, request := NewTestRequest("GET", "/handshake", nil)
 	for _, test := range loginHandshakeTests {
 		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		router.ServeHTTP(response, request)
