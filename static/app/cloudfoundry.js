@@ -42,19 +42,21 @@
                 });
         };
 
-        // Delete Route
+        // Create a Route
         this.createRoute = function(newRoute, appGuid) {
             // Create the route
-            return $http.post('/v2/routes', newRoute)
+            return $http.post('/v2/routes?async=true&inline-relations-depth=1', newRoute)
                 .then(function(response) {
                     // Map the route to the app
-                    return $http.put(response.data.metadata.url + '/apps/' + appGuid)
+                    return $http.put('/v2/apps/' + appGuid + '/routes/' + response.data.metadata.guid)
                         .then(function(response) {
-                            return response.data;
+                            return response;
                         });
+                })
+                .catch(function (response) {
+                    return response;
                 });
         };
-
 
         // Get organizations
         this.getOrgs = function() {
