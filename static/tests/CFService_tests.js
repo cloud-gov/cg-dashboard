@@ -326,7 +326,7 @@ describe('CloudFoundry Service Tests', function() {
     });
 
     describe('toggleSpaceUserPermissions', function() {
-        it('should covert data to a request to delete or put a user in a space', function() {
+        it('should convert data to a request to delete or put a user in a space', function() {
             var user = {
                 metadata: {
                     guid: 'userguid'
