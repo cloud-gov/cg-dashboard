@@ -43,7 +43,7 @@ func TestOAuth(t *testing.T) {
 		mockSettings.Sessions = store
 
 		// Setup a test route on the API router (which is guarded by OAuth)
-		response, request := NewTestRequest("GET", "/v2/test")
+		response, request := NewTestRequest("GET", "/v2/test", nil)
 		router := controllers.InitRouter(&mockSettings)
 		secureRouter := router.Subrouter(controllers.SecureContext{}, "/")
 		apiRouter := secureRouter.Subrouter(controllers.APIContext{}, "/v2")
@@ -66,6 +66,7 @@ var proxyTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Ok Proxy call",
 				SessionData: ValidTokenData,
+				EnvVars:     MockCompleteEnvVars,
 			},
 			ExpectedResponse: "test",
 			ExpectedCode:     http.StatusOK,
@@ -86,7 +87,7 @@ func TestProxy(t *testing.T) {
 		// Construct full url for the proxy.
 		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
 		c := &controllers.SecureContext{Context: new(controllers.Context)}
-		response, request, _ := PrepareExternalServerCall(t, test.SessionData, c, MockCompleteEnvVars, testServer, fullURL, test.RequestMethod)
+		response, request, _ := PrepareExternalServerCall(t, c, testServer, fullURL, test)
 		c.Proxy(response, request, fullURL)
 		VerifyExternalCallResponse(t, response, &test)
 		testServer.Close()
@@ -137,13 +138,12 @@ func TestPrivilegedProxy(t *testing.T) {
 			// Write the privileged token so that it can be used.
 			w.Write([]byte("access_token=" + privilegedToken + "&token_type=bearer"))
 		}))
-		// Create a copy and modify the env vars to point the token bearing server to our UAA server.
-		CopyOfCompleteEnvVars := MockCompleteEnvVars
-		CopyOfCompleteEnvVars.UAAURL = testUAAServer.URL
+		// We can only get this after the server has started.
+		test.EnvVars.UAAURL = testUAAServer.URL
 		// Construct full url for the proxy.
 		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
 		c := &controllers.SecureContext{Context: &controllers.Context{}}
-		response, request, _ := PrepareExternalServerCall(t, test.SessionData, c, CopyOfCompleteEnvVars, testServer, fullURL, test.RequestMethod)
+		response, request, _ := PrepareExternalServerCall(t, c, testServer, fullURL, test)
 		c.PrivilegedProxy(response, request, fullURL)
 		VerifyExternalCallResponse(t, response, &test)
 

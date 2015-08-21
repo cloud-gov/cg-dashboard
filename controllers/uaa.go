@@ -65,6 +65,11 @@ func (c *UAAContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
 //		filterN, valueN
 //	}
 func (c *UAAContext) QueryUser(rw web.ResponseWriter, req *web.Request) {
+	if req.Body == nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(rw, "{\"status\": \"error\", \"message\": \"empty request body\"}")
+		return
+	}
 	// Read JSON body of filters
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
@@ -72,6 +77,7 @@ func (c *UAAContext) QueryUser(rw web.ResponseWriter, req *web.Request) {
 		fmt.Fprintf(rw, "{\"status\": \"error\", \"message\": \"unable to read body\"}")
 		return
 	}
+	defer req.Body.Close()
 	// TODO check error.
 	var filters map[string]string
 	json.Unmarshal(body, &filters)
