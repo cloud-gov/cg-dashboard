@@ -26,6 +26,7 @@ func GetValidToken(req *http.Request, settings *Settings) *oauth2.Token {
 		// https://godoc.org/golang.org/x/oauth2#Config.Client
 		reqURL := fmt.Sprintf("%s%s", settings.ConsoleAPI, "/v2/info")
 		request, _ := http.NewRequest("GET", reqURL, nil)
+		request.Close = true
 		client := settings.OAuthConfig.Client(settings.TokenContext, &token)
 		if _, err := client.Do(request); err != nil {
 			return nil

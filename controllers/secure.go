@@ -37,6 +37,7 @@ func (c *SecureContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.
 func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url string) {
 	// Make the request.
 	request, _ := http.NewRequest(req.Method, url, req.Body)
+	request.Close = true
 	// Acquire the http client and the refresh token if needed
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
 	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
@@ -44,12 +45,24 @@ func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url str
 	// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
 	client.Timeout = 3 * time.Second
 	// Send the request.
-	res, _ := client.Do(request)
+	res, err := client.Do(request)
+	if res != nil {
+		defer res.Body.Close()
+	}
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(rw, "unknown error. try again")
+		return
+	}
 	// Should return the same status.
 	rw.WriteHeader(res.StatusCode)
 	// Read the body.
-	body, _ := ioutil.ReadAll(res.Body)
-	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(rw, "unknown error. try again")
+		return
+	}
 	// Write the body into response that is going back to the frontend.
 	fmt.Fprintf(rw, string(body))
 }
