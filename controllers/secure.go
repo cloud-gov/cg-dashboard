@@ -7,6 +7,7 @@ import (
 	"golang.org/x/oauth2"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 // SecureContext stores the session info and access token per user.
@@ -39,6 +40,9 @@ func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url str
 	// Acquire the http client and the refresh token if needed
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
 	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
+	// Prevents lingering goroutines from living forever.
+	// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
+	client.Timeout = 3 * time.Second
 	// Send the request.
 	res, _ := client.Do(request)
 	// Should return the same status.
