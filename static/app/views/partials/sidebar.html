@@ -24,7 +24,7 @@
                 <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/marketplace">
                     Marketplace
                 </a>
-                <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/manage-org">
+                <a ng-show="MenuData.data.orgManager" ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/manage-org">
                     Manage Org
                 </a>
             </li>

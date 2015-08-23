@@ -18,6 +18,12 @@
 			return $http.get('/uaa/userinfo')
 				.then(parseUserInfoGivenName, handleNoGivenName);
 		};
+		this.getUserInfoGuid = function() {
+			return $http.get('/uaa/userinfo')
+				.then(function(response) {
+					return response.data.user_id;
+				});
+		};
 		this.getUserGuidFromUserName = function(user) {
 			return $http.post('/uaa/Users', {"userName": user.userName})
 				.then(function(response) {
