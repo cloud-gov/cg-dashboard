@@ -6,7 +6,7 @@
     // Function for loadng the active org at each page
     // findActiveOrg will attempt to get the active org from cache before
     // downloading new data.
-    function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope) {
+    function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
         var renderOrg = function(orgData) {
 
             // Load org memory usage and quota usage
@@ -32,6 +32,13 @@
             $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace)      
         };
 
+        $uaa.getUserInfoGuid()
+           .then(function(userguid){
+               $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], userguid, 'managers', 'manager_guid')
+                   .then(function(response){
+                        MenuData.data.orgManager = (response[0]) && (response[0].metadata.guid == userguid);
+                   });
+           });
     };
 
     app.controller('HomeCtrl', function($scope, $cloudfoundry) {
@@ -59,12 +66,12 @@
         $scope.MenuData = MenuData;
     });
 
-    app.controller('OrgCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('OrgCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
     });
 
     app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $uaa, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
         var renderOrgUsers = function(users) {
             $scope.org_users = users;
         };
@@ -91,8 +98,8 @@
 
     });
 
-    app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
 	$scope.initOrgManagerState = false;
         var renderOrgUserOrgManagerState = function(response) {
 	    $scope.org_manager = response;
@@ -180,23 +187,23 @@
 
     });
 
-    app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
         $scope.activeTab = 'apps';
     });
 
-    app.controller('SpaceServicesCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
+    app.controller('SpaceServicesCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
       var renderServices = function(services) {
           $scope.services = services;
       };
-      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
       $cloudfoundry.getSpaceServices($routeParams['spaceguid'])
           .then(renderServices);
       $scope.activeTab = "services"
     });
 
-    app.controller('SpaceUserCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
-      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('SpaceUserCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
+      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
       var renderUsers = function(spaceUsers) {
         $scope.spaceUsers = spaceUsers;
         $cloudfoundry.getOrgUsers($routeParams['orgguid'])
@@ -250,16 +257,16 @@
       $scope.activeTab = "users"
     });
 
-    app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
         // Get all the services associated with an org
         $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
             $scope.services = services;
         });
     });
 
-    app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
         // Send service plans to the view
         var renderServicePlans = function(servicePlans) {
             $scope.plans = servicePlans;
@@ -300,8 +307,8 @@
         $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
     });
 
-    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
 
         var getServiceCredentials = function(service) {
             $cloudfoundry.getServiceCredentials(service)
