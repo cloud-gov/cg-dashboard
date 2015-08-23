@@ -109,4 +109,5 @@ var MockCompleteEnvVars = helpers.EnvVars{
 	LoginURL:     "loginurl",
 	UAAURL:       "uaaurl",
 	APIURL:       "apiurl",
+	PProfEnabled: "true",
 }
