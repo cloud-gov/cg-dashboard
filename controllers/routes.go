@@ -37,10 +37,22 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	apiRouter.Post("/:*", (*APIContext).APIProxy)
 	apiRouter.Delete("/:*", (*APIContext).APIProxy)
 
-	// Setup the /api subrouter.
+	// Setup the /uaa subrouter.
 	uaaRouter := secureRouter.Subrouter(UAAContext{}, "/uaa")
 	uaaRouter.Middleware((*UAAContext).OAuth)
 	uaaRouter.Get("/userinfo", (*UAAContext).UserInfo)
+
+	if settings != nil && settings.PProfEnabled {
+		// Setup the /pprof subrouter.
+		pprofRouter := secureRouter.Subrouter(PProfContext{}, "/debug/pprof")
+		pprofRouter.Get("/", (*PProfContext).Index)
+		pprofRouter.Get("/heap", (*PProfContext).Heap)
+		pprofRouter.Get("/goroutine", (*PProfContext).Goroutine)
+		pprofRouter.Get("/threadcreate", (*PProfContext).Threadcreate)
+		pprofRouter.Get("/block", (*PProfContext).Threadcreate)
+		pprofRouter.Get("/profile", (*PProfContext).Profile)
+		pprofRouter.Get("/symbol", (*PProfContext).Symbol)
+	}
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.

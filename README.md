@@ -32,6 +32,7 @@ If you are testing locally, export these variables. If you are deploying to clou
 - `CONSOLE_LOGIN_URL`: The base URL of the auth service. i.e. `https://login.domain.com`
 - `CONSOLE_UAA_URL`: The URL of the UAA service. i.e. `https://uaa.domain.com`
 - `CONSOLE_API`: The URL of the API service. i.e. `http://api.domain.com`
+- `PPROF_ENABLED`: An optional variable. If set to `true` or `1`, will turn on `/debug/pprof` endpoints as seen [here](https://golang.org/pkg/net/http/pprof/)
 
 ## Front end
 Install front end dependencies

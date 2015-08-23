@@ -23,6 +23,8 @@ type Settings struct {
 	TokenContext context.Context
 	// UAA API
 	UaaURL string
+	// A flag to indicate whether profiling should be included (debug purposes).
+	PProfEnabled bool
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -50,6 +52,11 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	s.LoginURL = envVars.LoginURL
 	s.TokenContext = context.TODO()
 	s.UaaURL = envVars.UAAURL
+	if len(envVars.APIURL) == 0 {
+		s.PProfEnabled = false
+	} else {
+		s.PProfEnabled = ((envVars.PProfEnabled == "true") || (envVars.PProfEnabled == "1"))
+	}
 
 	// Setup OAuth2 Client Service.
 	s.OAuthConfig = &oauth2.Config{
