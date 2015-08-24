@@ -42,13 +42,13 @@ var getOrgUserCategory = function(orgGuid, userGuid, category, queryString) {
     return {
         then: function(callback) {
             return callback([{
-                    metadata: {
-                        guid: 'guiduser1'
-                    },
-                    entity: {
-                        username: 'user1',
-                        admin: false,
-                    }
+                metadata: {
+                    guid: 'guiduser1'
+                },
+                entity: {
+                    username: 'user1',
+                    admin: false,
+                }
             }])
         }
     }
@@ -69,8 +69,7 @@ var getUserInfoGuid = function() {
 var getUserGuidFromUserName = function(user) {
     user.id = 'guid';
     return {
-        then: function(callback){
-        }
+        then: function(callback) {}
     }
 };
 
@@ -292,21 +291,18 @@ var getQuotaUsage = function(org) {
     //org.quota = 'data';
 };
 
-var getOrgUsersGeneric = function(guid) {
-    return {
-        then: function(callback) {
-            return callback(
-                [{
-                    metadata: {
-                        guid: 'guiduser1'
-                    },
-                    entity: {
-                        username: 'user1',
-                        admin: false,
-                    }
-                }]
-            )
+var getOrgUsersGeneric = function(guid, org_users, load) {
+    org_users = [{
+        metadata: {
+            guid: 'guiduser1'
+        },
+        entity: {
+            username: 'user1',
+            admin: false,
         }
+    }]
+    load = {
+        status: 'complete'
     }
 }
 
@@ -474,19 +470,8 @@ describe('OrgManagementCtrl', function() {
         });
     }));
 
-    it('should return the list of current org users', function() {
-        expect(scope.org_users).toEqual([{
-                metadata:
-                {
-                    guid: 'guiduser1',
-                },
-                entity:
-                {
-                    username: 'user1',
-                    admin: false,
-                },
-
-        }]);
+    it('should call the get orgUsers method with correct arguments', function() {
+        expect(cloudfoundry.getOrgUsers).toHaveBeenCalledWith('org1guid', [  ], { status : false });
     });
 
     it('should render the current Org Users tab via the activeTab var on load', function() {
@@ -561,7 +546,7 @@ describe('OrgUserManagementCtrl', function() {
         expect(scope.billingManagerStatus).toEqual(true);
         expect(scope.billingManagerStateChanging).toEqual(false);
 
-	scope.$digest();
+        scope.$digest();
         expect(scope.initOrgAuditorState).toEqual(true);
         expect(scope.orgAuditorStateChanging).toEqual(undefined);
         expect(scope.orgAuditorStatus).toEqual(false);
