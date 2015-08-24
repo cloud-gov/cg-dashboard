@@ -44,11 +44,14 @@
               };
               var renderName = function(name) {
                   $scope.givenName = name;
+                  // Load user's permissions
+                  $uaa.getUsersPermissions('managed_organizations')
+                  // Only allow navigation when names are loaded
+                  $scope.authorized = true;
               };
               // Get the auth status
               $cloudfoundry.getAuthStatus().then(function (status) {
                 if (status === "authorized") {
-                  $scope.authorized = true;
                   // Load the org data
                   $cloudfoundry.getOrgsData(renderOrgs);
                   // Load username

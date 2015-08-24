@@ -9,18 +9,23 @@
     function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
         var renderOrg = function(orgData) {
 
-            // Load org memory usage and quota usage
-            if (!orgData.quota) {
-                $cloudfoundry.getQuotaUsage(orgData);
-            };
-
-            if (orgData['code'] == 30003) {
-                MenuData.data.currentOrg = "404";
-            } else {
-                MenuData.data.currentOrg = orgData;
-                $scope.activeOrg = orgData;
-                $scope.spaces = $scope.activeOrg.spaces;
-            }
+          // Displace org data
+          if (orgData['code'] == 30003) {
+              MenuData.data.currentOrg = "404";
+          } else {
+              MenuData.data.currentOrg = orgData;
+              $scope.activeOrg = orgData;
+              $scope.spaces = $scope.activeOrg.spaces;
+          };
+          // Load org memory usage and quota usage if it isn't loaded
+          if (!orgData.quota) {
+              $cloudfoundry.getQuotaUsage(orgData);
+          };
+          // Find user permissions for orgs
+          $uaa.findUserPermissions($routeParams['orgguid'], 'managed_organizations')
+            .then(function (managerStatus) {
+                MenuData.data.orgManager = managerStatus;
+              });
         };
         var renderSpace = function(spaceData) {
             MenuData.data.currentSpace = spaceData;
@@ -29,16 +34,13 @@
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
         // Render a space if there is a spaceguid
         if ($routeParams.spaceguid) {
-            $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace)
+            $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace);
+            // Find user permissions for a space
+            $uaa.findUserPermissions($routeParams['spaceguid'], 'managed_spaces')
+              .then(function (managerStatus) {
+                  $scope.spaceManager = managerStatus;
+                });
         };
-
-        $uaa.getUserInfoGuid()
-            .then(function(userguid) {
-                $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], userguid, 'managers', 'manager_guid')
-                    .then(function(response) {
-                        MenuData.data.orgManager = (response[0]) && (response[0].metadata.guid == userguid);
-                    });
-            });
     };
 
     app.controller('MainCtrl', function($scope, $cloudfoundry, MenuData) {
@@ -171,11 +173,12 @@
             // This also enables the button after initial loading.
             $scope.initOrgAuditorState = true;
         };
-        $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', 'manager_guid').then(renderOrgUserOrgManagerState);
-
-        $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', 'billing_manager_guid').then(renderOrgUserBillingManagerState);
-
-        $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', 'auditor_guid').then(renderOrgUserOrgAuditorState);
+        $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', 'manager_guid')
+            .then(renderOrgUserOrgManagerState);
+        $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', 'billing_manager_guid')
+            .then(renderOrgUserBillingManagerState);
+        $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', 'auditor_guid')
+            .then(renderOrgUserOrgAuditorState);
 
 
 
@@ -249,7 +252,7 @@
         };
         $cloudfoundry.getSpaceUsers($routeParams['spaceguid'])
             .then(renderUsers);
-        $scope.activeTab = "users"
+        $scope.activeTab = "users";
     });
 
     app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
