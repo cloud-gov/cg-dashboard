@@ -87,29 +87,3 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	// Write the body into response that is going back to the frontend.
 	fmt.Fprintf(rw, string(body))
 }
-
-// PrivilegedProxy is an internal function that will construct the client using
-// the credentials of the web app itself (not of the user) with the token in the headers and
-// then sends a request.
-func (c *SecureContext) PrivilegedProxy(rw http.ResponseWriter, req *http.Request, url string) {
-	// Acquire the http client and the refresh token if needed
-	// https://godoc.org/golang.org/x/oauth2#Config.Client
-	client := c.Settings.HighPrivilegedOauthConfig.Client(c.Settings.TokenContext)
-	c.submitRequest(rw, req, url, client)
-
-}
-
-// submitRequest uses a given client and submits the specified request.
-func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request, url string, client *http.Client) {
-	// Make the request.
-	request, _ := http.NewRequest(req.Method, url, req.Body)
-	// Send the request.
-	res, _ := client.Do(request)
-	// Should return the same status.
-	rw.WriteHeader(res.StatusCode)
-	// Read the body.
-	body, _ := ioutil.ReadAll(res.Body)
-	defer res.Body.Close()
-	// Write the body into response that is going back to the frontend.
-	fmt.Fprintf(rw, string(body))
-}
