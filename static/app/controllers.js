@@ -75,18 +75,27 @@
         $scope.addUserToOrg = function(user) {
             user.id = undefined;
             return $uaa.getUserGuidFromUserName(user)
-                   .then(function(user){$cloudfoundry.setOrgUserCategory($routeParams['orgguid'], user.id, 'users', true)})
-                   .catch(function(error){
+                   .then(function(user){
+                       $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], user.id, 'users', true)
+                           .then(function(){
+                               $scope.showTab('current_org_users');
+		           });
+                   }).catch(function(error){
                        console.log('Unable to add the user');
                    });
         };
         $scope.removeUserFromOrg = function(userGuid) {
             // TODO: remove all roles before removing from org so that if the user is re-added, the user will have no roles.
-            return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], userGuid, 'users', false);
+            return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], userGuid, 'users', false)
+                   .then(function(){$scope.showTab('current_org_users')})
         };
         // Show a specific tab
         $scope.showTab = function(tab) {
             $scope.activeTab = tab;
+            if (tab == 'current_org_users') {
+                $scope.org_users = [];
+                $cloudfoundry.getOrgUsers($routeParams['orgguid'], $scope.org_users, $scope.loadComplete);
+            }
         };
         // Make the current org users tab the default active tab
         $scope.activeTab = 'current_org_users';
