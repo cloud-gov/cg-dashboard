@@ -90,16 +90,16 @@ describe('CloudFoundry Service Tests', function() {
                 domain_guid: 'domainguid',
                 host: 'host'
             };
-            httpBackend.whenPOST('/v2/routes', newRoute).respond({
+            httpBackend.whenPOST('/v2/routes?async=true&inline-relations-depth=1', newRoute).respond({
                 metadata: {
-                    url: '/v2/routes/routeguid'
+                    guid: 'routeguid'
                 }
             })
-            httpBackend.whenPUT('/v2/routes/routeguid/apps/appguid').respond({
+            httpBackend.whenPUT('/v2/apps/appguid/routes/routeguid').respond({
                 status: 'put'
             });
             $cloudfoundry.createRoute(newRoute, 'appguid').then(function(response) {
-                expect(response).toEqual({
+                expect(response.data).toEqual({
                     status: 'put'
                 });
             });
@@ -111,11 +111,11 @@ describe('CloudFoundry Service Tests', function() {
                 domain_guid: 'domainguid',
                 host: 'host'
             };
-            httpBackend.whenPOST('/v2/routes', newRoute).respond(400, {
+            httpBackend.whenPOST('/v2/routes?async=true&inline-relations-depth=1', newRoute).respond(400, {
                 status: 'failed'
             });
             $cloudfoundry.createRoute(newRoute, 'appguid').then(function(response) {
-                expect(response).toEqual({
+                expect(response.data).toEqual({
                     status: 'failed'
                 });
             });
@@ -127,16 +127,16 @@ describe('CloudFoundry Service Tests', function() {
                 domain_guid: 'domainguid',
                 host: 'host'
             };
-            httpBackend.whenPOST('/v2/routes', newRoute).respond({
+            httpBackend.whenPOST('/v2/routes?async=true&inline-relations-depth=1', newRoute).respond({
                 metadata: {
-                    url: '/v2/routes/routeguid'
+                    guid: 'routeguid'
                 }
             })
-            httpBackend.whenPUT('/v2/routes/routeguid/apps/appguid').respond(400, {
+            httpBackend.whenPUT('/v2/apps/appguid/routes/routeguid').respond(400, {
                 status: 'put_failed'
             });
             $cloudfoundry.createRoute(newRoute, 'appguid').then(function(response) {
-                expect(response).toEqual({
+                expect(response.data).toEqual({
                     status: 'put_failed'
                 });
             });
