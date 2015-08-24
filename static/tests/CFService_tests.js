@@ -263,7 +263,7 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
-    describe('getOrgUserUsers', function() {
+    describe('getOrgUsers', function() {
 
         it('should return the list of current org users', function() {
 
@@ -366,7 +366,7 @@ describe('CloudFoundry Service Tests', function() {
                     name: 'app2'
                 }]
             };
-            httpBackend.whenGET('/v2/spaces/spaceguid/summary').respond(spaceSummary);            
+            httpBackend.whenGET('/v2/spaces/spaceguid/summary').respond(spaceSummary);
             var callbackSpy2 = function(data) {
                 expect(data.name).toEqual('spacename');
                 expect(data.apps.length).toEqual(2);
@@ -374,7 +374,7 @@ describe('CloudFoundry Service Tests', function() {
             var callbackSpy = function(data) {
                 expect(data.name).toEqual('spacename');
                 expect(data.apps.length).toEqual(2);
-                // Now that data is stored, we can find it in the store, 
+                // Now that data is stored, we can find it in the store,
                 // it will not require another mock request
                 $cloudfoundry.findActiveSpace('spaceguid', callbackSpy2)
             };

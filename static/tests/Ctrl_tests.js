@@ -451,6 +451,9 @@ describe('OrgManagementCtrl', function() {
             getQuotaUsage: getQuotaUsage,
         }
 
+        // Spyon
+        spyOn(cloudfoundry, 'getOrgUsers').and.callThrough();
+
         // Mock UAA service
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
