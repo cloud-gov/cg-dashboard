@@ -264,19 +264,23 @@ describe('CloudFoundry Service Tests', function() {
     });
 
     describe('getOrgUsers', function() {
-
-        it('should return the list of current org users', function() {
-
+        it('should return the list of current org users even if they are on multiple pages', function() {
             var orgGuid = 'orgguid';
-            httpBackend.whenGET('/v2/organizations/'+orgGuid+'/users').respond({
-                resources: {
-                    action: 'get'
-                }
+            var org_users = [];
+            var loadComplete = {
+                status: false
+            };
+            httpBackend.whenGET('/v2/organizations/' + orgGuid + '/users').respond({
+                resources: [{
+                    name: 'user1'
+                }]
             });
-            $cloudfoundry.getOrgUsers(orgGuid).then(function(data) {
-                expect(data.action).toEqual('get');
-            });
+            expect(loadComplete.status).toBe(false);
+            expect(org_users.length).toBe(0);
+            $cloudfoundry.getOrgUsers(orgGuid, org_users, loadComplete)
             httpBackend.flush();
+            expect(loadComplete.status).toBe(true);
+            expect(org_users.length).toBe(1);
         });
     });
 
@@ -291,7 +295,7 @@ describe('CloudFoundry Service Tests', function() {
             var permissions = 'auditors';
             var orgGuid = 'orgguid';
             var queryString = 'auditor_guid';
-            httpBackend.whenGET('/v2/organizations/'+orgGuid+'/'+permissions+'?'+queryString+'=' +user.metadata.guid).respond({
+            httpBackend.whenGET('/v2/organizations/' + orgGuid + '/' + permissions + '?' + queryString + '=' + user.metadata.guid).respond({
                 resources: {
                     action: 'get'
                 }
@@ -312,12 +316,12 @@ describe('CloudFoundry Service Tests', function() {
             };
             var permissions = 'auditors';
             var orgGuid = 'orgguid';
-            httpBackend.whenPUT('/v2/organizations/'+orgGuid+'/'+permissions+'/userguid').respond({
+            httpBackend.whenPUT('/v2/organizations/' + orgGuid + '/' + permissions + '/userguid').respond({
                 resources: {
                     action: 'put'
                 }
             })
-            httpBackend.whenDELETE('/v2/organizations/'+orgGuid+'/'+permissions+'/userguid').respond({
+            httpBackend.whenDELETE('/v2/organizations/' + orgGuid + '/' + permissions + '/userguid').respond({
                 resources: {
                     action: 'delete'
                 }

@@ -4,7 +4,7 @@
 
         // Declare variables for passing data via this service
         var orgs, activeOrg, activeSpace = {guid: undefined};
-        
+
         // Paging function for endpoints that require more than one page
         var httpPager = function(url, resources, loadComplete) {
             // Prevent JS scope bug
@@ -13,7 +13,7 @@
             var get = function(nextUrl) {
                 return $http.get(nextUrl).then(this.receive).catch(this.returnError);
             };
-            // Receive response and add data 
+            // Receive response and add data
             self.receive = function(response) {
                 resources.push.apply(resources, response.data.resources);
                 if (response.data.next_url) {
@@ -21,7 +21,7 @@
                 }
                 self.setLoadComplete();
             };
-            // Return error if needed 
+            // Return error if needed
             self.returnError = function(response) {
                 return response;
             };
@@ -108,7 +108,7 @@
 
         // Get quota usage data
         this.getQuotaUsage = function(org) {
-            
+
             var quotadata = {};
             // Get a quota's memory limit
             var getMemoryLimit = function(response) {
