@@ -5,6 +5,7 @@ import (
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
+	"encoding/gob"
 	"errors"
 )
 
@@ -70,8 +71,13 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	}
 
 	// Initialize Sessions.
-	store := sessions.NewCookieStore([]byte("some key"))
-	s.Sessions = store
+	// Temp FIXME that fixes the problem of using a cookie store which would cause the secure encoding
+	// of the oauth 2.0 token struct in production to exceed the max size of 4096 bytes.
+	filesystemStore := sessions.NewFilesystemStore("", []byte("some key"))
+	filesystemStore.MaxLength(4096 * 4)
+	s.Sessions = filesystemStore
+	// Want to save a struct into the session. Have to register it.
+	gob.Register(oauth2.Token{})
 
 	return nil
 }

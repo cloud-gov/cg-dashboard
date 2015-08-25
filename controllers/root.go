@@ -51,7 +51,7 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 
 	// Ignore error, Get will return a session, existing or new.
 	session, _ := c.Settings.Sessions.Get(req.Request, "session")
-	session.Values["token"] = token.AccessToken
+	session.Values["token"] = *token
 
 	// Save session.
 	err = session.Save(req.Request, rw)

@@ -11,8 +11,8 @@ import (
 
 	"fmt"
 	"net/http"
-	"time"
 	"os"
+	"time"
 )
 
 var defaultPort = "9999"
@@ -53,5 +53,5 @@ func startApp(port string) {
 	}
 
 	// TODO add better timeout message. By default it will just say "Timeout"
-	http.ListenAndServe(":"+port, http.TimeoutHandler(context.ClearHandler(app), time.Second * 5, ""))
+	http.ListenAndServe(":"+port, http.TimeoutHandler(context.ClearHandler(app), time.Second*5, ""))
 }
