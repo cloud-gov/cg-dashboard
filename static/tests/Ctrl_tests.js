@@ -314,6 +314,10 @@ var getOrgUsersGeneric = function(guid, org_users, load) {
     }
 }
 
+var returnHome = function() {
+  return;
+}
+
 var getUsersGeneric = function(guid) {
     return {
         then: function(callback) {
@@ -342,6 +346,7 @@ describe('MainCtrl', function() {
         cloudfoundry = {
             getOrgsData: getOrgsData,
             setOrgsData: setOrgsData,
+            returnHome: returnHome
         };
         uaa = {
             getUserInfoGivenName: getUserInfoGivenName
@@ -379,7 +384,8 @@ describe('OrgCtrl', function() {
         cloudfoundry = {
             findActiveOrg: findActiveOrg,
             getOrgUserCategory: getOrgUserCategory,
-            getQuotaUsage: getQuotaUsage
+            getQuotaUsage: getQuotaUsage,
+            returnHome: returnHome
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -427,6 +433,7 @@ describe('OrgManagementCtrl', function() {
             getOrgUsers: getOrgUsersGeneric,
             findActiveOrg: findActiveOrg,
             getQuotaUsage: getQuotaUsage,
+            returnHome: returnHome
         }
 
         // Spyon
@@ -437,7 +444,7 @@ describe('OrgManagementCtrl', function() {
             getUserInfoGuid: getUserInfoGuid,
             getUserGuidFromUserName: getUserGuidFromUserName,
             findUserPermissions: findUserPermissions
-            
+
         };
 
         // Load Ctrl and scope
@@ -482,10 +489,11 @@ describe('OrgUserManagementCtrl', function() {
             findActiveOrg: findActiveOrg,
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
+            returnHome: returnHome
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
-            findUserPermissions: findUserPermissions          
+            findUserPermissions: findUserPermissions
         };
 
 
@@ -560,12 +568,13 @@ describe('SpaceCtrl', function() {
             getSpaceServices: getSpaceServices,
             getQuotaUsage: getQuotaUsage,
             getOrgUserCategory: getOrgUserCategory,
-            findActiveSpace: findActiveSpace
+            findActiveSpace: findActiveSpace,
+            returnHome: returnHome
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
-            findUserPermissions: findUserPermissions          
-           
+            findUserPermissions: findUserPermissions
+
         };
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
@@ -619,12 +628,13 @@ describe('SpaceServicesCtrl', function() {
             getQuotaUsage: getQuotaUsage,
             getSpaceServices: getSpaceServices,
             getOrgUserCategory: getOrgUserCategory,
-            findActiveSpace: findActiveSpace
+            findActiveSpace: findActiveSpace,
+            returnHome: returnHome
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
-            findUserPermissions: findUserPermissions          
-            
+            findUserPermissions: findUserPermissions
+
         };
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
@@ -685,6 +695,7 @@ describe('SpaceUserCtrl', function() {
             getOrgUsers: getUsersGeneric,
             findActiveSpace: findActiveSpace,
             getOrgUserCategory: getOrgUserCategory,
+            returnHome: returnHome,
             toggleSpaceUserPermissions: function(user, permission, spaceGuid) {
                 return {
                     then: function(callback) {
@@ -707,7 +718,7 @@ describe('SpaceUserCtrl', function() {
         };
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
-            findUserPermissions: findUserPermissions                      
+            findUserPermissions: findUserPermissions
         };
 
         spyOn(cloudfoundry, 'getSpaceDetails').and.callThrough();
@@ -813,12 +824,12 @@ describe('MarketCtrl', function() {
             getOrgServices: getOrgServices,
             findActiveOrg: findActiveOrg,
             getOrgUserCategory: getOrgUserCategory,
-            getQuotaUsage: getQuotaUsage
-
+            getQuotaUsage: getQuotaUsage,
+            returnHome: returnHome
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
-            findUserPermissions: findUserPermissions                      
+            findUserPermissions: findUserPermissions
         };
         spyOn(cloudfoundry, 'getOrgServices').and.callThrough();
 
@@ -859,12 +870,13 @@ describe('ServiceCtrl', function() {
             findActiveOrg: findActiveOrg,
             createServiceInstance: createServiceInstance,
             getOrgUserCategory: getOrgUserCategory,
-            getQuotaUsage: getQuotaUsage
+            getQuotaUsage: getQuotaUsage,
+            returnHome: returnHome,
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
-            findUserPermissions: findUserPermissions          
-            
+            findUserPermissions: findUserPermissions
+
         };
 
         spyOn(cloudfoundry, 'findActiveOrg').and.callThrough();
@@ -937,12 +949,13 @@ describe('AppCtrl', function() {
             deleteRoute: deleteRoute,
             getQuotaUsage: getQuotaUsage,
             getOrgUserCategory: getOrgUserCategory,
-            findActiveSpace: getSpaceDetails
+            findActiveSpace: getSpaceDetails,
+            returnHome: returnHome,
         };
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
-            findUserPermissions: findUserPermissions          
-            
+            findUserPermissions: findUserPermissions
+
         };
         spyOn(cloudfoundry, 'getAppSummary').and.callThrough();
 

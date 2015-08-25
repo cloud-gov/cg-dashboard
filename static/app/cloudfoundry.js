@@ -34,18 +34,18 @@
             return get(url);
         };
 
+        // Returns the authentication status from promise
+        var returnAuthStatus = function(response) {
+            return response.data.status
+        };
+
         // Redirects back to home page
-        var returnHome = function(response) {
+        this.returnHome = function(response) {
             $location.path('/');
             return {
                 'status': 'unauthorized'
             };
         }
-
-        // Returns the authentication status from promise
-        var returnAuthStatus = function(response) {
-            return response.data.status
-        };
 
         // Get current authentication status from server
         this.getAuthStatus = function() {
@@ -92,7 +92,7 @@
             return $http.get('/v2/organizations')
                 .then(function(response) {
                     return response.data.resources;
-                }, returnHome);
+                });
         };
 
         // Get org details

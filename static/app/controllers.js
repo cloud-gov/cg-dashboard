@@ -7,8 +7,10 @@
     // findActiveOrg will attempt to get the active org from cache before
     // downloading new data.
     function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
+        if (!$scope.authorized) {
+          $cloudfoundry.returnHome()
+        }
         var renderOrg = function(orgData) {
-
           // Displace org data
           if (orgData['code'] == 30003) {
               MenuData.data.currentOrg = "404";

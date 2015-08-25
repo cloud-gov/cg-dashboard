@@ -10,9 +10,6 @@
                 templateUrl: 'app/views/login.html',
                 controller: 'LoginCtrl'
             })
-            .when('/dashboard', {
-                templateUrl: 'app/views/dashboard.html',
-            })
             .when('/org/:orgguid', {
                 templateUrl: 'app/views/organizations.html',
                 controller: 'OrgCtrl'

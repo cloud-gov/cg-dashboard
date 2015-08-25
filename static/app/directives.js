@@ -36,7 +36,7 @@
     app.directive('deckHeader', function($cloudfoundry, $uaa) {
         return {
             templateUrl: 'app/views/partials/header.html',
-            controller: function($scope) {
+            controller: function($scope, $location) {
               // Render the orgs on the page
               var renderOrgs = function(orgs) {
                   $scope.orgs = orgs;
@@ -58,7 +58,7 @@
                   $uaa.getUserInfoGivenName().then(renderName);
                 }
                 else {
-                  $scope.authorized = false;
+                  $location.path('/');
                 }
               });
             }
