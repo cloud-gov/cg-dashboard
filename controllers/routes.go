@@ -44,7 +44,7 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 
 	if settings != nil && settings.PProfEnabled {
 		// Setup the /pprof subrouter.
-		pprofRouter := secureRouter.Subrouter(PProfContext{}, "/pprof")
+		pprofRouter := secureRouter.Subrouter(PProfContext{}, "/debug/pprof")
 		pprofRouter.Get("/", (*PProfContext).Index)
 		pprofRouter.Get("/heap", (*PProfContext).Heap)
 		pprofRouter.Get("/goroutine", (*PProfContext).Goroutine)
