@@ -13,7 +13,7 @@
 		},
 		{
 			"ImportPath": "github.com/gorilla/securecookie",
-			"Rev": "aeade84400a85c6875264ae51c7a56ecdcb61751"
+			"Rev": "ba5126409e0340d53e989ad07501a14949889a0d"
 		},
 		{
 			"ImportPath": "github.com/gorilla/sessions",
@@ -26,8 +26,8 @@
 		},
 		{
 			"ImportPath": "github.com/onsi/gomega",
-			"Comment": "v1.0-50-gd6c945f",
-			"Rev": "d6c945f9fdbf6cad99e85b0feff591caa268e0db"
+			"Comment": "v1.0-52-ga2ab864",
+			"Rev": "a2ab8644e0b6a33df2cbe44673bd0f6ebba9abc3"
 		},
 		{
 			"ImportPath": "github.com/sclevine/agouti",
@@ -36,7 +36,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "f0cf018861e2b54077eced91659e255072b5f215"
+			"Rev": "51854aba4682903632d14998d47781fe34e62a02"
 		},
 		{
 			"ImportPath": "golang.org/x/oauth2",

@@ -40,8 +40,9 @@ Install front end dependencies
 npm install
 ```
 ## Running locally
-- Modify the ClientID and ClientSecret in main() to reflect your client id and secret. TODO: Use environment variables.
-- Modify the AuthURL and TokenURL in main() to reflect the URLs to login and get tokens. TODO: Use environment variables.
+- Make sure all of your environment variables are set as mentioned above.
+- Install [godep](https://github.com/tools/godep)
+- Run `godep restore` to get all third party code
 - `go run server.go`
 - Navigate browser to `http://localhost:9999`
 

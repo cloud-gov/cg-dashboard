@@ -4,4 +4,3 @@
 .env
 static/bower_components/
 node_modules/
-Godeps/_workspace/
