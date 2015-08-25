@@ -813,7 +813,7 @@ describe('SpaceUserCtrl', function() {
 
 
 describe('MarketCtrl', function() {
-    var scope, cloudfoundry, location, MenuData = {
+    var ctrl, scope, cloudfoundry, location, MenuData = {
         data: {}
     };
     beforeEach(module('cfdeck'));
@@ -848,7 +848,7 @@ describe('MarketCtrl', function() {
     }));
 
     it('should put all the services into the space', function() {
-        expect(scope.services.length).toEqual(2);
+        expect(ctrl.services.length).toEqual(2);
     });
 
     it('should return the active org', function() {

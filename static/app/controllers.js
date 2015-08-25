@@ -244,14 +244,6 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
         $scope.activeTab = "users";
     });
 
-    app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
-        // Get all the services associated with an org
-        $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
-            $scope.services = services;
-        });
-    });
-
     app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
         // Send service plans to the view
@@ -452,7 +444,8 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
 (function() {
     angular.module('cfdeck')
         .controller('MainCtrl', MainCtrl)
-        .controller('OrgCtrl', OrgCtrl);
+        .controller('OrgCtrl', OrgCtrl)
+        .controller('MarketCtrl', MarketCtrl);
 
     MainCtrl.$inject = ['MenuData']
 
@@ -471,5 +464,17 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
     function OrgCtrl($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
     }
+
+    MarketCtrl.$inject = ['$scope', '$cloudfoundry', '$routeParams', 'MenuData', '$uaa']
+    function MarketCtrl($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        var vm = this;
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        // Get all the services associated with an org
+        $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
+            vm.services = services;
+        });
+    };
+
+
 
 }());

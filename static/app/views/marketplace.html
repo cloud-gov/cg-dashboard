@@ -40,7 +40,7 @@
         </th>
     </thead>
     <tbody>
-        <tr ng-repeat="service in services | orderBy:sortType:sortReverse | filter:searchService">
+        <tr ng-repeat="service in market.services | orderBy:sortType:sortReverse | filter:searchService">
             <td class="service-name-data">
                 <a href='#/org/{{ activeOrg.guid }}/marketplace/{{ service.metadata.guid }}'>{{service.entity.label}}</a>
             </td>
