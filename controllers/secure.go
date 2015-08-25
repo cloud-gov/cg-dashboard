@@ -64,6 +64,10 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	req.Close = true
 	// Make a new request.
 	request, _ := http.NewRequest(req.Method, url, req.Body)
+	// In case the body is not of io.Closer.
+	if request.Body != nil {
+		defer request.Body.Close()
+	}
 	request.Close = true
 	// Send the request.
 	res, err := client.Do(request)
