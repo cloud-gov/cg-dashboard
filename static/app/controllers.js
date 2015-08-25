@@ -1,44 +1,46 @@
 // Function for loadng the active org at each page
 // findActiveOrg will attempt to get the active org from cache before
 // downloading new data.
-function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
+function loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa) {
 
     $cloudfoundry.isAuthorized()
         .then(function(status) {
 
             var renderOrg = function(orgData) {
-                // Displace org data
-                if (orgData['code'] == 30003) {
-                    MenuData.data.currentOrg = "404";
-                } else {
-                    MenuData.data.currentOrg = orgData;
-                    $scope.activeOrg = orgData;
-                    $scope.spaces = $scope.activeOrg.spaces;
-                };
                 // Load org memory usage and quota usage if it isn't loaded
                 if (!orgData.quota) {
                     $cloudfoundry.getQuotaUsage(orgData);
                 };
-                // Find user permissions for orgs
+                MenuData.data.currentOrg = orgData;
+                $cloudfoundry.getQuotaUsage(orgData);
+                MenuData.data.storedOrg = $routeParams['orgguid']
+                    // Find user permissions for orgs
                 $uaa.findUserPermissions($routeParams['orgguid'], 'managed_organizations')
                     .then(function(managerStatus) {
                         MenuData.data.orgManager = managerStatus;
                     });
             };
+
             var renderSpace = function(spaceData) {
                 MenuData.data.currentSpace = spaceData;
-                $scope.space = spaceData;
-            };
-            $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
-            // Render a space if there is a spaceguid
-            if ($routeParams.spaceguid) {
-                $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace);
+                MenuData.data.storedSpace = $routeParams['spaceguid']
+
                 // Find user permissions for a space
                 $uaa.findUserPermissions($routeParams['spaceguid'], 'managed_spaces')
                     .then(function(managerStatus) {
-                        $scope.spaceManager = managerStatus;
+                        MenuData.data.spaceManager = managerStatus;
                     });
             };
+
+            // Only update org data if the requested org has changed
+            if (MenuData.data.storedOrg !== $routeParams['orgguid']) {
+                $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
+            }
+
+            // Only update space data if the requested space has changed
+            if (MenuData.data.storedSpace !== $routeParams['spaceguid']) {
+                $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace);
+            }
         });
 };
 
@@ -49,7 +51,7 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
     var app = angular.module('cfdeck');
 
     app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $uaa, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         $scope.addUserToOrg = function(user) {
             user.id = undefined;
             return $uaa.getUserGuidFromUserName(user)
@@ -88,7 +90,7 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
     });
 
     app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         $scope.initOrgManagerState = false;
         var renderOrgUserOrgManagerState = function(response) {
             $scope.org_manager = response;
@@ -175,7 +177,7 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
     });
 
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         $scope.activeTab = 'apps';
     });
 
@@ -183,14 +185,14 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
         var renderServices = function(services) {
             $scope.services = services;
         };
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         $cloudfoundry.getSpaceServices($routeParams['spaceguid'])
             .then(renderServices);
         $scope.activeTab = "services"
     });
 
     app.controller('SpaceUserCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         var renderUsers = function(spaceUsers) {
             $scope.spaceUsers = spaceUsers;
             // Get all the users associated with an org
@@ -245,7 +247,7 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
     });
 
     app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         // Send service plans to the view
         var renderServicePlans = function(servicePlans) {
             $scope.plans = servicePlans;
@@ -287,7 +289,7 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
     });
 
     app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
 
         var getServiceCredentials = function(service) {
             $cloudfoundry.getServiceCredentials(service)
@@ -462,13 +464,14 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
     OrgCtrl.$inject = ['$scope', '$cloudfoundry', '$routeParams', 'MenuData', '$uaa']
 
     function OrgCtrl($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
     }
 
     MarketCtrl.$inject = ['$scope', '$cloudfoundry', '$routeParams', 'MenuData', '$uaa']
+
     function MarketCtrl($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
         var vm = this;
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         // Get all the services associated with an org
         $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
             vm.services = services;

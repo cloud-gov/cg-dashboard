@@ -21,7 +21,8 @@
             })
             .when('/org/:orgguid/marketplace/:serviceguid', {
                 templateUrl: 'app/views/service.html',
-                controller: 'ServiceCtrl'
+                controller: 'ServiceCtrl',
+                controllerAs: 'marketservice'
             })
             .when('/org/:orgguid/manage-org', {
                 templateUrl: 'app/views/manage_org.html',

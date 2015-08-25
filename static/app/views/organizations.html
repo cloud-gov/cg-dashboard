@@ -1,4 +1,4 @@
-<div ng-switch="activeOrg">
+<div ng-switch="main.MenuData.data.currentOrg">
 
     <div ng-switch-when="404">
         <div class="page-header">
@@ -11,11 +11,10 @@
     </div>
 
     <div ng-switch-default>
-
         <div class="page-header">
-            <h3 class="text-center">{{activeOrg | orgNameFilter}}  Spaces</h3>
+            <h3 class="text-center">{{ main.MenuData.data.currentOrg | orgNameFilter }}  Spaces</h3>
         </div>
-        <div ng-show="spaces.length > 0">
+        <div ng-show="main.MenuData.data.currentOrg.spaces.length > 0">
             <form>
                 <div class="form-group">
                     <div class="input-group">
@@ -60,7 +59,7 @@
                     </th>
                 </thead>
                 <tbody>
-                    <tr class='space-info' ng-click="showSpace(space)" ng-repeat="space in activeOrg.spaces | orderBy:sortType:sortReverse | filter:searchSpace">
+                    <tr class='space-info' ng-repeat="space in main.MenuData.data.currentOrg.spaces | orderBy:sortType:sortReverse | filter:searchSpace">
                         <td><a href="#/org/{{ main.MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}">{{space.name}}</a></td>
                         <td>{{space.app_count}}</td>
                         <td>{{space.mem_dev_total}}</td>
@@ -69,7 +68,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="text-center" ng-show="spaces.length == 0">
+        <div class="text-center" ng-show="main.MenuData.data.currentOrg.spaces.length == 0">
             <h2>This organization has no spaces</h2>
         </div>
     </div>

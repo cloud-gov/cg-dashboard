@@ -40,10 +40,9 @@
               // Render the orgs on the page
               var renderOrgs = function(orgs) {
                   $scope.main.orgs = orgs;
-                  $cloudfoundry.setOrgsData(orgs);
               };
               var renderName = function(name) {
-                  $scope.givenName = name;
+                  $scope.main.givenName = name;
                   // Load user's permissions
                   $uaa.getUsersPermissions('managed_organizations')
                   // Only allow navigation when names are loaded
