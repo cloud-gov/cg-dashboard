@@ -5,6 +5,7 @@ import (
 
 	"fmt"
 	"net/http"
+	"time"
 )
 
 // GetValidToken is a helper function that returns a token struct only if it finds a non expired token for the session.
@@ -29,6 +30,9 @@ func GetValidToken(req *http.Request, settings *Settings) *oauth2.Token {
 		request, _ := http.NewRequest("GET", reqURL, nil)
 		request.Close = true
 		client := settings.OAuthConfig.Client(settings.TokenContext, &token)
+		// Prevents lingering goroutines from living forever.
+		// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
+		client.Timeout = 5 * time.Second
 		resp, err := client.Do(request)
 		if resp != nil {
 			defer resp.Body.Close()
