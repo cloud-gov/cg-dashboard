@@ -22,12 +22,18 @@ func GetValidToken(req *http.Request, settings *Settings) *oauth2.Token {
 		if token.Valid() {
 			return &token
 		}
+
 		// Attempt to refresh token using oauth2 Client
 		// https://godoc.org/golang.org/x/oauth2#Config.Client
 		reqURL := fmt.Sprintf("%s%s", settings.ConsoleAPI, "/v2/info")
 		request, _ := http.NewRequest("GET", reqURL, nil)
+		request.Close = true
 		client := settings.OAuthConfig.Client(settings.TokenContext, &token)
-		if _, err := client.Do(request); err != nil {
+		resp, err := client.Do(request)
+		if resp != nil {
+			defer resp.Body.Close()
+		}
+		if err != nil {
 			return nil
 		}
 		return &token

@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"github.com/gocraft/web"
+	"net/http"
 	"net/http/pprof"
+	"strings"
 )
 
 // PProfContext is a debug context to profile information about the backend.
@@ -12,6 +14,11 @@ type PProfContext struct {
 
 // Index responds with the pprof-formatted profile named by the request.
 func (c *PProfContext) Index(rw web.ResponseWriter, req *web.Request) {
+	// PPROF will automatically make paths for you. Need to make sure that the index has a / at the end.
+	if !strings.HasSuffix(req.URL.Path, "/") {
+		http.Redirect(rw, req.Request, req.URL.Path+"/", http.StatusMovedPermanently)
+		return
+	}
 	pprof.Index(rw, req.Request)
 }
 
