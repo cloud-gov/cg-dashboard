@@ -39,7 +39,7 @@
             controller: function($scope, $location) {
               // Render the orgs on the page
               var renderOrgs = function(orgs) {
-                  $scope.orgs = orgs;
+                  $scope.main.orgs = orgs;
                   $cloudfoundry.setOrgsData(orgs);
               };
               var renderName = function(name) {
@@ -47,7 +47,7 @@
                   // Load user's permissions
                   $uaa.getUsersPermissions('managed_organizations')
                   // Only allow navigation when names are loaded
-                  $scope.authorized = true;
+                  $scope.main.authorized = true;
               };
               // Get the auth status
               $cloudfoundry.getAuthStatus().then(function (status) {
@@ -60,6 +60,7 @@
                 else {
                   $scope.authorized = false;
                   $location.path('/');
+                  $scope.main.authorized = false;
                 }
               });
             }

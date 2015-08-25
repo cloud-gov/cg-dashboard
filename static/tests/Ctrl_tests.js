@@ -345,37 +345,22 @@ var getUsersGeneric = function(guid) {
 
 describe('MainCtrl', function() {
 
-    var scope, cloudfoundry, MenuData = {},
-        uaa;
+    var ctrl, cloudfoundry, MenuData = {};
 
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
-        // Mock cloudfoundry service
-        cloudfoundry = {
-            getOrgsData: getOrgsData,
-            setOrgsData: setOrgsData,
-            returnHome: returnHome,
-       };
-        uaa = {
-            getUserInfoGivenName: getUserInfoGivenName
-        };
         //Load Ctrl and scope with mock service
-        scope = $rootScope.$new();
-
         ctrl = $controller('MainCtrl', {
-            $scope: scope,
-            $cloudfoundry: cloudfoundry,
             MenuData: MenuData,
-            $uaa: uaa,
         });
     }));
 
     it('should clear the menu data', function() {
-        scope.MenuData.data = {
+        ctrl.MenuData.data = {
             test: 'data'
         }
-        scope.clearDashboard();
-        expect(scope.MenuData.data).toEqual({});
+        ctrl.clearDashboard();
+        expect(ctrl.MenuData.data).toEqual({});
     });
 
 });
@@ -394,7 +379,7 @@ describe('OrgCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
-            isAuthorized: isAuthorized            
+            isAuthorized: isAuthorized
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -443,7 +428,7 @@ describe('OrgManagementCtrl', function() {
             findActiveOrg: findActiveOrg,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
-            isAuthorized: isAuthorized            
+            isAuthorized: isAuthorized
         }
 
         // Spyon
@@ -500,7 +485,7 @@ describe('OrgUserManagementCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
-            isAuthorized: isAuthorized         
+            isAuthorized: isAuthorized
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -709,7 +694,7 @@ describe('SpaceUserCtrl', function() {
             findActiveSpace: findActiveSpace,
             getOrgUserCategory: getOrgUserCategory,
             returnHome: returnHome,
-            isAuthorized: isAuthorized,            
+            isAuthorized: isAuthorized,
             toggleSpaceUserPermissions: function(user, permission, spaceGuid) {
                 return {
                     then: function(callback) {
@@ -840,7 +825,7 @@ describe('MarketCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
-            isAuthorized: isAuthorized,       
+            isAuthorized: isAuthorized,
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -887,7 +872,7 @@ describe('ServiceCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
-            isAuthorized: isAuthorized,                    
+            isAuthorized: isAuthorized,
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -967,7 +952,7 @@ describe('AppCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             findActiveSpace: getSpaceDetails,
             returnHome: returnHome,
-            isAuthorized: isAuthorized,           
+            isAuthorized: isAuthorized,
         };
         uaa = {
             getUserInfoGuid: getUserInfoGuid,

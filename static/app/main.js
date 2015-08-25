@@ -11,11 +11,13 @@
             })
             .when('/org/:orgguid', {
                 templateUrl: 'app/views/organizations.html',
-                controller: 'OrgCtrl'
+                controller: 'OrgCtrl',
+                controllerAs: 'org'
             })
             .when('/org/:orgguid/marketplace', {
                 templateUrl: 'app/views/marketplace.html',
-                controller: 'MarketCtrl'
+                controller: 'MarketCtrl',
+                controllerAs: 'market'
             })
             .when('/org/:orgguid/marketplace/:serviceguid', {
                 templateUrl: 'app/views/service.html',

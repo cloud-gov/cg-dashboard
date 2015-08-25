@@ -10,13 +10,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#/dashboard" ng-click="clearDashboard()">
+            <a class="navbar-brand" href="#/dashboard" ng-click="main.clearDashboard()">
                 <i class="glyphicon glyphicon-cloud"></i>
                 Deck
                 <span class="label label-info">Alpha</span>
             </a>
         </div>
-        <div ng-switch="authorized">
+        <div ng-switch="main.authorized">
             <div ng-switch-when="true">
                 <!-- Navbar links -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -27,7 +27,7 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                             aria-expanded="false" id="org-dropdown">Organizations&nbsp;<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li ng-repeat="org in orgs">
+                                <li ng-repeat="org in main.orgs">
                                     <a class="org-name" ng-href="#/org/{{ org.metadata.guid }}">{{org | orgNameFilter}}</a>
                                 </li>
                             </ul>
@@ -40,6 +40,7 @@
                                 <li>
                                     <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}">Spaces </a>
                                     <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/marketplace">Marketplace</a>
+                                    <a ng-show="MenuData.data.orgManager" ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/manage-org">Manage Org</a>
                                 </li>
                             </ul>
                         </li>

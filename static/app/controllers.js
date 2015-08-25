@@ -1,64 +1,52 @@
+// Function for loadng the active org at each page
+// findActiveOrg will attempt to get the active org from cache before
+// downloading new data.
+function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
+
+    $cloudfoundry.isAuthorized()
+        .then(function(status) {
+
+            var renderOrg = function(orgData) {
+                // Displace org data
+                if (orgData['code'] == 30003) {
+                    MenuData.data.currentOrg = "404";
+                } else {
+                    MenuData.data.currentOrg = orgData;
+                    $scope.activeOrg = orgData;
+                    $scope.spaces = $scope.activeOrg.spaces;
+                };
+                // Load org memory usage and quota usage if it isn't loaded
+                if (!orgData.quota) {
+                    $cloudfoundry.getQuotaUsage(orgData);
+                };
+                // Find user permissions for orgs
+                $uaa.findUserPermissions($routeParams['orgguid'], 'managed_organizations')
+                    .then(function(managerStatus) {
+                        MenuData.data.orgManager = managerStatus;
+                    });
+            };
+            var renderSpace = function(spaceData) {
+                MenuData.data.currentSpace = spaceData;
+                $scope.space = spaceData;
+            };
+            $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
+            // Render a space if there is a spaceguid
+            if ($routeParams.spaceguid) {
+                $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace);
+                // Find user permissions for a space
+                $uaa.findUserPermissions($routeParams['spaceguid'], 'managed_spaces')
+                    .then(function(managerStatus) {
+                        $scope.spaceManager = managerStatus;
+                    });
+            };
+        });
+};
+
+
 (function() {
     'use strict';
     // Get the app
     var app = angular.module('cfdeck');
-
-    // Function for loadng the active org at each page
-    // findActiveOrg will attempt to get the active org from cache before
-    // downloading new data.
-    function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
-
-        $cloudfoundry.isAuthorized()
-            .then(function(status) {
-
-                var renderOrg = function(orgData) {
-                    // Displace org data
-                    if (orgData['code'] == 30003) {
-                        MenuData.data.currentOrg = "404";
-                    } else {
-                        MenuData.data.currentOrg = orgData;
-                        $scope.activeOrg = orgData;
-                        $scope.spaces = $scope.activeOrg.spaces;
-                    };
-                    // Load org memory usage and quota usage if it isn't loaded
-                    if (!orgData.quota) {
-                        $cloudfoundry.getQuotaUsage(orgData);
-                    };
-                    // Find user permissions for orgs
-                    $uaa.findUserPermissions($routeParams['orgguid'], 'managed_organizations')
-                        .then(function(managerStatus) {
-                            MenuData.data.orgManager = managerStatus;
-                        });
-                };
-                var renderSpace = function(spaceData) {
-                    MenuData.data.currentSpace = spaceData;
-                    $scope.space = spaceData;
-                };
-                $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
-                // Render a space if there is a spaceguid
-                if ($routeParams.spaceguid) {
-                    $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace);
-                    // Find user permissions for a space
-                    $uaa.findUserPermissions($routeParams['spaceguid'], 'managed_spaces')
-                        .then(function(managerStatus) {
-                            $scope.spaceManager = managerStatus;
-                        });
-                };
-            });
-    };
-
-    app.controller('MainCtrl', function($scope, $cloudfoundry, MenuData) {
-        // Initalize menudata
-        $scope.MenuData = MenuData;
-        // Clean menu data to return home
-        $scope.clearDashboard = function() {
-            $scope.MenuData.data = {};
-        };
-    });
-
-    app.controller('OrgCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
-    });
 
     app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $uaa, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
@@ -183,9 +171,6 @@
             .then(renderOrgUserBillingManagerState);
         $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', 'auditor_guid')
             .then(renderOrgUserOrgAuditorState);
-
-
-
 
     });
 
@@ -461,4 +446,30 @@
         $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
         resetAppStatsPoll();
     });
+}());
+
+
+(function() {
+    angular.module('cfdeck')
+        .controller('MainCtrl', MainCtrl)
+        .controller('OrgCtrl', OrgCtrl);
+
+    MainCtrl.$inject = ['MenuData']
+
+    function MainCtrl(MenuData) {
+        var vm = this;
+        // Initalize menudata
+        vm.MenuData = MenuData;
+        // Clean menu data to return home
+        vm.clearDashboard = function() {
+            vm.MenuData.data = {};
+        };
+    };
+
+    OrgCtrl.$inject = ['$scope', '$cloudfoundry', '$routeParams', 'MenuData', '$uaa']
+
+    function OrgCtrl($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+    }
+
 }());
