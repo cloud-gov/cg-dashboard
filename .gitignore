@@ -6,3 +6,4 @@ static/bower_components/
 node_modules/
 coverage
 .godeps/
+Godeps/_workspace/
