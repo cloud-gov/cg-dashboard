@@ -8,7 +8,7 @@ import (
 	_ "github.com/onsi/gomega"     // Needed for acceptance package.
 	_ "github.com/sclevine/agouti" // Needed for acceptance package.
 
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -30,10 +30,11 @@ func loadEnvVars() helpers.EnvVars {
 
 func main() {
 	// Start the server up.
-	var port string
-	if port = os.Getenv("PORT"); len(port) == 0 {
+	port := os.Getenv("PORT")
+	if port == "" {
 		port = defaultPort
 	}
+	log.Println("Deck listening to port", port)
 	startApp(port)
 }
 
@@ -44,7 +45,7 @@ func startApp(port string) {
 	app, _, err := controllers.InitApp(envVars)
 	if err != nil {
 		// Print the error.
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 		// Terminate the program with a non-zero value number.
 		// Need this for testing purposes.
 		os.Exit(1)
