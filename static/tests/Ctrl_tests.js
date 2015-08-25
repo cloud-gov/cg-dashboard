@@ -591,7 +591,7 @@ describe('SpaceCtrl', function() {
     }));
 
     it('should return a space\'s summary info', function() {
-        expect(scope.space).toEqual({
+        expect(MenuData.data.currentSpace).toEqual({
             guid: 'spaceguid',
             name: 'spacename',
             apps: [{
@@ -652,7 +652,7 @@ describe('SpaceServicesCtrl', function() {
     }));
 
     it('should return a space\'s summary info', function() {
-        expect(scope.space).toEqual({
+        expect(MenuData.data.currentSpace).toEqual({
             guid: 'spaceguid',
             name: 'spacename',
             apps: [{
@@ -737,7 +737,7 @@ describe('SpaceUserCtrl', function() {
     }));
 
     it('should return a space\'s summary info', function() {
-        expect(scope.space).toEqual({
+        expect(MenuData.data.currentSpace).toEqual({
             guid: 'spaceguid',
             name: 'spacename',
             apps: [{
@@ -852,7 +852,7 @@ describe('MarketCtrl', function() {
     });
 
     it('should return the active org', function() {
-        expect(scope.activeOrg.entity.name).toEqual('org1')
+        expect(MenuData.data.currentOrg.entity.name).toEqual('org1')
     });
 
 });
