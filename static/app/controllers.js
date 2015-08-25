@@ -6,7 +6,7 @@
     // Function for loadng the active org at each page
     // findActiveOrg will attempt to get the active org from cache before
     // downloading new data.
-    function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope) {
+    function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
         var renderOrg = function(orgData) {
 
             // Load org memory usage and quota usage
@@ -22,7 +22,23 @@
                 $scope.spaces = $scope.activeOrg.spaces;
             }
         };
+        var renderSpace = function(spaceData) {
+             MenuData.data.currentSpace = spaceData;
+             $scope.space = spaceData;
+        };
         $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
+        // Render a space if there is a spaceguid
+        if ($routeParams.spaceguid){
+            $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace)
+        };
+
+        $uaa.getUserInfoGuid()
+           .then(function(userguid){
+               $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], userguid, 'managers', 'manager_guid')
+                   .then(function(response){
+                        MenuData.data.orgManager = (response[0]) && (response[0].metadata.guid == userguid);
+                   });
+           });
     };
 
     app.controller('HomeCtrl', function($scope, $cloudfoundry) {
@@ -50,45 +66,214 @@
         $scope.MenuData = MenuData;
     });
 
-    app.controller('OrgCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('OrgCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
     });
 
-    app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
-        var renderSpace = function(space) {
-            $scope.space = space;
+    app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $uaa, $routeParams, MenuData) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        $scope.addUserToOrg = function(user) {
+            user.id = undefined;
+            return $uaa.getUserGuidFromUserName(user)
+                   .then(function(user){
+                       $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], user.id, 'users', true)
+                           .then(function(){
+                               $scope.showTab('current_org_users');
+		           });
+                   }).catch(function(error){
+                       console.log('Unable to add the user');
+                   });
         };
-        var renderServices = function(services) {
-            $scope.services = services;
+        $scope.removeUserFromOrg = function(userGuid) {
+            // TODO: remove all roles before removing from org so that if the user is re-added, the user will have no roles.
+            return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], userGuid, 'users', false)
+                   .then(function(){$scope.showTab('current_org_users')})
         };
         // Show a specific tab
         $scope.showTab = function(tab) {
-            // If the tab is the service instances tab load data
-            if (tab == "serviceInstances") {
-                // Get the spaces service instances
-                $cloudfoundry.getSpaceServices($routeParams['spaceguid'])
-                    .then(renderServices);
-            }
             $scope.activeTab = tab;
+            if (tab == 'current_org_users') {
+                $scope.org_users = [];
+                $cloudfoundry.getOrgUsers($routeParams['orgguid'], $scope.org_users, $scope.loadComplete);
+            }
         };
-        // Get the orgs data from cache or load new data
-        $cloudfoundry.getSpaceDetails($routeParams['spaceguid'])
-            .then(renderSpace);
-        // Make the apps tab the default active tab
+        // Make the current org users tab the default active tab
+        $scope.activeTab = 'current_org_users';
+        // Get all the users associated with an org
+        $scope.org_users = [];
+        $scope.loadComplete = {status: false};
+        $cloudfoundry.getOrgUsers($routeParams['orgguid'], $scope.org_users, $scope.loadComplete);
+    });
+
+    app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+	$scope.initOrgManagerState = false;
+        var renderOrgUserOrgManagerState = function(response) {
+	    $scope.org_manager = response;
+	    $scope.orgManagerStatus = (response[0]) &&(response[0].metadata.guid == $routeParams['userguid']);
+	    // No need to set up watching again if we have already.
+	    if ($scope.initOrgManagerState == true) {
+                return;
+	    }
+            $scope.$watch('orgManagerStatus', function(newValue, oldValue) {
+               // Only update when there is an actual change in value. This prevents unnecessary calls from
+               // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
+	       // is undefined. That means we are initializing for the first time.
+               if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
+                   $scope.orgManagerStateChanging = true;
+                   return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', newValue)
+                       .then(function() {
+                           // Re-enable toggle switch;
+                           $scope.orgManagerStateChanging = false;
+                       });
+               }
+            });
+	    // This also enables the button after initial loading.
+            $scope.initOrgManagerState = true;
+        };
+
+	$scope.initBillingManagerState = false;
+        var renderOrgUserBillingManagerState = function(response) {
+	    $scope.billing_manager = response;
+	    $scope.billingManagerStatus = (response[0]) &&(response[0].metadata.guid == $routeParams['userguid']);
+	    // No need to set up watching again if we have already.
+	    if ($scope.initBillingManagerState == true) {
+                return;
+	    }
+            $scope.$watch('billingManagerStatus', function(newValue, oldValue) {
+               // Only update when there is an actual change in value. This prevents unnecessary calls from
+               // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
+	       // is undefined. That means we are initializing for the first time.
+               if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
+                   $scope.billingManagerStateChanging = true;
+                   return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', newValue)
+                       .then(function() {
+                           // Re-enable toggle switch;
+                           $scope.billingManagerStateChanging = false;
+                       });
+               }
+            });
+	    // This also enables the button after initial loading.
+            $scope.initBillingManagerState = true;
+        };
+
+
+	$scope.initOrgAuditorState = false;
+        var renderOrgUserOrgAuditorState = function(response) {
+	    $scope.org_auditor = response;
+	    $scope.orgAuditorStatus = (response[0]) &&(response[0].metadata.guid == $routeParams['userguid']);
+
+	    // No need to set up watching again if we have already.
+	    if ($scope.initOrgAuditorState == true) {
+                return;
+	    }
+            $scope.$watch('orgAuditorStatus', function(newValue, oldValue) {
+               // Only update when there is an actual change in value. This prevents unnecessary calls from
+               // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
+	       // is undefined. That means we are initializing for the first time.
+               if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
+                   $scope.orgAuditorStateChanging = true;
+                   return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', newValue)
+                       .then(function() {
+                           // Re-enable toggle switch;
+                           $scope.orgAuditorStateChanging = false;
+                       });
+               }
+            });
+	    // This also enables the button after initial loading.
+            $scope.initOrgAuditorState = true;
+        };
+	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', 'manager_guid').then(renderOrgUserOrgManagerState);
+
+	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', 'billing_manager_guid').then(renderOrgUserBillingManagerState);
+
+	$cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', 'auditor_guid').then(renderOrgUserOrgAuditorState);
+
+
+
+
+    });
+
+    app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
         $scope.activeTab = 'apps';
     });
 
-    app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('SpaceServicesCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
+      var renderServices = function(services) {
+          $scope.services = services;
+      };
+      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+      $cloudfoundry.getSpaceServices($routeParams['spaceguid'])
+          .then(renderServices);
+      $scope.activeTab = "services"
+    });
+
+    app.controller('SpaceUserCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
+      loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+      var renderUsers = function(spaceUsers) {
+        $scope.spaceUsers = spaceUsers;
+        // Get all the users associated with an org
+        $scope.users = [];
+        $scope.loadComplete = {status: false};
+        $cloudfoundry.getOrgUsers($routeParams['orgguid'], $scope.users, $scope.loadComplete);
+      };
+      $scope.unsetActiveUser = function() {
+        $scope.activeUser = null;
+        $scope.disableSwitches = null;
+        $scope.spaceUserError = null;
+      };
+      $scope.setActiveUser = function(user) {
+        $scope.disableSwitches = true;
+        var activeUser = $scope.spaceUsers.filter(function (spaceuser) {
+            return spaceuser.metadata.guid === user.metadata.guid
+        });
+        if (activeUser.length === 1) {
+          activeUser = activeUser[0]
+          $scope.activeUser = activeUser;
+          $scope.activeUser.managers = activeUser.entity.space_roles.indexOf('space_manager') >= 0;
+          $scope.activeUser.auditors = activeUser.entity.space_roles.indexOf('space_auditor') >= 0;
+          $scope.activeUser.developers = activeUser.entity.space_roles.indexOf('space_developer') >= 0;
+        }
+        else {
+          $scope.activeUser = user;
+          $scope.activeUser.managers = false;
+          $scope.activeUser.auditors = false;
+          $scope.activeUser.developers = false;
+        }
+        $scope.disableSwitches = false;
+      };
+      $scope.toggleSpaceUserPermissions = function(permission) {
+        $scope.disableSwitches = true;
+        $scope.spaceUserError = null;
+        $cloudfoundry.toggleSpaceUserPermissions($scope.activeUser, permission, $routeParams['spaceguid'])
+            .then(function (response) {
+              if (response.status !== 201){
+                $scope.activeUser[permission] = !$scope.activeUser[permission];
+                $scope.spaceUserError = response.data.description;
+              }
+              else {
+                 $cloudfoundry.getSpaceUsers($routeParams['spaceguid'])
+                    .then(renderUsers);
+              }
+              $scope.disableSwitches = false;
+            });
+      };
+      $cloudfoundry.getSpaceUsers($routeParams['spaceguid'])
+          .then(renderUsers);
+      $scope.activeTab = "users"
+    });
+
+    app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
         // Get all the services associated with an org
         $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
             $scope.services = services;
         });
     });
 
-    app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
         // Send service plans to the view
         var renderServicePlans = function(servicePlans) {
             $scope.plans = servicePlans;
@@ -129,8 +314,8 @@
         $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
     });
 
-    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope);
+    app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
 
         var getServiceCredentials = function(service) {
             $cloudfoundry.getServiceCredentials(service)
@@ -190,17 +375,17 @@
         // Create new Route
         $scope.createRoute = function(newRoute) {
             $scope.routeErrorMsg = null;
-            if (newRoute && newRoute.domain_guid && newRoute.host ) { 
+            if (newRoute && newRoute.domain_guid && newRoute.host ) {
                 $scope.blockRoutes = true;
-                newRoute.space_guid = $routeParams['spaceguid']; 
+                newRoute.space_guid = $routeParams['spaceguid'];
                 $cloudfoundry.createRoute(newRoute, $routeParams['appguid'])
                     .then(function(response) {
-                        $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                        if(response.status === 400) {
+                            $scope.routeErrorMsg = response.data.description;
+                        } else {
+                            $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
+                        };
                         $scope.blockRoutes = false;
-                    })
-                    .catch(function(response) {
-                        $scope.blockRoutes = false;
-                        $scope.routeErrorMsg = response.data.description;
                     });
             } else {
                 $scope.routeErrorMsg = "Please provide both host and domain."

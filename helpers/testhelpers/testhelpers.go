@@ -5,10 +5,15 @@ import (
 	"github.com/18F/cf-deck/helpers"
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
+	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
+	"bytes"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
+	"testing"
 	"time"
 )
 
@@ -56,8 +61,13 @@ func (store *MockSessionStore) ResetSessionData(data map[string]interface{}, ses
 }
 
 // NewTestRequest is a helper function that creates a sample request with the given input parameters.
-func NewTestRequest(method, path string) (*httptest.ResponseRecorder, *http.Request) {
-	request, _ := http.NewRequest(method, path, nil)
+func NewTestRequest(method, path string, body []byte) (*httptest.ResponseRecorder, *http.Request) {
+	var request *http.Request
+	if body != nil {
+		request, _ = http.NewRequest(method, path, bytes.NewBuffer(body))
+	} else {
+		request, _ = http.NewRequest(method, path, nil)
+	}
 	recorder := httptest.NewRecorder()
 
 	return recorder, request
@@ -94,11 +104,41 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars hel
 
 // BasicConsoleUnitTest is Basic Unit Test Information.
 type BasicConsoleUnitTest struct {
-	TestName    string
-	EnvVars     helpers.EnvVars
+	// Name of the tests
+	TestName string
+	// Set of env vars to set up the settings.
+	EnvVars helpers.EnvVars
+	// Ending location of request.
 	Location    string
 	Code        int
 	SessionData map[string]interface{}
+}
+
+// BasicSecureTest contains info like BasicConsoleUnitTest.
+// TODO consolidate BasicConsoleUnitTest and BasicSecureTest
+type BasicSecureTest struct {
+	BasicConsoleUnitTest
+	ExpectedCode     int
+	ExpectedResponse string
+}
+
+// BasicProxyTest contains information for what our test 'external' server should do when the proxy methods contact it.
+type BasicProxyTest struct {
+	BasicSecureTest
+	// RequestMethod is the type of method that our test client should send.
+	RequestMethod string
+	// RequestPath is the path that our test client should send.
+	RequestPath string
+	// RequestBody is the body that our test client should send.
+	RequestBody []byte
+	// ExpectedPath is the path that the test 'external' cloud foundry server we setup should receive.
+	// This is useful as we translate our endpoints to conform with the cloud foundry APIs.
+	// e.g. our endpoint: /uaa/userinfo & cloud foundry endpoint: /userinfo
+	ExpectedPath string
+	// The response the test 'external' cloud foundry server should send back.
+	Response string
+	// The code the test 'external' cloud foundry server should send back.
+	ResponseCode int
 }
 
 // MockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
@@ -110,4 +150,63 @@ var MockCompleteEnvVars = helpers.EnvVars{
 	UAAURL:       "uaaurl",
 	APIURL:       "apiurl",
 	PProfEnabled: "true",
+}
+
+// CreateExternalServer creates a test server that should reply with the given parameters assuming that the incoming request matches what we want.
+func CreateExternalServer(t *testing.T, test *BasicProxyTest) *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != test.ExpectedPath {
+			t.Errorf("Server expected path %s but instead received path %s\n", test.ExpectedPath, r.URL.Path)
+		} else if r.Method != test.RequestMethod {
+			t.Errorf("Server expected method %s but instead received method %s\n", test.RequestMethod, r.Method)
+		} else {
+			w.WriteHeader(test.ResponseCode)
+			fmt.Fprintln(w, test.Response)
+		}
+		headerAuth := r.Header.Get("Authorization")
+		oauthToken, ok := test.SessionData["token"].(oauth2.Token)
+		if ok {
+			if headerAuth != "Bearer "+oauthToken.AccessToken {
+				t.Errorf("Unexpected authorization header, (%v) is found. Expected %s", headerAuth, oauthToken.AccessToken)
+			}
+		} else {
+			t.Errorf("Error converting to Session data to oauth.Token struct")
+		}
+	}))
+}
+
+// PrepareExternalServerCall creates all the things that we will use when we send the request to the external server.
+// This includes setting up the routes, create a test response recorder and a test request.
+func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testServer *httptest.Server, fullURL string, test BasicProxyTest) (*httptest.ResponseRecorder, *http.Request, *web.Router) {
+	if token, ok := test.SessionData["token"].(oauth2.Token); ok {
+		// Assign token
+		c.Token = token
+
+		// Assign settings to context
+		mockSettings := &helpers.Settings{}
+		mockSettings.InitSettings(test.EnvVars)
+		mockSettings.TokenContext = context.TODO()
+		c.Settings = mockSettings
+
+		response, request := NewTestRequest(test.RequestMethod, fullURL, test.RequestBody)
+		request.URL.Scheme = "http"
+		request.URL.Host = request.Host
+		test.EnvVars.APIURL = testServer.URL
+		test.EnvVars.UAAURL = testServer.URL
+		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
+		return response, request, router
+	}
+	t.Errorf("Cannot get token data")
+	return nil, nil, nil
+}
+
+// VerifyExternalCallResponse will verify the test response with what was expected by the test.
+func VerifyExternalCallResponse(t *testing.T, response *httptest.ResponseRecorder, test *BasicProxyTest) {
+	// Check response.
+	if strings.TrimSpace(response.Body.String()) != test.ExpectedResponse {
+		t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.TestName, test.ExpectedResponse, response.Body.String())
+	}
+	if response.Code != test.ExpectedCode {
+		t.Errorf("Test %s did not meet expected code. Expected %d. Found %d.\n", test.TestName, test.ExpectedCode, response.Code)
+	}
 }
