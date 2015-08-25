@@ -58,6 +58,7 @@
                   $uaa.getUserInfoGivenName().then(renderName);
                 }
                 else {
+                  $scope.authorized = false;
                   $location.path('/');
                 }
               });
