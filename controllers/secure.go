@@ -35,7 +35,12 @@ func (c *SecureContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.
 // Proxy is an internal function that will construct the client with the token in the headers and
 // then send a request.
 func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url string) {
-	// Make the request.
+	// In case the body is not of io.Closer.
+	if req.Body != nil {
+		defer req.Body.Close()
+	}
+	req.Close = true
+	// Make a new request.
 	request, _ := http.NewRequest(req.Method, url, req.Body)
 	request.Close = true
 	// Acquire the http client and the refresh token if needed
@@ -43,7 +48,7 @@ func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url str
 	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
 	// Prevents lingering goroutines from living forever.
 	// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
-	client.Timeout = 3 * time.Second
+	client.Timeout = 5 * time.Second
 	// Send the request.
 	res, err := client.Do(request)
 	if res != nil {

@@ -17,21 +17,24 @@ func GetValidToken(req *http.Request, settings *Settings) *oauth2.Token {
 	}
 
 	// Attempt to get the token from this session.
-	if token, ok := session.Values["token"].(oauth2.Token); ok {
-		// If valid, just return.
-		if token.Valid() {
-			return &token
-		}
+	if token, ok := session.Values["token"].(string); ok {
+		tok := new(oauth2.Token)
+		tok.AccessToken = token
+
 		// Attempt to refresh token using oauth2 Client
 		// https://godoc.org/golang.org/x/oauth2#Config.Client
 		reqURL := fmt.Sprintf("%s%s", settings.ConsoleAPI, "/v2/info")
 		request, _ := http.NewRequest("GET", reqURL, nil)
-		request.Close = true
-		client := settings.OAuthConfig.Client(settings.TokenContext, &token)
-		if _, err := client.Do(request); err != nil {
+		// request.Close = true
+		client := settings.OAuthConfig.Client(settings.TokenContext, tok)
+		resp, err := client.Do(request)
+		if resp != nil {
+			defer resp.Body.Close()
+		}
+		if err != nil {
 			return nil
 		}
-		return &token
+		return tok
 	}
 
 	// If couldn't find token or if it's expired, return nil

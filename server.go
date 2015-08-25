@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/18F/cf-deck/controllers"
 	"github.com/18F/cf-deck/helpers"
+	"github.com/gorilla/context"
 
 	_ "github.com/onsi/ginkgo"     // Needed for acceptance package.
 	_ "github.com/onsi/gomega"     // Needed for acceptance package.
@@ -10,6 +11,7 @@ import (
 
 	"fmt"
 	"net/http"
+	"time"
 	"os"
 )
 
@@ -50,5 +52,6 @@ func startApp(port string) {
 		os.Exit(1)
 	}
 
-	http.ListenAndServe(":"+port, app)
+	// TODO add better timeout message. By default it will just say "Timeout"
+	http.ListenAndServe(":"+port, http.TimeoutHandler(context.ClearHandler(app), time.Second * 5, ""))
 }
