@@ -63,3 +63,28 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 	http.Redirect(rw, req.Request, "/#/dashboard", http.StatusFound)
 	// TODO. Redirect to the original route.
 }
+
+// LoginRequired is a middleware that requires a valid toker or redirects to the handshake page.
+func (c *Context) LoginRequired(rw web.ResponseWriter, r *web.Request, next web.NextMiddlewareFunc) {
+	// If there is no request just continue
+	if r != nil {
+		next(rw, r)
+		return
+	}
+
+	token := helpers.GetValidToken(r.Request, c.Settings)
+	public_urls := map[string]struct{}{
+		"/handshake":      {},
+		"/oauth2callback": {},
+		"/ping":           {},
+	}
+	// Check if URL is public so we skip validation
+	_, ok := public_urls[r.URL.EscapedPath()]
+
+	if ok || token != nil {
+		next(rw, r)
+	} else {
+		rw.Header().Set("Location", "/handshake")
+		rw.WriteHeader(http.StatusMovedPermanently)
+	}
+}

@@ -54,6 +54,9 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 		pprofRouter.Get("/symbol", (*PProfContext).Symbol)
 	}
 
+	// Add auth middleware
+	router.Middleware((*Context).LoginRequired)
+
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.
 	router.Middleware(web.StaticMiddleware("static", web.StaticOption{IndexFile: "index.html"}))
