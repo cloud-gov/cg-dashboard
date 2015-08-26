@@ -16,7 +16,7 @@ type Context struct {
 // Ping is just a test endpoint to show that indeed the service is alive.
 // TODO. Remove.
 func (c *Context) Ping(rw web.ResponseWriter, req *web.Request) {
-	fmt.Fprintf(rw, "{\"status\": \"alive\"}")
+	fmt.Fprintf(rw, "{\"status\": \"alive\", \"build-info\": \""+c.Settings.BuildInfo+"\"}")
 }
 
 // LoginHandshake is the handler where we authenticate the user and the user authorizes this application access to information.

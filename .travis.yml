@@ -17,7 +17,9 @@ branches:
   only:
     - master
     - production
-before_deploy: python travis-vars-to-manifest.py
+before_deploy:
+- export BUILD_INFO=build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d-%H-%M-%S")-$TRAVIS_BUILD_NUMBER
+- python travis-vars-to-manifest.py
 deploy:
   edge: true
   provider: cloudfoundry

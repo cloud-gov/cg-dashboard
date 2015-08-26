@@ -8,6 +8,9 @@ import (
 // InitRouter sets up the router (and subrouters).
 // It also includes the closure middleware where we load the global Settings reference into each request.
 func InitRouter(settings *helpers.Settings) *web.Router {
+	if settings == nil {
+		return nil
+	}
 	router := web.New(Context{})
 
 	// A closure that effectively loads the Settings into every request.
@@ -43,7 +46,7 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	uaaRouter.Get("/userinfo", (*UAAContext).UserInfo)
 	uaaRouter.Post("/Users", (*UAAContext).QueryUser)
 
-	if settings != nil && settings.PProfEnabled {
+	if settings.PProfEnabled {
 		// Setup the /pprof subrouter.
 		pprofRouter := secureRouter.Subrouter(PProfContext{}, "/debug/pprof")
 		pprofRouter.Get("/", (*PProfContext).Index)
