@@ -3,9 +3,7 @@
     angular.module('cfdeck').service('$cloudfoundry', function($http, $location, $log, $q) {
 
         // Declare variables for passing data via this service
-        var orgs, activeOrg, activeSpace = {
-            guid: undefined
-        };
+        var orgs, activeOrg, activeSpace = {guid: undefined};
 
         // Paging function for endpoints that require more than one page
         var httpPager = function(url, resources, loadComplete) {
@@ -32,20 +30,20 @@
                 loadComplete.status = true;
             }
             return get(url);
-        };
-
-        // Returns the authentication status from promise
-        var returnAuthStatus = function(response) {
-            return response.data.status
-        };
+         };
 
         // Redirects back to home page
-        this.returnHome = function(response) {
+        var returnHome = function(response) {
             $location.path('/');
             return {
                 'status': 'unauthorized'
             };
         }
+
+        // Returns the authentication status from promise
+        var returnAuthStatus = function(response) {
+            return response.data.status
+        };
 
         // Get current authentication status from server
         this.getAuthStatus = function() {
@@ -82,7 +80,7 @@
                             return response;
                         });
                 })
-                .catch(function(response) {
+                .catch(function (response) {
                     return response;
                 });
         };
@@ -92,7 +90,7 @@
             return $http.get('/v2/organizations')
                 .then(function(response) {
                     return response.data.resources;
-                });
+                }, returnHome);
         };
 
         // Get org details
@@ -130,45 +128,45 @@
             this.getOrgLinks(org)
                 .then(getMemoryLimit)
                 .then(getOrgMemoryUsage)
-                .then(function() {
+                .then(function () {
                     org.quota = quotadata;
                 })
-                .catch(function() {
+                .catch(function () {
                     $log.info('Failed to get quota usage');
                 });
         };
 
-        // Get org users
+	// Get org users
         this.getOrgUsers = function(orgGuid, resources, loadComplete) {
             return httpPager('/v2/organizations/' + orgGuid + '/users', resources, loadComplete)
         };
 
-        // Generic function to get different org user categories
+	// Generic function to get different org user categories
         this.getOrgUserCategory = function(orgGuid, userGuid, category, queryString) {
-            return $http.get('/v2/organizations/' + orgGuid + '/' + category + '?' + queryString + '=' + userGuid)
+            return $http.get('/v2/organizations/' + orgGuid + '/'+category+'?'+queryString+'=' +userGuid)
                 .then(function(response) {
                     return response.data.resources;
                 });
         };
 
-        // Generic function to add different org user categories
+	// Generic function to add different org user categories
         this.addOrgUserCategory = function(orgGuid, userGuid, category) {
-            return $http.put('/v2/organizations/' + orgGuid + '/' + category + '/' + userGuid)
+            return $http.put('/v2/organizations/' + orgGuid + '/'+category+'/'+ userGuid)
                 .then(function(response) {
                     return response.data.resources;
                 });
         };
 
-        // Generic function to delete different org user categories
+	// Generic function to delete different org user categories
         this.deleteOrgUserCategory = function(orgGuid, userGuid, category) {
-            return $http.delete('/v2/organizations/' + orgGuid + '/' + category + '/' + userGuid)
+            return $http.delete('/v2/organizations/' + orgGuid + '/'+category+'/'+ userGuid)
                 .then(function(response) {
                     return response.data.resources;
                 });
         };
 
-        // Generic function to set different org user categories.
-        // Will add the category if 'adding' is true, otherwise, will delete.
+	// Generic function to set different org user categories.
+	// Will add the category if 'adding' is true, otherwise, will delete.
         this.setOrgUserCategory = function(orgGuid, userGuid, category, adding) {
             if (adding) {
                 return this.addOrgUserCategory(orgGuid, userGuid, category);
@@ -178,7 +176,7 @@
         };
 
 
-        // Get space details
+	// Get space details
         this.getSpaceDetails = function(spaceGuid) {
             return $http.get('/v2/spaces/' + spaceGuid + '/summary')
                 .then(function(response) {
@@ -190,8 +188,9 @@
             if (activeSpace.guid === spaceGuid) {
                 $log.info('Use stored space data');
                 callback(activeSpace);
-            } else {
-                this.getSpaceDetails(spaceGuid).then(function(spaceData) {
+            }
+            else {
+                this.getSpaceDetails(spaceGuid).then(function (spaceData) {
                     $log.info('Fetch new space data');
                     activeSpace = spaceData;
                     callback(spaceData);
@@ -208,16 +207,17 @@
         };
 
         // Toggle user permissions
-        this.toggleSpaceUserPermissions = function(user, permissions, spaceGuid) {
-            var returnResponse = function(response) {
-                return response;
-            };
-            var url = '/v2/spaces/' + spaceGuid + '/' + permissions + '/' + user.metadata.guid;
-            if (user[permissions]) {
-                return $http.put(url).then(returnResponse).catch(returnResponse);
-            } else {
-                return $http.delete(url).then(returnResponse).catch(returnResponse);
-            }
+        this.toggleSpaceUserPermissions = function (user, permissions, spaceGuid) {
+          var returnResponse = function (response) {
+            return response;
+          };
+          var url = '/v2/spaces/' + spaceGuid + '/' + permissions + '/' + user.metadata.guid;
+          if (user[permissions]){
+            return $http.put(url).then(returnResponse).catch(returnResponse);
+          }
+          else {
+            return $http.delete(url).then(returnResponse).catch(returnResponse);
+          }
         };
 
         // Get services

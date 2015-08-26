@@ -7,6 +7,6 @@
     </li>
     <li ng-class="{active: activeTab=='services'}"><a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}/services" >Service Instances</a>
     </li>
-    <li ng-show='spaceManager' ng-class="{active: activeTab=='users'}"><a ng-click="unsetActiveUser()" ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}/users">User Management</a>
+    <li ng-class="{active: activeTab=='users'}"><a ng-click="unsetActiveUser()" ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}/users">User Management</a>
     </li>
 </ul>
