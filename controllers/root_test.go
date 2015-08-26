@@ -10,9 +10,9 @@ import (
 
 func TestPing(t *testing.T) {
 	response, request := NewTestRequest("GET", "/ping", nil)
-	router := controllers.InitRouter(nil)
+	router, _, _ := controllers.InitApp(MockCompleteEnvVars)
 	router.ServeHTTP(response, request)
-	if response.Body.String() != "{\"status\": \"alive\"}" {
+	if response.Body.String() != "{\"status\": \"alive\", \"build-info\": \"developer-build\"}" {
 		t.Errorf("Expected alive. Found %s\n", response.Body.String())
 	}
 }

@@ -27,6 +27,7 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.UAAURL = os.Getenv(helpers.UAAURLEnvVar)
 	envVars.APIURL = os.Getenv(helpers.APIURLEnvVar)
 	envVars.PProfEnabled = os.Getenv(helpers.PProfEnabledEnvVar)
+	envVars.BuildInfo = os.Getenv(helpers.BuildInfoEnvVar)
 	return envVars
 }
 

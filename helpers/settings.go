@@ -28,6 +28,8 @@ type Settings struct {
 	HighPrivilegedOauthConfig *clientcredentials.Config
 	// A flag to indicate whether profiling should be included (debug purposes).
 	PProfEnabled bool
+	// Build Info
+	BuildInfo string
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -59,6 +61,9 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 		s.PProfEnabled = false
 	} else {
 		s.PProfEnabled = ((envVars.PProfEnabled == "true") || (envVars.PProfEnabled == "1"))
+	}
+	if s.BuildInfo = envVars.BuildInfo; len(s.BuildInfo) == 0 {
+		s.BuildInfo = "developer-build"
 	}
 
 	// Setup OAuth2 Client Service.
