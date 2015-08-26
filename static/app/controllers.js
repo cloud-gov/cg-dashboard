@@ -49,7 +49,6 @@
                 }
 
             });
-
     };
 
     app.controller('MainCtrl', function($scope, $cloudfoundry, MenuData) {
