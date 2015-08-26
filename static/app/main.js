@@ -5,9 +5,15 @@
         $routeProvider
             .when('/', {
                 templateUrl: 'app/views/index.html',
+                controller: 'HomeCtrl'
+            })
+            .when('/login', {
+                templateUrl: 'app/views/login.html',
+                controller: 'LoginCtrl'
             })
             .when('/dashboard', {
                 templateUrl: 'app/views/dashboard.html',
+                controller: 'HomeCtrl'
             })
             .when('/org/:orgguid', {
                 templateUrl: 'app/views/organizations.html',
