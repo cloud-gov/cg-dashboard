@@ -246,48 +246,6 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa) {
         $scope.activeTab = "users";
     });
 
-    app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
-        // Send service plans to the view
-        var renderServicePlans = function(servicePlans) {
-            $scope.plans = servicePlans;
-        };
-        // Render service details and request service plans
-        var renderService = function(service) {
-            $scope.service = service;
-            $cloudfoundry.getServicePlans(service.entity.service_plans_url).then(renderServicePlans);
-        };
-        // Checks if the service was created and display message
-        var checkIfCreated = function(response) {
-            $scope.disableSubmit = false;
-            if (response.status == 400) {
-                $scope.message = {
-                    type: 'error',
-                    message: response.data.description
-                }
-            } else {
-                $scope.activePlan = null;
-                $scope.message = {
-                    type: 'success',
-                    message: "Service Created!"
-                };
-            }
-        };
-        // Show maker and populate with space info
-        $scope.showServiceMaker = function(plan) {
-            $scope.message = null;
-            $scope.activePlan = plan;
-        };
-        // Send request to create service instance
-        $scope.createServiceInstance = function(serviceInstance) {
-            $scope.disableSubmit = true
-            serviceInstance.service_plan_guid = $scope.activePlan.metadata.guid;
-            $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
-        };
-        // Get service details
-        $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
-    });
-
     app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData, $uaa) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
 
@@ -447,7 +405,8 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa) {
     angular.module('cfdeck')
         .controller('MainCtrl', MainCtrl)
         .controller('OrgCtrl', OrgCtrl)
-        .controller('MarketCtrl', MarketCtrl);
+        .controller('MarketCtrl', MarketCtrl)
+        .controller('ServiceCtrl', ServiceCtrl);
 
     MainCtrl.$inject = ['MenuData']
 
@@ -476,6 +435,51 @@ function loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa) {
         $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
             vm.services = services;
         });
+    };
+    
+    ServiceCtrl.$inject = ['$cloudfoundry', '$routeParams', 'MenuData', '$uaa']
+
+    function ServiceCtrl($cloudfoundry, $routeParams, MenuData, $uaa) {
+        var vm = this;
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
+        // Send service plans to the view
+        var renderServicePlans = function(servicePlans) {
+            vm.plans = servicePlans;
+        };
+        // Render service details and request service plans
+        var renderService = function(service) {
+            vm.service = service;
+            $cloudfoundry.getServicePlans(service.entity.service_plans_url).then(renderServicePlans);
+        };
+        // Checks if the service was created and display message
+        var checkIfCreated = function(response) {
+            vm.disableSubmit = false;
+            if (response.status == 400) {
+                vm.message = {
+                    type: 'error',
+                    message: response.data.description
+                }
+            } else {
+                vm.activePlan = null;
+                vm.message = {
+                    type: 'success',
+                    message: "Service Created!"
+                };
+            }
+        };
+        // Show maker and populate with space info
+        vm.showServiceMaker = function(plan) {
+            vm.message = null;
+            vm.activePlan = plan;
+        };
+        // Send request to create service instance
+        vm.createServiceInstance = function(serviceInstance) {
+            vm.disableSubmit = true
+            serviceInstance.service_plan_guid = vm.activePlan.metadata.guid;
+            $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
+        };
+        // Get service details
+        $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
     };
 
 

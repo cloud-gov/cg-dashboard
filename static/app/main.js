@@ -22,7 +22,7 @@
             .when('/org/:orgguid/marketplace/:serviceguid', {
                 templateUrl: 'app/views/service.html',
                 controller: 'ServiceCtrl',
-                controllerAs: 'marketservice'
+                controllerAs: 'servicemarket'
             })
             .when('/org/:orgguid/manage-org', {
                 templateUrl: 'app/views/manage_org.html',

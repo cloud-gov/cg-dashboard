@@ -1,7 +1,7 @@
 <div class="well">
-    <h4 class="text-center">Create Service Instance for <u>{{service.entity.label}}</u> service using the <u>{{activePlan.entity.name}}</u> plan </h4>
+    <h4 class="text-center">Create Service Instance for <u>{{service.entity.label}}</u> service using the <u>{{servicemarket.activePlan.entity.name}}</u> plan </h4>
     </br>
-      <div ng-show='message.type=="error"' class="alert alert-danger" role="alert">{{message.message}}</div>
+      <div ng-show='servicemarket.message.type=="error"' class="alert alert-danger" role="alert">{{servicemarket.message.message}}</div>
     <form>
         <div class="form-group">
             <label>Choose a name for the service</label>
@@ -17,7 +17,7 @@
                 <option value=""></option>
             </select>
         </div>
-        <button ng-disabled="disableSubmit" class="btn btn-primary" type="submit" value="Create Service Instance"
-        ng-click="createServiceInstance(serviceInstance)" >Create Service Instance</button>
+        <button ng-disabled="servicemarket.disableSubmit" class="btn btn-primary" type="submit" value="Create Service Instance"
+        ng-click="servicemarket.createServiceInstance(serviceInstance)" >Create Service Instance</button>
     </form>
 </div>

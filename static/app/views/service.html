@@ -1,9 +1,9 @@
 <div class="page-header">
-    <h3 class="text-center">{{service.entity.label}} - service plans</h3>
-    <p class="text-center">{{service.entity.description}}</p>
+    <h3 class="text-center">{{servicemarket.service.entity.label}} - service plans</h3>
+    <p class="text-center">{{servicemarket.service.entity.description}}</p>
 </div>
 
-<div ng-show='message.type=="success"' class="alert alert-success" role="alert">{{message.message}}</div>
+<div ng-show='servicemarket.message.type=="success"' class="alert alert-success" role="alert">{{servicemarket.message.message}}</div>
 
 
 <form>
@@ -13,7 +13,7 @@
             </div>
 
             <input id="serviceSearch" type="text" class="form-control" placeholder="Search for a service"
-            ng-model="searchService">
+            ng-model="servicemarket.searchService">
 
         </div>
     </div>
@@ -50,7 +50,7 @@
 
     </thead>
     <tbody>
-        <tr ng-click="showService(service)" ng-repeat="plan in plans | orderBy:sortType:sortReverse | filter:searchService">
+        <tr ng-click="servicemarket.showService(service)" ng-repeat="plan in servicemarket.plans | orderBy:sortType:sortReverse | filter:servicemarket.searchService">
             <td class="plan-name-data">{{plan.entity.name}}</td>
             <td class="plan-free-data">{{plan.entity.free}}</td>
             <td class="plan-description-data">{{plan.entity.description}}</td>
@@ -65,12 +65,12 @@
                 </table>
             </td>
             <td>
-                <button type="button" class="btn btn-xs btn-primary" ng-click="showServiceMaker(plan)">Create Service Instance</button>
+                <button type="button" class="btn btn-xs btn-primary" ng-click="servicemarket.showServiceMaker(plan)">Create Service Instance</button>
             </td>
         </tr>
     </tbody>
 </table>
 
-<div id="service-maker" ng-show="activePlan">
+<div id="service-maker" ng-show="servicemarket.activePlan">
     <ng-include src="'app/views/servicemaker.html'"></ng-include>
 </div>

@@ -858,7 +858,7 @@ describe('MarketCtrl', function() {
 });
 
 describe('ServiceCtrl', function() {
-    var scope, cloudfoundry, MenuData = {
+    var ctrl, cloudfoundry, MenuData = {
         data: {}
     };
     beforeEach(module('cfdeck'));
@@ -884,41 +884,39 @@ describe('ServiceCtrl', function() {
         spyOn(cloudfoundry, 'getServiceDetails').and.callThrough();
         spyOn(cloudfoundry, 'getServicePlans').and.callThrough();
 
-        // Load Ctrl and scope
-        scope = $rootScope.$new()
+        // Load Ctrl
         ctrl = $controller('ServiceCtrl', {
-            $scope: scope,
             $cloudfoundry: cloudfoundry,
+            $rootScope: $rootScope,
+            MenuData: MenuData,           
             $uaa: uaa,
-            MenuData: MenuData
         });
     }));
 
     it('should put the service details into the space', function() {
-        expect(scope.service.entity.name).toEqual('service1');
+        expect(ctrl.service.entity.name).toEqual('service1');
     });
 
     it('should put the service plans data', function() {
-        expect(scope.plans[0]).toEqual({
+        expect(ctrl.plans[0]).toEqual({
             name: 'plan1'
         });
     });
 
     it('should show the service maker when showServiceMaker invoked by passing spaces, activePlan, and show serviceMaker', function() {
-
-        scope.showServiceMaker({
+        ctrl.showServiceMaker({
             name: 'plan1'
         });
-        expect(scope.activePlan).toEqual({
+        expect(ctrl.activePlan).toEqual({
             name: 'plan1'
         })
     });
 
     it('should create an service instance when prompted and show create message', function() {
-        scope.activePlan = {
+        ctrl.activePlan = {
             metadata: 'plan1guid'
         };
-        scope.createServiceInstance({
+        ctrl.createServiceInstance({
             name: 'service1'
         });
         // TODO: add a spy to check on message
