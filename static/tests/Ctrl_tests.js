@@ -7,6 +7,14 @@ var getAuthStatus = function() {
     }
 };
 
+var isAuthorized = function() {
+    return {
+        then: function(callback) {
+            return callback(true);
+        }
+    }
+};
+
 var getOrgsData = function(callback) {
     return callback(
         [{
@@ -315,7 +323,7 @@ var getOrgUsersGeneric = function(guid, org_users, load) {
 }
 
 var returnHome = function() {
-  return;
+    return;
 }
 
 var getUsersGeneric = function(guid) {
@@ -346,8 +354,8 @@ describe('MainCtrl', function() {
         cloudfoundry = {
             getOrgsData: getOrgsData,
             setOrgsData: setOrgsData,
-            returnHome: returnHome
-        };
+            returnHome: returnHome,
+       };
         uaa = {
             getUserInfoGivenName: getUserInfoGivenName
         };
@@ -385,7 +393,8 @@ describe('OrgCtrl', function() {
             findActiveOrg: findActiveOrg,
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
-            returnHome: returnHome
+            returnHome: returnHome,
+            isAuthorized: isAuthorized            
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -433,7 +442,8 @@ describe('OrgManagementCtrl', function() {
             getOrgUsers: getOrgUsersGeneric,
             findActiveOrg: findActiveOrg,
             getQuotaUsage: getQuotaUsage,
-            returnHome: returnHome
+            returnHome: returnHome,
+            isAuthorized: isAuthorized            
         }
 
         // Spyon
@@ -489,7 +499,8 @@ describe('OrgUserManagementCtrl', function() {
             findActiveOrg: findActiveOrg,
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
-            returnHome: returnHome
+            returnHome: returnHome,
+            isAuthorized: isAuthorized         
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -569,7 +580,8 @@ describe('SpaceCtrl', function() {
             getQuotaUsage: getQuotaUsage,
             getOrgUserCategory: getOrgUserCategory,
             findActiveSpace: findActiveSpace,
-            returnHome: returnHome
+            returnHome: returnHome,
+            isAuthorized: isAuthorized
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -629,7 +641,8 @@ describe('SpaceServicesCtrl', function() {
             getSpaceServices: getSpaceServices,
             getOrgUserCategory: getOrgUserCategory,
             findActiveSpace: findActiveSpace,
-            returnHome: returnHome
+            returnHome: returnHome,
+            isAuthorized: isAuthorized
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -696,6 +709,7 @@ describe('SpaceUserCtrl', function() {
             findActiveSpace: findActiveSpace,
             getOrgUserCategory: getOrgUserCategory,
             returnHome: returnHome,
+            isAuthorized: isAuthorized,            
             toggleSpaceUserPermissions: function(user, permission, spaceGuid) {
                 return {
                     then: function(callback) {
@@ -825,7 +839,8 @@ describe('MarketCtrl', function() {
             findActiveOrg: findActiveOrg,
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
-            returnHome: returnHome
+            returnHome: returnHome,
+            isAuthorized: isAuthorized,       
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -872,6 +887,7 @@ describe('ServiceCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
+            isAuthorized: isAuthorized,                    
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -951,6 +967,7 @@ describe('AppCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             findActiveSpace: getSpaceDetails,
             returnHome: returnHome,
+            isAuthorized: isAuthorized,           
         };
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
