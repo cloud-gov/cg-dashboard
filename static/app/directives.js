@@ -36,20 +36,32 @@
     app.directive('deckHeader', function($cloudfoundry, $uaa) {
         return {
             templateUrl: 'app/views/partials/header.html',
-            restrict: 'A',
-            controller: function($scope) {
-                // Render the given name of the user on the page
-                var renderName = function(name) {
-                    $scope.givenName = name;
-                };
-                $cloudfoundry.isAuthorized()
-                    .then(function(authorized) {
-                        $scope.authorized = authorized;
-                        if (authorized == true) {
-                            // Load the given name of the logged in user.
-                            $uaa.getUserInfoGivenName().then(renderName);
-                        }
-                    });
+            controller: function($scope, $location) {
+              // Render the orgs on the page
+              var renderOrgs = function(orgs) {
+                  $scope.orgs = orgs;
+                  $cloudfoundry.setOrgsData(orgs);
+              };
+              var renderName = function(name) {
+                  $scope.givenName = name;
+                  // Load user's permissions
+                  $uaa.getUsersPermissions('managed_organizations')
+                  // Only allow navigation when names are loaded
+                  $scope.authorized = true;
+              };
+              // Get the auth status
+              $cloudfoundry.getAuthStatus().then(function (status) {
+                if (status === "authorized") {
+                  // Load the org data
+                  $cloudfoundry.getOrgsData(renderOrgs);
+                  // Load username
+                  $uaa.getUserInfoGivenName().then(renderName);
+                }
+                else {
+                  $scope.authorized = false;
+                  $location.path('/');
+                }
+              });
             }
         };
     });
