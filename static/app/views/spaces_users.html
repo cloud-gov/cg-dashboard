@@ -1,13 +1,14 @@
 <div>
     <!-- Tabs -->
     <ng-include src="'app/views/partials/space_tabs.html'"></ng-include>
+    <div class="col-xs-12" style="height:5px;"></div>
     <!-- Tab panes -->
     <div class="tab-content" ng-show="users">
         <div role="tabpanel" class="tab-pane active" ng-hide="activeUser">
-            <ul class="nav nav-pills">
-                <li ng-class="{active: !addUserPill}"><a href="" ng-click="addUserPill = false">Current Space Users</a>
+            <ul class="nav nav-pills nav-justified">
+		    <li ng-class="{active: !addUserPill}"><a href="" ng-click="addUserPill = false">Current <u>{{ MenuData.data.currentOrg | orgNameFilter }} - {{space.name}}</u> Space Users</a>
                 </li>
-                <li ng-class="{active: addUserPill}"><a href="" ng-click="addUserPill = true">{{ MenuData.data.currentOrg | orgNameFilter }} Users</a>
+		<li ng-class="{active: addUserPill}"><a href="" ng-click="addUserPill = true">All <u>{{ MenuData.data.currentOrg | orgNameFilter }}</u> Org Users</a>
                 </li>
             </ul>
             <form>
@@ -32,13 +33,6 @@
                       <span ng-show="sortType == 'entity.username' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
                   </a>
                     </th>
-                    <th id='user-description-heading'>
-                        <a ng-click="sortType = 'entity.admin'; sortReverse = !sortReverse">
-                         Admin
-                      <span ng-show="sortType == 'entity.admin' && !sortReverse" class="glyphicon glyphicon-arrow-up"></span>
-                      <span ng-show="sortType == 'entity.admin' && sortReverse" class="glyphicon glyphicon-arrow-down"></span>
-                  </a>
-                    </th>
                     <th id='user-created-heading'>
                         <a ng-click="sortType = 'metadata.created_at'; sortReverse = !sortReverse">
                           Date Created
@@ -52,7 +46,6 @@
                         <td class="user-name-data">
                             <a ng-click="setActiveUser(user)">{{user.entity.username}}</a>
                         </td>
-                        <td class="user-description-data">{{user.entity.admin}}</td>
                         <td class="user-date-created-data">{{user.metadata.created_at | date:'yyyy-MM-dd'}}</td>
                     </tr>
                 </tbody>
@@ -61,7 +54,6 @@
                         <td class="user-name-data">
                             <a ng-click="setActiveUser(user)">{{user.entity.username}}</a>
                         </td>
-                        <td class="user-description-data">{{user.entity.admin}}</td>
                         <td class="user-date-created-data">{{user.metadata.created_at | date:'yyyy-MM-dd'}}</td>
                     </tr>
                 </tbody>
