@@ -4,7 +4,7 @@
     <!-- Tab panes -->
     <div class="tab-content" ng-show="users">
         <div role="tabpanel" class="tab-pane active" ng-hide="activeUser">
-            <ul class="nav nav-pills">
+            <ul class="nav nav-pills nav-justified">
                 <li ng-class="{active: !addUserPill}"><a href="" ng-click="addUserPill = false">Current Space Users</a>
                 </li>
                 <li ng-class="{active: addUserPill}"><a href="" ng-click="addUserPill = true">{{ MenuData.data.currentOrg | orgNameFilter }} Users</a>
