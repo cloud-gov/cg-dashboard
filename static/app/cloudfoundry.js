@@ -7,13 +7,51 @@
             guid: undefined
         };
 
+        // Attempts http request again if 503 is returned.
+        function httpRetry(url) {
+            var self = this,
+                // This defer method allows us to return a promise and resolve
+                // it later, without chaning multiple promises together.
+                deferred = $q.defer(),
+                counter = 0,
+                finalResponse;
+            // Function for getting and returning http request
+            var get = function(url) {
+                return $http.get(url).then(self.receive).catch(self.checkError);
+            }
+            // Function to receive an http request if no errors are present
+            self.receive = function(response) {
+                deferred.resolve(response);
+            };
+            // Check the type of error, if the error has been checked
+            // over 10 time or the error is not a 503 return the response.
+            // Otherwise retry the http get request
+            self.checkError = function(response) {
+                counter++;
+                if (counter > 10) {
+                    return response;
+                } else if (response.status === 503) {
+                    return get(url)
+                } else {
+                    return response;
+                };
+            };
+            // Start the loop
+            get(url);
+            // Return a promise to return the final response
+            return deferred.promise;
+        }
+
         // Paging function for endpoints that require more than one page
-        var httpPager = function(url, resources, loadComplete) {
+        function httpPager(url, resources, loadComplete) {
             // Prevent JS scope bug
-            var self = this;
+            var self = this,
+                currentUrl,
+                counter = 0;
             // Get the next url
             var get = function(nextUrl) {
-                return $http.get(nextUrl).then(this.receive).catch(this.returnError);
+                currentUrl = nextUrl;
+                return $http.get(nextUrl).then(self.receive).catch(self.returnError);
             };
             // Receive response and add data
             self.receive = function(response) {
@@ -25,12 +63,20 @@
             };
             // Return error if needed
             self.returnError = function(response) {
-                return response;
+                counter++;
+                if (counter > 10) {
+                    self.setLoadComplete();
+                    return response;
+                } else if (response.status === 503) {
+                    get(currentUrl);
+                } else {
+                    return response;
+                };
             };
             // Show that load has finished
             self.setLoadComplete = function() {
                 loadComplete.status = true;
-            }
+            };
             return get(url);
         };
 
@@ -180,7 +226,7 @@
 
         // Get space details
         this.getSpaceDetails = function(spaceGuid) {
-            return $http.get('/v2/spaces/' + spaceGuid + '/summary')
+            return httpRetry('/v2/spaces/' + spaceGuid + '/summary')
                 .then(function(response) {
                     return response.data;
                 });
@@ -201,7 +247,7 @@
 
         // Get space users
         this.getSpaceUsers = function(spaceGuid) {
-            return $http.get('/v2/spaces/' + spaceGuid + '/user_roles')
+            return httpRetry('/v2/spaces/' + spaceGuid + '/user_roles')
                 .then(function(response) {
                     return response.data.resources;
                 });
