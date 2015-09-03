@@ -9,11 +9,12 @@
 		<title>18F Cloud Deck</title>
 
 		<!-- Bootstrap -->
-		<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-		<link href="bower_components/angular-toggle-switch/angular-toggle-switch.css" rel="stylesheet">
+		<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="bower_components/angular-toggle-switch/angular-toggle-switch.css" rel="stylesheet" />
 		<link rel="stylesheet" href="bower_components/ladda/dist/ladda-themeless.min.css" />
 
-		<link href="assets/css/app.css" rel="stylesheet">
+		<link href="assets/css/app.css" rel="stylesheet" />
+		<link href="assets/css/statuspage.css" rel="stylesheet" />
 		<script src="bower_components/angularjs/angular.min.js"></script>
 		<script src="bower_components/angular-route/angular-route.min.js"></script>
 		<script src="bower_components/ladda/dist/spin.min.js"></script>
@@ -23,6 +24,7 @@
 		<script src="bower_components/angular-bootstrap-confirm/src/ui-bootstrap-position.js"></script>
 		<script src="bower_components/angular-bootstrap-confirm/dist/angular-bootstrap-confirm.min.js"></script>
 		<script src="bower_components/angular-toggle-switch/angular-toggle-switch.min.js"></script>
+		<script src="https://cdn.statuspage.io/se-v2.js"></script>
 
 		<script src="app/main.js"></script>
 		<script src="app/cloudfoundry.js"></script>
@@ -36,13 +38,13 @@
 	<body ng-controller="MainCtrl">
 		<div deck-header></div>
 		<div class="container-fluid">
-
-			<div class="row"> 
-                <div ng-show='authorized' class="col-sm-3 col-md-2 sidebar" ng-include="'app/views/partials/sidebar.html'"></div>
+			<div class="row">
+				<div ng-show='authorized' class="col-sm-3 col-md-2 sidebar" ng-include="'app/views/partials/sidebar.html'"></div>
 				<div ng-class="authorized ? 'col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main' : ''" ng-view></div>
+			</div>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+			<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+			<script src="assets/js/happyfoxchat.js"></script>
 		</div>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-		<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-		<script src="assets/js/happyfoxchat.js"></script>
 	</body>
 </html>
