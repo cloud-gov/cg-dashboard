@@ -43,6 +43,8 @@
         }
 
         // Paging function for endpoints that require more than one page
+        // TODO: Add httpRetry to httpPager, in its current form httpRetry 
+        // will not continue the promise chain inside httpPager. 
         function httpPager(url, resources, loadComplete) {
             // Prevent JS scope bug
             var self = this,
