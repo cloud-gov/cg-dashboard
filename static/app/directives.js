@@ -65,4 +65,19 @@
             }
         };
     });
+    app.directive('cloudStatus', function() {
+      return {
+          templateUrl: 'app/views/partials/status.html',
+          controller: function($scope, $http) {
+              var sp = new StatusPage.page({ page : 'swcbylb1c30f' });
+              sp.status({
+                success: function(data) {
+                  $scope.$apply(function(){
+                    $scope.statuspagecolor = "statuspagecolor-light " + data.status.indicator;
+                  });
+                }
+              })
+          }
+      };
+    });
 }());

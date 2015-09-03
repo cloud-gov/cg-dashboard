@@ -1,0 +1,29 @@
+// The CSS for the colored light that represents the current status per statuspage.io
+// $red:#e74c3c;
+// $orange:#e67e22;
+// $yellow:#f1c40f;
+// $green:#2ecc71;
+
+.statuspagecolor-light {
+  @include border-radius(99px);
+  display:inline-block;
+  width:10px;
+  height:10px;
+  margin-right:5px;
+}
+
+.statuspagecolor-light.critical {
+  color:#e74c3c;
+}
+
+.statuspagecolor-light.major {
+  color:#e67e22;
+}
+
+.statuspagecolor-light.minor {
+  color:#f1c40f;
+}
+
+.statuspagecolor-light.none {
+  color:#2ecc71;
+}
