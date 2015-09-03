@@ -65,10 +65,10 @@
             }
         };
     });
-    app.directive('cloudStatus', function() {
+    app.directive('cloudStatus', function($window) {
       return {
           templateUrl: 'app/views/partials/status.html',
-          controller: function($scope, $http) {
+          controller: function($scope, $http, $window) {
               var sp = new StatusPage.page({ page : 'swcbylb1c30f' });
               sp.status({
                 success: function(data) {
@@ -77,6 +77,11 @@
                   });
                 }
               })
+          },
+          link: function($scope) {
+            $scope.goto = function() {
+                $window.open('https://cloudgov.statuspage.io/');
+            };
           }
       };
     });
