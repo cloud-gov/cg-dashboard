@@ -393,7 +393,15 @@
                 });
         };
 
-        // Get all the services available to a space
+	// Get app events
+        this.getAppEvents = function(appGuid) {
+            return $http.get('/v2/events?order-direction=desc&q=actee:' + appGuid)
+                .then(function(response) {
+                    return response.data.resources;
+                });
+        };
+
+	// Get all the services available to a space
         this.getSpaceServices = function(spaceGuid) {
             return $http.get('/v2/spaces/' + spaceGuid + '/service_instances')
                 .then(function(response) {
