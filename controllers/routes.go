@@ -46,17 +46,10 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	uaaRouter.Get("/userinfo", (*UAAContext).UserInfo)
 	uaaRouter.Post("/Users", (*UAAContext).QueryUser)
 
-	if settings.PProfEnabled {
-		// Setup the /pprof subrouter.
-		pprofRouter := secureRouter.Subrouter(PProfContext{}, "/debug/pprof")
-		pprofRouter.Get("/", (*PProfContext).Index)
-		pprofRouter.Get("/heap", (*PProfContext).Heap)
-		pprofRouter.Get("/goroutine", (*PProfContext).Goroutine)
-		pprofRouter.Get("/threadcreate", (*PProfContext).Threadcreate)
-		pprofRouter.Get("/block", (*PProfContext).Threadcreate)
-		pprofRouter.Get("/profile", (*PProfContext).Profile)
-		pprofRouter.Get("/symbol", (*PProfContext).Symbol)
-	}
+	// Setup the /log subrouter.
+	logRouter := secureRouter.Subrouter(LogContext{}, "/log")
+	logRouter.Middleware((*LogContext).OAuth)
+	logRouter.Get("/recent", (*LogContext).RecentLogs)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.

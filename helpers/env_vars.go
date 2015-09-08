@@ -19,6 +19,9 @@ var (
 	// APIURLEnvVar is the environment variable key that represents the
 	// base api URL endpoint that this app should use to access cloud foundry data.
 	APIURLEnvVar = "CONSOLE_API_URL"
+	// LogURLEnvVar is the environment variable key that represents the
+	// endpoint to the loggregator.
+	LogURLEnvVar = "CONSOLE_LOG_URL"
 	// PProfEnabledEnvVar is the environment variable key that represents if the pprof routes
 	// should be enabled. If no value is specified, it is assumed to be false.
 	PProfEnabledEnvVar = "PPROF_ENABLED"
@@ -34,6 +37,7 @@ type EnvVars struct {
 	LoginURL     string
 	UAAURL       string
 	APIURL       string
+	LogURL       string
 	PProfEnabled string
 	BuildInfo    string
 }

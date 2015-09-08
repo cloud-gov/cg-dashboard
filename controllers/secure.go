@@ -7,6 +7,7 @@ import (
 	"golang.org/x/oauth2"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -81,6 +82,15 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	}
 	// Should return the same status.
 	rw.WriteHeader(res.StatusCode)
+	contentType := res.Header.Get("Content-Type")
+	if strings.HasPrefix(contentType, "multipart/") {
+		messages, err := helpers.ParseLogMessages(&res.Body, contentType)
+		if err != nil {
+			fmt.Fprintf(rw, err.Error())
+		}
+		fmt.Fprintf(rw, messages.String())
+		return
+	}
 	// Read the body.
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
@@ -88,6 +98,7 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 		fmt.Fprintf(rw, "unknown error. try again")
 		return
 	}
+
 	// Write the body into response that is going back to the frontend.
 	fmt.Fprintf(rw, string(body))
 }

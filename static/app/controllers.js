@@ -361,6 +361,9 @@
                 $scope.appStats = appStats;
             }
         };
+        var renderAppLogs = function(appLogs) {
+		$scope.appLogs = appLogs;
+	}
         var renderAppEvents = function(appEvents) {
             $scope.appEvents = [];
 	    // Go through the events and pull out the data we want (which is what the cf events command will give us)
@@ -398,6 +401,10 @@
                 $interval.cancel($scope.statsPromise);
             });
         };
+	// Get App Logs
+	$scope.getAppLogs = function() {
+		$cloudfoundry.getAppLogs($routeParams['appguid']).then(renderAppLogs);
+	}
 	// Get App Events
 	$scope.getAppEvents = function() {
 		$cloudfoundry.getAppEvents($routeParams['appguid']).then(renderAppEvents);
@@ -496,5 +503,6 @@
         $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
         resetAppStatsPoll();
 	$scope.getAppEvents();
+	$scope.getAppLogs();
     });
 }());

@@ -245,12 +245,14 @@
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-		<button class="btn btn-default pull-right">Refresh</button>
+		<button class="btn btn-default pull-right" ng-click="getAppLogs()">Refresh</button>
                 <h3 class="panel-title">Logs</h3>
 		<div class="clearfix"></div>
             </div>
-            <div class="panel-body">
-                data
+            <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
+		    <ul class="list-group">
+		    <li class="list-group-item" ng-repeat="appLog in appLogs">{{appLog.message}}</li>
+		    </ul>
             </div>
         </div>
     </div>

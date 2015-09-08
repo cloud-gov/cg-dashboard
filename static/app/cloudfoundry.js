@@ -393,6 +393,15 @@
                 });
         };
 
+	// Get app logs
+        this.getAppLogs = function(appGuid) {
+            return $http.get('/log/recent?app='+ appGuid)
+                .then(function(response) {
+                    return response.data;
+                })
+		.catch(function(err){console.log(err)});
+        };
+
 	// Get app events
         this.getAppEvents = function(appGuid) {
             return $http.get('/v2/events?order-direction=desc&q=actee:' + appGuid)
