@@ -3,9 +3,22 @@
 	"GoVersion": "go1.5",
 	"Deps": [
 		{
+			"ImportPath": "github.com/cloudfoundry/loggregatorlib/logmessage",
+			"Rev": "42d4217a9bd689179b313e53f8f0227b3b7cd597"
+		},
+		{
+			"ImportPath": "github.com/cloudfoundry/loggregatorlib/signature",
+			"Rev": "42d4217a9bd689179b313e53f8f0227b3b7cd597"
+		},
+		{
 			"ImportPath": "github.com/gocraft/web",
 			"Comment": "v1.1-16-g934a096",
 			"Rev": "934a096ff6918ed5d4667075794a8d18a88c1576"
+		},
+		{
+			"ImportPath": "github.com/gogo/protobuf/proto",
+			"Comment": "v0.1-6-g932b70a",
+			"Rev": "932b70afa8b0bf4a8e167fdf0c3367cebba45903"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
