@@ -45,6 +45,7 @@ func (ev *acceptanceTestEnvVars) loadTestEnvVars() {
 	ev.LoginURL = os.Getenv(helpers.LoginURLEnvVar)
 	ev.UAAURL = os.Getenv(helpers.UAAURLEnvVar)
 	ev.APIURL = os.Getenv(helpers.APIURLEnvVar)
+	ev.LogURL = os.Getenv(helpers.LogURLEnvVar)
 
 }
 
