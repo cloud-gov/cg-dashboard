@@ -31,7 +31,7 @@ If you are testing locally, export these variables. If you are deploying to clou
 - `CONSOLE_HOSTNAME`: The URL of the service itself.
 - `CONSOLE_LOGIN_URL`: The base URL of the auth service. i.e. `https://login.domain.com`
 - `CONSOLE_UAA_URL`: The URL of the UAA service. i.e. `https://uaa.domain.com`
-- `CONSOLE_API`: The URL of the API service. i.e. `http://api.domain.com`
+- `CONSOLE_API_URL`: The URL of the API service. i.e. `http://api.domain.com`
 - `CONSOLE_LOG_URL`: The URL of the loggregator service. i.e. `http://loggregator.domain.com`
 - `PPROF_ENABLED`: An optional variable. If set to `true` or `1`, will turn on `/debug/pprof` endpoints as seen [here](https://golang.org/pkg/net/http/pprof/)
 
