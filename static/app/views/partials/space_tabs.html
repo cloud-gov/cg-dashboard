@@ -3,7 +3,7 @@
 </div>
 <!-- Nav tabs -->
 <ul class="nav nav-tabs nav-justified">
-    <li ng-class="{active: activeTab=='apps'}"><a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/spaces/{{ space.guid }}">Apps</a>
+    <li ng-class="{active: activeTab=='apps'}"><a ng-href="#/org/{{ main.MenuData.data.currentOrg.guid }}/spaces/{{ main.MenuData.data.currentSpace.guid }}">Apps</a>
     </li>
     <li ng-class="{active: activeTab=='services'}">
         <a ng-href="#/org/{{ main.MenuData.data.currentOrg.guid }}/spaces/{{ main.MenuData.data.currentSpace.guid }}/services">Service Instances</a>
