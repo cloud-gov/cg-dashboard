@@ -1,7 +1,9 @@
-package controllers
+package controllers_test
 
 import (
+	"github.com/18F/cf-deck/controllers"
 	"github.com/18F/cf-deck/helpers"
+	. "github.com/18F/cf-deck/helpers/testhelpers"
 	"testing"
 )
 
@@ -15,15 +17,8 @@ type initAppTest struct {
 
 var initAppTests = []initAppTest{
 	{
-		testName: "Basic Valid EnvVars",
-		envVars: helpers.EnvVars{
-			ClientID:     "ID",
-			ClientSecret: "Secret",
-			Hostname:     "hostname",
-			LoginURL:     "loginurl",
-			UAAURL:       "uaaurl",
-			APIURL:       "apiurl",
-		},
+		testName:          "Basic Valid EnvVars",
+		envVars:           MockCompleteEnvVars,
 		returnRouterNil:   false,
 		returnSettingsNil: false,
 		returnErrorNil:    true,
@@ -39,7 +34,7 @@ var initAppTests = []initAppTest{
 
 func TestInitApp(t *testing.T) {
 	for _, test := range initAppTests {
-		router, settings, err := InitApp(test.envVars)
+		router, settings, err := controllers.InitApp(test.envVars)
 		if (router == nil) != test.returnRouterNil {
 			t.Errorf("Test %s did not return correct router value. Expected %t, Actual %t", test.testName, test.returnRouterNil, (router == nil))
 		} else if (settings == nil) != test.returnSettingsNil {

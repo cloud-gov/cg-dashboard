@@ -21,6 +21,7 @@ var initSettingsTests = []initSettingsTest{
 			LoginURL:     "loginurl",
 			UAAURL:       "uaaurl",
 			APIURL:       "apiurl",
+			LogURL:       "logurl",
 		},
 		returnValueNull: true,
 	},
