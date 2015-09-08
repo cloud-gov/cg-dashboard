@@ -4,7 +4,7 @@ go:
 - 1.5
 before_install:
 - npm install
-- pip install ruamel.yaml
+- pip install --user ruamel.yaml
 script:
 - "./codecheck.sh -u"
 - npm test

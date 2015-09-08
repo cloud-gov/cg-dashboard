@@ -212,6 +212,30 @@ var getAppStats = function(appGuid) {
     }
 };
 
+var getAppEvents = function(appGuid) {
+    return {
+        then: function(callback) {
+            return callback([{
+                entity: {
+                    timestamp: '0',
+                    metadata: {
+                        request: 'request'
+                    }
+                }
+            }])
+        }
+    }
+};
+
+var getAppLogs = function(appGuid) {
+    return {
+        then: function(callback) {
+            return callback([{
+                message: 'message0'
+            }])
+        }
+    }
+};
 var restartApp = function(app) {
     return {
         then: function(callback) {
@@ -953,8 +977,9 @@ describe('AppCtrl', function() {
             restartApp: restartApp,
             getPollAppStatusProperty: getPollAppStatusProperty,
             getAppSummary: getAppSummary,
-            getAppSummary: getAppSummary,
             getAppStats: getAppStats,
+            getAppEvents: getAppEvents,
+            getAppLogs: getAppLogs,
             getSpaceDetails: getSpaceDetails,
             findActiveOrg: findActiveOrg,
             getSpaceServices: getSpaceServices,
