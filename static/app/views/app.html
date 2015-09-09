@@ -237,3 +237,50 @@
         </div>
     </div>
 </div>
+
+<h4 class="text-center">Logs and Events</h4>
+
+<div class="row row-height" >
+
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+		<button class="btn btn-default pull-right" ng-click="getAppLogs()">Refresh</button>
+                <h3 class="panel-title">Logs</h3>
+		<div class="clearfix"></div>
+            </div>
+            <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
+		    <ul class="list-group">
+		    <li class="list-group-item" ng-repeat="appLog in appLogs">{{appLog.message}}</li>
+		    </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+		<button class="btn btn-default pull-right" ng-click="getAppEvents()">Refresh</button>
+                <h3 class="panel-title">Events</h3>
+		<div class="clearfix"></div>
+            </div>
+            <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
+		<table class="table">
+			<thead>
+				<th>Time</th>
+				<th>Event</th>
+				<th>Actor</th>
+				<th>Description</th>
+			</thead>
+			<tr ng-repeat="appEvent in appEvents">
+				<td>{{appEvent.time}}</td>
+				<td>{{appEvent.type}}</td>
+				<td>{{appEvent.actor}}</td>
+				<td>
+					<div ng-repeat="desc in appEvent.desc">{{desc}}</div>
+				</td>
+			</tr>
+		 </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -88,7 +88,7 @@ func TestProxy(t *testing.T) {
 		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
 		c := &controllers.SecureContext{Context: new(controllers.Context)}
 		response, request, _ := PrepareExternalServerCall(t, c, testServer, fullURL, test)
-		c.Proxy(response, request, fullURL)
+		c.Proxy(response, request, fullURL, c.GenericResponseHandler)
 		VerifyExternalCallResponse(t, response, &test)
 		testServer.Close()
 	}

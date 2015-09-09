@@ -7,3 +7,4 @@ env:
   CONSOLE_LOGIN_URL: https://login.18f.gov/
   CONSOLE_UAA_URL: https://uaa.18f.gov/
   CONSOLE_API_URL: https://api.18f.gov/
+  CONSOLE_LOG_URL: https://loggregator.18f.gov/

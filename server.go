@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/18F/cf-deck/controllers"
+	"github.com/18F/cf-deck/controllers/pprof"
 	"github.com/18F/cf-deck/helpers"
 	"github.com/gorilla/context"
 
@@ -26,6 +27,7 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.LoginURL = os.Getenv(helpers.LoginURLEnvVar)
 	envVars.UAAURL = os.Getenv(helpers.UAAURLEnvVar)
 	envVars.APIURL = os.Getenv(helpers.APIURLEnvVar)
+	envVars.LogURL = os.Getenv(helpers.LogURLEnvVar)
 	envVars.PProfEnabled = os.Getenv(helpers.PProfEnabledEnvVar)
 	envVars.BuildInfo = os.Getenv(helpers.BuildInfoEnvVar)
 	return envVars
@@ -44,13 +46,16 @@ func startApp(port string) {
 	// Load environment variables
 	envVars := loadEnvVars()
 
-	app, _, err := controllers.InitApp(envVars)
+	app, settings, err := controllers.InitApp(envVars)
 	if err != nil {
 		// Print the error.
 		fmt.Println(err.Error())
 		// Terminate the program with a non-zero value number.
 		// Need this for testing purposes.
 		os.Exit(1)
+	}
+	if settings.PProfEnabled {
+		pprof.InitPProfRouter(app)
 	}
 
 	// TODO add better timeout message. By default it will just say "Timeout"

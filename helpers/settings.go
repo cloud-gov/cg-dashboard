@@ -24,6 +24,8 @@ type Settings struct {
 	TokenContext context.Context
 	// UAA API
 	UaaURL string
+	// Log API
+	LogURL string
 	// High Privileged OauthConfig
 	HighPrivilegedOauthConfig *clientcredentials.Config
 	// A flag to indicate whether profiling should be included (debug purposes).
@@ -53,15 +55,15 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	if len(envVars.APIURL) == 0 {
 		return errors.New("Unable to find '" + APIURLEnvVar + "' in environment. Exiting.\n")
 	}
+	if len(envVars.LogURL) == 0 {
+		return errors.New("Unable to find '" + LogURLEnvVar + "' in environment. Exiting.\n")
+	}
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
 	s.TokenContext = context.TODO()
 	s.UaaURL = envVars.UAAURL
-	if len(envVars.APIURL) == 0 {
-		s.PProfEnabled = false
-	} else {
-		s.PProfEnabled = ((envVars.PProfEnabled == "true") || (envVars.PProfEnabled == "1"))
-	}
+	s.LogURL = envVars.LogURL
+	s.PProfEnabled = ((envVars.PProfEnabled == "true") || (envVars.PProfEnabled == "1"))
 	if s.BuildInfo = envVars.BuildInfo; len(s.BuildInfo) == 0 {
 		s.BuildInfo = "developer-build"
 	}

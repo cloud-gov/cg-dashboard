@@ -31,7 +31,8 @@ If you are testing locally, export these variables. If you are deploying to clou
 - `CONSOLE_HOSTNAME`: The URL of the service itself.
 - `CONSOLE_LOGIN_URL`: The base URL of the auth service. i.e. `https://login.domain.com`
 - `CONSOLE_UAA_URL`: The URL of the UAA service. i.e. `https://uaa.domain.com`
-- `CONSOLE_API`: The URL of the API service. i.e. `http://api.domain.com`
+- `CONSOLE_API_URL`: The URL of the API service. i.e. `http://api.domain.com`
+- `CONSOLE_LOG_URL`: The URL of the loggregator service. i.e. `http://loggregator.domain.com`
 - `PPROF_ENABLED`: An optional variable. If set to `true` or `1`, will turn on `/debug/pprof` endpoints as seen [here](https://golang.org/pkg/net/http/pprof/)
 
 ## Front end
@@ -91,6 +92,7 @@ In case you fork this project for your own use (no need to do this if forking to
 - `travis encrypt CONSOLE_CLIENT_SECRET='<your client secret>' --add env.global`
 - `travis encrypt CONSOLE_API_URL='<your public api url>' --add env.global`
 - `travis encrypt CONSOLE_UAA_URL='<your public uaa url>' --add env.global`
+- `travis encrypt CONSOLE_LOG_URL='<your public log url>' --add env.global`
 - `travis encrypt CONSOLE_LOGIN_URL='<your public login url>' --add env.global`
 - `travis encrypt CONSOLE_TEST_PASSWORD='<your user account password>' --add env.global`
 - `travis encrypt CONSOLE_TEST_USERNAME='<your user account username>' --add env.global`
