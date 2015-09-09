@@ -63,11 +63,7 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	s.TokenContext = context.TODO()
 	s.UaaURL = envVars.UAAURL
 	s.LogURL = envVars.LogURL
-	if len(envVars.APIURL) == 0 {
-		s.PProfEnabled = false
-	} else {
-		s.PProfEnabled = ((envVars.PProfEnabled == "true") || (envVars.PProfEnabled == "1"))
-	}
+	s.PProfEnabled = ((envVars.PProfEnabled == "true") || (envVars.PProfEnabled == "1"))
 	if s.BuildInfo = envVars.BuildInfo; len(s.BuildInfo) == 0 {
 		s.BuildInfo = "developer-build"
 	}

@@ -44,3 +44,31 @@ func TestInitApp(t *testing.T) {
 		}
 	}
 }
+
+type initRouterTest struct {
+	testName       string
+	settings       *helpers.Settings
+	returnValueNil bool
+}
+
+var initRouterTests = []initRouterTest{
+	{
+		testName:       "Non nil Settings",
+		settings:       &helpers.Settings{},
+		returnValueNil: false,
+	},
+	{
+		testName:       "Nil Settings",
+		settings:       nil,
+		returnValueNil: true,
+	},
+}
+
+func TestInitRouter(t *testing.T) {
+	for _, test := range initRouterTests {
+		router := controllers.InitRouter((test.settings))
+		if (router == nil) != test.returnValueNil {
+			t.Errorf("Test %s did not return correct router value. Expected %t, Actual %t\n", test.testName, test.returnValueNil, (router == nil))
+		}
+	}
+}
