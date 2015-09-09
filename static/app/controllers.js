@@ -359,10 +359,12 @@
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
                 $scope.appStats = appStats;
+		$scope.appEventsLoading = false;
             }
         };
         var renderAppLogs = function(appLogs) {
 		$scope.appLogs = appLogs;
+		$scope.appLogsLoading = false;
 	}
         var renderAppEvents = function(appEvents) {
             $scope.appEvents = [];
@@ -403,10 +405,12 @@
         };
 	// Get App Logs
 	$scope.getAppLogs = function() {
+		$scope.appLogsLoading = true;
 		$cloudfoundry.getAppLogs($routeParams['appguid']).then(renderAppLogs);
 	}
 	// Get App Events
 	$scope.getAppEvents = function() {
+		$scope.appEventsLoading = true;
 		$cloudfoundry.getAppEvents($routeParams['appguid']).then(renderAppEvents);
 	}
         // Create new Route
