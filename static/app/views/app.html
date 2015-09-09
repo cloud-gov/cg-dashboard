@@ -245,14 +245,30 @@
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-		<button class="btn btn-info pull-right" type="button" data-style="slide-left" ladda="appLogsLoading" ng-disabled="appLogsLoading" ng-click="getAppLogs()">Refresh</button>
-                <h3 class="panel-title">Logs</h3>
-		<div class="clearfix"></div>
+		<div class=row">
+		  <button class="btn btn-info pull-right btn-xs" type="button" data-style="slide-left" ladda="appLogsLoading" ng-disabled="appLogsLoading" ng-click="getAppLogs()">Refresh</button>
+                  <h3 class="panel-title">Logs</h3>
+		  <div class="clearfix"></div>
+		</div>
+		<br />
+		<div class=row">
+		  <form>
+		      <div class="form-group">
+			  <div class="input-group">
+			      <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+			      </div>
+
+			      <input type="text" class="form-control" placeholder="Search logs" ng-model="appLogSearch">
+
+			  </div>
+		      </div>
+		  </form>
+		</div>
             </div>
             <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
 		    <div ng-show="appLogs.length > 0">
 			    <ul class="list-group">
-				    <li class="list-group-item" ng-repeat="appLog in appLogs">{{appLog.message}}</li>
+				    <li class="list-group-item" ng-repeat="appLog in appLogs | filter:appLogSearch">{{appLog.message}}</li>
 			    </ul>
 		    </div>
 		    <div class="text-center" ng-show="appLogs.length == 0">
@@ -264,9 +280,25 @@
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-		<button class="btn btn-info pull-right" type="button" data-style="slide-left" ladda="appEventsLoading" ng-disabled="appEventsLoading" ng-click="getAppEvents()">Refresh</button>
-                <h3 class="panel-title">Events</h3>
-		<div class="clearfix"></div>
+		<div class=row">
+		  <button class="btn btn-info pull-right btn-xs" type="button" data-style="slide-left" ladda="appEventsLoading" ng-disabled="appEventsLoading" ng-click="getAppEvents()">Refresh</button>
+                  <h3 class="panel-title">Events</h3>
+		  <div class="clearfix"></div>
+		</div>
+		<br />
+		<div class=row">
+		  <form>
+		      <div class="form-group">
+			  <div class="input-group">
+			      <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+			      </div>
+
+			      <input type="text" class="form-control" placeholder="Search events" ng-model="appEventSearch">
+
+			  </div>
+		      </div>
+		  </form>
+		</div>
             </div>
             <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
 		<div ng-show="appEvents.length > 0">
@@ -277,7 +309,7 @@
 					<th>Actor</th>
 					<th>Description</th>
 				</thead>
-				<tr ng-repeat="appEvent in appEvents">
+				<tr ng-repeat="appEvent in appEvents | filter:appEventSearch">
 					<td>{{appEvent.time}}</td>
 					<td>{{appEvent.type}}</td>
 					<td>{{appEvent.actor}}</td>
