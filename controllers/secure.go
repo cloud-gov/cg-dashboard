@@ -7,7 +7,6 @@ import (
 	"golang.org/x/oauth2"
 	"io/ioutil"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -16,6 +15,9 @@ type SecureContext struct {
 	*Context // Required.
 	Token    oauth2.Token
 }
+
+// ResponseHandler is a type declaration for the function that will handle the response for the given request.
+type ResponseHandler func(*http.ResponseWriter, *http.Response)
 
 // OAuth is a middle ware that checks whether or not the user has a valid token.
 // If the token is present and still valid, it just passes it on.
@@ -35,11 +37,11 @@ func (c *SecureContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.
 
 // Proxy is an internal function that will construct the client with the token in the headers and
 // then send a request.
-func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url string) {
+func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url string, responseHandler ResponseHandler) {
 	// Acquire the http client and the refresh token if needed
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
 	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
-	c.submitRequest(rw, req, url, client)
+	c.submitRequest(rw, req, url, client, responseHandler)
 }
 
 // PrivilegedProxy is an internal function that will construct the client using
@@ -49,12 +51,12 @@ func (c *SecureContext) PrivilegedProxy(rw http.ResponseWriter, req *http.Reques
 	// Acquire the http client and the refresh token if needed
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
 	client := c.Settings.HighPrivilegedOauthConfig.Client(c.Settings.TokenContext)
-	c.submitRequest(rw, req, url, client)
+	c.submitRequest(rw, req, url, client, c.GenericResponseHandler)
 
 }
 
 // submitRequest uses a given client and submits the specified request.
-func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request, url string, client *http.Client) {
+func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request, url string, client *http.Client, responseHandler ResponseHandler) {
 	// Prevents lingering goroutines from living forever.
 	// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
 	client.Timeout = 5 * time.Second
@@ -82,23 +84,19 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	}
 	// Should return the same status.
 	rw.WriteHeader(res.StatusCode)
-	contentType := res.Header.Get("Content-Type")
-	if strings.HasPrefix(contentType, "multipart/") {
-		messages, err := helpers.ParseLogMessages(&res.Body, contentType)
-		if err != nil {
-			fmt.Fprintf(rw, err.Error())
-		}
-		fmt.Fprintf(rw, messages.String())
-		return
-	}
+	responseHandler(&rw, res)
+}
+
+// GenericResponseHandler is a normal handler for responses received from the proxy requests.
+func (c *SecureContext) GenericResponseHandler(rw *http.ResponseWriter, response *http.Response) {
 	// Read the body.
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		rw.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(rw, "unknown error. try again")
+		(*rw).WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(*rw, "unknown error. try again")
 		return
 	}
 
 	// Write the body into response that is going back to the frontend.
-	fmt.Fprintf(rw, string(body))
+	fmt.Fprintf(*rw, string(body))
 }

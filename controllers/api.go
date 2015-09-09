@@ -16,7 +16,7 @@ type APIContext struct {
 // that has not been specified, will just come here.
 func (c *APIContext) APIProxy(rw web.ResponseWriter, req *web.Request) {
 	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, req.URL)
-	c.Proxy(rw, req.Request, reqURL)
+	c.Proxy(rw, req.Request, reqURL, c.GenericResponseHandler)
 }
 
 // Logout is a handler that will attempt to clear the session information for the current user.

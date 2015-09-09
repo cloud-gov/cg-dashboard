@@ -18,7 +18,7 @@ type UAAContext struct {
 // uaaProxy prepares the final URL to pass through the proxy.
 func (c *UAAContext) uaaProxy(rw web.ResponseWriter, req *web.Request, uaaEndpoint string) {
 	reqURL := fmt.Sprintf("%s%s", c.Settings.UaaURL, uaaEndpoint)
-	c.Proxy(rw, req.Request, reqURL)
+	c.Proxy(rw, req.Request, reqURL, c.GenericResponseHandler)
 }
 
 // uaaPrivilegedProxy prepares the final URL to pass through the proxy with elevated privileges.
