@@ -245,7 +245,7 @@
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-		<button class="btn btn-default pull-right" ng-click="getAppLogs()">Refresh</button>
+		<button class="btn btn-info pull-right" type="button" data-style="slide-left" ladda="appLogsLoading" ng-disabled="appLogsLoading" ng-click="getAppLogs()">Refresh</button>
                 <h3 class="panel-title">Logs</h3>
 		<div class="clearfix"></div>
             </div>
@@ -259,7 +259,7 @@
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-		<button class="btn btn-default pull-right" ng-click="getAppEvents()">Refresh</button>
+		<button class="btn btn-info pull-right" type="button" data-style="slide-left" ladda="appEventsLoading" ng-disabled="appEventsLoading" ng-click="getAppEvents()">Refresh</button>
                 <h3 class="panel-title">Events</h3>
 		<div class="clearfix"></div>
             </div>
