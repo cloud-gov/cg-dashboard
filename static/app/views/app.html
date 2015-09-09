@@ -250,9 +250,14 @@
 		<div class="clearfix"></div>
             </div>
             <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
-		    <ul class="list-group">
-		    <li class="list-group-item" ng-repeat="appLog in appLogs">{{appLog.message}}</li>
-		    </ul>
+		    <div ng-show="appLogs.length > 0">
+			    <ul class="list-group">
+				    <li class="list-group-item" ng-repeat="appLog in appLogs">{{appLog.message}}</li>
+			    </ul>
+		    </div>
+		    <div class="text-center" ng-show="appLogs.length == 0">
+			    <h3>No Logs</h3>
+		    </div>
             </div>
         </div>
     </div>
@@ -264,22 +269,27 @@
 		<div class="clearfix"></div>
             </div>
             <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
-		<table class="table">
-			<thead>
-				<th>Time</th>
-				<th>Event</th>
-				<th>Actor</th>
-				<th>Description</th>
-			</thead>
-			<tr ng-repeat="appEvent in appEvents">
-				<td>{{appEvent.time}}</td>
-				<td>{{appEvent.type}}</td>
-				<td>{{appEvent.actor}}</td>
-				<td>
-					<div ng-repeat="desc in appEvent.desc">{{desc}}</div>
-				</td>
-			</tr>
-		 </table>
+		<div ng-show="appEvents.length > 0">
+			<table class="table">
+				<thead>
+					<th>Time</th>
+					<th>Event</th>
+					<th>Actor</th>
+					<th>Description</th>
+				</thead>
+				<tr ng-repeat="appEvent in appEvents">
+					<td>{{appEvent.time}}</td>
+					<td>{{appEvent.type}}</td>
+					<td>{{appEvent.actor}}</td>
+					<td>
+						<div ng-repeat="desc in appEvent.desc">{{desc}}</div>
+					</td>
+				</tr>
+			 </table>
+                 </div>
+		 <div class="text-center" ng-show="appEvents.length == 0">
+			 <h3>No Events</h3>
+                 </div>
             </div>
         </div>
     </div>
