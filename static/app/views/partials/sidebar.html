@@ -3,23 +3,23 @@
     <li class="dropdown">
         <a id="orgs-dropdown-btn" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
         aria-expanded="false">Change Organization&nbsp;<span class="caret"></span></a>
-        <ul id="org-dropdown-menu" class="dropdown-menu">
+        <ul id="orgs-dropdown-menu" class="dropdown-menu">
             <li ng-repeat="org in orgs">
-                <a class="org-name" ng-href="#/org/{{ org.metadata.guid }}">{{org | orgNameFilter}}</a>
+                <a class="org-link" ng-href="#/org/{{ org.metadata.guid }}">{{org | orgNameFilter}}</a>
             </li>
         </ul>
     </li>
     
 
     <li class="dropdown" ng-show="MenuData.data.currentOrg">
-        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+        <a id="org-dropdown-btn" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
         aria-expanded="false">{{ MenuData.data.currentOrg | orgNameFilter }} &nbsp;<span class="caret"></span></a>
-        <ul class="dropdown-menu">
+        <ul id="org-dropdown-menu" class="dropdown-menu">
             <li>
                 <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}">
                     Spaces
                 </a>
-                <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/marketplace">
+                <a id="org-marketplace" ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/marketplace">
                     Marketplace
                 </a>
                 <a ng-show="MenuData.data.orgManager" ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/manage-org">

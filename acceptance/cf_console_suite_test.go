@@ -22,14 +22,12 @@ type acceptanceTestEnvVars struct {
 	helpers.EnvVars
 	Username string
 	Password string
-	Org01    string
 }
 
 // Helper function to load all the variables needed.
 func (ev *acceptanceTestEnvVars) loadTestEnvVars() {
 	ev.Username = os.Getenv("CONSOLE_TEST_USERNAME")
 	ev.Password = os.Getenv("CONSOLE_TEST_PASSWORD")
-	ev.Org01 = os.Getenv("CONSOLE_TEST_ORG1")
 
 	if len(ev.Username) < 1 {
 		fmt.Println("Please set CONSOLE_TEST_USERNAME")
