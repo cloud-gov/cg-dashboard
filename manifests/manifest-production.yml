@@ -1,6 +1,6 @@
 ---
 applications:
-- name: prod-deck
+- name: cf-deck
   memory: 256M
   host: 18f-deck
   env:
