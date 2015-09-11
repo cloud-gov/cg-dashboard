@@ -1,52 +1,61 @@
 <!DOCTYPE html>
 <html ng-app="cfdeck">
-	<head>
 
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
 
-		<title>18F Cloud Deck</title>
-        <!-- New Relic script -->
-        <script src="assets/js/newrelic.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Bootstrap -->
-		<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-		<link href="bower_components/angular-toggle-switch/angular-toggle-switch.css" rel="stylesheet" />
-		<link rel="stylesheet" href="bower_components/ladda/dist/ladda-themeless.min.css" />
+    <title>18F Cloud Deck</title>
+    <!-- New Relic script -->
+    <script src="assets/js/newrelic.js"></script>
 
-		<link href="assets/css/app.css" rel="stylesheet" />
-		<link href="assets/css/statuspage.css" rel="stylesheet" />
-		<script src="bower_components/angularjs/angular.min.js"></script>
-		<script src="bower_components/angular-route/angular-route.min.js"></script>
-		<script src="bower_components/ladda/dist/spin.min.js"></script>
-		<script src="bower_components/ladda/dist/ladda.min.js"></script>
-		<script src="bower_components/angular-ladda/dist/angular-ladda.min.js"></script>
-		<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-		<script src="bower_components/angular-bootstrap-confirm/src/ui-bootstrap-position.js"></script>
-		<script src="bower_components/angular-bootstrap-confirm/dist/angular-bootstrap-confirm.min.js"></script>
-		<script src="bower_components/angular-toggle-switch/angular-toggle-switch.min.js"></script>
-		<script src="https://cdn.statuspage.io/se-v2.js"></script>
+    <!-- Bootstrap -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"
+    />
+    <link href="bower_components/angular-toggle-switch/angular-toggle-switch.css" rel="stylesheet"
+    />
+    <link rel="stylesheet" href="bower_components/ladda/dist/ladda-themeless.min.css"
+    />
 
-		<script src="app/main.js"></script>
-		<script src="app/cloudfoundry.js"></script>
-		<script src="app/uaa.js"></script>
-		<script src="app/services.js"></script>
-		<script src="app/factories.js"></script>
-		<script src="app/controllers.js"></script>
-		<script src="app/filters.js"></script>
-		<script src="app/directives.js"></script>
-	</head>
-	<body ng-controller="MainCtrl">
-		<div deck-header></div>
-		<div class="container-fluid">
-			<div class="row">
-				<div ng-show='authorized' class="col-sm-3 col-md-2 sidebar" ng-include="'app/views/partials/sidebar.html'"></div>
-				<div ng-class="authorized ? 'col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main' : ''" ng-view></div>
-			</div>
-			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-			<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-			<script src="assets/js/happyfoxchat.js"></script>
-		</div>
-	</body>
+    <link href="assets/css/app.css" rel="stylesheet" />
+    <link href="assets/css/statuspage.css" rel="stylesheet" />
+    <script src="bower_components/angularjs/angular.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/ladda/dist/spin.min.js"></script>
+    <script src="bower_components/ladda/dist/ladda.min.js"></script>
+    <script src="bower_components/angular-ladda/dist/angular-ladda.min.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="bower_components/angular-bootstrap-confirm/src/ui-bootstrap-position.js"></script>
+    <script src="bower_components/angular-bootstrap-confirm/dist/angular-bootstrap-confirm.min.js"></script>
+    <script src="bower_components/angular-toggle-switch/angular-toggle-switch.min.js"></script>
+    <script src="https://cdn.statuspage.io/se-v2.js"></script>
+    <script src="bower_components/angulartics/dist/angulartics.min.js"></script>
+    <script src="bower_components/angulartics-google-analytics/dist/angulartics-google-analytics.min.js"></script>
+    <script src="app/main.js"></script>
+    <script src="app/cloudfoundry.js"></script>
+    <script src="app/uaa.js"></script>
+    <script src="app/services.js"></script>
+    <script src="app/factories.js"></script>
+    <script src="app/controllers.js"></script>
+    <script src="app/filters.js"></script>
+    <script src="app/directives.js"></script>
+</head>
+
+<body ng-controller="MainCtrl">
+    <div deck-header></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div ng-show='authorized' class="col-sm-3 col-md-2 sidebar" ng-include="'app/views/partials/sidebar.html'"></div>
+            <div ng-class="authorized ? 'col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main' : ''"
+            ng-view></div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="assets/js/happyfoxchat.js"></script>
+    </div>
+    <div analytics="trackingId"></div>
+</body>
+
 </html>

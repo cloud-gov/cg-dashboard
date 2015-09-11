@@ -1,6 +1,9 @@
 (function() {
-    var app = angular.module('cfdeck', ['ngRoute', 'angular-ladda', 'ngSanitize', 'mwl.confirm', 'toggle-switch']);
-
+    var app = angular.module('cfdeck', ['ngRoute', 'angular-ladda', 'ngSanitize', 'mwl.confirm', 'toggle-switch', 'angulartics', 'angulartics.google.analytics']);
+    app.config(function($analyticsProvider) {
+        $analyticsProvider.firstPageview(true);
+        $analyticsProvider.withAutoBase(true);
+    });
     app.config(function($routeProvider) {
         $routeProvider
             .when('/', {
