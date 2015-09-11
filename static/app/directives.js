@@ -68,15 +68,24 @@
     app.directive('cloudStatus', function($window) {
       return {
           templateUrl: 'app/views/partials/status.html',
-          controller: function($scope, $http, $window) {
+          controller: function($scope, $http, $window, $interval) {
               var sp = new StatusPage.page({ page : 'swcbylb1c30f' });
-              sp.status({
-                success: function(data) {
-                  $scope.$apply(function(){
-                    $scope.statuspagecolor = "statuspagecolor-light " + data.status.indicator;
-                  });
-                }
-              })
+              var loadStatus = function(sp) {
+                sp.status({
+                  success: function(data) {
+                    $scope.$apply(function(){
+                      $scope.statuspagecolor = "statuspagecolor-light " + data.status.indicator;
+                    });
+                  }
+                })
+              };
+              // Set up the poll to call loadStatus(sp) every 10 seconds.
+              var poll = $interval(function(){loadStatus(sp);}, 10000);
+              // Call loadStatus(sp) for the first time.
+              loadStatus(sp);
+              // Destroy the poll when the page is left to clean up.
+              $scope.$on('$destroy', function() {$interval.cancel(poll);});
+
           },
           link: function($scope) {
             $scope.goto = function() {
