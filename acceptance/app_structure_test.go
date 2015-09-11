@@ -30,8 +30,6 @@ var _ = Describe("AppStructure", func() {
 	})
 
 	It("should show app structure for an authenticated user", func() {
-		// TODO remove skip once requirement is redone.
-		Skip("app page changed")
 		By("directing the user to a landing page", func() {
 			Expect(page.Navigate(testEnvVars.Hostname)).To(Succeed())
 		})
@@ -39,22 +37,27 @@ var _ = Describe("AppStructure", func() {
 		By("allowing the user to click the login button and redirected to fill out the login form and submit it", func() {
 			delayForRendering()
 			Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
-			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "/login")))
+			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "login")))
 			Expect(page.FindByName("username").Fill(testEnvVars.Username)).To(Succeed())
 			Expect(page.FindByName("password").Fill(testEnvVars.Password)).To(Succeed())
 			Expect(page.FindByButton("Sign in").Click()).To(Succeed())
 			Eventually(Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/dashboard")))
 		})
+		// TODO ensure the click actually works
 		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
-			delayForRendering()
-			Expect(page.Find("#org-dropdown")).To(BeFound())
-			Expect(page.Find("#org-dropdown").Text()).To(Equal("Organization: Select one "))
-			Expect(page.Find("#org-dropdown").Click()).To(Succeed())
+			Expect(page.Find("#orgs-dropdown-btn")).To(BeFound())
+			Expect(page.Find("#orgs-dropdown-btn").DoubleClick()).To(Succeed())
+			Expect(page.First(".org-name")).To(BeFound())
 		})
-
+		// TODO ensure the click actually works
 		By("allowing the user to click on an organization in the dropdown menu", func() {
 			delayForRendering()
-			Eventually(Expect(page.First(".org-name").Click()).To(Succeed()))
+			Expect(page.Find("#org-dropdown-menu")).To(BeFound())
+			Expect(page.First(".org-name").DoubleClick()).To(Succeed())
+		})
+
+		By("allowing the user to view the org page", func() {
+			Expect(page.Navigate(testEnvVars.Hostname + "#/org/" + testEnvVars.Org01)).To(Succeed())
 		})
 
 		By("showing the table containing spaces", func() {
@@ -68,7 +71,7 @@ var _ = Describe("AppStructure", func() {
 
 		By("allowing the user to click on a space in the tab views", func() {
 			delayForRendering()
-			Eventually(Expect(page.First(".space-info").DoubleClick()).To(Succeed()))
+			Eventually(Expect(page.First(".space-info").Click()).To(Succeed()))
 		})
 
 		By("showing app name and quota information (along with other information)", func() {
@@ -80,25 +83,19 @@ var _ = Describe("AppStructure", func() {
 			Expect(page.Find("#state-heading")).To(BeFound())
 			Expect(page.Find("#disk-quota-heading")).To(BeFound())
 
+			/* TODO make this work with a mock space
 			Expect(page.First(".app-name-data")).To(BeFound())
-
 			Expect(page.First(".buildpack-data")).To(BeFound())
-
 			Expect(page.First(".memory-data")).To(BeFound())
-
 			Expect(page.First(".instances-data")).To(BeFound())
-
 			Expect(page.First(".state-data")).To(BeFound())
-
 			Expect(page.First(".disk-quota-data")).To(BeFound())
+			*/
 		})
 
-		/*
-			MARKETPLACE TESTS
-		*/
-		By("allowing the user to click on the marketplace tab", func() {
-			delayForRendering()
-			Expect(page.Find("#marketplace").Click()).To(Succeed())
+		//MARKETPLACE TESTS
+		By("allowing the user to navigate to the marketplace", func() {
+			Expect(page.Navigate(testEnvVars.Hostname + "#/org/" + testEnvVars.Org01 + "/marketplace")).To(Succeed())
 		})
 
 		By("showing the user a table with all the services", func() {
@@ -117,7 +114,6 @@ var _ = Describe("AppStructure", func() {
 			Expect(page.Find("#serviceSearch").Fill("zzzzzzzzz1111zzz")).To(Succeed())
 			Expect(page.All(".service-name-data")).NotTo(HaveCount(rowCountPreSearch))
 		})
-
 	})
 
 	AfterEach(func() {

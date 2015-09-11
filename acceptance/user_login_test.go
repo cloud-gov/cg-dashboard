@@ -53,7 +53,7 @@ var _ = Describe("UserLogin", func() {
 		})
 
 		By("allowing the user to log out", func() {
-			Expect(page.Find("#logout").Click()).To(Succeed())
+			Expect(page.Find("#logout-btn").Click()).To(Succeed())
 			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "login")))
 		})
 	})
