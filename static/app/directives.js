@@ -64,7 +64,7 @@
             }
         };
     });
-
+    // http://stackoverflow.com/questions/20792325/angularjs-and-google-analytics
     app.directive('analytics', function() {
         return {
             restrict: 'A',
