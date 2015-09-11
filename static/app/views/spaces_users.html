@@ -1,4 +1,4 @@
-<div ng-show="space.guid">
+<div ng-show="main.MenuData.data.currentSpace">
     <!-- Tabs -->
     <ng-include src="'app/views/partials/space_tabs.html'"></ng-include>
     <div class="col-xs-12" style="height:5px;"></div>
@@ -6,9 +6,9 @@
     <div class="tab-content" ng-show="users">
         <div role="tabpanel" class="tab-pane active" ng-hide="activeUser">
             <ul class="nav nav-pills nav-justified">
-		    <li ng-class="{active: !addUserPill}"><a href="" ng-click="addUserPill = false">Current <u>{{ MenuData.data.currentOrg | orgNameFilter }} - {{space.name}}</u> Space Users</a>
+                <li ng-class="{active: !addUserPill}"><a href="" ng-click="addUserPill = false">Current <u>{{ MenuData.data.currentOrg | orgNameFilter }} - {{space.name}}</u> Space Users</a>
                 </li>
-		<li ng-class="{active: addUserPill}"><a href="" ng-click="addUserPill = true">All <u>{{ MenuData.data.currentOrg | orgNameFilter }}</u> Org Users</a>
+                <li ng-class="{active: addUserPill}"><a href="" ng-click="addUserPill = true">All <u>{{ MenuData.data.currentOrg | orgNameFilter }}</u> Org Users</a>
                 </li>
             </ul>
             <form>

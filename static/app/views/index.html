@@ -1,7 +1,7 @@
 <div class="container">
     <div class="jumbotron text-center">
         <h1>Welcome to Cf-Deck</h1>
-        <div ng-switch="authorized">
+        <div ng-switch="main.authorized">
           <a href="/#/dashboard" class="btn btn-success btn-md" ng-switch-when="true">Welcome</a>
           <a href="/handshake" class="btn btn-primary btn-md" ng-switch-when="false" id="login-btn">Login</a>
         </div>

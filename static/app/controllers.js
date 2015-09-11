@@ -1,71 +1,57 @@
+// Function for loadng the active org at each page
+// findActiveOrg will attempt to get the active org from cache before
+// downloading new data.
+function loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa) {
+
+    $cloudfoundry.isAuthorized()
+        .then(function(status) {
+
+            var renderOrg = function(orgData) {
+                // Load org memory usage and quota usage if it isn't loaded
+                if (!orgData.quota) {
+                    $cloudfoundry.getQuotaUsage(orgData);
+                };
+                MenuData.data.currentOrg = orgData;
+                $cloudfoundry.getQuotaUsage(orgData);
+                MenuData.data.storedOrg = $routeParams['orgguid']
+                    // Find user permissions for orgs
+                $uaa.findUserPermissions($routeParams['orgguid'], 'managed_organizations')
+                    .then(function(managerStatus) {
+                        MenuData.data.orgManager = managerStatus;
+                    });
+            };
+
+            var renderSpace = function(spaceData) {
+                MenuData.data.currentSpace = spaceData;
+                MenuData.data.storedSpace = $routeParams['spaceguid']
+
+                // Find user permissions for a space
+                $uaa.findUserPermissions($routeParams['spaceguid'], 'managed_spaces')
+                    .then(function(managerStatus) {
+                        MenuData.data.spaceManager = managerStatus;
+                    });
+            };
+
+            // Only update org data if the requested org has changed
+            if (MenuData.data.storedOrg !== $routeParams['orgguid']) {
+                $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
+            }
+
+            // Only update space data if the requested space has changed
+            if (MenuData.data.storedSpace !== $routeParams['spaceguid']) {
+                $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace);
+            }
+        });
+};
+
+
 (function() {
     'use strict';
     // Get the app
     var app = angular.module('cfdeck');
 
-    // Function for loadng the active org at each page
-    // findActiveOrg will attempt to get the active org from cache before
-    // downloading new data.
-    function loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa) {
-        $cloudfoundry.isAuthorized()
-            .then(function(status) {
-                if (status) {
-                    var renderOrg = function(orgData) {
-                        // Displace org data
-                        if (orgData['code'] == 30003) {
-                            MenuData.data.currentOrg = "404";
-                        } else {
-                            MenuData.data.currentOrg = orgData;
-                            $scope.activeOrg = orgData;
-                            $scope.spaces = $scope.activeOrg.spaces;
-                        };
-                        // Load org memory usage and quota usage if it isn't loaded
-                        if (!orgData.quota) {
-                            $cloudfoundry.getQuotaUsage(orgData);
-                        };
-                        // Find user permissions for orgs
-                        $uaa.findUserPermissions($routeParams['orgguid'], 'managed_organizations')
-                            .then(function(managerStatus) {
-                                MenuData.data.orgManager = managerStatus;
-                            });
-                    };
-                    var renderSpace = function(spaceData) {
-                        MenuData.data.currentSpace = spaceData;
-                        $scope.space = spaceData;
-                    };
-                    $cloudfoundry.findActiveOrg($routeParams['orgguid'], renderOrg);
-                    // Render a space if there is a spaceguid
-                    if ($routeParams.spaceguid) {
-                        $cloudfoundry.findActiveSpace($routeParams['spaceguid'], renderSpace);
-                        // Find user permissions for a space
-                        $uaa.findUserPermissions($routeParams['spaceguid'], 'managed_spaces')
-                            .then(function(managerStatus) {
-                                $scope.spaceManager = managerStatus;
-                            });
-                    };
-
-                } else {
-                    $cloudfoundry.returnHome()
-                }
-
-            });
-    };
-
-    app.controller('MainCtrl', function($scope, $cloudfoundry, MenuData) {
-        // Initalize menudata
-        $scope.MenuData = MenuData;
-        // Clean menu data to return home
-        $scope.clearDashboard = function() {
-            $scope.MenuData.data = {};
-        };
-    });
-
-    app.controller('OrgCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
-    });
-
     app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $uaa, $routeParams, MenuData) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         $scope.addUserToOrg = function(user) {
             user.id = undefined;
             return $uaa.getUserGuidFromUserName(user)
@@ -104,7 +90,7 @@
     });
 
     app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         $scope.initOrgManagerState = false;
         var renderOrgUserOrgManagerState = function(response) {
             $scope.org_manager = response;
@@ -188,13 +174,10 @@
         $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', 'auditor_guid')
             .then(renderOrgUserOrgAuditorState);
 
-
-
-
     });
 
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         $scope.activeTab = 'apps';
     });
 
@@ -202,14 +185,14 @@
         var renderServices = function(services) {
             $scope.services = services;
         };
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         $cloudfoundry.getSpaceServices($routeParams['spaceguid'])
             .then(renderServices);
         $scope.activeTab = "services"
     });
 
     app.controller('SpaceUserCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
         var renderUsers = function(spaceUsers) {
             $scope.spaceUsers = spaceUsers;
             // Get all the users associated with an org
@@ -263,58 +246,8 @@
         $scope.activeTab = "users";
     });
 
-    app.controller('MarketCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
-        // Get all the services associated with an org
-        $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
-            $scope.services = services;
-        });
-    });
-
-    app.controller('ServiceCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
-        // Send service plans to the view
-        var renderServicePlans = function(servicePlans) {
-            $scope.plans = servicePlans;
-        };
-        // Render service details and request service plans
-        var renderService = function(service) {
-            $scope.service = service;
-            $cloudfoundry.getServicePlans(service.entity.service_plans_url).then(renderServicePlans);
-        };
-        // Checks if the service was created and display message
-        var checkIfCreated = function(response) {
-            $scope.disableSubmit = false;
-            if (response.status == 400) {
-                $scope.message = {
-                    type: 'error',
-                    message: response.data.description
-                }
-            } else {
-                $scope.activePlan = null;
-                $scope.message = {
-                    type: 'success',
-                    message: "Service Created!"
-                };
-            }
-        };
-        // Show maker and populate with space info
-        $scope.showServiceMaker = function(plan) {
-            $scope.message = null;
-            $scope.activePlan = plan;
-        };
-        // Send request to create service instance
-        $scope.createServiceInstance = function(serviceInstance) {
-            $scope.disableSubmit = true
-            serviceInstance.service_plan_guid = $scope.activePlan.metadata.guid;
-            $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
-        };
-        // Get service details
-        $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
-    });
-
     app.controller('AppCtrl', function($scope, $cloudfoundry, $routeParams, $interval, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
 
         var getServiceCredentials = function(service) {
             $cloudfoundry.getServiceCredentials(service)
@@ -509,4 +442,90 @@
 	$scope.getAppEvents();
 	$scope.getAppLogs();
     });
+}());
+
+
+(function() {
+    angular.module('cfdeck')
+        .controller('MainCtrl', MainCtrl)
+        .controller('OrgCtrl', OrgCtrl)
+        .controller('MarketCtrl', MarketCtrl)
+        .controller('ServiceCtrl', ServiceCtrl);
+
+    MainCtrl.$inject = ['MenuData']
+
+    function MainCtrl(MenuData) {
+        var vm = this;
+        // Initalize menudata
+        vm.MenuData = MenuData;
+        // Clean menu data to return home
+        vm.clearDashboard = function() {
+            vm.MenuData.data = {};
+        };
+    };
+
+    OrgCtrl.$inject = ['$scope', '$cloudfoundry', '$routeParams', 'MenuData', '$uaa']
+
+    function OrgCtrl($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
+    }
+
+    MarketCtrl.$inject = ['$scope', '$cloudfoundry', '$routeParams', 'MenuData', '$uaa']
+
+    function MarketCtrl($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        var vm = this;
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
+        // Get all the services associated with an org
+        $cloudfoundry.getOrgServices($routeParams['orgguid']).then(function(services) {
+            vm.services = services;
+        });
+    };
+    
+    ServiceCtrl.$inject = ['$cloudfoundry', '$routeParams', 'MenuData', '$uaa']
+
+    function ServiceCtrl($cloudfoundry, $routeParams, MenuData, $uaa) {
+        var vm = this;
+        loadOrg(MenuData, $routeParams, $cloudfoundry, $uaa);
+        // Send service plans to the view
+        var renderServicePlans = function(servicePlans) {
+            vm.plans = servicePlans;
+        };
+        // Render service details and request service plans
+        var renderService = function(service) {
+            vm.service = service;
+            $cloudfoundry.getServicePlans(service.entity.service_plans_url).then(renderServicePlans);
+        };
+        // Checks if the service was created and display message
+        var checkIfCreated = function(response) {
+            vm.disableSubmit = false;
+            if (response.status == 400) {
+                vm.message = {
+                    type: 'error',
+                    message: response.data.description
+                }
+            } else {
+                vm.activePlan = null;
+                vm.message = {
+                    type: 'success',
+                    message: "Service Created!"
+                };
+            }
+        };
+        // Show maker and populate with space info
+        vm.showServiceMaker = function(plan) {
+            vm.message = null;
+            vm.activePlan = plan;
+        };
+        // Send request to create service instance
+        vm.createServiceInstance = function(serviceInstance) {
+            vm.disableSubmit = true
+            serviceInstance.service_plan_guid = vm.activePlan.metadata.guid;
+            $cloudfoundry.createServiceInstance(serviceInstance).then(checkIfCreated);
+        };
+        // Get service details
+        $cloudfoundry.getServiceDetails($routeParams['serviceguid']).then(renderService);
+    };
+
+
+
 }());

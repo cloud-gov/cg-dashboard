@@ -4,27 +4,25 @@
         <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
         aria-expanded="false" id="org-dropdown">Change Organization&nbsp;<span class="caret"></span></a>
         <ul class="dropdown-menu">
-            <li ng-repeat="org in orgs">
+            <li ng-repeat="org in main.orgs">
                 <a class="org-name" ng-href="#/org/{{ org.metadata.guid }}">{{org | orgNameFilter}}</a>
             </li>
         </ul>
     </li>
 
 
-
-
-    <li class="dropdown" ng-show="MenuData.data.currentOrg">
+    <li class="dropdown" ng-show="main.MenuData.data.currentOrg">
         <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-        aria-expanded="false" id="org-dropdown">{{ MenuData.data.currentOrg | orgNameFilter }} &nbsp;<span class="caret"></span></a>
+        aria-expanded="false" id="org-dropdown">{{ main.MenuData.data.currentOrg | orgNameFilter }} &nbsp;<span class="caret"></span></a>
         <ul class="dropdown-menu">
             <li>
-                <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}">
+                <a ng-href="#/org/{{ main.MenuData.data.currentOrg.guid }}">
                     Spaces
                 </a>
-                <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/marketplace">
+                <a ng-href="#/org/{{ main.MenuData.data.currentOrg.guid }}/marketplace">
                     Marketplace
                 </a>
-                <a ng-show="MenuData.data.orgManager" ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/manage-org">
+                <a ng-show="main.MenuData.data.orgManager" ng-href="#/org/{{ main.MenuData.data.currentOrg.guid }}/manage-org">
                     Manage Org
                 </a>
             </li>
@@ -32,16 +30,16 @@
     </li>
 
 
-    <li ng-show="MenuData.data.currentOrg.quota">
+    <li ng-show="main.MenuData.data.currentOrg.quota">
         <a>
           Quota Usage
            <div class="progress">
                <div class="progress-bar progress-bar-info" role="progressbar"
-                   aria-valuenow="{{MenuData.data.currentOrg.quota.used_memory}}"
+                   aria-valuenow="{{main.MenuData.data.currentOrg.quota.used_memory}}"
                    aria-valuemin="0"
-                   aria-valuemax="{{MenuData.data.currentOrg.quota.memory_limit}}"
-                   style="min-width: 2em; width:{{(MenuData.data.currentOrg.quota.used_memory/MenuData.data.currentOrg.quota.memory_limit*100)}}%">
-                   {{(MenuData.data.currentOrg.quota.used_memory/MenuData.data.currentOrg.quota.memory_limit*100 | number:0)}}%
+                   aria-valuemax="{{main.MenuData.data.currentOrg.quota.memory_limit}}"
+                   style="min-width: 2em; width:{{(main.MenuData.data.currentOrg.quota.used_memory/main.MenuData.data.currentOrg.quota.memory_limit*100)}}%">
+                   {{(main.MenuData.data.currentOrg.quota.used_memory/main.MenuData.data.currentOrg.quota.memory_limit*100 | number:0)}}%
                </div>
            </div>
           </a>

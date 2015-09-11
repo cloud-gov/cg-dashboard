@@ -369,37 +369,22 @@ var getUsersGeneric = function(guid) {
 
 describe('MainCtrl', function() {
 
-    var scope, cloudfoundry, MenuData = {},
-        uaa;
+    var ctrl, cloudfoundry, MenuData = {};
 
     beforeEach(module('cfdeck'));
     beforeEach(inject(function($rootScope, $controller) {
-        // Mock cloudfoundry service
-        cloudfoundry = {
-            getOrgsData: getOrgsData,
-            setOrgsData: setOrgsData,
-            returnHome: returnHome,
-       };
-        uaa = {
-            getUserInfoGivenName: getUserInfoGivenName
-        };
         //Load Ctrl and scope with mock service
-        scope = $rootScope.$new();
-
         ctrl = $controller('MainCtrl', {
-            $scope: scope,
-            $cloudfoundry: cloudfoundry,
             MenuData: MenuData,
-            $uaa: uaa,
         });
     }));
 
     it('should clear the menu data', function() {
-        scope.MenuData.data = {
+        ctrl.MenuData.data = {
             test: 'data'
         }
-        scope.clearDashboard();
-        expect(scope.MenuData.data).toEqual({});
+        ctrl.clearDashboard();
+        expect(ctrl.MenuData.data).toEqual({});
     });
 
 });
@@ -418,7 +403,7 @@ describe('OrgCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
-            isAuthorized: isAuthorized            
+            isAuthorized: isAuthorized
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -467,7 +452,7 @@ describe('OrgManagementCtrl', function() {
             findActiveOrg: findActiveOrg,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
-            isAuthorized: isAuthorized            
+            isAuthorized: isAuthorized
         }
 
         // Spyon
@@ -524,7 +509,7 @@ describe('OrgUserManagementCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
-            isAuthorized: isAuthorized         
+            isAuthorized: isAuthorized
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -630,7 +615,7 @@ describe('SpaceCtrl', function() {
     }));
 
     it('should return a space\'s summary info', function() {
-        expect(scope.space).toEqual({
+        expect(MenuData.data.currentSpace).toEqual({
             guid: 'spaceguid',
             name: 'spacename',
             apps: [{
@@ -691,7 +676,7 @@ describe('SpaceServicesCtrl', function() {
     }));
 
     it('should return a space\'s summary info', function() {
-        expect(scope.space).toEqual({
+        expect(MenuData.data.currentSpace).toEqual({
             guid: 'spaceguid',
             name: 'spacename',
             apps: [{
@@ -733,7 +718,7 @@ describe('SpaceUserCtrl', function() {
             findActiveSpace: findActiveSpace,
             getOrgUserCategory: getOrgUserCategory,
             returnHome: returnHome,
-            isAuthorized: isAuthorized,            
+            isAuthorized: isAuthorized,
             toggleSpaceUserPermissions: function(user, permission, spaceGuid) {
                 return {
                     then: function(callback) {
@@ -776,7 +761,7 @@ describe('SpaceUserCtrl', function() {
     }));
 
     it('should return a space\'s summary info', function() {
-        expect(scope.space).toEqual({
+        expect(MenuData.data.currentSpace).toEqual({
             guid: 'spaceguid',
             name: 'spacename',
             apps: [{
@@ -852,7 +837,7 @@ describe('SpaceUserCtrl', function() {
 
 
 describe('MarketCtrl', function() {
-    var scope, cloudfoundry, location, MenuData = {
+    var ctrl, scope, cloudfoundry, location, MenuData = {
         data: {}
     };
     beforeEach(module('cfdeck'));
@@ -864,7 +849,7 @@ describe('MarketCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
-            isAuthorized: isAuthorized,       
+            isAuthorized: isAuthorized,
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -887,17 +872,17 @@ describe('MarketCtrl', function() {
     }));
 
     it('should put all the services into the space', function() {
-        expect(scope.services.length).toEqual(2);
+        expect(ctrl.services.length).toEqual(2);
     });
 
     it('should return the active org', function() {
-        expect(scope.activeOrg.entity.name).toEqual('org1')
+        expect(MenuData.data.currentOrg.entity.name).toEqual('org1')
     });
 
 });
 
 describe('ServiceCtrl', function() {
-    var scope, cloudfoundry, MenuData = {
+    var ctrl, cloudfoundry, MenuData = {
         data: {}
     };
     beforeEach(module('cfdeck'));
@@ -911,7 +896,7 @@ describe('ServiceCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             getQuotaUsage: getQuotaUsage,
             returnHome: returnHome,
-            isAuthorized: isAuthorized,                    
+            isAuthorized: isAuthorized,
         }
         uaa = {
             getUserInfoGuid: getUserInfoGuid,
@@ -923,41 +908,39 @@ describe('ServiceCtrl', function() {
         spyOn(cloudfoundry, 'getServiceDetails').and.callThrough();
         spyOn(cloudfoundry, 'getServicePlans').and.callThrough();
 
-        // Load Ctrl and scope
-        scope = $rootScope.$new()
+        // Load Ctrl
         ctrl = $controller('ServiceCtrl', {
-            $scope: scope,
             $cloudfoundry: cloudfoundry,
+            $rootScope: $rootScope,
+            MenuData: MenuData,           
             $uaa: uaa,
-            MenuData: MenuData
         });
     }));
 
     it('should put the service details into the space', function() {
-        expect(scope.service.entity.name).toEqual('service1');
+        expect(ctrl.service.entity.name).toEqual('service1');
     });
 
     it('should put the service plans data', function() {
-        expect(scope.plans[0]).toEqual({
+        expect(ctrl.plans[0]).toEqual({
             name: 'plan1'
         });
     });
 
     it('should show the service maker when showServiceMaker invoked by passing spaces, activePlan, and show serviceMaker', function() {
-
-        scope.showServiceMaker({
+        ctrl.showServiceMaker({
             name: 'plan1'
         });
-        expect(scope.activePlan).toEqual({
+        expect(ctrl.activePlan).toEqual({
             name: 'plan1'
         })
     });
 
     it('should create an service instance when prompted and show create message', function() {
-        scope.activePlan = {
+        ctrl.activePlan = {
             metadata: 'plan1guid'
         };
-        scope.createServiceInstance({
+        ctrl.createServiceInstance({
             name: 'service1'
         });
         // TODO: add a spy to check on message
@@ -992,7 +975,7 @@ describe('AppCtrl', function() {
             getOrgUserCategory: getOrgUserCategory,
             findActiveSpace: getSpaceDetails,
             returnHome: returnHome,
-            isAuthorized: isAuthorized,           
+            isAuthorized: isAuthorized,
         };
         uaa = {
             getUserInfoGuid: getUserInfoGuid,

@@ -35,7 +35,7 @@
     <tbody>
         <tr ng-repeat="user in org_users | orderBy:sortType:sortReverse | filter:orgUsersMgmtService">
             <td class="org-user-name-data">
-                <a href='#/org/{{ activeOrg.guid }}/manage-org/{{ user.metadata.guid }}'>{{user.entity.username}}</a>
+                <a href='#/org/{{ main.MenuData.data.currentOrg.guid }}/manage-org/{{ user.metadata.guid }}'>{{user.entity.username}}</a>
             </td>
             <td class="org-user-date-created-data">{{user.metadata.created_at | date:'yyyy-MM-dd'}}</td>
             <td class="org-user-actions-data">
