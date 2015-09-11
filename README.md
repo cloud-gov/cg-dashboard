@@ -97,3 +97,13 @@ In case you fork this project for your own use (no need to do this if forking to
 - `travis encrypt CONSOLE_TEST_PASSWORD='<your user account password>' --add env.global`
 - `travis encrypt CONSOLE_TEST_USERNAME='<your user account username>' --add env.global`
 - `travis encrypt CONSOLE_HOSTNAME="http://localhost:9999" --add env.global`
+
+## What’s a Deck?
+
+From [Wikipedia](https://en.wikipedia.org/wiki/Sprawl_trilogy#Glossary):
+
+The Sprawl trilogy (also known as the Neuromancer, Cyberspace, or Matrix trilogy) is William Gibson's first set of novels, composed of Neuromancer (1984), Count Zero (1986), and Mona Lisa Overdrive (1988).
+
+**Cyberspace Deck** 
+
+Also called a "deck" for short, it is used to access the virtual representation of the matrix. The deck is connected to a tiara-like device that operates by using electrodes to stimulate the user's brain while drowning out other external stimulation. As Case describes them, decks are basically simplified simstim units.
