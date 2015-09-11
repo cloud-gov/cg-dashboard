@@ -1,21 +1,19 @@
 <ul class="nav nav-sidebar">
 
     <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-        aria-expanded="false" id="org-dropdown">Change Organization&nbsp;<span class="caret"></span></a>
-        <ul class="dropdown-menu">
+        <a id="orgs-dropdown-btn" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+        aria-expanded="false">Change Organization&nbsp;<span class="caret"></span></a>
+        <ul id="org-dropdown-menu" class="dropdown-menu">
             <li ng-repeat="org in orgs">
                 <a class="org-name" ng-href="#/org/{{ org.metadata.guid }}">{{org | orgNameFilter}}</a>
             </li>
         </ul>
     </li>
-
-
-
+    
 
     <li class="dropdown" ng-show="MenuData.data.currentOrg">
         <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-        aria-expanded="false" id="org-dropdown">{{ MenuData.data.currentOrg | orgNameFilter }} &nbsp;<span class="caret"></span></a>
+        aria-expanded="false">{{ MenuData.data.currentOrg | orgNameFilter }} &nbsp;<span class="caret"></span></a>
         <ul class="dropdown-menu">
             <li>
                 <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}">
