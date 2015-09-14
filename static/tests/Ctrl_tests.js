@@ -395,9 +395,10 @@ describe('MainCtrl', function() {
     }));
 
     it('should clear the menu data', function() {
+        scope.MenuData = {};
         scope.MenuData.data = {
             test: 'data'
-        }
+        };
         scope.clearDashboard();
         expect(scope.MenuData.data).toEqual({});
     });

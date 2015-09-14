@@ -8,6 +8,7 @@
             })
             .when('/dashboard', {
                 templateUrl: 'app/views/dashboard.html',
+                controller: 'DashboardCtrl',
             })
             .when('/org/:orgguid', {
                 templateUrl: 'app/views/organizations.html',
