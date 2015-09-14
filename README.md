@@ -87,16 +87,15 @@ All the acceptance tests are in the 'acceptance' folder.
 
 ## CI
 This project uses Travis-CI
-In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the Travis-CI CLI tool to re-encrypt all the environment variables.
-- `travis encrypt CONSOLE_CLIENT_ID='<your client id>' --add env.global`
-- `travis encrypt CONSOLE_CLIENT_SECRET='<your client secret>' --add env.global`
-- `travis encrypt CONSOLE_API_URL='<your public api url>' --add env.global`
-- `travis encrypt CONSOLE_UAA_URL='<your public uaa url>' --add env.global`
-- `travis encrypt CONSOLE_LOG_URL='<your public log url>' --add env.global`
-- `travis encrypt CONSOLE_LOGIN_URL='<your public login url>' --add env.global`
-- `travis encrypt CONSOLE_TEST_PASSWORD='<your user account password>' --add env.global`
-- `travis encrypt CONSOLE_TEST_USERNAME='<your user account username>' --add env.global`
-- `travis encrypt CONSOLE_HOSTNAME="http://localhost:9999" --add env.global`
+- The following environment variables need to be set in plain text in the global env section:
+  - `CONSOLE_API_URL`, `CONSOLE_UAA_URL`, `CONSOLE_LOG_URL`, `CONSOLE_LOGIN_URL`, `CONSOLE_HOSTNAME="http://localhost:9999"` 
+- In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the Travis-CI CLI tool to re-encrypt all the environment variables.
+  - `travis encrypt CONSOLE_CLIENT_ID='<your client id>' --add env.global`
+  - `travis encrypt CONSOLE_CLIENT_SECRET='<your client secret>' --add env.global`
+  - `travis encrypt CONSOLE_TEST_PASSWORD='<the test user account password>' --add env.global`
+  - `travis encrypt CONSOLE_TEST_USERNAME='<the test user account username>' --add env.global`
+  - `travis encrypt CF_USERNAME='<the user account username used to deploy>' --add env.global`
+  - `travis encrypt CF_PASSWORD='<the user account password used to deploy>' --add env.global`
 
 ## What’s a Deck?
 

@@ -1,7 +1,7 @@
 ---
 inherit: manifest-base.yml
 applications:
-- name: staging-deck
+- name: cf-deck
   memory: 256M
   host: console
   env:
