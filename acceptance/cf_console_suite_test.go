@@ -9,6 +9,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
+	. "github.com/sclevine/agouti/matchers"
 
 	"fmt"
 	"net/http/httptest"
@@ -91,6 +92,31 @@ func createPage() *agouti.Page {
 	Expect(err).NotTo(HaveOccurred())
 	page.ClearCookies()
 	return page
+}
+
+type User struct {
+	testEnvVars acceptanceTestEnvVars
+}
+
+func startUserSessionWith(testEnvVars acceptanceTestEnvVars) User {
+	u := User{testEnvVars}
+	return u
+}
+
+func (u User) LoginTo(page *agouti.Page) {
+	Expect(page.Navigate(u.testEnvVars.Hostname)).To(Succeed())
+	delayForRendering()
+	Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
+	Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
+	Expect(page.FindByName("username").Fill(u.testEnvVars.Username)).To(Succeed())
+	Expect(page.FindByName("password").Fill(u.testEnvVars.Password)).To(Succeed())
+	Expect(page.FindByButton("Sign in").Click()).To(Succeed())
+	Expect(page).To(HaveURL(u.testEnvVars.Hostname + "/#/dashboard"))
+}
+
+func (u User) LogoutOf(page *agouti.Page) {
+	Expect(page.Find("#logout-btn").Click()).To(Succeed())
+	Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
 }
 
 func TestCfConsole(t *testing.T) {

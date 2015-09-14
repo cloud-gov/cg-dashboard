@@ -16,6 +16,7 @@ var _ = Describe("AppStructure", func() {
 		page        *agouti.Page
 		server      *httptest.Server
 		testEnvVars acceptanceTestEnvVars
+		user        User
 	)
 
 	testEnvVars = acceptanceTestEnvVars{}
@@ -27,23 +28,15 @@ var _ = Describe("AppStructure", func() {
 
 		// Create a fresh page to navigate.
 		page = createPage()
+
+		// Create user
+		user = startUserSessionWith(testEnvVars)
+
+		// Log user in
+		user.LoginTo(page)
 	})
 
 	It("should show app structure for an authenticated user", func() {
-		By("directing the user to a landing page", func() {
-			Expect(page.Navigate(testEnvVars.Hostname)).To(Succeed())
-		})
-
-		By("allowing the user to click the login button and redirected to fill out the login form and submit it", func() {
-			delayForRendering()
-			Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
-			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "login")))
-			Expect(page.FindByName("username").Fill(testEnvVars.Username)).To(Succeed())
-			Expect(page.FindByName("password").Fill(testEnvVars.Password)).To(Succeed())
-			Expect(page.FindByButton("Sign in").Click()).To(Succeed())
-			Eventually(Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/dashboard")))
-		})
-
 		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
 			Expect(page.Find("#orgs-dropdown-btn")).To(BeVisible())
 			Expect(page.Find("#orgs-dropdown-btn").Click()).To(Succeed())
@@ -117,6 +110,8 @@ var _ = Describe("AppStructure", func() {
 	})
 
 	AfterEach(func() {
+		// Logout user
+		user.LogoutOf(page)
 		// Destroy the page
 		Expect(page.Destroy()).To(Succeed())
 		// Close the server.
