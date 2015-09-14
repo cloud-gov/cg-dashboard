@@ -52,14 +52,10 @@ var _ = Describe("UserLogin", func() {
 			Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/dashboard"))
 		})
 
-		/*
-			By("allowing the user to log out", func() {
-				Expect(page.Find("#logout").Click()).To(Succeed())
-				Expect(page).To(HavePopupText("Are you sure?"))
-				Expect(page.ConfirmPopup()).To(Succeed())
-				Eventually(page).Should(HaveTitle("Login"))
-			})
-		*/
+		By("allowing the user to log out", func() {
+			Expect(page.Find("#logout-btn").Click()).To(Succeed())
+			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "login")))
+		})
 	})
 
 	AfterEach(func() {
