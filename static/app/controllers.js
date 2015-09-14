@@ -58,6 +58,8 @@
         $scope.clearDashboard = function() {
             $scope.MenuData.data = {};
         };
+        // Scope UA Code
+        // $scope.trackingId = 'TrackingCode';
     });
 
     app.controller('OrgCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
@@ -359,39 +361,39 @@
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
                 $scope.appStats = appStats;
-		$scope.appEventsLoading = false;
+                $scope.appEventsLoading = false;
             }
         };
         var renderAppLogs = function(appLogs) {
-		$scope.appLogs = appLogs;
-		$scope.appLogsLoading = false;
-	}
+            $scope.appLogs = appLogs;
+            $scope.appLogsLoading = false;
+        }
         var renderAppEvents = function(appEvents) {
             $scope.appEvents = [];
-	    // Go through the events and pull out the data we want (which is what the cf events command will give us)
-	    for (var i = 0; i < appEvents.length; i++){
-		var singleEvent = {};
-		singleEvent.time = appEvents[i].entity.timestamp;
-		singleEvent.type = appEvents[i].entity.type;
-		singleEvent.actor = appEvents[i].entity.actor_name;
-		singleEvent.desc = '';
-		if (appEvents[i].entity.metadata.request) {
-			singleEvent.desc = [];
-			if (appEvents[i].entity.metadata.request.state) {
-				singleEvent.desc.push('state: ' + appEvents[i].entity.metadata.request.state);
-			}
-			if (appEvents[i].entity.metadata.request.name) {
-				singleEvent.desc.push('name: ' + appEvents[i].entity.metadata.request.name);
-			}
-			if (appEvents[i].entity.metadata.request.memory) {
-				singleEvent.desc.push('memory: ' + appEvents[i].entity.metadata.request.memory);
-			}
-			if (appEvents[i].entity.metadata.request.buildpack) {
-				singleEvent.desc.push('buildpack: ' + appEvents[i].entity.metadata.request.buildpack);
-			}
-		}
-		$scope.appEvents.push(singleEvent);
-	    }
+            // Go through the events and pull out the data we want (which is what the cf events command will give us)
+            for (var i = 0; i < appEvents.length; i++) {
+                var singleEvent = {};
+                singleEvent.time = appEvents[i].entity.timestamp;
+                singleEvent.type = appEvents[i].entity.type;
+                singleEvent.actor = appEvents[i].entity.actor_name;
+                singleEvent.desc = '';
+                if (appEvents[i].entity.metadata.request) {
+                    singleEvent.desc = [];
+                    if (appEvents[i].entity.metadata.request.state) {
+                        singleEvent.desc.push('state: ' + appEvents[i].entity.metadata.request.state);
+                    }
+                    if (appEvents[i].entity.metadata.request.name) {
+                        singleEvent.desc.push('name: ' + appEvents[i].entity.metadata.request.name);
+                    }
+                    if (appEvents[i].entity.metadata.request.memory) {
+                        singleEvent.desc.push('memory: ' + appEvents[i].entity.metadata.request.memory);
+                    }
+                    if (appEvents[i].entity.metadata.request.buildpack) {
+                        singleEvent.desc.push('buildpack: ' + appEvents[i].entity.metadata.request.buildpack);
+                    }
+                }
+                $scope.appEvents.push(singleEvent);
+            }
         };
         var resetAppStatsPoll = function() {
             $scope.statsPromise = $interval(function() {
@@ -403,17 +405,17 @@
                 $interval.cancel($scope.statsPromise);
             });
         };
-	// Get App Logs
-	$scope.getAppLogs = function() {
-		$scope.appLogsLoading = true;
-		$cloudfoundry.getAppLogs($routeParams['appguid']).then(renderAppLogs);
-	}
-	// Get App Events
-	$scope.getAppEvents = function() {
-		$scope.appEventsLoading = true;
-		$cloudfoundry.getAppEvents($routeParams['appguid']).then(renderAppEvents);
-	}
-        // Create new Route
+        // Get App Logs
+        $scope.getAppLogs = function() {
+                $scope.appLogsLoading = true;
+                $cloudfoundry.getAppLogs($routeParams['appguid']).then(renderAppLogs);
+            }
+            // Get App Events
+        $scope.getAppEvents = function() {
+                $scope.appEventsLoading = true;
+                $cloudfoundry.getAppEvents($routeParams['appguid']).then(renderAppEvents);
+            }
+            // Create new Route
         $scope.createRoute = function(newRoute) {
             $scope.routeErrorMsg = null;
             if (newRoute && newRoute.domain_guid && newRoute.host) {
@@ -506,7 +508,7 @@
         // TODO: Make it so it won't request stats if the state in the summary is not STARTED.
         $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
         resetAppStatsPoll();
-	$scope.getAppEvents();
-	$scope.getAppLogs();
+        $scope.getAppEvents();
+        $scope.getAppLogs();
     });
 }());
