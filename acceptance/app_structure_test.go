@@ -17,6 +17,7 @@ var _ = Describe("AppStructure", func() {
 		server      *httptest.Server
 		testEnvVars acceptanceTestEnvVars
 		user        User
+		testAssets  testAssetsMap
 	)
 
 	testEnvVars = acceptanceTestEnvVars{}
@@ -29,8 +30,11 @@ var _ = Describe("AppStructure", func() {
 		// Create a fresh page to navigate.
 		page = createPage()
 
+		// Load test assets needed for tests.
+		testAssets = loadTestAssets()
+
 		// Create user
-		user = startUserSessionWith(testEnvVars)
+		user = startUserSessionWith(testEnvVars, testAssets)
 
 		// Log user in
 		user.LoginTo(page)

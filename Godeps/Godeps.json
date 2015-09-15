@@ -1,6 +1,9 @@
 {
 	"ImportPath": "github.com/18F/cf-deck",
 	"GoVersion": "go1.5",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/cloudfoundry/loggregatorlib/logmessage",
@@ -9,6 +12,16 @@
 		{
 			"ImportPath": "github.com/cloudfoundry/loggregatorlib/signature",
 			"Rev": "42d4217a9bd689179b313e53f8f0227b3b7cd597"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/inject",
+			"Comment": "v1.0-rc1-10-g33e0aa1",
+			"Rev": "33e0aa1cb7c019ccc3fbe049a8262a6403d30504"
+		},
+		{
+			"ImportPath": "github.com/codeskyblue/go-sh",
+			"Comment": "v0.1-37-g3d593d4",
+			"Rev": "3d593d477915b4d2f2e74b2e041495345647a46b"
 		},
 		{
 			"ImportPath": "github.com/gocraft/web",

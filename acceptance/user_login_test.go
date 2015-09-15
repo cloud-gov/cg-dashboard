@@ -44,7 +44,6 @@ var _ = Describe("UserLogin", func() {
 
 		By("allowing the user to click the login button and redirected to fill out the login form and submit it", func() {
 			delayForRendering()
-			delayForRendering()
 			Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
 			Eventually(Expect(page).To(HaveURL(testEnvVars.LoginURL + "login")))
 			Expect(page.FindByName("username").Fill(testEnvVars.Username)).To(Succeed())
