@@ -78,6 +78,9 @@ All the acceptance tests are in the 'acceptance' folder.
 - To run locally, in addition to the variables in the "Set the environmnent variables" section, you will need to set two more variables in your environment
 - `CONSOLE_TEST_USERNAME`: The username of the account you want the tests to use to login into your `CONSOLE_LOGIN_URL`
 - `CONSOLE_TEST_PASSWORD`: The password of the account you want the tests to use to login into your `CONSOLE_LOGIN_URL`
+- `CONSOLE_TEST_ORG_NAME`: The test organization the user should be navigating to.
+- `CONSOLE_TEST_SPACE_NAME`: The test space the user should be navigating to.
+- `CONSOLE_TEST_APP_NAME`: The test app the user should be navigating to.
 
 #### Running acceptance tests
 - `cd acceptance && go test -tags acceptance`
@@ -88,7 +91,7 @@ All the acceptance tests are in the 'acceptance' folder.
 ## CI
 This project uses Travis-CI
 - The following environment variables need to be set in plain text in the global env section:
-  - `CONSOLE_API_URL`, `CONSOLE_UAA_URL`, `CONSOLE_LOG_URL`, `CONSOLE_LOGIN_URL`, `CONSOLE_HOSTNAME="http://localhost:9999"` 
+  - `CONSOLE_API_URL`, `CONSOLE_UAA_URL`, `CONSOLE_LOG_URL`, `CONSOLE_LOGIN_URL`, `CONSOLE_HOSTNAME="http://localhost:9999"`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, and `CONSOLE_TEST_APP_NAME`
 - In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the Travis-CI CLI tool to re-encrypt all the environment variables.
   - `travis encrypt CONSOLE_CLIENT_ID='<your client id>' --add env.global`
   - `travis encrypt CONSOLE_CLIENT_SECRET='<your client secret>' --add env.global`

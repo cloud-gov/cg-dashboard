@@ -46,7 +46,8 @@ var _ = Describe("AppStructure", func() {
 		By("allowing the user to click on an organization in the dropdown menu", func() {
 			DelayForRendering()
 			Expect(page.Find("#orgs-dropdown-menu")).To(BeVisible())
-			Eventually(Expect(page.First(".org-link").Click()).To(Succeed()))
+			Expect(page.FindByLink(testEnvVars.TestOrgName)).To(BeFound())
+			Eventually(Expect(page.FindByLink(testEnvVars.TestOrgName).Click()).To(Succeed()))
 		})
 
 		By("showing the table containing spaces", func() {
@@ -60,7 +61,8 @@ var _ = Describe("AppStructure", func() {
 
 		By("allowing the user to click on a space in the tab views", func() {
 			DelayForRendering()
-			Eventually(Expect(page.First(".space-info").Click()).To(Succeed()))
+			Expect(page.FindByLink(testEnvVars.TestSpaceName)).To(BeFound())
+			Eventually(Expect(page.FindByLink(testEnvVars.TestSpaceName).Click()).To(Succeed()))
 		})
 
 		By("showing app name and quota information (along with other information)", func() {
@@ -80,7 +82,7 @@ var _ = Describe("AppStructure", func() {
 			Expect(page.First(".disk-quota-data")).To(BeFound())
 		})
 
-		//MARKETPLACE TESTS
+		// MARKETPLACE TESTS
 		By("allowing the user to click a dropdown menu labeled 'Marketplace'", func() {
 			Expect(page.Find("#org-dropdown-btn")).To(BeVisible())
 			Expect(page.Find("#org-dropdown-btn").Click()).To(Succeed())
