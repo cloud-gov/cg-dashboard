@@ -39,15 +39,11 @@ var _ = Describe("AppStructure", func() {
 
 	It("should show app structure for an authenticated user", func() {
 		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
-			Expect(page.Find("#orgs-dropdown-btn")).To(BeVisible())
-			Expect(page.Find("#orgs-dropdown-btn").Click()).To(Succeed())
+			user.OpenDropdownOfOrgsOn(page)
 		})
 
 		By("allowing the user to click on an organization in the dropdown menu", func() {
-			DelayForRendering()
-			Expect(page.Find("#orgs-dropdown-menu")).To(BeVisible())
-			Expect(page.FindByLink(testEnvVars.TestOrgName)).To(BeFound())
-			Eventually(Expect(page.FindByLink(testEnvVars.TestOrgName).Click()).To(Succeed()))
+			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
 		})
 
 		By("showing the table containing spaces", func() {
@@ -83,15 +79,8 @@ var _ = Describe("AppStructure", func() {
 		})
 
 		// MARKETPLACE TESTS
-		By("allowing the user to click a dropdown menu labeled 'Marketplace'", func() {
-			Expect(page.Find("#org-dropdown-btn")).To(BeVisible())
-			Expect(page.Find("#org-dropdown-btn").Click()).To(Succeed())
-		})
-
-		By("allowing the user to click on the org marketplace in the dropdown menu", func() {
-			DelayForRendering()
-			Expect(page.Find("#org-dropdown-menu")).To(BeVisible())
-			Eventually(Expect(page.Find("#org-marketplace").Click()).To(Succeed()))
+		By("allowing the user to click on the org marketplace in the org dropdown menu", func() {
+			user.OpenOrgMenuOn(page).ClickMarketplaceLink()
 		})
 
 		By("showing the user a table with all the services", func() {

@@ -35,3 +35,21 @@ func (u User) LogoutOf(page *agouti.Page) {
 	Expect(page.Find("#logout-btn").Click()).To(Succeed())
 	Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
 }
+
+func (u User) OpenOrgMenuOn(page *agouti.Page) OrgMenu {
+	Expect(page.Find("#org-dropdown-btn")).To(BeVisible())
+	Expect(page.Find("#org-dropdown-btn").Click()).To(Succeed())
+	return OrgMenu{page}
+}
+
+func (u User) OpenDropdownOfOrgsOn(page *agouti.Page) {
+	Expect(page.Find("#orgs-dropdown-btn")).To(BeVisible())
+	Expect(page.Find("#orgs-dropdown-btn").Click()).To(Succeed())
+}
+
+func (u User) SelectOrgFromDropdown(page *agouti.Page, orgName string) {
+	DelayForRendering()
+	Expect(page.Find("#orgs-dropdown-menu")).To(BeVisible())
+	Expect(page.FindByLink(orgName)).To(BeFound())
+	Eventually(Expect(page.FindByLink(orgName).Click()).To(Succeed()))
+}
