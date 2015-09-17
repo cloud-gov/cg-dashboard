@@ -171,12 +171,12 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat='route in appSummary.routes'>
+        <tr name="{{route.host}}-row" ng-repeat='route in appSummary.routes'>
             <td>{{route.host}}</td>
             <td>{{route.domain.name}}</td>
             <td>
-                <button type="button" type="submit" class="btn btn-xs btn-danger" ng-disabled="blockRoutes"
-                mwl-confirm title="Warning!" message="Are you sure you want to delete this route?"
+                <button name="{{route.host}}-delete" type="button" type="submit" class="btn btn-xs btn-danger" ng-disabled="blockRoutes"
+                mwl-confirm title="Warning!" message="Are you sure you want to delete this route?" confirm-text="Delete {{route.host}}"
                 on-confirm="deleteRoute(route)" confirm-button-type="danger" cancel-button-type="default">
                     Delete Route
                 </button>
@@ -195,7 +195,7 @@
             </td>
             <td>
                 <button type="button" type="submit" class="btn btn-xs btn-info" ng-disabled="blockRoutes"
-                mwl-confirm title="Notice!" message="Please allow a few moments for the route to be created"
+                mwl-confirm title="Notice!" confirm-text="Confirm Route" message="Are you sure you want to create this route?"
                 on-confirm="createRoute(newRoute)" confirm-button-type="info" cancel-button-type="default">
                     Create Route
                 </button>
