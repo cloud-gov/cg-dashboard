@@ -68,6 +68,37 @@ var _ = Describe("Services", func() {
 		})
 	})
 
+	It("should allow a user to delete a service instance", func() {
+		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
+			user.OpenDropdownOfOrgsOn(page)
+		})
+
+		By("allowing the user to click on an organization in the dropdown menu", func() {
+			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
+		})
+
+		By("allowing the user to click on the org spaces in the org dropdown menu", func() {
+			user.OpenOrgMenuOn(page).ClickSpacesLink()
+		})
+		By("allowing the user to click the on test space", func() {
+			DelayForRendering()
+			Expect(page.FindByLink(testEnvVars.TestSpaceName)).To(BeFound())
+			Eventually(Expect(page.FindByLink(testEnvVars.TestSpaceName).Click()).To(Succeed()))
+		})
+		By("allowing the user to click the on test service instances tab", func() {
+			DelayForRendering()
+			Expect(page.FindByLink("Service Instances")).To(BeFound())
+			Eventually(Expect(page.FindByLink("Service Instances").Click()).To(Succeed()))
+		})
+		By("finding the unbound service instance and delete it", func() {
+			DelayForRendering()
+			Expect(page.Find("#service-instance-search").Fill("testService01")).To(Succeed())
+			Expect(page.All(".delete-unbound-service-instance-btn").Count()).To(Equal(1))
+			Expect(page.First(".delete-unbound-service-instance-btn").Click()).To(Succeed())
+			Expect(page.FindByButton("Confirm").Click()).To(Succeed())
+		})
+	})
+
 	AfterEach(func() {
 		// Logout user
 		user.LogoutOf(page)
