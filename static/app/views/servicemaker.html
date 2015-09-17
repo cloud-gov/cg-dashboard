@@ -1,7 +1,7 @@
 <div class="well">
     <h4 class="text-center">Create Service Instance for <u>{{service.entity.label}}</u> service using the <u>{{activePlan.entity.name}}</u> plan </h4>
     </br>
-      <div ng-show='message.type=="error"' class="alert alert-danger" role="alert">{{message.message}}</div> 
+      <div id="message-alert-servicemaker" ng-show='message.type=="error"' class="alert alert-danger" role="alert">{{message.message}}</div>
     <form>
         <div class="form-group">
             <label>Choose a name for the service</label>
@@ -11,13 +11,13 @@
         <div class="form-group">
             <label>Select the space for the service instance</label>
 
-            <select name="space_guid" class="form-control" ng-model="serviceInstance.space_guid"
+            <select id="target-space" name="space_guid" class="form-control" ng-model="serviceInstance.space_guid"
             ng-options="space.guid as space.name for space in spaces"
             required>
                 <option value=""></option>
             </select>
         </div>
-        <button ng-disabled="disableSubmit" class="btn btn-primary" type="submit" value="Create Service Instance"
+        <button id="confirm-create-service-btn" ng-disabled="disableSubmit" class="btn btn-primary" type="submit" value="Create Service Instance"
         ng-click="createServiceInstance(serviceInstance)" >Create Service Instance</button>
     </form>
 </div>

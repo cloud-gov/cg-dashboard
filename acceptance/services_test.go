@@ -56,8 +56,15 @@ var _ = Describe("Services", func() {
 		By("finding the shared-psql plan row", func() {
 			Expect(page.Find("#servicePlanSearch").Fill("shared-psql")).To(Succeed())
 			Expect(page.All(".create-service-btn").Count()).To(Equal(1))
-			// Expect(page.First(".create-service-btn").Click).To(Succeed())
-			// Expect(page.Find("#servicePlanSearch").Fill("shared-psql")).To(Succeed())
+		})
+		By("creating the service and showing 'Service Created' to confirm creatiion", func() {
+			Expect(page.First(".create-service-btn").Click()).To(Succeed())
+			Expect(page.Find("#new-service-name").Fill("testService01")).To(Succeed())
+			selection := page.Find("#target-space")
+			Expect(selection.Select(testEnvVars.TestSpaceName)).To(Succeed())
+			Eventually(Expect(page.First("#confirm-create-service-btn").Click()).To(Succeed()))
+			DelayForRendering()
+			Expect(page.Find("#message-alert-service")).To(HaveText("Service Created!"))
 		})
 	})
 
