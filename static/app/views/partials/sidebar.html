@@ -16,7 +16,7 @@
         aria-expanded="false">{{ MenuData.data.currentOrg | orgNameFilter }} &nbsp;<span class="caret"></span></a>
         <ul id="org-dropdown-menu" class="dropdown-menu">
             <li>
-                <a ng-href="#/org/{{ MenuData.data.currentOrg.guid }}">
+                <a id="org-spaces" ng-href="#/org/{{ MenuData.data.currentOrg.guid }}">
                     Spaces
                 </a>
                 <a id="org-marketplace" ng-href="#/org/{{ MenuData.data.currentOrg.guid }}/marketplace">

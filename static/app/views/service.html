@@ -3,7 +3,7 @@
     <p class="text-center">{{service.entity.description}}</p>
 </div>
 
-<div ng-show='message.type=="success"' class="alert alert-success" role="alert">{{message.message}}</div>
+<div id="message-alert-service" ng-show='message.type=="success"' class="alert alert-success" role="alert">{{message.message}}</div>
 
 
 <form>
@@ -12,14 +12,14 @@
             <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
             </div>
 
-            <input id="serviceSearch" type="text" class="form-control" placeholder="Search for a service"
-            ng-model="searchService">
+            <input id="servicePlanSearch" type="text" class="form-control" placeholder="Search for a service"
+            ng-model="searchServicePlan">
 
         </div>
     </div>
 </form>
 
-<table id="servicesTable" class="table table-condensed">
+<table id="servicePlansTable" class="table table-condensed">
     <thead>
         <th id='plan-name-heading'>
             <a ng-click="sortType = 'entity.name'; sortReverse = !sortReverse">
@@ -50,7 +50,7 @@
 
     </thead>
     <tbody>
-        <tr ng-click="showService(service)" ng-repeat="plan in plans | orderBy:sortType:sortReverse | filter:searchService">
+        <tr ng-click="showService(service)" ng-repeat="plan in plans | orderBy:sortType:sortReverse | filter:searchServicePlan">
             <td class="plan-name-data">{{plan.entity.name}}</td>
             <td class="plan-free-data">{{plan.entity.free}}</td>
             <td class="plan-description-data">{{plan.entity.description}}</td>
@@ -65,7 +65,7 @@
                 </table>
             </td>
             <td>
-                <button type="button" class="btn btn-xs btn-primary" ng-click="showServiceMaker(plan)">Create Service Instance</button>
+                <button type="button" class="btn btn-xs btn-primary create-service-btn" ng-click="showServiceMaker(plan)">Create Service Instance</button>
             </td>
         </tr>
     </tbody>
