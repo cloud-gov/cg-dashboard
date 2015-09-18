@@ -17,6 +17,7 @@ var _ = Describe("Services", func() {
 		server      *httptest.Server
 		testEnvVars AcceptanceTestEnvVars
 		user        User
+		service     Service
 	)
 
 	testEnvVars = AcceptanceTestEnvVars{}
@@ -34,41 +35,30 @@ var _ = Describe("Services", func() {
 
 		// Log user in
 		user.LoginTo(page)
+
+		// Init service
+		service = InitService("testService01", testEnvVars, user)
 	})
 	It("should allow a user to create a service instance", func() {
-		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
-			user.OpenDropdownOfOrgsOn(page)
-		})
-
-		By("allowing the user to click on an organization in the dropdown menu", func() {
-			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
-		})
-
-		By("allowing the user to click on the org marketplace in the org dropdown menu", func() {
-			user.OpenOrgMenuOn(page).ClickMarketplaceLink()
-		})
-		By("allowing the user to click the Service Name called 'rds'", func() {
-			DelayForRendering()
-			Expect(page.FindByLink("rds")).To(BeFound())
-			Eventually(Expect(page.FindByLink("rds").Click()).To(Succeed()))
-		})
-
-		By("finding the shared-psql plan row", func() {
-			Expect(page.Find("#servicePlanSearch").Fill("shared-psql")).To(Succeed())
-			Expect(page.All(".create-service-btn").Count()).To(Equal(1))
-		})
-		By("creating the service and showing 'Service Created' to confirm creatiion", func() {
-			Expect(page.First(".create-service-btn").Click()).To(Succeed())
-			Expect(page.Find("#new-service-name").Fill("testService01")).To(Succeed())
-			selection := page.Find("#target-space")
-			Expect(selection.Select(testEnvVars.TestSpaceName)).To(Succeed())
-			Eventually(Expect(page.First("#confirm-create-service-btn").Click()).To(Succeed()))
-			DelayForRendering()
-			Expect(page.Find("#message-alert-service")).To(HaveText("Service Created!"))
+		Skip("")
+		By("creating a service", func() {
+			service.CreateService(page)
 		})
 	})
 
 	It("should allow a user to delete a service instance", func() {
+		Skip("")
+		By("deleting a service", func() {
+			service.DeleteUnboundService(page)
+		})
+
+	})
+
+	It("should allow a user to create a service instance and bind it to an app.", func() {
+		Skip("")
+		By("creating a service", func() {
+			service.CreateService(page)
+		})
 		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
 			user.OpenDropdownOfOrgsOn(page)
 		})
@@ -85,17 +75,32 @@ var _ = Describe("Services", func() {
 			Expect(page.FindByLink(testEnvVars.TestSpaceName)).To(BeFound())
 			Eventually(Expect(page.FindByLink(testEnvVars.TestSpaceName).Click()).To(Succeed()))
 		})
-		By("allowing the user to click the on test service instances tab", func() {
+		By("going to the app page", func() {
 			DelayForRendering()
-			Expect(page.FindByLink("Service Instances")).To(BeFound())
-			Eventually(Expect(page.FindByLink("Service Instances").Click()).To(Succeed()))
+			Expect(page.FindByLink(testEnvVars.TestAppName)).To(BeFound())
+			Eventually(Expect(page.FindByLink(testEnvVars.TestAppName).Click()).To(Succeed()))
 		})
-		By("finding the unbound service instance and delete it", func() {
+		By("binding the service to the app", func() {
 			DelayForRendering()
-			Expect(page.Find("#service-instance-search").Fill("testService01")).To(Succeed())
-			Expect(page.All(".delete-unbound-service-instance-btn").Count()).To(Equal(1))
-			Expect(page.First(".delete-unbound-service-instance-btn").Click()).To(Succeed())
-			Expect(page.FindByButton("Confirm").Click()).To(Succeed())
+			// Find the service panel heading.
+			xPathHeading := "//div[@class='panel panel-default']/div[@class='panel-heading']/*[contains(text(), '"+"testService01"+"')]"
+			Expect(page.FindByXPath(xPathHeading)).To(BeFound())
+			// Go up two levels to get the whole panel.
+			xPathHeadingGrandparent := xPathHeading + "/parent::*/parent::*"
+			panel := page.FindByXPath(xPathHeadingGrandparent)
+			Expect(panel).To(BeFound())
+			// Get the button.
+			Expect(panel.Find(".bind-service-btn")).To(BeFound())
+			Expect(panel.Find(".bind-service-btn").Click()).To(Succeed())
+			DelayForRendering()
+			Expect(FindFirstVisibleOverlayButtonByText("Confirm Bind", page)).NotTo(Equal(nil))
+			Expect(FindFirstVisibleOverlayButtonByText("Confirm Bind", page).Click()).To(Succeed())
+			DelayForRendering()
+		})
+	})
+	It("should allow a user to delete a service instance", func() {
+		By("deleting a service", func() {
+			service.DeleteUnboundService(page)
 		})
 	})
 
