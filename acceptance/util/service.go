@@ -88,4 +88,11 @@ func (s Service) deleteService(delete_button_id string, page *agouti.Page) {
 			Expect(page.First(delete_button_id).Click()).To(Succeed())
 			Expect(page.FindByButton("Confirm").Click()).To(Succeed())
 		})
+		By("verifying that the service is gone", func() {
+			Expect(page.Refresh()).To(Succeed())
+			DelayForRendering()
+			Expect(page.Find("#service-instance-search").Fill("testService01")).To(Succeed())
+			Expect(page.All(delete_button_id).Count()).To(Equal(0))
+
+		})
 }

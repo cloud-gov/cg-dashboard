@@ -17,7 +17,10 @@ var _ = Describe("Services", func() {
 		server      *httptest.Server
 		testEnvVars AcceptanceTestEnvVars
 		user        User
+		spaces Spaces
+		space Space
 		service     Service
+		app App
 	)
 
 	testEnvVars = AcceptanceTestEnvVars{}
@@ -55,7 +58,6 @@ var _ = Describe("Services", func() {
 	})
 
 	It("should allow a user to create a service instance and bind it to an app.", func() {
-		Skip("")
 		By("creating a service", func() {
 			service.CreateService(page)
 		})
@@ -68,17 +70,13 @@ var _ = Describe("Services", func() {
 		})
 
 		By("allowing the user to click on the org spaces in the org dropdown menu", func() {
-			user.OpenOrgMenuOn(page).ClickSpacesLink()
+			spaces = user.OpenOrgMenuOn(page).ClickSpacesLink()
 		})
 		By("allowing the user to click the on test space", func() {
-			DelayForRendering()
-			Expect(page.FindByLink(testEnvVars.TestSpaceName)).To(BeFound())
-			Eventually(Expect(page.FindByLink(testEnvVars.TestSpaceName).Click()).To(Succeed()))
+			space = spaces.ViewSpace(testEnvVars.TestSpaceName)
 		})
 		By("going to the app page", func() {
-			DelayForRendering()
-			Expect(page.FindByLink(testEnvVars.TestAppName)).To(BeFound())
-			Eventually(Expect(page.FindByLink(testEnvVars.TestAppName).Click()).To(Succeed()))
+			app = space.ViewApp(testEnvVars.TestAppName)
 		})
 		By("binding the service to the app", func() {
 			DelayForRendering()
@@ -92,10 +90,8 @@ var _ = Describe("Services", func() {
 			// Get the button.
 			Expect(panel.Find(".bind-service-btn")).To(BeFound())
 			Expect(panel.Find(".bind-service-btn").Click()).To(Succeed())
-			DelayForRendering()
 			Expect(FindFirstVisibleOverlayButtonByText("Confirm Bind", page)).NotTo(Equal(nil))
 			Expect(FindFirstVisibleOverlayButtonByText("Confirm Bind", page).Click()).To(Succeed())
-			DelayForRendering()
 		})
 	})
 	It("should allow a user to delete a service instance", func() {

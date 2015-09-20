@@ -48,7 +48,6 @@ func (u User) OpenDropdownOfOrgsOn(page *agouti.Page) {
 }
 
 func (u User) SelectOrgFromDropdown(page *agouti.Page, orgName string) {
-	DelayForRendering()
 	Expect(page.Find("#orgs-dropdown-menu")).To(BeVisible())
 	Expect(page.FindByLink(orgName)).To(BeFound())
 	Eventually(Expect(page.FindByLink(orgName).Click()).To(Succeed()))
