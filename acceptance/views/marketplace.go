@@ -24,5 +24,6 @@ func (m Marketplace) CreateService(serviceType string, servicePlan string, servi
 	Expect(selection.Select(spaceName)).To(Succeed())
 	Eventually(Expect(m.page.First("#confirm-create-service-btn").Click()).To(Succeed()))
 	DelayForRendering()
+	DelayForRendering()
 	Expect(m.page.Find("#message-alert-service")).To(HaveText("Service Created!"))
 }
