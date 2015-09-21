@@ -3,6 +3,7 @@
 package util
 
 import (
+	. "github.com/18F/cf-deck/acceptance/util"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"

@@ -4,6 +4,7 @@ package acceptance
 
 import (
 	. "github.com/18F/cf-deck/acceptance/util"
+	. "github.com/18F/cf-deck/acceptance/views"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
