@@ -38,7 +38,6 @@ func (a App) BindToService(serviceName string) {
 	Expect(panel).To(BeFound())
 	// Get the button.
 	Expect(panel.Find(".unbind-service-btn")).To(BeFound())
-	Expect(panel.Find(".unbind-service-btn").Click()).To(Succeed())
 }
 
 func (a App) UnbindFromService(serviceName string) {
@@ -67,5 +66,4 @@ func (a App) UnbindFromService(serviceName string) {
 	Expect(panel).To(BeFound())
 	// Get the button.
 	Expect(panel.Find(".bind-service-btn")).To(BeFound())
-	Expect(panel.Find(".bind-service-btn").Click()).To(Succeed())
 }
