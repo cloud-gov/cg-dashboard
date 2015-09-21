@@ -3,19 +3,21 @@
 package util
 
 import (
-	"github.com/18F/cf-deck/helpers"
 	"fmt"
+	"github.com/18F/cf-deck/helpers"
 	"os"
 )
 
 // Helper composite struct to store all the regular env variables as well as the ones for this test suite.
 type AcceptanceTestEnvVars struct {
 	helpers.EnvVars
-	Username string
-	Password string
-	TestOrgName string
+	Username      string
+	Password      string
+	TestOrgName   string
 	TestSpaceName string
-	TestAppName string
+	TestAppName   string
+	TestDomain    string
+	TestHost      string
 }
 
 // Helper function to load all the variables needed.
@@ -25,6 +27,8 @@ func (ev *AcceptanceTestEnvVars) LoadTestEnvVars() {
 	ev.TestOrgName = os.Getenv("CONSOLE_TEST_ORG_NAME")
 	ev.TestSpaceName = os.Getenv("CONSOLE_TEST_SPACE_NAME")
 	ev.TestAppName = os.Getenv("CONSOLE_TEST_APP_NAME")
+	ev.TestDomain = os.Getenv("CONSOLE_TEST_DOMAIN")
+	ev.TestHost = os.Getenv("CONSOLE_TEST_HOST")
 
 	if len(ev.Username) < 1 {
 		fmt.Println("Please set CONSOLE_TEST_USERNAME")
@@ -50,6 +54,17 @@ func (ev *AcceptanceTestEnvVars) LoadTestEnvVars() {
 		fmt.Println("Please set CONSOLE_TEST_APP_NAME")
 		os.Exit(1)
 	}
+
+	if len(ev.TestHost) < 1 {
+		fmt.Println("Please set CONSOLE_TEST_HOST")
+		os.Exit(1)
+	}
+
+	if len(ev.TestDomain) < 1 {
+		fmt.Println("Please set CONSOLE_TEST_DOMAIN")
+		os.Exit(1)
+	}
+
 	// The app will catch the rest of these
 	ev.ClientID = os.Getenv(helpers.ClientIDEnvVar)
 	ev.ClientSecret = os.Getenv(helpers.ClientSecretEnvVar)
