@@ -213,12 +213,12 @@
                 <h3 class="panel-title">{{service.entity.name}}</h3>
             </div>
             <div class="panel-body">
-                <button type="button" class="btn btn-xs btn-info" ng-disabled="disableServiceBinder"
+                <button type="button" class="btn btn-xs btn-info bind-service-btn" ng-disabled="disableServiceBinder"
                 ng-show="!service.boundService" mwl-confirm title="Notice!" message="You will need to <b>restage</b> this application before this service is available."
-                on-confirm="bindService(service)" confirm-button-type="info" cancel-button-type="default">Bind Service</button>
-                <button type="button" class="btn btn-xs btn-danger" ng-disabled="disableServiceBinder"
+                on-confirm="bindService(service)" confirm-button-type="info" cancel-button-type="default" confirm-text="Confirm Bind">Bind Service</button>
+                <button type="button" class="btn btn-xs btn-danger unbind-service-btn" ng-disabled="disableServiceBinder"
                 ng-show="service.boundService" mwl-confirm title="Warning!" message="Are you sure you want to unbind this service?"
-                on-confirm="unbindService(service)" confirm-button-type="danger"
+                on-confirm="unbindService(service)" confirm-button-type="danger" confirm-text="Yes"
                 cancel-button-type="default">Unbind Service</button>
             </div>
             <div class="panel-heading" ng-show='service.credentials'>

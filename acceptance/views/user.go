@@ -3,6 +3,7 @@
 package util
 
 import (
+	. "github.com/18F/cf-deck/acceptance/util"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
@@ -22,7 +23,6 @@ func StartUserSessionWith(testEnvVars AcceptanceTestEnvVars) User {
 
 func (u User) LoginTo(page *agouti.Page) {
 	Expect(page.Navigate(u.testEnvVars.Hostname)).To(Succeed())
-	DelayForRendering()
 	Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
 	Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
 	Expect(page.FindByName("username").Fill(u.username)).To(Succeed())
@@ -48,7 +48,6 @@ func (u User) OpenDropdownOfOrgsOn(page *agouti.Page) {
 }
 
 func (u User) SelectOrgFromDropdown(page *agouti.Page, orgName string) {
-	DelayForRendering()
 	Expect(page.Find("#orgs-dropdown-menu")).To(BeVisible())
 	Expect(page.FindByLink(orgName)).To(BeFound())
 	Eventually(Expect(page.FindByLink(orgName).Click()).To(Succeed()))
