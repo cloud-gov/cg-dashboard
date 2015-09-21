@@ -22,7 +22,6 @@ func StartUserSessionWith(testEnvVars AcceptanceTestEnvVars) User {
 
 func (u User) LoginTo(page *agouti.Page) {
 	Expect(page.Navigate(u.testEnvVars.Hostname)).To(Succeed())
-	DelayForRendering()
 	Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
 	Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
 	Expect(page.FindByName("username").Fill(u.username)).To(Succeed())

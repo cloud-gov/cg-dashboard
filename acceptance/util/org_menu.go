@@ -12,9 +12,10 @@ type OrgMenu struct {
 	page *agouti.Page
 }
 
-func (m OrgMenu) ClickMarketplaceLink() {
+func (m OrgMenu) ClickMarketplaceLink() Marketplace {
 	Expect(m.page.Find("#org-dropdown-menu")).To(BeVisible())
 	Eventually(Expect(m.page.Find("#org-marketplace").Click()).To(Succeed()))
+	return Marketplace{m.page}
 }
 
 func (m OrgMenu) ClickSpacesLink() Spaces {

@@ -218,7 +218,7 @@
                 on-confirm="bindService(service)" confirm-button-type="info" cancel-button-type="default" confirm-text="Confirm Bind">Bind Service</button>
                 <button type="button" class="btn btn-xs btn-danger unbind-service-btn" ng-disabled="disableServiceBinder"
                 ng-show="service.boundService" mwl-confirm title="Warning!" message="Are you sure you want to unbind this service?"
-                on-confirm="unbindService(service)" confirm-button-type="danger" confirm-text="Confirm Unbind"
+                on-confirm="unbindService(service)" confirm-button-type="danger" confirm-text="Yes"
                 cancel-button-type="default">Unbind Service</button>
             </div>
             <div class="panel-heading" ng-show='service.credentials'>

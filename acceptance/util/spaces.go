@@ -15,5 +15,6 @@ func (s Spaces) ViewSpace(spaceName string) Space {
 	DelayForRendering()
 	Expect(s.page.FindByLink(spaceName)).To(BeFound())
 	Eventually(Expect(s.page.FindByLink(spaceName).Click()).To(Succeed()))
+	DelayForRendering()
 	return Space{s.page}
 }
