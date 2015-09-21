@@ -14,6 +14,7 @@ type Space struct {
 
 func (s Space) ViewApp(appName string) App {
 	DelayForRendering()
+	DelayForRendering()
 	Expect(s.page.FindByLink(appName)).To(BeFound())
 	Eventually(Expect(s.page.FindByLink(appName).Click()).To(Succeed()))
 	return App{s.page}
