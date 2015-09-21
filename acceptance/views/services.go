@@ -33,11 +33,13 @@ func (s Services) DeleteBoundServiceInstance(instanceName string) {
 func (s Services) VerifyServiceInstanceExists(instanceName string) {
 	DelayForRendering()
 	Expect(s.page.Find("#service-instance-search").Fill(instanceName)).To(Succeed())
+	DelayForRendering()
 	Expect(s.page.All(".delete-unbound-service-instance-btn").Count()).To(Equal(1))
 }
 
 func (s Services) VerifyServiceInstanceDoesNotExist(instanceName string) {
 	DelayForRendering()
 	Expect(s.page.Find("#service-instance-search").Fill(instanceName)).To(Succeed())
+	DelayForRendering()
 	Expect(s.page.All(".delete-unbound-service-instance-btn").Count()).To(Equal(0))
 }
