@@ -67,3 +67,36 @@ func (a App) UnbindFromService(serviceName string) {
 	// Get the button.
 	Expect(panel.Find(".bind-service-btn")).To(BeFound())
 }
+
+func (a App) CreateRoute(host string, domain string) {
+	// ** Create route and confirm it exists **
+	DelayForRendering()
+	// Fill in the hostname with a dummy route name
+	Expect(a.page.FindByName("host").Fill(host)).To(Succeed())
+	//Select the domain name
+	Expect(a.page.FindByName("domain_guid").Select(domain)).To(Succeed())
+	DelayForRendering()
+	// Click on the create route button
+	Expect(a.page.FindByButton("Create Route").Click()).To(Succeed())
+	DelayForRendering()
+	// Clicks on the confirm button
+	confirmButton := FindFirstVisibleOverlayButtonByText("Confirm", a.page)
+	Expect(confirmButton.Click()).To(Succeed())
+	DelayForRendering()
+	// Check if route exists
+	Expect(a.page.FindByName(host + "-" + domain + "-row")).To(BeFound())
+}
+
+func (a App) DeleteRoute(host string, domain string) {
+	// ** Delete route and confirm that it doesn't exist **
+	DelayForRendering()
+	// Finds and clicks on the delete route button
+	Expect(a.page.FindByName(host + "-" + domain + "-delete").Click()).To(Succeed())
+	// Find and click the confirm button
+	confirmButton := FindFirstVisibleOverlayButtonByText("Confirm", a.page)
+	Expect(confirmButton.Click()).To(Succeed())
+	DelayForRendering()
+	DelayForRendering()
+	// Checks that the route doesn't exist
+	Expect(a.page.FindByName(host + "-" + domain + "-row")).ToNot(BeFound())
+}
