@@ -81,6 +81,8 @@ All the acceptance tests are in the 'acceptance' folder.
 - `CONSOLE_TEST_ORG_NAME`: The test organization the user should be navigating to.
 - `CONSOLE_TEST_SPACE_NAME`: The test space the user should be navigating to.
 - `CONSOLE_TEST_APP_NAME`: The test app the user should be navigating to.
+- `CONSOLE_TEST_HOST`: The host that the app can create a mock route for. 
+- `CONSOLE_TEST_DOMAIN`: The domain for the mock route.
 
 #### Running acceptance tests
 - `cd acceptance && go test -tags acceptance`
