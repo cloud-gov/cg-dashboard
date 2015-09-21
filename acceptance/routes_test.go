@@ -42,13 +42,9 @@ var _ = Describe("AppStructure", func() {
 	It("Allow the user to create and destroy app routes", func() {
 		By("going to the app page", func() {
 			user.OpenDropdownOfOrgsOn(page)
-			DelayForRendering()
 			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
-			DelayForRendering()
 			spaces = user.OpenOrgMenuOn(page).ClickSpacesLink()
-			DelayForRendering()
 			space = spaces.ViewSpace(testEnvVars.TestSpaceName)
-			DelayForRendering()
 			app = space.ViewApp(testEnvVars.TestAppName)
 		})
 
