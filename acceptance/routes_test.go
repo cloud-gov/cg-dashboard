@@ -4,20 +4,22 @@ package acceptance
 
 import (
 	. "github.com/18F/cf-deck/acceptance/util"
+	. "github.com/18F/cf-deck/acceptance/views"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
-	. "github.com/sclevine/agouti/matchers"
-
 	"net/http/httptest"
 )
 
 var _ = Describe("AppStructure", func() {
 	var (
+		user        User
 		page        *agouti.Page
 		server      *httptest.Server
 		testEnvVars AcceptanceTestEnvVars
-		user        User
+		spaces      Spaces
+		space       Space
+		app         App
 	)
 
 	testEnvVars = AcceptanceTestEnvVars{}
@@ -38,64 +40,26 @@ var _ = Describe("AppStructure", func() {
 	})
 
 	It("Allow the user to create and destroy app routes", func() {
-		By("Navigate to the org page", func() {
+		By("going to the app page", func() {
 			user.OpenDropdownOfOrgsOn(page)
-		})
-
-		By("allowing the user to click on an organization in the dropdown menu", func() {
+			DelayForRendering()
 			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
+			DelayForRendering()
+			spaces = user.OpenOrgMenuOn(page).ClickSpacesLink()
+			DelayForRendering()
+			space = spaces.ViewSpace(testEnvVars.TestSpaceName)
+			DelayForRendering()
+			app = space.ViewApp(testEnvVars.TestAppName)
 		})
 
-		By("allowing the user to click on a space in the tab views", func() {
-			DelayForRendering()
-			Expect(page.FindByLink(testEnvVars.TestSpaceName)).To(BeFound())
-			Eventually(Expect(page.FindByLink(testEnvVars.TestSpaceName).Click()).To(Succeed()))
+		By("allowing the user to create a route", func() {
+			// Create a route
+			app.CreateRoute(testEnvVars.TestHost, testEnvVars.TestDomain)
 		})
 
-		By("allowing the user to click on an app in the tab views", func() {
-			DelayForRendering()
-			Expect(page.FindByLink(testEnvVars.TestAppName)).To(BeFound())
-			Eventually(Expect(page.FindByLink(testEnvVars.TestAppName).Click()).To(Succeed()))
-			DelayForRendering()
-		})
-
-		By("allowing the user to fill in a host route", func() {
-			DelayForRendering()
-			Expect(page.FindByName("host").Fill("testtestest")).To(Succeed())
-		})
-
-		By("allowing the user to select a domain", func() {
-			selection := page.FindByName("domain_guid")
-			Expect(selection.Select("18f.gov")).To(Succeed())
-			DelayForRendering()
-		})
-
-		By("allowing the user to create a route by submitting the form", func() {
-			Expect(page.FindByButton("Create Route").Click()).To(Succeed())
-			DelayForRendering()
-			Expect(page.FindByButton("Confirm Route").Click()).To(Succeed())
-			DelayForRendering()
-		})
-
-		By("showing the route that was created", func() {
-			DelayForRendering()
-			Expect(page.FindByName("testtestest-row")).To(BeFound())
-		})
-
-		By("allowing user to click on the delete button", func() {
-			DelayForRendering()
-			Expect(page.FindByName("testtestest-delete").Click()).To(Succeed())
-		})
-
-		By("allowing user to confirm the deletion", func() {
-			DelayForRendering()
-			Expect(page.FindByButton("Delete testtestest").Click()).To(Succeed())
-		})
-
-		By("removing the deleted route form the page user", func() {
-			DelayForRendering()
-			Expect(page.FindByName("testtestest-row")).NotTo(BeFound())
-
+		By("allowing the user to delete a route", func() {
+			// Delete the route
+			app.DeleteRoute(testEnvVars.TestHost, testEnvVars.TestDomain)
 		})
 
 	})
