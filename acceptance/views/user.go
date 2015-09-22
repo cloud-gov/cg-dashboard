@@ -23,8 +23,8 @@ func StartUserSessionWith(testEnvVars AcceptanceTestEnvVars) User {
 
 func (u User) LoginTo(page *agouti.Page) {
 	Expect(page.Navigate(u.testEnvVars.Hostname)).To(Succeed())
-	Eventually(Expect(page.Find("#login-btn").Click()).To(Succeed()))
-	Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
+	Expect(page.Find("#login-btn").Click()).To(Succeed())
+	Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login"))
 	Expect(page.FindByName("username").Fill(u.username)).To(Succeed())
 	Expect(page.FindByName("password").Fill(u.password)).To(Succeed())
 	Expect(page.FindByButton("Sign in").Click()).To(Succeed())
@@ -37,18 +37,18 @@ func (u User) LogoutOf(page *agouti.Page) {
 }
 
 func (u User) OpenOrgMenuOn(page *agouti.Page) OrgMenu {
-	Expect(page.Find("#org-dropdown-btn")).To(BeVisible())
+	Eventually(page.Find("#org-dropdown-btn")).Should(BeVisible())
 	Expect(page.Find("#org-dropdown-btn").Click()).To(Succeed())
 	return OrgMenu{page}
 }
 
 func (u User) OpenDropdownOfOrgsOn(page *agouti.Page) {
-	Expect(page.Find("#orgs-dropdown-btn")).To(BeVisible())
+	Eventually(page.Find("#orgs-dropdown-btn")).Should(BeVisible())
 	Expect(page.Find("#orgs-dropdown-btn").Click()).To(Succeed())
 }
 
 func (u User) SelectOrgFromDropdown(page *agouti.Page, orgName string) {
-	Expect(page.Find("#orgs-dropdown-menu")).To(BeVisible())
+	Eventually(page.Find("#orgs-dropdown-menu")).Should(BeVisible())
 	Expect(page.FindByLink(orgName)).To(BeFound())
-	Eventually(Expect(page.FindByLink(orgName).Click()).To(Succeed()))
+	Expect(page.FindByLink(orgName).Click()).To(Succeed())
 }
