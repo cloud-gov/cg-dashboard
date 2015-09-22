@@ -64,6 +64,7 @@ var _ = Describe("AppStructure", func() {
 
 		By("showing app name and quota information (along with other information)", func() {
 			DelayForRendering()
+			DelayForRendering()
 			Eventually(page.Find("#app-name-heading")).Should(BeFound())
 			Expect(page.Find("#buildpack-heading")).To(BeFound())
 			Expect(page.Find("#memory-heading")).To(BeFound())

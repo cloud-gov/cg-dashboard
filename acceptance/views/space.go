@@ -22,6 +22,7 @@ func (s Space) ViewApp(appName string) App {
 
 func (s Space) ViewServiceInstances() Services {
 	DelayForRendering()
+	DelayForRendering()
 	Eventually(s.page.FindByLink("Service Instances")).Should(BeFound())
 	Expect(s.page.FindByLink("Service Instances").Click()).To(Succeed())
 	return Services{s.page}
