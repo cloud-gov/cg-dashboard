@@ -64,19 +64,20 @@ var _ = Describe("AppStructure", func() {
 
 		By("showing app name and quota information (along with other information)", func() {
 			DelayForRendering()
-			Eventually(Expect(page.Find("#app-name-heading")).To(BeFound()))
+			DelayForRendering()
+			Eventually(page.Find("#app-name-heading")).Should(BeFound())
 			Expect(page.Find("#buildpack-heading")).To(BeFound())
 			Expect(page.Find("#memory-heading")).To(BeFound())
 			Expect(page.Find("#instances-heading")).To(BeFound())
 			Expect(page.Find("#state-heading")).To(BeFound())
 			Expect(page.Find("#disk-quota-heading")).To(BeFound())
 
-			Expect(page.First(".app-name-data")).To(BeFound())
-			Expect(page.First(".buildpack-data")).To(BeFound())
-			Expect(page.First(".memory-data")).To(BeFound())
-			Expect(page.First(".instances-data")).To(BeFound())
-			Expect(page.First(".state-data")).To(BeFound())
-			Expect(page.First(".disk-quota-data")).To(BeFound())
+			Eventually(page.First(".app-name-data")).Should(BeFound())
+			Eventually(page.First(".buildpack-data")).Should(BeFound())
+			Eventually(page.First(".memory-data")).Should(BeFound())
+			Eventually(page.First(".instances-data")).Should(BeFound())
+			Eventually(page.First(".state-data")).Should(BeFound())
+			Eventually(page.First(".disk-quota-data")).Should(BeFound())
 		})
 
 		// MARKETPLACE TESTS

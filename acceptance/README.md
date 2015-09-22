@@ -18,6 +18,6 @@
 - More helpers reside in `cf_console_suite_test.go` file
 
 ### Running the tests
-- Make sure you have `CONSOLE_TEST_USERNAME`, `CONSOLE_TEST_PASSWORD`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, and `CONSOLE_TEST_APP_NAME` set in your environment.
+- Make sure you have `CONSOLE_TEST_USERNAME`, `CONSOLE_TEST_PASSWORD`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, `CONSOLE_TEST_APP_NAME`, `CONSOLE_TEST_HOST`, and `CONSOLE_TEST_DOMAIN` set in your environment.
   - This represents a username and password for the test to browse through with.
 - Run `go test ./... --tags acceptance`
