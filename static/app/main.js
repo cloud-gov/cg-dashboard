@@ -10,9 +10,12 @@
                 templateUrl: 'app/views/dashboard.html',
                 controller: 'DashboardCtrl',
             })
+            .when('/org/:orgguid/spaces', {
+                redirectTo: "/org/:orgguid"
+            })
             .when('/org/:orgguid', {
                 templateUrl: 'app/views/organizations.html',
-                controller: 'OrgCtrl'
+                controller: 'OrgCtrl' // TODO Rename to OrgSpaces
             })
             .when('/org/:orgguid/marketplace', {
                 templateUrl: 'app/views/marketplace.html',
@@ -32,7 +35,10 @@
             })
             .when('/org/:orgguid/spaces/:spaceguid', {
                 templateUrl: 'app/views/spaces.html',
-                controller: 'SpaceCtrl'
+                controller: 'SpaceCtrl' // TODO Rename to SpaceApps
+            })
+            .when('/org/:orgguid/spaces/:spaceguid/apps', {
+                redirectTo: "/org/:orgguid/spaces/:spaceguid"
             })
             .when('/org/:orgguid/spaces/:spaceguid/services', {
                 templateUrl: 'app/views/spaces_services.html',
@@ -49,5 +55,29 @@
             .otherwise({
                 redirectTo: "/"
             });
+    });
+    app.config(function($httpProvider) {
+        $httpProvider.interceptors.push(function($q, $injector, $location) {
+            return {
+                responseError: function(rejection) {
+                    if (rejection.status === 404) {
+                        // Check to make sure if we aren't at the root.
+                        if ($location.path() != "/") {
+                            // Go up one directory if not found.
+                            var arr = window.location.href.split("/");
+                            delete arr[arr.length - 1];
+                            window.location.assign(arr.join("/"));
+                            // Make sure the page is reloaded to reflect the new values.
+                            window.location.reload();
+                        }
+                    }
+
+                    /* If not a 401, do nothing with this error.
+                     * This is necessary to make a `responseError`
+                     * interceptor a no-op. */
+                    return $q.reject(rejection);
+                }
+            };
+        });
     });
 }());
