@@ -10,9 +10,20 @@ export default class App extends React.Component {
   render() {
 
     return (
-      <div>
-        <h3>it works</h3>
+    <nav className="navbar navbar-inverse navbar-fixed-top">
+      <div className="container-fluid">
+        <div className="collapse navbar-collapse">
+          <a className="navbar-brand" href="#/dashboard" ng-click="clearDashboard()">
+            <i className="glyphicon glyphicon-cloud"></i>
+            Deck
+            <span className="label label-info">Alpha</span>
+          </a>
+        </div>
       </div>
+    </nav>
+    <div className="container-fluid">
+
+    </div>
     );
   }
 }

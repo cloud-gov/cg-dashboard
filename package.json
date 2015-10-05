@@ -45,6 +45,7 @@
   "dependencies": {
     "axios": "^0.5.4",
     "bootstrap": "^3.3.5",
+    "director": "^1.2.8",
     "events": "^1.0.2",
     "exports-loader": "^0.6.2",
     "file-loader": "^0.8.4",
