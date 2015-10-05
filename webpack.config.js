@@ -1,6 +1,6 @@
 var path = require('path');
 
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var srcDir = './static_src';
 var compiledDir = './static/assets';
@@ -10,7 +10,7 @@ module.exports = {
 
   output: {
     path: path.resolve(compiledDir),
-    filename: "bundle.js"
+    filename: 'bundle.js'
   },
 
 
@@ -18,7 +18,10 @@ module.exports = {
     loaders: [
       { test: /\.jsx?$/,
         loader: 'babel?optional[]=runtime',
-        exclude: /node_modules/ }
+        exclude: /node_modules/ },
+      { test: /\.css$/,
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
+      }
     ]
   },
 
@@ -27,5 +30,6 @@ module.exports = {
   },
 
   plugins: [
+    new ExtractTextPlugin('style.css', { allChunks: true })
   ]
 };
