@@ -11,12 +11,10 @@ const mainEl = document.querySelector('.js-app');
 
 
 function login() {
-  console.log('login');
   React.render(<App><Login/></App>, mainEl);
 }
 
 function dashboard() {
-  console.log('dashboard');
   React.render(<App></App>, mainEl);
 }
 

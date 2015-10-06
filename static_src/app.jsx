@@ -1,17 +1,40 @@
 
 import React from 'react';
 
+import Login from './components/login.jsx';
+import LoginStore from './stores/login_store.js';
+
+function getState() {
+  return {isLoggedIn: LoginStore.isLoggedIn()};
+}
 
 export default class App extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = {isLoggedIn: false};
   }
 
-  render() {
+  componentDidMount() {
+    this.setState(getState());
+    LoginStore.addChangeListener(this._onChange);
+  }
+
+  _onChange = () => {
+    this.setState(getState());
+  }
+
+  render = () => {
+    var content;
+
+    if (this.state.isLoggedIn) {
+      content = this.props.children;
+    } else {
+      content = <Login />;
+    }
 
     return (
     <div>
-      // TODO use a separate navbar component for this.
+      { /* TODO use a separate navbar component for this. */ }
       <nav className="navbar navbar-inverse navbar-fixed-top">
         <div className="container-fluid">
           <a className="navbar-brand" href="#/dashboard">
@@ -22,13 +45,12 @@ export default class App extends React.Component {
         </div>
       </nav>
       <div className="container-fluid">
-        // TODO maybe create if branch here to check login status.
-        { this.props.children }
+        { content }
       </div>
     </div>
     );
   }
-}
+};
 
 App.propTypes = { content: React.PropTypes.element };
 

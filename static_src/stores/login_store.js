@@ -11,7 +11,6 @@ class LoginStore extends BaseStore {
   }
 
   _registerToActions(action) {
-    console.log('action', action);
     switch(action.type) {
       case loginActionTypes.RECEIVED_STATUS:
         this._isAuthenticated = action.status;
