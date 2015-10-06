@@ -3,6 +3,24 @@ import '../node_modules/bootstrap/dist/css/bootstrap.css';
 
 import React from 'react';
 
-import {App, run} from './app.jsx';
+import App from './app.jsx';
 
-run(document.querySelector('.js-app'));
+class Login extends React.Component {
+  constructor() {
+    super();
+  }
+
+  render() {
+    return (
+    <App>
+      <div className="container">
+        <h1>Login</h1>
+      </div>
+    </App>
+    );
+  }
+
+}
+
+React.render(<Login/>, document.querySelector('.js-app'));
+
