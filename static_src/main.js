@@ -6,6 +6,7 @@ import React from 'react';
 
 import App from './app.jsx';
 import Login from './components/login.jsx';
+import loginActions from './actions/login_actions.js';
 
 const mainEl = document.querySelector('.js-app');
 
@@ -19,19 +20,23 @@ function dashboard() {
 }
 
 function checkAuth() {
-  login();
-  return false;
+  loginActions.fetchStatus();
+}
+
+function notFound() {
+  React.render(<h1>Not Found</h1>, mainEl);
 }
 
 let routes = {
+  '': dashboard,
   '/': dashboard,
   '/login': login
 }
 
-
 let router = new Router(routes);
 router.configure({
-  before: checkAuth
+  before: checkAuth,
+  notfound: notFound
 });
 router.init();
 
