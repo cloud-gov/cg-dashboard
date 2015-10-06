@@ -1,26 +1,39 @@
 
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
 
+import {Router} from 'director';
 import React from 'react';
 
 import App from './app.jsx';
+import Login from './components/login.jsx';
 
-class Login extends React.Component {
-  constructor() {
-    super();
-  }
+const mainEl = document.querySelector('.js-app');
 
-  render() {
-    return (
-    <App>
-      <div className="container">
-        <h1>Login</h1>
-      </div>
-    </App>
-    );
-  }
 
+function login = function() {
+  console.log('login');
+  React.render(<App><Login/></App>, mainEl);
 }
 
-React.render(<Login/>, document.querySelector('.js-app'));
+function dashboard = function() {
+  console.log('dashboard');
+  React.render(<App></App>, mainEl);
+}
+
+function checkAuth() {
+  login();
+  return false;
+}
+
+let routes = {
+  '/': dashboard
+  '/login': login
+}
+
+
+let router = new Router(routes);
+router.configure({
+  before: checkAuth
+});
+router.init();
 
