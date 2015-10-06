@@ -10,12 +10,12 @@ import Login from './components/login.jsx';
 const mainEl = document.querySelector('.js-app');
 
 
-function login = function() {
+function login() {
   console.log('login');
   React.render(<App><Login/></App>, mainEl);
 }
 
-function dashboard = function() {
+function dashboard() {
   console.log('dashboard');
   React.render(<App></App>, mainEl);
 }
@@ -26,7 +26,7 @@ function checkAuth() {
 }
 
 let routes = {
-  '/': dashboard
+  '/': dashboard,
   '/login': login
 }
 

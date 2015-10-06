@@ -11,6 +11,7 @@ export default class App extends React.Component {
 
     return (
     <div>
+      // TODO use a separate navbar component for this.
       <nav className="navbar navbar-inverse navbar-fixed-top">
         <div className="container-fluid">
           <a className="navbar-brand" href="#/dashboard">
@@ -21,6 +22,7 @@ export default class App extends React.Component {
         </div>
       </nav>
       <div className="container-fluid">
+        // TODO maybe create if branch here to check login status.
         { this.props.children }
       </div>
     </div>
