@@ -10,7 +10,7 @@ export default {
       type: orgActionTypes.ORGS_FETCH
     });
 
-    //cfApi.fetchOrgs();
+    cfApi.fetchOrgs();
   },
 
   receivedOrgs(orgs) {

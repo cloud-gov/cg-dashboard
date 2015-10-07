@@ -61,6 +61,16 @@ describe('OrgStore', () => {
     });
   });
 
+  describe('get currentOrg', function() {
+    it('should start with null, none selected', function() {
+
+    });
+
+    it('should return the current org its on', function() {
+
+    });
+  });
+
   describe('on orgs received', () => {
     it('should set data to passed in orgs', () => {
       var expected = wrapOrgs([{t: 1}, {t: 2}]);

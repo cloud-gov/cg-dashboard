@@ -19,7 +19,7 @@ export default class Navbar extends React.Component {
 
   componentDidMount() {
     OrgStore.addChangeListener(this._onChange);
-    orgActions.fetchAll();
+    //orgActions.fetchAll();
   }
 
   _onChange = () => {
