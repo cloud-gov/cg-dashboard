@@ -16,8 +16,16 @@ class OrgStore extends BaseStore {
     this._data = [];
   }
 
-  _registerToActions() {
+  _registerToActions(action) {
+    switch (action.type) {
+      case orgActionTypes.ORGS_RECEIVED:
+        this._data = formatData(action.orgs);
+        this.emitChange();
+        break;
 
+      default:
+        break;
+    }
   }
 
   get(guid) {
