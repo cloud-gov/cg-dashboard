@@ -63,11 +63,13 @@ describe('OrgStore', () => {
 
   describe('get currentOrg', function() {
     it('should start with null, none selected', function() {
-
+      expect(OrgStore.currentOrg).toBe(null);
     });
 
     it('should return the current org its on', function() {
-
+      var expected = { name: 'testOrgA', guid: 'asdlfkja;' };
+      OrgStore._currentOrg = expected;
+      expect(OrgStore.currentOrg).toEqual(expected);
     });
   });
 

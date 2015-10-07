@@ -14,6 +14,7 @@ class OrgStore extends BaseStore {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = [];
+    this._currentOrg = null;
   }
 
   _registerToActions(action) {
@@ -36,6 +37,10 @@ class OrgStore extends BaseStore {
 
   getAll() {
     return this._data;
+  }
+
+  get currentOrg() {
+    return this._currentOrg;
   }
 }
 
