@@ -1,6 +1,6 @@
 
 import AppDispatcher from '../dispatcher.js';
-import cfApi from '../utils/cf_api.js';
+import cfApi from '../util/cf_api.js';
 import { orgActionTypes } from '../constants';
 
 export default {
@@ -10,7 +10,7 @@ export default {
       type: orgActionTypes.ORGS_FETCH
     });
 
-    cfApi.fetchOrgs();
+    //cfApi.fetchOrgs();
   },
 
   receivedOrgs(orgs) {

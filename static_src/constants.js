@@ -11,4 +11,9 @@ var loginActionTypes = keymirror({
   RECEIVED_STATUS: null,
 });
 
-export { errorActionTypes, loginActionTypes };
+var orgActionTypes = keymirror({
+  ORGS_FETCH: null,
+  ORGS_RECEIVED: null
+});
+
+export { errorActionTypes, loginActionTypes, orgActionTypes };

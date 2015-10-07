@@ -3,6 +3,7 @@ import React from 'react';
 
 import Login from './components/login.jsx';
 import LoginStore from './stores/login_store.js';
+import Navbar from './components/navbar.jsx';
 
 function getState() {
   return {isLoggedIn: LoginStore.isLoggedIn()};
@@ -24,10 +25,12 @@ export default class App extends React.Component {
   }
 
   render = () => {
-    var content;
+    var content,
+        sidebar;
 
     if (this.state.isLoggedIn) {
       content = this.props.children;
+      sidebar = <Navbar />;
     } else {
       content = <Login />;
     }
@@ -45,7 +48,14 @@ export default class App extends React.Component {
         </div>
       </nav>
       <div className="container-fluid">
-        { content }
+        <div className="row">
+          <nav className="col-sm-3 col-md-2 sidebar">
+            { sidebar }
+          </nav>
+          <main className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            { content }
+          </main>
+        </div>
       </div>
     </div>
     );

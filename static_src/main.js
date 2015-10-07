@@ -16,7 +16,10 @@ function login() {
 }
 
 function dashboard() {
-  React.render(<App></App>, mainEl);
+  React.render(<App>
+    <h3>Welcome to CF-Deck</h3>
+    <h5>Pick an organization to get started</h5>
+  </App>, mainEl);
 }
 
 function checkAuth() {
