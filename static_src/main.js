@@ -33,6 +33,7 @@ function notFound() {
 let routes = {
   '': dashboard,
   '/': dashboard,
+  '/dashboard': dashboard,
   '/login': login
 }
 
