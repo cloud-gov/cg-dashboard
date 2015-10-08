@@ -21,6 +21,8 @@ class OrgStore extends BaseStore {
     switch (action.type) {
       case orgActionTypes.ORGS_RECEIVED:
         this._data = formatData(action.orgs);
+        // TODO this should be set with an action after
+        this._currentOrg = this._data[0];
         this.emitChange();
         break;
 

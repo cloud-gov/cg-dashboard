@@ -1,6 +1,7 @@
 
 import React from 'react';
 
+import loginActions from './actions/login_actions.js';
 import Login from './components/login.jsx';
 import LoginStore from './stores/login_store.js';
 import Navbar from './components/navbar.jsx';
@@ -18,6 +19,7 @@ export default class App extends React.Component {
   componentDidMount() {
     this.setState(getState());
     LoginStore.addChangeListener(this._onChange);
+    //loginActions.fetchStatus();
   }
 
   _onChange = () => {

@@ -10,6 +10,7 @@ export default {
       type: orgActionTypes.ORGS_FETCH
     });
 
+    console.log('orgactions, fetchall');
     cfApi.fetchOrgs();
   },
 

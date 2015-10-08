@@ -7,7 +7,7 @@ class LoginStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this))
-    this._isAuthenticated = false;
+    this._isAuthenticated = true;
   }
 
   _registerToActions(action) {

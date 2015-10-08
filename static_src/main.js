@@ -23,7 +23,7 @@ function dashboard() {
 }
 
 function checkAuth() {
-  loginActions.fetchStatus();
+  //loginActions.fetchStatus();
 }
 
 function notFound() {

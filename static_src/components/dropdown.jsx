@@ -10,18 +10,18 @@ export default class Dropdown extends React.Component {
 
   render() {
     return (
-      <div class="dropdown open">
-        <a class="dropdown-toggle" role="button"
+      <div className="dropdown open">
+        <a className="dropdown-toggle" role="button"
             aria-haspopup="true" aria-expanded="{ this.state.open }">
           { this.props.title }
-          <span class="caret"></span>
+          <span className="caret"></span>
         </a>
-        <ul class="dropdown-menu">
+        <ul className="dropdown-menu">
           { this.props.items.map((item) => {
             return (
               <li>{ item.element }</li>
-            );
-          })};
+            )
+          })}
         </ul>
       </div>
     );
