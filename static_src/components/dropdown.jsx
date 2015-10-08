@@ -19,7 +19,7 @@ export default class Dropdown extends React.Component {
         <ul className="dropdown-menu">
           { this.props.items.map((item) => {
             return (
-              <li>{ item.element }</li>
+              <li key={ item.key }>{ item.element }</li>
             )
           })}
         </ul>

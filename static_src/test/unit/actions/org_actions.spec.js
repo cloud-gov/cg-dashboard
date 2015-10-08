@@ -17,21 +17,16 @@ describe('orgActions', () => {
   });
 
   describe('fetchAll()', () => {
-    it('should call apis fetch method', () => {
-      var spy = sandbox.spy(cfApi, 'fetchOrgs');
-
-      orgActions.fetchAll();
-
-      expect(spy).toHaveBeenCalledOnce();
-    });
-
-    it('should dispatch a view event of type orgs fetch', () => {
+    it('should dispatch a view event of type orgs fetch', (done) => {
       var spy = sandbox.spy(AppDispatcher, 'handleViewAction');
 
       orgActions.fetchAll();
 
-      let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(orgActionTypes.ORGS_FETCH);
+      setTimeout(() => {
+        let arg = spy.getCall(0).args[0];
+        expect(arg.type).toEqual(orgActionTypes.ORGS_FETCH);
+        done();
+      });
     });
   });
 });

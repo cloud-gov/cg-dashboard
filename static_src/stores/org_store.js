@@ -1,6 +1,8 @@
 
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
+import cfApi from '../util/cf_api.js';
+import LoginStore from './login_store.js';
 import { orgActionTypes } from '../constants.js';
 
 function formatData(resources) {
@@ -19,6 +21,11 @@ class OrgStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
+      case orgActionTypes.ORGS_FETCH:
+        AppDispatcher.waitFor([LoginStore.dispatchToken]);
+        cfApi.fetchOrgs();
+        break;
+
       case orgActionTypes.ORGS_RECEIVED:
         this._data = formatData(action.orgs);
         // TODO this should be set with an action after

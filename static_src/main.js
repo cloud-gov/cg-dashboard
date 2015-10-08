@@ -5,8 +5,8 @@ import {Router} from 'director';
 import React from 'react';
 
 import App from './app.jsx';
+import cfApi from './util/cf_api.js';
 import Login from './components/login.jsx';
-import loginActions from './actions/login_actions.js';
 
 const mainEl = document.querySelector('.js-app');
 
@@ -23,7 +23,7 @@ function dashboard() {
 }
 
 function checkAuth() {
-  //loginActions.fetchStatus();
+  cfApi.getAuthStatus();
 }
 
 function notFound() {

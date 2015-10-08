@@ -19,7 +19,6 @@ export default class App extends React.Component {
   componentDidMount() {
     this.setState(getState());
     LoginStore.addChangeListener(this._onChange);
-    //loginActions.fetchStatus();
   }
 
   _onChange = () => {

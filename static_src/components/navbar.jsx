@@ -33,7 +33,8 @@ export default class Navbar extends React.Component {
 
     orgEls = this.state.orgs.map((org) => {
       return {
-        element: <a href="#/org/{ org.guid }">{ org.name }</a>
+        element: <a href="#/org/{ org.guid }">{ org.name }</a>,
+        key: org.guid
       }
     });
 

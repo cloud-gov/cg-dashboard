@@ -6,12 +6,11 @@ import { orgActionTypes } from '../constants';
 export default {
 
   fetchAll() {
-    AppDispatcher.handleViewAction({
-      type: orgActionTypes.ORGS_FETCH
-    });
-
-    console.log('orgactions, fetchall');
-    cfApi.fetchOrgs();
+    setTimeout(() => {
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORGS_FETCH
+      });
+    }, 1);
   },
 
   receivedOrgs(orgs) {
