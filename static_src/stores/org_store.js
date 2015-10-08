@@ -17,6 +17,7 @@ class OrgStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = [];
     this._currentOrg = null;
+    this._currentOrgGuid = null;
   }
 
   _registerToActions(action) {
@@ -28,15 +29,22 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORGS_RECEIVED:
         this._data = formatData(action.orgs);
-        // TODO this should be set with an action after
-        this._currentOrg = this._data[0];
+        if (this._currentOrgGuid) {
+          this._currentOrg = this.get(this._currentOrgGuid) || null;
+        }
+        else {
+          this._currentOrg = this._data[0];
+        }
         this.emitChange();
         break;
 
       case orgActionTypes.ORG_CHANGE_CURRENT:
+        this._currentOrgGuid = action.orgGuid;
         var org = this.get(action.orgGuid);
-        this._currentOrg = org;
-        this.emitChange();
+        if (org) {
+          this._currentOrg = org;
+          this.emitChange();
+        }
         break;
 
       default:

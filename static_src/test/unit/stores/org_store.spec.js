@@ -112,11 +112,15 @@ describe('OrgStore', () => {
 
       expect(OrgStore.currentOrg).toEqual(expected);
     });
-    it('should emit a change event', function() {
-      var spy = sandbox.spy(OrgStore, 'emitChange');
+    it('should emit a change event if it finds the org', function() {
+      var spy = sandbox.spy(OrgStore, 'emitChange'),
+          expected = { guid: 'sdsf', name: 'testA' };
+
+      OrgStore._data.push(expected);
 
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORG_CHANGE_CURRENT,
+        orgGuid: expected.guid
       });
 
       expect(spy).toHaveBeenCalledOnce();
