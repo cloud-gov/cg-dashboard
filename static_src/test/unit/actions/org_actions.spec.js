@@ -29,4 +29,18 @@ describe('orgActions', () => {
       });
     });
   });
+
+  describe('changeCurrentOrg()', function() {
+    it('should send an org change current event action with new org', function() {
+      var spy = sandbox.spy(AppDispatcher, 'handleViewAction'),
+          expected = 'asdlfka';
+
+      orgActions.changeCurrentOrg(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(orgActionTypes.ORG_CHANGE_CURRENT);
+      expect(arg.orgGuid).toEqual(expected);
+    });
+  });
 });

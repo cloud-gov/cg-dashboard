@@ -15,10 +15,10 @@ export default class Dropdown extends React.Component {
   }
 
   render() {
-    var classes = classNames('dropdown', {
-      'open': !!this.state.open
-    }),
-        id = 'dropdown-' + this.props.title;
+    var id = 'dropdown-' + this.props.title,
+        classes = classNames('dropdown', {
+          'open': !!this.state.open
+        });
 
     return (
       <div className={ classes }>

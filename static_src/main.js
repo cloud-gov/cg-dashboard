@@ -22,6 +22,11 @@ function dashboard() {
   </App>, mainEl);
 }
 
+function org(orgGuid) {
+  // TODO some way to set currentOrg.
+  React.render(<App></App>, mainEl);
+}
+
 function checkAuth() {
   cfApi.getAuthStatus();
 }
@@ -34,7 +39,12 @@ let routes = {
   '': dashboard,
   '/': dashboard,
   '/dashboard': dashboard,
-  '/login': login
+  '/login': login,
+  '/org': {
+    '/:orgGuid': {
+      on: org
+    }
+  }
 }
 
 let router = new Router(routes);

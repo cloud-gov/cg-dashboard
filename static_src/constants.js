@@ -12,6 +12,7 @@ var loginActionTypes = keymirror({
 });
 
 var orgActionTypes = keymirror({
+  ORG_CHANGE_CURRENT: null,
   ORGS_FETCH: null,
   ORGS_RECEIVED: null
 });
