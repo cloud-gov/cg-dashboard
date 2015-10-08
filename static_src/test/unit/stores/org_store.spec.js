@@ -27,6 +27,7 @@ describe('OrgStore', () => {
 
   beforeEach(() => {
     OrgStore._data = [];
+    OrgStore._currentOrg = null;
     sandbox = sinon.sandbox.create();
   });
 
@@ -92,6 +93,30 @@ describe('OrgStore', () => {
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORGS_RECEIVED,
         orgs: []
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on org change current', function() {
+    it('should set current org to org with guid passed in', function() {
+      var expected = { guid: 'sdsf', name: 'testA' };
+
+      OrgStore._data.push(expected);
+
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORG_CHANGE_CURRENT,
+        orgGuid: expected.guid
+      });
+
+      expect(OrgStore.currentOrg).toEqual(expected);
+    });
+    it('should emit a change event', function() {
+      var spy = sandbox.spy(OrgStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORG_CHANGE_CURRENT,
       });
 
       expect(spy).toHaveBeenCalledOnce();

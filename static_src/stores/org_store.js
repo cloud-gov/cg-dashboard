@@ -33,6 +33,12 @@ class OrgStore extends BaseStore {
         this.emitChange();
         break;
 
+      case orgActionTypes.ORG_CHANGE_CURRENT:
+        var org = this.get(action.orgGuid);
+        this._currentOrg = org;
+        this.emitChange();
+        break;
+
       default:
         break;
     }
