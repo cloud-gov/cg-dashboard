@@ -40,12 +40,46 @@ Install front end dependencies
 ```
 npm install
 ```
+
+Build the code:
+```
+npm run build
+```
+or to continually watch and build with changes:
+```
+npm run watch
+```
+
+To run the tests:
+```
+npm run test
+```
+or to continually watch and test when theres changes:
+```
+npm run watch-test
+```
+
+To lint the code:
+```
+npm run lint
+```
+
+In order to get correct synatax highlighting with vim, install the following
+npm modules globally:
+
+```
+npm install -g eslint
+npm install -g babel-eslint
+npm install -g eslint-plugin-react
+```
+
 ## Running locally
 - Make sure all of your environment variables are set as mentioned above.
 - Install [godep](https://github.com/tools/godep)
 - Run `godep restore` to get all third party code
 - `go run server.go`
 - Navigate browser to `http://localhost:9999`
+
 
 ## Unit Testing
 ### Running Go unit tests

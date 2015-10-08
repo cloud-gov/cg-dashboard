@@ -1,52 +1,73 @@
-<!DOCTYPE html>
-<html ng-app="cfdeck">
-	<head>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
+  </head>
+  <style>
+    /* Move down content because we have a fixed navbar that is 50px tall */
+    body {
+      padding-top: 50px;
+    }
 
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+    /* Hide for mobile, show later */
+    .sidebar {
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .sidebar {
+        position: fixed;
+        top: 51px;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        display: block;
+        padding: 20px;
+        overflow-x: hidden;
+        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+        background-color: #f5f5f5;
+        border-right: 1px solid #eee;
+      }
+    }
+    /* Sidebar navigation */
+    .nav-sidebar {
+      margin-right: -21px; /* 20px padding + 1px border */
+      margin-bottom: 20px;
+      margin-left: -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .dropdown {
+      padding-bottom: 10px;
+      padding-top: 10px;
+    }
+    .nav-sidebar > .active > a,
+    .nav-sidebar > .active > a:hover,
+    .nav-sidebar > .active > a:focus {
+      color: #fff;
+      background-color: #428bca;
+    }
 
-		<title>18F Cloud Deck</title>
-        <!-- New Relic script -->
-        <script src="assets/js/newrelic.js"></script>
+    /*
+     * Main content
+     */
 
-        <!-- Bootstrap -->
-		<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-		<link href="bower_components/angular-toggle-switch/angular-toggle-switch.css" rel="stylesheet" />
-		<link rel="stylesheet" href="bower_components/ladda/dist/ladda-themeless.min.css" />
+    .main {
+      padding: 20px;
+    }
+    @media (min-width: 768px) {
+      .main {
+        padding-right: 40px;
+        padding-left: 40px;
+      }
+    }
+    .main .page-header {
+      margin-top: 0;
+    }
+  </style>
+  <body>
+    <div class="js-app"></div>
 
-		<link href="assets/css/app.css" rel="stylesheet" />
-		<link href="assets/css/statuspage.css" rel="stylesheet" />
-		<script src="bower_components/angularjs/angular.min.js"></script>
-		<script src="bower_components/angular-route/angular-route.min.js"></script>
-		<script src="bower_components/ladda/dist/spin.min.js"></script>
-		<script src="bower_components/ladda/dist/ladda.min.js"></script>
-		<script src="bower_components/angular-ladda/dist/angular-ladda.min.js"></script>
-		<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-		<script src="bower_components/angular-bootstrap-confirm/src/ui-bootstrap-position.js"></script>
-		<script src="bower_components/angular-bootstrap-confirm/dist/angular-bootstrap-confirm.min.js"></script>
-		<script src="bower_components/angular-toggle-switch/angular-toggle-switch.min.js"></script>
-		<script src="https://cdn.statuspage.io/se-v2.js"></script>
-
-		<script src="app/main.js"></script>
-		<script src="app/cloudfoundry.js"></script>
-		<script src="app/uaa.js"></script>
-		<script src="app/services.js"></script>
-		<script src="app/factories.js"></script>
-		<script src="app/controllers.js"></script>
-		<script src="app/filters.js"></script>
-		<script src="app/directives.js"></script>
-	</head>
-	<body ng-controller="MainCtrl">
-		<div deck-header></div>
-		<div class="container-fluid">
-			<div class="row">
-				<div ng-show='authorized' class="col-sm-3 col-md-2 sidebar" ng-include="'app/views/partials/sidebar.html'"></div>
-				<div ng-class="authorized ? 'col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main' : ''" ng-view></div>
-			</div>
-			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-			<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-			<script src="assets/js/happyfoxchat.js"></script>
-		</div>
-	</body>
+    <script type="text/javascript" src="assets/bundle.js" charset="utf-8">
+    </script>
+  </body>
 </html>

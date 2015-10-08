@@ -8,3 +8,4 @@ coverage
 .godeps/
 Godeps/_workspace/
 cf-deck
+static/assets
