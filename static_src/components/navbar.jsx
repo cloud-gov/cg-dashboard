@@ -29,7 +29,8 @@ export default class Navbar extends React.Component {
 
   render = () => {
     var orgName = this.state.currentOrg && this.state.currentOrg.name || '',
-        orgEls = [];
+        orgEls = [],
+        navigation;
 
     orgEls = this.state.orgs.map((org) => {
       return {
@@ -38,12 +39,45 @@ export default class Navbar extends React.Component {
       }
     });
 
+    if (this.state.currentOrg) {
+      navigation = this._buildNav(this.state.currentOrg);
+    }
+
     return (
       <ul className="nav nav-sidebar">
         <li>
-          <Dropdown title={ orgName } items={ orgEls } />
+          <Dropdown title='Change Organization' items={ orgEls } />
         </li>
+        { navigation }
       </ul>
     );
   }
+
+  _buildNav = (org) => {
+    var navEls = [];
+
+    navEls.push({
+      key: 'spaces', 
+      element: <a href={ '#/org/' + org.guid }>Spaces</a>
+    });
+
+    navEls.push({
+      key: 'marketplace', 
+      element: <a href={ '#/org/' + org.guid + 'marketplace' }>Marketplace</a>
+    });
+
+    navEls.push({
+      key: 'manage_org', 
+      element: <a href={ '#/org/' + org.guid + 'manage-org' }>Manage Org</a>
+    });
+    let navigation = (
+      <li>
+      <Dropdown title={ this.state.currentOrg.name.toUpperCase() || '' } 
+      items={ navEls } />
+      </li>
+    );
+
+    return navigation;
+  }
+
 };
