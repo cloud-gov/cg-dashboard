@@ -63,12 +63,12 @@ export default class Navbar extends React.Component {
 
     navEls.push({
       key: 'marketplace', 
-      element: <a href={ '#/org/' + org.guid + 'marketplace' }>Marketplace</a>
+      element: <a href={ '#/org/' + org.guid + '/marketplace' }>Marketplace</a>
     });
 
     navEls.push({
       key: 'manage_org', 
-      element: <a href={ '#/org/' + org.guid + 'manage-org' }>Manage Org</a>
+      element: <a href={ '#/org/' + org.guid + '/manage-org' }>Manage Org</a>
     });
     let navigation = (
       <li>

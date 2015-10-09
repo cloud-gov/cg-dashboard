@@ -84,6 +84,43 @@ describe('cfApi', function() {
     });
   });
 
+  describe('fetchOrg()', () => {
+    it('returns a promise', () => {
+      var actual = cfApi.fetchOrg('xxaa');
+
+      expect(actual.then).toBeTruthy();
+    });
+
+    it('calls http get request with guid', () => {
+      var spy = sandbox.spy(http, 'get'),
+          expected = 'xxxaa2';
+
+      cfApi.fetchOrg(expected);
+
+      let actual = spy.getCall(0).args[0];
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(actual).toMatch(new RegExp(expected));
+    });
+
+    it('calls received org action with response data on success', () => {
+      var testRes = {
+            guid: 'xxaa',
+            name: 'testOrgA'
+          },
+          expected = { data: testRes },
+          stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(orgActions, 'receivedOrg');
+
+      let testPromise = createPromise(expected);
+      stub.returns(testPromise);
+
+      cfApi.fetchOrg(testRes.guid);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('fetchOrgs()', function() {
     it('calls http get request for orgs', function() {
       var spy = sandbox.spy(http, 'get');

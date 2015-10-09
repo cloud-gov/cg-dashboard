@@ -17,6 +17,14 @@ export default {
     });
   },
 
+  fetchOrg(guid) {
+    return http.get(APIV + '/organizations/' + guid + '/summary').then((res) => {
+      orgActions.receivedOrg(res.data);
+    }, (err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
   fetchOrgs() {
     return http.get(APIV + '/organizations').then((res) => {
       orgActions.receivedOrgs(res.data.resources);

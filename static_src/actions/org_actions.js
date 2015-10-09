@@ -25,5 +25,9 @@ export default {
       type: orgActionTypes.ORGS_RECEIVED,
       orgs: orgs
     });
+  },
+
+  receivedOrg(org) {
+
   }
 };
