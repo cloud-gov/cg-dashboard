@@ -16,6 +16,19 @@ describe('orgActions', () => {
     sandbox.restore();
   });
 
+  describe('fetch()', () => {
+    it('should dispatch a view event of type org fetch', () => {
+      var spy = sandbox.spy(AppDispatcher, 'handleViewAction'),
+          expected = 'adsfa';
+
+      orgActions.fetch(expected);
+
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(orgActionTypes.ORG_FETCH);
+      expect(arg.orgGuid).toEqual(expected);
+    });
+  });
+
   describe('fetchAll()', () => {
     it('should dispatch a view event of type orgs fetch', (done) => {
       var spy = sandbox.spy(AppDispatcher, 'handleViewAction');
@@ -27,6 +40,20 @@ describe('orgActions', () => {
         expect(arg.type).toEqual(orgActionTypes.ORGS_FETCH);
         done();
       });
+    });
+  });
+
+  describe('receivedOrg()', function() {
+    it('should dispatch a server event for org fetch with the org', function() {
+      var expected: { guid: 'asdf', name: 'adsfa' },
+          spy = sandbox.spy(AppDispatcher, 'handleServerAction');
+
+      orgActions.receivedOrg(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(orgActionTypes.ORG_RECEIVED);
+      expect(arg.org).toEqual(expected);
     });
   });
 

@@ -13,8 +13,10 @@ var loginActionTypes = keymirror({
 
 var orgActionTypes = keymirror({
   ORG_CHANGE_CURRENT: null,
+  ORG_FETCH: null,
   ORGS_FETCH: null,
-  ORGS_RECEIVED: null
+  ORGS_RECEIVED: null,
+  ORG_RECEIVED: null
 });
 
 export { errorActionTypes, loginActionTypes, orgActionTypes };

@@ -12,6 +12,13 @@ export default {
     });
   },
 
+  fetch(orgGuid) {
+    AppDispatcher.handleViewAction({
+      type: orgActionTypes.ORG_FETCH,
+      orgGuid: orgGuid
+    });
+  },
+
   fetchAll() {
     setTimeout(() => {
       AppDispatcher.handleViewAction({
@@ -20,14 +27,18 @@ export default {
     }, 1);
   },
 
+  receivedOrg(org) {
+    AppDispatcher.handleServerAction({
+      type: orgActionTypes.ORG_RECEIVED,
+      org: org
+    });
+  },
+
   receivedOrgs(orgs) {
     AppDispatcher.handleServerAction({
       type: orgActionTypes.ORGS_RECEIVED,
       orgs: orgs
     });
-  },
-
-  receivedOrg(org) {
-
   }
+
 };
