@@ -2,6 +2,7 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
+import cfApi from '../../../util/cf_api.js';
 import OrgStore from '../../../stores/org_store.js';
 import { orgActionTypes } from '../../../constants';
 
@@ -96,6 +97,60 @@ describe('OrgStore', () => {
       });
 
       expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on org fetch', function() {
+    it('should call the api org fetch function', function() {
+      var spy = sandbox.spy(cfApi, 'fetchOrg'),
+          expected = 'xsfewq';
+
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORG_FETCH,
+        orgGuid: expected
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expected);
+    });
+  });
+
+  describe('on org received', function() {
+    it('should emit a change event', function() {
+      var spy = sandbox.spy(OrgStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORG_RECEIVED,
+        org: { guid: 'asdf' }
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should ensure org passed in has data added to it', () => {
+      var testGuid = 'xaaddf',
+          expected = {
+            guid: testGuid,
+            name: 'orgA',
+            spaces: [
+              { guid: 'xaaddf1', name: 'spaceA'},
+              { guid: 'xaaddf2', name: 'spaceB'}
+            ]
+          };
+
+      OrgStore._data = [
+        { guid: testGuid, spaceUrl: 'https://space' }
+      ];
+      expect(OrgStore.get(testGuid)).toBeObject();
+
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORG_RECEIVED,
+        org: expected
+      });
+
+      expect(OrgStore._data[0].guid).toEqual(expected.guid);
+      expect(OrgStore._data[0].spaces).toEqual(expected.spaces);
     });
   });
 

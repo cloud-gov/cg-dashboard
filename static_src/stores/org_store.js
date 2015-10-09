@@ -22,9 +22,25 @@ class OrgStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
+      case orgActionTypes.ORG_FETCH:
+        cfApi.fetchOrg(action.orgGuid);
+        break;
+
       case orgActionTypes.ORGS_FETCH:
         AppDispatcher.waitFor([LoginStore.dispatchToken]);
         cfApi.fetchOrgs();
+        break;
+
+      case orgActionTypes.ORG_RECEIVED:
+        if (action.org) {
+          var toUpdate = this.get(action.org.guid);
+          if (toUpdate) {
+            toUpdate = Object.assign(toUpdate, action.org); 
+          } else {
+            _OrgStore._data.push(action.org);
+          }
+          this.emitChange();
+        }
         break;
 
       case orgActionTypes.ORGS_RECEIVED:
