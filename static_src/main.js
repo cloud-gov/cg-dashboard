@@ -8,6 +8,7 @@ import App from './app.jsx';
 import cfApi from './util/cf_api.js';
 import Login from './components/login.jsx';
 import orgActions from './actions/org_actions.js';
+import SpaceList from './components/space_list.jsx';
 
 const mainEl = document.querySelector('.js-app');
 
@@ -25,7 +26,8 @@ function dashboard() {
 
 function org(orgGuid) {
   orgActions.changeCurrentOrg(orgGuid);
-  React.render(<App></App>, mainEl);
+  cfApi.fetchOrg(orgGuid);
+  React.render(<App><SpaceList /></App>, mainEl);
 }
 
 function checkAuth() {

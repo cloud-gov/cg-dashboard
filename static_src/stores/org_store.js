@@ -44,7 +44,23 @@ class OrgStore extends BaseStore {
         break;
 
       case orgActionTypes.ORGS_RECEIVED:
-        this._data = formatData(action.orgs);
+        var updates = formatData(action.orgs);
+        if (this._data.length) {
+          updates.forEach((update) => {
+            this._data.forEach((org) => {
+              var toUpdate = true;
+              if (update.guid === org.guid) {
+                org = Object.assign(org, update);
+                toUpdate = false;
+              }
+            });
+            if (toUpdate) {
+              this._data.push(update);
+            }
+          });   
+        } else {
+          this._data = updates;
+        }
         if (this._currentOrgGuid) {
           this._currentOrg = this.get(this._currentOrgGuid) || null;
         }
