@@ -970,7 +970,7 @@ describe('AppCtrl', function() {
         data: {}
     };
     beforeEach(module('cfdeck'));
-    beforeEach(inject(function($rootScope, $controller) {
+    beforeEach(inject(function($rootScope, $controller, _$interval_) {
         //Mock CF service
         cloudfoundry = {
             stopApp: stopApp,
@@ -1000,6 +1000,7 @@ describe('AppCtrl', function() {
             findUserPermissions: findUserPermissions
 
         };
+        $interval = _$interval_;
         spyOn(cloudfoundry, 'getAppSummary').and.callThrough();
 
         // Load Ctrl and scope
@@ -1007,6 +1008,7 @@ describe('AppCtrl', function() {
         ctrl = $controller('AppCtrl', {
             $scope: scope,
             $cloudfoundry: cloudfoundry,
+            $interval: $interval,
             $routeParams: {
                 appguid: 'appguid',
                 spaceguid: 'spaceguid',
@@ -1014,6 +1016,7 @@ describe('AppCtrl', function() {
             $uaa: uaa,
             MenuData: MenuData
         });
+        $interval.flush(5000);
 
     }));
 

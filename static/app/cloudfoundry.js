@@ -386,10 +386,12 @@
         };
 
         // Get detailed app stats
-        this.getAppStats = function(appGuid) {
+        this.getAppStats = function(appGuid, appStarted) {
             return $http.get('/v2/apps/' + appGuid + '/stats')
                 .then(function(response) {
                     return response.data;
+		}, function(response) {
+                    appStarted.value = !(response.status == 400); // If stats returned 400, stop for now.
                 });
         };
 
