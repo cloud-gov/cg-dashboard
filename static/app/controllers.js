@@ -351,9 +351,12 @@
         };
 
 
+	// Flag to indicate if app is started. This will also let us know if we can load the stats.
+	var appStarted = {value: false};
         // Inject Math functions into the view.
         $scope.Math = window.Math;
         var renderAppSummary = function(appSummary) {
+            appStarted.value = (appSummary.state == "STARTED");
             // Only render while we are not updating an app ourselves.
             if ($cloudfoundry.getPollAppStatusProperty() === true) {
                 $scope.appSummary = appSummary;
@@ -402,12 +405,17 @@
             }
         };
         var resetAppStatsPoll = function() {
-            $scope.statsPromise = $interval(function() {
+            $scope.summaryPromise = $interval(function() {
                 $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
-                $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
+            }, 5000);
+            $scope.statsPromise = $interval(function() {
+                if (appStarted.value) {  // Only look up stats if app is started.
+                    $cloudfoundry.getAppStats($routeParams['appguid'], appStarted).then(renderAppStats);
+                }
             }, 5000);
             // Make sure to clean up afterwards when the page is naviageted away.
             $scope.$on('$destroy', function() {
+                $interval.cancel($scope.summaryPromise);
                 $interval.cancel($scope.statsPromise);
             });
         };
@@ -511,8 +519,6 @@
         };
         // Get summary of apps
         $cloudfoundry.getAppSummary($routeParams['appguid']).then(renderAppSummary);
-        // TODO: Make it so it won't request stats if the state in the summary is not STARTED.
-        $cloudfoundry.getAppStats($routeParams['appguid']).then(renderAppStats);
         resetAppStatsPoll();
         $scope.getAppEvents();
         $scope.getAppLogs();
