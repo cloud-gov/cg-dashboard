@@ -25,6 +25,10 @@ export default {
     });
   },
 
+  fetchOrgMemoryUsage(guid) {
+    return http.get(APIV + '/organizations/' + guid + '/memory_usage');
+  },
+
   fetchOrgs() {
     return http.get(APIV + '/organizations').then((res) => {
       orgActions.receivedOrgs(res.data.resources);

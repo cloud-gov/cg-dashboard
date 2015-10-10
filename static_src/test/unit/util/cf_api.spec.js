@@ -164,6 +164,25 @@ describe('cfApi', function() {
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith(expected);
     });
+  });
 
+  describe('fetchMemoryUsage()', function() {
+    it('returns a promise', function() {
+      var actual = cfApi.fetchOrgMemoryUsage();
+
+      expect(actual.then).toBeTruthy();
+    });
+
+    it('calls http get request for orgs memory usage', function() {
+      var spy = sandbox.spy(http, 'get'),
+          expectedGuid = 'asdfad';
+
+      cfApi.fetchOrgMemoryUsage(expectedGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch('memory_usage');
+      expect(actual).toMatch(expectedGuid);
+    });
   });
 });
