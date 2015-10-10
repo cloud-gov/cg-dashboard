@@ -29,6 +29,10 @@ export default {
     return http.get(APIV + '/organizations/' + guid + '/memory_usage');
   },
 
+  fetchOrgMemoryLimit(guid) {
+    return http.get(APIV + '/quota_definitions/' + guid);
+  },
+
   fetchOrgs() {
     return http.get(APIV + '/organizations').then((res) => {
       orgActions.receivedOrgs(res.data.resources);

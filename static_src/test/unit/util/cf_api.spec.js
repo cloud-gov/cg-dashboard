@@ -166,7 +166,7 @@ describe('cfApi', function() {
     });
   });
 
-  describe('fetchMemoryUsage()', function() {
+  describe('fetchOrgMemoryUsage()', function() {
     it('returns a promise', function() {
       var actual = cfApi.fetchOrgMemoryUsage();
 
@@ -184,5 +184,26 @@ describe('cfApi', function() {
       expect(actual).toMatch('memory_usage');
       expect(actual).toMatch(expectedGuid);
     });
+  });
+
+  describe('fetchOrgMemoryLimit()', function() {
+    it('returns a promise', function() {
+      var actual = cfApi.fetchOrgMemoryLimit();
+
+      expect(actual.then).toBeTruthy();
+    });
+
+    it('calls http get request for orgs memory usage', function() {
+      var spy = sandbox.spy(http, 'get'),
+          expectedGuid = 'asdfad';
+
+      cfApi.fetchOrgMemoryLimit(expectedGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch('quota_definitions');
+      expect(actual).toMatch(expectedGuid);
+    });
+
   });
 });
