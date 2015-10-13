@@ -53,7 +53,6 @@ export default class SpaceList extends React.Component {
       { label: 'Total Production Memory', key: 'mem_prod_total' }
     ];
 
-    console.log('render', this.state);
     let rows = this.state.rows;
     for (let row of rows) {
       row.name =  unsafe('<a href="/#/spaces/' + row.guid + '">' + 

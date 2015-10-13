@@ -17,12 +17,32 @@ export default {
     });
   },
 
+  fetchOrgLinks(guid) {
+    return http.get(APIV + '/organizations/' + guid).then((res) => {
+      return res.data.entity;
+    });
+  },
+
+  fetchOrgDetails(guid) {
+    return http.get(APIV + '/organizations/' + guid + '/summary')
+        .then((res) => {
+      return res.data;
+    });
+  },
+
   fetchOrg(guid) {
-    return Promise.all([http.get(APIV + '/organizations/' + guid + '/summary'),
+    var fullOrg = {};
+    var req = Promise.all([this.fetchOrgLinks(guid), this.fetchOrgDetails(guid)]);
+
+    return req.then((res) => {
+      fullOrg = Object.assign(...res);
+      return Promise.all([
         this.fetchOrgMemoryUsage(guid),
-        this.fetchOrgMemoryLimit(guid)])
-    .then((responses) => {
-      var fullOrg = Object.assign(...responses);
+        this.fetchOrgMemoryLimit(fullOrg)
+      ]); 
+    }).then((res) => {
+      fullOrg.quota = {};
+      fullOrg = Object.assign(fullOrg.quota, ...res);
       orgActions.receivedOrg(fullOrg);
     }, (err) => {
       errorActions.errorFetch(err); 
@@ -36,10 +56,10 @@ export default {
     });;
   },
 
-  fetchOrgMemoryLimit(guid) {
-    return http.get(APIV + '/quota_definitions/' + guid)
+  fetchOrgMemoryLimit(org) {
+    return http.get(org.quota_definition_url)
     .then((res) => {
-      return res.data; 
+      return res.data.entity; 
     });;
   },
 

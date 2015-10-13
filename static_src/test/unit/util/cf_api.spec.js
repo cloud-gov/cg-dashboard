@@ -91,7 +91,7 @@ describe('cfApi', function() {
       expect(actual.then).toBeTruthy();
     });
 
-    it('calls http get request 3 times for all data with guid', () => {
+    it('calls http get request 2 times for all data with guid', () => {
       var spy = sandbox.spy(http, 'get'),
           expected = 'xxxaa2';
 
@@ -99,29 +99,32 @@ describe('cfApi', function() {
 
       let actual = spy.getCall(0).args[0];
 
-      expect(spy).toHaveBeenCalledThrice();
+      expect(spy).toHaveBeenCalledTwice();
       expect(actual).toMatch(new RegExp(expected));
     });
 
-    it('calls received org action with response data on success', () => {
+    it('calls received org action with response data on success', (done) => {
       var testRes = {
             guid: 'xxaa',
             name: 'testOrgA'
           },
           expected = { data: testRes },
-          stub = sandbox.stub(http, 'get'),
           spy = sandbox.spy(orgActions, 'receivedOrg');
 
-      let testPromise = createPromise(expected);
+      sandbox.stub(cfApi, 'fetchOrgLinks').returns(
+        createPromise({quota_definition_url: 'http://api.com'}));
+      sandbox.stub(cfApi, 'fetchOrgDetails').returns(
+        createPromise(expected))
       sandbox.stub(cfApi, 'fetchOrgMemoryUsage').returns(
         createPromise({memory_usage_in_mb: 10}));
       sandbox.stub(cfApi, 'fetchOrgMemoryLimit').returns(
         createPromise({memory_limit: 20}));
-      stub.returns(testPromise);
 
-      cfApi.fetchOrg(testRes.guid);
-
-      expect(spy).toHaveBeenCalledOnce();
+      let thing = cfApi.fetchOrg(testRes.guid);
+      thing.then(function() {
+        expect(spy).toHaveBeenCalledOnce();
+        done(); 
+      });
     });
   });
 
@@ -192,16 +195,20 @@ describe('cfApi', function() {
 
   describe('fetchOrgMemoryLimit()', function() {
     it('returns a promise', function() {
-      var actual = cfApi.fetchOrgMemoryLimit();
+      var testOrg = {quota_definition_url: 'http://api/quota_definitions'};
+      var actual = cfApi.fetchOrgMemoryLimit(testOrg);
 
       expect(actual.then).toBeTruthy();
     });
 
     it('calls http get request for orgs memory usage', function() {
       var spy = sandbox.spy(http, 'get'),
-          expectedGuid = 'asdfad';
+          expectedGuid = 'asdfad',
+          expectedOrg = {guid: expectedGuid, 
+              quota_definition_url: 'http://api.gov/quota_definitions/' + 
+                expectedGuid};
 
-      cfApi.fetchOrgMemoryLimit(expectedGuid);
+      cfApi.fetchOrgMemoryLimit(expectedOrg);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
