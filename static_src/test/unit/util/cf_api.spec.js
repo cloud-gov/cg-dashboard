@@ -91,7 +91,7 @@ describe('cfApi', function() {
       expect(actual.then).toBeTruthy();
     });
 
-    it('calls http get request with guid', () => {
+    it('calls http get request 3 times for all data with guid', () => {
       var spy = sandbox.spy(http, 'get'),
           expected = 'xxxaa2';
 
@@ -99,7 +99,7 @@ describe('cfApi', function() {
 
       let actual = spy.getCall(0).args[0];
 
-      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledThrice();
       expect(actual).toMatch(new RegExp(expected));
     });
 
@@ -113,6 +113,10 @@ describe('cfApi', function() {
           spy = sandbox.spy(orgActions, 'receivedOrg');
 
       let testPromise = createPromise(expected);
+      sandbox.stub(cfApi, 'fetchOrgMemoryUsage').returns(
+        createPromise({memory_usage_in_mb: 10}));
+      sandbox.stub(cfApi, 'fetchOrgMemoryLimit').returns(
+        createPromise({memory_limit: 20}));
       stub.returns(testPromise);
 
       cfApi.fetchOrg(testRes.guid);

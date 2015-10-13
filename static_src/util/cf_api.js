@@ -18,19 +18,29 @@ export default {
   },
 
   fetchOrg(guid) {
-    return http.get(APIV + '/organizations/' + guid + '/summary').then((res) => {
-      orgActions.receivedOrg(res.data);
+    return Promise.all([http.get(APIV + '/organizations/' + guid + '/summary'),
+        this.fetchOrgMemoryUsage(guid),
+        this.fetchOrgMemoryLimit(guid)])
+    .then((responses) => {
+      var fullOrg = Object.assign(...responses);
+      orgActions.receivedOrg(fullOrg);
     }, (err) => {
-      errorActions.errorFetch(err);
+      errorActions.errorFetch(err); 
     });
   },
 
   fetchOrgMemoryUsage(guid) {
-    return http.get(APIV + '/organizations/' + guid + '/memory_usage');
+    return http.get(APIV + '/organizations/' + guid + '/memory_usage')
+    .then((res) => {
+      return res.data; 
+    });;
   },
 
   fetchOrgMemoryLimit(guid) {
-    return http.get(APIV + '/quota_definitions/' + guid);
+    return http.get(APIV + '/quota_definitions/' + guid)
+    .then((res) => {
+      return res.data; 
+    });;
   },
 
   fetchOrgs() {
