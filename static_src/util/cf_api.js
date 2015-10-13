@@ -5,6 +5,7 @@ import errorActions from '../actions/error_actions.js';
 import loginActions from '../actions/login_actions.js';
 import loginActionTypes from '../constants.js';
 import orgActions from '../actions/org_actions.js';
+import spaceActions from '../actions/space_actions.js';
 
 const APIV = '/v2';
 
@@ -71,7 +72,11 @@ export default {
     });
   },
 
-  fetchSpace() {
-
+  fetchSpace(guid) {
+    return http.get(APIV + '/spaces/' + guid + '/sumary').then((res) => {
+      spaceActions.receivedSpace(res.data);
+    }, (err) => {
+      errorActions.errorFetch(err);
+    });
   }
 };
