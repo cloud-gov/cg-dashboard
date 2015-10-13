@@ -69,5 +69,9 @@ export default {
     }, (err) => {
       errorActions.errorFetch(err);
     });
+  },
+
+  fetchSpace() {
+
   }
 };

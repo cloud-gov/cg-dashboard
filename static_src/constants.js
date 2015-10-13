@@ -19,4 +19,9 @@ var orgActionTypes = keymirror({
   ORG_RECEIVED: null
 });
 
-export { errorActionTypes, loginActionTypes, orgActionTypes };
+var spaceActionTypes = keymirror({
+  SPACE_FETCH: null,
+  SPACE_RECEIVED: null
+});
+
+export { errorActionTypes, loginActionTypes, orgActionTypes, spaceActionTypes };

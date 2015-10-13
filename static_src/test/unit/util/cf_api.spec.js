@@ -215,6 +215,5 @@ describe('cfApi', function() {
       expect(actual).toMatch('quota_definitions');
       expect(actual).toMatch(expectedGuid);
     });
-
   });
 });
