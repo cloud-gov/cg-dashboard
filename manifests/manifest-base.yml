@@ -1,10 +1,10 @@
 ---
 buildpack: https://github.com/ddollar/heroku-buildpack-multi.git
-domain: 18f.gov
+domain: apps.cloud.gov
 env:
   CONSOLE_CLIENT_ID: CLIENT_ID
   CONSOLE_CLIENT_SECRET: CLIENT_SECRET
-  CONSOLE_LOGIN_URL: https://login.18f.gov/
-  CONSOLE_UAA_URL: https://uaa.18f.gov/
-  CONSOLE_API_URL: https://api.18f.gov/
-  CONSOLE_LOG_URL: https://loggregator.18f.gov/
+  CONSOLE_LOGIN_URL: https://login.cloud.gov/
+  CONSOLE_UAA_URL: https://uaa.cloud.gov/
+  CONSOLE_API_URL: https://api.cloud.gov/
+  CONSOLE_LOG_URL: https://loggregator.cloud.gov/
