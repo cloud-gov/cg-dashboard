@@ -1,6 +1,6 @@
 ---
 buildpack: https://github.com/ddollar/heroku-buildpack-multi.git
-domain: apps.cloud.gov
+domain: cloud.gov
 env:
   CONSOLE_CLIENT_ID: CLIENT_ID
   CONSOLE_CLIENT_SECRET: CLIENT_SECRET

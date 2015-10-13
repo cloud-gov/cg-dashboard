@@ -13,11 +13,11 @@ CF_PATH="."
 if [ "$TRAVIS_BRANCH" == "master" ]
 then
 	CF_MANIFEST="manifests/manifest-master.yml"
-	CF_SPACE="staging"
+	CF_SPACE="deck-stage"
 elif [ "$TRAVIS_BRANCH" == "production" ]
 then
 	CF_MANIFEST="manifests/manifest-production.yml"
-	CF_SPACE="prod"
+	CF_SPACE="deck-prod"
 fi
 
 echo $CF_MANIFEST
@@ -26,6 +26,6 @@ echo $CF_SPACE
 export CF_BIN=$CLIPATH/out/cf
 # Log in
 $CF_BIN api $CF_API
-$CF_BIN login --u $CF_USERNAME --p $CF_PASSWORD --o $CF_ORGANIZATION --s $CF_SPACE && $CF_BIN install-plugin $GOAUTOPILOT_BIN
+$CF_BIN auth $CF_USERNAME $CF_PASSWORD && $CF_BIN target -o $CF_ORGANIZATION -s $CF_SPACE && $CF_BIN install-plugin $GOAUTOPILOT_BIN
 # Run autopilot plugin
 $CF_BIN zero-downtime-push cf-deck -f $CF_MANIFEST -p $CF_PATH
