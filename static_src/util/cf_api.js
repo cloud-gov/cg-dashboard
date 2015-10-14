@@ -42,8 +42,9 @@ export default {
         this.fetchOrgMemoryLimit(fullOrg)
       ]); 
     }).then((res) => {
-      fullOrg.quota = {};
-      fullOrg = Object.assign(fullOrg.quota, ...res);
+      var quota = {}
+      quota = Object.assign(quota, ...res);
+      fullOrg.quota = quota;
       orgActions.receivedOrg(fullOrg);
     }, (err) => {
       errorActions.errorFetch(err); 

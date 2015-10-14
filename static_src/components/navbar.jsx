@@ -6,8 +6,10 @@ import orgActions from '../actions/org_actions.js';
 import OrgStore from '../stores/org_store.js';
 
 function getState() {
+  var currentOrgGuid = OrgStore.currentOrgGuid,
+      currentOrg = OrgStore.get(currentOrgGuid);
   return {
-    currentOrg: OrgStore.currentOrg,
+    currentOrg: currentOrg,
     orgs: OrgStore.getAll()
   };
 }

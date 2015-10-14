@@ -10,19 +10,13 @@ var Table = Reactable.Table,
     unsafe = Reactable.unsafe;
 
 function stateSetter() {
-  var currentOrg = OrgStore.currentOrg,
-      org;
-
-  if (currentOrg) {
-    org = OrgStore.get(currentOrg.guid);
-    if (!org) {
-      orgActions.fetch(currentOrg.guid);
-    }
-  }
+  var currentOrgGuid = OrgStore.currentOrgGuid,
+      currentOrg = OrgStore.get(currentOrgGuid);
 
   return { 
     currentOrg: currentOrg,
-    rows: (org && org.spaces) || []
+    currentOrgGuid: currentOrgGuid,
+    rows: (currentOrg && currentOrg.spaces) || []
   };
 }
 
@@ -30,47 +24,52 @@ export default class SpaceList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = { rows: [], currentOrg: null };
+    this.state = { rows: [], currentOrgGuid: this.props.initialOrgGuid };
   }
 
   componentDidMount() {
     OrgStore.addChangeListener(this._onChange);
     this.setState(stateSetter());
-    if (this.state.currentOrg) {
-      orgActions.fetch(this.state.currentOrg.guid);
-    }
   }
 
   _onChange = () => {
     this.setState(stateSetter());
   }
 
-  render() {
-    var columns = [
+  get columns() {
+    return [
       { label: 'Name', key: 'name' },
       { label: 'Number of Apps', key: 'app_count' },
       { label: 'Total Development Memory', key: 'mem_dev_total' },
       { label: 'Total Production Memory', key: 'mem_prod_total' }
     ];
+  }
 
+  get title() {
+    return this.state.currentOrg && this.state.currentOrg.name || '';
+  }
+
+  get noneFound() {
+    return <h4 className="test-none_message">No spaces found</h4>
+  }
+
+  render() {
     let rows = this.state.rows;
     for (let row of rows) {
       row.name =  unsafe('<a href="/#/spaces/' + row.guid + '">' + 
         row.name +'</a>');
     }
 
-    let title = this.state.currentOrg && this.state.currentOrg.name || '';
-
-    let content = <h4 className="test-none_message">No spaces found</h4>;
+    let content = this.noneFound;
     if (rows.length) {
-      content = <SpaceList.Table data={ rows } columns={ columns } 
+      content = <SpaceList.Table data={ rows } columns={ this.columns } 
         sortable={ true } className="table" />;
     }
 
     return (
       <div>
         <div className="page-header">
-          <h3 className="text-center">{ title }  Spaces</h3>
+          <h3 className="text-center">{ this.title }  Spaces</h3>
         </div>
         <div className="tableWrapper"> 
           { content }
@@ -80,3 +79,6 @@ export default class SpaceList extends React.Component {
   }
 }
 SpaceList.Table = Table;
+SpaceList.propTypes = {
+  initialOrgGuid: React.PropTypes.string.isRequired
+}

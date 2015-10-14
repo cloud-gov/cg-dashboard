@@ -10,7 +10,7 @@ function wrapOrgs(orgs) {
   var n = 0;
   return orgs.map((org) => {
     return {
-      metadata: { guid: n },
+      metadata: { guid: org.guid || n },
       entity: org
     };
     n++;
@@ -28,7 +28,7 @@ describe('OrgStore', () => {
 
   beforeEach(() => {
     OrgStore._data = [];
-    OrgStore._currentOrg = null;
+    OrgStore._currentOrgGuid = null;
     sandbox = sinon.sandbox.create();
   });
 
@@ -63,21 +63,21 @@ describe('OrgStore', () => {
     });
   });
 
-  describe('get currentOrg', function() {
+  describe('get currentOrgGuid', function() {
     it('should start with null, none selected', function() {
-      expect(OrgStore.currentOrg).toBe(null);
+      expect(OrgStore.currentOrgGuid).toBe(null);
     });
 
     it('should return the current org its on', function() {
-      var expected = { name: 'testOrgA', guid: 'asdlfkja;' };
-      OrgStore._currentOrg = expected;
-      expect(OrgStore.currentOrg).toEqual(expected);
+      var expected = 'asdlfkja;';
+      OrgStore._currentOrgGuid = expected;
+      expect(OrgStore.currentOrgGuid).toEqual(expected);
     });
   });
 
   describe('on orgs received', () => {
     it('should set data to passed in orgs', () => {
-      var expected = wrapOrgs([{t: 1}, {t: 2}]);
+      var expected = wrapOrgs([{guid: '1as'}, {guid: '2as'}]);
       expect(OrgStore.getAll()).toBeArray();
 
       AppDispatcher.handleViewAction({
@@ -85,6 +85,7 @@ describe('OrgStore', () => {
         orgs: expected
       });
 
+      expect(OrgStore.getAll().length).toEqual(2);
       expect(OrgStore.getAll()).toEqual(unwrapOrgs(expected));
     });
 
@@ -97,6 +98,24 @@ describe('OrgStore', () => {
       });
 
       expect(spy).toHaveBeenCalledOnce();
+    });
+    
+    it('should merge data with existing orgs', () => {
+      var updates = wrapOrgs([{guid: 'aaa1', name: 'sue'}, 
+            {guid: 'aaa2', name: 'see'}]),
+          current = [{guid: 'aaa1', memory: 1024}];
+
+      OrgStore._data = current;
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORGS_RECEIVED,
+        orgs: updates
+      });
+
+      expect(OrgStore.getAll().length).toEqual(2);
+      let actual = OrgStore.get('aaa1');
+      expect(actual).toBeTruthy();
+      expect(actual.name).toEqual('sue');
+      expect(actual.memory).toEqual(1024);
     });
   });
 
@@ -155,18 +174,6 @@ describe('OrgStore', () => {
   });
 
   describe('on org change current', function() {
-    it('should set current org to org with guid passed in', function() {
-      var expected = { guid: 'sdsf', name: 'testA' };
-
-      OrgStore._data.push(expected);
-
-      AppDispatcher.handleViewAction({
-        type: orgActionTypes.ORG_CHANGE_CURRENT,
-        orgGuid: expected.guid
-      });
-
-      expect(OrgStore.currentOrg).toEqual(expected);
-    });
     it('should emit a change event if it finds the org', function() {
       var spy = sandbox.spy(OrgStore, 'emitChange'),
           expected = { guid: 'sdsf', name: 'testA' };

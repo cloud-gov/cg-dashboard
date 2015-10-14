@@ -8,6 +8,7 @@ import errorActions from '../../../actions/error_actions.js';
 import loginActions from '../../../actions/login_actions.js';
 import loginActionTypes from '../../../constants.js';
 import orgActions from '../../../actions/org_actions.js';
+import OrgStore from '../../../stores/org_store.js';
 import spaceActions from '../../../actions/space_actions.js';
 
 function createPromise(res, err) {
@@ -27,6 +28,7 @@ describe('cfApi', function() {
   var sandbox;
 
   beforeEach(() => {
+    OrgStore._data = [];
     sandbox = sinon.sandbox.create();
   });
 

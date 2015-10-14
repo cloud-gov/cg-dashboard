@@ -27,7 +27,7 @@ function dashboard() {
 function org(orgGuid) {
   orgActions.changeCurrentOrg(orgGuid);
   cfApi.fetchOrg(orgGuid);
-  React.render(<App><SpaceList /></App>, mainEl);
+  React.render(<App><SpaceList initialOrgGuid={ orgGuid } /></App>, mainEl);
 }
 
 function space(orgGuid, spaceGuid) {
