@@ -225,7 +225,7 @@ describe('cfApi', function() {
       var spy = sandbox.spy(http, 'get'),
           expected = 'yyyybba1';
 
-      cfApi.fetchSpace('orguidadsfa', expected);
+      cfApi.fetchSpace(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
@@ -242,7 +242,7 @@ describe('cfApi', function() {
 
       stub.returns(testPromise);
 
-      cfApi.fetchSpace('orguidgdasd', expectedGuid);
+      cfApi.fetchSpace(expectedGuid);
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith(expected.data);
     });

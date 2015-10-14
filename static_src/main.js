@@ -8,6 +8,7 @@ import App from './app.jsx';
 import cfApi from './util/cf_api.js';
 import Login from './components/login.jsx';
 import orgActions from './actions/org_actions.js';
+import Space from './components/space.jsx';
 import SpaceList from './components/space_list.jsx';
 
 const mainEl = document.querySelector('.js-app');
@@ -53,12 +54,12 @@ let routes = {
   '/login': login,
   '/org': {
     '/:orgGuid': {
-      on: org,
-      '/space': {
+      '/spaces': {
         '/:spaceGuid': {
           on: space
         }
-      }
+      },
+      on: org,
     }
   }
 }

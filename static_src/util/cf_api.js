@@ -73,9 +73,9 @@ export default {
     });
   },
 
-  fetchSpace(orgGuid, spaceGuid) {
+  fetchSpace(spaceGuid) {
     return http.get(
-      APIV + `/organizations/${ orgGuid }/spaces/${spaceGuid}/summary`)
+      APIV + `/spaces/${spaceGuid}/summary`)
         .then((res) => {
       spaceActions.receivedSpace(res.data);
     }, (err) => {

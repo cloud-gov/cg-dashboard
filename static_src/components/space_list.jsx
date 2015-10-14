@@ -53,10 +53,14 @@ export default class SpaceList extends React.Component {
     return <h4 className="test-none_message">No spaces found</h4>
   }
 
+  spaceLink = (spaceGuid) => {
+    return `/#/org/${ this.state.currentOrgGuid }/spaces/${ spaceGuid }`;
+  }
+
   render() {
     let rows = this.state.rows;
     for (let row of rows) {
-      row.name =  unsafe('<a href="/#/spaces/' + row.guid + '">' + 
+      row.name =  unsafe('<a href="' + this.spaceLink(row.guid) + '">' + 
         row.name +'</a>');
     }
 
