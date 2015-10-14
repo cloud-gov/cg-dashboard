@@ -30,6 +30,14 @@ function org(orgGuid) {
   React.render(<App><SpaceList /></App>, mainEl);
 }
 
+function space(orgGuid, spaceGuid) {
+  orgActions.changeCurrentOrg(orgGuid);
+  // TODO what happens if the space arrives before the changelistener is added?
+  cfApi.fetchOrg(orgGuid);
+  cfApi.fetchSpace(spaceGuid);
+  React.render(<App><Space initialSpaceGuid={ spaceGuid}  /></App>, mainEl);
+}
+
 function checkAuth() {
   cfApi.getAuthStatus();
 }
@@ -45,7 +53,12 @@ let routes = {
   '/login': login,
   '/org': {
     '/:orgGuid': {
-      on: org
+      on: org,
+      '/space': {
+        '/:spaceGuid': {
+          on: space
+        }
+      }
     }
   }
 }

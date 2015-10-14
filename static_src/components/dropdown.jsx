@@ -41,3 +41,9 @@ export default class Dropdown extends React.Component {
     );
   }
 };
+
+Dropdown.propTypes = { 
+  title: React.PropTypes.string.isRequired,
+  items: React.PropTypes.any
+};
+

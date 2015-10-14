@@ -28,8 +28,7 @@ export default class Navbar extends React.Component {
   }
 
   render = () => {
-    var orgName = this.state.currentOrg && this.state.currentOrg.name || '',
-        orgEls = [],
+    var orgEls = [],
         navigation;
 
     orgEls = this.state.orgs.map((org) => {
@@ -72,7 +71,7 @@ export default class Navbar extends React.Component {
     });
     let navigation = (
       <li>
-      <Dropdown title={ this.state.currentOrg.name.toUpperCase() || '' } 
+      <Dropdown title={ org.name.toUpperCase() || '' } 
       items={ navEls } />
       </li>
     );

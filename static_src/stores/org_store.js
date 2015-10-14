@@ -11,6 +11,30 @@ function formatData(resources) {
   });
 }
 
+function merge(currents, updates) {
+  var merged = [];
+  if (currents.length) {
+    // TODO investigate faster the o^2 here.
+    updates.forEach((update) => {
+      var shouldAdd = true;
+      currents.forEach((current) => {
+        if (update.guid === current.guid) {
+          merged.push(Object.assign(current, update));
+          shouldAdd = false;
+        } else {
+          merged.push(current);
+        }
+      });
+      if (shouldAdd) {
+        merged.push(update);
+      }
+    });   
+  } else {
+    merged = updates;
+  }
+  return merged;
+}
+
 class OrgStore extends BaseStore {
   constructor() {
     super();
@@ -37,7 +61,7 @@ class OrgStore extends BaseStore {
           if (toUpdate) {
             toUpdate = Object.assign(toUpdate, action.org); 
           } else {
-            _OrgStore._data.push(action.org);
+            this._data.push(action.org);
           }
           this.emitChange();
         }
@@ -45,28 +69,7 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORGS_RECEIVED:
         var updates = formatData(action.orgs);
-        if (this._data.length) {
-          updates.forEach((update) => {
-            this._data.forEach((org) => {
-              var toUpdate = true;
-              if (update.guid === org.guid) {
-                org = Object.assign(org, update);
-                toUpdate = false;
-              }
-            });
-            if (toUpdate) {
-              this._data.push(update);
-            }
-          });   
-        } else {
-          this._data = updates;
-        }
-        if (this._currentOrgGuid) {
-          this._currentOrg = this.get(this._currentOrgGuid) || null;
-        }
-        else {
-          this._currentOrg = this._data[0];
-        }
+        this._data = merge(this._data, updates);
         this.emitChange();
         break;
 
