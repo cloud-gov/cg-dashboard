@@ -36,7 +36,9 @@ function space(orgGuid, spaceGuid) {
   // TODO what happens if the space arrives before the changelistener is added?
   cfApi.fetchOrg(orgGuid);
   cfApi.fetchSpace(spaceGuid);
-  React.render(<App><Space initialSpaceGuid={ spaceGuid}  /></App>, mainEl);
+  React.render(<App>
+      <Space initialSpaceGuid={ spaceGuid} initialOrgGuid={ orgGuid }  />
+    </App>, mainEl);
 }
 
 function checkAuth() {

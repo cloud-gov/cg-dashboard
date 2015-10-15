@@ -10,7 +10,11 @@ export default class Space extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = { space: {}, spaceGuid: this.props.initialSpaceGuid };
+    this.state = {
+      space: {},
+      currentOrgGuid: this.props.initialOrgGuid,
+      currentSpaceGuid: this.props.initialSpaceGuid,
+    };
   }
 
   componentDidMount() {
@@ -20,7 +24,7 @@ export default class Space extends React.Component {
   _onChange = () => {
     this.setState({
       currentOrgGuid: OrgStore.currentOrgGuid,
-      space: SpaceStore.get(this.state.spaceGuid)
+      space: SpaceStore.get(this.state.currentSpaceGuid)
     });
   }
 
@@ -48,8 +52,12 @@ export default class Space extends React.Component {
         </div>
         <Tabnav items={ this.subNav } initialItem="Apps"  />
         <div className="tab-content">
-          <div role="tabpanel" class="tab-pane active">
-            <AppList initialApps={ this.state.space.apps } />
+          <div role="tabpanel" className="tab-pane active">
+            <AppList 
+              initialApps={ this.state.space.apps } 
+              initialOrgGuid={ this.state.currentOrgGuid }
+              initialSpaceGuid={ this.state.currentSpaceGuid }
+            />
           </div>
         </div>
       </div>
@@ -58,6 +66,7 @@ export default class Space extends React.Component {
 };
 
 Space.propTypes = {
+  initialOrgGuid: React.PropTypes.string.isRequired,
   initialSpaceGuid: React.PropTypes.string.isRequired
 };
 
