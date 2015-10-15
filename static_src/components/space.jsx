@@ -3,11 +3,13 @@ import React from 'react';
 
 import AppList from '../components/app_list.jsx';
 import OrgStore from '../stores/org_store.js';
+import ServiceInstanceList from '../components/service_list.jsx';
 import SpaceStore from '../stores/space_store.js';
 import Tabnav from './tabnav.jsx';
 
 const PAGES = {
-  'apps': AppList
+  'apps': AppList,
+  'services': ServiceInstanceList
 }
 
 export default class Space extends React.Component {
@@ -58,7 +60,7 @@ export default class Space extends React.Component {
         <div className="page-header">
           <h3 className="text-center">{ this.state.spaceName } Space</h3>
         </div>
-        <Tabnav items={ this.subNav } initialItem="apps"  />
+        <Tabnav items={ this.subNav } initialItem={ this.props.currentPage } />
         <div className="tab-content">
           <div role="tabpanel" className="tab-pane active">
             <Content

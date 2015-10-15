@@ -10,6 +10,10 @@ export default class Tabnav extends React.Component {
     this.state = { current: this.props.initialItem };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({current: nextProps.initialItem});
+  }
+
   render() {
     return (
     <ul className="nav nav-tabs nav-justified">
