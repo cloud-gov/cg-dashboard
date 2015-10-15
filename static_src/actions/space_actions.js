@@ -1,7 +1,7 @@
 
 import AppDispatcher from '../dispatcher.js';
 import cfApi from '../util/cf_api.js';
-import { spaceActionTypes } from '../constants';
+import { spaceActionTypes } from '../constants.js';
 
 export default {
   fetch(spaceGuid) {
