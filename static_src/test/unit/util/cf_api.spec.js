@@ -10,6 +10,7 @@ import loginActionTypes from '../../../constants.js';
 import orgActions from '../../../actions/org_actions.js';
 import OrgStore from '../../../stores/org_store.js';
 import spaceActions from '../../../actions/space_actions.js';
+import serviceActions from '../../../actions/service_actions.js';
 
 function createPromise(res, err) {
   // TODO figure out how to do this with actual Promise object.
@@ -257,6 +258,60 @@ describe('cfApi', function() {
       stub.returns(testPromise);
 
       let actual = cfApi.fetchSpace();
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expected);
+    });
+  });
+
+  describe('fetchServiceInstances()', function() {
+    it('calls http get request for service instance with space guid',
+        function() {
+      var spy = sandbox.spy(http, 'get'),
+          expected = 'yyyybba1';
+
+      cfApi.fetchServiceInstances(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+    });
+    it('calls service action for received service instances with payload on ' +
+       'success', function() {
+      var expectedGuid = 'ttba',
+          expected,
+          stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(serviceActions, 'receivedInstances');
+
+      expected = [
+        { metadata: {
+            guid: expectedGuid
+          },
+          entity: {
+            type: 'someasdf'
+          }
+        }
+      ];
+
+      let testRes = {data: {resources: expected }};
+
+      let testPromise = createPromise(testRes);
+      stub.returns(testPromise);
+
+      cfApi.fetchServiceInstances(expectedGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expected);
+    });
+    it('calls errorActions fetch error on failure', () => {
+      var stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(errorActions, 'errorFetch'),
+          expected = { message: 'error' };
+
+      let testPromise = createPromise(true, expected);
+
+      stub.returns(testPromise);
+
+      let actual = cfApi.fetchServiceInstances();
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith(expected);
     });

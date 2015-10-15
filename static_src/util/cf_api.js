@@ -6,6 +6,7 @@ import loginActions from '../actions/login_actions.js';
 import loginActionTypes from '../constants.js';
 import orgActions from '../actions/org_actions.js';
 import spaceActions from '../actions/space_actions.js';
+import serviceActions from '../actions/service_actions.js';
 
 const APIV = '/v2';
 
@@ -78,6 +79,15 @@ export default {
       APIV + `/spaces/${spaceGuid}/summary`)
         .then((res) => {
       spaceActions.receivedSpace(res.data);
+    }, (err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
+  fetchServiceInstances(spaceGuid) {
+    return http.get(APIV + `/spaces/${ spaceGuid }/service_instances`).then(
+        (res) => {
+      serviceActions.receivedInstances(res.data.resources);
     }, (err) => {
       errorActions.errorFetch(err);
     });
