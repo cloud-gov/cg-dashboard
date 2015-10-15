@@ -2,12 +2,15 @@
 import React from 'react';
 import Reactable from 'reactable';
 
+import SpaceStore from '../stores/space_store.js';
+
 var Table = Reactable.Table,
     unsafe = Reactable.unsafe;
 
 function stateSetter(props) {
+  var space = SpaceStore.get(props.initialSpaceGuid);
   return {
-    apps: props.initialApps,
+    apps: space && space.apps || [],
     currentOrgGuid: props.initialOrgGuid,
     currentSpaceGuid: props.initialSpaceGuid
   }
@@ -17,11 +20,20 @@ export default class AppList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = stateSetter(props);;
+    this.state = stateSetter(props);
+    this.state.apps = props.initialApps;
+  }
+
+  componentDidMount() {
+    SpaceStore.addChangeListener(this._onChange);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState(stateSetter(nextProps));
+  }
+
+  _onChange = () => {
+    this.setState(stateSetter(this.props));
   }
 
   appUrl(app) {
@@ -52,6 +64,7 @@ export default class AppList extends React.Component {
   }
 
   render() {
+    console.log('render', this.state);
     var content = <h4 className="test-none_message">No apps</h4>;
     // TODO format rows in table
     if (this.state.apps.length) {

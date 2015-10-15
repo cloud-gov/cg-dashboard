@@ -6,6 +6,10 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import Tabnav from './tabnav.jsx';
 
+const PAGES = {
+  'apps': AppList
+}
+
 export default class Space extends React.Component {
   constructor(props) {
     super(props);
@@ -33,12 +37,16 @@ export default class Space extends React.Component {
     return  `/#/org/${ this.state.currentOrgGuid }/spaces/${ this.state.space.guid}/${page}`;
   }
 
+  currentContent = (pageName) => {
+    return PAGES[pageName];  
+  }
+
   get subNav() {
     return [
-      { name: 'Apps', element: <a href={ this.spaceUrl('apps') }>Apps</a> },
-      { name: 'Service Instances', element: <a href={ this.spaceUrl('services') }>
+      { name: 'apps', element: <a href={ this.spaceUrl('apps') }>Apps</a> },
+      { name: 'services', element: <a href={ this.spaceUrl('services') }>
           Service Instances</a> },
-      { name: 'User Management', element: <a href={ this.spaceUrl('users') }>
+      { name: 'users', element: <a href={ this.spaceUrl('users') }>
           User Management</a> }
     ];
   }
@@ -50,7 +58,7 @@ export default class Space extends React.Component {
         <div className="page-header">
           <h3 className="text-center">{ this.state.spaceName } Space</h3>
         </div>
-        <Tabnav items={ this.subNav } initialItem="Apps"  />
+        <Tabnav items={ this.subNav } initialItem="apps"  />
         <div className="tab-content">
           <div role="tabpanel" className="tab-pane active">
             <AppList 
@@ -66,9 +74,11 @@ export default class Space extends React.Component {
 };
 
 Space.propTypes = {
+  currentPage: React.PropTypes.string,
   initialOrgGuid: React.PropTypes.string.isRequired,
   initialSpaceGuid: React.PropTypes.string.isRequired
 };
 
 Space.defaultProps = {
+  currentPage: 'apps'
 };
