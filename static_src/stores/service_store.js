@@ -17,6 +17,10 @@ class ServiceStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
+      case serviceActionTypes.SERVICE_INSTANCES_FETCH:
+        cfApi.fetchServiceInstances(action.spaceGuid);
+        break;
+
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED:
         var updates = this._formatSplitRes(action.serviceInstances);
         this._data = updates;

@@ -2,6 +2,7 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
+import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import ServiceStore from '../../../stores/service_store.js';
 import { serviceActionTypes } from '../../../constants.js';
@@ -27,6 +28,22 @@ describe('ServiceStore', function() {
   describe('getAll()', () => {
     it('should return a list of services', () => {
       expect(ServiceStore.getAll()).toBeArray();
+    });
+  });
+
+  describe('on service instances fetch', function() {
+    it('should fetch service instances from api with space guid', function() {
+      var spy = sandbox.spy(cfApi, 'fetchServiceInstances'),
+          expectedSpaceGuid = '9998sdfa;dksa';
+
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
+        spaceGuid: expectedSpaceGuid
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedSpaceGuid);
     });
   });
 
