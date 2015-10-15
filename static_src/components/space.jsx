@@ -37,8 +37,8 @@ export default class Space extends React.Component {
     return  `/#/org/${ this.state.currentOrgGuid }/spaces/${ this.state.space.guid}/${page}`;
   }
 
-  currentContent = (pageName) => {
-    return PAGES[pageName];  
+  get currentContent() {
+    return PAGES[this.props.currentPage];
   }
 
   get subNav() {
@@ -52,7 +52,7 @@ export default class Space extends React.Component {
   }
 
   render() {
-
+    var Content = this.currentContent;;
     return (
       <div>
         <div className="page-header">
@@ -61,8 +61,7 @@ export default class Space extends React.Component {
         <Tabnav items={ this.subNav } initialItem="apps"  />
         <div className="tab-content">
           <div role="tabpanel" className="tab-pane active">
-            <AppList 
-              initialApps={ this.state.space.apps } 
+            <Content
               initialOrgGuid={ this.state.currentOrgGuid }
               initialSpaceGuid={ this.state.currentSpaceGuid }
             />

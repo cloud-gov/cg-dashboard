@@ -64,7 +64,6 @@ export default class AppList extends React.Component {
   }
 
   render() {
-    console.log('render', this.state);
     var content = <h4 className="test-none_message">No apps</h4>;
     // TODO format rows in table
     if (this.state.apps.length) {
