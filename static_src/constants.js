@@ -24,4 +24,10 @@ var spaceActionTypes = keymirror({
   SPACE_RECEIVED: null
 });
 
-export { errorActionTypes, loginActionTypes, orgActionTypes, spaceActionTypes };
+var serviceActionTypes = keymirror({
+  SERVICE_INSTANCES_FETCH: null,
+  SERVICE_INSTANCES_RECEIVED: null
+});
+
+export { errorActionTypes, loginActionTypes, orgActionTypes, spaceActionTypes,
+  serviceActionTypes};
