@@ -275,6 +275,7 @@ describe('cfApi', function() {
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
     });
+
     it('calls service action for received service instances with payload on ' +
        'success', function() {
       var expectedGuid = 'ttba',
@@ -302,6 +303,7 @@ describe('cfApi', function() {
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith(expected);
     });
+
     it('calls errorActions fetch error on failure', () => {
       var stub = sandbox.stub(http, 'get'),
           spy = sandbox.spy(errorActions, 'errorFetch'),

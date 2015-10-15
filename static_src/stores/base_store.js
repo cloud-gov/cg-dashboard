@@ -27,4 +27,10 @@ export default class BaseStore extends EventEmitter {
   removeChangeListener(cb) {
     this.removeListener('CHANGE', cb);
   }
+
+  _formatSplitRes(resources) {
+    return resources.map((resource) => {
+      return Object.assign(resource.entity, resource.metadata);
+    });
+  }
 }

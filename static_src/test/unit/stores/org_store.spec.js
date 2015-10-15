@@ -3,25 +3,9 @@ import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
+import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import OrgStore from '../../../stores/org_store.js';
 import { orgActionTypes } from '../../../constants';
-
-function wrapOrgs(orgs) {
-  var n = 0;
-  return orgs.map((org) => {
-    return {
-      metadata: { guid: org.guid || n },
-      entity: org
-    };
-    n++;
-  });
-};
-
-function unwrapOrgs(orgs) {
-  return orgs.map((org) => {
-    return Object.assign(org.entity, org.metadata);
-  });
-}
 
 describe('OrgStore', () => {
   var sandbox;
@@ -77,7 +61,7 @@ describe('OrgStore', () => {
 
   describe('on orgs received', () => {
     it('should set data to passed in orgs', () => {
-      var expected = wrapOrgs([{guid: '1as'}, {guid: '2as'}]);
+      var expected = wrapInRes([{guid: '1as'}, {guid: '2as'}]);
       expect(OrgStore.getAll()).toBeArray();
 
       AppDispatcher.handleViewAction({
@@ -86,7 +70,7 @@ describe('OrgStore', () => {
       });
 
       expect(OrgStore.getAll().length).toEqual(2);
-      expect(OrgStore.getAll()).toEqual(unwrapOrgs(expected));
+      expect(OrgStore.getAll()).toEqual(unwrapOfRes(expected));
     });
 
     it('should emit a change event', () => {
@@ -101,7 +85,7 @@ describe('OrgStore', () => {
     });
     
     it('should merge data with existing orgs', () => {
-      var updates = wrapOrgs([{guid: 'aaa1', name: 'sue'}, 
+      var updates = wrapInRes([{guid: 'aaa1', name: 'sue'}, 
             {guid: 'aaa2', name: 'see'}]),
           current = [{guid: 'aaa1', memory: 1024}];
 

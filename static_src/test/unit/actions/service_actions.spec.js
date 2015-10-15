@@ -53,7 +53,7 @@ describe('serviceActions', function() {
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];
       expect(arg.type).toEqual(serviceActionTypes.SERVICE_INSTANCES_RECEIVED);
-      expect(arg.serviceInstance).toEqual(expected);
+      expect(arg.serviceInstances).toEqual(expected);
     });
   });
 

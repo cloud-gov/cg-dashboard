@@ -10,10 +10,10 @@ export default {
     });
   },
 
-  receivedInstances(serviceInstance) {
+  receivedInstances(serviceInstances) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
-      serviceInstance: serviceInstance
+      serviceInstances: serviceInstances
     });
   }
 };

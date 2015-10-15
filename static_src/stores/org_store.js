@@ -58,7 +58,7 @@ class OrgStore extends BaseStore {
         break;
 
       case orgActionTypes.ORGS_RECEIVED:
-        var updates = formatData(action.orgs);
+        var updates = this._formatSplitRes(action.orgs);
         this._data = merge(this._data, updates);
         this.emitChange();
         break;
