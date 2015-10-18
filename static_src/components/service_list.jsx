@@ -5,7 +5,11 @@ import Reactable from 'reactable';
 import serviceActions from '../actions/service_actions.js';
 import ServiceStore from '../stores/service_store.js';
 
-var Table = Reactable.Table;
+var Table = Reactable.Table,
+    Thead = Reactable.Thead,
+    Th = Reactable.Th,
+    Tr = Reactable.Tr,
+    Td = Reactable.Td;
 
 function stateSetter(props) {
   return {
@@ -33,20 +37,41 @@ export default class ServiceInstanceList extends React.Component {
   get columns() {
     return [
       { label: 'Name', key: 'name' },
-      { label: 'Last operation', key: 'last_operation.type' },
-      { label: 'Updated at', key: 'last_operation.updated_at' },
-      { label: '', key: '' }
+      { label: 'Last operation', key: 'type' },
+      { label: 'Updated at', key: 'updated_at' },
+      { label: 'Delete', key: 'delete_istance' }
     ];
   }
 
   render() {
     var content = <h4 className="test-none_message">No service instances</h4>;
+    console.log('render', this.state.serviceInstances);
     if (this.state.serviceInstances.length) {
-      content = <Table 
-        className="table"
-        data={ this.state.serviceInstances } 
-        columns={ this.columns }
-        sortable={ true } />;
+      content = (
+        <Table className="table" sortable={ true }>
+          <Thead>
+            { this.columns.map(function(column) {
+              return (
+                <Th column={ column.label } className={ column.key }>
+                  { column.label }</Th>
+              )
+            })}
+          </Thead>
+          { this.state.serviceInstances.map(function(instance) {
+            return (
+              <Tr>
+                <Td column="Name"><span>{ instance.name }</span></Td>
+                <Td column="Last operation">{ instance.last_operation.type }</Td>
+                <Td column="Updated at">
+                  { instance.last_operation.updated_at }
+                </Td>
+                <Td column="Delete">
+                </Td>
+              </Tr>
+            )
+          })}
+        </Table>
+      );
     }
 
     return (
@@ -61,3 +86,4 @@ ServiceInstanceList.propTypes = {
   initialOrgGuid: React.PropTypes.string,
   initialSpaceGuid: React.PropTypes.string
 };
+
