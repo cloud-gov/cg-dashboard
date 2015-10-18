@@ -11,6 +11,14 @@ class ServiceStore extends BaseStore {
     this._data = [];
   }
 
+  get(serviceGuid) {
+    if (serviceGuid) {
+      return this._data.find((service) => {
+        return service.guid === serviceGuid;
+      });
+    }
+  }
+
   getAll() {
     return this._data;
   }

@@ -25,7 +25,31 @@ describe('ServiceStore', function() {
     });
   });
 
-  describe('getAll()', () => {
+  describe('get()', function() {
+    it('should return a service if it can find it in data based on guid',
+        function() {
+      var expectedGuid = '8sfjlkasjdf',
+          expected = { guid: expectedGuid };
+
+      ServiceStore._data.push(expected);
+
+      let actual = ServiceStore.get(expectedGuid);
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('should returned undefined if not found', function() {
+      var testService = { guid: 'aaa' };
+
+      ServiceStore._data.push(testService);
+
+      let actual = ServiceStore.get('mkmkmkmkm');
+      
+      expect(actual).toBeFalsy();
+    });
+  });
+
+  describe('getAll()', function() {
     it('should return a list of services', () => {
       expect(ServiceStore.getAll()).toBeArray();
     });
