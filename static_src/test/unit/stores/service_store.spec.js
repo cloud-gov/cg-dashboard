@@ -100,4 +100,34 @@ describe('ServiceStore', function() {
       expect(spy).toHaveBeenCalledOnce();
     });
   });
+
+  describe('on service instance delete', function() {
+    it('should do nothing if the service isn\'t in data', function() {
+      var spy = sandbox.spy(cfApi, 'deleteUnboundServiceInstance');
+
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
+        serviceInstanceGuid: 'adsf'
+      });
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should api delete with the service', function() {
+      var spy = sandbox.spy(cfApi, 'deleteUnboundServiceInstance'),
+          expectedGuid = 'qp98wfj',
+          expected = { guid: expectedGuid, url: '/' + expectedGuid };
+
+      ServiceStore._data.push(expected);
+
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
+        serviceInstanceGuid: expectedGuid
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expected);
+    });
+  });
 });

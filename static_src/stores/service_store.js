@@ -35,6 +35,13 @@ class ServiceStore extends BaseStore {
         this.emitChange();
         break;
 
+      case serviceActionTypes.SERVICE_INSTANCE_DELETE:
+        var toDelete = this.get(action.serviceInstanceGuid);
+        if (toDelete) {
+          cfApi.deleteUnboundServiceInstance(toDelete);
+        }
+        break;
+
       default:
         break;
 
