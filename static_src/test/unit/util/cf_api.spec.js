@@ -318,4 +318,32 @@ describe('cfApi', function() {
       expect(spy).toHaveBeenCalledWith(expected);
     });
   });
+
+  describe('deleteUnboundServiceInstance()', function() {
+    it('should call http delete request on service route with service guid',
+        function() {
+      var spy = sandbox.spy(http, 'delete'),
+          expected = 'yyasdflkjayybbaal1';
+
+      cfApi.deleteUnboundServiceInstance(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+    });
+
+    it('should call service deleted action', function() {
+      var stub = sandbox.stub(http, 'delete'),
+          spy = sandbox.spy(serviceActions, 'deletedInstance');
+
+      let testPromise = createPromise({status: true});
+      stub.returns(testPromise);
+
+      cfApi.deleteUnboundServiceInstance('vxmlks');
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    // TODO should be error action for non fetch errors.
+  });
 });

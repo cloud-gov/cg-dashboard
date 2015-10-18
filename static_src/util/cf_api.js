@@ -91,5 +91,14 @@ export default {
     }, (err) => {
       errorActions.errorFetch(err);
     });
+  },
+
+  deleteUnboundServiceInstance(serviceInstanceGuid) {
+    return http.delete(APIV + `/service_instances/${ serviceInstanceGuid }`)
+    .then((res) => {
+      serviceActions.deletedInstance();
+    }, (err) => {
+      // Do nothing.
+    });
   }
 };
