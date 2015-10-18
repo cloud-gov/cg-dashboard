@@ -72,14 +72,16 @@ describe('serviceActions', function() {
   });
 
   describe('deletedInstance()', function() {
-    it('should dispatch a instance deleted server event', function() {
-      var spy = sandbox.spy(AppDispatcher, 'handleServerAction');
+    it('should dispatch a instance deleted server event with guid', function() {
+      var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
+          expectedGuid = 'admxzcg';
 
-      serviceActions.deletedInstance();
+      serviceActions.deletedInstance(expectedGuid);
 
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];
       expect(arg.type).toEqual(serviceActionTypes.SERVICE_INSTANCE_DELETED);
+      expect(arg.serviceInstanceGuid).toEqual(expectedGuid);
     });
   });
 });

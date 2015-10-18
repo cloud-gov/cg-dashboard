@@ -24,9 +24,10 @@ export default {
     });
   },
 
-  deletedInstance() {
+  deletedInstance(serviceInstanceGuid) {
     AppDispatcher.handleServerAction({
-      type: serviceActionTypes.SERVICE_INSTANCE_DELETED
+      type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
+      serviceInstanceGuid: serviceInstanceGuid
     });
   }
 };
