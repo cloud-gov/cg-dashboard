@@ -2,6 +2,7 @@
 import React from 'react';
 import Reactable from 'reactable';
 
+import Button from './button.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceStore from '../stores/service_store.js';
 
@@ -34,6 +35,9 @@ export default class ServiceInstanceList extends React.Component {
     this.setState(stateSetter(this.props));
   }
 
+  _handleDelete = (instanceGuid, ev) => {
+  }
+
   get columns() {
     return [
       { label: 'Name', key: 'name' },
@@ -45,27 +49,34 @@ export default class ServiceInstanceList extends React.Component {
 
   render() {
     var content = <h4 className="test-none_message">No service instances</h4>;
-    console.log('render', this.state.serviceInstances);
+    let button = <Button label="Delete instance" 
+      onClickHandler={ this._handleDelete } />;
+
     if (this.state.serviceInstances.length) {
       content = (
         <Table className="table" sortable={ true }>
           <Thead>
-            { this.columns.map(function(column) {
+            { this.columns.map((column) => {
               return (
                 <Th column={ column.label } className={ column.key }>
                   { column.label }</Th>
               )
             })}
           </Thead>
-          { this.state.serviceInstances.map(function(instance) {
+          { this.state.serviceInstances.map((instance) => {
             return (
-              <Tr>
+              <Tr key={ instance.guid }>
                 <Td column="Name"><span>{ instance.name }</span></Td>
                 <Td column="Last operation">{ instance.last_operation.type }</Td>
                 <Td column="Updated at">
                   { instance.last_operation.updated_at }
                 </Td>
                 <Td column="Delete">
+                  <Button 
+                  onClickHandler={ this._handleDelete.bind(this, instance.guid) } 
+                  label="delete">
+                    <span>Delete Instance</span>
+                  </Button>
                 </Td>
               </Tr>
             )
