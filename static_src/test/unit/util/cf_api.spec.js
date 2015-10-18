@@ -333,16 +333,20 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp(expectedGuid));
     });
 
-    it('should call service deleted action', function() {
+    it('should call service deleted action with guid', function() {
       var stub = sandbox.stub(http, 'delete'),
-          spy = sandbox.spy(serviceActions, 'deletedInstance');
+          spy = sandbox.spy(serviceActions, 'deletedInstance'),
+          expectedGuid = '38wofjasd',
+          expected = { guid: expectedGuid, url: '/' + expectedGuid};
 
       let testPromise = createPromise({status: true});
       stub.returns(testPromise);
 
-      cfApi.deleteUnboundServiceInstance('vxmlks');
+      cfApi.deleteUnboundServiceInstance(expected);
 
       expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toEqual(expectedGuid);
     });
 
     // TODO should be error action for non fetch errors.
