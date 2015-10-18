@@ -93,8 +93,9 @@ export default {
     });
   },
 
-  deleteUnboundServiceInstance(serviceInstanceGuid) {
-    return http.delete(APIV + `/service_instances/${ serviceInstanceGuid }`)
+  deleteUnboundServiceInstance(serviceInstance) {
+    return http.delete(APIV + 
+        `/service_instances/${ serviceInstance.url }`)
     .then((res) => {
       serviceActions.deletedInstance();
     }, (err) => {

@@ -323,13 +323,14 @@ describe('cfApi', function() {
     it('should call http delete request on service route with service guid',
         function() {
       var spy = sandbox.spy(http, 'delete'),
-          expected = 'yyasdflkjayybbaal1';
+          expectedGuid = 'yyasdflkjayybbaal1',
+          expected = { guid: expectedGuid, url: '/'+ expectedGuid}
 
       cfApi.deleteUnboundServiceInstance(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp(expectedGuid));
     });
 
     it('should call service deleted action', function() {
