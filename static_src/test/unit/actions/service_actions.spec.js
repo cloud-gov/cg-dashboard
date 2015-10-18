@@ -57,4 +57,18 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('deleteInstance()', function() {
+    it('should dispatch a instance delete view event with instance guid', () => {
+      var spy = sandbox.spy(AppDispatcher, 'handleViewAction'),
+          expectedInstanceGuid = '0sd9fajdmz';
+
+      serviceActions.deleteInstance(expectedInstanceGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(serviceActionTypes.SERVICE_INSTANCE_DELETE);
+      expect(arg.spaceGuid).toEqual(expectedInstanceGuid);
+
+    });
+  });
 });

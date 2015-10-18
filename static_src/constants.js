@@ -25,6 +25,7 @@ var spaceActionTypes = keymirror({
 });
 
 var serviceActionTypes = keymirror({
+  SERVICE_INSTANCE_DELETE: null,
   SERVICE_INSTANCES_FETCH: null,
   SERVICE_INSTANCES_RECEIVED: null
 });
