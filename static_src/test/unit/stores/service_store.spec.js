@@ -130,4 +130,48 @@ describe('ServiceStore', function() {
       expect(arg).toEqual(expected);
     });
   });
+
+  describe('on service instance deleted', function() {
+    it('should remove the service from the data', function() {
+      var expectedGuid = 'macldksajpi',
+          expected = { guid: expectedGuid, url: '/' + expectedGuid };
+
+      ServiceStore._data.push(expected);
+
+      expect(ServiceStore.get(expectedGuid)).toEqual(expected);
+
+      AppDispatcher.handleServerAction({
+        type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
+        serviceInstanceGuid: expectedGuid
+      });
+
+      expect(ServiceStore.get(expectedGuid)).toBeFalsy();
+    });
+
+    it('should emit a change event if found locally', function() {
+      var spy = sandbox.spy(ServiceStore, 'emitChange');
+      var expectedGuid = 'macldksajpi',
+          expected = { guid: expectedGuid, url: '/' + expectedGuid };
+
+      ServiceStore._data.push(expected);
+
+      AppDispatcher.handleServerAction({
+        type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
+        serviceInstanceGuid: expectedGuid
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should not emit a change event if not found locally', function() {
+      var spy = sandbox.spy(ServiceStore, 'emitChange');
+
+      AppDispatcher.handleServerAction({
+        type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
+        serviceInstanceGuid: 'adsfas' 
+      });
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
 });

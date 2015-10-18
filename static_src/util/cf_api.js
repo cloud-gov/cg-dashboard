@@ -97,7 +97,7 @@ export default {
     return http.delete(APIV + 
         `/service_instances/${ serviceInstance.url }`)
     .then((res) => {
-      serviceActions.deletedInstance();
+      serviceActions.deletedInstance(serviceInstance.guid);
     }, (err) => {
       // Do nothing.
     });

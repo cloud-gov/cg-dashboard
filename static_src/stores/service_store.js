@@ -42,6 +42,15 @@ class ServiceStore extends BaseStore {
         }
         break;
 
+      case serviceActionTypes.SERVICE_INSTANCE_DELETED:
+        var deleted = this.get(action.serviceInstanceGuid);
+        if (deleted) {
+          var index = this._data.indexOf(deleted);
+          this._data.splice(index, 1);
+          this.emitChange();
+        }
+        break;
+
       default:
         break;
 
