@@ -67,8 +67,19 @@ describe('serviceActions', function() {
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];
       expect(arg.type).toEqual(serviceActionTypes.SERVICE_INSTANCE_DELETE);
-      expect(arg.spaceGuid).toEqual(expectedInstanceGuid);
+      expect(arg.serviceInstanceGuid).toEqual(expectedInstanceGuid);
+    });
+  });
 
+  describe('deletedInstance()', function() {
+    it('should dispatch a instance deleted server event', function() {
+      var spy = sandbox.spy(AppDispatcher, 'handleServerAction');
+
+      serviceActions.deletedInstance();
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(serviceActionTypes.SERVICE_INSTANCE_DELETED);
     });
   });
 });

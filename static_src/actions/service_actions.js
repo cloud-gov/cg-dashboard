@@ -19,8 +19,14 @@ export default {
 
   deleteInstance(instanceGuid) {
     AppDispatcher.handleViewAction({
-      type: SERVICE_INSTANCE_DELETE,
+      type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
       serviceInstanceGuid: instanceGuid
+    });
+  },
+
+  deletedInstance() {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_DELETED
     });
   }
 };
