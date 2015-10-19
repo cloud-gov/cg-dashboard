@@ -18,7 +18,7 @@ Date: 10/15/2015
 
   
 ### Current features
- - view basic information on your organizations, spaces with those organizations and apps within those spaces.
+- view basic information on your organizations, spaces with those organizations and apps within those spaces.
 - remove, add, update users in your organization/space.
 - add services to your app through the marketplace. these could be anything from databases to logging.
 - manage an app by by stopping/starting it, modifying routes, setting up services.
@@ -26,6 +26,7 @@ Date: 10/15/2015
 - see the status of the cloud.gov platform as a whole
 
 ### Budget and schedule
+the deck could be used by cloud.gov users now.
 
 ### Assumptions
 - managed services (the ability to add a secondary service like a database or logging to the app) is an important use case of using the deck.
