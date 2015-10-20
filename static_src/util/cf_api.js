@@ -1,6 +1,7 @@
 
 import http from 'axios';
 
+import appActions from '../actions/app_actions.js';
 import errorActions from '../actions/error_actions.js';
 import loginActions from '../actions/login_actions.js';
 import loginActionTypes from '../constants.js';
@@ -100,6 +101,14 @@ export default {
       serviceActions.deletedInstance(serviceInstance.guid);
     }, (err) => {
       // Do nothing.
+    });
+  },
+
+  fetchApp(appGuid) {
+    return http.get(APIV + `/apps/${ appGuid }/summary`).then((res) => {
+      appActions.received(res.data);
+    }, (err) => {
+      errorActions.errorFetch(err);
     });
   }
 };

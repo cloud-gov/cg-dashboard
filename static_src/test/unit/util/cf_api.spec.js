@@ -3,6 +3,7 @@ import '../../global_setup.js';
 
 import http from 'axios';
 
+import appActions from '../../../actions/app_actions.js';
 import cfApi from '../../../util/cf_api.js';
 import errorActions from '../../../actions/error_actions.js';
 import loginActions from '../../../actions/login_actions.js';
@@ -350,5 +351,47 @@ describe('cfApi', function() {
     });
 
     // TODO should be error action for non fetch errors.
+  });
+
+  describe('fetchApp()', function() {
+    it('should call an http get request for app with app guid', function() {
+      var spy = sandbox.spy(http, 'get'),
+          expected = 'yyyybba1';
+
+      cfApi.fetchApp(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+    });
+
+    it('calls received action with app from response on success', function() {
+      var expectedGuid = 'ttba',
+          expected = { data: { guid: expectedGuid } },
+          stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(appActions, 'received');
+
+      let testPromise = createPromise(expected);
+
+      stub.returns(testPromise);
+
+      cfApi.fetchApp(expectedGuid);
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expected.data);
+    });
+
+    it('calls errorActions fetch error on failure', () => {
+      var stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(errorActions, 'errorFetch'),
+          expected = { message: 'error' };
+
+      let testPromise = createPromise(true, expected);
+
+      stub.returns(testPromise);
+
+      let actual = cfApi.fetchApp();
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expected);
+    });
   });
 });
