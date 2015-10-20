@@ -1,5 +1,5 @@
 # Design brief
-Description: This document is mean't to introduce new people to the current state and desired goals of the design of the cloud.gov deck.
+Description: This document is meant to introduce new people to the current state and desired goals of the design of the cloud.gov deck.
 
 Date: 10/15/2015
 
@@ -61,10 +61,10 @@ in terms of UI/design work, here's some questions we're interested in exploring:
   - steps should a user go through to accomplish various tasks
   - what problems exist with current flow?
   
-its open to how these questions are answered (user interviews, usability test, a/b testing, competative research, brainstorming, common sense) or how the answers are delivered (user flows, wireframes, personas, journey map, storyboards) as long as they are sound.
+it's open to how these questions are answered (user interviews, usability test, a/b testing, competative research, brainstorming, common sense) or how the answers are delivered (user flows, wireframes, personas, journey map, storyboards) as long as they are sound.
   
 ### Suggestions
-- theres other competing products out there that have done a good job in this space. Pivotal has specifically done a good job in the cloud foundry space. 
+- there are other competing products out there that have done a good job in this space. Pivotal has specifically done a good job in the cloud foundry space. 
   
 ### Setup
 to use the cloud.gov dec:
