@@ -31,5 +31,10 @@ var serviceActionTypes = keymirror({
   SERVICE_INSTANCES_RECEIVED: null
 });
 
-export { errorActionTypes, loginActionTypes, orgActionTypes, spaceActionTypes,
-  serviceActionTypes};
+var appActionTypes = keymirror({
+  APP_FETCH: null,
+  APP_RECEIVED: null
+});
+
+export { appActionTypes, errorActionTypes, loginActionTypes, orgActionTypes,
+  spaceActionTypes, serviceActionTypes};
