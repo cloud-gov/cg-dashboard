@@ -106,7 +106,7 @@ export default {
 
   fetchApp(appGuid) {
     return http.get(APIV + `/apps/${ appGuid }/summary`).then((res) => {
-      appActions.received(res.data);
+      appActions.receivedApp(res.data);
     }, (err) => {
       errorActions.errorFetch(err);
     });

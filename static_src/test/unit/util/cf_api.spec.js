@@ -369,7 +369,7 @@ describe('cfApi', function() {
       var expectedGuid = 'ttba',
           expected = { data: { guid: expectedGuid } },
           stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(appActions, 'received');
+          spy = sandbox.spy(appActions, 'receivedApp');
 
       let testPromise = createPromise(expected);
 

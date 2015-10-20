@@ -31,13 +31,13 @@ describe('appActions', function() {
     });
   });
 
-  describe('received()', function() {
+  describe('receivedApp()', function() {
     it('should dispatch a server event of type app resv with app data', 
         function() {
       var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
           expected = { guid: 'asdfa', service: [] };
 
-      appActions.received(expected);
+      appActions.receivedApp(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];

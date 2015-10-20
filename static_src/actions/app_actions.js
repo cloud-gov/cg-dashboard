@@ -10,7 +10,7 @@ export default {
     });
   },
 
-  received(app) {
+  receivedApp(app) {
     AppDispatcher.handleServerAction({
       type: appActionTypes.APP_RECEIVED,
       app: app
