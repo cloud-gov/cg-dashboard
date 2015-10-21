@@ -4,7 +4,7 @@ go:
 - 1.5
 before_install:
 - npm install
-- npm build
+- npm run build
 - pip install --user ruamel.yaml
 script:
 - "./codecheck.sh -u"
@@ -18,6 +18,7 @@ branches:
   - alpha-staging
 before_deploy:
 - export BUILD_INFO=build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d-%H-%M-%S")-$TRAVIS_BUILD_NUMBER
+- export PHANTOMJS_BIN=/usr/local/phantomjs/bin/phantomjs
 # Extract any encrypted env vars and put them into the manifests/manifest-master.yml
 - python deploy/travis-vars-to-manifest.py
 # Download the go-bindata binary, which is necessary for the CF CLI
