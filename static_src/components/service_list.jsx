@@ -36,6 +36,8 @@ export default class ServiceInstanceList extends React.Component {
   }
 
   _handleDelete = (instanceGuid, ev) => {
+    ev.preventDefault();
+    serviceActions.deleteInstance(instanceGuid);
   }
 
   get columns() {
