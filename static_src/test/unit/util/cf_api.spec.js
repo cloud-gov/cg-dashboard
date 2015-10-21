@@ -13,6 +13,7 @@ import OrgStore from '../../../stores/org_store.js';
 import spaceActions from '../../../actions/space_actions.js';
 import serviceActions from '../../../actions/service_actions.js';
 import userActions from '../../../actions/user_actions.js';
+import { wrapInRes, unwrapOfRes } from '../helpers.js';
 
 function createPromise(res, err) {
   // TODO figure out how to do this with actual Promise object.
@@ -410,7 +411,7 @@ describe('cfApi', function() {
 
     it('calls received action with users from response on success', function() {
       var expectedGuid = 'adsfkxcmz',
-          expected = { data: { resources: [{ guid: expectedGuid }]}},
+          expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
           stub = sandbox.stub(http, 'get'),
           spy = sandbox.spy(userActions, 'receivedSpaceUsers');
 

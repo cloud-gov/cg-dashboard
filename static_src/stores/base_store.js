@@ -34,6 +34,7 @@ export default class BaseStore extends EventEmitter {
     });
   }
 
+  // TODO make this have no side effects.
   _merge(currents, updates) {
     if (currents.length) {
       updates.forEach(function(update) {
