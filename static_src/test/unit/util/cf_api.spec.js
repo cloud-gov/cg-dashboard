@@ -12,6 +12,7 @@ import orgActions from '../../../actions/org_actions.js';
 import OrgStore from '../../../stores/org_store.js';
 import spaceActions from '../../../actions/space_actions.js';
 import serviceActions from '../../../actions/service_actions.js';
+import userActions from '../../../actions/user_actions.js';
 
 function createPromise(res, err) {
   // TODO figure out how to do this with actual Promise object.
@@ -393,5 +394,48 @@ describe('cfApi', function() {
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith(expected);
     });
+  });
+
+  describe('fetchSpaceUsers()', function() {
+    it('should call an http get request for users with space guid', function() {
+      var spy = sandbox.spy(http, 'get'),
+          expected = 'adsfpjweqidalkvn';
+
+      cfApi.fetchSpaceUsers(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+    });
+
+    it('calls received action with users from response on success', function() {
+      var expectedGuid = 'adsfkxcmz',
+          expected = { data: { resources: [{ guid: expectedGuid }]}},
+          stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(userActions, 'receivedSpaceUsers');
+
+      let testPromise = createPromise(expected);
+
+      stub.returns(testPromise);
+
+      cfApi.fetchSpaceUsers('adsfas');
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expected.data.resources);
+    });
+
+    it('calls errorActions fetch error on failure', () => {
+      var stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(errorActions, 'errorFetch'),
+          expected = { message: 'error' };
+
+      let testPromise = createPromise(true, expected);
+
+      stub.returns(testPromise);
+
+      let actual = cfApi.fetchSpaceUsers();
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expected);
+    });
+
   });
 });

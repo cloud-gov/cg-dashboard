@@ -8,6 +8,7 @@ import loginActionTypes from '../constants.js';
 import orgActions from '../actions/org_actions.js';
 import spaceActions from '../actions/space_actions.js';
 import serviceActions from '../actions/service_actions.js';
+import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
 
@@ -107,6 +108,14 @@ export default {
   fetchApp(appGuid) {
     return http.get(APIV + `/apps/${ appGuid }/summary`).then((res) => {
       appActions.receivedApp(res.data);
+    }, (err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
+  fetchSpaceUsers(spaceGuid) {
+    return http.get(APIV + `/spaces/${ spaceGuid }/user_roles`).then((res) => {
+      userActions.receivedSpaceUsers(res.data.resources);
     }, (err) => {
       errorActions.errorFetch(err);
     });
