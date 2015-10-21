@@ -13,7 +13,7 @@ branches:
   only:
   - master
   - production
-  - alpha-staging
+  - staging-alpha
 before_deploy:
 - export BUILD_INFO=build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d-%H-%M-%S")-$TRAVIS_BUILD_NUMBER
 - export PHANTOMJS_BIN=/usr/local/phantomjs/bin/phantomjs
