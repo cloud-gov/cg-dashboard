@@ -14,6 +14,10 @@ if [ "$TRAVIS_BRANCH" == "master" ]
 then
 	CF_MANIFEST="manifests/manifest-master.yml"
 	CF_SPACE="deck-stage"
+elif [ "$TRAVIS_BRANCH" == "staging-alpha" ]
+then
+	CF_MANIFEST="manifests/manifest-master.yml"
+  CF_SPACE="staging-alpha"
 elif [ "$TRAVIS_BRANCH" == "production" ]
 then
 	CF_MANIFEST="manifests/manifest-production.yml"

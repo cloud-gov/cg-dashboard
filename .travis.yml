@@ -4,6 +4,7 @@ go:
 - 1.5
 before_install:
 - npm install
+- npm build
 - pip install --user ruamel.yaml
 script:
 - "./codecheck.sh -u"
@@ -14,6 +15,7 @@ branches:
   only:
   - master
   - production
+  - alpha-staging
 before_deploy:
 - export BUILD_INFO=build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d-%H-%M-%S")-$TRAVIS_BUILD_NUMBER
 # Extract any encrypted env vars and put them into the manifests/manifest-master.yml
@@ -45,6 +47,7 @@ deploy:
     branch:
     - master
     - production
+    - staging-alpha
 env:
   global:
   - CF_API=https://api.cloud.gov
