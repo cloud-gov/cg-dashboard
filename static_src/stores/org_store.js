@@ -11,21 +11,6 @@ function formatData(resources) {
   });
 }
 
-function merge(currents, updates) {
-  if (currents.length) {
-    updates.forEach(function(update) {
-      var same = currents.find(function(current) {
-        return current.guid === update.guid;
-      });
-       
-      same ? Object.assign(same, update) : currents.push(update);
-    });
-  } else {
-    currents = updates;
-  }
-  return currents;
-}
-
 class OrgStore extends BaseStore {
   constructor() {
     super();
@@ -59,7 +44,7 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORGS_RECEIVED:
         var updates = this._formatSplitRes(action.orgs);
-        this._data = merge(this._data, updates);
+        this._data = this._merge(this._data, updates);
         this.emitChange();
         break;
 

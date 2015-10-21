@@ -33,4 +33,19 @@ export default class BaseStore extends EventEmitter {
       return Object.assign(resource.entity, resource.metadata);
     });
   }
+
+  _merge(currents, updates) {
+    if (currents.length) {
+      updates.forEach(function(update) {
+        var same = currents.find(function(current) {
+          return current.guid === update.guid;
+        });
+         
+        same ? Object.assign(same, update) : currents.push(update);
+      });
+    } else {
+      currents = updates;
+    }
+    return currents;
+  }
 }
