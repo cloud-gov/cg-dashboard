@@ -36,5 +36,10 @@ var appActionTypes = keymirror({
   APP_RECEIVED: null
 });
 
+var userActionTypes = keymirror({
+  SPACE_USERS_FETCH: null,
+  SPACE_USERS_RECEIVED: null
+});
+
 export { appActionTypes, errorActionTypes, loginActionTypes, orgActionTypes,
-  spaceActionTypes, serviceActionTypes};
+  spaceActionTypes, serviceActionTypes, userActionTypes };
