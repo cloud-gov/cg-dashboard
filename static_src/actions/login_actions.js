@@ -1,4 +1,9 @@
 
+/*
+ * Actions for login information such as login status. Actions for getting and
+ * modifying login information should go here. 
+ */
+
 import AppDispatcher from '../dispatcher.js';
 import cfApi from '../util/cf_api.js';
 import { loginActionTypes } from '../constants';

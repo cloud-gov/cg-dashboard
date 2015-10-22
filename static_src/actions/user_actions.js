@@ -1,4 +1,9 @@
 
+/*
+ * Actions for user entities. Any actions such as fetching, creating, updating,
+ * etc should go here.
+ */
+
 import AppDispatcher from '../dispatcher.js';
 import { userActionTypes } from '../constants';
 

@@ -1,4 +1,9 @@
 
+/*
+ * Actions for space entities. Any actions such as fetching, creating, updating,
+ * etc should go here.
+ */
+
 import AppDispatcher from '../dispatcher.js';
 import cfApi from '../util/cf_api.js';
 import { spaceActionTypes } from '../constants.js';

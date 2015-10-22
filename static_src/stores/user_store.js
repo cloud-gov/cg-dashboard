@@ -1,4 +1,9 @@
 
+/*
+ * Store for user data. Will store and update user data on changes from UI and
+ * server.
+ */
+
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';

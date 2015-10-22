@@ -1,4 +1,8 @@
 
+/*
+ * Includes basic functionality that all stores need.
+ */
+
 import { EventEmitter } from 'events';
 import AppDispatcher from '../dispatcher.js';
 

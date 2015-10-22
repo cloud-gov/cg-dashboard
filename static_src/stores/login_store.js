@@ -1,4 +1,8 @@
 
+/*
+ * Store to hold and update login status.
+ */
+
 import BaseStore from './base_store.js';
 import { loginActionTypes } from '../constants.js';
 

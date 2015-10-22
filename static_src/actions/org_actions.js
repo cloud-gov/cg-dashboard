@@ -1,4 +1,9 @@
 
+/*
+ * Actions for organization entities. Any actions such as fetching, creating,
+ * updating, etc should go here.
+ */
+
 import AppDispatcher from '../dispatcher.js';
 import cfApi from '../util/cf_api.js';
 import { orgActionTypes } from '../constants';
@@ -20,6 +25,8 @@ export default {
   },
 
   fetchAll() {
+    // TODO investigate more why timeout is needed here.
+    // Currently being used to allow different actions to happen at same time.
     setTimeout(() => {
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORGS_FETCH

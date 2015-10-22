@@ -72,6 +72,7 @@ describe('serviceActions', function() {
   });
 
   describe('deletedInstance()', function() {
+    // TODO create test case to simulate failed delete attempt.
     it('should dispatch a instance deleted server event with guid', function() {
       var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
           expectedGuid = 'admxzcg';
