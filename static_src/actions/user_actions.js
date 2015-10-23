@@ -22,10 +22,20 @@ export default {
     });
   },
 
-  receivedUsers(users) {
+  receivedOrgUsers(users, orgGuid) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USERS_RECEIVED,
-      users: users
+      users: users,
+      orgGuid: orgGuid
+    });
+  },
+
+  receivedSpaceUsers(users, spaceGuid) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USERS_RECEIVED,
+      users: users,
+      spaceGuid: spaceGuid
     });
   }
+
 };

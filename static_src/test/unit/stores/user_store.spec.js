@@ -71,7 +71,7 @@ describe('UserStore', function() {
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('shoudl not emit a change if no users was passed in', function() {
+    it('should not emit a change if no users was passed in', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
@@ -104,6 +104,48 @@ describe('UserStore', function() {
           email: 'michale@gsa.gov'
         }
       );
+    });
+
+    it('should add org and/or space guid to user', function() {
+      var user = { guid: 'adzxcv', name: 'Seymor' },
+          expectedGuid = 'a09dsfuva';
+
+      AppDispatcher.handleServerAction({
+        type: userActionTypes.USERS_RECEIVED,
+        users: wrapInRes([user]),
+        orgGuid: expectedGuid
+      });
+
+      let actual = UserStore.get(user.guid);
+
+      expect(actual.orgGuid).toEqual(expectedGuid);
+    });
+  });
+
+  describe('getAllInSpace()', function() {
+    // TODO possibly move this functionality to shared place.
+    it('should find all user that have the space guid passed in', function() {
+      var spaceGuid = 'asdfa';
+      var testUser = { guid: 'adfzxcv', spaceGuid: spaceGuid };
+
+      UserStore._data.push(testUser);
+
+      let actual = UserStore.getAllInSpace(spaceGuid);
+
+      expect(actual[0]).toEqual(testUser);
+    });
+  });
+
+  describe('getAllInOrg()', function() {
+    it('should find all users that have the org guid passed in', function() {
+      var orgGuid = 'asdfa';
+      var testUser = { guid: 'adfzxcv', orgGuid: orgGuid };
+
+      UserStore._data.push(testUser);
+
+      let actual = UserStore.getAllInOrg(orgGuid);
+
+      expect(actual[0]).toEqual(testUser);
     });
   });
 });

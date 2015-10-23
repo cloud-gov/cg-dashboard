@@ -45,13 +45,13 @@ describe('userActions', function() {
     });
   });
 
-  describe('receivedUsers()', function() {
+  describe('receivedOrgUsers()', function() {
     it(`should dispatch a server event of type users fetch with received
         data`, function() {
       var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
           expected = [{ entity: { }, metadata: { guid: 'adf' }}];
       
-      userActions.receivedUsers(expected);
+      userActions.receivedOrgUsers(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];

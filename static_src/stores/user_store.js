@@ -28,6 +28,15 @@ class UserStore extends BaseStore {
 
       case userActionTypes.USERS_RECEIVED:
         var updates = this._formatSplitRes(action.users);
+        updates = updates.map((update) => {
+          if (action.orgGuid) {
+            update.orgGuid = action.orgGuid;
+          }
+          if (action.space) {
+            update.spaceGuid = action.spaceGuid;
+          }
+          return update;
+        });
         if (updates.length) {
           this._data = this._merge(this._data, updates);
           this.emitChange();
@@ -50,6 +59,18 @@ class UserStore extends BaseStore {
 
   getAll() {
     return this._data;
+  }
+
+  getAllInSpace(spaceGuid) {
+    return this._data.filter((user) => {
+      return user.spaceGuid === spaceGuid;
+    });
+  }
+
+  getAllInOrg(orgGuid) {
+    return this._data.filter((user) => {
+      return user.orgGuid === orgGuid;
+    });
   }
 
 };

@@ -115,7 +115,7 @@ export default {
 
   fetchSpaceUsers(spaceGuid) {
     return http.get(APIV + `/spaces/${ spaceGuid }/user_roles`).then((res) => {
-      userActions.receivedUsers(res.data.resources);
+      userActions.receivedSpaceUsers(res.data.resources, spaceGuid);
     }, (err) => {
       errorActions.errorFetch(err);
     });
@@ -123,7 +123,7 @@ export default {
 
   fetchOrgUsers(orgGuid) {
     return http.get(APIV + `/organizations/${ orgGuid }/users`).then((res) => {
-      userActions.receivedUsers(res.data.resources);
+      userActions.receivedOrgUsers(res.data.resources, orgGuid);
     }, (err) => {
       errorActions.errorFetch(err);
     });

@@ -413,7 +413,7 @@ describe('cfApi', function() {
       var expectedGuid = 'adsfkxcmz',
           expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
           stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(userActions, 'receivedUsers');
+          spy = sandbox.spy(userActions, 'receivedSpaceUsers');
 
       let testPromise = createPromise(expected);
 
@@ -456,7 +456,7 @@ describe('cfApi', function() {
       var expectedGuid = 'adsfkxcmz',
           expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
           stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(userActions, 'receivedUsers');
+          spy = sandbox.spy(userActions, 'receivedOrgUsers');
 
       let testPromise = createPromise(expected);
 
