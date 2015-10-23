@@ -115,7 +115,7 @@ export default {
 
   fetchSpaceUsers(spaceGuid) {
     return http.get(APIV + `/spaces/${ spaceGuid }/user_roles`).then((res) => {
-      userActions.receivedSpaceUsers(res.data.resources);
+      userActions.receivedUsers(res.data.resources);
     }, (err) => {
       errorActions.errorFetch(err);
     });
