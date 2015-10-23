@@ -76,7 +76,6 @@ describe('UserStore', function() {
       UserStore._data.push(existingUser);
       expect(UserStore.get(sharedGuid)).toEqual(existingUser);
 
-      console.log('asdlfkja;sd', wrapInRes([newUser]));
       AppDispatcher.handleServerAction({
         type: userActionTypes.SPACE_USERS_RECEIVED,
         users: wrapInRes([newUser])

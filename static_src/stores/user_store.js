@@ -38,8 +38,8 @@ class UserStore extends BaseStore {
   // TODO move all of this to base store, I've found they're all the same.
   get(guid) {
     if (guid) {
-      return this._data.find((app) => {
-        return app.guid === guid;
+      return this._data.find((user) => {
+        return user.guid === guid;
       });
     }
   }
