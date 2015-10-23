@@ -43,12 +43,28 @@ describe('UserStore', function() {
     });
   });
 
+  describe('on org users fetch', function() {
+    it('should fetch org users through the api', function() {
+      var spy = sandbox.spy(cfApi, 'fetchOrgUsers'),
+          expectedGuid = 'axckzvjxcov';
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.ORG_USERS_FETCH,
+        orgGuid: expectedGuid
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+    });
+  });
+
   describe('on space users received', function() {
     it('should emit a change event if data was updated', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
-        type: userActionTypes.SPACE_USERS_RECEIVED,
+        type: userActionTypes.USERS_RECEIVED,
         users: wrapInRes([{ guid: 'adsfa' }])
       });
 
@@ -59,7 +75,7 @@ describe('UserStore', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
-        type: userActionTypes.SPACE_USERS_RECEIVED,
+        type: userActionTypes.USERS_RECEIVED,
         users: []
       });
 
@@ -77,7 +93,7 @@ describe('UserStore', function() {
       expect(UserStore.get(sharedGuid)).toEqual(existingUser);
 
       AppDispatcher.handleServerAction({
-        type: userActionTypes.SPACE_USERS_RECEIVED,
+        type: userActionTypes.USERS_RECEIVED,
         users: wrapInRes([newUser])
       });
 

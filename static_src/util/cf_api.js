@@ -119,5 +119,13 @@ export default {
     }, (err) => {
       errorActions.errorFetch(err);
     });
+  },
+
+  fetchOrgUsers(orgGuid) {
+    return http.get(APIV + `/organizations/${ orgGuid }/users`).then((res) => {
+      userActions.receivedUsers(res.data.resources);
+    }, (err) => {
+      errorActions.errorFetch(err);
+    });
   }
 };

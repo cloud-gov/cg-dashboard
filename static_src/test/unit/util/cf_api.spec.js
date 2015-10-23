@@ -437,6 +437,50 @@ describe('cfApi', function() {
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith(expected);
     });
+  });
 
+  describe('fetchOrgUsers()', function() {
+    it('should call an http get request for users with space guid', function() {
+      var spy = sandbox.spy(http, 'get'),
+          expected = 'adsfpjweqidalkvn';
+
+      cfApi.fetchOrgUsers(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('organizations'));
+      expect(actual).toMatch(new RegExp(expected));
+    });
+
+    it('calls received action with users from response on success', function() {
+      var expectedGuid = 'adsfkxcmz',
+          expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
+          stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(userActions, 'receivedUsers');
+
+      let testPromise = createPromise(expected);
+
+      stub.returns(testPromise);
+
+      cfApi.fetchOrgUsers('adsfas');
+      
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expected.data.resources);
+    });
+
+    it('calls errorActions fetch error on failure', () => {
+      var stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(errorActions, 'errorFetch'),
+          expected = { message: 'error' };
+
+      let testPromise = createPromise(true, expected);
+
+      stub.returns(testPromise);
+
+      let actual = cfApi.fetchOrgUsers();
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expected);
+    });
   });
 });
