@@ -1,6 +1,8 @@
 
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
 
+import './css/main.css';
+
 import {Router} from 'director';
 import React from 'react';
 
