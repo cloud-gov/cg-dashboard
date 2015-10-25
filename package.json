@@ -8,7 +8,7 @@
     "codecov": "cat ./coverage/coverage-final.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "clean": "rm -rf ./static/assets/*",
     "lint": "eslint -c .eslintrc ./static_src",
-    "test": "npm run lint && karma start --single-run --browsers PhantomJS",
+    "test": "npm run lint && karma start --single-run --browsers PhantomJS2",
     "watch-test": "karma start --browsers Chrome",
     "watch": "watch 'npm run build' ./static_src"
   },
@@ -33,8 +33,8 @@
     "karma-chrome-launcher": "^0.2.0",
     "karma-jasmine": "^0.2.2",
     "karma-jasmine-matchers": "^0.1.3",
-    "karma-phantomjs-launcher": "^0.2.1",
     "karma-phantomjs-shim": "^1.0.0",
+    "karma-phantomjs2-launcher": "^0.3.2",
     "karma-sinon": "^1.0.4",
     "karma-sourcemap-loader": "^0.3.5",
     "karma-webpack": "^1.7.0",
