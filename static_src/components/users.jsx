@@ -1,4 +1,9 @@
 
+/**
+ * Renders a users pages that allows to switch between all users in a space
+ * and all users in the org.
+ */
+
 import React from 'react';
 
 import userActions from '../actions/user_actions.js';

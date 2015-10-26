@@ -113,6 +113,11 @@ export default {
     });
   },
 
+  /**
+   * Fetch all users that belong to a certain space.
+   *
+   * @param {Number} spaceGuid - The guid of the space that the users belong to.
+   */
   fetchSpaceUsers(spaceGuid) {
     return http.get(APIV + `/spaces/${ spaceGuid }/user_roles`).then((res) => {
       userActions.receivedSpaceUsers(res.data.resources, spaceGuid);
@@ -121,6 +126,11 @@ export default {
     });
   },
 
+  /**
+   * Fetch all users that belong to a certain space.
+   *
+   * @param {Number} orgGuid - The guid of the org that the users belong to.
+   */
   fetchOrgUsers(orgGuid) {
     return http.get(APIV + `/organizations/${ orgGuid }/users`).then((res) => {
       userActions.receivedOrgUsers(res.data.resources, orgGuid);

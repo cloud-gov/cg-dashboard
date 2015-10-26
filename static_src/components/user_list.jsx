@@ -1,4 +1,8 @@
 
+/**
+ * Renders a list of users.
+ */
+
 import React from 'react';
 import Reactable from 'reactable';
 
