@@ -5,13 +5,13 @@ import AppList from '../components/app_list.jsx';
 import OrgStore from '../stores/org_store.js';
 import ServiceInstanceList from '../components/service_list.jsx';
 import SpaceStore from '../stores/space_store.js';
-import UserList from './user_list.jsx';
+import Users from './users.jsx';
 import Tabnav from './tabnav.jsx';
 
 const PAGES = {
   'apps': AppList,
   'services': ServiceInstanceList,
-  'users': UserList
+  'users': Users
 }
 
 export default class Space extends React.Component {
