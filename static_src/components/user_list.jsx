@@ -2,10 +2,6 @@
 import React from 'react';
 import Reactable from 'reactable';
 
-import userActions from '../actions/user_actions.js';
-import UserStore from '../stores/user_store.js';
-import Tabnav from './tabnav.jsx';
-
 var Table = Reactable.Table,
     unsafe = Reactable.unsafe;
 
