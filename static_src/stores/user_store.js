@@ -61,6 +61,9 @@ class UserStore extends BaseStore {
     return this._data;
   }
 
+  /**
+   * Get all users in a certain space
+   */
   getAllInSpace(spaceGuid) {
     return this._data.filter((user) => {
       return user.spaceGuid === spaceGuid;
