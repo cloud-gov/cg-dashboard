@@ -9,11 +9,17 @@ import Tabnav from './tabnav.jsx';
 var Table = Reactable.Table,
     unsafe = Reactable.unsafe;
 
-function stateSetter(props) {
-  var users = UserStore.getAll();
+const TAB_SPACE_NAME = 'space_users',
+      TAB_ORG_NAME = 'org_users';
+
+function stateSetter(currentState) {
+  var users = [];
+  if (currentState.currentTab === TAB_SPACE_NAME) {
+    users = UserStore.getAllInSpace(currentState.currentSpaceGuid);
+  } else {
+    users = UserStore.getAllInOrg(currentState.currentOrgGuid);
+  }
   return {
-    currentOrgGuid: props.initialOrgGuid,
-    currentSpaceGuid: props.initialSpaceGuid,
     users: users
   }
 }
@@ -22,8 +28,12 @@ export default class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = stateSetter(props);
-    this.state.currentTab = props.initialCurrentTab;
+    this.state = {
+      currentOrgGuid: props.initialOrgGuid,
+      currentSpaceGuid: props.initialSpaceGuid,
+      currentTab: props.initialCurrentTab,
+      users: []
+    };
   }
 
   componentDidMount() {
@@ -32,18 +42,19 @@ export default class UserList extends React.Component {
   }
 
   _onChange = () => {
-    this.setState(stateSetter(this.props));
+    this.setState(stateSetter(this.state));
   }
 
   _setTab = (tab) => {
     this.setState({
       currentTab: tab
     });
-    if (tab === 'space_users') {
+    if (tab === TAB_SPACE_NAME) {
        userActions.fetchSpaceUsers(this.state.currentSpaceGuid); 
     } else {
        userActions.fetchOrgUsers(this.state.currentOrgGuid); 
     }
+    this.setState(stateSetter(this.state));
   }
 
   handleTabClick = (tab, ev) => {
