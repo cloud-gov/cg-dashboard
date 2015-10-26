@@ -28,18 +28,27 @@ export default class UserList extends React.Component {
 
   componentDidMount() {
     UserStore.addChangeListener(this._onChange);
-    userActions.fetchSpaceUsers(this.state.currentSpaceGuid);
+    this._setTab(this.props.initialCurrentTab);
   }
 
   _onChange = () => {
     this.setState(stateSetter(this.props));
   }
 
-  handleTabClick = (tab, ev) => {
-    ev.preventDefault();
+  _setTab = (tab) => {
     this.setState({
       currentTab: tab
     });
+    if (tab === 'space_users') {
+       userActions.fetchSpaceUsers(this.state.currentSpaceGuid); 
+    } else {
+       userActions.fetchOrgUsers(this.state.currentOrgGuid); 
+    }
+  }
+
+  handleTabClick = (tab, ev) => {
+    ev.preventDefault();
+    this._setTab(tab);
   }
 
   get subNav() {
@@ -78,6 +87,7 @@ export default class UserList extends React.Component {
         columns={ this.columns }
         sortable={ true } className="table" />;
     }
+    console.log('render', this.state);
 
     return (
       <div>
