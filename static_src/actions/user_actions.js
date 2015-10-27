@@ -24,7 +24,7 @@ export default {
 
   receivedOrgUsers(users, orgGuid) {
     AppDispatcher.handleServerAction({
-      type: userActionTypes.USERS_RECEIVED,
+      type: userActionTypes.ORG_USERS_RECEIVED,
       users: users,
       orgGuid: orgGuid
     });
@@ -32,7 +32,7 @@ export default {
 
   receivedSpaceUsers(users, spaceGuid) {
     AppDispatcher.handleServerAction({
-      type: userActionTypes.USERS_RECEIVED,
+      type: userActionTypes.SPACE_USERS_RECEIVED,
       users: users,
       spaceGuid: spaceGuid
     });

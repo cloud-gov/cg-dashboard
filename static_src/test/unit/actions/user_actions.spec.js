@@ -18,7 +18,7 @@ describe('userActions', function() {
   });
 
   describe('fetchOrgUsers()', function() {
-    it('should dispatch a viwe event of type org users fetch', function() {
+    it('should dispatch a view event of type org users fetch', function() {
       var spy = sandbox.spy(AppDispatcher, 'handleViewAction'),
           expectedOrgGuid = 'asdflkjz';
 
@@ -46,7 +46,7 @@ describe('userActions', function() {
   });
 
   describe('receivedOrgUsers()', function() {
-    it(`should dispatch a server event of type users fetch with received
+    it(`should dispatch a server event of type org users received with received
         data`, function() {
       var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
           expected = [{ entity: { }, metadata: { guid: 'adf' }}];
@@ -55,7 +55,22 @@ describe('userActions', function() {
 
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(userActionTypes.USERS_RECEIVED);
+      expect(arg.type).toEqual(userActionTypes.ORG_USERS_RECEIVED);
+      expect(arg.users).toEqual(expected);
+    });
+  });
+
+  describe('receivedSpaceUsers()', function() {
+    it(`should dispatch a server event of type space users received with received
+        data`, function() {
+      var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
+          expected = [{ entity: { }, metadata: { guid: 'adf' }}];
+      
+      userActions.receivedSpaceUsers(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(userActionTypes.SPACE_USERS_RECEIVED);
       expect(arg.users).toEqual(expected);
     });
   });

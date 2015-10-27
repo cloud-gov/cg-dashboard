@@ -59,12 +59,12 @@ describe('UserStore', function() {
     });
   });
 
-  describe('on space users received', function() {
+  describe('on space or org users received', function() {
     it('should emit a change event if data was updated', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
-        type: userActionTypes.USERS_RECEIVED,
+        type: userActionTypes.SPACE_USERS_RECEIVED,
         users: wrapInRes([{ guid: 'adsfa' }])
       });
 
@@ -75,7 +75,7 @@ describe('UserStore', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
-        type: userActionTypes.USERS_RECEIVED,
+        type: userActionTypes.ORG_USERS_RECEIVED,
         users: []
       });
 
@@ -93,7 +93,7 @@ describe('UserStore', function() {
       expect(UserStore.get(sharedGuid)).toEqual(existingUser);
 
       AppDispatcher.handleServerAction({
-        type: userActionTypes.USERS_RECEIVED,
+        type: userActionTypes.SPACE_USERS_RECEIVED,
         users: wrapInRes([newUser])
       });
 
@@ -111,7 +111,7 @@ describe('UserStore', function() {
           expectedGuid = 'a09dsfuva';
 
       AppDispatcher.handleServerAction({
-        type: userActionTypes.USERS_RECEIVED,
+        type: userActionTypes.SPACE_USERS_RECEIVED,
         users: wrapInRes([user]),
         orgGuid: expectedGuid
       });
