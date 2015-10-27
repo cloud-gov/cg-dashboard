@@ -32,7 +32,7 @@ class UserStore extends BaseStore {
           if (action.orgGuid) {
             update.orgGuid = action.orgGuid;
           }
-          if (action.space) {
+          if (action.spaceGuid) {
             update.spaceGuid = action.spaceGuid;
           }
           return update;
