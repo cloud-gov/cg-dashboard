@@ -6,6 +6,8 @@ before_install:
 - npm install
 - npm run build
 - pip install --user ruamel.yaml
+before_script:
+- PHANTOMJS_BIN=./node_modules/phantomjs2/bin/phantomjs
 script:
 - npm test
 - "./codecheck.sh -u"
