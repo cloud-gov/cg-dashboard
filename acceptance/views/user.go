@@ -11,8 +11,8 @@ import (
 
 type User struct {
 	testEnvVars AcceptanceTestEnvVars
-	username string
-	password string
+	username    string
+	password    string
 }
 
 func StartUserSessionWith(testEnvVars AcceptanceTestEnvVars) User {
@@ -23,7 +23,7 @@ func StartUserSessionWith(testEnvVars AcceptanceTestEnvVars) User {
 
 func (u User) LoginTo(page *agouti.Page) {
 	Expect(page.Navigate(u.testEnvVars.Hostname)).To(Succeed())
-	Expect(page.Find("#login-btn").Click()).To(Succeed())
+	Expect(page.Find(".test-login").Click()).To(Succeed())
 	Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login"))
 	Expect(page.FindByName("username").Fill(u.username)).To(Succeed())
 	Expect(page.FindByName("password").Fill(u.password)).To(Succeed())

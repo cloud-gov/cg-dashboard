@@ -35,10 +35,10 @@ var _ = Describe("UserLogin", func() {
 		user = StartUserSessionWith(testEnvVars)
 	})
 
-	It("should redirect users to login page if accessing privileged dashboard page without first logining in.", func() {
+	It("should show the login form if accessing privileged dashboard page without first logining in.", func() {
 		By("redirecting the user to the login form", func() {
 			Expect(page.Navigate(testEnvVars.Hostname + "/#/dashboard")).To(Succeed())
-			Expect(page).To(HaveURL(testEnvVars.Hostname + "/#/"))
+			Expect(page.Find(".test-login")).Should(BeVisible())
 		})
 
 	})
