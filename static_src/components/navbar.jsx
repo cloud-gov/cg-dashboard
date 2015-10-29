@@ -47,7 +47,8 @@ export default class Navbar extends React.Component {
     return (
       <ul className="nav nav-sidebar">
         <li>
-          <Dropdown title='Change Organization' items={ orgEls } />
+          <Dropdown title='Change Organization' classes={ ['test-nav-orgs'] }
+            items={ orgEls } />
         </li>
         { navigation }
       </ul>
@@ -74,7 +75,7 @@ export default class Navbar extends React.Component {
     let navigation = (
       <li>
       <Dropdown title={ org.name.toUpperCase() || '' } 
-      items={ navEls } />
+        classes={ ['test-nav-org'] } items={ navEls } />
       </li>
     );
 

@@ -13,13 +13,13 @@ type OrgMenu struct {
 }
 
 func (m OrgMenu) ClickMarketplaceLink() Marketplace {
-	Expect(m.page.Find("#org-dropdown-menu")).To(BeVisible())
-	Eventually(Expect(m.page.Find("#org-marketplace").Click()).To(Succeed()))
+	Expect(m.page.First(".test-nav-org")).To(BeVisible())
+	Eventually(Expect(m.page.FindByLink("Marketplace").Click()).To(Succeed()))
 	return Marketplace{m.page}
 }
 
 func (m OrgMenu) ClickSpacesLink() Spaces {
-	Expect(m.page.Find("#org-dropdown-menu")).To(BeVisible())
-	Eventually(Expect(m.page.Find("#org-spaces").Click()).To(Succeed()))
+	Expect(m.page.First(".test-nav-org")).To(BeVisible())
+	Eventually(Expect(m.page.FindByLink("Spaces").Click()).To(Succeed()))
 	return Spaces{m.page}
 }

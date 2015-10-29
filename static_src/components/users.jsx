@@ -87,7 +87,9 @@ export default class Users extends React.Component {
   render() {
     return (
       <div>
-        <Tabnav items={ this.subNav } initialItem={ this.state.currentTab } />
+      <Tabnav items={ this.subNav } 
+        classes={ ['test-subnav-users'] }
+        initialItem={ this.state.currentTab } />
         <div className="tab-content">
           <div role="tabpanel" className="tab-pane active">
             <UserList initialUsers={ this.state.users } />
