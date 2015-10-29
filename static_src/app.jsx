@@ -63,5 +63,3 @@ export default class App extends React.Component {
   }
 };
 
-App.propTypes = { content: React.PropTypes.element };
-

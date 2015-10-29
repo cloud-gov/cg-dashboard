@@ -15,8 +15,11 @@ export default class Tabnav extends React.Component {
   }
 
   render() {
+    var defaultClasses = ['nav', 'nav-tabs', 'nav-justified'];
+    var classes = classNames(defaultClasses, this.props.classes);
+
     return (
-    <ul className="nav nav-tabs nav-justified">
+    <ul className={ classes }>
       { this.props.items.map((item) => {
         if (item.name === this.state.current) {
           return <li className="active">{ item.element }</li>;
@@ -31,5 +34,6 @@ export default class Tabnav extends React.Component {
 
 Tabnav.propTypes = {
   initialItem: React.PropTypes.string.isRequired,
-  items: React.PropTypes.any
+  items: React.PropTypes.any,
+  classes: React.PropTypes.array
 };

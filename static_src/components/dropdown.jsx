@@ -16,7 +16,7 @@ export default class Dropdown extends React.Component {
 
   render() {
     var id = 'dropdown-' + this.props.title,
-        classes = classNames('dropdown', {
+        classes = classNames('dropdown', this.props.classes, {
           'open': !!this.state.open
         });
 
@@ -44,6 +44,7 @@ export default class Dropdown extends React.Component {
 
 Dropdown.propTypes = { 
   title: React.PropTypes.string.isRequired,
-  items: React.PropTypes.any
+  items: React.PropTypes.any,
+  classes: React.PropTypes.array
 };
 

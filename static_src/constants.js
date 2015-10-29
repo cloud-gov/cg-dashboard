@@ -53,9 +53,13 @@ var appActionTypes = keymirror({
 });
 
 var userActionTypes = keymirror({
-  // Action to fetch a single user from the server.
+  // Action to fetch users belonging to a organization from the server.
+  ORG_USERS_FETCH: null,
+  // Action to fetch users belonging to a space from the server.
   SPACE_USERS_FETCH: null,
-  // Action when a user was received from the server.
+  // Action when all organization users were received from the server.
+  ORG_USERS_RECEIVED: null,
+  // Action when all space users were received from the server.
   SPACE_USERS_RECEIVED: null
 });
 

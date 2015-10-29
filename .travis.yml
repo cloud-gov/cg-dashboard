@@ -13,6 +13,7 @@ script:
 - npm test
 - "./codecheck.sh -u"
 - go test ./...
+- cd acceptance && go test -tags acceptance && cd ..
 branches:
   only:
   - master

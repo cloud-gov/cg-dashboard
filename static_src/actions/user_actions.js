@@ -8,6 +8,13 @@ import AppDispatcher from '../dispatcher.js';
 import { userActionTypes } from '../constants';
 
 export default {
+  fetchOrgUsers(orgGuid) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.ORG_USERS_FETCH,
+      orgGuid: orgGuid
+    });
+  },
+
   fetchSpaceUsers(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.SPACE_USERS_FETCH,
@@ -15,10 +22,20 @@ export default {
     });
   },
 
-  receivedSpaceUsers(users) {
+  receivedOrgUsers(users, orgGuid) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.ORG_USERS_RECEIVED,
+      users: users,
+      orgGuid: orgGuid
+    });
+  },
+
+  receivedSpaceUsers(users, spaceGuid) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.SPACE_USERS_RECEIVED,
-      users: users
+      users: users,
+      spaceGuid: spaceGuid
     });
   }
+
 };
