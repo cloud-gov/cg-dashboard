@@ -137,5 +137,14 @@ export default {
     }, (err) => {
       errorActions.errorFetch(err);
     });
+  },
+
+  deleteUser(userGuid, orgGuid) {
+    return http.delete(APIV + `/organizations/${ orgGuid }/users/${ userGuid }/`)
+        .then((res) => {
+      userActions.deletedUser(userGuid, orgGuid);
+    }, (err) => {
+      // TODO create correct error action.
+    });
   }
 };

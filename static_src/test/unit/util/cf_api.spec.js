@@ -483,4 +483,36 @@ describe('cfApi', function() {
       expect(spy).toHaveBeenCalledWith(expected);
     });
   });
+
+  describe('deleteUser()', function() {
+    it('should call a http delete request on the org and user', function() {
+      var spy = sandbox.spy(http, 'delete'),
+          expectedUserGuid = 'zvmxncznv-9u8qwphu',
+          expectedOrgGuid = '0291kdvakjbdfvhp';
+
+      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expectedUserGuid));
+      expect(actual).toMatch(new RegExp(expectedOrgGuid));
+    });
+
+    it('should call org deleted action with guid', function() {
+      var stub = sandbox.stub(http, 'delete'),
+          spy = sandbox.spy(userActions, 'deletedUser'),
+          expectedUserGuid = 'aldfskjmcx',
+          expectedOrgGuid = 'sa09dvjakdnva';
+
+      let testPromise = createPromise({status: true});
+      stub.returns(testPromise);
+
+      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(expectedUserGuid);
+      expect(args[1]).toEqual(expectedOrgGuid);
+    });
+  });
 });
