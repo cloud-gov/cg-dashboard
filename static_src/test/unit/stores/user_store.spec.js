@@ -5,6 +5,7 @@ import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import UserStore from '../../../stores/user_store.js';
+import userActions from '../../../actions/user_actions.js';
 import { userActionTypes } from '../../../constants';
 
 describe('UserStore', function() {
@@ -119,6 +120,76 @@ describe('UserStore', function() {
       let actual = UserStore.get(user.guid);
 
       expect(actual.orgGuid).toEqual(expectedGuid);
+    });
+  });
+
+  describe('on user delete', function() {
+    it('should remove user categories from org', function() {
+      var spy = sandbox.spy(cfApi, 'deleteOrgUserCategory'),
+          expectedUserGuid = '19p83fhasjkdhf',
+          expectedOrgGuid = 'zxncmvduhvad',
+          expectedCategory = 'users';
+
+      userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(expectedUserGuid);
+      expect(args[1]).toEqual(expectedOrgGuid);
+      expect(args[2]).toEqual(expectedCategory);
+    });
+    
+    it('should delete the user on the server', function() {
+      var spy = sandbox.spy(cfApi, 'deleteUser'),
+          stub = sandbox.stub(cfApi, 'deleteOrgUserCategory'),
+          expectedUserGuid = 'znxvmnzvmz',
+          expectedOrgGuid = '029fjaskdjfalskdna';
+
+      let testPromise = {
+        then: function(cb) {
+          cb();
+        }
+      }
+
+      stub.returns(testPromise);
+
+      userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(expectedUserGuid);
+      expect(args[1]).toEqual(expectedOrgGuid);
+    });
+  });
+
+  describe('on user deleted', function() {
+    it('should remove the user of the guid from the data', function() {
+      var expectedUserGuid = 'zxkvnakjdva',
+          expectedUser = { guid: expectedUserGuid };
+
+      UserStore._data.push(expectedUser);
+
+      userActions.deletedUser(expectedUserGuid, 'alkdfj');
+
+      expect(UserStore.get(expectedUserGuid)).toBeFalsy();
+    });
+
+    it('should emit a change event if it deletes something', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange'),
+          testUserGuid = 'qpweoiralkfdsj';
+
+      UserStore._data.push({guid: testUserGuid});
+      userActions.deletedUser(testUserGuid, 'adlsvjkadfa');
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should not emit a change event if nothing deleted', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange');
+
+      userActions.deletedUser('asdfljk', 'adlsvjkadfa');
+
+      expect(spy).not.toHaveBeenCalledOnce();
     });
   });
 

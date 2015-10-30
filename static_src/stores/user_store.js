@@ -44,6 +44,28 @@ class UserStore extends BaseStore {
         }
         break;
 
+      case userActionTypes.USER_DELETE:
+        var orgCategoryReq = cfApi.deleteOrgUserCategory(
+          action.userGuid,
+          action.orgGuid,
+          'users');
+
+        orgCategoryReq.then((res) => {
+          cfApi.deleteUser(action.userGuid, action.orgGuid);
+        });
+
+        break;
+
+      case userActionTypes.USER_DELETED:
+        var deleted = this.get(action.userGuid);
+        if (deleted) {
+          var index = this._data.indexOf(deleted);
+          this._data.splice(index, 1);
+          this.emitChange();
+        }
+        break;
+
+
       default:
         break;
     }
