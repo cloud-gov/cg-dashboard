@@ -515,4 +515,25 @@ describe('cfApi', function() {
       expect(args[1]).toEqual(expectedOrgGuid);
     });
   });
+
+  describe('deleteOrgUserCategory()', function() {
+    it('should call a http delete request on the org user with category ',
+        function() {
+      var spy = sandbox.spy(http, 'delete'),
+          expectedUserGuid = 'zvmxncznv-9u8qwphu',
+          expectedOrgGuid = '0291kdvakjbdfvhp',
+          expectedCategory = 'some_role';
+
+      cfApi.deleteOrgUserCategory(
+        expectedUserGuid,
+        expectedOrgGuid,
+        expectedCategory);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expectedUserGuid));
+      expect(actual).toMatch(new RegExp(expectedOrgGuid));
+      expect(actual).toMatch(new RegExp(expectedCategory));
+    });
+  });
 });

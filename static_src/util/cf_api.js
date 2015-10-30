@@ -146,5 +146,12 @@ export default {
     }, (err) => {
       // TODO create correct error action.
     });
+  },
+
+  deleteOrgUserCategory(userGuid, orgGuid, category) {
+    return http.delete(APIV + `/organizations/${ orgGuid }/${ category }/
+        ${ userGuid }`).catch((err) => {
+      // TODO create correct error action.
+    });
   }
 };
