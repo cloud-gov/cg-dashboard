@@ -22,19 +22,59 @@ export default class UserList extends React.Component {
     this.setState({users: nextProps.initialUsers});
   }
 
+  handleDelete = (userGuid, ev) => {
+    this.props.onRemove(userGuid, ev);
+  }
+
   get columns() {
-    return [
+    var columns = [
       { label: 'Name', key: 'username' },
       { label: 'Date Created', key: 'created_at' }
     ];
+
+    if (this.props.onRemove) {
+      columns.push({ label: 'Actions', key: 'actions' });
+    }
+
+    return columns;
   }
 
   render() {
     var content = <h4 className="test-none_message">No users</h4>;
     if (this.state.users.length) {
-      content = <Table data={ this.state.users } 
-        columns={ this.columns }
-        sortable={ true } className="table" />;
+      content = (
+      <Table sortable={ true } className="table">
+        <Thead>
+          { this.columns.map((column) => {
+            return (
+              <Th column={ column.label } className={ column.key }>
+                { column.label }</Th>
+            )
+          })}
+        </Thead>
+        { this.state.users.map((user) => {
+          var actions;
+          if (this.props.onRemove) {
+            actions = (
+              <Td column="Actions">
+                <Button 
+                onClickHandler={ this._handleDelete.bind(this, user.guid) } 
+                label="delete">
+                  <span>Remove User From Org</span>
+                </Button>
+              </Td>
+            );
+          } 
+          return (
+            <Tr key={ user.guid }>
+              <Td column="Name"><span>{ user.name }</span></Td>
+              <Td column="Date Created">{ user.created_at }</Td>
+              { actions }
+            </Tr>
+          )
+        })}
+      </Table>
+      );
     }
 
     return (
@@ -47,7 +87,8 @@ export default class UserList extends React.Component {
 };
 
 UserList.propTypes = {
-  initialUsers: React.PropTypes.array
+  initialUsers: React.PropTypes.array,
+  onRemove: React.PropTypes.function
 };
 
 UserList.defaultProps = {
