@@ -90,4 +90,11 @@ while getopts ":u" opt; do
   esac
 done
 
+echo
+echo
+echo '---------------------------------------------------------'
+echo 'Doing acceptance tests'
+echo '---------------------------------------------------------'
+cd acceptance; go test -tags acceptance; cd ..
+
 exit $scriptreturn

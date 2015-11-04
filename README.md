@@ -1,12 +1,12 @@
 # 18F Cloud Foundry Deck
 
-[![Build Status](https://travis-ci.org/18F/cf-deck.svg?branch=master)](https://travis-ci.org/18F/cf-deck)
+[![Build Status](https://travis-ci.org/18F/cg-deck.svg?branch=master)](https://travis-ci.org/18F/cg-deck)
 
 
 ## Tech Stack
-- `Go` (v1.5 required) for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cf-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cf-deck?branch=master)
+- `Go` (v1.5 required) for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
 
-- `AngularJS` for the frontend. [![JS Code Coverage Status](http://codecov.io/github/18F/cf-deck/coverage.svg?branch=master)](http://codecov.io/github/18F/cf-deck?branch=master)
+- `AngularJS` for the frontend. [![JS Code Coverage Status](http://codecov.io/github/18F/cg-deck/coverage.svg?branch=master)](http://codecov.io/github/18F/cg-deck?branch=master)
 
 
 ## Setup
@@ -81,7 +81,7 @@ All the acceptance tests are in the 'acceptance' folder.
 - `CONSOLE_TEST_ORG_NAME`: The test organization the user should be navigating to.
 - `CONSOLE_TEST_SPACE_NAME`: The test space the user should be navigating to.
 - `CONSOLE_TEST_APP_NAME`: The test app the user should be navigating to.
-- `CONSOLE_TEST_HOST`: The host that the app can create a mock route for. 
+- `CONSOLE_TEST_HOST`: The host that the app can create a mock route for.
 - `CONSOLE_TEST_DOMAIN`: The domain for the mock route.
 
 #### Running acceptance tests
@@ -108,6 +108,6 @@ From [Wikipedia](https://en.wikipedia.org/wiki/Sprawl_trilogy#Glossary):
 
 The Sprawl trilogy (also known as the Neuromancer, Cyberspace, or Matrix trilogy) is William Gibson's first set of novels, composed of Neuromancer (1984), Count Zero (1986), and Mona Lisa Overdrive (1988).
 
-**Cyberspace Deck** 
+**Cyberspace Deck**
 
 Also called a "deck" for short, it is used to access the virtual representation of the matrix. The deck is connected to a tiara-like device that operates by using electrodes to stimulate the user's brain while drowning out other external stimulation. As Case describes them, decks are basically simplified simstim units.
