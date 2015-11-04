@@ -98,6 +98,13 @@
 
     app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $uaa, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
+        if (!MenuData.data.orgManager) {
+            // Check if we really have access. If not, go back up one.
+            var arr = window.location.href.split("/");
+            delete arr[arr.length - 1];
+            window.location.assign(arr.join("/"));
+            window.location.reload();
+        }
         $scope.orgActiveTab = 'orgUsers';
         // Make the current org users tab the default active tab
         $scope.activeTab = 'current_org_users';
@@ -149,6 +156,7 @@
         // Show a specific tab
         $scope.showTab = function(tab) {
             $scope.removeOrgUserError = null;
+             $scope.inviteOrgUserError = null;
             $scope.activeTab = tab;
             if (tab == 'current_org_users') {
                 $scope.org_users = [];
