@@ -188,43 +188,21 @@
 
         // Get org users
         this.getOrgUsers = function(orgGuid, resources, loadComplete) {
-            return httpPager('/v2/organizations/' + orgGuid + '/users', resources, loadComplete)
+            return httpPager('/v2/organizations/' + orgGuid + '/user_roles', resources, loadComplete)
         };
 
-        // Generic function to get different org user categories
-        this.getOrgUserCategory = function(orgGuid, userGuid, category, queryString) {
-            return $http.get('/v2/organizations/' + orgGuid + '/' + category + '?' + queryString + '=' + userGuid)
-                .then(function(response) {
-                    return response.data.resources;
-                });
-        };
-
-        // Generic function to add different org user categories
-        this.addOrgUserCategory = function(orgGuid, userGuid, category) {
-            return $http.put('/v2/organizations/' + orgGuid + '/' + category + '/' + userGuid)
-                .then(function(response) {
-                    return response.data.resources;
-                });
-        };
-
-        // Generic function to delete different org user categories
-        this.deleteOrgUserCategory = function(orgGuid, userGuid, category) {
-            return $http.delete('/v2/organizations/' + orgGuid + '/' + category + '/' + userGuid)
-                .then(function(response) {
-                    return response.data.resources;
-                });
-        };
-
-        // Generic function to set different org user categories.
-        // Will add the category if 'adding' is true, otherwise, will delete.
-        this.setOrgUserCategory = function(orgGuid, userGuid, category, adding) {
-            if (adding) {
-                return this.addOrgUserCategory(orgGuid, userGuid, category);
+	// Toggle user permissions
+        this.toggleOrgUserPermissions = function(user, permissions, orgGuid) {
+            var returnResponse = function(response) {
+                return response;
+            };
+            var url = '/v2/organizations/' + orgGuid + '/' + permissions + '/' + user.metadata.guid;
+            if (user[permissions]) {
+                return $http.put(url).then(returnResponse).catch(returnResponse);
             } else {
-                return this.deleteOrgUserCategory(orgGuid, userGuid, category);
+                return $http.delete(url).then(returnResponse).catch(returnResponse);
             }
         };
-
 
         // Get space details
         this.getSpaceDetails = function(spaceGuid) {

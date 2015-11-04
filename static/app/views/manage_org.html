@@ -1,11 +1,8 @@
-<div class="page-header">
-    <h3 class="text-center">{{activeOrg | orgNameFilter}} Management</h3>
-</div>
-
-<div>
-
+<ng-include src="'app/views/partials/org_tabs.html'"></ng-include>
+<div class='text-center' ng-hide="loadComplete.status">Loading...</div>
+<div ng-show="loadComplete.status">
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs nav-justified" role="tablist">
+    <ul class="nav nav-justified nav-pills" role="tablist">
         <li role="presentation" class="active"><a aria-controls="current_org_users" role="tab" data-toggle="tab" ng-click="showTab('current_org_users')">Organization Users</a>
         </li>
         <li role="presentation"><a aria-controls="add_org_user" role="tab" data-toggle="tab" ng-click="showTab('add_org_user')">Add User to Organization</a>
@@ -23,4 +20,3 @@
         </div>
     </div>
 </div>
-<div class='text-center' ng-hide="loadComplete.status">Loading...</div>

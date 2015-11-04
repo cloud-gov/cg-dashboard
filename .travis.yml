@@ -9,7 +9,6 @@ script:
 - "./codecheck.sh -u"
 - npm test
 - go test ./...
-- cd acceptance && go test -tags acceptance && cd ..
 branches:
   only:
   - master
