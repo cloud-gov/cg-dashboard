@@ -95,6 +95,8 @@ echo
 echo '---------------------------------------------------------'
 echo 'Doing acceptance tests'
 echo '---------------------------------------------------------'
-cd acceptance; go test -tags acceptance; cd ..
+cd acceptance
+go test -tags acceptance || true
+cd ..
 
 exit $scriptreturn
