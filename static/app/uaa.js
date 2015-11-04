@@ -80,8 +80,14 @@
                     "userName": user.userName
                 })
                 .then(function(response) {
-                    user.id = response.data.resources[0].id;
+                    if (!response.data.resources[0]) {
+                        user.error = "Can not find username: " + user.userName + ". Please ensure that user has an account";
+                    } else {
+                        user.id = response.data.resources[0].id;
+                    }
                     return user;
+		}).catch(function(error) {
+                    return error.data.description;
                 });
         };
     });

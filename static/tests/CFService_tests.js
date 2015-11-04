@@ -270,7 +270,7 @@ describe('CloudFoundry Service Tests', function() {
             var loadComplete = {
                 status: false
             };
-            httpBackend.whenGET('/v2/organizations/' + orgGuid + '/users').respond({
+            httpBackend.whenGET('/v2/organizations/' + orgGuid + '/user_roles').respond({
                 resources: [{
                     name: 'user1'
                 }]
@@ -284,53 +284,28 @@ describe('CloudFoundry Service Tests', function() {
         });
     });
 
-    describe('getOrgUserCategory', function() {
-
-        it('should return if the current user has the given org category role', function() {
+    describe('toggleOrgUserPermissions', function() {
+        it('should convert data to a request to delete or put a user in a org', function() {
             var user = {
                 metadata: {
                     guid: 'userguid'
                 },
+                auditors: true,
             };
             var permissions = 'auditors';
             var orgGuid = 'orgguid';
-            var queryString = 'auditor_guid';
-            httpBackend.whenGET('/v2/organizations/' + orgGuid + '/' + permissions + '?' + queryString + '=' + user.metadata.guid).respond({
-                resources: {
-                    action: 'get'
-                }
-            });
-            $cloudfoundry.getOrgUserCategory(orgGuid, user.metadata.guid, permissions, queryString).then(function(data) {
-                expect(data.action).toEqual('get');
-            });
-            httpBackend.flush();
-        });
-    });
-
-    describe('setOrgUserCategory', function() {
-        it('should convert data to a request to delete or put a user in an org', function() {
-            var user = {
-                metadata: {
-                    guid: 'userguid'
-                },
-            };
-            var permissions = 'auditors';
-            var orgGuid = 'orgguid';
-            httpBackend.whenPUT('/v2/organizations/' + orgGuid + '/' + permissions + '/userguid').respond({
-                resources: {
-                    action: 'put'
-                }
+            httpBackend.whenPUT('/v2/organizations/orgguid/auditors/userguid').respond({
+                action: 'put'
             })
-            httpBackend.whenDELETE('/v2/organizations/' + orgGuid + '/' + permissions + '/userguid').respond({
-                resources: {
-                    action: 'delete'
-                }
+            httpBackend.whenDELETE('/v2/organizations/orgguid/auditors/userguid').respond({
+                action: 'delete'
             })
-            $cloudfoundry.setOrgUserCategory(orgGuid, user.metadata.guid, permissions, true).then(function(respond) {
-                expect(respond.action).toEqual('put');
+            $cloudfoundry.toggleOrgUserPermissions(user, permissions, orgGuid).then(function(respond) {
+                expect(respond.data.action).toEqual('put');
             });
-            $cloudfoundry.setOrgUserCategory(orgGuid, user.metadata.guid, permissions, false).then(function(respond) {
-                expect(respond.action).toEqual('delete');
+            user.auditors = false;
+            $cloudfoundry.toggleOrgUserPermissions(user, permissions, orgGuid).then(function(respond) {
+                expect(respond.data.action).toEqual('delete');
             });
             httpBackend.flush();
         });

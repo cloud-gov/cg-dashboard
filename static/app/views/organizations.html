@@ -1,4 +1,5 @@
 <div ng-switch="activeOrg">
+  <ng-include src="'app/views/partials/org_tabs.html'"></ng-include>
 
     <div ng-switch-when="404">
         <div class="page-header">
@@ -12,9 +13,6 @@
 
     <div ng-switch-default>
 
-        <div class="page-header">
-            <h3 class="text-center">{{activeOrg | orgNameFilter}}  Spaces</h3>
-        </div>
         <div ng-show="spaces.length > 0">
             <form>
                 <div class="form-group">

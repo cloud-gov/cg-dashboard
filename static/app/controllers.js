@@ -92,38 +92,13 @@
     });
 
     app.controller('OrgCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
+        $scope.orgActiveTab = 'spaces';
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
     });
 
     app.controller('OrgManagementCtrl', function($scope, $cloudfoundry, $uaa, $routeParams, MenuData) {
         loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
-        $scope.addUserToOrg = function(user) {
-            user.id = undefined;
-            return $uaa.getUserGuidFromUserName(user)
-                .then(function(user) {
-                    $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], user.id, 'users', true)
-                        .then(function() {
-                            $scope.showTab('current_org_users');
-                        });
-                }).catch(function(error) {
-                    console.log('Unable to add the user');
-                });
-        };
-        $scope.removeUserFromOrg = function(userGuid) {
-            // TODO: remove all roles before removing from org so that if the user is re-added, the user will have no roles.
-            return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], userGuid, 'users', false)
-                .then(function() {
-                    $scope.showTab('current_org_users')
-                })
-        };
-        // Show a specific tab
-        $scope.showTab = function(tab) {
-            $scope.activeTab = tab;
-            if (tab == 'current_org_users') {
-                $scope.org_users = [];
-                $cloudfoundry.getOrgUsers($routeParams['orgguid'], $scope.org_users, $scope.loadComplete);
-            }
-        };
+        $scope.orgActiveTab = 'orgUsers';
         // Make the current org users tab the default active tab
         $scope.activeTab = 'current_org_users';
         // Get all the users associated with an org
@@ -131,97 +106,96 @@
         $scope.loadComplete = {
             status: false
         };
+
+	$scope.addUserToOrg = function(user) {
+            user.id = undefined;
+            user.error = undefined;
+            return $uaa.getUserGuidFromUserName(user)
+                .then(function(user) {
+                    if (!user.error) {
+                        user.metadata = {guid: user.id};
+                        user.users = true; // want it to become true.
+                        $cloudfoundry.toggleOrgUserPermissions(user, "users", $routeParams['orgguid'])
+                            .then(function() {
+                                $scope.showTab('current_org_users');
+                            });
+                    } else {
+                        $scope.inviteOrgUserError = user.error;
+                    }
+                }).catch(function(error) {
+                    $scope.inviteOrgUserError = error;
+                });
+        };
+        $scope.removeUserFromOrg = function(user) {
+            user.users = false; // want it to be false aka removed.
+            user.managers = user.entity.organization_roles.indexOf('org_manager') >= 0;
+            user.auditors = user.entity.organization_roles.indexOf('org_auditor') >= 0;
+            user.billing_managers = user.entity.organization_roles.indexOf('billing_manager') >= 0;
+            $scope.removeOrgUserError = null;
+            if (user.managers || user.auditors || user.billing_managers) {
+                $scope.removeOrgUserError = "Please remove all other organization roles for the user before attempting to remove the user from the organization";
+                return;
+            }
+            // TODO: remove all roles before removing from org so that if the user is re-added, the user will have no roles.
+            return $cloudfoundry.toggleOrgUserPermissions(user, "users",$routeParams['orgguid'])
+                .then(function(response) {
+                    if (response.status !== 201) {
+                        $scope.removeOrgUserError = response.data.description;
+                    } else {
+                        $scope.showTab('current_org_users')
+                    }
+                })
+        };
+        // Show a specific tab
+        $scope.showTab = function(tab) {
+            $scope.removeOrgUserError = null;
+            $scope.activeTab = tab;
+            if (tab == 'current_org_users') {
+                $scope.org_users = [];
+                $scope.unsetActiveUser();
+                $cloudfoundry.getOrgUsers($routeParams['orgguid'], $scope.org_users, $scope.loadComplete);
+            }
+        };
+
+        $scope.unsetActiveUser = function() {
+            $scope.activeUser = null;
+            $scope.disableSwitches = null;
+            $scope.orgUserError = null;
+        };
+        $scope.setActiveUser = function(user) {
+            $scope.disableSwitches = true;
+            var activeUser = $scope.org_users.filter(function(orguser) {
+                return orguser.metadata.guid === user.metadata.guid
+            });
+            if (activeUser.length === 1) {
+                activeUser = activeUser[0]
+                $scope.activeUser = activeUser;
+                $scope.activeUser.managers = activeUser.entity.organization_roles.indexOf('org_manager') >= 0;
+                $scope.activeUser.auditors = activeUser.entity.organization_roles.indexOf('org_auditor') >= 0;
+                $scope.activeUser.billing_managers = activeUser.entity.organization_roles.indexOf('billing_manager') >= 0;
+            } else {
+                $scope.activeUser = user;
+                $scope.activeUser.managers = false;
+                $scope.activeUser.auditors = false;
+                $scope.activeUser.billing_managers = false;
+            }
+            $scope.disableSwitches = false;
+        };
+        $scope.toggleOrgUserPermissions = function(permission) {
+            $scope.disableSwitches = true;
+            $scope.orgUserError = null;
+            $cloudfoundry.toggleOrgUserPermissions($scope.activeUser, permission, $routeParams['orgguid'])
+                .then(function(response) {
+                    if (response.status !== 201) {
+                        $scope.activeUser[permission] = !$scope.activeUser[permission];
+                        $scope.orgUserError = response.data.description;
+                    } else {
+                        $cloudfoundry.getOrgUsers($routeParams['orgguid'], $scope.org_users, $scope.loadComplete);
+                    }
+                    $scope.disableSwitches = false;
+                });
+        };
         $cloudfoundry.getOrgUsers($routeParams['orgguid'], $scope.org_users, $scope.loadComplete);
-    });
-
-    app.controller('OrgUserManagementCtrl', function($scope, $cloudfoundry, $routeParams, MenuData, $uaa) {
-        loadOrg(MenuData, $routeParams, $cloudfoundry, $scope, $uaa);
-        $scope.initOrgManagerState = false;
-        var renderOrgUserOrgManagerState = function(response) {
-            $scope.org_manager = response;
-            $scope.orgManagerStatus = (response[0]) && (response[0].metadata.guid == $routeParams['userguid']);
-            // No need to set up watching again if we have already.
-            if ($scope.initOrgManagerState == true) {
-                return;
-            }
-            $scope.$watch('orgManagerStatus', function(newValue, oldValue) {
-                // Only update when there is an actual change in value. This prevents unnecessary calls from
-                // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
-                // is undefined. That means we are initializing for the first time.
-                if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
-                    $scope.orgManagerStateChanging = true;
-                    return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', newValue)
-                        .then(function() {
-                            // Re-enable toggle switch;
-                            $scope.orgManagerStateChanging = false;
-                        });
-                }
-            });
-            // This also enables the button after initial loading.
-            $scope.initOrgManagerState = true;
-        };
-
-        $scope.initBillingManagerState = false;
-        var renderOrgUserBillingManagerState = function(response) {
-            $scope.billing_manager = response;
-            $scope.billingManagerStatus = (response[0]) && (response[0].metadata.guid == $routeParams['userguid']);
-            // No need to set up watching again if we have already.
-            if ($scope.initBillingManagerState == true) {
-                return;
-            }
-            $scope.$watch('billingManagerStatus', function(newValue, oldValue) {
-                // Only update when there is an actual change in value. This prevents unnecessary calls from
-                // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
-                // is undefined. That means we are initializing for the first time.
-                if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
-                    $scope.billingManagerStateChanging = true;
-                    return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', newValue)
-                        .then(function() {
-                            // Re-enable toggle switch;
-                            $scope.billingManagerStateChanging = false;
-                        });
-                }
-            });
-            // This also enables the button after initial loading.
-            $scope.initBillingManagerState = true;
-        };
-
-
-        $scope.initOrgAuditorState = false;
-        var renderOrgUserOrgAuditorState = function(response) {
-            $scope.org_auditor = response;
-            $scope.orgAuditorStatus = (response[0]) && (response[0].metadata.guid == $routeParams['userguid']);
-
-            // No need to set up watching again if we have already.
-            if ($scope.initOrgAuditorState == true) {
-                return;
-            }
-            $scope.$watch('orgAuditorStatus', function(newValue, oldValue) {
-                // Only update when there is an actual change in value. This prevents unnecessary calls from
-                // anomalies where the watch call is triggered. Also, go ahead and trigger if the old value
-                // is undefined. That means we are initializing for the first time.
-                if ((oldValue != newValue || (oldValue == undefined)) && (newValue != undefined)) {
-                    $scope.orgAuditorStateChanging = true;
-                    return $cloudfoundry.setOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', newValue)
-                        .then(function() {
-                            // Re-enable toggle switch;
-                            $scope.orgAuditorStateChanging = false;
-                        });
-                }
-            });
-            // This also enables the button after initial loading.
-            $scope.initOrgAuditorState = true;
-        };
-        $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'managers', 'manager_guid')
-            .then(renderOrgUserOrgManagerState);
-        $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'billing_managers', 'billing_manager_guid')
-            .then(renderOrgUserBillingManagerState);
-        $cloudfoundry.getOrgUserCategory($routeParams['orgguid'], $routeParams['userguid'], 'auditors', 'auditor_guid')
-            .then(renderOrgUserOrgAuditorState);
-
-
-
-
     });
 
     app.controller('SpaceCtrl', function($scope, $cloudfoundry, $location, $routeParams, MenuData, $uaa) {
