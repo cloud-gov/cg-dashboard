@@ -140,7 +140,7 @@ export default {
   },
 
   deleteUser(userGuid, orgGuid) {
-    return http.delete(APIV + `/organizations/${ orgGuid }/users/${ userGuid }/`)
+    return http.delete(APIV + '/organizations/' + orgGuid + '/users/' + userGuid)
         .then((res) => {
       userActions.deletedUser(userGuid, orgGuid);
     }, (err) => {
@@ -149,8 +149,8 @@ export default {
   },
 
   deleteOrgUserCategory(userGuid, orgGuid, category) {
-    return http.delete(APIV + `/organizations/${ orgGuid }/${ category }/
-        ${ userGuid }`).catch((err) => {
+    return http.delete(APIV + '/organizations/' + orgGuid + '/' + category +
+                       '/' + userGuid).catch((err) => {
       // TODO create correct error action.
     });
   }

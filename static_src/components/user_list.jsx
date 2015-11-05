@@ -6,8 +6,13 @@
 import React from 'react';
 import Reactable from 'reactable';
 
+import Button from './button.jsx';
+
 var Table = Reactable.Table,
-    unsafe = Reactable.unsafe;
+    Thead = Reactable.Thead,
+    Th = Reactable.Th,
+    Tr = Reactable.Tr,
+    Td = Reactable.Td;
 
 export default class UserList extends React.Component {
   constructor(props) {
@@ -22,7 +27,7 @@ export default class UserList extends React.Component {
     this.setState({users: nextProps.initialUsers});
   }
 
-  handleDelete = (userGuid, ev) => {
+  _handleDelete = (userGuid, ev) => {
     this.props.onRemove(userGuid, ev);
   }
 
@@ -67,7 +72,7 @@ export default class UserList extends React.Component {
           } 
           return (
             <Tr key={ user.guid }>
-              <Td column="Name"><span>{ user.name }</span></Td>
+              <Td column="Name"><span>{ user.username }</span></Td>
               <Td column="Date Created">{ user.created_at }</Td>
               { actions }
             </Tr>

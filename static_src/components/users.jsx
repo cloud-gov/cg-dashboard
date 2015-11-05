@@ -63,6 +63,11 @@ export default class Users extends React.Component {
     this._setTab(tab);
   }
 
+  handleRemove = (userGuid, ev) => {
+    ev.preventDefault();
+    userActions.deleteUser(userGuid, this.state.currentOrgGuid);
+  }
+
   get subNav() {
     var tabs = [
       { name: 'space_users' },
@@ -85,6 +90,12 @@ export default class Users extends React.Component {
   }
 
   render() {
+    var removeHandler;
+
+    if (this.state.currentTab === TAB_ORG_NAME) {
+      removeHandler = this.handleRemove;  
+    }
+
     return (
       <div>
       <Tabnav items={ this.subNav } 
@@ -92,7 +103,8 @@ export default class Users extends React.Component {
         initialItem={ this.state.currentTab } />
         <div className="tab-content">
           <div role="tabpanel" className="tab-pane active">
-            <UserList initialUsers={ this.state.users } />
+            <UserList onRemove={ removeHandler } 
+                initialUsers={ this.state.users } />
           </div>
         </div>
       </div>
