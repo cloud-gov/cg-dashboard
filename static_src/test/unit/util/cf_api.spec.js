@@ -568,7 +568,7 @@ describe('cfApi', function() {
             error_code: 'CF-AssociationNotEmpty'
           };
 
-      let testPromise = createPromise(true, expected);
+      let testPromise = createPromise(true, { data: expected });
       stub.returns(testPromise);
 
       cfApi.deleteOrgUserPermissions(expectedUserGuid, 'asdf', 'role');

@@ -108,4 +108,20 @@ describe('userActions', function() {
       expect(arg.orgGuid).toEqual(expectedOrgGuid);
     })
   });
+
+  describe('errorRemoveUser()', function() {
+    it('should call a server action for remove error', function() {
+      var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
+          expectedUserGuid = 'klfjanmxcvasfzcv',
+          expectedError = { code: 10006, message: 'something bad' };
+          
+      userActions.errorRemoveUser(expectedUserGuid, expectedError);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(userActionTypes.ERROR_REMOVE_USER);
+      expect(arg.userGuid).toEqual(expectedUserGuid);
+      expect(arg.error).toEqual(expectedError);
+    });
+  });
 });

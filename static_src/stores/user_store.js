@@ -14,6 +14,7 @@ class UserStore extends BaseStore {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = [];
+    this._error = null;
   }
 
   _registerToActions(action) {
@@ -40,17 +41,18 @@ class UserStore extends BaseStore {
         });
         if (updates.length) {
           this._data = this._merge(this._data, updates);
+          this._error = null;
           this.emitChange();
         }
         break;
 
       case userActionTypes.USER_DELETE:
-        var orgCategoryReq = cfApi.deleteOrgUserCategory(
+        var orgPermissionsReq = cfApi.deleteOrgUserPermissions(
           action.userGuid,
           action.orgGuid,
           'users');
 
-        orgCategoryReq.then((res) => {
+        orgPermissionsReq.then((res) => {
           cfApi.deleteUser(action.userGuid, action.orgGuid);
         });
 
@@ -61,10 +63,15 @@ class UserStore extends BaseStore {
         if (deleted) {
           var index = this._data.indexOf(deleted);
           this._data.splice(index, 1);
+          this._error = null;
           this.emitChange();
         }
         break;
 
+      case userActionTypes.ERROR_REMOVE_USER:
+        this._error = action.error;
+        this.emitChange();
+        break;
 
       default:
         break;
@@ -97,6 +104,10 @@ class UserStore extends BaseStore {
     return this._data.filter((user) => {
       return user.orgGuid === orgGuid;
     });
+  }
+
+  getError() {
+    return this._error;
   }
 
 };

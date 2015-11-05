@@ -124,8 +124,8 @@ describe('UserStore', function() {
   });
 
   describe('on user delete', function() {
-    it('should remove user categories from org', function() {
-      var spy = sandbox.spy(cfApi, 'deleteOrgUserCategory'),
+    it('should remove user permissions from org', function() {
+      var spy = sandbox.spy(cfApi, 'deleteOrgUserPermissions'),
           expectedUserGuid = '19p83fhasjkdhf',
           expectedOrgGuid = 'zxncmvduhvad',
           expectedCategory = 'users';
@@ -141,7 +141,7 @@ describe('UserStore', function() {
     
     it('should delete the user on the server', function() {
       var spy = sandbox.spy(cfApi, 'deleteUser'),
-          stub = sandbox.stub(cfApi, 'deleteOrgUserCategory'),
+          stub = sandbox.stub(cfApi, 'deleteOrgUserPermissions'),
           expectedUserGuid = 'znxvmnzvmz',
           expectedOrgGuid = '029fjaskdjfalskdna';
 
@@ -190,6 +190,24 @@ describe('UserStore', function() {
       userActions.deletedUser('asdfljk', 'adlsvjkadfa');
 
       expect(spy).not.toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on error remove user', function() {
+    it('should emit a change event', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange');
+
+      userActions.errorRemoveUser('asdf', {});
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should set the error to the error passed in', function() {
+      var expected = { code: 10007, message: 'test' };
+
+      userActions.errorRemoveUser('asdf', expected);
+
+      expect(UserStore.getError()).toEqual(expected);
     });
   });
 

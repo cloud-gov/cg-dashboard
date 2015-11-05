@@ -144,7 +144,7 @@ export default {
         .then((res) => {
       userActions.deletedUser(userGuid, orgGuid);
     }, (err) => {
-      // TODO create correct error action.
+      userActions.errorRemoveUser(userGuid, err.data);
     });
   },
 
@@ -161,7 +161,7 @@ export default {
                        '/' + userGuid).then((res) => {
       return res.response; 
     }, (err) => {
-      userActions.errorRemoveUser(userGuid, err);
+      userActions.errorRemoveUser(userGuid, err.data);
     });
   },
 

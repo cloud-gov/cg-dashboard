@@ -55,7 +55,11 @@ export default {
   },
 
   errorRemoveUser(userGuid, error) {
-
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.ERROR_REMOVE_USER,
+      userGuid: userGuid,
+      error: error
+    });
   }
 
 };

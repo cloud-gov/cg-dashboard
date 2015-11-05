@@ -64,7 +64,9 @@ var userActionTypes = keymirror({
   // Action to delete a user from an org.
   USER_DELETE: null,
   // Action when a user was deleted from an org on the server.
-  USER_DELETED: null
+  USER_DELETED: null,
+  // Action when there's an error when trying to remove a user.
+  ERROR_REMOVE_USER: null
 });
 
 export { appActionTypes, errorActionTypes, loginActionTypes, orgActionTypes,
