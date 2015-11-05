@@ -52,6 +52,10 @@ export default {
       userGuid: userGuid,
       orgGuid: orgGuid
     });
+  },
+
+  errorRemoveUser(userGuid, error) {
+
   }
 
 };
