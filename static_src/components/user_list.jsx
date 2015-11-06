@@ -93,6 +93,7 @@ export default class UserList extends React.Component {
 
 UserList.propTypes = {
   initialUsers: React.PropTypes.array,
+  // Set to a function when there should be a remove button.
   onRemove: React.PropTypes.function
 };
 
