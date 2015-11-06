@@ -22,6 +22,7 @@ function stateSetter(currentState) {
     users = UserStore.getAllInOrg(currentState.currentOrgGuid);
   }
   return {
+    error: UserStore.getError(),
     users: users
   }
 }
@@ -63,6 +64,11 @@ export default class Users extends React.Component {
     this._setTab(tab);
   }
 
+  handleRemove = (userGuid, ev) => {
+    ev.preventDefault();
+    userActions.deleteUser(userGuid, this.state.currentOrgGuid);
+  }
+
   get subNav() {
     var tabs = [
       { name: 'space_users' },
@@ -85,14 +91,31 @@ export default class Users extends React.Component {
   }
 
   render() {
+    var removeHandler,
+        errorMessage;
+
+    if (this.state.currentTab === TAB_ORG_NAME) {
+      removeHandler = this.handleRemove;  
+    }
+
+    if (this.state.error) {
+      // TODO make this an error message component
+      errorMessage = (
+        <div className="alert alert-danger" role="alert">
+          { this.state.error.description }</div>
+      );
+    }
+
     return (
       <div>
       <Tabnav items={ this.subNav } 
         classes={ ['test-subnav-users'] }
         initialItem={ this.state.currentTab } />
+        { errorMessage }
         <div className="tab-content">
           <div role="tabpanel" className="tab-pane active">
-            <UserList initialUsers={ this.state.users } />
+            <UserList onRemove={ removeHandler } 
+                initialUsers={ this.state.users } />
           </div>
         </div>
       </div>

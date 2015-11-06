@@ -74,4 +74,54 @@ describe('userActions', function() {
       expect(arg.users).toEqual(expected);
     });
   });
+
+  describe('deleteUser()', function() {
+    it('should dispatch a view event of type user delete with user guid',
+        function() {
+      var spy = sandbox.spy(AppDispatcher, 'handleViewAction'),
+          expectedUserGuid = 'adsklfjanmxcv',
+          expectedOrgGuid = 'sdkjfcmxxzcxvzz';
+          
+      userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(userActionTypes.USER_DELETE);
+      expect(arg.userGuid).toEqual(expectedUserGuid);
+      expect(arg.orgGuid).toEqual(expectedOrgGuid);
+    })
+  });
+
+  describe('deletedUser()', function() {
+    it('should dispatch a server event of type user deleted with user guid',
+        function() {
+      var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
+          expectedUserGuid = 'klfjanmxcvasfzcv',
+          expectedOrgGuid = '0909uasdifhnmzxcv';
+          
+      userActions.deletedUser(expectedUserGuid, expectedOrgGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(userActionTypes.USER_DELETED);
+      expect(arg.userGuid).toEqual(expectedUserGuid);
+      expect(arg.orgGuid).toEqual(expectedOrgGuid);
+    })
+  });
+
+  describe('errorRemoveUser()', function() {
+    it('should call a server action for remove error', function() {
+      var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
+          expectedUserGuid = 'klfjanmxcvasfzcv',
+          expectedError = { code: 10006, message: 'something bad' };
+          
+      userActions.errorRemoveUser(expectedUserGuid, expectedError);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(userActionTypes.ERROR_REMOVE_USER);
+      expect(arg.userGuid).toEqual(expectedUserGuid);
+      expect(arg.error).toEqual(expectedError);
+    });
+  });
 });

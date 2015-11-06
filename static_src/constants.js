@@ -60,7 +60,13 @@ var userActionTypes = keymirror({
   // Action when all organization users were received from the server.
   ORG_USERS_RECEIVED: null,
   // Action when all space users were received from the server.
-  SPACE_USERS_RECEIVED: null
+  SPACE_USERS_RECEIVED: null,
+  // Action to delete a user from an org.
+  USER_DELETE: null,
+  // Action when a user was deleted from an org on the server.
+  USER_DELETED: null,
+  // Action when there's an error when trying to remove a user.
+  ERROR_REMOVE_USER: null
 });
 
 export { appActionTypes, errorActionTypes, loginActionTypes, orgActionTypes,

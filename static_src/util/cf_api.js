@@ -137,5 +137,38 @@ export default {
     }, (err) => {
       errorActions.errorFetch(err);
     });
+  },
+
+  deleteUser(userGuid, orgGuid) {
+    return http.delete(APIV + '/organizations/' + orgGuid + '/users/' + userGuid)
+        .then((res) => {
+      userActions.deletedUser(userGuid, orgGuid);
+    }, (err) => {
+      userActions.errorRemoveUser(userGuid, err.data);
+    });
+  },
+
+  // TODO deprecate possibly in favor of deleteOrgUserPermissions.
+  deleteOrgUserCategory(userGuid, orgGuid, category) {
+    return http.delete(APIV + '/organizations/' + orgGuid + '/' + category +
+                       '/' + userGuid).catch((err) => {
+      // TODO create correct error action.
+    });
+  },
+
+  deleteOrgUserPermissions(userGuid, orgGuid, permissions) {
+    return http.delete(APIV + '/organizations/' + orgGuid + '/' + permissions + 
+                       '/' + userGuid).then((res) => {
+      return res.response; 
+    }, (err) => {
+      userActions.errorRemoveUser(userGuid, err.data);
+    });
+  },
+
+  putOrgUserPermissions(userGuid, orgGuid, permissions) {
+    return http.put(APIV + '/organizations/' + orgGuid + '/' + permissions + 
+                       '/' + userGuid).then((res) => {
+      return res.response; 
+    });
   }
 };

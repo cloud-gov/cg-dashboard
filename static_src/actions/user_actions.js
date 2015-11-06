@@ -36,6 +36,30 @@ export default {
       users: users,
       spaceGuid: spaceGuid
     });
+  },
+
+  deleteUser(userGuid, orgGuid) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_DELETE,
+      userGuid: userGuid,
+      orgGuid: orgGuid
+    });
+  },
+
+  deletedUser(userGuid, orgGuid) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_DELETED,
+      userGuid: userGuid,
+      orgGuid: orgGuid
+    });
+  },
+
+  errorRemoveUser(userGuid, error) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.ERROR_REMOVE_USER,
+      userGuid: userGuid,
+      error: error
+    });
   }
 
 };

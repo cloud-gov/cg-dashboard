@@ -483,4 +483,120 @@ describe('cfApi', function() {
       expect(spy).toHaveBeenCalledWith(expected);
     });
   });
+
+  describe('deleteUser()', function() {
+    it('should call a http delete request on the org and user', function() {
+      var spy = sandbox.spy(http, 'delete'),
+          expectedUserGuid = 'zvmxncznv-9u8qwphu',
+          expectedOrgGuid = '0291kdvakjbdfvhp';
+
+      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expectedUserGuid));
+      expect(actual).toMatch(new RegExp(expectedOrgGuid));
+    });
+
+    it('should call org deleted action with guid', function() {
+      var stub = sandbox.stub(http, 'delete'),
+          spy = sandbox.spy(userActions, 'deletedUser'),
+          expectedUserGuid = 'aldfskjmcx',
+          expectedOrgGuid = 'sa09dvjakdnva';
+
+      let testPromise = createPromise({status: true});
+      stub.returns(testPromise);
+
+      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(expectedUserGuid);
+      expect(args[1]).toEqual(expectedOrgGuid);
+    });
+  });
+
+  describe('deleteOrgUserCategory()', function() {
+    it('should call a http delete request on the org user with category ',
+        function() {
+      var spy = sandbox.spy(http, 'delete'),
+          expectedUserGuid = 'zvmxncznv-9u8qwphu',
+          expectedOrgGuid = '0291kdvakjbdfvhp',
+          expectedCategory = 'some_role';
+
+      cfApi.deleteOrgUserCategory(
+        expectedUserGuid,
+        expectedOrgGuid,
+        expectedCategory);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expectedUserGuid));
+      expect(actual).toMatch(new RegExp(expectedOrgGuid));
+      expect(actual).toMatch(new RegExp(expectedCategory));
+    });
+  });
+
+  describe('deleteOrgUserPermissions()', function() {
+    it('should call an http delete request on org user with permissions',
+        function() {
+      var spy = sandbox.spy(http, 'delete'),
+          expectedUserGuid = 'zvmxncznv-9u8qwphu',
+          expectedOrgGuid = '0291kdvakjbdfvhp',
+          expectedPermission = 'manager';
+
+      cfApi.deleteOrgUserPermissions(
+        expectedUserGuid,
+        expectedOrgGuid,
+        expectedPermission);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expectedUserGuid));
+      expect(actual).toMatch(new RegExp(expectedOrgGuid));
+      expect(actual).toMatch(new RegExp(expectedPermission));
+    });
+
+    it(`should call user action on a 400 response that has code 10006 with
+        message about the error from cf`, function() {
+      var stub = sandbox.stub(http, 'delete'),
+          spy = sandbox.spy(userActions, 'errorRemoveUser'),
+          expectedUserGuid = 'zcvmzxncbvpafd',
+          expected = {
+            code: 10006,
+            description: 'Please delete the user associations for your spaces',
+            error_code: 'CF-AssociationNotEmpty'
+          };
+
+      let testPromise = createPromise(true, { data: expected });
+      stub.returns(testPromise);
+
+      cfApi.deleteOrgUserPermissions(expectedUserGuid, 'asdf', 'role');
+
+      expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(expectedUserGuid);
+      expect(args[1]).toEqual(expected);
+    });
+  });
+
+  describe('deleteOrgUserPermissions()', function() {
+    it('should call an http put request on org user with permissions', function() {
+      var spy = sandbox.spy(http, 'put'),
+          expectedUserGuid = 'zvmxncznv-9u8qwphu',
+          expectedOrgGuid = '0291kdvakjbdfvhp',
+          expectedPermission = 'manager';
+
+      cfApi.putOrgUserPermissions(
+        expectedUserGuid,
+        expectedOrgGuid,
+        expectedPermission);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expectedUserGuid));
+      expect(actual).toMatch(new RegExp(expectedOrgGuid));
+      expect(actual).toMatch(new RegExp(expectedPermission));
+    });
+  });
 });
