@@ -6,6 +6,15 @@ import cfApi from '../../../util/cf_api.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
 
+function assertAction(spy, type, params) {
+  expect(spy).toHaveBeenCalledOnce();
+  let arg = spy.getCall(0).args[0];
+  expect(arg.type).toEqual(type);
+  for (let param in params) {
+    expect(arg[param]).toEqual(params[param]);
+  }
+}
+
 describe('serviceActions', function() {
   var sandbox;
 
@@ -17,17 +26,38 @@ describe('serviceActions', function() {
     sandbox.restore();
   });
 
+  function setupViewSpy() {
+    var spy = sandbox.spy(AppDispatcher, 'handleViewAction');
+    return spy;
+  }
+
+  describe('fetchAllServices()', function() {
+    it('should dispatch a view event of type service fetch', function() {
+      let expectedParams = {
+        orgGuid: 'adsfa'
+      }
+      let spy = setupViewSpy()
+
+      serviceActions.fetchAllServices(expectedParams.orgGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICES_FETCH, expectedParams);
+    });
+  });
+
   describe('fetchInstance()', function() {
     it('should dispatch a view event of type service instance fetch', function() {
-      var spy = sandbox.spy(AppDispatcher, 'handleViewAction'),
-          expectedSpaceGuid = 'aksfdsaaa8899';
+      var expectedSpaceGuid = 'aksfdsaaa8899';
+
+      let expectedParams = {
+        spaceGuid: expectedSpaceGuid 
+      }
+
+      let spy = setupViewSpy()
 
       serviceActions.fetchAllInstances(expectedSpaceGuid);
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(serviceActionTypes.SERVICE_INSTANCES_FETCH);
-      expect(arg.spaceGuid).toEqual(expectedSpaceGuid);
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCES_FETCH, 
+                   expectedParams)
     });
   });
 
