@@ -1,4 +1,6 @@
 
+import AppDispatcher from '../../dispatcher.js';
+
 export function wrapInRes(responses) {
   var n = 0;
   return responses.map((res) => {
@@ -18,10 +20,18 @@ export function unwrapOfRes(entities) {
 
 export function assertAction(spy, type, params) {
   expect(spy).toHaveBeenCalledOnce();
-  let arg = spy.getCall(0).args[0];
-  expect(arg.type).toEqual(type);
+  let actionInfo = spy.getCall(0).args[0];
+  expect(actionInfo.type).toEqual(type);
   for (let param in params) {
-    expect(arg[param]).toEqual(params[param]);
+    expect(actionInfo[param]).toEqual(params[param]);
   }
+}
+
+export function setupViewSpy(sandbox) {
+  return sandbox.spy(AppDispatcher, 'handleViewAction');
+}
+
+export function setupServerSpy(sandbox) {
+  return sandbox.spy(AppDispatcher, 'handleServerAction');
 }
 

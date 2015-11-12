@@ -2,6 +2,7 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
+import { assertAction } from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import appActions from '../../../actions/app_actions.js';
 import { appActionTypes } from '../../../constants.js';
@@ -17,32 +18,44 @@ describe('appActions', function() {
     sandbox.restore();
   });
 
+  function setupViewSpy() {
+    return sandbox.spy(AppDispatcher, 'handleViewAction');
+  }
+
+  function setupServerSpy() {
+    return sandbox.spy(AppDispatcher, 'handleServerAction');
+  }
+
   describe('fetch()', function() {
     it('should dispatch a view event of type app fetch', function() {
-      var spy = sandbox.spy(AppDispatcher, 'handleViewAction'),
-          expectedAppGuid = 'asdflkjz';
+      var expectedAppGuid = 'asdflkjz',
+          expectedParams = {
+            appGuid: expectedAppGuid
+          };
+
+      let spy = setupViewSpy()
 
       appActions.fetch(expectedAppGuid);
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(appActionTypes.APP_FETCH);
-      expect(arg.appGuid).toEqual(expectedAppGuid);
+      assertAction(spy, appActionTypes.APP_FETCH, 
+                   expectedParams)
     });
   });
 
   describe('receivedApp()', function() {
     it('should dispatch a server event of type app resv with app data', 
         function() {
-      var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
-          expected = { guid: 'asdfa', service: [] };
+      var expected = { guid: 'asdfa', service: [] },
+          expectedParams = {
+            app: expected
+          };
+
+      let spy = setupServerSpy()
 
       appActions.receivedApp(expected);
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(appActionTypes.APP_RECEIVED);
-      expect(arg.app).toEqual(expected);
+      assertAction(spy, appActionTypes.APP_RECEIVED, 
+                   expectedParams)
     });
   });
 });
