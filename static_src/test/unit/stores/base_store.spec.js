@@ -146,4 +146,59 @@ describe('BaseStore', () => {
       expect(clone).toEqual(testRezs);
     });
   });
+
+  describe('merge()', function() {
+    var existingEntityA = {
+      guid: 'zznbmbz',
+      name: 'ea',
+      cpu: 34
+    }; 
+    var existingEntityB = {
+      guid: 'zzlkcxv',
+      name: 'eb'
+    }; 
+    var existingEntities = [existingEntityA, existingEntityB];
+
+    it('should update existing entities with updated with same guid ', 
+        function() {
+      var updateA = {
+        guid: existingEntityA.guid,
+        name: 'zzz',
+        memory: 1024
+      };
+
+      let actual = store._merge(existingEntities, [updateA]);
+
+      expect(actual[0]).toEqual({
+        guid: updateA.guid,
+        name: updateA.name,
+        memory: updateA.memory,
+        cpu: existingEntityA.cpu
+      });
+      expect(actual[1]).toEqual(existingEntityB);
+    });
+
+    it('should not modify the source data', function() {
+      var clone = existingEntities.slice(0);
+      var updateA = {
+        guid: existingEntityA.guid,
+        memory: 1024
+      };
+
+      store._merge(existingEntities, [updateA]);
+
+      expect(existingEntities).toEqual(clone);
+    });
+
+    it('should return the updates if there\'s no current data', function() {
+      var updates = [
+        { guid: 'zxb', name: 'a1' },
+        { guid: 'kjl', name: 'a2' }
+      ];
+
+      let actual = store._merge([], updates);
+
+      expect(actual).toEqual(updates);
+    });
+  });
 });
