@@ -2,18 +2,10 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
+import { assertAction } from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
-
-function assertAction(spy, type, params) {
-  expect(spy).toHaveBeenCalledOnce();
-  let arg = spy.getCall(0).args[0];
-  expect(arg.type).toEqual(type);
-  for (let param in params) {
-    expect(arg[param]).toEqual(params[param]);
-  }
-}
 
 describe('serviceActions', function() {
   var sandbox;
@@ -27,8 +19,10 @@ describe('serviceActions', function() {
   });
 
   function setupViewSpy() {
-    var spy = sandbox.spy(AppDispatcher, 'handleViewAction');
-    return spy;
+    return sandbox.spy(AppDispatcher, 'handleViewAction');
+  }
+  function setupServerSpy() {
+    return sandbox.spy(AppDispatcher, 'handleServerAction');
   }
 
   describe('fetchAllServices()', function() {

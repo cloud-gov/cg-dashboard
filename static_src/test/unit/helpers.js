@@ -15,3 +15,13 @@ export function unwrapOfRes(entities) {
     return Object.assign(entity.entity, entity.metadata);
   });
 }
+
+export function assertAction(spy, type, params) {
+  expect(spy).toHaveBeenCalledOnce();
+  let arg = spy.getCall(0).args[0];
+  expect(arg.type).toEqual(type);
+  for (let param in params) {
+    expect(arg[param]).toEqual(params[param]);
+  }
+}
+
