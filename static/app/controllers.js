@@ -291,7 +291,7 @@
         // Checks if the service was created and display message
         var checkIfCreated = function(response) {
             $scope.disableSubmit = false;
-            if (response.status == 400) {
+            if (response.status >= 300) {
                 $scope.message = {
                     type: 'error',
                     message: response.data.description
