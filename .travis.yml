@@ -13,15 +13,11 @@ script:
 - npm test
 - "./codecheck.sh -u"
 - go test ./...
-- cd acceptance && go test -tags acceptance && cd ..
 branches:
   only:
   - master
   - production
   - staging-alpha
-matrix:
-  allow_failures:
-    - script: cd acceptance && go test -tags acceptance && cd ..
 before_deploy:
 - export BUILD_INFO=build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d-%H-%M-%S")-$TRAVIS_BUILD_NUMBER
 # Extract any encrypted env vars and put them into the manifests/manifest-master.yml
