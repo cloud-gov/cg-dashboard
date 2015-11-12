@@ -45,7 +45,7 @@ export default class BaseStore extends EventEmitter {
     return this._data;
   }
 
-  _formatSplitRes(resources) {
+  formatSplitResponse(resources) {
     return resources.map((resource) => {
       return Object.assign(resource.entity, resource.metadata);
     });

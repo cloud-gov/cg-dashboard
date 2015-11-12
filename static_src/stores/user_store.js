@@ -29,7 +29,7 @@ class UserStore extends BaseStore {
 
       case userActionTypes.SPACE_USERS_RECEIVED:
       case userActionTypes.ORG_USERS_RECEIVED:
-        var updates = this._formatSplitRes(action.users);
+        var updates = this.formatSplitResponse(action.users);
         updates = updates.map((update) => {
           if (action.orgGuid) {
             update.orgGuid = action.orgGuid;
