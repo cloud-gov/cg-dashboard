@@ -66,18 +66,6 @@ class OrgStore extends BaseStore {
     }
   }
 
-  get(guid) {
-    if (guid) {
-      return this._data.find((org) => {
-        return org.guid === guid;
-      });
-    }
-  }
-
-  getAll() {
-    return this._data;
-  }
-
   get currentOrgGuid() {
     return this._currentOrgGuid;
   }

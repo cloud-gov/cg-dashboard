@@ -22,19 +22,4 @@ describe('SpaceStore', () => {
       expect(SpaceStore._data).toBeEmptyArray();
     });
   });
-
-  describe('get()', () => {
-    it('should return the correct space based on guid', () => {
-      var testSpaces = [
-        { guid: 'sp1xxa', name: 'testSpaceA', apps: [] },
-        { guid: 'sp1xxb', name: 'testSpaceB', apps: [] }
-      ];
-
-      SpaceStore._data = testSpaces;
-
-      let actual = SpaceStore.get(testSpaces[0].guid);
-
-      expect(actual).toEqual(testSpaces[0]);
-    });
-  });
 });

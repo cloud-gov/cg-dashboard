@@ -34,9 +34,11 @@ export default class BaseStore extends EventEmitter {
   }
 
   get(guid) {
-    return this._data.find((space) => {
-      return space.guid === guid;
-    });
+    if (guid) {
+      return this._data.find((space) => {
+        return space.guid === guid;
+      });
+    }
   }
 
   getAll() {

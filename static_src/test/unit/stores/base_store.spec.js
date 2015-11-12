@@ -90,6 +90,14 @@ describe('BaseStore', () => {
 
       expect(actual).toBe(undefined);
     });
+
+    it('should return undefined if not guid is passed in', function() {
+      store._data = [{ guid: 'adsf' }]; 
+
+      let actual = store.get();
+
+      expect(actual).toBe(undefined);
+    });
   });
 
   describe('getAll()', function() {

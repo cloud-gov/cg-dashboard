@@ -15,19 +15,6 @@ class ServiceStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = [];
   }
-
-  get(serviceGuid) {
-    if (serviceGuid) {
-      return this._data.find((service) => {
-        return service.guid === serviceGuid;
-      });
-    }
-  }
-
-  getAll() {
-    return this._data;
-  }
-
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_INSTANCES_FETCH:

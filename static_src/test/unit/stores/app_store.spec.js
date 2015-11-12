@@ -25,38 +25,6 @@ describe('AppStore', function() {
     });
   });
 
-  describe('getAll()', function() {
-    it('should return all the data', function() {
-      var expected = [{guid: 'adfxzcv'}];
-
-      AppStore._data = expected;
-
-      expect(AppStore.getAll()).toEqual(expected);
-    });
-  });
-
-  describe('get()', function() {
-    it('should return a service if it can find one based on guid', function() {
-      var expectedGuid = '8sfjlkasjdf',
-          expected = { guid: expectedGuid };
-
-      AppStore._data.push(expected);
-
-      let actual = AppStore.get(expectedGuid);
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('should return undefined if not found by guid', function() {
-      var expectedGuid = '8sfjlkasjdf',
-          expected = { guid: expectedGuid };
-
-      let actual = AppStore.get(expectedGuid);
-
-      expect(actual).toBeFalsy();
-    });
-  });
-
   describe('on app fetch', function() {
     it('should fetch app with guid from api', function() {
       var spy = sandbox.spy(cfApi, 'fetchApp'),
