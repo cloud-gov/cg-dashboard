@@ -2,7 +2,7 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import { assertAction } from '../helpers.js';
+import { assertAction, setupViewSpy, setupServerSpy } from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import appActions from '../../../actions/app_actions.js';
 import { appActionTypes } from '../../../constants.js';
@@ -17,14 +17,6 @@ describe('appActions', function() {
   afterEach(() => {
     sandbox.restore();
   });
-
-  function setupViewSpy() {
-    return sandbox.spy(AppDispatcher, 'handleViewAction');
-  }
-
-  function setupServerSpy() {
-    return sandbox.spy(AppDispatcher, 'handleServerAction');
-  }
 
   describe('fetch()', function() {
     it('should dispatch a view event of type app fetch', function() {
