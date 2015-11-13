@@ -2,6 +2,7 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
+import { assertAction, setupViewSpy, setupServerSpy } from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
@@ -17,30 +18,42 @@ describe('serviceActions', function() {
     sandbox.restore();
   });
 
+  describe('fetchAllServices()', function() {
+    it('should dispatch a view event of type service fetch', function() {
+      let expectedParams = {
+        orgGuid: 'adsfa'
+      }
+      let spy = setupViewSpy(sandbox)
+
+      serviceActions.fetchAllServices(expectedParams.orgGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICES_FETCH, expectedParams);
+    });
+  });
+
   describe('fetchInstance()', function() {
     it('should dispatch a view event of type service instance fetch', function() {
-      var spy = sandbox.spy(AppDispatcher, 'handleViewAction'),
-          expectedSpaceGuid = 'aksfdsaaa8899';
+      var expectedSpaceGuid = 'aksfdsaaa8899';
+
+      let expectedParams = {
+        spaceGuid: expectedSpaceGuid 
+      }
+
+      let spy = setupViewSpy(sandbox)
 
       serviceActions.fetchAllInstances(expectedSpaceGuid);
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(serviceActionTypes.SERVICE_INSTANCES_FETCH);
-      expect(arg.spaceGuid).toEqual(expectedSpaceGuid);
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCES_FETCH, 
+                   expectedParams)
     });
   });
 
   describe('receivedInstance()', function() {
     it('should dispatch a server event of type service instance resv with ' +
        'the service instances', function() {
-      var expected,
-          expectedGuid,
-          spy = sandbox.spy(AppDispatcher, 'handleServerAction');
-
-      expected = [
+      var expected = [
         { metadata: {
-            guid: expectedGuid
+            guid: 'afds'
           },
           entity: {
             type: 'someasdf'
@@ -48,41 +61,48 @@ describe('serviceActions', function() {
         }
       ];
 
+      let expectedParams = {
+        serviceInstances: expected
+      }
+
+      let spy = setupServerSpy(sandbox)
+
       serviceActions.receivedInstances(expected);
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(serviceActionTypes.SERVICE_INSTANCES_RECEIVED);
-      expect(arg.serviceInstances).toEqual(expected);
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
+                   expectedParams);
     });
   });
 
   describe('deleteInstance()', function() {
     it('should dispatch a instance delete view event with instance guid', () => {
-      var spy = sandbox.spy(AppDispatcher, 'handleViewAction'),
-          expectedInstanceGuid = '0sd9fajdmz';
+      var expectedInstanceGuid = 'asdfasdf';
+      var expectedParams = {
+        serviceInstanceGuid: expectedInstanceGuid
+      }
 
+      let spy = setupViewSpy(sandbox)
       serviceActions.deleteInstance(expectedInstanceGuid);
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(serviceActionTypes.SERVICE_INSTANCE_DELETE);
-      expect(arg.serviceInstanceGuid).toEqual(expectedInstanceGuid);
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETE,
+                   expectedParams);
     });
   });
 
   describe('deletedInstance()', function() {
     // TODO create test case to simulate failed delete attempt.
     it('should dispatch a instance deleted server event with guid', function() {
-      var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
-          expectedGuid = 'admxzcg';
+      var expectedGuid = 'admxzcg',
+          expectedParams = {
+            serviceInstanceGuid: expectedGuid
+          };
+
+      let spy = setupServerSpy(sandbox)
 
       serviceActions.deletedInstance(expectedGuid);
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(serviceActionTypes.SERVICE_INSTANCE_DELETED);
-      expect(arg.serviceInstanceGuid).toEqual(expectedGuid);
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETED,
+                   expectedParams);
     });
   });
 });

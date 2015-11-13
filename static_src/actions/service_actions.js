@@ -10,6 +10,13 @@ import AppDispatcher from '../dispatcher.js';
 import { serviceActionTypes } from '../constants';
 
 export default {
+  fetchAllServices(orgGuid) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICES_FETCH,
+      orgGuid: orgGuid
+    });
+  },
+
   fetchAllInstances(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCES_FETCH,

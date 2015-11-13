@@ -2,6 +2,7 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
+import { assertAction, setupViewSpy, setupServerSpy } from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import spaceActions from '../../../actions/space_actions.js';
 import { spaceActionTypes } from '../../../constants.js';
@@ -29,7 +30,7 @@ describe('spaceActions', () => {
     });
 
     it('should dispatch a view event of type space fetch', () => {
-      var spy = sandbox.spy(AppDispatcher, 'handleViewAction');
+      let spy = setupViewSpy(sandbox);
 
       spaceActions.fetch();
 
@@ -40,15 +41,15 @@ describe('spaceActions', () => {
 
   describe('receivedSpace()', () => {
     it('should dispatch server event of type space received', () => {
-      var spy = sandbox.spy(AppDispatcher, 'handleServerAction'),
-          expected = { guid: 'asdf' };
+      var expected = { guid: 'asdf' },
+          spy = setupServerSpy(sandbox),
+          expectedParams = {
+            space: expected
+          };
 
       spaceActions.receivedSpace(expected);
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(spaceActionTypes.SPACE_RECEIVED);
-      expect(arg.space).toEqual(expected);
+      assertAction(spy, spaceActionTypes.SPACE_RECEIVED, expectedParams);
     });
   });
 });
