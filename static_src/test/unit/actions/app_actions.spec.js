@@ -25,7 +25,7 @@ describe('appActions', function() {
             appGuid: expectedAppGuid
           };
 
-      let spy = setupViewSpy()
+      let spy = setupViewSpy(sandbox)
 
       appActions.fetch(expectedAppGuid);
 
@@ -42,7 +42,7 @@ describe('appActions', function() {
             app: expected
           };
 
-      let spy = setupServerSpy()
+      let spy = setupServerSpy(sandbox)
 
       appActions.receivedApp(expected);
 
