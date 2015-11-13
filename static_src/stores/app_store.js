@@ -33,18 +33,6 @@ class AppStore extends BaseStore {
         break;
     }
   }
-
-  get(guid) {
-    if (guid) {
-      return this._data.find((app) => {
-        return app.guid === guid;
-      });
-    }
-  }
-
-  getAll() {
-    return this._data;
-  }
 }
 
 let _AppStore = new AppStore();
