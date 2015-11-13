@@ -38,6 +38,7 @@ export default class Users extends React.Component {
       users: []
     };
   }
+
   componentDidMount() {
     UserStore.addChangeListener(this._onChange);
     this._setTab(this.props.initialCurrentTab);

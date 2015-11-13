@@ -42,23 +42,25 @@ describe('ServiceInstanceStore', function() {
   describe('on services received', function() {
     it('should set the passed in services to current data', function() {
       var expected = [
-        { guid: 'zxvcjz' },
-        { guid: '3981f' }
+        { guid: 'zxvcjz', name: 'zxkjv' },
+        { guid: '3981f', name: 'adlfskzxcv' }
       ];
 
+      let testRes = wrapInRes(expected);
       ServiceStore._data = [{ guid: 'alkdjsfzxcv' }];
 
-      serviceActions.receivedServices(expected);
+      serviceActions.receivedServices(testRes);
 
       let actual = ServiceStore.getAll();
 
+      expect(actual.length).toEqual(2);
       expect(actual).toEqual(expected);
     });
 
     it('should emit a change event', function() {
       var spy = sandbox.spy(ServiceStore, 'emitChange');
 
-      serviceActions.receivedServices();
+      serviceActions.receivedServices(wrapInRes([{ guid: 'adfklj' }]));
 
       expect(spy).toHaveBeenCalledOnce();
     });

@@ -3,7 +3,7 @@ import React from 'react';
 
 import AppList from '../components/app_list.jsx';
 import OrgStore from '../stores/org_store.js';
-import ServiceInstanceList from '../components/service_list.jsx';
+import ServiceInstanceList from '../components/service_instance_list.jsx';
 import SpaceStore from '../stores/space_store.js';
 import Users from './users.jsx';
 import Tabnav from './tabnav.jsx';
