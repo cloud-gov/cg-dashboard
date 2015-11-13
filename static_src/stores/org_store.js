@@ -48,7 +48,7 @@ class OrgStore extends BaseStore {
         break;
 
       case orgActionTypes.ORGS_RECEIVED:
-        var updates = this._formatSplitRes(action.orgs);
+        var updates = this.formatSplitResponse(action.orgs);
         this._data = this._merge(this._data, updates);
         this.emitChange();
         break;
@@ -64,18 +64,6 @@ class OrgStore extends BaseStore {
       default:
         break;
     }
-  }
-
-  get(guid) {
-    if (guid) {
-      return this._data.find((org) => {
-        return org.guid === guid;
-      });
-    }
-  }
-
-  getAll() {
-    return this._data;
   }
 
   get currentOrgGuid() {

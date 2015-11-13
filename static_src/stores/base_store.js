@@ -10,6 +10,7 @@ export default class BaseStore extends EventEmitter {
 
   constructor() {
     super();
+    this._data = [];
   }
 
   subscribe(actionSubscribe) {
@@ -32,7 +33,19 @@ export default class BaseStore extends EventEmitter {
     this.removeListener('CHANGE', cb);
   }
 
-  _formatSplitRes(resources) {
+  get(guid) {
+    if (guid) {
+      return this._data.find((space) => {
+        return space.guid === guid;
+      });
+    }
+  }
+
+  getAll() {
+    return this._data;
+  }
+
+  formatSplitResponse(resources) {
     return resources.map((resource) => {
       return Object.assign(resource.entity, resource.metadata);
     });

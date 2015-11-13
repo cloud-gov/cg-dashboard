@@ -29,7 +29,7 @@ class UserStore extends BaseStore {
 
       case userActionTypes.SPACE_USERS_RECEIVED:
       case userActionTypes.ORG_USERS_RECEIVED:
-        var updates = this._formatSplitRes(action.users);
+        var updates = this.formatSplitResponse(action.users);
         updates = updates.map((update) => {
           if (action.orgGuid) {
             update.orgGuid = action.orgGuid;
@@ -76,19 +76,6 @@ class UserStore extends BaseStore {
       default:
         break;
     }
-  }
-
-  // TODO move all of this to base store, I've found they're all the same.
-  get(guid) {
-    if (guid) {
-      return this._data.find((user) => {
-        return user.guid === guid;
-      });
-    }
-  }
-
-  getAll() {
-    return this._data;
   }
 
   /**

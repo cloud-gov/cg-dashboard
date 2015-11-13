@@ -15,19 +15,6 @@ class ServiceStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = [];
   }
-
-  get(serviceGuid) {
-    if (serviceGuid) {
-      return this._data.find((service) => {
-        return service.guid === serviceGuid;
-      });
-    }
-  }
-
-  getAll() {
-    return this._data;
-  }
-
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_INSTANCES_FETCH:
@@ -35,7 +22,7 @@ class ServiceStore extends BaseStore {
         break;
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED:
-        var updates = this._formatSplitRes(action.serviceInstances);
+        var updates = this.formatSplitResponse(action.serviceInstances);
         this._data = updates;
         this.emitChange();
         break;

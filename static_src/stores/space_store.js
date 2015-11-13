@@ -16,12 +16,6 @@ class SpaceStore extends BaseStore {
     this._data = [];
   }
 
-  get(guid) {
-    return this._data.find((space) => {
-      return space.guid === guid;
-    });
-  }
-
   _registerToActions(action) {
     switch (action.type) {
       case spaceActionTypes.SPACE_RECEIVED:
