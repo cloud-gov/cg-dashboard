@@ -5,9 +5,10 @@ import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import ServiceStore from '../../../stores/service_store.js';
+import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
 
-describe('ServiceStore', function() {
+describe('ServiceInstanceStore', function() {
   var sandbox;
 
   beforeEach(() => {
@@ -25,123 +26,41 @@ describe('ServiceStore', function() {
     });
   });
 
-  describe('on service instances fetch', function() {
-    it('should fetch service instances from api with space guid', function() {
-      var spy = sandbox.spy(cfApi, 'fetchServiceInstances'),
-          expectedSpaceGuid = '9998sdfa;dksa';
+  describe('on services fetch', function() {
+    it('should call the cf api for all services belonging to the org', function() {
+      var spy = sandbox.spy(cfApi, 'fetchAllServices'),
+          expectedOrgGuid = 'zxncvz8xcvhn32';
 
-      AppDispatcher.handleViewAction({
-        type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
-        spaceGuid: expectedSpaceGuid
-      });
+      serviceActions.fetchAllServices(expectedOrgGuid);
 
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedSpaceGuid);
+      expect(arg).toEqual(expectedOrgGuid);
     });
   });
 
-  describe('on service instances received', function() {
-    it('should set data to unwrapped, passed in instances', function() {
+  describe('on services received', function() {
+    it('should set the passed in services to current data', function() {
       var expected = [
-        {
-          guid: 'adfa',
-          type: 'postgres'
-        }
+        { guid: 'zxvcjz' },
+        { guid: '3981f' }
       ];
-      let testRes = wrapInRes(expected);
-      AppDispatcher.handleServerAction({
-        type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
-        serviceInstances: testRes
-      });
 
-      expect(ServiceStore.getAll().length).toEqual(1);
-      expect(ServiceStore.getAll()).toEqual(expected);
+      ServiceStore._data = [{ guid: 'alkdjsfzxcv' }];
+
+      serviceActions.receivedServices(expected);
+
+      let actual = ServiceStore.getAll();
+
+      expect(actual).toEqual(expected);
     });
 
     it('should emit a change event', function() {
       var spy = sandbox.spy(ServiceStore, 'emitChange');
 
-      AppDispatcher.handleViewAction({
-        type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
-        serviceInstances: []
-      });
+      serviceActions.receivedServices();
 
       expect(spy).toHaveBeenCalledOnce();
-    });
-  });
-
-  describe('on service instance delete', function() {
-    it('should do nothing if the service isn\'t in data', function() {
-      var spy = sandbox.spy(cfApi, 'deleteUnboundServiceInstance');
-
-      AppDispatcher.handleViewAction({
-        type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
-        serviceInstanceGuid: 'adsf'
-      });
-
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('should api delete with the service', function() {
-      var spy = sandbox.spy(cfApi, 'deleteUnboundServiceInstance'),
-          expectedGuid = 'qp98wfj',
-          expected = { guid: expectedGuid, url: '/' + expectedGuid };
-
-      ServiceStore._data.push(expected);
-
-      AppDispatcher.handleViewAction({
-        type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
-        serviceInstanceGuid: expectedGuid
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expected);
-    });
-  });
-
-  describe('on service instance deleted', function() {
-    it('should remove the service from the data', function() {
-      var expectedGuid = 'macldksajpi',
-          expected = { guid: expectedGuid, url: '/' + expectedGuid };
-
-      ServiceStore._data.push(expected);
-
-      expect(ServiceStore.get(expectedGuid)).toEqual(expected);
-
-      AppDispatcher.handleServerAction({
-        type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
-        serviceInstanceGuid: expectedGuid
-      });
-
-      expect(ServiceStore.get(expectedGuid)).toBeFalsy();
-    });
-
-    it('should emit a change event if found locally', function() {
-      var spy = sandbox.spy(ServiceStore, 'emitChange');
-      var expectedGuid = 'macldksajpi',
-          expected = { guid: expectedGuid, url: '/' + expectedGuid };
-
-      ServiceStore._data.push(expected);
-
-      AppDispatcher.handleServerAction({
-        type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
-        serviceInstanceGuid: expectedGuid
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
-    });
-
-    it('should not emit a change event if not found locally', function() {
-      var spy = sandbox.spy(ServiceStore, 'emitChange');
-
-      AppDispatcher.handleServerAction({
-        type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
-        serviceInstanceGuid: 'adsfas' 
-      });
-
-      expect(spy).not.toHaveBeenCalled();
     });
   });
 });

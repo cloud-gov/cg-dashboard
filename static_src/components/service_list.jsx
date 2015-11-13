@@ -4,7 +4,7 @@ import Reactable from 'reactable';
 
 import Button from './button.jsx';
 import serviceActions from '../actions/service_actions.js';
-import ServiceStore from '../stores/service_store.js';
+import ServiceInstanceStore from '../stores/service_instance_store.js';
 
 var Table = Reactable.Table,
     Thead = Reactable.Thead,
@@ -14,7 +14,7 @@ var Table = Reactable.Table,
 
 function stateSetter(props) {
   return {
-    serviceInstances: ServiceStore.getAll(),
+    serviceInstances: ServiceInstanceStore.getAll(),
     currentSpaceGuid: props.initialSpaceGuid
   };
 }
@@ -27,7 +27,7 @@ export default class ServiceInstanceList extends React.Component {
   }
 
   componentDidMount() {
-    ServiceStore.addChangeListener(this._onChange);
+    ServiceInstanceStore.addChangeListener(this._onChange);
     serviceActions.fetchAllInstances(this.state.currentSpaceGuid);
   }
 
