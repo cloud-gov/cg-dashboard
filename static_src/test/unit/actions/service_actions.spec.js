@@ -31,6 +31,20 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('receivedServices()', function() {
+    it('should dispatch a view event of type service fetch', function() {
+      var expected = [{ guid: 'adfzxcvz' }];
+      let expectedParams = {
+        services: expected
+      }
+      let spy = setupServerSpy(sandbox)
+
+      serviceActions.receivedServices(expected);
+
+      assertAction(spy, serviceActionTypes.SERVICES_RECEIVED, expectedParams);
+    });
+  });
+
   describe('fetchInstance()', function() {
     it('should dispatch a view event of type service instance fetch', function() {
       var expectedSpaceGuid = 'aksfdsaaa8899';
