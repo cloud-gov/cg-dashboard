@@ -23,8 +23,8 @@ class ServiceStore extends BaseStore {
         break;
 
       case serviceActionTypes.SERVICES_RECEIVED:
-        var updates = this.formatSplitResponse(action.services);
-        this._data = updates;
+        var services = this.formatSplitResponse(action.services);
+        this._data = services;
         this.emitChange();
         break;
 
