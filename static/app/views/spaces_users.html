@@ -72,7 +72,7 @@
                             <h3 class="panel-title">Space Manager</h3>
                         </div>
                         <div class="panel-body">
-                            <toggle-switch ng-disabled="disableSwitches || !loadComplete.status" ng-click="toggleSpaceUserPermissions('managers')"
+                            <toggle-switch id='managers' ng-disabled="disableSwitches || !loadComplete.status" ng-click="toggleSpaceUserPermissions('managers')"
                             ng-model="activeUser.managers">
                             </toggle-switch>
                         </div>
@@ -85,7 +85,7 @@
                             <h3 class="panel-title">Space Developer</h3>
                         </div>
                         <div class="panel-body">
-                            <toggle-switch ng-disabled="disableSwitches || !loadComplete.status" ng-click="toggleSpaceUserPermissions('developers')"
+                            <toggle-switch id='developers' ng-disabled="disableSwitches || !loadComplete.status" ng-click="toggleSpaceUserPermissions('developers')"
                             ng-model="activeUser.developers">
                             </toggle-switch>
                         </div>
@@ -98,7 +98,7 @@
                             <h3 class="panel-title">Space Auditor</h3>
                         </div>
                         <div class="panel-body">
-                            <toggle-switch ng-disabled="disableSwitches || !loadComplete.status" ng-click="toggleSpaceUserPermissions('auditors')"
+                            <toggle-switch id='auditors' ng-disabled="disableSwitches || !loadComplete.status" ng-click="toggleSpaceUserPermissions('auditors')"
                             ng-model="activeUser.auditors">
                             </toggle-switch>
                         </div>
