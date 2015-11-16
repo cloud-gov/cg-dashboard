@@ -1,102 +1,63 @@
 
+/**
+ * Renders a list of services
+ */
+
 import React from 'react';
 import Reactable from 'reactable';
 
-import Button from './button.jsx';
-import serviceActions from '../actions/service_actions.js';
-import ServiceStore from '../stores/service_store.js';
+var Table = Reactable.Table;
 
-var Table = Reactable.Table,
-    Thead = Reactable.Thead,
-    Th = Reactable.Th,
-    Tr = Reactable.Tr,
-    Td = Reactable.Td;
-
-function stateSetter(props) {
-  return {
-    serviceInstances: ServiceStore.getAll(),
-    currentSpaceGuid: props.initialSpaceGuid
-  };
-}
-
-export default class ServiceInstanceList extends React.Component {
+export default class ServiceList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = stateSetter(props);
+    this.state = {
+      services: props.initialServices
+    };
   }
 
-  componentDidMount() {
-    ServiceStore.addChangeListener(this._onChange);
-    serviceActions.fetchAllInstances(this.state.currentSpaceGuid);
-  }
-
-  _onChange = () => {
-    this.setState(stateSetter(this.props));
-  }
-
-  _handleDelete = (instanceGuid, ev) => {
-    ev.preventDefault();
-    serviceActions.deleteInstance(instanceGuid);
+  componentWillReceiveProps(nextProps) {
+    this.setState({services: nextProps.initialServices});
   }
 
   get columns() {
-    return [
-      { label: 'Name', key: 'name' },
-      { label: 'Last operation', key: 'type' },
-      { label: 'Updated at', key: 'updated_at' },
-      { label: 'Delete', key: 'delete_istance' }
+    var columns = [
+      { label: 'Name', key: 'label' },
+      { label: 'Description', key: 'description' },
+      { label: 'Date Created', key: 'created_at' }
     ];
+
+    return columns;
+  }
+
+  get rows() {
+    var rows = this.state.services;
+    return rows;
   }
 
   render() {
-    var content = <h4 className="test-none_message">No service instances</h4>;
-    let button = <Button label="Delete instance" 
-      onClickHandler={ this._handleDelete } />;
-
-    if (this.state.serviceInstances.length) {
+    var content = <h4 className="test-none_message">No services</h4>;
+    if (this.state.services.length) {
       content = (
-        <Table className="table" sortable={ true }>
-          <Thead>
-            { this.columns.map((column) => {
-              return (
-                <Th column={ column.label } className={ column.key }>
-                  { column.label }</Th>
-              )
-            })}
-          </Thead>
-          { this.state.serviceInstances.map((instance) => {
-            return (
-              <Tr key={ instance.guid }>
-                <Td column="Name"><span>{ instance.name }</span></Td>
-                <Td column="Last operation">{ instance.last_operation.type }</Td>
-                <Td column="Updated at">
-                  { instance.last_operation.updated_at }
-                </Td>
-                <Td column="Delete">
-                  <Button 
-                  onClickHandler={ this._handleDelete.bind(this, instance.guid) } 
-                  label="delete">
-                    <span>Delete Instance</span>
-                  </Button>
-                </Td>
-              </Tr>
-            )
-          })}
-        </Table>
+        <Table data={ this.rows } 
+          columns={ this.columns }
+          sortable={ true } className="table" />
       );
     }
 
     return (
-      <div className="tableWrapper"> 
-        { content }
-      </div>
+    <div className="tableWrapper"> 
+      { content }
+    </div>
     );
   }
+}
+
+ServiceList.propTypes = {
+  initialServices: React.PropTypes.array
 };
 
-ServiceInstanceList.propTypes = {
-  initialOrgGuid: React.PropTypes.string,
-  initialSpaceGuid: React.PropTypes.string
-};
-
+ServiceList.defaultProps = {
+  initialServices: []
+}

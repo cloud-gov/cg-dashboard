@@ -9,7 +9,9 @@ import React from 'react';
 import App from './app.jsx';
 import cfApi from './util/cf_api.js';
 import Login from './components/login.jsx';
+import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
+import serviceActions from './actions/service_actions.js';
 import Space from './components/space.jsx';
 import SpaceList from './components/space_list.jsx';
 
@@ -47,6 +49,16 @@ function space(orgGuid, spaceGuid, potentialPage) {
     </App>, mainEl);
 }
 
+function marketplace(orgGuid) {
+  serviceActions.fetchAllServices(orgGuid);
+  React.render(
+    <App>
+      <Marketplace
+        initialOrgGuid={ orgGuid } />
+    </App>,
+  mainEl);
+}
+
 function checkAuth() {
   cfApi.getAuthStatus();
 }
@@ -69,6 +81,9 @@ let routes = {
           },
           on: space
         }
+      },
+      '/marketplace': {
+        on: marketplace
       },
       on: org,
     }

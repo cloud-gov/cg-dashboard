@@ -29,7 +29,8 @@ function createPromise(res, err) {
 };
 
 describe('cfApi', function() {
-  var sandbox;
+  var sandbox,
+  errorFetchRes = { message: 'error' };
 
   beforeEach(() => {
     OrgStore._data = [];
@@ -39,6 +40,22 @@ describe('cfApi', function() {
   afterEach(() => {
     sandbox.restore();
   });
+
+  function fetchErrorSetup() {
+    var stub = sandbox.stub(http, 'get'),
+        spy = sandbox.spy(errorActions, 'errorFetch'),
+        expected = errorFetchRes;
+
+    let testPromise = createPromise(true, expected);
+    stub.returns(testPromise);
+    
+    return spy;
+  };
+
+  function assertFetchError(spy) {
+    expect(spy).toHaveBeenCalledOnce();
+    expect(spy).toHaveBeenCalledWith(errorFetchRes);
+  }
 
   describe('getAuthStatus()', function() {
     it('returns a promise', function() {
@@ -165,18 +182,11 @@ describe('cfApi', function() {
     });
 
     it('calls error action with error on failure', function() {
-      var stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(errorActions, 'errorFetch'),
-          expected = { status: 'internal error' };
+      var spy = fetchErrorSetup();
 
-      let testPromise = createPromise(true, expected);
+      cfApi.fetchOrgs();
 
-      stub.returns(testPromise);
-
-      let actual = cfApi.fetchOrgs();
-
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected);
+      assertFetchError(spy);
     });
   });
 
@@ -252,17 +262,11 @@ describe('cfApi', function() {
     });
 
     it('calls errorActions fetch error on failure', () => {
-      var stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(errorActions, 'errorFetch'),
-          expected = { message: 'error' };
+      var spy = fetchErrorSetup();
 
-      let testPromise = createPromise(true, expected);
+      cfApi.fetchSpace();
 
-      stub.returns(testPromise);
-
-      let actual = cfApi.fetchSpace();
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected);
+      assertFetchError(spy);
     });
   });
 
@@ -308,17 +312,11 @@ describe('cfApi', function() {
     });
 
     it('calls errorActions fetch error on failure', () => {
-      var stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(errorActions, 'errorFetch'),
-          expected = { message: 'error' };
+      var spy = fetchErrorSetup();
 
-      let testPromise = createPromise(true, expected);
+      cfApi.fetchServiceInstances();
 
-      stub.returns(testPromise);
-
-      let actual = cfApi.fetchServiceInstances();
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected);
+      assertFetchError(spy);
     });
   });
 
@@ -383,17 +381,11 @@ describe('cfApi', function() {
     });
 
     it('calls errorActions fetch error on failure', () => {
-      var stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(errorActions, 'errorFetch'),
-          expected = { message: 'error' };
+      var spy = fetchErrorSetup();
 
-      let testPromise = createPromise(true, expected);
+      cfApi.fetchApp();
 
-      stub.returns(testPromise);
-
-      let actual = cfApi.fetchApp();
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected);
+      assertFetchError(spy);
     });
   });
 
@@ -425,17 +417,11 @@ describe('cfApi', function() {
     });
 
     it('calls errorActions fetch error on failure', () => {
-      var stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(errorActions, 'errorFetch'),
-          expected = { message: 'error' };
+      var spy = fetchErrorSetup();
 
-      let testPromise = createPromise(true, expected);
+      cfApi.fetchSpaceUsers();
 
-      stub.returns(testPromise);
-
-      let actual = cfApi.fetchSpaceUsers();
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected);
+      assertFetchError(spy);
     });
   });
 
@@ -469,18 +455,11 @@ describe('cfApi', function() {
     });
 
     it('calls errorActions fetch error on failure', () => {
-      var stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(errorActions, 'errorFetch'),
-          expected = { message: 'error' };
+      var spy = fetchErrorSetup();
 
-      let testPromise = createPromise(true, expected);
+      cfApi.fetchOrgUsers();
 
-      stub.returns(testPromise);
-
-      let actual = cfApi.fetchOrgUsers();
-
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected);
+      assertFetchError(spy);
     });
   });
 
@@ -597,6 +576,43 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp(expectedUserGuid));
       expect(actual).toMatch(new RegExp(expectedOrgGuid));
       expect(actual).toMatch(new RegExp(expectedPermission));
+    });
+  });
+
+  describe('fetchAllServices()', function() {
+    it('should call http get request for services with org guid', function() {
+      var spy = sandbox.spy(http, 'get'),
+          expected = 'q98ahfxvjahfsdphu';
+
+      cfApi.fetchAllServices(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('services'));
+    });
+
+    it('calls received action with services from respons', function() {
+      var expectedGuid = 'mzxlvkj',
+          expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
+          stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(serviceActions, 'receivedServices');
+
+      let testPromise = createPromise(expected);
+
+      stub.returns(testPromise);
+
+      cfApi.fetchAllServices('alksdfj');
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expected.data.resources);
+    });
+    
+    it('calls errorActions fetch error on failure', function() {
+      var spy = fetchErrorSetup();
+
+      let actual = cfApi.fetchAllServices();
+
+      assertFetchError(spy);
     });
   });
 });

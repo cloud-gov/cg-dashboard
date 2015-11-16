@@ -17,6 +17,13 @@ export default {
     });
   },
 
+  receivedServices(services) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICES_RECEIVED,
+      services: services
+    });
+  },
+
   fetchAllInstances(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCES_FETCH,

@@ -170,5 +170,15 @@ export default {
                        '/' + userGuid).then((res) => {
       return res.response; 
     });
+  },
+
+  fetchAllServices(orgGuid) {
+    return http.get(APIV + '/organizations/' + orgGuid + '/services').then(
+    (res) => {
+      serviceActions.receivedServices(res.data.resources);
+    }, (err) => {
+      errorActions.errorFetch(err);
+    });
   }
+
 };

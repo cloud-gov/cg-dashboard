@@ -6,6 +6,7 @@ import { assertAction, setupViewSpy, setupServerSpy } from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
+import { wrapInRes, unwrapOfRes } from '../helpers.js';
 
 describe('serviceActions', function() {
   var sandbox;
@@ -28,6 +29,20 @@ describe('serviceActions', function() {
       serviceActions.fetchAllServices(expectedParams.orgGuid);
 
       assertAction(spy, serviceActionTypes.SERVICES_FETCH, expectedParams);
+    });
+  });
+
+  describe('receivedServices()', function() {
+    it('should dispatch a view event of type service fetch', function() {
+      var expected = [{ guid: 'adfzxcvz' }];
+      let expectedParams = {
+        services: wrapInRes(expected)
+      }
+      let spy = setupServerSpy(sandbox)
+
+      serviceActions.receivedServices(wrapInRes(expected));
+
+      assertAction(spy, serviceActionTypes.SERVICES_RECEIVED, expectedParams);
     });
   });
 

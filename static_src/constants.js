@@ -35,6 +35,10 @@ var spaceActionTypes = keymirror({
 });
 
 var serviceActionTypes = keymirror({
+  // Action to fetch all services (for marketplace) for an org.
+  SERVICES_FETCH: null,
+  // Action when all services for an org were received from the server.
+  SERVICES_RECEIVED: null,
   // Action to delete a single service instance.
   SERVICE_INSTANCE_DELETE: null,
   // Action when a single service instance was deleted on the server.

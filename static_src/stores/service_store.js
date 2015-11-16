@@ -15,32 +15,17 @@ class ServiceStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = [];
   }
+
   _registerToActions(action) {
     switch (action.type) {
-      case serviceActionTypes.SERVICE_INSTANCES_FETCH:
-        cfApi.fetchServiceInstances(action.spaceGuid);
+      case serviceActionTypes.SERVICES_FETCH:
+        cfApi.fetchAllServices(action.orgGuid);
         break;
 
-      case serviceActionTypes.SERVICE_INSTANCES_RECEIVED:
-        var updates = this.formatSplitResponse(action.serviceInstances);
-        this._data = updates;
+      case serviceActionTypes.SERVICES_RECEIVED:
+        var services = this.formatSplitResponse(action.services);
+        this._data = services;
         this.emitChange();
-        break;
-
-      case serviceActionTypes.SERVICE_INSTANCE_DELETE:
-        var toDelete = this.get(action.serviceInstanceGuid);
-        if (toDelete) {
-          cfApi.deleteUnboundServiceInstance(toDelete);
-        }
-        break;
-
-      case serviceActionTypes.SERVICE_INSTANCE_DELETED:
-        var deleted = this.get(action.serviceInstanceGuid);
-        if (deleted) {
-          var index = this._data.indexOf(deleted);
-          this._data.splice(index, 1);
-          this.emitChange();
-        }
         break;
 
       default:
