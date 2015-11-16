@@ -51,8 +51,6 @@ export default class ServiceInstanceList extends React.Component {
 
   render() {
     var content = <h4 className="test-none_message">No service instances</h4>;
-    let button = <Button label="Delete instance" 
-      onClickHandler={ this._handleDelete } />;
 
     if (this.state.serviceInstances.length) {
       content = (
