@@ -46,6 +46,39 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('fetchAllPlans()', function() {
+    it('should dispatch a view event with service guid', function() {
+      var expectedGuid = 'admxzcg',
+          expectedParams = {
+            serviceGuid: expectedGuid
+          };
+
+      let spy = setupViewSpy(sandbox)
+
+      serviceActions.fetchAllPlans(expectedGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_PLANS_FETCH,
+                   expectedParams);
+    });
+  });
+
+  describe('receivedPlans()', function() {
+    it('should dispatch a server event for received service plans with the plans',
+        function() {
+      var expectedServices = [{ guid: 'asdf', name: 'plan' }],
+          expectedParams = {
+            servicePlans: wrapInRes(expectedServices)
+          };
+
+      let spy = setupServerSpy(sandbox)
+
+      serviceActions.receivedPlans(wrapInRes(expectedServices));
+
+      assertAction(spy, serviceActionTypes.SERVICE_PLANS_RECEIVED,
+                   expectedParams);
+    });
+  });
+
   describe('fetchInstance()', function() {
     it('should dispatch a view event of type service instance fetch', function() {
       var expectedSpaceGuid = 'aksfdsaaa8899';
@@ -117,37 +150,6 @@ describe('serviceActions', function() {
       serviceActions.deletedInstance(expectedGuid);
 
       assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETED,
-                   expectedParams);
-    });
-  });
-
-  describe('fetchAllPlans()', function() {
-    it('should dispatch a view event with service guid', function() {
-      var expectedGuid = 'admxzcg',
-          expectedParams = {
-            serviceGuid: expectedGuid
-          };
-
-      let spy = setupViewSpy(sandbox)
-
-      serviceActions.fetchAllPlans(expectedGuid);
-
-      assertAction(spy, serviceActionTypes.SERVICE_PLANS_FETCH,
-                   expectedParams);
-    });
-
-    it('should dispatch a server event for received service plans with the plans',
-        function() {
-      var expectedServices = [{ guid: 'asdf' }],
-          expectedParams = {
-            servicePlans: expectedServices
-          };
-
-      let spy = setupServerSpy(sandbox)
-
-      serviceActions.receivedPlans(expectedServices);
-
-      assertAction(spy, serviceActionTypes.SERVICE_PLANS_RECEIVED,
                    expectedParams);
     });
   });

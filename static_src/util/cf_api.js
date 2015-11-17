@@ -179,6 +179,10 @@ export default {
     }, (err) => {
       errorActions.errorFetch(err);
     });
+  },
+
+  fetchAllServicePlans(serviceGuid) {
+
   }
 
 };
