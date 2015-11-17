@@ -1,6 +1,10 @@
 {
   "name": "tests",
   "version": "1.0.0",
+  "engines": {
+    "node": "4.2.2",
+    "npm": "2.14.x"
+  },
   "description": "test suite",
   "main": "null",
   "scripts": {
