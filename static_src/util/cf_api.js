@@ -182,7 +182,12 @@ export default {
   },
 
   fetchAllServicePlans(serviceGuid) {
-
+    return http.get(APIV + '/services/' + serviceGuid + '/service_plans').then(
+    (res) => {
+      serviceActions.receivedPlans(res.data.resources);
+    }, (err) => {
+      errorActions.errorFetch(err);
+    });
   }
 
 };
