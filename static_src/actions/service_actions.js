@@ -24,6 +24,20 @@ export default {
     });
   },
 
+  fetchAllPlans(serviceGuid) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_PLANS_FETCH,
+      serviceGuid: serviceGuid
+    });
+  },
+
+  receivedPlans(servicePlans) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_PLANS_RECEIVED,
+      servicePlans: servicePlans
+    });
+  },
+
   fetchAllInstances(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
