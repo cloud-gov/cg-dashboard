@@ -25,10 +25,12 @@ export default {
   },
 
   fetchAllPlans(serviceGuid) {
-    AppDispatcher.handleViewAction({
-      type: serviceActionTypes.SERVICE_PLANS_FETCH,
-      serviceGuid: serviceGuid
-    });
+    setTimeout(() => {
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_PLANS_FETCH,
+        serviceGuid: serviceGuid
+      });
+    }, 1);
   },
 
   receivedPlans(servicePlans) {

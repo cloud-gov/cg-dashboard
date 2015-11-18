@@ -6,7 +6,13 @@
 import React from 'react';
 import Reactable from 'reactable';
 
-var Table = Reactable.Table;
+import ServicePlanList from './service_plan_list.jsx';
+
+var Table = Reactable.Table,
+    Thead = Reactable.Thead,
+    Th = Reactable.Th,
+    Tr = Reactable.Tr,
+    Td = Reactable.Td;
 
 export default class ServiceList extends React.Component {
   constructor(props) {
@@ -40,9 +46,35 @@ export default class ServiceList extends React.Component {
     var content = <h4 className="test-none_message">No services</h4>;
     if (this.state.services.length) {
       content = (
-        <Table data={ this.rows } 
-          columns={ this.columns }
-          sortable={ true } className="table" />
+      <table className="table">
+        <thead>
+          { this.columns.map((column) => {
+            return (
+              <th className={ column.key }>
+                { column.label }
+              </th>
+            )
+          })}
+        </thead>
+        { this.rows.map((row) => {
+          return [
+          <tr key={ row.guid }>
+            { this.columns.map((rowcolumn) => {
+              return (
+                <td><span>
+                  { row[rowcolumn.key] }
+                </span></td>
+              )
+            })}
+          </tr>,
+          <tr colSpan="3">
+            <td colSpan="3">
+              <ServicePlanList initialServiceGuid={ row.guid } />
+            </td>
+          </tr>
+          ]
+        })}
+      </table>
       );
     }
 

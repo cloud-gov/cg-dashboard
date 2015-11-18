@@ -8,6 +8,7 @@ import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import { serviceActionTypes } from '../constants.js';
+import ServiceStore from './service_store.js';
 
 class ServicePlanStore extends BaseStore {
   constructor() {
@@ -25,6 +26,7 @@ class ServicePlanStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_PLANS_FETCH:
+        AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         cfApi.fetchAllServicePlans(action.serviceGuid);
         break;
 
