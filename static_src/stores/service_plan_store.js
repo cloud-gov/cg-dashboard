@@ -1,7 +1,7 @@
 
 /*
- * Store for services data. Will store and update services data on changes from
- * UI and server.
+ * Store for service plans data. Service plans belong to a service so there's
+ * separate functionality to get all plans under a particiular service. 
  */
 
 import AppDispatcher from '../dispatcher';
