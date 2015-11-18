@@ -31,7 +31,6 @@ export default class Marketplace extends React.Component {
   }
 
   _onChange = () => {
-    //debugger;
     this.setState(stateSetter());
   }
 
