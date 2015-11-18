@@ -17,14 +17,16 @@ import { wrapInRes, unwrapOfRes } from '../helpers.js';
 
 function createPromise(res, err) {
   // TODO figure out how to do this with actual Promise object.
-  return {
-    then: function(cb, errCb) {
-      if (!err) {
-        cb(res);
-      } else {
-        errCb(err);
-      }
+  var fakePromise = function(cb, errCb) {
+    if (!err) {
+      cb(res);
+    } else {
+      errCb(err);
     }
+  };
+  return {
+    then: fakePromise,
+    done: fakePromise
   }
 };
 
@@ -58,12 +60,6 @@ describe('cfApi', function() {
   }
 
   describe('getAuthStatus()', function() {
-    it('returns a promise', function() {
-      var actual = cfApi.getAuthStatus();
-
-      expect(actual.then).toBeTruthy();
-    });
-
     it('calls http get request for auth status', () => {
       var spy = sandbox.spy(http, 'get');
 

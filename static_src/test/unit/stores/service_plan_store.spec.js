@@ -81,6 +81,26 @@ describe('ServicePlanStore', function() {
       expect(actual).toEqual(expected[0]);
     });
 
+    it('should parse out the JSON in extra field', function() {
+      var expected = { amount: { usd: 0.1 }},
+          expectedGuid = 'adslkjfzcxv';
+
+      let plan = {
+        guid: expectedGuid,
+        extra: JSON.stringify(expected)
+      };
+
+      let testRes = wrapInRes([plan]);
+
+      serviceActions.receivedPlans(testRes);
+
+      let actual = ServicePlanStore.get(expectedGuid);
+
+      expect(actual).toBeTruthy();
+      expect(actual.guid).toEqual(expectedGuid);
+      expect(actual.extra).toEqual(expected);
+    });
+
     it('should do nothing if there are no service plans', function() {
       var spy = sandbox.spy(ServicePlanStore, 'emitChange');
 

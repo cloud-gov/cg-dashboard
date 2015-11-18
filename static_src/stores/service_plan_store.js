@@ -23,6 +23,16 @@ class ServicePlanStore extends BaseStore {
     });
   }
 
+  parseJson(entities, key) {
+    return entities.map((entity) => {
+      console.log('entity key', entity[key]);
+      if (entity[key]) {
+        entity[key] = JSON.parse(entity[key]);
+      }
+      return entity;
+    });
+  }
+
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_PLANS_FETCH:
@@ -33,6 +43,7 @@ class ServicePlanStore extends BaseStore {
       case serviceActionTypes.SERVICE_PLANS_RECEIVED:
         if (action.servicePlans) {
           var servicePlans = this.formatSplitResponse(action.servicePlans);
+          servicePlans = this.parseJson(servicePlans, 'extra')
           this._data = this._merge(this._data, servicePlans);
           this.emitChange();
         }

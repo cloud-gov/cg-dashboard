@@ -6,6 +6,7 @@
 import React from 'react';
 import Reactable from 'reactable';
 
+import Button from './button.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 
@@ -29,7 +30,8 @@ export default class ServicePlanList extends React.Component {
     super(props);
     this.props = props;
     this.state = {
-      serviceGuid: props.initialServiceGuid
+      serviceGuid: props.initialServiceGuid,
+      servicePlans: []
     };
   }
 
@@ -87,7 +89,11 @@ export default class ServicePlanList extends React.Component {
               <Td column="Name"><span>{ plan.name }</span></Td>
               <Td column="Free">{ plan.free }</Td>
               <Td column="Description">{ plan.updated_at }</Td>
-              <Td column="Cost">{ plan.extra.costs.amount.usd || 0.00 }</Td>
+              <Td column="Cost">
+                <span>
+                  ${ (plan.extra.costs[0].amount.usd || 0).toFixed(2) } monthly
+                </span>
+              </Td>
               <Td column="Actions">
                 <Button 
                   onClickHandler={ this._handleAdd.bind(this, plan.guid) } 
