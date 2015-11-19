@@ -17,14 +17,16 @@ import { wrapInRes, unwrapOfRes } from '../helpers.js';
 
 function createPromise(res, err) {
   // TODO figure out how to do this with actual Promise object.
-  return {
-    then: function(cb, errCb) {
-      if (!err) {
-        cb(res);
-      } else {
-        errCb(err);
-      }
+  var fakePromise = function(cb, errCb) {
+    if (!err) {
+      cb(res);
+    } else {
+      errCb(err);
     }
+  };
+  return {
+    then: fakePromise,
+    done: fakePromise
   }
 };
 
@@ -58,12 +60,6 @@ describe('cfApi', function() {
   }
 
   describe('getAuthStatus()', function() {
-    it('returns a promise', function() {
-      var actual = cfApi.getAuthStatus();
-
-      expect(actual.then).toBeTruthy();
-    });
-
     it('calls http get request for auth status', () => {
       var spy = sandbox.spy(http, 'get');
 
@@ -592,11 +588,12 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('services'));
     });
 
-    it('calls received action with services from respons', function() {
+    it('calls received action with services from response', function() {
       var expectedGuid = 'mzxlvkj',
           expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
           stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(serviceActions, 'receivedServices');
+          spy = sandbox.stub(serviceActions, 'receivedServices').returns(
+            function() { });
 
       let testPromise = createPromise(expected);
 
@@ -611,6 +608,44 @@ describe('cfApi', function() {
       var spy = fetchErrorSetup();
 
       let actual = cfApi.fetchAllServices();
+
+      assertFetchError(spy);
+    });
+  });
+
+  describe('fetchAllServicePlans()', function() {
+    it('should call http get request for service plans with service guid',
+        function() {
+      var spy = sandbox.spy(http, 'get'),
+          expected = 'q98ahfxvjahfsdphu';
+
+      cfApi.fetchAllServicePlans(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('service_plans'));
+    });
+
+    it('calls received action with services from response', function() {
+      var expectedGuid = 'mzxlvkj',
+          expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
+          stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy(serviceActions, 'receivedPlans');
+
+      let testPromise = createPromise(expected);
+
+      stub.returns(testPromise);
+
+      cfApi.fetchAllServicePlans('alksdfj');
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expected.data.resources);
+    });
+    
+    it('calls errorActions fetch error on failure', function() {
+      var spy = fetchErrorSetup();
+
+      let actual = cfApi.fetchAllServicePlans();
 
       assertFetchError(spy);
     });

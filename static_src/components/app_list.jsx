@@ -9,6 +9,7 @@ var Table = Reactable.Table,
 
 function stateSetter(props) {
   var space = SpaceStore.get(props.initialSpaceGuid);
+
   return {
     apps: space && space.apps || [],
     currentOrgGuid: props.initialOrgGuid,

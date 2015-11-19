@@ -39,6 +39,10 @@ var serviceActionTypes = keymirror({
   SERVICES_FETCH: null,
   // Action when all services for an org were received from the server.
   SERVICES_RECEIVED: null,
+  // Action to fetch all service plans for a certain service.
+  SERVICE_PLANS_FETCH: null,
+  // Action when all service plans for a service were received from the server.
+  SERVICE_PLANS_RECEIVED: null,
   // Action to delete a single service instance.
   SERVICE_INSTANCE_DELETE: null,
   // Action when a single service instance was deleted on the server.

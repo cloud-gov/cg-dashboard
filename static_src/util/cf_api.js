@@ -1,5 +1,6 @@
 
 import http from 'axios';
+import 'promises-done-polyfill';
 
 import appActions from '../actions/app_actions.js';
 import errorActions from '../actions/error_actions.js';
@@ -14,7 +15,7 @@ const APIV = '/v2';
 
 export default {
   getAuthStatus() {
-    return http.get(APIV + '/authstatus').then((res) => {
+    return http.get(APIV + '/authstatus').done((res) => {
       loginActions.receivedStatus(res.data.status);
     }, (err) => {
       loginActions.receivedStatus(false);
@@ -69,7 +70,7 @@ export default {
   },
 
   fetchOrgs() {
-    return http.get(APIV + '/organizations').then((res) => {
+    return http.get(APIV + '/organizations').done((res) => {
       orgActions.receivedOrgs(res.data.resources);
     }, (err) => {
       errorActions.errorFetch(err);
@@ -79,7 +80,7 @@ export default {
   fetchSpace(spaceGuid) {
     return http.get(
       APIV + `/spaces/${spaceGuid}/summary`)
-        .then((res) => {
+        .done((res) => {
       spaceActions.receivedSpace(res.data);
     }, (err) => {
       errorActions.errorFetch(err);
@@ -87,7 +88,7 @@ export default {
   },
 
   fetchServiceInstances(spaceGuid) {
-    return http.get(APIV + `/spaces/${ spaceGuid }/service_instances`).then(
+    return http.get(APIV + `/spaces/${ spaceGuid }/service_instances`).done(
         (res) => {
       serviceActions.receivedInstances(res.data.resources);
     }, (err) => {
@@ -98,7 +99,7 @@ export default {
   deleteUnboundServiceInstance(serviceInstance) {
     return http.delete(APIV + 
         `/service_instances/${ serviceInstance.url }`)
-    .then((res) => {
+    .done((res) => {
       serviceActions.deletedInstance(serviceInstance.guid);
     }, (err) => {
       // Do nothing.
@@ -106,7 +107,7 @@ export default {
   },
 
   fetchApp(appGuid) {
-    return http.get(APIV + `/apps/${ appGuid }/summary`).then((res) => {
+    return http.get(APIV + `/apps/${ appGuid }/summary`).done((res) => {
       appActions.receivedApp(res.data);
     }, (err) => {
       errorActions.errorFetch(err);
@@ -119,7 +120,7 @@ export default {
    * @param {Number} spaceGuid - The guid of the space that the users belong to.
    */
   fetchSpaceUsers(spaceGuid) {
-    return http.get(APIV + `/spaces/${ spaceGuid }/user_roles`).then((res) => {
+    return http.get(APIV + `/spaces/${ spaceGuid }/user_roles`).done((res) => {
       userActions.receivedSpaceUsers(res.data.resources, spaceGuid);
     }, (err) => {
       errorActions.errorFetch(err);
@@ -132,7 +133,7 @@ export default {
    * @param {Number} orgGuid - The guid of the org that the users belong to.
    */
   fetchOrgUsers(orgGuid) {
-    return http.get(APIV + `/organizations/${ orgGuid }/users`).then((res) => {
+    return http.get(APIV + `/organizations/${ orgGuid }/users`).done((res) => {
       userActions.receivedOrgUsers(res.data.resources, orgGuid);
     }, (err) => {
       errorActions.errorFetch(err);
@@ -141,7 +142,7 @@ export default {
 
   deleteUser(userGuid, orgGuid) {
     return http.delete(APIV + '/organizations/' + orgGuid + '/users/' + userGuid)
-        .then((res) => {
+        .done((res) => {
       userActions.deletedUser(userGuid, orgGuid);
     }, (err) => {
       userActions.errorRemoveUser(userGuid, err.data);
@@ -173,9 +174,18 @@ export default {
   },
 
   fetchAllServices(orgGuid) {
-    return http.get(APIV + '/organizations/' + orgGuid + '/services').then(
+    return http.get(APIV + '/organizations/' + orgGuid + '/services').done(
     (res) => {
       serviceActions.receivedServices(res.data.resources);
+    }, (err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
+  fetchAllServicePlans(serviceGuid) {
+    return http.get(APIV + '/services/' + serviceGuid + '/service_plans').done(
+    (res) => {
+      serviceActions.receivedPlans(res.data.resources);
     }, (err) => {
       errorActions.errorFetch(err);
     });
