@@ -85,15 +85,16 @@ export default class ServicePlanList extends React.Component {
         { this.state.servicePlans.map((plan) => {
           return (
             <Tr key={ plan.guid }>
-              <Td column="Name"><span>{ plan.name }</span></Td>
-              <Td column="Free">{ plan.free }</Td>
-              <Td column="Description">{ plan.updated_at }</Td>
-              <Td column="Cost">
+              <Td column={ this.columns[0].label }>
+                <span>{ plan.name }</span></Td>
+              <Td column={ this.columns[1].label }>{ plan.free }</Td>
+              <Td column={ this.columns[2].label }>{ plan.updated_at }</Td>
+              <Td column={ this.columns[3].label }>
                 <span>
                   ${ (plan.extra.costs[0].amount.usd || 0).toFixed(2) } monthly
                 </span>
               </Td>
-              <Td column="Actions">
+              <Td column={ this.columns[4].label }>
                 <Button 
                   onClickHandler={ this._handleAdd.bind(this, plan.guid) } 
                   label="create">
