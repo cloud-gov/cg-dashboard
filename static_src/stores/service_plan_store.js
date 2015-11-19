@@ -25,7 +25,6 @@ class ServicePlanStore extends BaseStore {
 
   parseJson(entities, key) {
     return entities.map((entity) => {
-      console.log('entity key', entity[key]);
       if (entity[key]) {
         entity[key] = JSON.parse(entity[key]);
       }
@@ -35,6 +34,14 @@ class ServicePlanStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
+      case serviceActionTypes.SERVICES_RECEIVED:
+        AppDispatcher.waitFor([ServiceStore.dispatchToken]);
+        var services = this.formatSplitResponse(action.services);
+        for (let service of services) {
+          cfApi.fetchAllServicePlans(service.guid);
+        }
+        break;
+
       case serviceActionTypes.SERVICE_PLANS_FETCH:
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         cfApi.fetchAllServicePlans(action.serviceGuid);

@@ -37,7 +37,6 @@ export default class ServicePlanList extends React.Component {
 
   componentWillMount() {
     ServicePlanStore.addChangeListener(this._onChange);
-    serviceActions.fetchAllPlans(this.state.serviceGuid);
   }
 
   componentWillReceiveProps(nextProps) {
