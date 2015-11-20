@@ -109,6 +109,21 @@ export default {
                           serviceActions.receivedInstances);
   },
 
+  createServiceInstance(name, spaceGuid, servicePlanGuid) {
+    var payload = {
+      name: name,
+      spaceGuid: spaceGuid,
+      servicePlanGuid: servicePlanGuid
+    };
+
+    return http.post('/service_instances?accepts_incomplete=true', payload)
+    .done((res) => {
+      serviceActions.createdInstance(res.data);
+    }, (err) => {
+      serviceActions.errorCreateInstance(err);
+    });
+  },
+
   deleteUnboundServiceInstance(serviceInstance) {
     return http.delete(APIV + 
         `/service_instances/${ serviceInstance.url }`)

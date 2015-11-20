@@ -61,6 +61,10 @@ export default {
     });
   },
 
+  errorCreateInstance(err) {
+
+  },
+
   receivedInstances(serviceInstances) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,

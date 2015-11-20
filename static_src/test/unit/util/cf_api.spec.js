@@ -296,6 +296,86 @@ describe('cfApi', function() {
     });
   });
 
+  describe('createServiceInstance()', function() {
+    var expectedName = 'name',
+        expectedSpaceGuid = 'vzjck8zv9czjck',
+        expectedServicePlanGuid = 'vcmn234adf';
+
+    it('should call an http create for service_instance url and payload',
+        function() {
+      var expectedName = 'nameA',
+          expectedSpaceGuid = 'adjszc98bv7zxcf',
+          expectedServicePlanGuid = 'aldkfjbnzx1231',
+          spy = sandbox.spy(http, 'post');
+
+      let expected = {
+        name: expectedName,
+        spaceGuid: expectedSpaceGuid,
+        servicePlanGuid: expectedServicePlanGuid
+      };
+
+      cfApi.createServiceInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('service_instances'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(expected);
+    });
+
+    it('should add an accepts_incomplete param in the request', function() {
+      var spy = sandbox.spy(http, 'post');
+
+      cfApi.createServiceInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
+      
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('accepts_incomplete'));
+    });
+
+    it('should call service action for instance created on success', function() {
+      var stub = sandbox.stub(http, 'post'),
+          spy = sandbox.spy(serviceActions, 'createdInstance'),
+          expected = { data: { guid: 'znvmjahskf' }};
+
+      let testPromise = createPromise(expected);
+      stub.returns(testPromise);
+
+      cfApi.createServiceInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toEqual(expected.data);
+    });
+
+    it('should call an service error action on failure', function() {
+      var stub = sandbox.stub(http, 'post'),
+          spy = sandbox.stub(serviceActions, 'errorCreateInstance'),
+          expectedErr = { status: 'error' };
+
+      let testPromise = createPromise(true, expectedErr);
+      stub.returns(testPromise);
+
+      cfApi.createServiceInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toEqual(expectedErr);
+    });
+  });
+
   describe('deleteUnboundServiceInstance()', function() {
     it('should call http delete request on service route with service guid',
         function() {
