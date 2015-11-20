@@ -36,6 +36,18 @@ class ServiceInstanceStore extends BaseStore {
         );
         break;
 
+      case serviceActionTypes.SERVICE_INSTANCE_CREATED:
+        var existing = this.get(action.serviceInstance.guid);
+        if (existing) {
+          //this.update
+          existing = Object.assign(existing, action.serviceInstance);
+
+        } else {
+          this._data.push(action.serviceInstance);
+        }
+        this.emitChange();
+        break;
+
       case serviceActionTypes.SERVICE_INSTANCE_DELETE:
         var toDelete = this.get(action.serviceInstanceGuid);
         if (toDelete) {
