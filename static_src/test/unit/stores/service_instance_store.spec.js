@@ -5,6 +5,7 @@ import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import ServiceInstanceStore from '../../../stores/service_instance_store.js';
+import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
 
 describe('ServiceInstanceStore', function() {
@@ -68,6 +69,24 @@ describe('ServiceInstanceStore', function() {
       });
 
       expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on service instance create', function() {
+    it('should call an api method to create a service instance', function() {
+      var spy = sandbox.spy(cfApi, 'createServiceInstance'),
+          expectedName = 'blah',
+          expectedSpaceGuid = 'q9208fhdasl',
+          expectedServicePlanGuid = 'a098fduadshf2';
+
+      serviceActions.createInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(expectedName, expectedSpaceGuid,
+                                       expectedServicePlanGuid);
     });
   });
 

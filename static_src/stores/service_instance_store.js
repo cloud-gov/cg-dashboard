@@ -28,6 +28,14 @@ class ServiceInstanceStore extends BaseStore {
         this.emitChange();
         break;
 
+      case serviceActionTypes.SERVICE_INSTANCE_CREATE:
+        cfApi.createServiceInstance(
+          action.name,
+          action.spaceGuid,
+          action.servicePlanGuid
+        );
+        break;
+
       case serviceActionTypes.SERVICE_INSTANCE_DELETE:
         var toDelete = this.get(action.serviceInstanceGuid);
         if (toDelete) {
