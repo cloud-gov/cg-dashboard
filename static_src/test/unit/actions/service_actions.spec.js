@@ -96,6 +96,47 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('createInstance()', function() {
+    it(`should dispatch a view event of type service instance create with name
+        space guid, and service plan guid`, function() {
+      var expectedSpaceGuid = 'alksjdfvcbxzzz',
+          expectedName = 'service',
+          expectedServicePlanGuid = '78900987adfasda';
+
+      let expectedParams = {
+        name: expectedName,
+        spaceGuid: expectedSpaceGuid,
+        servicePlanGuid: expectedServicePlanGuid
+      };
+      let spy = setupViewSpy(sandbox);
+
+      serviceActions.createInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE,
+                   expectedParams);
+    });
+  });
+
+  describe('createdInstance()', function() {
+    it('should dispatch a server event of type instance created with service',
+        function() {
+      var expectedInstance = { guid: 'asdfas' };
+
+      let expectedParams = {
+        serviceInstance: expectedInstance
+      };
+      let spy = setupServerSpy(sandbox);
+
+      serviceActions.createdInstance(expectedInstance);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATED,
+                   expectedParams);
+    });
+  });
+
   describe('receivedInstance()', function() {
     it('should dispatch a server event of type service instance resv with ' +
        'the service instances', function() {

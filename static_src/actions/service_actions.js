@@ -45,6 +45,22 @@ export default {
     });
   },
 
+  createInstance(name, spaceGuid, servicePlanGuid) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CREATE,
+      name: name,
+      spaceGuid: spaceGuid,
+      servicePlanGuid: servicePlanGuid
+    });
+  },
+
+  createdInstance(serviceInstance) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CREATED,
+      serviceInstance: serviceInstance
+    });
+  },
+
   receivedInstances(serviceInstances) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,

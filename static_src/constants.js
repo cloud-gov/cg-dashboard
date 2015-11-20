@@ -50,7 +50,11 @@ var serviceActionTypes = keymirror({
   // Action to fetch a all service instances from the server.
   SERVICE_INSTANCES_FETCH: null,
   // Action when all service instances were received from the server. 
-  SERVICE_INSTANCES_RECEIVED: null
+  SERVICE_INSTANCES_RECEIVED: null,
+  // Action to create a service instance.
+  SERVICE_INSTANCE_CREATE: null,
+  // Action when a service instance was created on the server.
+  SERVICE_INSTANCE_CREATED: null
 });
 
 var appActionTypes = keymirror({
