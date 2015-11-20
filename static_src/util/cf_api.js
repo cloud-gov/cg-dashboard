@@ -105,12 +105,8 @@ export default {
   },
 
   fetchServiceInstances(spaceGuid) {
-    return http.get(APIV + `/spaces/${ spaceGuid }/service_instances`).done(
-        (res) => {
-      serviceActions.receivedInstances(res.data.resources);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchMany(`/spaces/${ spaceGuid }/service_instances`,
+                          serviceActions.receivedInstances);
   },
 
   deleteUnboundServiceInstance(serviceInstance) {
@@ -124,11 +120,8 @@ export default {
   },
 
   fetchApp(appGuid) {
-    return http.get(APIV + `/apps/${ appGuid }/summary`).done((res) => {
-      appActions.receivedApp(res.data);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchOne(`/apps/${ appGuid }/summary`,
+                          appActions.receivedApp);
   },
 
   /**
@@ -137,11 +130,8 @@ export default {
    * @param {Number} spaceGuid - The guid of the space that the users belong to.
    */
   fetchSpaceUsers(spaceGuid) {
-    return http.get(APIV + `/spaces/${ spaceGuid }/user_roles`).done((res) => {
-      userActions.receivedSpaceUsers(res.data.resources, spaceGuid);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchMany(`/spaces/${ spaceGuid }/user_roles`,
+                          userActions.receivedSpaceUsers);
   },
 
   /**
@@ -150,11 +140,8 @@ export default {
    * @param {Number} orgGuid - The guid of the org that the users belong to.
    */
   fetchOrgUsers(orgGuid) {
-    return http.get(APIV + `/organizations/${ orgGuid }/users`).done((res) => {
-      userActions.receivedOrgUsers(res.data.resources, orgGuid);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchMany(`/organizations/${ orgGuid }/users`,
+                          userActions.receivedOrgUsers);
   },
 
   deleteUser(userGuid, orgGuid) {
@@ -191,21 +178,13 @@ export default {
   },
 
   fetchAllServices(orgGuid) {
-    return http.get(APIV + '/organizations/' + orgGuid + '/services').done(
-    (res) => {
-      serviceActions.receivedServices(res.data.resources);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchMany('/organizations/' + orgGuid + '/services',
+                          serviceActions.receivedServices);
   },
 
   fetchAllServicePlans(serviceGuid) {
-    return http.get(APIV + '/services/' + serviceGuid + '/service_plans').done(
-    (res) => {
-      serviceActions.receivedPlans(res.data.resources);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchMany('/services/' + serviceGuid + '/service_plans',
+                          serviceActions.receivedPlans);
   }
 
 };
