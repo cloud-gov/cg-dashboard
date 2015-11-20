@@ -14,6 +14,28 @@ import userActions from '../actions/user_actions.js';
 const APIV = '/v2';
 
 export default {
+  version: APIV,
+
+  fetch(url, action, multiple) {
+    return http.get(APIV + url).done((res) => {
+      if (!multiple) {
+        action(res.data)
+      } else {
+        action(res.data.resources);
+      }
+    }, (err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
+  fetchOne(url, action) {
+    return this.fetch(url, action);
+  },
+
+  fetchMany(url, action) {
+    return this.fetch(url, action, true);
+  },
+
   getAuthStatus() {
     return http.get(APIV + '/authstatus').done((res) => {
       loginActions.receivedStatus(res.data.status);
@@ -78,13 +100,8 @@ export default {
   },
 
   fetchSpace(spaceGuid) {
-    return http.get(
-      APIV + `/spaces/${spaceGuid}/summary`)
-        .done((res) => {
-      spaceActions.receivedSpace(res.data);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchOne(`spaces/${ spaceGuid }/summary`,
+                         spaceActions.receivedSpace);
   },
 
   fetchServiceInstances(spaceGuid) {
