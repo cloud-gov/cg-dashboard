@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+import CreateServiceInstance from './create_service_instance.jsx';
 import ServiceList from './service_list.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceStore from '../stores/service_store.js';
@@ -41,6 +42,9 @@ export default class Marketplace extends React.Component {
           <h3 className="text-center">Marketplace</h3>
         </div>
         <ServiceList initialServices={ this.state.services } />
+        <CreateServiceInstance
+          service
+        />
       </div>
     );
   }
