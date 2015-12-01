@@ -51,6 +51,8 @@ var serviceActionTypes = keymirror({
   SERVICE_INSTANCES_FETCH: null,
   // Action when all service instances were received from the server. 
   SERVICE_INSTANCES_RECEIVED: null,
+  // Action to open UI to create a service instance.
+  SERVICE_INSTANCE_CREATE_DIALOG: null,
   // Action to create a service instance.
   SERVICE_INSTANCE_CREATE: null,
   // Action when a service instance was created on the server.

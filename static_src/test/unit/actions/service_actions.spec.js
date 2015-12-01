@@ -96,6 +96,26 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('createInstanceDialog()', function() {
+    it(`should dispatch a view event of type create instance dialog with the
+        service guid and service plan guid`, function() {
+      var expectedServiceGuid = 'wqphjhajkajkhadjhfd',
+          expectedServicePlanGuid = 'fp2ajkdsfadgh32fasd';
+
+      let expectedParams = {
+        servicePlanGuid: expectedServicePlanGuid,
+        serviceGuid: expectedServiceGuid
+      };
+      let spy = setupViewSpy(sandbox);
+
+      serviceActions.createInstanceDialog(expectedServiceGuid,
+        expectedServicePlanGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE_DIALOG,
+                   expectedParams);
+    });
+  });
+
   describe('createInstance()', function() {
     it(`should dispatch a view event of type service instance create with name
         space guid, and service plan guid`, function() {

@@ -45,6 +45,14 @@ export default {
     });
   },
 
+  createInstanceDialog(serviceGuid, planGuid) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CREATE_DIALOG,
+      serviceGuid: serviceGuid,
+      servicePlanGuid: planGuid
+    });
+  },
+
   createInstance(name, spaceGuid, servicePlanGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE,
