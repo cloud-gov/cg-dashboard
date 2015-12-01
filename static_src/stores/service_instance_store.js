@@ -8,12 +8,19 @@ import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import { serviceActionTypes } from '../constants.js';
+import ServiceStore from './service_store.js';
+import ServicePlanStore from './service_plan_store.js';
 
 class ServiceInstanceStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = [];
+    this._createInstanceForm = null;
+  }
+
+  get createInstanceForm() {
+    return this._createInstanceForm;
   }
 
   _registerToActions(action) {
@@ -25,6 +32,14 @@ class ServiceInstanceStore extends BaseStore {
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED:
         var services = this.formatSplitResponse(action.serviceInstances);
         this._data = services;
+        this.emitChange();
+        break;
+
+      case serviceActionTypes.SERVICE_INSTANCE_CREATE_DIALOG:
+        this._createInstanceForm = {
+          service: ServiceStore.get(action.serviceGuid),
+          servicePlan: ServicePlanStore.get(action.servicePlanGuid)
+        };
         this.emitChange();
         break;
 
@@ -45,6 +60,7 @@ class ServiceInstanceStore extends BaseStore {
         } else {
           this._data.push(action.serviceInstance);
         }
+        this._createInstanceForm = null;
         this.emitChange();
         break;
 

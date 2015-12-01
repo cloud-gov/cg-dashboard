@@ -7,6 +7,8 @@ import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import ServiceInstanceStore from '../../../stores/service_instance_store.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
+import ServiceStore from '../../../stores/service_store.js';
+import ServicePlanStore from '../../../stores/service_plan_store.js';
 
 describe('ServiceInstanceStore', function() {
   var sandbox;
@@ -72,6 +74,33 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
+  describe('on service instance create ui', function() {
+    it('should set createInstanceForm to object with service and plan from stores',
+        function() {
+      var expectedService = { guid: 'adsf3232222a' },
+          expectedServicePlan = { guid: 'zxvczvqe' };
+
+      sandbox.stub(ServiceStore, 'get').returns(expectedService);
+      sandbox.stub(ServicePlanStore, 'get').returns(expectedServicePlan);
+      
+      serviceActions.createInstanceDialog('adfkjvnzxczv', 'aldsfjalqwe');
+
+      let actual = ServiceInstanceStore.createInstanceForm;
+
+      expect(actual).toBeTruthy();
+      expect(actual.service).toEqual(expectedService);
+      expect(actual.servicePlan).toEqual(expectedServicePlan);
+    });
+
+    it('should emit a change event', function() {
+      var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+
+      serviceActions.createInstanceDialog('adfkjvnzxczv', 'aldsfjalqwe');
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('on service instance create', function() {
     it('should call an api method to create a service instance', function() {
       var spy = sandbox.spy(cfApi, 'createServiceInstance'),
@@ -124,6 +153,14 @@ describe('ServiceInstanceStore', function() {
       serviceActions.createdInstance({ guid: 'adsfavzxc' });
 
       expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should set form to nothing', function() {
+      ServiceInstanceStore._createInstanceForm = { service: {} };
+      expect(ServiceInstanceStore.createInstanceForm).toBeTruthy();
+      serviceActions.createdInstance({ guid: 'asdf9a8fasss', name: 'nameA' });
+
+      expect(ServiceInstanceStore.createInstanceForm).toBeFalsy();
     });
   });
 
