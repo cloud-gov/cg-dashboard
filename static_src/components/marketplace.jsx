@@ -4,13 +4,18 @@
 
 import React from 'react';
 
-import CreateServiceInstance from './create_service_instance.jsx';
 import ServiceList from './service_list.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceStore from '../stores/service_store.js';
+import ServicePlanStore from '../stores/service_plan_store.js';
 
 function stateSetter() {
   var services = ServiceStore.getAll();
+
+  services.forEach(function(service) {
+    var plan = ServicePlanStore.getAllFromService(service.guid);
+    service.servicePlans = plan; 
+  });
 
   return {
     services: services
@@ -29,6 +34,7 @@ export default class Marketplace extends React.Component {
 
   componentDidMount() {
     ServiceStore.addChangeListener(this._onChange);
+    ServicePlanStore.addChangeListener(this._onChange);
   }
 
   _onChange = () => {
@@ -42,9 +48,6 @@ export default class Marketplace extends React.Component {
           <h3 className="text-center">Marketplace</h3>
         </div>
         <ServiceList initialServices={ this.state.services } />
-        <CreateServiceInstance
-          service
-        />
       </div>
     );
   }

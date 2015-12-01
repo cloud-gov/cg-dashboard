@@ -69,7 +69,8 @@ export default class ServiceList extends React.Component {
           </tr>,
           <tr colSpan="3">
             <td colSpan="3">
-              <ServicePlanList initialServiceGuid={ row.guid } />
+            <ServicePlanList initialServiceGuid={ row.guid }
+                initialServicePlans={ row.servicePlans } />
             </td>
           </tr>
           ]

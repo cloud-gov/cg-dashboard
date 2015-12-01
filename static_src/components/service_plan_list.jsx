@@ -16,36 +16,21 @@ var Table = Reactable.Table,
     Tr = Reactable.Tr,
     Td = Reactable.Td;
 
-function stateSetter(serviceGuid) {
-  var plans = ServicePlanStore.getAllFromService(serviceGuid);
-
-  return {
-    serviceGuid: serviceGuid,
-    servicePlans: plans
-  }
-}
-
 export default class ServicePlanList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
     this.state = {
       serviceGuid: props.initialServiceGuid,
-      servicePlans: []
+      servicePlans: this.props.initialServicePlans
     };
   }
 
-  componentWillMount() {
-    ServicePlanStore.addChangeListener(this._onChange);
-  }
-
   componentWillReceiveProps(nextProps) {
-    this.setState({serviceGuid: nextProps.initialServiceGuid});
-    this.setState(stateSetter(this.state.serviceGuid));
-  }
-
-  _onChange = () => {
-    this.setState(stateSetter(this.state.serviceGuid));
+    this.setState({
+      serviceGuid: nextProps.initialServiceGuid,
+      servicePlans: nextProps.initialServicePlans
+    });
   }
 
   _handleAdd = (planGuid) => {
@@ -117,5 +102,10 @@ export default class ServicePlanList extends React.Component {
 }
 
 ServicePlanList.propTypes = {
-  initialServiceGuid: React.PropTypes.string
+  initialServiceGuid: React.PropTypes.string,
+  initialServicePlans: React.PropTypes.array
+};
+
+ServicePlanList.defaultProps = {
+  initialServicePlans: []
 };
