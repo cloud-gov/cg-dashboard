@@ -50,6 +50,7 @@ function space(orgGuid, spaceGuid, potentialPage) {
 }
 
 function marketplace(orgGuid) {
+  cfApi.fetchOrg(orgGuid);
   cfApi.fetchAllServices(orgGuid);
   React.render(
     <App>

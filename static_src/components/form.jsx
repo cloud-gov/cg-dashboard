@@ -7,7 +7,7 @@ var currid = 0;
 
 function nextId() {
   currid += 1; 
-  reutrn currid;
+  return currid;
 }
 
 export class Form extends React.Component {
@@ -20,7 +20,7 @@ export class Form extends React.Component {
 
   render() {
     return (
-      <form action={ this.props.action } method={ this.props.method }
+      <form action={ this.props.action } method={ this.props.method }>
         <fieldset>
           { this.props.children }
         </fieldset>
@@ -43,7 +43,7 @@ export class FormElement extends React.Component {
     this.props = props;
     this.state = {};
     if (!this.props.key) {
-      this.state.id = nextId()
+      this.state.id = nextId();
     }
   }
 
@@ -74,7 +74,7 @@ export class FormText extends FormElement {
 
   render() {
     return (
-      <div>
+      <div className="form-group">
         <label for={ this.key }>{ this.props.label }</label>
         <input type="text" id={ this.key } />
       </div>
@@ -91,9 +91,9 @@ export class FormSelect extends FormElement {
 
   render() {
     return (
-      <div>
+      <div className="form-group">
         <label for={ this.key }>{ this.props.label }</label>
-        <select name={ this.key } id={ this.key }>
+        <select className="form-control" name={ this.key } id={ this.key }>
           { this.props.options.map((option) => {
             return (
               <option value={ option.value }>{ option.label }</option>

@@ -6,7 +6,7 @@ import React from 'react';
 
 import Box from './box.jsx';
 import Button from './button.jsx';
-import { Form, FormText, FormSelect } from './form.jsx';
+import { Form, FormText, FormSelect, FormElement } from './form.jsx';
 import SpaceStore from '../stores/space_store.js';
 import serviceActions from '../actions/service_actions.js';
 import serviceInstanceStore from '../stores/service_instance_store.js';
@@ -24,11 +24,13 @@ export default class CreateServiceInstance extends React.Component {
     super(props);
     this.props = props;
     this.state = {
+      spaces: []
     };
   }
 
   componentDidMount() {
     SpaceStore.addChangeListener(this._onChange);
+    this.setState(stateSetter());
   }
 
   _onChange = () => {
@@ -40,14 +42,16 @@ export default class CreateServiceInstance extends React.Component {
   }
 
   get servicePlanName() {
-    return this.props.servicePlan.label || 'unknown';
+    return this.props.servicePlan.name || 'unknown';
   }
 
   render() {
+    console.log(this.state);
+    console.log(this.props);
     return (
       <Box>
-        <h4>Create service instance for { this.serviceName } using
-          { this.servicePlanName } plan.
+      <h4>Create service instance for { this.serviceName } using { 
+          this.servicePlanName } plan.
         </h4>
 
         <Form action="/service_instances" method="post">
@@ -72,6 +76,6 @@ CreateServiceInstance.propTypes = {
   servicePlan: React.PropTypes.object.isRequired
 };
 
-createServiceInstance.defaultProps = {
+CreateServiceInstance.defaultProps = {
   service: {}
 }

@@ -36,6 +36,7 @@ class ServiceInstanceStore extends BaseStore {
         break;
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_DIALOG:
+        AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         this._createInstanceForm = {
           service: ServiceStore.get(action.serviceGuid),
           servicePlan: ServicePlanStore.get(action.servicePlanGuid)
