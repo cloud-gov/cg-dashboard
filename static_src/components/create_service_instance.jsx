@@ -46,8 +46,6 @@ export default class CreateServiceInstance extends React.Component {
   }
 
   render() {
-    console.log(this.state);
-    console.log(this.props);
     return (
       <Box>
       <h4>Create service instance for { this.serviceName } using { 

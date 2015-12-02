@@ -69,13 +69,13 @@ export class FormText extends FormElement {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {};
+    this.state = this.state || {};
   }
 
   render() {
     return (
       <div className="form-group">
-        <label for={ this.key }>{ this.props.label }</label>
+        <label htmlFor={ this.key }>{ this.props.label }</label>
         <input type="text" id={ this.key } />
       </div>
     );
@@ -86,13 +86,13 @@ export class FormSelect extends FormElement {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {};
+    this.state = this.state || {};
   }
 
   render() {
     return (
       <div className="form-group">
-        <label for={ this.key }>{ this.props.label }</label>
+        <label htmlFor={ this.key }>{ this.props.label }</label>
         <select className="form-control" name={ this.key } id={ this.key }>
           { this.props.options.map((option) => {
             return (

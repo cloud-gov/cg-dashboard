@@ -27,7 +27,6 @@ class SpaceStore extends BaseStore {
         break;
 
       case spaceActionTypes.SPACE_RECEIVED:
-        // TODO move to help to share with other stores
         var toUpdate = this.get(action.space.guid);
         if (toUpdate) {
           toUpdate = Object.assign(toUpdate, action.space); 
