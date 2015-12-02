@@ -18,6 +18,17 @@ export class Form extends React.Component {
     };
   }
 
+  validate() {
+    var errors = [];
+    this.props.children.forEach(function(child) {
+      var error = child.validate();
+      if (error) {
+        errors.push(error);
+      }
+    });
+    return errors;
+  }
+
   render() {
     return (
       <form action={ this.props.action } method={ this.props.method }>
@@ -65,18 +76,42 @@ FormElement.defaultProps = {
   validator: function() {}
 };
 
+const ERR_MSG_MISSING_TEXT = 'No text entered';
+
 export class FormText extends FormElement {
   constructor(props) {
     super(props);
     this.props = props;
     this.state = this.state || {};
+    this.state.value = null;
+    this.state.error = null;
+  }
+
+  validate() {
+    var error = null;
+
+    if (!this.state.value && this.state.value.length) {
+      error = ERR_MSG_MISSING_TEXT;
+    }
+    this.setState({error: error});
+    return error;
+  }
+
+  _handleChange(ev) {
+    this.setState({value: ev.target.value,
+      error: null}); 
   }
 
   render() {
+    var error;
+    if (this.state.error) {
+      error = <span>{ this.state.error }</span>;
+    }
     return (
       <div className="form-group">
+        { error }
         <label htmlFor={ this.key }>{ this.props.label }</label>
-        <input type="text" id={ this.key } />
+        <input type="text" id={ this.key } onChange={ this._handleChange } />
       </div>
     );
   }
