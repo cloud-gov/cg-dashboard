@@ -37,6 +37,15 @@ export default class CreateServiceInstance extends React.Component {
     this.setState(stateSetter());
   }
 
+  _submit = (ev) => {
+    ev.preventDefault();
+    this.refs.form.validate();
+  }
+
+  _onValidateField = (fieldName, err) => {
+    console.error('there were errors', fieldName, err);
+  }
+
   get serviceName() {
     return this.props.service.label || 'unknown';
   }
@@ -52,17 +61,24 @@ export default class CreateServiceInstance extends React.Component {
           this.servicePlanName } plan.
         </h4>
 
-        <Form action="/service_instances" method="post">
-          <FormText label="Choose a name for the service" 
+        <Form action="/service_instances" method="post" ref="form">
+          <FormText 
+            label="Choose a name for the service" 
+            name="name"
             validator={ FormElement.validatorString }
+            onValidate={ this._onValidate.bind(this, 'name') }
           />
-          <FormSelect label="Select the space for the service instance"
+          <FormSelect 
+            label="Select the space for the service instance"
+            name="space"
             options={ this.state.spaces.map((space) => {
               return { value: space.guid, label: space.name };
             })}
             validator={ FormElement.validatorString }
+            onValidate={ this._onValidateField.bind(this, 'space') }
           />
-          <Button>Create service instance</Button>
+          <Button onClickHandler={ this._submit }>Create service instance
+          </Button>
         </Form>
       </Box>
     );
