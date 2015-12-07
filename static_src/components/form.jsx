@@ -22,7 +22,6 @@ export class Form extends React.Component {
   }
 
   componentWillMount() {
-    this.registerElements(this.props.children);
   }
 
   attachToForm = (element) => {
@@ -44,21 +43,20 @@ export class Form extends React.Component {
     this.props.onValidate(errs);
   }
 
-  registerElements = (children) => {
-    React.Children.forEach(children, (child) => {
-      if(child && child.props && child.props.name) {
-        // TODO, loop through children in render and pass prop there.
-        child.props.attachToForm = this.attachToForm;
-        child.props.detachForm = this.detatchFromForm;
-      }
-    });
-  }
-
   render() {
     return (
       <form action={ this.props.action } method={ this.props.method }>
         <fieldset>
-          { this.props.children }
+          { React.Children.map(this.props.children, (child) => {
+            if (child && child.props && child.props.name) {
+              return React.cloneElement(child, {
+                attachToForm: this.attachToForm,
+                detachFromForm: this.detachFromForm
+              })
+            } else {
+              return child;
+            }
+          })}
         </fieldset>
       </form>
     );
