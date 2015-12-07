@@ -17,19 +17,21 @@ export class Form extends React.Component {
     this.state = {
       isValid: false,
       fields: {},
+      fieldValues: {},
       errs: []
     };
   }
 
-  componentWillMount() {
-  }
-
   attachToForm = (element) => {
-    this.state.fields[element.props.name] = element;
+    var fields =  this.state.fields;
+    fields[element.props.name] = element;
+    this.setState({ fields: fields });
   }
 
-  detatchFromForm = () => {
-    delete this.state.fields[element.props.name];
+  detatchFromForm = (element) => {
+    var fields =  this.state.fields;
+    delete fields[element.props.name];
+    this.setState({ fields: fields });
   }
 
   validate() {
@@ -37,22 +39,53 @@ export class Form extends React.Component {
         errs = [];
     for (name in this.state.fields) {
       let field = this.state.fields[name];
-      errs.push(field.validate());
+      let err = field.validate();
+      if (err) {
+        errs.push(err);
+      }
     }
     this.setState({errs: errs, isValid: !!errs.length});
     this.props.onValidate(errs);
+    if (!errs.length) {
+      this.props.onValid(this.state.fieldValues);
+    }
+  }
+
+  _handleSubmit = (ev) => {
+    var values = this.state.fieldValues;
+    ev.preventDefault();
+    for (name in this.state.fields) {
+      let field = this.state.fields[name];
+      values[name] = field.state.value;
+    }
+    this.setState({fieldValues: values});
+    this.validate();
   }
 
   render() {
+    var errorMsg;
+
+    if (this.state.errs.length) {
+      errorMsg = <FormError message='There were errors submitting the form.' />
+    }
+
     return (
-      <form action={ this.props.action } method={ this.props.method }>
+      <form action={ this.props.action } method={ this.props.method }
+          onSubmit={ this._handleSubmit }>
+        { errorMsg }
         <fieldset>
           { React.Children.map(this.props.children, (child) => {
             if (child && child.props && child.props.name) {
-              return React.cloneElement(child, {
-                attachToForm: this.attachToForm,
-                detachFromForm: this.detachFromForm
-              })
+              if (child.props.name === 'submit') {
+                return React.cloneElement(child, {
+                  onClickHandler: this._handleSubmit
+                })
+              } else {
+                return React.cloneElement(child, {
+                  attachToForm: this.attachToForm,
+                  detachFromForm: this.detachFromForm
+                })
+              }
             } else {
               return child;
             }
@@ -65,12 +98,14 @@ export class Form extends React.Component {
 Form.propTypes = {
   action: React.PropTypes.string,
   method: React.PropTypes.string,
-  onValidate: React.PropTypes.func
+  onValidate: React.PropTypes.func,
+  onValid: React.PropTypes.func
 };
 Form.defaultProps = {
   action: '/',
   method: 'post',
-  onValidate: function() { }
+  onValidate: function() { },
+  onValid: function() { }
 };
 
 export class FormElement extends React.Component {

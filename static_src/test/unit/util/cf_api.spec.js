@@ -310,8 +310,8 @@ describe('cfApi', function() {
 
       let expected = {
         name: expectedName,
-        spaceGuid: expectedSpaceGuid,
-        servicePlanGuid: expectedServicePlanGuid
+        space_guid: expectedSpaceGuid,
+        service_plan_guid: expectedServicePlanGuid
       };
 
       cfApi.createServiceInstance(

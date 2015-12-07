@@ -77,7 +77,8 @@ export default class ServicePlanList extends React.Component {
               <Td column={ this.columns[2].label }>{ plan.updated_at }</Td>
               <Td column={ this.columns[3].label }>
                 <span>
-                  ${ (plan.extra.costs[0].amount.usd || 0).toFixed(2) } monthly
+                  ${ (plan.extra && plan.extra.costs && 
+                      plan.extra.costs[0].amount.usd || 0).toFixed(2) } monthly
                 </span>
               </Td>
               <Td column={ this.columns[4].label }>

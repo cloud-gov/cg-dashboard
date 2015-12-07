@@ -112,11 +112,11 @@ export default {
   createServiceInstance(name, spaceGuid, servicePlanGuid) {
     var payload = {
       name: name,
-      spaceGuid: spaceGuid,
-      servicePlanGuid: servicePlanGuid
+      space_guid: spaceGuid,
+      service_plan_guid: servicePlanGuid
     };
 
-    return http.post('/service_instances?accepts_incomplete=true', payload)
+    return http.post(APIV + '/service_instances?accepts_incomplete=true', payload)
     .done((res) => {
       serviceActions.createdInstance(res.data);
     }, (err) => {
