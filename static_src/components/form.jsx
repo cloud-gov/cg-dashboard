@@ -16,7 +16,8 @@ export class Form extends React.Component {
     this.props = props;
     this.state = {
       isValid: false,
-      fields: {}
+      fields: {},
+      errs: []
     };
   }
 
@@ -33,16 +34,19 @@ export class Form extends React.Component {
   }
 
   validate() {
-    var name;
+    var name,
+        errs = [];
     for (name in this.state.fields) {
       let field = this.state.fields[name];
-      field.validate();
+      errs.push(field.validate());
     }
+    this.setState({errs: errs, isValid: !!errs.length});
+    this.props.onValidate(errs);
   }
 
   registerElements = (children) => {
     React.Children.forEach(children, (child) => {
-      if(child.props.name) {
+      if(child && child.props && child.props.name) {
         // TODO, loop through children in render and pass prop there.
         child.props.attachToForm = this.attachToForm;
         child.props.detachForm = this.detatchFromForm;
@@ -62,18 +66,20 @@ export class Form extends React.Component {
 };
 Form.propTypes = {
   action: React.PropTypes.string,
-  method: React.PropTypes.string
+  method: React.PropTypes.string,
+  onValidate: React.PropTypes.func
 };
 Form.defaultProps = {
   action: '/',
-  method: 'post'
+  method: 'post',
+  onValidate: function() { }
 };
 
 export class FormElement extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {};
+    this.state = {err: null};
     if (!this.props.key) {
       this.state.id = nextId();
     }
@@ -101,6 +107,8 @@ export class FormElement extends React.Component {
       err.value = this.state.value;
       // TODO rename to onError.
       this.props.onValidate(err);
+      this.setState({ err: err });
+      return err;
     }
   }
 
@@ -127,7 +135,7 @@ export class FormText extends FormElement {
     this.props = props;
     this.state = this.state || {};
     this.state.value = '';
-    this.state.error = null;
+    this.state.err = null;
   }
 
   _handleChange(ev) {
@@ -136,8 +144,8 @@ export class FormText extends FormElement {
 
   render() {
     var error;
-    if (this.state.error) {
-      error = <span>{ this.state.error }</span>;
+    if (this.state.err) {
+      error = <p className="alert alert-danger">{ this.state.err.message }</p>;
     }
     return (
       <div className="form-group">
@@ -157,7 +165,7 @@ export class FormSelect extends FormElement {
     this.props = props;
     this.state = this.state || {};
     this.state.value = '';
-    this.state.error = null;
+    this.state.err = null;
   }
 
   _handleChange(ev) {

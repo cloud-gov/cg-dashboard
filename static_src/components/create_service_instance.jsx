@@ -24,6 +24,7 @@ export default class CreateServiceInstance extends React.Component {
     super(props);
     this.props = props;
     this.state = {
+      errs: [],
       spaces: []
     };
   }
@@ -42,8 +43,8 @@ export default class CreateServiceInstance extends React.Component {
     this.refs.form.validate();
   }
 
-  _onValidateField = (fieldName, err) => {
-    console.error('there were errors', fieldName, err);
+  _onValidateForm = (errs) => {
+    this.setState({errs: errs});
   }
 
   get serviceName() {
@@ -55,18 +56,29 @@ export default class CreateServiceInstance extends React.Component {
   }
 
   render() {
+    var errorMsg;
+
+    if (this.state.errs.length) {
+      errorMsg = (
+        <p className="alert alert-danger">
+          There were errors submitting the form.
+        </p>
+      );
+    }
+
     return (
       <Box>
       <h4>Create service instance for { this.serviceName } using { 
           this.servicePlanName } plan.
         </h4>
 
-        <Form action="/service_instances" method="post" ref="form">
+        <Form action="/service_instances" method="post" ref="form"
+            onValidate={ this._onValidateForm }>
+          { errorMsg }
           <FormText 
             label="Choose a name for the service" 
             name="name"
             validator={ FormElement.validatorString }
-            onValidate={ this._onValidate.bind(this, 'name') }
           />
           <FormSelect 
             label="Select the space for the service instance"
@@ -75,7 +87,6 @@ export default class CreateServiceInstance extends React.Component {
               return { value: space.guid, label: space.name };
             })}
             validator={ FormElement.validatorString }
-            onValidate={ this._onValidateField.bind(this, 'space') }
           />
           <Button onClickHandler={ this._submit }>Create service instance
           </Button>
