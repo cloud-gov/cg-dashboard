@@ -105,9 +105,9 @@ export class FormElement extends React.Component {
       err.value = this.state.value;
       // TODO rename to onError.
       this.props.onValidate(err);
-      this.setState({ err: err });
-      return err;
     }
+    this.setState({ err: err });
+    return err;
   }
 
   get key() {
@@ -126,6 +126,19 @@ FormElement.defaultProps = {
   onValidate: function() {}
 };
 
+export class FormError extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+  }
+
+  render() {
+    return <p className="alert alert-danger">{ this.props.message }</p>;
+  }
+}
+FormError.propTypes = { message: React.PropTypes.string };
+FormError.defaultProps = { message: '' };
+
 
 export class FormText extends FormElement {
   constructor(props) {
@@ -136,14 +149,14 @@ export class FormText extends FormElement {
     this.state.err = null;
   }
 
-  _handleChange(ev) {
+  _handleChange = (ev) => {
     this.setState({value: ev.target.value}); 
   }
 
   render() {
     var error;
     if (this.state.err) {
-      error = <p className="alert alert-danger">{ this.state.err.message }</p>;
+      error = <FormError message={ this.state.err.message } />
     }
     return (
       <div className="form-group">
@@ -166,16 +179,27 @@ export class FormSelect extends FormElement {
     this.state.err = null;
   }
 
-  _handleChange(ev) {
+  _handleChange = (ev) => {
     this.setState({ value: ev.target.value });
   }
 
   render() {
+    var error;
+    if (this.state.err) {
+      error = <FormError message={ this.state.err.message } />
+    }
     return (
       <div className="form-group">
+        { error }
         <label htmlFor={ this.key }>{ this.props.label }</label>
-        <select className="form-control" name={ this.key } id={ this.key }
+        <select className="form-control" 
+            name={ this.key } 
+            id={ this.key }
+            onChange={ this._handleChange }
             value={ this.state.value }>
+          <option value='' key={ this.key + '-null'}>
+            --
+          </option>
           { this.props.options.map((option, i) => {
             return (
               <option 

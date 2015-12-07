@@ -6,7 +6,7 @@ import React from 'react';
 
 import Box from './box.jsx';
 import Button from './button.jsx';
-import { Form, FormText, FormSelect, FormElement } from './form.jsx';
+import { Form, FormText, FormSelect, FormElement, FormError } from './form.jsx';
 import SpaceStore from '../stores/space_store.js';
 import serviceActions from '../actions/service_actions.js';
 import serviceInstanceStore from '../stores/service_instance_store.js';
@@ -59,11 +59,7 @@ export default class CreateServiceInstance extends React.Component {
     var errorMsg;
 
     if (this.state.errs.length) {
-      errorMsg = (
-        <p className="alert alert-danger">
-          There were errors submitting the form.
-        </p>
-      );
+      errorMsg = <FormError message='There were errors submitting the form.' />
     }
 
     return (
