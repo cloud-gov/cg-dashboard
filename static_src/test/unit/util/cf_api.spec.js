@@ -362,7 +362,7 @@ describe('cfApi', function() {
           spy = sandbox.stub(serviceActions, 'errorCreateInstance'),
           expectedErr = { status: 'error' };
 
-      let testPromise = createPromise(true, expectedErr);
+      let testPromise = createPromise(true, {data: expectedErr});
       stub.returns(testPromise);
 
       cfApi.createServiceInstance(

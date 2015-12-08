@@ -120,7 +120,7 @@ export default {
     .done((res) => {
       serviceActions.createdInstance(res.data);
     }, (err) => {
-      serviceActions.errorCreateInstance(err);
+      serviceActions.errorCreateInstance(err.data);
     });
   },
 

@@ -13,9 +13,11 @@ import serviceActions from '../actions/service_actions.js';
 import serviceInstanceStore from '../stores/service_instance_store.js';
 
 function stateSetter() {
-  var spaces = SpaceStore.getAll();
+  var spaces = SpaceStore.getAll(),
+      createError = ServiceInstanceStore.createError;
 
   return {
+    createError: createError,
     spaces: spaces
   }
 }
@@ -32,6 +34,7 @@ export default class CreateServiceInstance extends React.Component {
 
   componentDidMount() {
     SpaceStore.addChangeListener(this._onChange);
+    serviceInstanceStore.addChangeListener(this._onChange);
     this.setState(stateSetter());
   }
 
@@ -61,12 +64,17 @@ export default class CreateServiceInstance extends React.Component {
 
   render() {
     var createError;
+
+    if (this.state.createError) {
+      createError = <FormError message={ this.state.createError.description } />
+    }
+
     return (
       <Box>
         <h4>Create service instance for { this.serviceName } using { 
           this.servicePlanName } plan.
         </h4>
-
+        { createError }
         <Form action="/service_instances" method="post" ref="form"
             onValidate={ this._onValidateForm } onValid={ this._onValidForm }>
           <FormText 
