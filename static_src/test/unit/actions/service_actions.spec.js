@@ -157,6 +157,22 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('errorCreateInstance()', function() {
+    it('should dispatch a server event of type error create instance', function() {
+      var expectedErr = { status: 400 };
+
+      let expectedParams = {
+        error: expectedErr
+      }
+      let spy = setupServerSpy(sandbox);
+
+      serviceActions.errorCreateInstance(expectedErr);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_ERROR,
+                   expectedParams);
+    });
+  });
+
   describe('receivedInstance()', function() {
     it('should dispatch a server event of type service instance resv with ' +
        'the service instances', function() {

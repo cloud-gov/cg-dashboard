@@ -43,7 +43,6 @@ export default class CreateServiceInstance extends React.Component {
   }
 
   _onValidForm = (values) => {
-    console.log('onvalid', values);
     serviceActions.createInstance(
       values.name,
       values.space,

@@ -70,7 +70,10 @@ export default {
   },
 
   errorCreateInstance(err) {
-
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_ERROR,
+      error: err
+    });
   },
 
   receivedInstances(serviceInstances) {
