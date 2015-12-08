@@ -15,6 +15,7 @@ describe('ServiceInstanceStore', function() {
 
   beforeEach(() => {
     ServiceInstanceStore._data = [];
+    ServiceInstanceStore._createError = null;
     sandbox = sinon.sandbox.create();
   });
 
@@ -25,6 +26,18 @@ describe('ServiceInstanceStore', function() {
   describe('constructor()', () => {
     it('should set _data to empty array', () => {
       expect(ServiceInstanceStore._data).toBeEmptyArray();
+    });
+  });
+
+  describe('get createError()', function() {
+    it('should return createError', function() {
+      var expected = {msg: 'adsf'};
+      let actual = ServiceInstanceStore.createError;
+
+      expect(actual).toBeFalsy();
+      ServiceInstanceStore._createError = expected;
+      actual = ServiceInstanceStore.createError;
+      expect(actual).toEqual(expected);
     });
   });
 
@@ -116,6 +129,27 @@ describe('ServiceInstanceStore', function() {
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith(expectedName, expectedSpaceGuid,
                                        expectedServicePlanGuid);
+    });
+  });
+
+  describe('on instance create error', function() {
+    it('should set create error to passed in error', function() {
+      var expectedError = { status: 500 };
+
+      serviceActions.errorCreateInstance(expectedError);
+
+      let actual = ServiceInstanceStore.createError;
+
+      expect(actual).toBeTruthy();
+      expect(actual).toEqual(expectedError);
+    });
+
+    it('should emit a change event', function() {
+      var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+
+      serviceActions.errorCreateInstance({ status: 500 });
+
+      expect(spy).toHaveBeenCalledOnce();
     });
   });
 

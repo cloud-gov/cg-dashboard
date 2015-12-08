@@ -8,6 +8,7 @@ import Box from './box.jsx';
 import Button from './button.jsx';
 import { Form, FormText, FormSelect, FormElement, FormError } from './form.jsx';
 import SpaceStore from '../stores/space_store.js';
+import ServiceInstanceStore  from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
 import serviceInstanceStore from '../stores/service_instance_store.js';
 
@@ -59,9 +60,10 @@ export default class CreateServiceInstance extends React.Component {
   }
 
   render() {
+    var createError;
     return (
       <Box>
-      <h4>Create service instance for { this.serviceName } using { 
+        <h4>Create service instance for { this.serviceName } using { 
           this.servicePlanName } plan.
         </h4>
 

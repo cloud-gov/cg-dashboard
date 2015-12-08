@@ -17,10 +17,15 @@ class ServiceInstanceStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = [];
     this._createInstanceForm = null;
+    this._createError = null;
   }
 
   get createInstanceForm() {
     return this._createInstanceForm;
+  }
+
+  get createError() {
+    return this._createError;
   }
 
   _registerToActions(action) {
@@ -62,6 +67,12 @@ class ServiceInstanceStore extends BaseStore {
           this._data.push(action.serviceInstance);
         }
         this._createInstanceForm = null;
+        this.emitChange();
+        break;
+
+      case serviceActionTypes.SERVICE_INSTANCE_ERROR:
+        var error = action.error;
+        this._createError = error;
         this.emitChange();
         break;
 
