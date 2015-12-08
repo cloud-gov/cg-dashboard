@@ -71,5 +71,5 @@ export default class Marketplace extends React.Component {
 }
 
 Marketplace.propTypes = {
-  initialOrgGuid: React.PropTypes.string.isRequired,
+  initialOrgGuid: React.PropTypes.string.isRequired
 }

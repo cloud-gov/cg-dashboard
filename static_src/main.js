@@ -49,9 +49,12 @@ function space(orgGuid, spaceGuid, potentialPage) {
     </App>, mainEl);
 }
 
-function marketplace(orgGuid) {
+function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   cfApi.fetchOrg(orgGuid);
   cfApi.fetchAllServices(orgGuid);
+  if (serviceGuid && servicePlanGuid) {
+    serviceActions.createInstanceDialog(serviceGuid, servicePlanGuid);
+  }
   React.render(
     <App>
       <Marketplace
@@ -84,6 +87,9 @@ let routes = {
         }
       },
       '/marketplace': {
+        '/create/:serviceGuid/:servicePlanGuid': {
+          on: marketplace
+        },
         on: marketplace
       },
       on: org,
