@@ -60,6 +60,22 @@ describe('UserStore', function() {
     });
   });
 
+  describe('on org user roles fetch', function() {
+    it('should fetch org user roles through api', function() {
+      var spy = sandbox.spy(cfApi, 'fetchOrgUserRoles'),
+          expectedGuid = 'axckzvjxcov';
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.ORG_USER_ROLES_FETCH,
+        orgGuid: expectedGuid
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+    });
+  });
+
   describe('on space or org users received', function() {
     it('should emit a change event if data was updated', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
@@ -120,6 +136,40 @@ describe('UserStore', function() {
       let actual = UserStore.get(user.guid);
 
       expect(actual.orgGuid).toEqual(expectedGuid);
+    });
+  });
+
+  describe('on org user roles received', function() {
+    it('should emit a change event if data changed', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
+        orgUserRoles: wrapInRes([{ guid: 'adsfa' }])
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+    it('should merge and update new users with existing users in data',
+        function() {
+      var sharedGuid = 'wpqoifesadkzcvn';
+
+      let existingUser = { guid: sharedGuid, name: 'Michael' };
+      let newUser = { guid: sharedGuid, organization_roles: ['role'] };
+
+      UserStore._data.push(existingUser);
+      expect(UserStore.get(sharedGuid)).toEqual(existingUser);
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
+        orgUserRoles: wrapInRes([newUser])
+      });
+      let actual = UserStore.get(sharedGuid);
+      expect(actual).toEqual({
+        guid: sharedGuid,
+        name: 'Michael',
+        organization_roles: ['role']
+      });
     });
   });
 

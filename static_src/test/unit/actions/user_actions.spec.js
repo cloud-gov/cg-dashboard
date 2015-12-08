@@ -82,7 +82,7 @@ describe('userActions', function() {
   describe('receivedOrgUserRoles()', function() {
     it('should dispatch a view event of type org user roles fetch', function() {
       var expectedOrgGuid = 'zknxvzmnxjkafakdlsxcv',
-          expectedOrgRoles = [{ guid: 'zxcvz' }],
+          expectedOrgRoles = [{ metadata: {guid: 'zxcvz'}, entity: { }}],
           expectedParams = {
             orgUserRoles: expectedOrgRoles,
             orgGuid: expectedOrgGuid

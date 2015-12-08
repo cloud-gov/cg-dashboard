@@ -23,8 +23,20 @@ class UserStore extends BaseStore {
         cfApi.fetchOrgUsers(action.orgGuid);
         break;
 
+      case userActionTypes.ORG_USER_ROLES_FETCH:
+        cfApi.fetchOrgUserRoles(action.orgGuid);
+        break;
+
       case userActionTypes.SPACE_USERS_FETCH:
         cfApi.fetchSpaceUsers(action.spaceGuid);
+        break;
+
+      case userActionTypes.ORG_USER_ROLES_RECEIVED:
+        var updates = this.formatSplitResponse(action.orgUserRoles);
+        if (updates.length) {
+          this._data = this._merge(this._data, updates);
+          this.emitChange();
+        }
         break;
 
       case userActionTypes.SPACE_USERS_RECEIVED:
