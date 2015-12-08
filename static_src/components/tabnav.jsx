@@ -20,11 +20,11 @@ export default class Tabnav extends React.Component {
 
     return (
     <ul className={ classes }>
-      { this.props.items.map((item) => {
+      { this.props.items.map((item, i) => {
         if (item.name === this.state.current) {
-          return <li className="active">{ item.element }</li>;
+          return <li className="active" key={ i }>{ item.element }</li>;
         } else {
-          return <li>{ item.element }</li>;
+          return <li key={ i }>{ item.element }</li>;
         }
       })}
     </ul>
