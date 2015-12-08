@@ -162,7 +162,9 @@ export default {
   },
 
   fetchOrgUserRoles(orgGuid) {
-
+    return this.fetchMany(`/organizations/${ orgGuid }/user_roles`,
+                          userActions.receivedOrgUserRoles,
+                          orgGuid);
   },
 
   deleteUser(userGuid, orgGuid) {
