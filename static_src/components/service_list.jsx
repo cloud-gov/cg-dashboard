@@ -50,7 +50,7 @@ export default class ServiceList extends React.Component {
         <thead>
           { this.columns.map((column) => {
             return (
-              <th className={ column.key }>
+              <th className={ column.key } key={ column.key }>
                 { column.label }
               </th>
             )
@@ -61,7 +61,7 @@ export default class ServiceList extends React.Component {
           <tr key={ row.guid }>
             { this.columns.map((rowcolumn) => {
               return (
-                <td><span>
+                <td key={ rowcolumn.key }><span>
                   { row[rowcolumn.key] }
                 </span></td>
               )

@@ -63,7 +63,8 @@ export default class ServicePlanList extends React.Component {
         <Thead>
           { this.columns.map((column) => {
             return (
-              <Th column={ column.label } className={ column.key }>
+              <Th column={ column.label } className={ column.key } 
+                  key={ column.key }>
                 { column.label }</Th>
             )
           })}
