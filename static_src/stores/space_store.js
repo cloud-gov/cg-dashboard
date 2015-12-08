@@ -7,7 +7,7 @@
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import { spaceActionTypes } from '../constants.js';
+import { orgActionTypes, spaceActionTypes } from '../constants.js';
 
 class SpaceStore extends BaseStore {
   constructor() {
@@ -18,8 +18,15 @@ class SpaceStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
+      case orgActionTypes.ORG_RECEIVED:
+        var spaces = action.org.spaces;
+        if (spaces) {
+          this._data = this._merge(this._data, spaces);  
+          this.emitChange();
+        }
+        break;
+
       case spaceActionTypes.SPACE_RECEIVED:
-        // TODO move to help to share with other stores
         var toUpdate = this.get(action.space.guid);
         if (toUpdate) {
           toUpdate = Object.assign(toUpdate, action.space); 

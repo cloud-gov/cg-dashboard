@@ -14,6 +14,28 @@ import userActions from '../actions/user_actions.js';
 const APIV = '/v2';
 
 export default {
+  version: APIV,
+
+  fetch(url, action, multiple) {
+    return http.get(APIV + url).done((res) => {
+      if (!multiple) {
+        action(res.data)
+      } else {
+        action(res.data.resources);
+      }
+    }, (err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
+  fetchOne(url, action) {
+    return this.fetch(url, action);
+  },
+
+  fetchMany(url, action) {
+    return this.fetch(url, action, true);
+  },
+
   getAuthStatus() {
     return http.get(APIV + '/authstatus').done((res) => {
       loginActions.receivedStatus(res.data.status);
@@ -78,21 +100,27 @@ export default {
   },
 
   fetchSpace(spaceGuid) {
-    return http.get(
-      APIV + `/spaces/${spaceGuid}/summary`)
-        .done((res) => {
-      spaceActions.receivedSpace(res.data);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchOne(`spaces/${ spaceGuid }/summary`,
+                         spaceActions.receivedSpace);
   },
 
   fetchServiceInstances(spaceGuid) {
-    return http.get(APIV + `/spaces/${ spaceGuid }/service_instances`).done(
-        (res) => {
-      serviceActions.receivedInstances(res.data.resources);
+    return this.fetchMany(`/spaces/${ spaceGuid }/service_instances`,
+                          serviceActions.receivedInstances);
+  },
+
+  createServiceInstance(name, spaceGuid, servicePlanGuid) {
+    var payload = {
+      name: name,
+      space_guid: spaceGuid,
+      service_plan_guid: servicePlanGuid
+    };
+
+    return http.post(APIV + '/service_instances?accepts_incomplete=true', payload)
+    .done((res) => {
+      serviceActions.createdInstance(res.data);
     }, (err) => {
-      errorActions.errorFetch(err);
+      serviceActions.errorCreateInstance(err.data);
     });
   },
 
@@ -107,11 +135,8 @@ export default {
   },
 
   fetchApp(appGuid) {
-    return http.get(APIV + `/apps/${ appGuid }/summary`).done((res) => {
-      appActions.receivedApp(res.data);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchOne(`/apps/${ appGuid }/summary`,
+                          appActions.receivedApp);
   },
 
   /**
@@ -120,11 +145,8 @@ export default {
    * @param {Number} spaceGuid - The guid of the space that the users belong to.
    */
   fetchSpaceUsers(spaceGuid) {
-    return http.get(APIV + `/spaces/${ spaceGuid }/user_roles`).done((res) => {
-      userActions.receivedSpaceUsers(res.data.resources, spaceGuid);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchMany(`/spaces/${ spaceGuid }/user_roles`,
+                          userActions.receivedSpaceUsers);
   },
 
   /**
@@ -133,11 +155,8 @@ export default {
    * @param {Number} orgGuid - The guid of the org that the users belong to.
    */
   fetchOrgUsers(orgGuid) {
-    return http.get(APIV + `/organizations/${ orgGuid }/users`).done((res) => {
-      userActions.receivedOrgUsers(res.data.resources, orgGuid);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchMany(`/organizations/${ orgGuid }/users`,
+                          userActions.receivedOrgUsers);
   },
 
   deleteUser(userGuid, orgGuid) {
@@ -174,21 +193,13 @@ export default {
   },
 
   fetchAllServices(orgGuid) {
-    return http.get(APIV + '/organizations/' + orgGuid + '/services').done(
-    (res) => {
-      serviceActions.receivedServices(res.data.resources);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchMany('/organizations/' + orgGuid + '/services',
+                          serviceActions.receivedServices);
   },
 
   fetchAllServicePlans(serviceGuid) {
-    return http.get(APIV + '/services/' + serviceGuid + '/service_plans').done(
-    (res) => {
-      serviceActions.receivedPlans(res.data.resources);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return this.fetchMany('/services/' + serviceGuid + '/service_plans',
+                          serviceActions.receivedPlans);
   }
 
 };
