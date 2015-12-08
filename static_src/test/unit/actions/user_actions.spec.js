@@ -33,6 +33,21 @@ describe('userActions', function() {
     });
   });
 
+  describe('fetchOrgUserRoles()', function() {
+    it('should dispatch a view event of type org user roles fetch', function() {
+      var expectedOrgGuid = 'zknxvzmnxjkafakdlsxcv',
+          expectedParams = {
+            orgGuid: expectedOrgGuid
+          };
+
+      let spy = setupViewSpy(sandbox);
+
+      userActions.fetchOrgUserRoles(expectedOrgGuid);
+
+      assertAction(spy, userActionTypes.ORG_USER_ROLES_FETCH, expectedParams);
+    });
+  });
+
   describe('fetchSpaceUsers()', function() {
     it('should dispatch a view event of type space users fetch', function() {
       var expectedSpaceGuid = 'asdflkjz',
@@ -61,6 +76,23 @@ describe('userActions', function() {
       userActions.receivedOrgUsers(expected);
 
       assertAction(spy, userActionTypes.ORG_USERS_RECEIVED, expectedParams);
+    });
+  });
+
+  describe('receivedOrgUserRoles()', function() {
+    it('should dispatch a view event of type org user roles fetch', function() {
+      var expectedOrgGuid = 'zknxvzmnxjkafakdlsxcv',
+          expectedOrgRoles = [{ guid: 'zxcvz' }],
+          expectedParams = {
+            orgUserRoles: expectedOrgRoles,
+            orgGuid: expectedOrgGuid
+          };
+
+      let spy = setupServerSpy(sandbox);
+
+      userActions.receivedOrgUserRoles(expectedOrgRoles, expectedOrgGuid);
+
+      assertAction(spy, userActionTypes.ORG_USER_ROLES_RECEIVED, expectedParams);
     });
   });
 

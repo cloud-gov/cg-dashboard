@@ -15,6 +15,13 @@ export default {
     });
   },
 
+  fetchOrgUserRoles(orgGuid) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.ORG_USER_ROLES_FETCH,
+      orgGuid: orgGuid
+    });
+  },
+
   fetchSpaceUsers(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.SPACE_USERS_FETCH,
@@ -26,6 +33,14 @@ export default {
     AppDispatcher.handleServerAction({
       type: userActionTypes.ORG_USERS_RECEIVED,
       users: users,
+      orgGuid: orgGuid
+    });
+  },
+
+  receivedOrgUserRoles(roles, orgGuid) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.ORG_USER_ROLES_RECEIVED,
+      orgUserRoles: roles,
       orgGuid: orgGuid
     });
   },

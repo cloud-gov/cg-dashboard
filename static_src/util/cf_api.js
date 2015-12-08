@@ -161,6 +161,10 @@ export default {
                           orgGuid);
   },
 
+  fetchOrgUserRoles(orgGuid) {
+
+  },
+
   deleteUser(userGuid, orgGuid) {
     return http.delete(APIV + '/organizations/' + orgGuid + '/users/' + userGuid)
         .done((res) => {
