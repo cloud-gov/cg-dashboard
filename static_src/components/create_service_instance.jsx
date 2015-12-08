@@ -55,11 +55,11 @@ export default class CreateServiceInstance extends React.Component {
   }
 
   get serviceName() {
-    return this.props.service.label || 'unknown';
+    return this.props.service.label || 'Unknown Service Name';
   }
 
   get servicePlanName() {
-    return this.props.servicePlan.name || 'unknown';
+    return this.props.servicePlan.name || 'Unknown Service Plan Name';
   }
 
   render() {
