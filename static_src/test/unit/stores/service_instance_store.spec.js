@@ -96,7 +96,7 @@ describe('ServiceInstanceStore', function() {
       sandbox.stub(ServiceStore, 'get').returns(expectedService);
       sandbox.stub(ServicePlanStore, 'get').returns(expectedServicePlan);
       
-      serviceActions.createInstanceDialog('adfkjvnzxczv', 'aldsfjalqwe');
+      serviceActions.createInstanceForm('adfkjvnzxczv', 'aldsfjalqwe');
 
       let actual = ServiceInstanceStore.createInstanceForm;
 
@@ -108,7 +108,7 @@ describe('ServiceInstanceStore', function() {
     it('should emit a change event', function() {
       var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
 
-      serviceActions.createInstanceDialog('adfkjvnzxczv', 'aldsfjalqwe');
+      serviceActions.createInstanceForm('adfkjvnzxczv', 'aldsfjalqwe');
 
       expect(spy).toHaveBeenCalledOnce();
     });

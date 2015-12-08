@@ -40,7 +40,7 @@ class ServiceInstanceStore extends BaseStore {
         this.emitChange();
         break;
 
-      case serviceActionTypes.SERVICE_INSTANCE_CREATE_DIALOG:
+      case serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM:
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         this._createInstanceForm = {
           service: ServiceStore.get(action.serviceGuid),

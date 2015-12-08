@@ -45,9 +45,9 @@ export default {
     });
   },
 
-  createInstanceDialog(serviceGuid, planGuid) {
+  createInstanceForm(serviceGuid, planGuid) {
     AppDispatcher.handleViewAction({
-      type: serviceActionTypes.SERVICE_INSTANCE_CREATE_DIALOG,
+      type: serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM,
       serviceGuid: serviceGuid,
       servicePlanGuid: planGuid
     });

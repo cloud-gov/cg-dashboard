@@ -34,7 +34,7 @@ export default class ServicePlanList extends React.Component {
   }
 
   _handleAdd = (planGuid) => {
-    serviceActions.createInstanceDialog(this.state.serviceGuid,
+    serviceActions.createInstanceForm(this.state.serviceGuid,
       planGuid);
   }
 

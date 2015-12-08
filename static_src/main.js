@@ -53,7 +53,7 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   cfApi.fetchOrg(orgGuid);
   cfApi.fetchAllServices(orgGuid);
   if (serviceGuid && servicePlanGuid) {
-    serviceActions.createInstanceDialog(serviceGuid, servicePlanGuid);
+    serviceActions.createInstanceForm(serviceGuid, servicePlanGuid);
   }
   React.render(
     <App>

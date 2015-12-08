@@ -96,8 +96,8 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('createInstanceDialog()', function() {
-    it(`should dispatch a view event of type create instance dialog with the
+  describe('createInstanceForm()', function() {
+    it(`should dispatch a view event of type create instance form with the
         service guid and service plan guid`, function() {
       var expectedServiceGuid = 'wqphjhajkajkhadjhfd',
           expectedServicePlanGuid = 'fp2ajkdsfadgh32fasd';
@@ -108,10 +108,10 @@ describe('serviceActions', function() {
       };
       let spy = setupViewSpy(sandbox);
 
-      serviceActions.createInstanceDialog(expectedServiceGuid,
+      serviceActions.createInstanceForm(expectedServiceGuid,
         expectedServicePlanGuid);
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE_DIALOG,
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM,
                    expectedParams);
     });
   });
