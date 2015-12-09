@@ -40,6 +40,10 @@ function space(orgGuid, spaceGuid, potentialPage) {
   // TODO what happens if the space arrives before the changelistener is added?
   cfApi.fetchOrg(orgGuid);
   cfApi.fetchSpace(spaceGuid);
+  // TODO use constant
+  if (potentialPage === 'users') {
+    cfApi.fetchOrgUserRoles(orgGuid);
+  }
   React.render(
     <App>
       <Space
