@@ -16,24 +16,24 @@ const APIV = '/v2';
 export default {
   version: APIV,
 
-  fetch(url, action, multiple) {
+  fetch(url, action, multiple, ...params) {
     return http.get(APIV + url).done((res) => {
       if (!multiple) {
-        action(res.data)
+        action(res.data, ...params)
       } else {
-        action(res.data.resources);
+        action(res.data.resources, ...params);
       }
     }, (err) => {
       errorActions.errorFetch(err);
     });
   },
 
-  fetchOne(url, action) {
-    return this.fetch(url, action);
+  fetchOne(url, action, ...params) {
+    return this.fetch(url, action, false, ...params);
   },
 
-  fetchMany(url, action) {
-    return this.fetch(url, action, true);
+  fetchMany(url, action, ...params) {
+    return this.fetch(url, action, true, ...params);
   },
 
   getAuthStatus() {
@@ -100,7 +100,7 @@ export default {
   },
 
   fetchSpace(spaceGuid) {
-    return this.fetchOne(`spaces/${ spaceGuid }/summary`,
+    return this.fetchOne(`/spaces/${ spaceGuid }/summary`,
                          spaceActions.receivedSpace);
   },
 
@@ -146,7 +146,8 @@ export default {
    */
   fetchSpaceUsers(spaceGuid) {
     return this.fetchMany(`/spaces/${ spaceGuid }/user_roles`,
-                          userActions.receivedSpaceUsers);
+                          userActions.receivedSpaceUsers, 
+                          spaceGuid);
   },
 
   /**
@@ -156,7 +157,8 @@ export default {
    */
   fetchOrgUsers(orgGuid) {
     return this.fetchMany(`/organizations/${ orgGuid }/users`,
-                          userActions.receivedOrgUsers);
+                          userActions.receivedOrgUsers,
+                          orgGuid);
   },
 
   deleteUser(userGuid, orgGuid) {

@@ -52,7 +52,8 @@ export default class UserList extends React.Component {
         <Thead>
           { this.columns.map((column) => {
             return (
-              <Th column={ column.label } className={ column.key }>
+              <Th column={ column.label } className={ column.key }
+                  key={ column.key }>
                 { column.label }</Th>
             )
           })}
@@ -94,7 +95,7 @@ export default class UserList extends React.Component {
 UserList.propTypes = {
   initialUsers: React.PropTypes.array,
   // Set to a function when there should be a remove button.
-  onRemove: React.PropTypes.function
+  onRemove: React.PropTypes.func
 };
 
 UserList.defaultProps = {
