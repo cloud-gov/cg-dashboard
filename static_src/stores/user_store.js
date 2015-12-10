@@ -52,6 +52,17 @@ class UserStore extends BaseStore {
         );
         break;
 
+      case userActionTypes.USER_ROLES_ADDED:
+        var user = this.get(action.userGuid);
+        if (user) {
+          if (user.organization_roles && 
+              user.organization_roles.indexOf(action.roles) === -1) {
+            user.organization_roles.push(action.roles);
+            this.emitChange();
+          } 
+        }
+        break;
+
       case userActionTypes.USER_ROLES_DELETE:
         var apiMethodMap = {
           'organization': cfApi.deleteOrgUserPermissions,
@@ -63,6 +74,18 @@ class UserStore extends BaseStore {
           action.resourceGuid,
           action.roles
         );
+        break;
+
+      case userActionTypes.USER_ROLES_DELETED:
+        var user = this.get(action.userGuid);
+        if (user) {
+          let idx =  user.organization_roles && 
+            user.organization_roles.indexOf(action.roles);
+          if (idx > -1) {
+            user.organization_roles.splice(idx, 1);
+            this.emitChange();
+          } 
+        }
         break;
 
       case userActionTypes.SPACE_USERS_RECEIVED:

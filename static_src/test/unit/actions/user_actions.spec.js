@@ -192,6 +192,30 @@ describe('userActions', function() {
     });
   });
 
+  describe('addedUserRoles()', function() {
+    it(`should call a server action to add user roles with roles user guid and
+        resource type`, function() {
+      var expectedRole = 'org_manager',
+          expectedUserGuid = 'azxcvoiuzxcvzxcvzxvzx',
+          expectedType = 'organization';
+
+      let expectedParams = {
+        roles: expectedRole,
+        userGuid: expectedUserGuid,
+        resourceType: expectedType
+      };
+          
+      let spy = setupServerSpy(sandbox)
+
+      userActions.addedUserRoles(
+        expectedRole,
+        expectedUserGuid,
+        expectedType);
+
+      assertAction(spy, userActionTypes.USER_ROLES_ADDED, expectedParams);
+    });
+  });
+
   describe('deleteUserRoles()', function() {
     it(`should call a view action to remove user roles with current roles 
         user guid and org guid and type`, function() {
@@ -216,6 +240,30 @@ describe('userActions', function() {
         expectedType);
 
       assertAction(spy, userActionTypes.USER_ROLES_DELETE, expectedParams);
+    });
+  });
+
+  describe('deletedUserRoles()', function() {
+    it(`should call a server action to add user roles with roles user guid and
+        resource type`, function() {
+      var expectedRole = 'org_manager',
+          expectedUserGuid = 'azxcvoiuzxcvzxcvzxvzx',
+          expectedType = 'organization';
+
+      let expectedParams = {
+        roles: expectedRole,
+        userGuid: expectedUserGuid,
+        resourceType: expectedType
+      };
+          
+      let spy = setupServerSpy(sandbox)
+
+      userActions.deletedUserRoles(
+        expectedRole,
+        expectedUserGuid,
+        expectedType);
+
+      assertAction(spy, userActionTypes.USER_ROLES_DELETED, expectedParams);
     });
   });
 });

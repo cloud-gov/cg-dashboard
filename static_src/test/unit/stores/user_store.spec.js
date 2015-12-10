@@ -196,6 +196,37 @@ describe('UserStore', function() {
     });
   });
 
+  describe('on user roles added', function() {
+    it('should update the resource type roles array if it exists with new roles',
+        function() {
+      var testGuid = 'zxcvzxc',
+          expectedRole = 'org_dark_lord';
+
+      var existingUser = {
+        guid: testGuid,
+        organization_roles: ['org_manager']
+      };
+
+      UserStore._data.push(existingUser);
+
+      userActions.addedUserRoles(expectedRole, testGuid, 'organization');
+
+      let actual = UserStore.get(testGuid);
+      expect(actual).toBeTruthy();
+      expect(actual.organization_roles).toContain(expectedRole);
+    });
+
+    it('should emit a change event if it finds the user', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange'),
+          testUserGuid = '234xcvbqwn';
+
+      UserStore._data.push({guid: testUserGuid, organization_roles: []});
+      userActions.addedUserRoles('testrole', testUserGuid, 'organization');
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('on user roles delete', function() {
     it('should call the api to delete the role', function() {
       var spy = sandbox.stub(cfApi, 'deleteOrgUserPermissions'),
@@ -215,6 +246,39 @@ describe('UserStore', function() {
       expect(args[0]).toEqual(expectedUserGuid);
       expect(args[1]).toEqual(expectedOrgGuid);
       expect(args[2]).toEqual(expectedRoles);
+    });
+  });
+
+  describe('on user roles deleted', function() {
+    it('should update the resource type roles array if it exists with new roles',
+        function() {
+      var testGuid = 'zxcvzxc',
+          expectedRole = 'org_dark_lord';
+
+      var existingUser = {
+        guid: testGuid,
+        organization_roles: ['org_manager', expectedRole]
+      };
+
+      UserStore._data.push(existingUser);
+
+      userActions.deletedUserRoles(expectedRole, testGuid, 'organization');
+
+      let actual = UserStore.get(testGuid);
+      expect(actual).toBeTruthy();
+      expect(actual.organization_roles).not.toContain(expectedRole);
+    });
+
+    it('should emit a change event if it finds the user and no role', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange'),
+          expectedRole = 'org_dark_lord',
+          testUserGuid = '234xcvbqwn';
+
+      UserStore._data.push({guid: testUserGuid,
+        organization_roles: [expectedRole]});
+      userActions.deletedUserRoles(expectedRole, testUserGuid, 'organization');
+
+      expect(spy).toHaveBeenCalledOnce();
     });
   });
 
