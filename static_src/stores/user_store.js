@@ -7,7 +7,14 @@
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
+import userActions from '../actions/user_actions.js';
 import { userActionTypes } from '../constants.js';
+
+const resourceToRole = {
+  'managers': 'org_manager',
+  'billing_managers': 'billing_manager',
+  'auditors': 'org_auditor'
+};
 
 class UserStore extends BaseStore {
   constructor() {
@@ -49,15 +56,21 @@ class UserStore extends BaseStore {
           action.userGuid,
           action.resourceGuid,
           action.roles
-        );
+        ).done((res) => {
+          userActions.addedUserRoles(
+            action.roles,
+            action.userGuid,
+            action.resouceType);
+        });
         break;
 
       case userActionTypes.USER_ROLES_ADDED:
         var user = this.get(action.userGuid);
         if (user) {
+          let role = resourceToRole[action.roles] || action.roles;
           if (user.organization_roles && 
-              user.organization_roles.indexOf(action.roles) === -1) {
-            user.organization_roles.push(action.roles);
+              user.organization_roles.indexOf(role) === -1) {
+            user.organization_roles.push(role);
             this.emitChange();
           } 
         }
@@ -73,14 +86,20 @@ class UserStore extends BaseStore {
           action.userGuid,
           action.resourceGuid,
           action.roles
-        );
+        ).done((res) => {
+          userActions.deletedUserRoles(
+            action.roles,
+            action.userGuid,
+            action.resouceType);
+        });
         break;
 
       case userActionTypes.USER_ROLES_DELETED:
         var user = this.get(action.userGuid);
         if (user) {
+          let role = resourceToRole[action.roles] || action.roles;
           let idx =  user.organization_roles && 
-            user.organization_roles.indexOf(action.roles);
+            user.organization_roles.indexOf(role);
           if (idx > -1) {
             user.organization_roles.splice(idx, 1);
             this.emitChange();

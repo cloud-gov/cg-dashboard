@@ -150,6 +150,7 @@ describe('UserStore', function() {
 
       expect(spy).toHaveBeenCalledOnce();
     });
+
     it('should merge and update new users with existing users in data',
         function() {
       var sharedGuid = 'wpqoifesadkzcvn';
@@ -174,12 +175,17 @@ describe('UserStore', function() {
   });
 
   describe('on user roles add', function() {
-    it('should call the api for org delete if type org to update the role',
+    it('should call the api for org add if type org to update the role',
         function() {
       var spy = sandbox.stub(cfApi, 'putOrgUserPermissions'),
           expectedRoles = 'org_manager',
           expectedUserGuid = 'zjkxcvadfzxcvz',
           expectedOrgGuid = 'zxcvzcxvzxroiter';
+
+      let testPromise = {
+        done: function() { }
+      };
+      spy.returns(testPromise);
 
       userActions.addUserRoles(
         expectedRoles,
@@ -193,6 +199,11 @@ describe('UserStore', function() {
       expect(args[0]).toEqual(expectedUserGuid);
       expect(args[1]).toEqual(expectedOrgGuid);
       expect(args[2]).toEqual(expectedRoles);
+    });
+
+    it('should call the added user role action with role, user guid and type',
+        function() {
+
     });
   });
 
@@ -225,6 +236,11 @@ describe('UserStore', function() {
 
       expect(spy).toHaveBeenCalledOnce();
     });
+
+    it(`should map certain resource names to a role name when adding to user`,
+        function() {
+
+    });
   });
 
   describe('on user roles delete', function() {
@@ -233,6 +249,11 @@ describe('UserStore', function() {
           expectedRoles = 'org_manager',
           expectedUserGuid = 'zjkxcvz234asdf',
           expectedOrgGuid = 'zxcvzcxvzxroiter';
+
+      let testPromise = {
+        done: function() { }
+      };
+      spy.returns(testPromise);
 
       userActions.deleteUserRoles(
         expectedRoles,
@@ -246,6 +267,11 @@ describe('UserStore', function() {
       expect(args[0]).toEqual(expectedUserGuid);
       expect(args[1]).toEqual(expectedOrgGuid);
       expect(args[2]).toEqual(expectedRoles);
+    });
+
+    it('should call the deleted user role action with role, user guid and type',
+        function() {
+
     });
   });
 
@@ -279,6 +305,11 @@ describe('UserStore', function() {
       userActions.deletedUserRoles(expectedRole, testUserGuid, 'organization');
 
       expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it(`should map certain resource names to a role name when deleting from user`,
+        function() {
+
     });
   });
 

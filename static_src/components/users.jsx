@@ -71,11 +71,17 @@ export default class Users extends React.Component {
   }
 
   handleAddPermissions = (roleKey, userGuid) => {
-
+    userActions.addUserRoles(roleKey, 
+                                userGuid, 
+                                this.state.currentOrgGuid,
+                                'organization');
   }
 
   handleRemovePermissions = (roleKey, userGuid) => {
-
+    userActions.deleteUserRoles(roleKey, 
+                                userGuid, 
+                                this.state.currentOrgGuid,
+                                'organization');
   }
 
   get subNav() {
@@ -126,6 +132,8 @@ export default class Users extends React.Component {
             <UserList 
                 initialUsers={ this.state.users } 
                 onRemove={ removeHandler } 
+                onAddPermissions={ this.handleAddPermissions }
+                onRemovePermissions={ this.handleRemovePermissions }
             />
           </div>
         </div>

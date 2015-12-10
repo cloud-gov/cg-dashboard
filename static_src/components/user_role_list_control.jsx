@@ -12,6 +12,12 @@ const roles = [
   { key: 'org_auditor', label: 'Org Auditor' }
 ];
 
+const roleToResource = {
+  'org_manager': 'managers',
+  'billing_manager': 'billing_managers',
+  'org_auditor': 'auditors'
+}
+
 export default class UserRoleListControl extends React.Component {
   constructor(props) {
     super(props);
@@ -27,10 +33,11 @@ export default class UserRoleListControl extends React.Component {
   }
 
   _onChange = (roleKey, checked) => {
-    var handler = (checked) ? this.props.onRemovePermissions : 
+    var handler = (!checked) ? this.props.onRemovePermissions : 
       this.props.onAddPermissions;
+    var resource = roleToResource[roleKey];
 
-    handler(roleKey, this.props.user.guid);
+    handler(resource, this.props.user.guid);
   }
 
   get roles() {
