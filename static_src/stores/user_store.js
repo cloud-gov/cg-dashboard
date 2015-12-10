@@ -39,6 +39,32 @@ class UserStore extends BaseStore {
         }
         break;
 
+      case userActionTypes.USER_ROLES_ADD:
+        var apiMethodMap = {
+          'organization': cfApi.putOrgUserPermissions,
+          'space': cfApi.putSpaceUserPermissions
+        }
+        var api = apiMethodMap[action.resourceType];
+        api(
+          action.userGuid,
+          action.resourceGuid,
+          action.roles
+        );
+        break;
+
+      case userActionTypes.USER_ROLES_DELETE:
+        var apiMethodMap = {
+          'organization': cfApi.deleteOrgUserPermissions,
+          'space': cfApi.deleteSpaceUserPermissions
+        }
+        var api = apiMethodMap[action.resourceType];
+        api(
+          action.userGuid,
+          action.resourceGuid,
+          action.roles
+        );
+        break;
+
       case userActionTypes.SPACE_USERS_RECEIVED:
       case userActionTypes.ORG_USERS_RECEIVED:
         var updates = this.formatSplitResponse(action.users);

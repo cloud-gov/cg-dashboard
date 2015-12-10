@@ -28,10 +28,10 @@ export function assertAction(spy, type, params) {
 }
 
 export function setupViewSpy(sandbox) {
-  return sandbox.spy(AppDispatcher, 'handleViewAction');
+  return sandbox.stub(AppDispatcher, 'handleViewAction');
 }
 
 export function setupServerSpy(sandbox) {
-  return sandbox.spy(AppDispatcher, 'handleServerAction');
+  return sandbox.stub(AppDispatcher, 'handleServerAction');
 }
 

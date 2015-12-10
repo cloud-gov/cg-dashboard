@@ -75,7 +75,11 @@ export default class UserList extends React.Component {
             </tr>,
             <tr key={ user.guid + '-role' }>
               <td colSpan="2">
-                <UserRoleListControl user={ user } />
+                <UserRoleListControl 
+                  onAddPermissions={ this.props.onAddPermissions }
+                  onRemovePermissions={ this.props.onRemovePermissions }
+                  user={ user } 
+                />
               </td>
             </tr>
           ])
@@ -97,7 +101,9 @@ export default class UserList extends React.Component {
 UserList.propTypes = {
   initialUsers: React.PropTypes.array,
   // Set to a function when there should be a remove button.
-  onRemove: React.PropTypes.func
+  onRemove: React.PropTypes.func,
+  onRemovePermissions: React.PropTypes.func,
+  onAddPermissions: React.PropTypes.func
 };
 
 UserList.defaultProps = {

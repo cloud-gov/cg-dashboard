@@ -27,7 +27,10 @@ export default class UserRoleListControl extends React.Component {
   }
 
   _onChange = (roleKey, checked) => {
+    var handler = (checked) ? this.props.onRemovePermissions : 
+      this.props.onAddPermissions;
 
+    handler(roleKey, this.props.user.guid);
   }
 
   get roles() {
@@ -55,5 +58,11 @@ export default class UserRoleListControl extends React.Component {
   }
 }
 UserRoleListControl.propTypes = {
-  user: React.PropTypes.object.isRequired
+  user: React.PropTypes.object.isRequired,
+  onRemovePermissions: React.PropTypes.func,
+  onAddPermissions: React.PropTypes.func
 };
+UserRoleListControl.defaultProps = {
+  onRemovePermissions: function() { },
+  onAddPermissions: function() { }
+}

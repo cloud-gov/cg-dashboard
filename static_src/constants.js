@@ -82,6 +82,10 @@ var userActionTypes = keymirror({
   ORG_USER_ROLES_RECEIVED: null,
   // Action when all space users were received from the server.
   SPACE_USERS_RECEIVED: null,
+  // Action to add permissions to a user for a space or org on the server.
+  USER_ROLES_ADD: null,
+  // Action to delete persmissions to a user for a space or org on the server.
+  USER_ROLES_DELETE: null,
   // Action to delete a user from an org.
   USER_DELETE: null,
   // Action when a user was deleted from an org on the server.

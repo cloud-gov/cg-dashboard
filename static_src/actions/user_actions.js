@@ -69,6 +69,27 @@ export default {
     });
   },
 
+  addUserRoles(roles, userGuid, resourceGuid, resourceType) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ROLES_ADD,
+      roles: roles,
+      userGuid: userGuid,
+      resourceGuid: resourceGuid,
+      resourceType: resourceType
+    });
+  },
+
+  deleteUserRoles(roles, userGuid, resourceGuid, resourceType) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ROLES_DELETE,
+      roles: roles,
+      userGuid: userGuid,
+      resourceGuid: resourceGuid,
+      resourceType: resourceType
+    });
+
+  },
+
   errorRemoveUser(userGuid, error) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.ERROR_REMOVE_USER,

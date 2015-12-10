@@ -164,4 +164,58 @@ describe('userActions', function() {
       assertAction(spy, userActionTypes.ERROR_REMOVE_USER, expectedParams);
     });
   });
+
+  describe('addUserRoles()', function() {
+    it(`should call a view action to add user roles with current roles 
+        user guid and guid and type`, function() {
+      var expectedRole = 'org_manager',
+          expectedUserGuid = 'akdfjadzxcvzxcvzxvzx',
+          expectedGuid = '2eve2v2vadsfa',
+          expectedType = 'org';
+
+      let expectedParams = {
+        roles: expectedRole,
+        userGuid: expectedUserGuid,
+        resourceGuid: expectedGuid,
+        resourceType: expectedType
+      };
+          
+      let spy = setupViewSpy(sandbox)
+
+      userActions.addUserRoles(
+        expectedRole,
+        expectedUserGuid,
+        expectedGuid,
+        expectedType);
+
+      assertAction(spy, userActionTypes.USER_ROLES_ADD, expectedParams);
+    });
+  });
+
+  describe('deleteUserRoles()', function() {
+    it(`should call a view action to remove user roles with current roles 
+        user guid and org guid and type`, function() {
+      var expectedRole = 'org_manager',
+          expectedUserGuid = 'akdfjasdfjasdfadzxcvzxcvzxvzx',
+          expectedGuid = '2eve2dsfa',
+          expectedType = 'space';
+
+      let expectedParams = {
+        roles: expectedRole,
+        userGuid: expectedUserGuid,
+        resourceGuid: expectedGuid,
+        resourceType: expectedType
+      };
+          
+      let spy = setupViewSpy(sandbox)
+
+      userActions.deleteUserRoles(
+        expectedRole,
+        expectedUserGuid,
+        expectedGuid,
+        expectedType);
+
+      assertAction(spy, userActionTypes.USER_ROLES_DELETE, expectedParams);
+    });
+  });
 });

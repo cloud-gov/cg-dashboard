@@ -173,6 +173,51 @@ describe('UserStore', function() {
     });
   });
 
+  describe('on user roles add', function() {
+    it('should call the api for org delete if type org to update the role',
+        function() {
+      var spy = sandbox.stub(cfApi, 'putOrgUserPermissions'),
+          expectedRoles = 'org_manager',
+          expectedUserGuid = 'zjkxcvadfzxcvz',
+          expectedOrgGuid = 'zxcvzcxvzxroiter';
+
+      userActions.addUserRoles(
+        expectedRoles,
+        expectedUserGuid,
+        expectedOrgGuid,
+        'organization'
+      );
+      
+      expect(spy).toHaveBeenCalledOnce(); 
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(expectedUserGuid);
+      expect(args[1]).toEqual(expectedOrgGuid);
+      expect(args[2]).toEqual(expectedRoles);
+    });
+  });
+
+  describe('on user roles delete', function() {
+    it('should call the api to delete the role', function() {
+      var spy = sandbox.stub(cfApi, 'deleteOrgUserPermissions'),
+          expectedRoles = 'org_manager',
+          expectedUserGuid = 'zjkxcvz234asdf',
+          expectedOrgGuid = 'zxcvzcxvzxroiter';
+
+      userActions.deleteUserRoles(
+        expectedRoles,
+        expectedUserGuid,
+        expectedOrgGuid,
+        'organization'
+      );
+      
+      expect(spy).toHaveBeenCalledOnce(); 
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(expectedUserGuid);
+      expect(args[1]).toEqual(expectedOrgGuid);
+      expect(args[2]).toEqual(expectedRoles);
+    });
+  });
+
   describe('on user delete', function() {
     it('should remove user permissions from org', function() {
       var spy = sandbox.spy(cfApi, 'deleteOrgUserPermissions'),
