@@ -95,6 +95,21 @@ describe('cfApi', function() {
 
       assertFetchError(spy);
     });
+
+    it('should pass any additional arguments to the action', function() {
+      var spy = sandbox.spy(),
+          stub = sandbox.stub(http, 'get'),
+          expectedArgA = 'arga',
+          expectedArgB = 'argb';
+
+      let testPromise = createPromise('asdf');
+      stub.returns(testPromise);
+      cfApi.fetchOne('/thing/asdfz', spy, expectedArgA, expectedArgB);
+      let actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(expectedArgA);
+      actual = spy.getCall(0).args[2];
+      expect(actual).toEqual(expectedArgB);
+    });
   });
 
   describe('getAuthStatus()', function() {
@@ -440,6 +455,8 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('user_roles'));
       actual = spy.getCall(0).args[1];
       expect(actual).toEqual(userActions.receivedSpaceUsers);
+      actual = spy.getCall(0).args[2];
+      expect(actual).toEqual(expected);
     });
   });
 
@@ -458,6 +475,8 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('users'));
       actual = spy.getCall(0).args[1]
       expect(actual).toEqual(userActions.receivedOrgUsers);
+      actual = spy.getCall(0).args[2];
+      expect(actual).toEqual(expected);
     });
   });
 
