@@ -73,15 +73,27 @@ export default class Users extends React.Component {
   handleAddPermissions = (roleKey, userGuid) => {
     userActions.addUserRoles(roleKey, 
                                 userGuid, 
-                                this.state.currentOrgGuid,
-                                'organization');
+                                this.resourceGuid,
+                                this.resourceType);
   }
 
   handleRemovePermissions = (roleKey, userGuid) => {
     userActions.deleteUserRoles(roleKey, 
                                 userGuid, 
-                                this.state.currentOrgGuid,
-                                'organization');
+                                this.resourceGuid,
+                                this.resourceType);
+  }
+
+  get resourceType() {
+    var resourceType = this.state.currentTab === TAB_ORG_NAME ? 'organization' :
+      'space';
+    return resourceType;
+  }
+
+  get resourceGuid() {
+    var resourceGuid = this.state.currentTab === TAB_ORG_NAME ? 
+      this.state.currentOrgGuid : this.state.currentSpaceGuid;
+    return resourceGuid;
   }
 
   get subNav() {

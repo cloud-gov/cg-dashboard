@@ -200,6 +200,27 @@ export default {
     });
   },
 
+  // TODO refactor with org user permissions
+  putSpaceUserPermissions(userGuid, spaceGuid, role) {
+    return http.put(APIV + `/spaces/${ spaceGuid }/${ role }/${ userGuid }`).then(
+      (res) => {
+        return res.response;
+      }, (err) => {
+        // TODO figure out error action
+        console.error(err);
+      });
+  },
+
+  // TODO refactor with org user permissions
+  deleteSpaceUserPermissions(userGuid, spaceGuid, role) {
+    return http.delete(APIV + `/spaces/${ spaceGuid }/${ role }/${ userGuid }`).then(
+      (res) => {
+        return res.response;
+      }, (err) => {
+        userActions.errorRemoveUser(userGuid, err.data);
+      });
+  },
+
   fetchAllServices(orgGuid) {
     return this.fetchMany('/organizations/' + orgGuid + '/services',
                           serviceActions.receivedServices);

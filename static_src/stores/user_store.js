@@ -90,7 +90,7 @@ class UserStore extends BaseStore {
           userActions.deletedUserRoles(
             action.roles,
             action.userGuid,
-            action.resouceType);
+            action.resourceType);
         });
         break;
 
