@@ -4,15 +4,10 @@
  */
 
 import React from 'react';
-import Reactable from 'reactable';
 
 import Button from './button.jsx';
+import UserRoleListControl from './user_role_list_control.jsx';
 
-var Table = Reactable.Table,
-    Thead = Reactable.Thead,
-    Th = Reactable.Th,
-    Tr = Reactable.Tr,
-    Td = Reactable.Td;
 
 export default class UserList extends React.Component {
   constructor(props) {
@@ -48,38 +43,49 @@ export default class UserList extends React.Component {
     var content = <h4 className="test-none_message">No users</h4>;
     if (this.state.users.length) {
       content = (
-      <Table sortable={ true } className="table">
-        <Thead>
+      <table sortable={ true } className="table">
+        <thead>
           { this.columns.map((column) => {
             return (
-              <Th column={ column.label } className={ column.key }
+              <th column={ column.label } className={ column.key }
                   key={ column.key }>
-                { column.label }</Th>
+                { column.label }</th>
             )
           })}
-        </Thead>
+        </thead>
+        <tbody>
         { this.state.users.map((user) => {
           var actions;
           if (this.props.onRemove) {
             actions = (
-              <Td column="Actions">
+              <td column="Actions">
                 <Button 
                 onClickHandler={ this._handleDelete.bind(this, user.guid) } 
                 label="delete">
                   <span>Remove User From Org</span>
                 </Button>
-              </Td>
+                </td>
             );
           } 
-          return (
-            <Tr key={ user.guid }>
-              <Td column="Name"><span>{ user.username }</span></Td>
-              <Td column="Date Created">{ user.created_at }</Td>
+          return ([
+            <tr key={ user.guid }>
+              <td column="Name"><span>{ user.username }</span></td>
+              <td column="Date Created">{ user.created_at }</td>
               { actions }
-            </Tr>
-          )
+            </tr>,
+            <tr key={ user.guid + '-role' }>
+              <td colSpan="2">
+                <UserRoleListControl 
+                  onAddPermissions={ this.props.onAddPermissions }
+                  onRemovePermissions={ this.props.onRemovePermissions }
+                  user={ user } 
+                />
+              </td>
+            </tr>
+          ])
         })}
-      </Table>
+        </tbody>
+      </table>
       );
     }
 
@@ -95,7 +101,9 @@ export default class UserList extends React.Component {
 UserList.propTypes = {
   initialUsers: React.PropTypes.array,
   // Set to a function when there should be a remove button.
-  onRemove: React.PropTypes.func
+  onRemove: React.PropTypes.func,
+  onRemovePermissions: React.PropTypes.func,
+  onAddPermissions: React.PropTypes.func
 };
 
 UserList.defaultProps = {

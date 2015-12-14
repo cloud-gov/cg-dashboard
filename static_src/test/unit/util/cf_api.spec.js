@@ -480,6 +480,25 @@ describe('cfApi', function() {
     });
   });
 
+  describe('fetchOrgUserRoles()', function() {
+    it(`should call fetch org user roles with org guid and received org user 
+        roles action and org guid`, function() {
+      var expectedOrgGuid = 'zkjvczcvzwexdvzdfa',
+          spy = sandbox.stub(cfApi, 'fetchMany');
+          
+      cfApi.fetchOrgUserRoles(expectedOrgGuid);
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expectedOrgGuid));
+      expect(actual).toMatch(new RegExp('organizations'));
+      expect(actual).toMatch(new RegExp('roles'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(userActions.receivedOrgUserRoles);
+      actual = spy.getCall(0).args[2];
+      expect(actual).toEqual(expectedOrgGuid);
+    });
+  });
+
   describe('deleteUser()', function() {
     it('should call a http delete request on the org and user', function() {
       var spy = sandbox.spy(http, 'delete'),

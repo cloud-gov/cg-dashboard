@@ -70,6 +70,32 @@ export default class Users extends React.Component {
     userActions.deleteUser(userGuid, this.state.currentOrgGuid);
   }
 
+  handleAddPermissions = (roleKey, userGuid) => {
+    userActions.addUserRoles(roleKey, 
+                                userGuid, 
+                                this.resourceGuid,
+                                this.resourceType);
+  }
+
+  handleRemovePermissions = (roleKey, userGuid) => {
+    userActions.deleteUserRoles(roleKey, 
+                                userGuid, 
+                                this.resourceGuid,
+                                this.resourceType);
+  }
+
+  get resourceType() {
+    var resourceType = this.state.currentTab === TAB_ORG_NAME ? 'organization' :
+      'space';
+    return resourceType;
+  }
+
+  get resourceGuid() {
+    var resourceGuid = this.state.currentTab === TAB_ORG_NAME ? 
+      this.state.currentOrgGuid : this.state.currentSpaceGuid;
+    return resourceGuid;
+  }
+
   get subNav() {
     var tabs = [
       { name: 'space_users' },
@@ -115,8 +141,12 @@ export default class Users extends React.Component {
         { errorMessage }
         <div className="tab-content">
           <div role="tabpanel" className="tab-pane active">
-            <UserList onRemove={ removeHandler } 
-                initialUsers={ this.state.users } />
+            <UserList 
+                initialUsers={ this.state.users } 
+                onRemove={ removeHandler } 
+                onAddPermissions={ this.handleAddPermissions }
+                onRemovePermissions={ this.handleRemovePermissions }
+            />
           </div>
         </div>
       </div>
