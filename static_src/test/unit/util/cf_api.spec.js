@@ -473,7 +473,7 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('organizations'));
       expect(actual).toMatch(new RegExp('users'));
-      actual = spy.getCall(0).args[1]
+      actual = spy.getCall(0).args[1];
       expect(actual).toEqual(userActions.receivedOrgUsers);
       actual = spy.getCall(0).args[2];
       expect(actual).toEqual(expected);
