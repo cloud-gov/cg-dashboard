@@ -33,6 +33,8 @@ export default class ServicePlanList extends React.Component {
       serviceGuid: props.initialServiceGuid,
       servicePlans: []
     };
+    this._onChange = this._onChange.bind(this);
+    this._handleAdd = this._handleAdd.bind(this);
   }
 
   componentWillMount() {
@@ -44,11 +46,11 @@ export default class ServicePlanList extends React.Component {
     this.setState(stateSetter(this.state.serviceGuid));
   }
 
-  _onChange = () => {
+  _onChange() {
     this.setState(stateSetter(this.state.serviceGuid));
   }
 
-  _handleAdd = (planGuid) => {
+  _handleAdd(planGuid) {
 
   }
 

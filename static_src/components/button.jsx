@@ -10,9 +10,10 @@ export default class Button extends React.Component {
     super(props);
     this.props = props;
     this.state = stateSetter(props);
+    this._handleClick = this._handleClick.bind(this);
   }
 
-  _handleClick = (ev) => {
+  _handleClick(ev) {
     return this.props.onClickHandler(ev);
   }
 

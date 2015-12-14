@@ -18,6 +18,8 @@ export default class Navbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = getState();
+    this._onChange = this._onChange.bind(this);
+    this._buildNav = this._buildNav.bind(this);
   }
 
   componentDidMount() {
@@ -25,11 +27,11 @@ export default class Navbar extends React.Component {
     orgActions.fetchAll();
   }
 
-  _onChange = () => {
+  _onChange() {
     this.setState(getState());
   }
 
-  render = () => {
+  render() {
     var orgEls = [],
         navigation;
 
@@ -55,7 +57,7 @@ export default class Navbar extends React.Component {
     );
   }
 
-  _buildNav = (org) => {
+  _buildNav(org) {
     var navEls = [];
 
     navEls.push({

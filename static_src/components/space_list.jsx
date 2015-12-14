@@ -25,6 +25,8 @@ export default class SpaceList extends React.Component {
     super(props);
     this.props = props;
     this.state = { rows: [], currentOrgGuid: this.props.initialOrgGuid };
+    this._onChange = this._onChange.bind(this);
+    this.spaceLink = this.spaceLink.bind(this);
   }
 
   componentDidMount() {
@@ -32,7 +34,7 @@ export default class SpaceList extends React.Component {
     this.setState(stateSetter());
   }
 
-  _onChange = () => {
+  _onChange() {
     this.setState(stateSetter());
   }
 
@@ -53,7 +55,7 @@ export default class SpaceList extends React.Component {
     return <h4 className="test-none_message">No spaces found</h4>
   }
 
-  spaceLink = (spaceGuid) => {
+  spaceLink(spaceGuid) {
     return `/#/org/${ this.state.currentOrgGuid }/spaces/${ spaceGuid }`;
   }
 

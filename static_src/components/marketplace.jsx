@@ -24,13 +24,14 @@ export default class Marketplace extends React.Component {
       currentOrgGuid: props.initialOrgGuid,
       services: []
     };
+    this._onChange = this._onChange.bind(this);
   }
 
   componentDidMount() {
     ServiceStore.addChangeListener(this._onChange);
   }
 
-  _onChange = () => {
+  _onChange() {
     this.setState(stateSetter());
   }
 

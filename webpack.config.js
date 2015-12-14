@@ -26,7 +26,7 @@ module.exports = {
           path.resolve(__dirname, 'node_modules'),
         ],
         query: {
-          presets: ['es2015', 'stage-0', 'react'],
+          presets: ['es2015', 'react'],
           plugins: []
         }
       },

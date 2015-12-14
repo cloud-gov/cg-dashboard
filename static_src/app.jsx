@@ -14,6 +14,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {isLoggedIn: false};
+    this._onChange = this._onChange.bind(this);
   }
 
   componentDidMount() {
@@ -21,11 +22,11 @@ export default class App extends React.Component {
     LoginStore.addChangeListener(this._onChange);
   }
 
-  _onChange = () => {
+  _onChange() {
     this.setState(getState());
   }
 
-  render = () => {
+  render() {
     var content,
         sidebar;
 
