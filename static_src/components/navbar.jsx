@@ -36,8 +36,6 @@ export default class Navbar extends React.Component {
     var orgEls = [],
         navigation;
 
-    console.log('styles', styles);
-    
     let classes = classNames('nav', styles.sidebar);
 
     orgEls = this.state.orgs.map((org) => {
