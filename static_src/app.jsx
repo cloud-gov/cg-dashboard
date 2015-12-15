@@ -1,8 +1,5 @@
 
-import classNames from 'classnames';
 import React from 'react';
-
-import styles from './css/main.css';
 
 import loginActions from './actions/login_actions.js';
 import Login from './components/login.jsx';
@@ -39,9 +36,6 @@ export default class App extends React.Component {
       content = <Login />;
     }
 
-    let sidebarClasses = classNames('col-sm-3', 'col-md-2', styles.sidebar);
-    let mainClasses = classNames('col-sm-9', 'col-sm-offset-3', 'col-md-10',
-                                 'col-md-offset-2', styles.main);
     return (
     <div>
       { /* TODO use a separate navbar component for this. */ }
@@ -56,10 +50,10 @@ export default class App extends React.Component {
       </nav>
       <div className="container-fluid">
         <div className="row">
-          <nav className={ sidebarClasses }>
+          <nav className="col-sm-3 col-md-2 sidebar">
             { sidebar }
           </nav>
-          <main className={ mainClasses }>
+          <main className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             { content }
           </main>
         </div>
