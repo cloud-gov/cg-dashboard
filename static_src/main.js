@@ -76,7 +76,6 @@ function notFound() {
 }
 
 let routes = {
-  '': dashboard,
   '/': dashboard,
   '/dashboard': dashboard,
   '/login': login,
@@ -106,5 +105,5 @@ router.configure({
   before: checkAuth,
   notfound: notFound
 });
-router.init();
+router.init('/');
 
