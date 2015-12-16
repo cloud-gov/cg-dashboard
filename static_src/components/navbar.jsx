@@ -1,5 +1,8 @@
 
+import classNames from 'classnames';
 import React from 'react';
+
+import styles from '../css/components/navbar.css';
 
 import Dropdown from '../components/dropdown.jsx';
 import orgActions from '../actions/org_actions.js';
@@ -33,6 +36,8 @@ export default class Navbar extends React.Component {
     var orgEls = [],
         navigation;
 
+    let classes = classNames('nav', styles.sidebar);
+
     orgEls = this.state.orgs.map((org) => {
       return {
         element: <a href={ '#/org/' + org.guid }>{ org.name }</a>,
@@ -45,8 +50,8 @@ export default class Navbar extends React.Component {
     }
 
     return (
-      <ul className="nav nav-sidebar">
-        <li>
+      <ul className={ classes }>
+        <li className="">
           <Dropdown title='Change Organization' classes={ ['test-nav-orgs'] }
             items={ orgEls } />
         </li>

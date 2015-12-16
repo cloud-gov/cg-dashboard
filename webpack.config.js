@@ -19,7 +19,16 @@ module.exports = {
       { test: /\.jsx?$/,
         loader: 'babel?optional[]=runtime&stage=0',
         exclude: /node_modules/ },
+      { test: /\.css$/, 
+        include: path.resolve(__dirname, 'static_src/css'),
+        loader: ExtractTextPlugin.extract('style-loader',
+          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader') 
+      },
+      { test: /\.less$/,
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
+      },
       { test: /\.css$/,
+        include: path.resolve(__dirname, 'node_modules'),
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
       },
       { test: /\.(woff|woff2)$/,  loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
@@ -30,6 +39,10 @@ module.exports = {
   },
 
   resolve: {
+    alias: {
+      'bootstrap.css':  __dirname + '/node_modules/bootstrap/dist/css/bootstrap.css',
+      'bootstrap.less': __dirname + '/node_modules/bootstrap/less/bootstrap.less'
+    },
     modulesDirectories: ['node_modules', 'components']
   },
 
