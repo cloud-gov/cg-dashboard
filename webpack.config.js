@@ -7,7 +7,6 @@ var compiledDir = './static/assets';
 
 module.exports = {
   entry: [
-    'babel-polyfill',
     srcDir + '/main.js'
   ],
 
@@ -27,7 +26,7 @@ module.exports = {
         ],
         query: {
           presets: ['es2015', 'react'],
-          plugins: []
+          plugins: ['transform-runtime']
         }
       },
       { test: /\.css$/, 

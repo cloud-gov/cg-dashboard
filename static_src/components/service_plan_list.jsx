@@ -29,7 +29,6 @@ export default class ServicePlanList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-<<<<<<< HEAD
     this.setState({serviceGuid: nextProps.initialServiceGuid});
     this.setState(stateSetter(this.state.serviceGuid));
   }
@@ -39,18 +38,8 @@ export default class ServicePlanList extends React.Component {
   }
 
   _handleAdd(planGuid) {
-
-=======
-    this.setState({
-      serviceGuid: nextProps.initialServiceGuid,
-      servicePlans: nextProps.initialServicePlans
-    });
-  }
-
-  _handleAdd = (planGuid) => {
     serviceActions.createInstanceForm(this.state.serviceGuid,
       planGuid);
->>>>>>> upstream/staging-alpha
   }
 
   get columns() {

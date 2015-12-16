@@ -41,6 +41,8 @@ export default class Users extends React.Component {
     this._setTab = this._setTab.bind(this);
     this.handleTabClick = this.handleTabClick.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleAddPermissions = this.handleAddPermissions.bind(this);
+    this.handleRemovePermissions = this.handleRemovePermissions.bind(this);
   }
 
   componentDidMount() {
@@ -74,14 +76,14 @@ export default class Users extends React.Component {
     userActions.deleteUser(userGuid, this.state.currentOrgGuid);
   }
 
-  handleAddPermissions = (roleKey, userGuid) => {
+  handleAddPermissions(roleKey, userGuid) {
     userActions.addUserRoles(roleKey, 
                                 userGuid, 
                                 this.resourceGuid,
                                 this.resourceType);
   }
 
-  handleRemovePermissions = (roleKey, userGuid) => {
+  handleRemovePermissions(roleKey, userGuid) {
     userActions.deleteUserRoles(roleKey, 
                                 userGuid, 
                                 this.resourceGuid,

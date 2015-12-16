@@ -20,15 +20,18 @@ export class Form extends React.Component {
       fieldValues: {},
       errs: []
     };
+    this._handleSubmit = this._handleSubmit.bind(this);
+    this.attachToForm = this.attachToForm.bind(this);
+    this.detatchFromForm = this.detatchFromForm.bind(this);
   }
 
-  attachToForm = (element) => {
+  attachToForm(element) {
     var fields =  this.state.fields;
     fields[element.props.name] = element;
     this.setState({ fields: fields });
   }
 
-  detatchFromForm = (element) => {
+  detatchFromForm(element) {
     var fields =  this.state.fields;
     delete fields[element.props.name];
     this.setState({ fields: fields });
@@ -51,7 +54,7 @@ export class Form extends React.Component {
     }
   }
 
-  _handleSubmit = (ev) => {
+  _handleSubmit(ev) {
     var values = this.state.fieldValues;
     ev.preventDefault();
     for (name in this.state.fields) {
@@ -116,13 +119,15 @@ export class FormElement extends React.Component {
     if (!this.props.key) {
       this.state.id = nextId();
     }
+    this.componentWillMount = this.componentWillMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
   }
   
-  componentWillMount = () => {
+  componentWillMount() {
     this.props.attachToForm && this.props.attachToForm(this);
   }
 
-  componentWillUnmount = () => {
+  componentWillUnmount() {
     this.props.detatchFromForm && this.props.detatchFromForm(this);
   }
 
@@ -182,9 +187,10 @@ export class FormText extends FormElement {
     this.state = this.state || {};
     this.state.value = '';
     this.state.err = null;
+    this._handleChange = this._handleChange.bind(this);
   }
 
-  _handleChange = (ev) => {
+  _handleChange(ev) {
     this.setState({value: ev.target.value}); 
   }
 
@@ -212,9 +218,10 @@ export class FormSelect extends FormElement {
     this.state = this.state || {};
     this.state.value = '';
     this.state.err = null;
+    this._handleChange = this._handleChange.bind(this)
   }
 
-  _handleChange = (ev) => {
+  _handleChange(ev) {
     this.setState({ value: ev.target.value });
   }
 
