@@ -32,7 +32,7 @@ function createPromise(res, err) {
 
 describe('cfApi', function() {
   var sandbox,
-  errorFetchRes = { message: 'error' };
+      errorFetchRes = { message: 'error' };
 
   beforeEach(() => {
     OrgStore._data = [];
@@ -58,6 +58,59 @@ describe('cfApi', function() {
     expect(spy).toHaveBeenCalledOnce();
     expect(spy).toHaveBeenCalledWith(errorFetchRes);
   }
+
+  describe('fetchOne()', function() {
+    it('should call an http get request with the versioned url', function() {
+      var stub = sandbox.stub(http, 'get'),
+          expectedUrl = '/org/asldfkj';
+
+      let testPromise = createPromise({data: {}});
+      stub.returns(testPromise);
+
+      cfApi.fetchOne(expectedUrl, function() { });
+
+      expect(stub).toHaveBeenCalledOnce();
+      let actual = stub.getCall(0).args[0];
+      expect(actual).toEqual(cfApi.version + expectedUrl);
+    });
+
+    it('should call the action with the response data on success', function() {
+      var expected = { data: { guid: 'q39g08hgdih' }},
+          stub = sandbox.stub(http, 'get'),
+          spy = sandbox.spy();
+
+      let testPromise = createPromise(expected);
+      stub.returns(testPromise);
+
+      cfApi.fetchOne('/thing/adjfk', spy);
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toEqual(expected.data);
+    });
+
+    it('should call the fetch error action on failure', function() {
+      var spy = fetchErrorSetup();
+
+      cfApi.fetchOne();
+
+      assertFetchError(spy);
+    });
+
+    it('should pass any additional arguments to the action', function() {
+      var spy = sandbox.spy(),
+          stub = sandbox.stub(http, 'get'),
+          expectedArgA = 'arga',
+          expectedArgB = 'argb';
+
+      let testPromise = createPromise('asdf');
+      stub.returns(testPromise);
+      cfApi.fetchOne('/thing/asdfz', spy, expectedArgA, expectedArgB);
+      let actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(expectedArgA);
+      actual = spy.getCall(0).args[2];
+      expect(actual).toEqual(expectedArgB);
+    });
+  });
 
   describe('getAuthStatus()', function() {
     it('calls http get request for auth status', () => {
@@ -105,12 +158,6 @@ describe('cfApi', function() {
   });
 
   describe('fetchOrg()', () => {
-    it('returns a promise', () => {
-      var actual = cfApi.fetchOrg('xxaa');
-
-      expect(actual.then).toBeTruthy();
-    });
-
     it('calls http get request 2 times for all data with guid', () => {
       var spy = sandbox.spy(http, 'get'),
           expected = 'xxxaa2';
@@ -231,88 +278,116 @@ describe('cfApi', function() {
   });
 
   describe('fetchSpace()', () => {
-    it('calls http get request for space with guid', () => {
-      var spy = sandbox.spy(http, 'get'),
-          expected = 'yyyybba1';
+    it('calls fetch one for space with guid and received space', function() {
+      var expected = 'yyyybba1',
+          spy = sandbox.stub(cfApi, 'fetchOne');
 
       cfApi.fetchSpace(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
-    });
-
-    it('calls received action with space from response on success', () => {
-      var expectedGuid = 'ttba',
-          expected = { data: { guid: expectedGuid } },
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(spaceActions, 'receivedSpace');
-
-      let testPromise = createPromise(expected);
-
-      stub.returns(testPromise);
-
-      cfApi.fetchSpace(expectedGuid);
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected.data);
-    });
-
-    it('calls errorActions fetch error on failure', () => {
-      var spy = fetchErrorSetup();
-
-      cfApi.fetchSpace();
-
-      assertFetchError(spy);
+      expect(actual).toMatch(new RegExp('space'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(spaceActions.receivedSpace);
     });
   });
 
   describe('fetchServiceInstances()', function() {
-    it('calls http get request for service instance with space guid',
+    it('should call fetch with spaces service instances url and recevied space',
         function() {
-      var spy = sandbox.spy(http, 'get'),
-          expected = 'yyyybba1';
+      var expected = 'yyyybba1',
+          spy = sandbox.stub(cfApi, 'fetchMany');
 
       cfApi.fetchServiceInstances(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('spaces'));
+      expect(actual).toMatch(new RegExp('service_instances'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(serviceActions.receivedInstances);
     });
+  });
 
-    it('calls service action for received service instances with payload on ' +
-       'success', function() {
-      var expectedGuid = 'ttba',
-          expected,
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(serviceActions, 'receivedInstances');
+  describe('createServiceInstance()', function() {
+    var expectedName = 'name',
+        expectedSpaceGuid = 'vzjck8zv9czjck',
+        expectedServicePlanGuid = 'vcmn234adf';
 
-      expected = [
-        { metadata: {
-            guid: expectedGuid
-          },
-          entity: {
-            type: 'someasdf'
-          }
-        }
-      ];
+    it('should call an http create for service_instance url and payload',
+        function() {
+      var expectedName = 'nameA',
+          expectedSpaceGuid = 'adjszc98bv7zxcf',
+          expectedServicePlanGuid = 'aldkfjbnzx1231',
+          spy = sandbox.spy(http, 'post');
 
-      let testRes = {data: {resources: expected }};
+      let expected = {
+        name: expectedName,
+        space_guid: expectedSpaceGuid,
+        service_plan_guid: expectedServicePlanGuid
+      };
 
-      let testPromise = createPromise(testRes);
-      stub.returns(testPromise);
-
-      cfApi.fetchServiceInstances(expectedGuid);
+      cfApi.createServiceInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
 
       expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected);
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('service_instances'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(expected);
     });
 
-    it('calls errorActions fetch error on failure', () => {
-      var spy = fetchErrorSetup();
+    it('should add an accepts_incomplete param in the request', function() {
+      var spy = sandbox.spy(http, 'post');
 
-      cfApi.fetchServiceInstances();
+      cfApi.createServiceInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
+      
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('accepts_incomplete'));
+    });
 
-      assertFetchError(spy);
+    it('should call service action for instance created on success', function() {
+      var stub = sandbox.stub(http, 'post'),
+          spy = sandbox.spy(serviceActions, 'createdInstance'),
+          expected = { data: { guid: 'znvmjahskf' }};
+
+      let testPromise = createPromise(expected);
+      stub.returns(testPromise);
+
+      cfApi.createServiceInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toEqual(expected.data);
+    });
+
+    it('should call an service error action on failure', function() {
+      var stub = sandbox.stub(http, 'post'),
+          spy = sandbox.stub(serviceActions, 'errorCreateInstance'),
+          expectedErr = { status: 'error' };
+
+      let testPromise = createPromise(true, {data: expectedErr});
+      stub.returns(testPromise);
+
+      cfApi.createServiceInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toEqual(expectedErr);
     });
   });
 
@@ -350,112 +425,77 @@ describe('cfApi', function() {
   });
 
   describe('fetchApp()', function() {
-    it('should call an http get request for app with app guid', function() {
-      var spy = sandbox.spy(http, 'get'),
-          expected = 'yyyybba1';
+    it('should call fetch with apps url and received app space', function() {
+      var expected = 'yyyybba1',
+          spy = sandbox.stub(cfApi, 'fetchOne');
 
       cfApi.fetchApp(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
-    });
-
-    it('calls received action with app from response on success', function() {
-      var expectedGuid = 'ttba',
-          expected = { data: { guid: expectedGuid } },
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(appActions, 'receivedApp');
-
-      let testPromise = createPromise(expected);
-
-      stub.returns(testPromise);
-
-      cfApi.fetchApp(expectedGuid);
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected.data);
-    });
-
-    it('calls errorActions fetch error on failure', () => {
-      var spy = fetchErrorSetup();
-
-      cfApi.fetchApp();
-
-      assertFetchError(spy);
+      expect(actual).toMatch(new RegExp('apps'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(appActions.receivedApp);
     });
   });
 
   describe('fetchSpaceUsers()', function() {
-    it('should call an http get request for users with space guid', function() {
-      var spy = sandbox.spy(http, 'get'),
-          expected = 'adsfpjweqidalkvn';
+    it('should call fetch with spaces user roles url with space guid and the' +
+       ' received space users action', function() {
+      var expected = 'yyyybba1',
+          spy = sandbox.stub(cfApi, 'fetchMany');
 
       cfApi.fetchSpaceUsers(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
-    });
-
-    it('calls received action with users from response on success', function() {
-      var expectedGuid = 'adsfkxcmz',
-          expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(userActions, 'receivedSpaceUsers');
-
-      let testPromise = createPromise(expected);
-
-      stub.returns(testPromise);
-
-      cfApi.fetchSpaceUsers('adsfas');
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected.data.resources);
-    });
-
-    it('calls errorActions fetch error on failure', () => {
-      var spy = fetchErrorSetup();
-
-      cfApi.fetchSpaceUsers();
-
-      assertFetchError(spy);
+      expect(actual).toMatch(new RegExp('spaces'));
+      expect(actual).toMatch(new RegExp('user_roles'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(userActions.receivedSpaceUsers);
+      actual = spy.getCall(0).args[2];
+      expect(actual).toEqual(expected);
     });
   });
 
   describe('fetchOrgUsers()', function() {
-    it('should call an http get request for users with space guid', function() {
-      var spy = sandbox.spy(http, 'get'),
-          expected = 'adsfpjweqidalkvn';
+    it('should call fetch org users with org guid and received org users action',
+        function() {
+      var expected = 'yyyybba1',
+          spy = sandbox.stub(cfApi, 'fetchMany');
 
       cfApi.fetchOrgUsers(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp('organizations'));
       expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('organizations'));
+      expect(actual).toMatch(new RegExp('users'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(userActions.receivedOrgUsers);
+      actual = spy.getCall(0).args[2];
+      expect(actual).toEqual(expected);
     });
+  });
 
-    it('calls received action with users from response on success', function() {
-      var expectedGuid = 'adsfkxcmz',
-          expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(userActions, 'receivedOrgUsers');
-
-      let testPromise = createPromise(expected);
-
-      stub.returns(testPromise);
-
-      cfApi.fetchOrgUsers('adsfas');
-      
+  describe('fetchOrgUserRoles()', function() {
+    it(`should call fetch org user roles with org guid and received org user 
+        roles action and org guid`, function() {
+      var expectedOrgGuid = 'zkjvczcvzwexdvzdfa',
+          spy = sandbox.stub(cfApi, 'fetchMany');
+          
+      cfApi.fetchOrgUserRoles(expectedOrgGuid);
       expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected.data.resources);
-    });
-
-    it('calls errorActions fetch error on failure', () => {
-      var spy = fetchErrorSetup();
-
-      cfApi.fetchOrgUsers();
-
-      assertFetchError(spy);
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expectedOrgGuid));
+      expect(actual).toMatch(new RegExp('organizations'));
+      expect(actual).toMatch(new RegExp('roles'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(userActions.receivedOrgUserRoles);
+      actual = spy.getCall(0).args[2];
+      expect(actual).toEqual(expectedOrgGuid);
     });
   });
 
@@ -576,9 +616,10 @@ describe('cfApi', function() {
   });
 
   describe('fetchAllServices()', function() {
-    it('should call http get request for services with org guid', function() {
-      var spy = sandbox.spy(http, 'get'),
-          expected = 'q98ahfxvjahfsdphu';
+    it('should fetch services with org guid and received services action',
+         function() {
+      var expected = 'yyyybba1',
+          spy = sandbox.stub(cfApi, 'fetchMany');
 
       cfApi.fetchAllServices(expected);
 
@@ -586,38 +627,17 @@ describe('cfApi', function() {
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('services'));
-    });
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(serviceActions.receivedServices);
 
-    it('calls received action with services from response', function() {
-      var expectedGuid = 'mzxlvkj',
-          expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.stub(serviceActions, 'receivedServices').returns(
-            function() { });
-
-      let testPromise = createPromise(expected);
-
-      stub.returns(testPromise);
-
-      cfApi.fetchAllServices('alksdfj');
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected.data.resources);
-    });
-    
-    it('calls errorActions fetch error on failure', function() {
-      var spy = fetchErrorSetup();
-
-      let actual = cfApi.fetchAllServices();
-
-      assertFetchError(spy);
     });
   });
 
   describe('fetchAllServicePlans()', function() {
-    it('should call http get request for service plans with service guid',
-        function() {
-      var spy = sandbox.spy(http, 'get'),
-          expected = 'q98ahfxvjahfsdphu';
+    it('calls fetch services plans with service guid and received plans',
+         function() {
+      var expected = 'yyyybba1',
+          spy = sandbox.stub(cfApi, 'fetchMany');
 
       cfApi.fetchAllServicePlans(expected);
 
@@ -625,29 +645,8 @@ describe('cfApi', function() {
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('service_plans'));
-    });
-
-    it('calls received action with services from response', function() {
-      var expectedGuid = 'mzxlvkj',
-          expected = { data: { resources: wrapInRes([{ guid: expectedGuid }])}},
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(serviceActions, 'receivedPlans');
-
-      let testPromise = createPromise(expected);
-
-      stub.returns(testPromise);
-
-      cfApi.fetchAllServicePlans('alksdfj');
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected.data.resources);
-    });
-    
-    it('calls errorActions fetch error on failure', function() {
-      var spy = fetchErrorSetup();
-
-      let actual = cfApi.fetchAllServicePlans();
-
-      assertFetchError(spy);
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(serviceActions.receivedPlans);
     });
   });
 });

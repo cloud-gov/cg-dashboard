@@ -45,6 +45,37 @@ export default {
     });
   },
 
+  createInstanceForm(serviceGuid, planGuid) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM,
+      serviceGuid: serviceGuid,
+      servicePlanGuid: planGuid
+    });
+  },
+
+  createInstance(name, spaceGuid, servicePlanGuid) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CREATE,
+      name: name,
+      spaceGuid: spaceGuid,
+      servicePlanGuid: servicePlanGuid
+    });
+  },
+
+  createdInstance(serviceInstance) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CREATED,
+      serviceInstance: serviceInstance
+    });
+  },
+
+  errorCreateInstance(err) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_ERROR,
+      error: err
+    });
+  },
+
   receivedInstances(serviceInstances) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,

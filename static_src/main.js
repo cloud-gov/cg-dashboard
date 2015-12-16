@@ -1,5 +1,5 @@
 
-import '../node_modules/bootstrap/dist/css/bootstrap.css';
+import 'bootstrap.css';
 
 import './css/main.css';
 
@@ -40,6 +40,10 @@ function space(orgGuid, spaceGuid, potentialPage) {
   // TODO what happens if the space arrives before the changelistener is added?
   cfApi.fetchOrg(orgGuid);
   cfApi.fetchSpace(spaceGuid);
+  // TODO use constant
+  if (potentialPage === 'users') {
+    cfApi.fetchOrgUserRoles(orgGuid);
+  }
   React.render(
     <App>
       <Space
@@ -49,8 +53,12 @@ function space(orgGuid, spaceGuid, potentialPage) {
     </App>, mainEl);
 }
 
-function marketplace(orgGuid) {
+function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
+  cfApi.fetchOrg(orgGuid);
   cfApi.fetchAllServices(orgGuid);
+  if (serviceGuid && servicePlanGuid) {
+    serviceActions.createInstanceForm(serviceGuid, servicePlanGuid);
+  }
   React.render(
     <App>
       <Marketplace
@@ -68,7 +76,6 @@ function notFound() {
 }
 
 let routes = {
-  '': dashboard,
   '/': dashboard,
   '/dashboard': dashboard,
   '/login': login,
@@ -83,6 +90,9 @@ let routes = {
         }
       },
       '/marketplace': {
+        '/create/:serviceGuid/:servicePlanGuid': {
+          on: marketplace
+        },
         on: marketplace
       },
       on: org,
@@ -95,5 +105,5 @@ router.configure({
   before: checkAuth,
   notfound: notFound
 });
-router.init();
+router.init('/');
 

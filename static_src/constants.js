@@ -50,7 +50,16 @@ var serviceActionTypes = keymirror({
   // Action to fetch a all service instances from the server.
   SERVICE_INSTANCES_FETCH: null,
   // Action when all service instances were received from the server. 
-  SERVICE_INSTANCES_RECEIVED: null
+  SERVICE_INSTANCES_RECEIVED: null,
+  // Action to open UI to create a service instance.
+  SERVICE_INSTANCE_CREATE_FORM: null,
+  // Action when an error happens attempting to create a service instance on
+  // server.
+  SERVICE_INSTANCE_ERROR: null,
+  // Action to create a service instance.
+  SERVICE_INSTANCE_CREATE: null,
+  // Action when a service instance was created on the server.
+  SERVICE_INSTANCE_CREATED: null
 });
 
 var appActionTypes = keymirror({
@@ -63,12 +72,24 @@ var appActionTypes = keymirror({
 var userActionTypes = keymirror({
   // Action to fetch users belonging to a organization from the server.
   ORG_USERS_FETCH: null,
+  // Action to fetch the user roles for an org from the server.
+  ORG_USER_ROLES_FETCH: null,
   // Action to fetch users belonging to a space from the server.
   SPACE_USERS_FETCH: null,
   // Action when all organization users were received from the server.
   ORG_USERS_RECEIVED: null,
+  // Action when all org user roles were received from the server.
+  ORG_USER_ROLES_RECEIVED: null,
   // Action when all space users were received from the server.
   SPACE_USERS_RECEIVED: null,
+  // Action to add permissions to a user for a space or org on the server.
+  USER_ROLES_ADD: null,
+  // Action when user roles are added on the server.
+  USER_ROLES_ADDED: null,
+  // Action to delete persmissions to a user for a space or org on the server.
+  USER_ROLES_DELETE: null,
+  // Action when user roles are deleted on the server.
+  USER_ROLES_DELETED: null,
   // Action to delete a user from an org.
   USER_DELETE: null,
   // Action when a user was deleted from an org on the server.

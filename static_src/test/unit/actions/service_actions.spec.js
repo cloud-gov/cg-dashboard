@@ -96,6 +96,83 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('createInstanceForm()', function() {
+    it(`should dispatch a view event of type create instance form with the
+        service guid and service plan guid`, function() {
+      var expectedServiceGuid = 'wqphjhajkajkhadjhfd',
+          expectedServicePlanGuid = 'fp2ajkdsfadgh32fasd';
+
+      let expectedParams = {
+        servicePlanGuid: expectedServicePlanGuid,
+        serviceGuid: expectedServiceGuid
+      };
+      let spy = setupViewSpy(sandbox);
+
+      serviceActions.createInstanceForm(expectedServiceGuid,
+        expectedServicePlanGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM,
+                   expectedParams);
+    });
+  });
+
+  describe('createInstance()', function() {
+    it(`should dispatch a view event of type service instance create with name
+        space guid, and service plan guid`, function() {
+      var expectedSpaceGuid = 'alksjdfvcbxzzz',
+          expectedName = 'service',
+          expectedServicePlanGuid = '78900987adfasda';
+
+      let expectedParams = {
+        name: expectedName,
+        spaceGuid: expectedSpaceGuid,
+        servicePlanGuid: expectedServicePlanGuid
+      };
+      let spy = setupViewSpy(sandbox);
+
+      serviceActions.createInstance(
+          expectedName,
+          expectedSpaceGuid,
+          expectedServicePlanGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE,
+                   expectedParams);
+    });
+  });
+
+  describe('createdInstance()', function() {
+    it('should dispatch a server event of type instance created with service',
+        function() {
+      var expectedInstance = { guid: 'asdfas' };
+
+      let expectedParams = {
+        serviceInstance: expectedInstance
+      };
+      let spy = setupServerSpy(sandbox);
+
+      serviceActions.createdInstance(expectedInstance);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATED,
+                   expectedParams);
+    });
+  });
+
+  describe('errorCreateInstance()', function() {
+    it('should dispatch a server event of type error create instance', function() {
+      var expectedErr = { status: 400 };
+
+      let expectedParams = {
+        error: expectedErr
+      }
+      let spy = setupServerSpy(sandbox);
+
+      serviceActions.errorCreateInstance(expectedErr);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_ERROR,
+                   expectedParams);
+    });
+  });
+
   describe('receivedInstance()', function() {
     it('should dispatch a server event of type service instance resv with ' +
        'the service instances', function() {

@@ -60,6 +60,22 @@ describe('UserStore', function() {
     });
   });
 
+  describe('on org user roles fetch', function() {
+    it('should fetch org user roles through api', function() {
+      var spy = sandbox.spy(cfApi, 'fetchOrgUserRoles'),
+          expectedGuid = 'axckzvjxcov';
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.ORG_USER_ROLES_FETCH,
+        orgGuid: expectedGuid
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+    });
+  });
+
   describe('on space or org users received', function() {
     it('should emit a change event if data was updated', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
@@ -120,6 +136,180 @@ describe('UserStore', function() {
       let actual = UserStore.get(user.guid);
 
       expect(actual.orgGuid).toEqual(expectedGuid);
+    });
+  });
+
+  describe('on org user roles received', function() {
+    it('should emit a change event if data changed', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
+        orgUserRoles: wrapInRes([{ guid: 'adsfa' }])
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should merge and update new users with existing users in data',
+        function() {
+      var sharedGuid = 'wpqoifesadkzcvn';
+
+      let existingUser = { guid: sharedGuid, name: 'Michael' };
+      let newUser = { guid: sharedGuid, organization_roles: ['role'] };
+
+      UserStore._data.push(existingUser);
+      expect(UserStore.get(sharedGuid)).toEqual(existingUser);
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
+        orgUserRoles: wrapInRes([newUser])
+      });
+      let actual = UserStore.get(sharedGuid);
+      expect(actual).toEqual({
+        guid: sharedGuid,
+        name: 'Michael',
+        organization_roles: ['role']
+      });
+    });
+  });
+
+  describe('on user roles add', function() {
+    it('should call the api for org add if type org to update the role',
+        function() {
+      var spy = sandbox.stub(cfApi, 'putOrgUserPermissions'),
+          expectedRoles = 'org_manager',
+          expectedUserGuid = 'zjkxcvadfzxcvz',
+          expectedOrgGuid = 'zxcvzcxvzxroiter';
+
+      let testPromise = {
+        done: function() { }
+      };
+      spy.returns(testPromise);
+
+      userActions.addUserRoles(
+        expectedRoles,
+        expectedUserGuid,
+        expectedOrgGuid,
+        'organization'
+      );
+      
+      expect(spy).toHaveBeenCalledOnce(); 
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(expectedUserGuid);
+      expect(args[1]).toEqual(expectedOrgGuid);
+      expect(args[2]).toEqual(expectedRoles);
+    });
+
+    it('should call the added user role action with role, user guid and type',
+        function() {
+
+    });
+  });
+
+  describe('on user roles added', function() {
+    it('should update the resource type roles array if it exists with new roles',
+        function() {
+      var testGuid = 'zxcvzxc',
+          expectedRole = 'org_dark_lord';
+
+      var existingUser = {
+        guid: testGuid,
+        organization_roles: ['org_manager']
+      };
+
+      UserStore._data.push(existingUser);
+
+      userActions.addedUserRoles(expectedRole, testGuid, 'organization');
+
+      let actual = UserStore.get(testGuid);
+      expect(actual).toBeTruthy();
+      expect(actual.organization_roles).toContain(expectedRole);
+    });
+
+    it('should emit a change event if it finds the user', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange'),
+          testUserGuid = '234xcvbqwn';
+
+      UserStore._data.push({guid: testUserGuid, organization_roles: []});
+      userActions.addedUserRoles('testrole', testUserGuid, 'organization');
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it(`should map certain resource names to a role name when adding to user`,
+        function() {
+
+    });
+  });
+
+  describe('on user roles delete', function() {
+    it('should call the api to delete the role', function() {
+      var spy = sandbox.stub(cfApi, 'deleteOrgUserPermissions'),
+          expectedRoles = 'org_manager',
+          expectedUserGuid = 'zjkxcvz234asdf',
+          expectedOrgGuid = 'zxcvzcxvzxroiter';
+
+      let testPromise = {
+        done: function() { }
+      };
+      spy.returns(testPromise);
+
+      userActions.deleteUserRoles(
+        expectedRoles,
+        expectedUserGuid,
+        expectedOrgGuid,
+        'organization'
+      );
+      
+      expect(spy).toHaveBeenCalledOnce(); 
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(expectedUserGuid);
+      expect(args[1]).toEqual(expectedOrgGuid);
+      expect(args[2]).toEqual(expectedRoles);
+    });
+
+    it('should call the deleted user role action with role, user guid and type',
+        function() {
+
+    });
+  });
+
+  describe('on user roles deleted', function() {
+    it('should update the resource type roles array if it exists with new roles',
+        function() {
+      var testGuid = 'zxcvzxc',
+          expectedRole = 'org_dark_lord';
+
+      var existingUser = {
+        guid: testGuid,
+        organization_roles: ['org_manager', expectedRole]
+      };
+
+      UserStore._data.push(existingUser);
+
+      userActions.deletedUserRoles(expectedRole, testGuid, 'organization');
+
+      let actual = UserStore.get(testGuid);
+      expect(actual).toBeTruthy();
+      expect(actual.organization_roles).not.toContain(expectedRole);
+    });
+
+    it('should emit a change event if it finds the user and no role', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange'),
+          expectedRole = 'org_dark_lord',
+          testUserGuid = '234xcvbqwn';
+
+      UserStore._data.push({guid: testUserGuid,
+        organization_roles: [expectedRole]});
+      userActions.deletedUserRoles(expectedRole, testUserGuid, 'organization');
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it(`should map certain resource names to a role name when deleting from user`,
+        function() {
+
     });
   });
 
