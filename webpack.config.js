@@ -6,7 +6,9 @@ var srcDir = './static_src';
 var compiledDir = './static/assets';
 
 module.exports = {
-  entry: srcDir + '/main.js',
+  entry: [
+    srcDir + '/main.js'
+  ],
 
   output: {
     path: path.resolve(compiledDir),
@@ -16,9 +18,17 @@ module.exports = {
 
   module: {
     loaders: [
-      { test: /\.jsx?$/,
-        loader: 'babel?optional[]=runtime&stage=0',
-        exclude: /node_modules/ },
+      { 
+        test: /\.jsx?$/,
+        loader: 'babel',
+        exclude: [
+          path.resolve(__dirname, 'node_modules'),
+        ],
+        query: {
+          presets: ['es2015', 'react'],
+          plugins: ['transform-runtime']
+        }
+      },
       { test: /\.css$/, 
         include: path.resolve(__dirname, 'static_src/css'),
         loader: ExtractTextPlugin.extract('style-loader',
@@ -31,7 +41,9 @@ module.exports = {
         include: path.resolve(__dirname, 'node_modules'),
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
       },
-      { test: /\.(woff|woff2)$/,  loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
+      { test: /\.(woff|woff2)$/,  
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff' 
+      },
       { test: /\.ttf$/,    loader: 'file-loader' },
       { test: /\.eot$/,    loader: 'file-loader' },
       { test: /\.svg$/,    loader: 'file-loader' }

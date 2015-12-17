@@ -22,17 +22,19 @@ export default class UserRoleListControl extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
+    this._onChange = this._onChange.bind(this);
+    this.checkRole = this.checkRole.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({user: nextProps.users});
   }
 
-  checkRole = (roleKey) => {
+  checkRole(roleKey) {
     return (this.roles.indexOf(roleKey) > -1);
   }
 
-  _onChange = (roleKey, checked) => {
+  _onChange(roleKey, checked) {
     var handler = (!checked) ? this.props.onRemovePermissions : 
       this.props.onAddPermissions;
     var resource = roleToResource[roleKey];

@@ -10,9 +10,10 @@ export default class Dropdown extends React.Component {
     super(props);
     this.props = props;
     this.state = { open: false };
+    this.handleTitleClick = this.handleTitleClick.bind(this);
   }
 
-  handleTitleClick = (ev) => {
+  handleTitleClick(ev) {
     this.setState({ open: !this.state.open });
   }
 

@@ -1,5 +1,5 @@
 
-require('babel/polyfill');
+require('babel-polyfill');
 import TestUtils from 'react/lib/ReactTestUtils';
 
 

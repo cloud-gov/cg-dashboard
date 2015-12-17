@@ -30,6 +30,9 @@ export default class CreateServiceInstance extends React.Component {
       errs: [],
       spaces: []
     };
+    this._onChange = this._onChange.bind(this);
+    this._onValidateForm = this._onValidateForm.bind(this);
+    this._onValidForm = this._onValidForm.bind(this);
   }
 
   componentDidMount() {
@@ -38,15 +41,15 @@ export default class CreateServiceInstance extends React.Component {
     this.setState(stateSetter());
   }
 
-  _onChange = () => {
+  _onChange() {
     this.setState(stateSetter());
   }
 
-  _onValidateForm = (errs) => {
+  _onValidateForm(errs) {
     this.setState({errs: errs});
   }
 
-  _onValidForm = (values) => {
+  _onValidForm(values) {
     serviceActions.createInstance(
       values.name,
       values.space,

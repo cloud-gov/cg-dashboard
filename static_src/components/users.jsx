@@ -37,6 +37,12 @@ export default class Users extends React.Component {
       currentTab: props.initialCurrentTab,
       users: []
     };
+    this._onChange = this._onChange.bind(this);
+    this._setTab = this._setTab.bind(this);
+    this.handleTabClick = this.handleTabClick.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
+    this.handleAddPermissions = this.handleAddPermissions.bind(this);
+    this.handleRemovePermissions = this.handleRemovePermissions.bind(this);
   }
 
   componentDidMount() {
@@ -44,11 +50,11 @@ export default class Users extends React.Component {
     this._setTab(this.props.initialCurrentTab);
   }
 
-  _onChange = () => {
+  _onChange() {
     this.setState(stateSetter(this.state));
   }
 
-  _setTab = (tab) => {
+  _setTab(tab) {
     this.setState({
       currentTab: tab
     });
@@ -60,24 +66,24 @@ export default class Users extends React.Component {
     this.setState(stateSetter(this.state));
   }
 
-  handleTabClick = (tab, ev) => {
+  handleTabClick(tab, ev) {
     ev.preventDefault();
     this._setTab(tab);
   }
 
-  handleRemove = (userGuid, ev) => {
+  handleRemove(userGuid, ev) {
     ev.preventDefault();
     userActions.deleteUser(userGuid, this.state.currentOrgGuid);
   }
 
-  handleAddPermissions = (roleKey, userGuid) => {
+  handleAddPermissions(roleKey, userGuid) {
     userActions.addUserRoles(roleKey, 
                                 userGuid, 
                                 this.resourceGuid,
                                 this.resourceType);
   }
 
-  handleRemovePermissions = (roleKey, userGuid) => {
+  handleRemovePermissions(roleKey, userGuid) {
     userActions.deleteUserRoles(roleKey, 
                                 userGuid, 
                                 this.resourceGuid,
