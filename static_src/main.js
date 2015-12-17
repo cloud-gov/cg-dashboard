@@ -32,7 +32,10 @@ function dashboard() {
 function org(orgGuid) {
   orgActions.changeCurrentOrg(orgGuid);
   cfApi.fetchOrg(orgGuid);
-  React.render(<App><SpaceList initialOrgGuid={ orgGuid } /></App>, mainEl);
+  React.render(
+    <App>
+      <SpaceList initialOrgGuid={ orgGuid } />
+    </App>, mainEl);
 }
 
 function space(orgGuid, spaceGuid, potentialPage) {
@@ -69,6 +72,7 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
 
 function checkAuth() {
   cfApi.getAuthStatus();
+  orgActions.fetchAll();
 }
 
 function notFound() {
