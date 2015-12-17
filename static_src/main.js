@@ -33,7 +33,7 @@ function org(orgGuid) {
   orgActions.changeCurrentOrg(orgGuid);
   cfApi.fetchOrg(orgGuid);
   React.render(
-    <App currentOrgGuid={ orgGuid }>
+    <App>
       <SpaceList initialOrgGuid={ orgGuid } />
     </App>, mainEl);
 }
@@ -48,7 +48,7 @@ function space(orgGuid, spaceGuid, potentialPage) {
     cfApi.fetchOrgUserRoles(orgGuid);
   }
   React.render(
-    <App currentOrgGuid={ orgGuid }>
+    <App>
       <Space
         initialSpaceGuid={ spaceGuid}
         initialOrgGuid={ orgGuid }
@@ -63,7 +63,7 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
     serviceActions.createInstanceForm(serviceGuid, servicePlanGuid);
   }
   React.render(
-    <App currentOrgGuid={ orgGuid }>
+    <App>
       <Marketplace
         initialOrgGuid={ orgGuid } />
     </App>,
