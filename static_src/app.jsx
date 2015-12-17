@@ -7,7 +7,7 @@ import styles from './css/main.css';
 import loginActions from './actions/login_actions.js';
 import Login from './components/login.jsx';
 import LoginStore from './stores/login_store.js';
-import Navbar from './components/navbar.jsx';
+import { Nav } from './components/navbar.jsx';
 
 function getState() {
   return {isLoggedIn: LoginStore.isLoggedIn()};
@@ -34,7 +34,7 @@ export default class App extends React.Component {
 
     if (this.state.isLoggedIn) {
       content = this.props.children;
-      sidebar = <Navbar />;
+      sidebar = <Nav initialCurrentOrgGuid={ this.props.currentOrgGuid } />;
     } else {
       content = <Login />;
     }
@@ -68,4 +68,5 @@ export default class App extends React.Component {
     );
   }
 };
-
+App.propTypes = { currentOrgGuid: React.PropTypes.string };
+App.defaultProps = { currentOrgGuid: '0' };

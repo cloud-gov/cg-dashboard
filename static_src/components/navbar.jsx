@@ -8,83 +8,125 @@ import Dropdown from '../components/dropdown.jsx';
 import orgActions from '../actions/org_actions.js';
 import OrgStore from '../stores/org_store.js';
 
-function getState() {
+export class NavLink extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+  }
+
+  render() {
+    return (
+      <li className={ styles.sublink }>
+        <a href={ this.props.href }>{ this.props.name }</a>
+      </li>
+    );
+  }
+}
+NavLink.propTypes = {
+  href: React.PropTypes.string.isRequired,
+  name: React.PropTypes.string,
+  onClick: React.PropTypes.func
+};
+NavLink.defaultProps = { 
+  name: '',
+  onClick: function() { }
+};
+
+export class NavList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+  }
+
+  render() {
+    var classes = classNames('nav', styles.sidebar);
+
+    return (
+      <ul className={ classes }>
+        { this.props.children } 
+      </ul>
+    );
+  }
+}
+
+function stateSetter() {
   var currentOrgGuid = OrgStore.currentOrgGuid,
       currentOrg = OrgStore.get(currentOrgGuid);
+
   return {
     currentOrg: currentOrg,
     orgs: OrgStore.getAll()
   };
 }
 
-export default class Navbar extends React.Component {
+export class Nav extends React.Component {
   constructor(props) {
     super(props);
-    this.state = getState();
+    this.props = props;
+    let currentOrg = OrgStore.get(this.props.initialCurrentOrgGuid);
+    this.state = {
+      currentOrg: currentOrg,
+      orgs: []
+    }
+    this._handleOrgClick = this._handleOrgClick.bind(this);
+    this._onChange = this._onChange.bind(this);
   }
 
   componentDidMount() {
     OrgStore.addChangeListener(this._onChange);
-    orgActions.fetchAll();
   }
 
-  _onChange = () => {
-    this.setState(getState());
+  componentWillUnmount() {
+    OrgStore.removeChangeListener(this._onChange);
   }
 
-  render = () => {
-    var orgEls = [],
-        navigation;
+  _onChange() {
+    this.setState(stateSetter());
+  }
 
-    let classes = classNames('nav', styles.sidebar);
+  _handleOrgClick(orgGuid) {
+    orgActions.changeCurrentOrg(orgGuid);
+  }
 
-    orgEls = this.state.orgs.map((org) => {
-      return {
-        element: <a href={ '#/org/' + org.guid }>{ org.name }</a>,
-        key: org.guid
-      }
-    });
+  orgHref(org) {
+    return  '#/org/' + org.guid;
+  }
 
-    if (this.state.currentOrg) {
-      navigation = this._buildNav(this.state.currentOrg);
-    }
+  orgSubHref(org, linkHref) {
+    return this.orgHref(org) + linkHref;
+  }
 
+  render() {
     return (
-      <ul className={ classes }>
-        <li className="">
-          <Dropdown title='Change Organization' classes={ ['test-nav-orgs'] }
-            items={ orgEls } />
-        </li>
-        { navigation }
-      </ul>
+      <div>
+      { this.state.orgs.map((org) => {
+        return (
+          <NavList key={ org.guid }>
+            <NavLink href={ this.orgHref(org) } name={ org.name } />
+            <NavList>
+              { this.props.subLinks.map((sub) => {
+                return (
+                  <NavLink 
+                    href={ this.orgSubHref(org, sub.link) }
+                    name={ sub.name } />
+                )
+              })}
+            </NavList>
+          </NavList>
+        );
+      })}
+      </div>
     );
   }
-
-  _buildNav = (org) => {
-    var navEls = [];
-
-    navEls.push({
-      key: 'spaces', 
-      element: <a href={ '#/org/' + org.guid }>Spaces</a>
-    });
-
-    navEls.push({
-      key: 'marketplace', 
-      element: <a href={ '#/org/' + org.guid + '/marketplace' }>Marketplace</a>
-    });
-
-    navEls.push({
-      key: 'manage_org', 
-      element: <a href={ '#/org/' + org.guid + '/manage-org' }>Manage Org</a>
-    });
-    let navigation = (
-      <li>
-      <Dropdown title={ org.name.toUpperCase() || '' } 
-        classes={ ['test-nav-org'] } items={ navEls } />
-      </li>
-    );
-
-    return navigation;
-  }
-
+}
+Nav.propTypes = {
+  subLinks: React.PropTypes.array,
+  initialCurrentOrgGuid: React.PropTypes.string
+}
+Nav.defaultProps = {
+  subLinks: [
+    { link: '', name: 'Spaces' },
+    { link: '/marketplace', name: 'Marketplace' }
+  ],
+  initialCurrentOrgGuid: '0'
 };
