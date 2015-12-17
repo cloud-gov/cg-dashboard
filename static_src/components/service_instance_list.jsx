@@ -17,6 +17,8 @@ function stateSetter(props) {
     serviceInstances: ServiceInstanceStore.getAll(),
     currentSpaceGuid: props.initialSpaceGuid
   };
+  this._onChange = this._onChange.bind(this);
+  this._handleDelete = this._handleDelete.bind(this);
 }
 
 export default class ServiceInstanceList extends React.Component {
@@ -31,11 +33,11 @@ export default class ServiceInstanceList extends React.Component {
     serviceActions.fetchAllInstances(this.state.currentSpaceGuid);
   }
 
-  _onChange = () => {
+  _onChange() {
     this.setState(stateSetter(this.props));
   }
 
-  _handleDelete = (instanceGuid, ev) => {
+  _handleDelete(instanceGuid, ev) {
     ev.preventDefault();
     serviceActions.deleteInstance(instanceGuid);
   }

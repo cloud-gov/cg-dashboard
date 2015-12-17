@@ -1,6 +1,8 @@
 
 import React from 'react';
 
+import styles from '../css/main.css';
+
 import classNames from 'classnames';
 
 export default class Dropdown extends React.Component {
@@ -8,21 +10,22 @@ export default class Dropdown extends React.Component {
     super(props);
     this.props = props;
     this.state = { open: false };
+    this.handleTitleClick = this.handleTitleClick.bind(this);
   }
 
-  handleTitleClick = (ev) => {
+  handleTitleClick(ev) {
     this.setState({ open: !this.state.open });
   }
 
   render() {
     var id = 'dropdown-' + this.props.title,
-        classes = classNames('dropdown', this.props.classes, {
+        classes = classNames(styles.dropdown, this.props.classes, {
           'open': !!this.state.open
         });
 
     return (
       <div className={ classes }>
-      <a id="dropdown-{ this.props.title }" 
+      <a id= { 'dropdown-' + this.props.title }
             className="dropdown-toggle" role="button"
             aria-haspopup="true" aria-expanded={ id }
             onClick={ this.handleTitleClick }>

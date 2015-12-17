@@ -23,20 +23,22 @@ export default class Space extends React.Component {
       currentOrgGuid: this.props.initialOrgGuid,
       currentSpaceGuid: this.props.initialSpaceGuid,
     };
+    this._onChange = this._onChange.bind(this);
+    this.spaceUrl = this.spaceUrl.bind(this);
   }
 
   componentDidMount() {
     SpaceStore.addChangeListener(this._onChange);
   }
 
-  _onChange = () => {
+  _onChange() {
     this.setState({
       currentOrgGuid: OrgStore.currentOrgGuid,
       space: SpaceStore.get(this.state.currentSpaceGuid)
     });
   }
 
-  spaceUrl = (page) => {
+  spaceUrl(page) {
     // TODO fix this with a link somehow
     return  `/#/org/${ this.state.currentOrgGuid }/spaces/${ this.state.space.guid}/${page}`;
   }

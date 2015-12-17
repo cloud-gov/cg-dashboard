@@ -23,6 +23,7 @@ export default class AppList extends React.Component {
     this.props = props;
     this.state = stateSetter(props);
     this.state.apps = props.initialApps;
+    this._onChange = this._onChange.bind(this);
   }
 
   componentDidMount() {
@@ -33,7 +34,7 @@ export default class AppList extends React.Component {
     this.setState(stateSetter(nextProps));
   }
 
-  _onChange = () => {
+  _onChange() {
     this.setState(stateSetter(this.props));
   }
 

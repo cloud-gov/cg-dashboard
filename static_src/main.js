@@ -1,5 +1,5 @@
 
-import '../node_modules/bootstrap/dist/css/bootstrap.css';
+import 'bootstrap.css';
 
 import './css/main.css';
 
@@ -32,7 +32,10 @@ function dashboard() {
 function org(orgGuid) {
   orgActions.changeCurrentOrg(orgGuid);
   cfApi.fetchOrg(orgGuid);
-  React.render(<App><SpaceList initialOrgGuid={ orgGuid } /></App>, mainEl);
+  React.render(
+    <App>
+      <SpaceList initialOrgGuid={ orgGuid } />
+    </App>, mainEl);
 }
 
 function space(orgGuid, spaceGuid, potentialPage) {
@@ -69,6 +72,7 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
 
 function checkAuth() {
   cfApi.getAuthStatus();
+  orgActions.fetchAll();
 }
 
 function notFound() {
@@ -76,7 +80,6 @@ function notFound() {
 }
 
 let routes = {
-  '': dashboard,
   '/': dashboard,
   '/dashboard': dashboard,
   '/login': login,
@@ -106,5 +109,5 @@ router.configure({
   before: checkAuth,
   notfound: notFound
 });
-router.init();
+router.init('/');
 
