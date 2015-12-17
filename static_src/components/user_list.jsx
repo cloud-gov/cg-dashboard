@@ -16,13 +16,14 @@ export default class UserList extends React.Component {
     this.state = {
       users: props.initialUsers
     };
+    this._handleDelete = this._handleDelete.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({users: nextProps.initialUsers});
   }
 
-  _handleDelete = (userGuid, ev) => {
+  _handleDelete(userGuid, ev) {
     this.props.onRemove(userGuid, ev);
   }
 

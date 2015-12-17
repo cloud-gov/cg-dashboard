@@ -24,16 +24,20 @@ export default class ServicePlanList extends React.Component {
       serviceGuid: props.initialServiceGuid,
       servicePlans: this.props.initialServicePlans
     };
+    this._onChange = this._onChange.bind(this);
+    this._handleAdd = this._handleAdd.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      serviceGuid: nextProps.initialServiceGuid,
-      servicePlans: nextProps.initialServicePlans
-    });
+    this.setState({serviceGuid: nextProps.initialServiceGuid});
+    this.setState(stateSetter(this.state.serviceGuid));
   }
 
-  _handleAdd = (planGuid) => {
+  _onChange() {
+    this.setState(stateSetter(this.state.serviceGuid));
+  }
+
+  _handleAdd(planGuid) {
     serviceActions.createInstanceForm(this.state.serviceGuid,
       planGuid);
   }
