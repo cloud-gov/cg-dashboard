@@ -19,6 +19,7 @@ var _ = Describe("AppStructure", func() {
 		server      *httptest.Server
 		testEnvVars AcceptanceTestEnvVars
 		user        User
+		nav         Nav
 	)
 
 	testEnvVars = AcceptanceTestEnvVars{}
@@ -39,12 +40,13 @@ var _ = Describe("AppStructure", func() {
 	})
 
 	It("should show app structure for an authenticated user", func() {
-		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
-			user.OpenDropdownOfOrgsOn(page)
+		Skip("Not implemented")
+		By("allowing the user to click on an organization in the navigation", func() {
+			nav = SetupClickFirstOrg(page)
 		})
 
-		By("allowing the user to click on an organization in the dropdown menu", func() {
-			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
+		By("allowing the user to click on any organization in navigation", func() {
+			nav.ClickOrg(testEnvVars.TestOrgName)
 		})
 
 		By("showing the table containing spaces", func() {
@@ -82,7 +84,7 @@ var _ = Describe("AppStructure", func() {
 
 		// MARKETPLACE TESTS
 		By("allowing the user to click on the org marketplace in the org dropdown menu", func() {
-			user.OpenOrgMenuOn(page).ClickMarketplaceLink()
+			SetupClickFirstOrg(page).ClickMarketplace()
 		})
 
 		By("showing the user a table with all the services", func() {

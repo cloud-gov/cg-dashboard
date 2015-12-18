@@ -27,30 +27,17 @@ func (u User) LoginTo(page *agouti.Page) {
 	Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login"))
 	Expect(page.FindByName("username").Fill(u.username)).To(Succeed())
 	Expect(page.FindByName("password").Fill(u.password)).To(Succeed())
+	page.Screenshot("debug/t01-user-filled_form.jpg")
 	Expect(page.FindByButton("Sign in").Click()).To(Succeed())
-	page.FindByButton("Authorize").Click()
+	page.Screenshot("debug/t01-user-clicked_submit.jpg")
+	Eventually(page.FindByButton("Authorize").Click())
+	page.Screenshot("debug/t01-user-clicked_authorize.jpg")
 	DelayForRendering()
+	page.Screenshot("debug/t01-user-delayed_for_rendering.jpg")
 	Expect(page).To(HaveURL(u.testEnvVars.Hostname + "/#/dashboard"))
 }
 
 func (u User) LogoutOf(page *agouti.Page) {
 	Expect(page.Find("#logout-btn").Click()).To(Succeed())
 	Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
-}
-
-func (u User) OpenOrgMenuOn(page *agouti.Page) OrgMenu {
-	Eventually(page.First(".test-nav-org")).Should(BeVisible())
-	Expect(page.First(".test-nav-org a").Click()).To(Succeed())
-	return OrgMenu{page}
-}
-
-func (u User) OpenDropdownOfOrgsOn(page *agouti.Page) {
-	Eventually(page.First(".test-nav-orgs")).Should(BeVisible())
-	Expect(page.First(".test-nav-orgs a").Click()).To(Succeed())
-}
-
-func (u User) SelectOrgFromDropdown(page *agouti.Page, orgName string) {
-	Eventually(page.First(".test-nav-org")).Should(BeVisible())
-	Expect(page.FindByLink(orgName)).To(BeFound())
-	Expect(page.FindByLink(orgName).Click()).To(Succeed())
 }

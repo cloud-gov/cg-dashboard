@@ -53,6 +53,7 @@ var _ = Describe("UserLogin", func() {
 		})
 
 		By("allowing the user to log out", func() {
+			Skip("Not implemented")
 			user.LogoutOf(page)
 		})
 	})

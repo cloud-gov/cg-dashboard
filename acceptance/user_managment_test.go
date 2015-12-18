@@ -19,7 +19,9 @@ var _ = Describe("UserManagement", func() {
 		page        *agouti.Page
 		server      *httptest.Server
 		testEnvVars AcceptanceTestEnvVars
+		spaces      Spaces
 		user        User
+		nav         Nav
 		testOrg     string
 		testSpace   string
 	)
@@ -44,10 +46,17 @@ var _ = Describe("UserManagement", func() {
 	})
 
 	It("should allow a space manager to see a list of users for a space", func() {
-		By("allowing the user to navigate to the space users page", func() {
-			Expect(page.Navigate(fmt.Sprintf(testEnvVars.Hostname+
-				"/#/org/%s/spaces/%s/users",
-				testOrg, testSpace))).To(Succeed())
+		By("allowing the user to click on an organization in navigation", func() {
+			nav = SetupNav(page)
+			nav.ClickOrg(testEnvVars.TestOrgName)
+		})
+
+		By("allowing user to click on spaces in the navigation", func() {
+			spaces = nav.ClickSpaces()
+		})
+
+		By("allowing user to click on a certain space", func() {
+			spaces.ViewSpace(testEnvVars.TestSpaceName)
 		})
 
 		By("having the active tab set to default space users", func() {

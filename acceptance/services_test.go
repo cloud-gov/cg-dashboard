@@ -17,6 +17,7 @@ var _ = Describe("Services", func() {
 		server      *httptest.Server
 		testEnvVars AcceptanceTestEnvVars
 		user        User
+		nav         Nav
 		spaces      Spaces
 		space       Space
 		services    Services
@@ -41,43 +42,42 @@ var _ = Describe("Services", func() {
 		user.LoginTo(page)
 	})
 	It("should allow a user to create a service instance", func() {
-		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
-			user.OpenDropdownOfOrgsOn(page)
+		By("allowing the user to click on an organization in navigation", func() {
+			nav = SetupNav(page)
+			nav.ClickOrg(testEnvVars.TestOrgName)
 		})
 
-		By("allowing the user to click on an organization in the dropdown menu", func() {
-			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
+		By("allowing the user to click on the org marketplace in navigation", func() {
+			marketplace = nav.ClickMarketplace()
 		})
 
-		By("allowing the user to click on the org marketplace in the org dropdown menu", func() {
-			marketplace = user.OpenOrgMenuOn(page).ClickMarketplaceLink()
-		})
 		By("allowing the user to create a service of type 'rds'", func() {
 			marketplace.CreateService("rds", "shared-psql", "testService01", testEnvVars.TestSpaceName)
 		})
 	})
 
 	It("should allow a user to delete a service instance", func() {
-		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
-			user.OpenDropdownOfOrgsOn(page)
+		By("allowing the user to click on an organization in navigation", func() {
+			nav = SetupNav(page)
+			nav.ClickOrg(testEnvVars.TestOrgName)
 		})
 
-		By("allowing the user to click on an organization in the dropdown menu", func() {
-			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
+		By("allowing the user to click on the org spaces in the navigation", func() {
+			nav.ClickSpaces()
 		})
 
-		By("allowing the user to click on the org spaces in the org dropdown menu", func() {
-			spaces = user.OpenOrgMenuOn(page).ClickSpacesLink()
-		})
 		By("allowing the user to click the on test space", func() {
 			space = spaces.ViewSpace(testEnvVars.TestSpaceName)
 		})
+
 		By("allowing the user to click the on test service instances tab", func() {
 			services = space.ViewServiceInstances()
 		})
+
 		By("finding the unbound service instance and delete it", func() {
 			services.DeleteServiceInstance("testService01")
 		})
+
 		By("verifying that the service is gone", func() {
 			Skip("works locally but not on Travis. we can assume everything worked out if we made it this far.")
 			services.VerifyServiceInstanceDoesNotExist("testService01")
@@ -85,33 +85,35 @@ var _ = Describe("Services", func() {
 	})
 
 	It("should allow a user to create a service instance and bind it to an app.", func() {
-		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
-			user.OpenDropdownOfOrgsOn(page)
+		By("allowing the user to click on an organization in navigation", func() {
+			nav = SetupNav(page)
+			nav.ClickOrg(testEnvVars.TestOrgName)
 		})
 
-		By("allowing the user to click on an organization in the dropdown menu", func() {
-			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
+		By("allowing the user to click on the org marketplace in navigation", func() {
+			marketplace = nav.ClickMarketplace()
 		})
 
-		By("allowing the user to click on the org marketplace in the org dropdown menu", func() {
-			marketplace = user.OpenOrgMenuOn(page).ClickMarketplaceLink()
-		})
 		By("allowing the user to create a service of type 'rds'", func() {
 			marketplace.CreateService("rds", "shared-psql", "testService01", testEnvVars.TestSpaceName)
 		})
 
 		By("allowing the user to click on the org spaces in the org dropdown menu", func() {
-			spaces = user.OpenOrgMenuOn(page).ClickSpacesLink()
+			nav.ClickSpaces()
 		})
+
 		By("allowing the user to click the on test space", func() {
 			space = spaces.ViewSpace(testEnvVars.TestSpaceName)
 		})
+
 		By("going to the app page", func() {
 			app = space.ViewApp(testEnvVars.TestAppName)
 		})
+
 		By("binding the service to the app", func() {
 			app.BindToService("testService01")
 		})
+
 		Skip("")
 		By("unbinding the service from the app", func() {
 			app.UnbindFromService("testService01")
@@ -121,20 +123,19 @@ var _ = Describe("Services", func() {
 		})
 	})
 	It("should allow a user to delete a bound service instance", func() {
-		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
-			user.OpenDropdownOfOrgsOn(page)
+		By("allowing the user to click on an organization in navigation", func() {
+			nav = SetupNav(page)
+			nav.ClickOrg(testEnvVars.TestOrgName)
 		})
 
-		By("allowing the user to click on an organization in the dropdown menu", func() {
-			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
+		By("allowing the user to click on the org spaces in the navigation", func() {
+			spaces = nav.ClickSpaces()
 		})
 
-		By("allowing the user to click on the org spaces in the org dropdown menu", func() {
-			spaces = user.OpenOrgMenuOn(page).ClickSpacesLink()
-		})
 		By("allowing the user to click the on test space", func() {
 			space = spaces.ViewSpace(testEnvVars.TestSpaceName)
 		})
+
 		By("allowing the user to click the on test service instances tab", func() {
 			services = space.ViewServiceInstances()
 		})
