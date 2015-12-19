@@ -11,7 +11,7 @@ import (
 	"net/http/httptest"
 )
 
-var _ = Describe("Services", func() {
+var _ = XDescribe("Services", func() {
 	var (
 		page        *agouti.Page
 		server      *httptest.Server

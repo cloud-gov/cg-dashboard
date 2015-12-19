@@ -43,16 +43,14 @@ var _ = Describe("UserManagement", func() {
 
 		// Log user in
 		user.LoginTo(page)
+
+		// Get a nav resource
+		nav = SetupNav(page)
 	})
 
 	It("should allow a space manager to see a list of users for a space", func() {
-		By("allowing the user to click on an organization in navigation", func() {
-			nav = SetupNav(page)
-			nav.ClickOrg(testEnvVars.TestOrgName)
-		})
-
-		By("allowing user to click on spaces in the navigation", func() {
-			spaces = nav.ClickSpaces()
+		By("allowing user to click on spaces in an org the navigation", func() {
+			spaces = nav.ClickOrgSpaces(testEnvVars.TestOrgName)
 		})
 
 		By("allowing user to click on a certain space", func() {

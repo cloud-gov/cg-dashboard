@@ -11,7 +11,7 @@ import (
 	"net/http/httptest"
 )
 
-var _ = Describe("AppStructure", func() {
+var _ = XDescribe("AppStructure", func() {
 	var (
 		user        User
 		page        *agouti.Page
@@ -41,7 +41,6 @@ var _ = Describe("AppStructure", func() {
 	})
 
 	It("Allow the user to create and destroy app routes", func() {
-		Skip("Not implemented")
 		By("going to the app page", func() {
 			nav = SetupNav(page)
 			nav.ClickOrg(testEnvVars.TestOrgName)
