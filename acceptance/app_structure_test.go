@@ -13,7 +13,7 @@ import (
 	"net/http/httptest"
 )
 
-var _ = Describe("AppStructure", func() {
+var _ = XDescribe("AppStructure", func() {
 	var (
 		page        *agouti.Page
 		server      *httptest.Server
@@ -40,7 +40,6 @@ var _ = Describe("AppStructure", func() {
 	})
 
 	It("should show app structure for an authenticated user", func() {
-		Skip("Not implemented")
 		By("allowing the user to click on an organization in the navigation", func() {
 			nav = SetupClickFirstOrg(page)
 		})
