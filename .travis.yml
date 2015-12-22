@@ -53,7 +53,7 @@ deploy:
     - staging-alpha
 env:
   global:
-  - TRAVIS_NODE_VERSION="4.2.2"
+  - TRAVIS_NODE_VERSION="4.2.3"
   - CF_API=https://api.cloud.gov
   - CF_ORGANIZATION=cf
   - CONSOLE_UAA_URL=https://uaa.cloud.gov/
