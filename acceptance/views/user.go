@@ -24,12 +24,12 @@ func StartUserSessionWith(testEnvVars AcceptanceTestEnvVars) User {
 func (u User) LoginTo(page *agouti.Page) {
 	Expect(page.Navigate(u.testEnvVars.Hostname + "/#/")).To(Succeed())
 	Expect(page.First(".test-login").Click()).To(Succeed())
-	Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login"))
+	Eventually(page).Should(HaveURL(u.testEnvVars.LoginURL + "login"))
 	Expect(page.FindByName("username").Fill(u.username)).To(Succeed())
 	Expect(page.FindByName("password").Fill(u.password)).To(Succeed())
 	Expect(page.FindByButton("Sign in").Click()).To(Succeed())
 	Eventually(page.FindByButton("Authorize").Click())
-	Eventually(Expect(page).To(HaveURL(u.testEnvVars.Hostname + "/#/dashboard")))
+	Eventually(page).Should(HaveURL(u.testEnvVars.Hostname + "/#/dashboard"))
 }
 
 func (u User) LogoutOf(page *agouti.Page) {

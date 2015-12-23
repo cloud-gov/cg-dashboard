@@ -7,6 +7,7 @@ import (
 
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
+	. "github.com/sclevine/agouti/matchers"
 )
 
 type Nav struct {
@@ -27,7 +28,8 @@ func SetupClickFirstOrg(page *agouti.Page) Nav {
 
 func (n Nav) ClickOrg(orgName string) Nav {
 	var sel = n.base.FindByLink(strings.ToLower(orgName))
-	Eventually(Expect(sel.Click()).To(Succeed()))
+	Eventually(sel).Should(BeFound())
+	Expect(sel.Click()).To(Succeed())
 	return Nav{n.page, sel}
 }
 
