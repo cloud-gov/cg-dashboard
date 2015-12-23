@@ -3,7 +3,6 @@
 package util
 
 import (
-	. "github.com/18F/cf-deck/acceptance/util"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
@@ -23,7 +22,5 @@ func (m Marketplace) CreateService(serviceType string, servicePlan string, servi
 	selection := m.page.Find("#target-space")
 	Expect(selection.Select(spaceName)).To(Succeed())
 	Eventually(Expect(m.page.First("#confirm-create-service-btn").Click()).To(Succeed()))
-	DelayForRendering()
-	DelayForRendering()
 	Expect(m.page.Find("#message-alert-service")).To(HaveText("Service Created!"))
 }

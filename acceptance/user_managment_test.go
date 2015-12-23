@@ -45,7 +45,6 @@ var _ = Describe("UserManagement", func() {
 		user.LoginTo(page)
 
 		// Get a nav resource
-		DelayForRendering()
 		nav = SetupNav(page)
 	})
 
@@ -61,7 +60,6 @@ var _ = Describe("UserManagement", func() {
 		})
 
 		By("allowing manager to click on user management tab", func() {
-			DelayForRendering()
 			Eventually(spaces.ClickUserManagement())
 			Eventually(Expect(page).To(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
 				"/#/org/%s/spaces/%s/users", testOrg, testSpace))))

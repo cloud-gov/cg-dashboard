@@ -49,7 +49,6 @@ var _ = XDescribe("AppStructure", func() {
 		})
 
 		By("showing the table containing spaces", func() {
-			DelayForRendering()
 			Expect(page.Find("#spacesTable")).To(BeFound())
 			Expect(page.FindByXPath("//*[@id='spacesTable']/thead/tr/th[1]").Text()).To(Equal("Name"))
 			Expect(page.FindByXPath("//*[@id='spacesTable']/thead/tr/th[2]").Text()).To(Equal("Number of Apps"))
@@ -58,14 +57,11 @@ var _ = XDescribe("AppStructure", func() {
 		})
 
 		By("allowing the user to click on a space in the tab views", func() {
-			DelayForRendering()
 			Expect(page.FindByLink(testEnvVars.TestSpaceName)).To(BeFound())
 			Eventually(Expect(page.FindByLink(testEnvVars.TestSpaceName).Click()).To(Succeed()))
 		})
 
 		By("showing app name and quota information (along with other information)", func() {
-			DelayForRendering()
-			DelayForRendering()
 			Eventually(page.Find("#app-name-heading")).Should(BeFound())
 			Expect(page.Find("#buildpack-heading")).To(BeFound())
 			Expect(page.Find("#memory-heading")).To(BeFound())
@@ -87,7 +83,6 @@ var _ = XDescribe("AppStructure", func() {
 		})
 
 		By("showing the user a table with all the services", func() {
-			DelayForRendering()
 			Expect(page.Find("#service-name-heading")).To(BeFound())
 			Expect(page.Find("#service-description-heading")).To(BeFound())
 			Expect(page.Find("#service-date-created-heading")).To(BeFound())
@@ -97,7 +92,6 @@ var _ = XDescribe("AppStructure", func() {
 		})
 
 		By("allowing the user to search for a service", func() {
-			DelayForRendering()
 			rowCountPreSearch, _ := page.All(".service-name-data").Count()
 			Expect(page.Find("#serviceSearch").Fill("zzzzzzzzz1111zzz")).To(Succeed())
 			Expect(page.All(".service-name-data")).NotTo(HaveCount(rowCountPreSearch))
