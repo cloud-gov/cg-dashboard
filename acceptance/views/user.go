@@ -29,8 +29,6 @@ func (u User) LoginTo(page *agouti.Page) {
 	Expect(page.FindByName("password").Fill(u.password)).To(Succeed())
 	Expect(page.FindByButton("Sign in").Click()).To(Succeed())
 	Eventually(page.FindByButton("Authorize").Click())
-	DelayForRendering()
-	DelayForRendering()
 	Eventually(Expect(page).To(HaveURL(u.testEnvVars.Hostname + "/#/dashboard")))
 }
 

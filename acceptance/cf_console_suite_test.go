@@ -11,6 +11,7 @@ import (
 	"github.com/sclevine/agouti"
 
 	"fmt"
+	"github.com/18F/cf-deck/helpers"
 	"net/http/httptest"
 	"os"
 	"testing"
@@ -21,6 +22,7 @@ func startServer() (*httptest.Server, AcceptanceTestEnvVars) {
 	// Load the environment variables to conduct the tests.
 	testEnvVars := AcceptanceTestEnvVars{}
 	testEnvVars.LoadTestEnvVars()
+	SetDefaultEventuallyTimeout(helpers.TimeoutConstant)
 
 	var err error
 	// Attempt to initial routers
@@ -64,7 +66,8 @@ var agoutiDriver *agouti.WebDriver
 
 var _ = BeforeSuite(func() {
 	// MAKE SURE YOU INSTALL PhantomJS. `brew install phantomjs`
-	agoutiDriver = agouti.PhantomJS()
+	//agoutiDriver = agouti.PhantomJS()
+	agoutiDriver = agouti.ChromeDriver()
 
 	Expect(agoutiDriver.Start()).To(Succeed())
 })

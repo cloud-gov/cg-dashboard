@@ -45,28 +45,36 @@ var _ = Describe("UserManagement", func() {
 		user.LoginTo(page)
 
 		// Get a nav resource
+		DelayForRendering()
 		nav = SetupNav(page)
 	})
 
 	It("should allow a space manager to see a list of users for a space", func() {
-		By("allowing user to click on spaces in an org the navigation", func() {
+		By("allowing manager to click on spaces in an org the navigation", func() {
 			spaces = nav.ClickOrgSpaces(testEnvVars.TestOrgName)
 		})
 
-		By("allowing user to click on a certain space", func() {
-			spaces.ViewSpace(testEnvVars.TestSpaceName)
+		By("allowing manager to click on a certain space", func() {
+			Eventually(spaces.ViewSpace(testEnvVars.TestSpaceName))
+			Eventually(Expect(page).To(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
+				"/#/org/%s/spaces/%s", testOrg, testSpace))))
+		})
+
+		By("allowing manager to click on user management tab", func() {
+			DelayForRendering()
+			Eventually(spaces.ClickUserManagement())
+			Eventually(Expect(page).To(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
+				"/#/org/%s/spaces/%s/users", testOrg, testSpace))))
 		})
 
 		By("having the active tab set to default space users", func() {
-			Expect(page).To(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
-				"/#/org/%s/spaces/%s/users", testOrg, testSpace)))
 			Eventually(Expect(page.First(".test-subnav-users")).Should(BeVisible()))
 			Eventually(Expect(page.First(".test-subnav-users .active").Text()).To(Equal("Current space users")))
 		})
 
 		By("seeing a user list for spaces on the first page by default", func() {
-			Eventually(Expect(page.First(".table")).Should(BeVisible()))
-			Eventually(Expect(page.First(".table tbody tr")).Should(BeVisible()))
+			Eventually(Expect(page.First(".table")).Should(BeFound()))
+			Eventually(Expect(page.First(".table tbody tr")).Should(BeFound()))
 		})
 	})
 

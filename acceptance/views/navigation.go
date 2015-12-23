@@ -3,7 +3,6 @@
 package util
 
 import (
-	"fmt"
 	"strings"
 
 	. "github.com/onsi/gomega"
@@ -28,7 +27,7 @@ func SetupClickFirstOrg(page *agouti.Page) Nav {
 
 func (n Nav) ClickOrg(orgName string) Nav {
 	var sel = n.base.FindByLink(strings.ToLower(orgName))
-	Expect(sel.Click()).To(Succeed())
+	Eventually(Expect(sel.Click()).To(Succeed()))
 	return Nav{n.page, sel}
 }
 
@@ -44,11 +43,11 @@ func (n Nav) ClickSpaces() Spaces {
 
 func (n Nav) ClickOrgSpaces(orgName string) Spaces {
 	var orgNav = n.ClickOrg(orgName)
-	var sel = orgNav.base.FindByLink("Spaces")
+	var currentNavList = orgNav.base.FindByXPath("ancestor::ul")
 
-	fmt.Printf("spaces all: %v", sel.String())
+	var spacesLink = currentNavList.FindByLink("Spaces")
 
-	Expect(sel.Click()).To(Succeed())
+	Eventually(Expect(spacesLink.Click()).To(Succeed()))
 	return Spaces{orgNav.page}
 }
 

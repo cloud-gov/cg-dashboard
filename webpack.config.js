@@ -7,6 +7,7 @@ var compiledDir = './static/assets';
 
 module.exports = {
   entry: [
+    'babel-polyfill',
     srcDir + '/main.js'
   ],
 

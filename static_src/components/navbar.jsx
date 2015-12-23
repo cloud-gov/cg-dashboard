@@ -98,7 +98,6 @@ export class Nav extends React.Component {
 
   render() {
     var classes = classNames('test-nav-primary');
-    console.log('classes', classes);
     return (
       <div className={ classes }>
       { this.state.orgs.map((org) => {
