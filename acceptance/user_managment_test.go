@@ -55,14 +55,14 @@ var _ = Describe("UserManagement", func() {
 
 		By("allowing manager to click on a certain space", func() {
 			Eventually(spaces.ViewSpace(testEnvVars.TestSpaceName))
-			Eventually(Expect(page).To(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
-				"/#/org/%s/spaces/%s", testOrg, testSpace))))
+			Eventually(page).Should(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
+				"/#/org/%s/spaces/%s", testOrg, testSpace)))
 		})
 
 		By("allowing manager to click on user management tab", func() {
-			Eventually(spaces.ClickUserManagement())
-			Eventually(Expect(page).To(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
-				"/#/org/%s/spaces/%s/users", testOrg, testSpace))))
+			spaces.ClickUserManagement()
+			Eventually(page).Should(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
+				"/#/org/%s/spaces/%s/users", testOrg, testSpace)))
 		})
 
 		By("having the active tab set to default space users", func() {
@@ -84,8 +84,17 @@ var _ = Describe("UserManagement", func() {
 		})
 
 		By("allowing the user to navigate to the all org users page", func() {
-			Expect(page.FindByLink("All organization users")).Should(BeVisible())
-			Expect(page.FindByLink("All organization users").Click()).To(Succeed())
+			var orgUsersLink = page.FindByLink("All organization users")
+			Eventually(orgUsersLink).Should(BeFound())
+			Expect(orgUsersLink.Click()).To(Succeed())
+		})
+
+		By("seeing a user list for the whole org", func() {
+			var table = page.First(".table")
+			Eventually(table).Should(BeFound())
+			var rows = table.First("tbody tr")
+			Eventually(rows).Should(BeFound())
+			Expect(rows.Count()).Should(BeNumerically(">=", 1))
 		})
 	})
 

@@ -11,10 +11,10 @@ import (
 	"github.com/sclevine/agouti"
 
 	"fmt"
-	"github.com/18F/cf-deck/helpers"
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 )
 
 // Helper function to handle all the weird work of creating a test server.
@@ -22,7 +22,8 @@ func startServer() (*httptest.Server, AcceptanceTestEnvVars) {
 	// Load the environment variables to conduct the tests.
 	testEnvVars := AcceptanceTestEnvVars{}
 	testEnvVars.LoadTestEnvVars()
-	SetDefaultEventuallyTimeout(helpers.TimeoutConstant)
+	var TimeoutConstant = time.Second * 10
+	SetDefaultEventuallyTimeout(TimeoutConstant)
 
 	var err error
 	// Attempt to initial routers

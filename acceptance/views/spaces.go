@@ -19,7 +19,8 @@ func (s Spaces) ViewSpace(spaceName string) Space {
 }
 
 func (s Spaces) ClickUserManagement() Space {
-	Eventually(s.page.FindByLink("User Management")).Should(BeFound())
-	Expect(s.page.FindByLink("User Management").Click()).To(Succeed())
+	var userManagementLink = s.page.FindByLink("User Management")
+	Eventually(userManagementLink).Should(BeFound())
+	Expect(userManagementLink.Click()).To(Succeed())
 	return Space{s.page}
 }

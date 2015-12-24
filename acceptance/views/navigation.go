@@ -18,7 +18,9 @@ type Nav struct {
 var baseSelector = ".test-nav-primary"
 
 func SetupNav(page *agouti.Page) Nav {
-	return Nav{page, page.First(baseSelector)}
+	var nav = page.First(baseSelector)
+	Eventually(nav).Should(BeFound())
+	return Nav{page, nav}
 }
 
 func SetupClickFirstOrg(page *agouti.Page) Nav {
@@ -49,6 +51,7 @@ func (n Nav) ClickOrgSpaces(orgName string) Spaces {
 
 	var spacesLink = currentNavList.FindByLink("Spaces")
 
+	Eventually(spacesLink).Should(BeFound())
 	Eventually(Expect(spacesLink.Click()).To(Succeed()))
 	return Spaces{orgNav.page}
 }
