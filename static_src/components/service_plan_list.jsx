@@ -16,6 +16,14 @@ var Table = Reactable.Table,
     Tr = Reactable.Tr,
     Td = Reactable.Td;
 
+function stateSetter(serviceGuid) {
+  var s = {
+    servicePlans: ServicePlanStore.getAllFromService(serviceGuid)
+  };
+
+  return s;
+}
+
 export default class ServicePlanList extends React.Component {
   constructor(props) {
     super(props);

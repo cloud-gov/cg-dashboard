@@ -8,10 +8,11 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
+	. "github.com/sclevine/agouti/matchers"
 	"net/http/httptest"
 )
 
-var _ = XDescribe("Services", func() {
+var _ = Describe("Services", func() {
 	var (
 		page        *agouti.Page
 		server      *httptest.Server
@@ -40,23 +41,65 @@ var _ = XDescribe("Services", func() {
 
 		// Log user in
 		user.LoginTo(page)
+
+		// Get a nav resource
+		nav = SetupNav(page)
 	})
-	It("should allow a user to create a service instance", func() {
-		By("allowing the user to click on an organization in navigation", func() {
-			nav = SetupNav(page)
-			nav.ClickOrg(testEnvVars.TestOrgName)
+
+	It("should allow an org manager to see a list of services", func() {
+		By("allowing the manager to click on the org marketplace in navigation", func() {
+			marketplace = nav.ClickOrgMarketplace(testEnvVars.TestOrgName)
 		})
 
+		By("allowing the manager to see a lists of services", func() {
+			var service = marketplace.FindService("rds")
+			Expect(service.ServiceRow.First("td")).To(HaveText("rds"))
+		})
+	})
+
+	It("should allow an org manager to see a list of service plans for services", func() {
+		var service Service
+
+		By("allowing the manager to click on the org marketplace in navigation", func() {
+			marketplace = nav.ClickOrgMarketplace(testEnvVars.TestOrgName)
+		})
+
+		By("allowing the manager to see a lists of services", func() {
+			service = marketplace.FindService("rds")
+		})
+
+		By("allowing the manager to see a list of service plans for a service", func() {
+			var costHeading = service.PlanList.FindByXPath("thead/tr/th[.='Cost']")
+			Eventually(costHeading).Should(BeFound())
+			var firstPlan = service.PlanList.First("tbody tr")
+			Eventually(firstPlan).Should(BeFound())
+			var nameField = firstPlan.First("td")
+			Eventually(nameField).Should(BeFound())
+		})
+	})
+
+	It("should allow an org manager to create a service instance", func() {
+		var service Service
+
 		By("allowing the user to click on the org marketplace in navigation", func() {
-			marketplace = nav.ClickMarketplace()
+			marketplace = nav.ClickOrgMarketplace(testEnvVars.TestOrgName)
+		})
+
+		By("allowing the manager to see a lists of services", func() {
+			service = marketplace.FindService("rds")
 		})
 
 		By("allowing the user to create a service of type 'rds'", func() {
-			marketplace.CreateService("rds", "shared-psql", "testService01", testEnvVars.TestSpaceName)
+			service.CreateService("shared-psql", "testService02",
+				testEnvVars.TestSpaceName)
+		})
+
+		By("verifying the service was created", func() {
+
 		})
 	})
 
-	It("should allow a user to delete a service instance", func() {
+	XIt("should allow a user to delete a service instance", func() {
 		By("allowing the user to click on an organization in navigation", func() {
 			nav = SetupNav(page)
 			nav.ClickOrg(testEnvVars.TestOrgName)
@@ -84,14 +127,14 @@ var _ = XDescribe("Services", func() {
 		})
 	})
 
-	It("should allow a user to create a service instance and bind it to an app.", func() {
+	XIt("should allow a user to create a service instance and bind it to an app.", func() {
 		By("allowing the user to click on an organization in navigation", func() {
 			nav = SetupNav(page)
 			nav.ClickOrg(testEnvVars.TestOrgName)
 		})
 
 		By("allowing the user to click on the org marketplace in navigation", func() {
-			marketplace = nav.ClickMarketplace()
+			marketplace = nav.ClickOrgMarketplace("")
 		})
 
 		By("allowing the user to create a service of type 'rds'", func() {
@@ -122,7 +165,8 @@ var _ = XDescribe("Services", func() {
 			app.BindToService("testService01")
 		})
 	})
-	It("should allow a user to delete a bound service instance", func() {
+
+	XIt("should allow a user to delete a bound service instance", func() {
 		By("allowing the user to click on an organization in navigation", func() {
 			nav = SetupNav(page)
 			nav.ClickOrg(testEnvVars.TestOrgName)
@@ -150,7 +194,7 @@ var _ = XDescribe("Services", func() {
 
 	AfterEach(func() {
 		// Logout user
-		user.LogoutOf(page)
+		// user.LogoutOf(page)
 		// Destroy the page
 		Expect(page.Destroy()).To(Succeed())
 		// Close the server.

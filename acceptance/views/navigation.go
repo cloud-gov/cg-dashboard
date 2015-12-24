@@ -56,7 +56,13 @@ func (n Nav) ClickOrgSpaces(orgName string) Spaces {
 	return Spaces{orgNav.page}
 }
 
-func (n Nav) ClickMarketplace() Marketplace {
-	Expect(n.base.FindByLink("Marketplace").Click()).To(Succeed())
+func (n Nav) ClickOrgMarketplace(orgName string) Marketplace {
+	var orgNav = n.ClickOrg(orgName)
+	var currentNavList = orgNav.base.FindByXPath("ancestor::ul")
+	var marketplaceLink = currentNavList.FindByLink("Marketplace")
+
+	Eventually(marketplaceLink).Should(BeFound())
+	Expect(marketplaceLink.Click()).To(Succeed())
+
 	return Marketplace{n.page}
 }

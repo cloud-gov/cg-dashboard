@@ -79,7 +79,7 @@ var _ = XDescribe("AppStructure", func() {
 
 		// MARKETPLACE TESTS
 		By("allowing the user to click on the org marketplace in the org dropdown menu", func() {
-			SetupClickFirstOrg(page).ClickMarketplace()
+			SetupClickFirstOrg(page).ClickOrgMarketplace("")
 		})
 
 		By("showing the user a table with all the services", func() {
