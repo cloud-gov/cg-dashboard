@@ -90,7 +90,7 @@ var _ = Describe("Services", func() {
 		})
 
 		By("allowing the user to create a service of type 'rds'", func() {
-			service.CreateService("shared-psql", "testService02",
+			service.CreateService("rds", "shared-psql", "testService02",
 				testEnvVars.TestSpaceName)
 		})
 
@@ -99,14 +99,12 @@ var _ = Describe("Services", func() {
 		})
 	})
 
-	XIt("should allow a user to delete a service instance", func() {
-		By("allowing the user to click on an organization in navigation", func() {
-			nav = SetupNav(page)
-			nav.ClickOrg(testEnvVars.TestOrgName)
-		})
+	It("should allow a user to delete a service instance", func() {
+		var spaces Spaces
 
-		By("allowing the user to click on the org spaces in the navigation", func() {
-			nav.ClickSpaces()
+		By("allowing the manager to navigate to the org spaces in the navigation", func() {
+			nav = SetupNav(page)
+			spaces = nav.ClickOrgSpaces(testEnvVars.TestOrgName)
 		})
 
 		By("allowing the user to click the on test space", func() {

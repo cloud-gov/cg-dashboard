@@ -96,9 +96,10 @@ export default class ServicePlanList extends React.Component {
               </Td>
               <Td column={ this.columns[4].label }>
                 <Button 
+                  classes={ ["test-create_service_instance"] }
                   onClickHandler={ this._handleAdd.bind(this, plan.guid) } 
                   label="create">
-                  <span>Create service instance</span>
+                    <span>Create service instance</span>
                 </Button>
               </Td>
             </Tr>

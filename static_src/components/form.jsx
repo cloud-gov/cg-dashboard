@@ -3,6 +3,8 @@ import React from 'react';
 
 import Button from './button.jsx';
 
+import classNames from 'classnames';
+
 var currid = 0;
 
 function nextId() {
@@ -68,13 +70,15 @@ export class Form extends React.Component {
   render() {
     var errorMsg;
 
+    var classes = classNames(...this.props.classes);
+
     if (this.state.errs.length) {
       errorMsg = <FormError message='There were errors submitting the form.' />
     }
 
     return (
       <form action={ this.props.action } method={ this.props.method }
-          onSubmit={ this._handleSubmit }>
+          onSubmit={ this._handleSubmit } className={ classes }>
         { errorMsg }
         <fieldset>
           { React.Children.map(this.props.children, (child) => {
@@ -100,12 +104,14 @@ export class Form extends React.Component {
 };
 Form.propTypes = {
   action: React.PropTypes.string,
+  classes: React.PropTypes.array,
   method: React.PropTypes.string,
   onValidate: React.PropTypes.func,
   onValid: React.PropTypes.func
 };
 Form.defaultProps = {
   action: '/',
+  classes: [],
   method: 'post',
   onValidate: function() { },
   onValid: function() { }
@@ -155,12 +161,14 @@ export class FormElement extends React.Component {
   }
 }
 FormElement.propTypes = {
+  classes: React.PropTypes.array,
   label: React.PropTypes.string,
   validator: React.PropTypes.func,
   key: React.PropTypes.string,
   onValidate: React.PropTypes.func
 };
 FormElement.defaultProps = {
+  classes: [],
   label: '',
   validator: function() {},
   onValidate: function() {}
@@ -196,6 +204,8 @@ export class FormText extends FormElement {
 
   render() {
     var error;
+    var classes = classNames(...this.props.classes);
+
     if (this.state.err) {
       error = <FormError message={ this.state.err.message } />
     }
@@ -204,7 +214,7 @@ export class FormText extends FormElement {
         { error }
         <label htmlFor={ this.key }>{ this.props.label }</label>
         <input type="text" id={ this.key } value={ this.state.value }
-          onChange={ this._handleChange } />
+          onChange={ this._handleChange } className={ classes } />
       </div>
     );
   }
@@ -227,6 +237,8 @@ export class FormSelect extends FormElement {
 
   render() {
     var error;
+    var classes = classNames('form-control', ...this.props.classes);
+
     if (this.state.err) {
       error = <FormError message={ this.state.err.message } />
     }
@@ -234,7 +246,8 @@ export class FormSelect extends FormElement {
       <div className="form-group">
         { error }
         <label htmlFor={ this.key }>{ this.props.label }</label>
-        <select className="form-control" 
+        <select 
+            className={ classes }
             name={ this.key } 
             id={ this.key }
             onChange={ this._handleChange }

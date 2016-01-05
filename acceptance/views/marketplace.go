@@ -49,6 +49,16 @@ func (s Service) CreateService(servicePlan string, instanceName string,
 	Eventually(planName).Should(BeFound())
 	var planRow = planName.FirstByXPath("ancestor::tr")
 	Eventually(planRow).Should(BeFound())
+	var planCreateAction = planRow.First(".test-create_service_instance")
+	Eventually(planCreateAction).Should(BeFound())
+	Expect(planCreateAction.Click()).Should(Succeed())
+	var createForm = s.page.First(".test-create_service_instance_form")
+	Eventually(createForm).Should(BeFound())
+	var nameField = createForm.First(".test-create_service_instance_name")
+	var spaceSelect = createForm.First(".test-create_service_instance_space")
+	Expect(nameField.Fill(instanceName)).To(Succeed())
+	Expect(spaceSelect.Select(spaceName)).To(Succeed())
+	Expect(createForm.Submit()).To(Succeed())
 }
 
 func (m Marketplace) CreateService(serviceType string, servicePlan string,

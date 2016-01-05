@@ -1,6 +1,8 @@
 
 import React from 'react';
 
+import classNames from 'classnames';
+
 function stateSetter() {
   return {};
 }
@@ -18,8 +20,9 @@ export default class Button extends React.Component {
   }
 
   render() {
+    var classes = classNames('btn', 'btn-default', ...this.props.classes);
     return (
-      <button type="button" className="btn btn-default" 
+      <button type="button" className={ classes }
           aria-label={ this.props.label } onClick={ this._handleClick }>
         { this.props.children }
       </button>
@@ -28,11 +31,13 @@ export default class Button extends React.Component {
 }
 
 Button.propTypes = {
+  classes: React.PropTypes.array,
   label: React.PropTypes.string,
   onClickHandler: React.PropTypes.func
 };
 
 Button.defaultProps = {
+  classes: [],
   label: '',
   onClickHandler: function() { return true; }
 };
