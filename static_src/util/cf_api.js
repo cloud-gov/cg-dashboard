@@ -125,8 +125,7 @@ export default {
   },
 
   deleteUnboundServiceInstance(serviceInstance) {
-    return http.delete(APIV + 
-        `/service_instances/${ serviceInstance.url }`)
+    return http.delete(serviceInstance.url)
     .done((res) => {
       serviceActions.deletedInstance(serviceInstance.guid);
     }, (err) => {

@@ -14,18 +14,20 @@ import (
 
 var _ = Describe("Services", func() {
 	var (
-		page        *agouti.Page
-		server      *httptest.Server
-		testEnvVars AcceptanceTestEnvVars
-		user        User
-		nav         Nav
-		spaces      Spaces
-		space       Space
-		services    Services
-		app         App
-		marketplace Marketplace
+		page             *agouti.Page
+		server           *httptest.Server
+		testEnvVars      AcceptanceTestEnvVars
+		user             User
+		nav              Nav
+		spaces           Spaces
+		space            Space
+		services         Services
+		app              App
+		marketplace      Marketplace
+		testInstanceName string
 	)
 
+	testInstanceName = "testService02"
 	testEnvVars = AcceptanceTestEnvVars{}
 	testEnvVars.LoadTestEnvVars()
 
@@ -90,7 +92,7 @@ var _ = Describe("Services", func() {
 		})
 
 		By("allowing the user to create a service of type 'rds'", func() {
-			service.CreateService("rds", "shared-psql", "testService02",
+			service.CreateService("shared-psql", testInstanceName,
 				testEnvVars.TestSpaceName)
 		})
 
@@ -116,7 +118,7 @@ var _ = Describe("Services", func() {
 		})
 
 		By("finding the unbound service instance and delete it", func() {
-			services.DeleteServiceInstance("testService01")
+			services.DeleteServiceInstance(testInstanceName)
 		})
 
 		By("verifying that the service is gone", func() {
