@@ -1,9 +1,9 @@
 package controllers_test
 
 import (
-	"github.com/18F/cf-deck/controllers"
-	"github.com/18F/cf-deck/helpers"
-	. "github.com/18F/cf-deck/helpers/testhelpers"
+	"github.com/18F/cg-deck/controllers"
+	"github.com/18F/cg-deck/helpers"
+	. "github.com/18F/cg-deck/helpers/testhelpers"
 	"testing"
 )
 

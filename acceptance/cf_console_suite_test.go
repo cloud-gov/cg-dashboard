@@ -3,8 +3,8 @@
 package acceptance
 
 import (
-	. "github.com/18F/cf-deck/acceptance/util"
-	"github.com/18F/cf-deck/controllers"
+	. "github.com/18F/cg-deck/acceptance/util"
+	"github.com/18F/cg-deck/controllers"
 	"github.com/gocraft/web"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -68,7 +68,7 @@ var agoutiDriver *agouti.WebDriver
 var _ = BeforeSuite(func() {
 	// MAKE SURE YOU INSTALL PhantomJS. `brew install phantomjs`
 	agoutiDriver = agouti.PhantomJS()
-	// agoutiDriver = agouti.ChromeDriver()
+	//agoutiDriver = agouti.ChromeDriver()
 
 	Expect(agoutiDriver.Start()).To(Succeed())
 })

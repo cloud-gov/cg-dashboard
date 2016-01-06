@@ -17,8 +17,6 @@ type Services struct {
 func (s Services) DeleteServiceInstance(instanceName string) {
 	var table = s.page.First(".table")
 	Eventually(table).Should(BeFound())
-	var count, _ = s.page.All(".test-delete_instance").Count()
-	fmt.Printf("count: %v\n", count)
 	var instanceNameCell = table.FirstByXPath(
 		fmt.Sprintf("tbody/tr/td/*[.=\"%s\"]", instanceName))
 	Eventually(instanceNameCell).Should(BeFound())
@@ -27,8 +25,6 @@ func (s Services) DeleteServiceInstance(instanceName string) {
 	var instanceDeleteAction = instance.First(".test-delete_instance")
 	Eventually(instanceDeleteAction).Should(BeFound())
 	Expect(instanceDeleteAction.Click()).Should(Succeed())
-	count, _ = s.page.All(".test-delete_instance").Count()
-	fmt.Printf("count: %v\n", count)
 	// TODO this following check isn't working even though the API says it should.
 	//Eventually(instanceNameCell).ShouldNot(BeFound())
 }

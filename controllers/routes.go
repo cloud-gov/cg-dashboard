@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/18F/cf-deck/helpers"
+	"github.com/18F/cg-deck/helpers"
 	"github.com/gocraft/web"
 )
 
