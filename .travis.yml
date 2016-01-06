@@ -14,7 +14,7 @@ script:
 - npm test
 - "./codecheck.sh -u"
 - go test ./...
-- cd acceptance && go go test -tags acceptance
+- cd acceptance && go test -tags acceptance
 branches:
   only:
   - master
