@@ -67,8 +67,8 @@ var agoutiDriver *agouti.WebDriver
 
 var _ = BeforeSuite(func() {
 	// MAKE SURE YOU INSTALL PhantomJS. `brew install phantomjs`
-	//agoutiDriver = agouti.PhantomJS()
-	agoutiDriver = agouti.ChromeDriver()
+	agoutiDriver = agouti.PhantomJS()
+	// agoutiDriver = agouti.ChromeDriver()
 
 	Expect(agoutiDriver.Start()).To(Succeed())
 })
