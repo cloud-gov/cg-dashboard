@@ -62,6 +62,7 @@ env:
   - CONSOLE_LOG_URL=https://loggregator.cloud.gov/
   - CONSOLE_LOGIN_URL=https://login.cloud.gov/
   - CONSOLE_HOSTNAME=http://localhost:9999/
+  - CONSOLE_TEST_USERNAME=sys-tester
   - CONSOLE_TEST_ORG_NAME=CF-DECK
   - CONSOLE_TEST_SPACE_NAME=testSpace01
   - CONSOLE_TEST_APP_NAME=testapp01
