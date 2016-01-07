@@ -3,8 +3,8 @@
 package acceptance
 
 import (
-	. "github.com/18F/cf-deck/acceptance/util"
-	. "github.com/18F/cf-deck/acceptance/views"
+	. "github.com/18F/cg-deck/acceptance/util"
+	. "github.com/18F/cg-deck/acceptance/views"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
@@ -13,12 +13,13 @@ import (
 	"net/http/httptest"
 )
 
-var _ = Describe("AppStructure", func() {
+var _ = XDescribe("AppStructure", func() {
 	var (
 		page        *agouti.Page
 		server      *httptest.Server
 		testEnvVars AcceptanceTestEnvVars
 		user        User
+		nav         Nav
 	)
 
 	testEnvVars = AcceptanceTestEnvVars{}
@@ -39,16 +40,15 @@ var _ = Describe("AppStructure", func() {
 	})
 
 	It("should show app structure for an authenticated user", func() {
-		By("allowing the user to click a dropdown menu labeled 'Organizations'", func() {
-			user.OpenDropdownOfOrgsOn(page)
+		By("allowing the user to click on an organization in the navigation", func() {
+			nav = SetupClickFirstOrg(page)
 		})
 
-		By("allowing the user to click on an organization in the dropdown menu", func() {
-			user.SelectOrgFromDropdown(page, testEnvVars.TestOrgName)
+		By("allowing the user to click on any organization in navigation", func() {
+			nav.ClickOrg(testEnvVars.TestOrgName)
 		})
 
 		By("showing the table containing spaces", func() {
-			DelayForRendering()
 			Expect(page.Find("#spacesTable")).To(BeFound())
 			Expect(page.FindByXPath("//*[@id='spacesTable']/thead/tr/th[1]").Text()).To(Equal("Name"))
 			Expect(page.FindByXPath("//*[@id='spacesTable']/thead/tr/th[2]").Text()).To(Equal("Number of Apps"))
@@ -57,14 +57,11 @@ var _ = Describe("AppStructure", func() {
 		})
 
 		By("allowing the user to click on a space in the tab views", func() {
-			DelayForRendering()
 			Expect(page.FindByLink(testEnvVars.TestSpaceName)).To(BeFound())
 			Eventually(Expect(page.FindByLink(testEnvVars.TestSpaceName).Click()).To(Succeed()))
 		})
 
 		By("showing app name and quota information (along with other information)", func() {
-			DelayForRendering()
-			DelayForRendering()
 			Eventually(page.Find("#app-name-heading")).Should(BeFound())
 			Expect(page.Find("#buildpack-heading")).To(BeFound())
 			Expect(page.Find("#memory-heading")).To(BeFound())
@@ -82,11 +79,10 @@ var _ = Describe("AppStructure", func() {
 
 		// MARKETPLACE TESTS
 		By("allowing the user to click on the org marketplace in the org dropdown menu", func() {
-			user.OpenOrgMenuOn(page).ClickMarketplaceLink()
+			SetupClickFirstOrg(page).ClickOrgMarketplace("")
 		})
 
 		By("showing the user a table with all the services", func() {
-			DelayForRendering()
 			Expect(page.Find("#service-name-heading")).To(BeFound())
 			Expect(page.Find("#service-description-heading")).To(BeFound())
 			Expect(page.Find("#service-date-created-heading")).To(BeFound())
@@ -96,7 +92,6 @@ var _ = Describe("AppStructure", func() {
 		})
 
 		By("allowing the user to search for a service", func() {
-			DelayForRendering()
 			rowCountPreSearch, _ := page.All(".service-name-data").Count()
 			Expect(page.Find("#serviceSearch").Fill("zzzzzzzzz1111zzz")).To(Succeed())
 			Expect(page.All(".service-name-data")).NotTo(HaveCount(rowCountPreSearch))

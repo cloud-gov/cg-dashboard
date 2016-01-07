@@ -97,8 +97,9 @@ export class Nav extends React.Component {
   }
 
   render() {
+    var classes = classNames('test-nav-primary');
     return (
-      <div>
+      <div className={ classes }>
       { this.state.orgs.map((org) => {
         return (
           <NavList key={ org.guid }>

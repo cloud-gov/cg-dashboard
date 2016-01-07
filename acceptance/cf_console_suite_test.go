@@ -3,8 +3,8 @@
 package acceptance
 
 import (
-	. "github.com/18F/cf-deck/acceptance/util"
-	"github.com/18F/cf-deck/controllers"
+	. "github.com/18F/cg-deck/acceptance/util"
+	"github.com/18F/cg-deck/controllers"
 	"github.com/gocraft/web"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -14,6 +14,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 )
 
 // Helper function to handle all the weird work of creating a test server.
@@ -21,6 +22,8 @@ func startServer() (*httptest.Server, AcceptanceTestEnvVars) {
 	// Load the environment variables to conduct the tests.
 	testEnvVars := AcceptanceTestEnvVars{}
 	testEnvVars.LoadTestEnvVars()
+	var TimeoutConstant = time.Second * 10
+	SetDefaultEventuallyTimeout(TimeoutConstant)
 
 	var err error
 	// Attempt to initial routers
@@ -65,6 +68,7 @@ var agoutiDriver *agouti.WebDriver
 var _ = BeforeSuite(func() {
 	// MAKE SURE YOU INSTALL PhantomJS. `brew install phantomjs`
 	agoutiDriver = agouti.PhantomJS()
+	//agoutiDriver = agouti.ChromeDriver()
 
 	Expect(agoutiDriver.Start()).To(Succeed())
 })

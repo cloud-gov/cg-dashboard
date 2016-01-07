@@ -8,7 +8,7 @@
   "description": "test suite",
   "main": "null",
   "scripts": {
-    "build": "npm run clean && webpack",
+    "build": "npm run clean && node_modules/webpack/bin/webpack.js",
     "codecov": "cat ./coverage/coverage-final.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "clean": "rm -rf ./static/assets/*",
     "lint": "eslint -c .eslintrc ./static_src",
@@ -36,7 +36,7 @@
     "jasmine-core": "^2.3.4",
     "jasmine-sinon": "^0.4.0",
     "jsx-loader": "^0.13.2",
-    "karma": "^0.13.8",
+    "karma": "^0.13.19",
     "karma-chrome-launcher": "^0.2.0",
     "karma-jasmine": "^0.2.2",
     "karma-jasmine-matchers": "^0.1.3",

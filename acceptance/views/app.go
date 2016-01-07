@@ -3,7 +3,7 @@
 package util
 
 import (
-	. "github.com/18F/cf-deck/acceptance/util"
+	. "github.com/18F/cg-deck/acceptance/util"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
@@ -14,7 +14,6 @@ type App struct {
 }
 
 func (a App) BindToService(serviceName string) {
-	DelayForRendering()
 	// Find the service panel heading.
 	xPathHeading := "//div[@class='panel panel-default']/div[@class='panel-heading']/*[contains(text(), '" + serviceName + "')]"
 	Expect(a.page.FindByXPath(xPathHeading)).To(BeFound())
@@ -28,7 +27,6 @@ func (a App) BindToService(serviceName string) {
 	Expect(FindFirstVisibleOverlayButtonByText("Confirm Bind", a.page)).NotTo(Equal(nil))
 	Expect(FindFirstVisibleOverlayButtonByText("Confirm Bind", a.page).Click()).To(Succeed())
 	// Check now that we should see the unbind button.
-	DelayForRendering()
 	// Find the service panel heading.
 	xPathHeading = "//div[@class='panel panel-default']/div[@class='panel-heading']/*[contains(text(), '" + serviceName + "')]"
 	Eventually(a.page.FindByXPath(xPathHeading)).Should(BeFound())
@@ -41,7 +39,6 @@ func (a App) BindToService(serviceName string) {
 }
 
 func (a App) UnbindFromService(serviceName string) {
-	DelayForRendering()
 	// Find the service panel heading.
 	xPathHeading := "//div[@class='panel panel-default']/div[@class='panel-heading']/*[contains(text(), '" + serviceName + "')]"
 	Eventually(a.page.FindByXPath(xPathHeading)).Should(BeFound())
@@ -56,7 +53,6 @@ func (a App) UnbindFromService(serviceName string) {
 	Expect(confirmBtn).To(BeVisible())
 	Expect(confirmBtn.Click()).To(Succeed())
 	// Check now that we should see the bind button.
-	DelayForRendering()
 	// Find the service panel heading.
 	xPathHeading = "//div[@class='panel panel-default']/div[@class='panel-heading']/*[contains(text(), '" + serviceName + "')]"
 	Eventually(a.page.FindByXPath(xPathHeading)).Should(BeFound())
@@ -70,33 +66,26 @@ func (a App) UnbindFromService(serviceName string) {
 
 func (a App) CreateRoute(host string, domain string) {
 	// ** Create route and confirm it exists **
-	DelayForRendering()
 	// Fill in the hostname with a dummy route name
 	Expect(a.page.FindByName("host").Fill(host)).To(Succeed())
 	//Select the domain name
 	Expect(a.page.FindByName("domain_guid").Select(domain)).To(Succeed())
-	DelayForRendering()
 	// Click on the create route button
 	Expect(a.page.FindByButton("Create Route").Click()).To(Succeed())
-	DelayForRendering()
 	// Clicks on the confirm button
 	confirmButton := FindFirstVisibleOverlayButtonByText("Confirm", a.page)
 	Expect(confirmButton.Click()).To(Succeed())
-	DelayForRendering()
 	// Check if route exists
 	Expect(a.page.FindByName(host + "-" + domain + "-row")).To(BeFound())
 }
 
 func (a App) DeleteRoute(host string, domain string) {
 	// ** Delete route and confirm that it doesn't exist **
-	DelayForRendering()
 	// Finds and clicks on the delete route button
 	Expect(a.page.FindByName(host + "-" + domain + "-delete").Click()).To(Succeed())
 	// Find and click the confirm button
 	confirmButton := FindFirstVisibleOverlayButtonByText("Confirm", a.page)
 	Expect(confirmButton.Click()).To(Succeed())
-	DelayForRendering()
-	DelayForRendering()
 	// Checks that the route doesn't exist
 	Expect(a.page.FindByName(host + "-" + domain + "-row")).ToNot(BeFound())
 }

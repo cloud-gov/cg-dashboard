@@ -1,12 +1,12 @@
 # 18F Cloud Foundry Deck
 
-[![Build Status](https://travis-ci.org/18F/cf-deck.svg?branch=master)](https://travis-ci.org/18F/cf-deck)
+[![Build Status](https://travis-ci.org/18F/cg-deck.svg?branch=master)](https://travis-ci.org/18F/cg-deck)
 
 
 ## Tech Stack
-- `Go` (v1.5 required) for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cf-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cf-deck?branch=master)
+- `Go` (v1.5 required) for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
 
-- `AngularJS` for the frontend. [![JS Code Coverage Status](http://codecov.io/github/18F/cf-deck/coverage.svg?branch=master)](http://codecov.io/github/18F/cf-deck?branch=master)
+- `AngularJS` for the frontend. [![JS Code Coverage Status](http://codecov.io/github/18F/cg-deck/coverage.svg?branch=master)](http://codecov.io/github/18F/cg-deck?branch=master)
 
 
 ## Setup

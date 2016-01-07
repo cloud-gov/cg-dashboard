@@ -4,8 +4,8 @@ package acceptance
 
 import (
 	"fmt"
-	. "github.com/18F/cf-deck/acceptance/util"
-	. "github.com/18F/cf-deck/acceptance/views"
+	. "github.com/18F/cg-deck/acceptance/util"
+	. "github.com/18F/cg-deck/acceptance/views"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
@@ -19,7 +19,9 @@ var _ = Describe("UserManagement", func() {
 		page        *agouti.Page
 		server      *httptest.Server
 		testEnvVars AcceptanceTestEnvVars
+		spaces      Spaces
 		user        User
+		nav         Nav
 		testOrg     string
 		testSpace   string
 	)
@@ -41,25 +43,36 @@ var _ = Describe("UserManagement", func() {
 
 		// Log user in
 		user.LoginTo(page)
+
+		// Get a nav resource
+		nav = SetupNav(page)
 	})
 
 	It("should allow a space manager to see a list of users for a space", func() {
-		By("allowing the user to navigate to the space users page", func() {
-			Expect(page.Navigate(fmt.Sprintf(testEnvVars.Hostname+
-				"/#/org/%s/spaces/%s/users",
-				testOrg, testSpace))).To(Succeed())
+		By("allowing manager to click on spaces in an org the navigation", func() {
+			spaces = nav.ClickOrgSpaces(testEnvVars.TestOrgName)
+		})
+
+		By("allowing manager to click on a certain space", func() {
+			Eventually(spaces.ViewSpace(testEnvVars.TestSpaceName))
+			Eventually(page).Should(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
+				"/#/org/%s/spaces/%s", testOrg, testSpace)))
+		})
+
+		By("allowing manager to click on user management tab", func() {
+			spaces.ClickUserManagement()
+			Eventually(page).Should(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
+				"/#/org/%s/spaces/%s/users", testOrg, testSpace)))
 		})
 
 		By("having the active tab set to default space users", func() {
-			Expect(page).To(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
-				"/#/org/%s/spaces/%s/users", testOrg, testSpace)))
 			Eventually(Expect(page.First(".test-subnav-users")).Should(BeVisible()))
 			Eventually(Expect(page.First(".test-subnav-users .active").Text()).To(Equal("Current space users")))
 		})
 
 		By("seeing a user list for spaces on the first page by default", func() {
-			Eventually(Expect(page.First(".table")).Should(BeVisible()))
-			Eventually(Expect(page.First(".table tbody tr")).Should(BeVisible()))
+			Eventually(Expect(page.First(".table")).Should(BeFound()))
+			Eventually(Expect(page.First(".table tbody tr")).Should(BeFound()))
 		})
 	})
 
@@ -71,8 +84,17 @@ var _ = Describe("UserManagement", func() {
 		})
 
 		By("allowing the user to navigate to the all org users page", func() {
-			Expect(page.FindByLink("All organization users")).Should(BeVisible())
-			Expect(page.FindByLink("All organization users").Click()).To(Succeed())
+			var orgUsersLink = page.FindByLink("All organization users")
+			Eventually(orgUsersLink).Should(BeFound())
+			Expect(orgUsersLink.Click()).To(Succeed())
+		})
+
+		By("seeing a user list for the whole org", func() {
+			var table = page.First(".table")
+			Eventually(table).Should(BeFound())
+			var rows = table.First("tbody tr")
+			Eventually(rows).Should(BeFound())
+			Expect(rows.Count()).Should(BeNumerically(">=", 1))
 		})
 	})
 

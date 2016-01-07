@@ -1,8 +1,8 @@
 // +build acceptance
 
 package util
+
 import (
-	. "github.com/18F/cf-deck/acceptance/util"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
@@ -13,9 +13,14 @@ type Spaces struct {
 }
 
 func (s Spaces) ViewSpace(spaceName string) Space {
-	DelayForRendering()
-	Expect(s.page.FindByLink(spaceName)).To(BeFound())
-	Eventually(Expect(s.page.FindByLink(spaceName).Click()).To(Succeed()))
-	DelayForRendering()
+	Eventually(s.page.FindByLink(spaceName)).Should(BeFound())
+	Expect(s.page.FindByLink(spaceName).Click()).To(Succeed())
+	return Space{s.page}
+}
+
+func (s Spaces) ClickUserManagement() Space {
+	var userManagementLink = s.page.FindByLink("User Management")
+	Eventually(userManagementLink).Should(BeFound())
+	Expect(userManagementLink.Click()).To(Succeed())
 	return Space{s.page}
 }

@@ -78,14 +78,21 @@ export default class CreateServiceInstance extends React.Component {
           this.servicePlanName } plan.
         </h4>
         { createError }
-        <Form action="/service_instances" method="post" ref="form"
-            onValidate={ this._onValidateForm } onValid={ this._onValidForm }>
+        <Form action="/service_instances" 
+            classes={ ["test-create_service_instance_form"] }
+            method="post"
+            ref="form"
+            onValidate={ this._onValidateForm } 
+            onValid={ this._onValidForm }>
           <FormText 
+            classes={ ["test-create_service_instance_name"] }
             label="Choose a name for the service" 
             name="name"
             validator={ FormElement.validatorString }
           />
           <FormSelect 
+            classes={ ["test-create_service_instance_space"] }
+            label="Choose a name for the service" 
             label="Select the space for the service instance"
             name="space"
             options={ this.state.spaces.map((space) => {

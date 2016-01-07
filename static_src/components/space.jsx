@@ -58,13 +58,21 @@ export default class Space extends React.Component {
   }
 
   render() {
-    var Content = this.currentContent;;
+    var Content = this.currentContent,
+        tabNav;
+
+    if (this.state.space.guid) {
+      tabNav = (
+        <Tabnav items={ this.subNav } initialItem={ this.props.currentPage } />
+      );
+    }
+
     return (
       <div>
         <div className="page-header">
           <h3 className="text-center">{ this.state.spaceName } Space</h3>
         </div>
-        <Tabnav items={ this.subNav } initialItem={ this.props.currentPage } />
+        { tabNav }
         <div className="tab-content">
           <div role="tabpanel" className="tab-pane active">
             <Content

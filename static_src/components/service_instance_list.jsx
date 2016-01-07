@@ -26,6 +26,7 @@ export default class ServiceInstanceList extends React.Component {
     super(props);
     this.props = props;
     this.state = stateSetter(props);
+    this._onChange = this._onChange.bind(this);
   }
 
   componentDidMount() {
@@ -75,6 +76,7 @@ export default class ServiceInstanceList extends React.Component {
                 </Td>
                 <Td column="Delete">
                   <Button 
+                  classes={ ["test-delete_instance"] }
                   onClickHandler={ this._handleDelete.bind(this, instance.guid) } 
                   label="delete">
                     <span>Delete Instance</span>

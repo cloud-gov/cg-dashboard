@@ -3,8 +3,8 @@
 package acceptance
 
 import (
-	. "github.com/18F/cf-deck/acceptance/util"
-	. "github.com/18F/cf-deck/acceptance/views"
+	. "github.com/18F/cg-deck/acceptance/util"
+	. "github.com/18F/cg-deck/acceptance/views"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
@@ -53,6 +53,7 @@ var _ = Describe("UserLogin", func() {
 		})
 
 		By("allowing the user to log out", func() {
+			Skip("Not implemented")
 			user.LogoutOf(page)
 		})
 	})

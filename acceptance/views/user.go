@@ -3,7 +3,7 @@
 package util
 
 import (
-	. "github.com/18F/cf-deck/acceptance/util"
+	. "github.com/18F/cg-deck/acceptance/util"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
@@ -23,32 +23,18 @@ func StartUserSessionWith(testEnvVars AcceptanceTestEnvVars) User {
 
 func (u User) LoginTo(page *agouti.Page) {
 	Expect(page.Navigate(u.testEnvVars.Hostname + "/#/")).To(Succeed())
-	Expect(page.Find(".test-login").Click()).To(Succeed())
-	Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login"))
+	var loginLink = page.First(".test-login")
+	Eventually(loginLink).Should(BeFound())
+	Expect(loginLink.Click()).To(Succeed())
+	Eventually(page).Should(HaveURL(u.testEnvVars.LoginURL + "login"))
 	Expect(page.FindByName("username").Fill(u.username)).To(Succeed())
 	Expect(page.FindByName("password").Fill(u.password)).To(Succeed())
 	Expect(page.FindByButton("Sign in").Click()).To(Succeed())
-	Expect(page).To(HaveURL(u.testEnvVars.Hostname + "/#/dashboard"))
+	Eventually(page.FindByButton("Authorize").Click())
+	Eventually(page).Should(HaveURL(u.testEnvVars.Hostname + "/#/dashboard"))
 }
 
 func (u User) LogoutOf(page *agouti.Page) {
 	Expect(page.Find("#logout-btn").Click()).To(Succeed())
 	Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
-}
-
-func (u User) OpenOrgMenuOn(page *agouti.Page) OrgMenu {
-	Eventually(page.First(".test-nav-org")).Should(BeVisible())
-	Expect(page.First(".test-nav-org a").Click()).To(Succeed())
-	return OrgMenu{page}
-}
-
-func (u User) OpenDropdownOfOrgsOn(page *agouti.Page) {
-	Eventually(page.First(".test-nav-orgs")).Should(BeVisible())
-	Expect(page.First(".test-nav-orgs a").Click()).To(Succeed())
-}
-
-func (u User) SelectOrgFromDropdown(page *agouti.Page, orgName string) {
-	Eventually(page.First(".test-nav-org")).Should(BeVisible())
-	Expect(page.FindByLink(orgName)).To(BeFound())
-	Expect(page.FindByLink(orgName).Click()).To(Succeed())
 }
