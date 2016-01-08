@@ -58,6 +58,11 @@ func createPage() *agouti.Page {
 	return page
 }
 
+func resetPage(page *agouti.Page, testEnvVars AcceptanceTestEnvVars) {
+	page.Navigate(testEnvVars.Hostname + "/v2/logout")
+	page.Navigate(testEnvVars.Hostname)
+}
+
 func TestCfConsole(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "CfConsole Suite")
@@ -67,8 +72,8 @@ var agoutiDriver *agouti.WebDriver
 
 var _ = BeforeSuite(func() {
 	// MAKE SURE YOU INSTALL PhantomJS. `brew install phantomjs`
-	agoutiDriver = agouti.PhantomJS()
-	//agoutiDriver = agouti.ChromeDriver()
+	// agoutiDriver = agouti.PhantomJS()
+	agoutiDriver = agouti.ChromeDriver()
 
 	Expect(agoutiDriver.Start()).To(Succeed())
 })

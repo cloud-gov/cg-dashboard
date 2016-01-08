@@ -31,6 +31,9 @@ var _ = Describe("UserLogin", func() {
 		// Create a fresh page to navigate.
 		page = createPage()
 
+		// Reset page
+		resetPage(page, testEnvVars)
+
 		// Create user
 		user = StartUserSessionWith(testEnvVars)
 	})
