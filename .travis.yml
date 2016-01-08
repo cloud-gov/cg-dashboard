@@ -1,7 +1,9 @@
 language: go
-sudo: false
+sudo: required
 go:
 - 1.5
+services:
+  - docker
 before_install:
 - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
 - npm install
@@ -14,7 +16,7 @@ script:
 - npm test
 - "./codecheck.sh -u"
 - go test ./...
-- cd acceptance && go test -tags acceptance && cd ..
+- acceptance/scripts/run_test.sh -a
 branches:
   only:
   - master

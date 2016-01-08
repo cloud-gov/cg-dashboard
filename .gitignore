@@ -7,5 +7,6 @@ node_modules/
 coverage
 .godeps/
 Godeps/_workspace/
-cf-deck
+cg-deck
+acceptance/scripts/.env_docker
 static/assets

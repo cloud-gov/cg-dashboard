@@ -20,4 +20,9 @@
 ### Running the tests
 - Make sure you have `CONSOLE_TEST_USERNAME`, `CONSOLE_TEST_PASSWORD`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, `CONSOLE_TEST_APP_NAME`, `CONSOLE_TEST_HOST`, and `CONSOLE_TEST_DOMAIN` set in your environment.
   - This represents a username and password for the test to browse through with.
-- Run `go test ./... --tags acceptance`
+- Make sure you have docker installed on your computer
+- For automated mode:
+  - `acceptance/scripts/run_test.sh -a`
+- For debug mode where the developer can vnc into the container:
+  - `acceptance/scripts/run_test.sh -d`
+  - Once inside the container, run `acceptance/scripts/debug.sh`
