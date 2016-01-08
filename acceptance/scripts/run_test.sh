@@ -46,7 +46,8 @@ if [[ $DEBUG -eq 1 ]]; then
 	echo "Running in debug mode"
 	docker run -itd -p $IMAGE_PORT:5900 --env-file $ENV_FILE $IMAGE_NAME
 	HOST_IP=$(docker-machine ip $DOCKER_MACHINE_NAME)
-	open vnc://$HOST_IP:$IMAGE_PORT
+	#open vnc://$HOST_IP:$IMAGE_PORT
+	echo "Open your vnc client to $HOST_IP:$IMAGE_PORT"
 fi
 if [[ $AUTO -eq 1 ]]; then
 	echo "Running in auto mode"
