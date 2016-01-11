@@ -26,3 +26,6 @@
 - For debug mode where the developer can vnc into the container:
   - `acceptance/scripts/run_test.sh -d`
   - Once inside the container, run `acceptance/scripts/debug.sh`
+
+### Travis CI Gotchas
+- Periodically, Travis will [hang](https://github.com/travis-ci/travis-ci/issues/3251) during the acceptance tests. Just restart the build.
