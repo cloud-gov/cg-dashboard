@@ -28,4 +28,4 @@ export CF_BIN=$CLIPATH/out/cf
 $CF_BIN api $CF_API
 $CF_BIN auth $CF_USERNAME $CF_PASSWORD && $CF_BIN target -o $CF_ORGANIZATION -s $CF_SPACE && $CF_BIN install-plugin $GOAUTOPILOT_BIN
 # Run autopilot plugin
-$CF_BIN zero-downtime-push cf-deck -f $CF_MANIFEST -p $CF_PATH
+$CF_BIN zero-downtime-push cg-deck -f $CF_MANIFEST -p $CF_PATH

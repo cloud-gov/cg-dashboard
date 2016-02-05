@@ -1,7 +1,7 @@
 package pprof
 
 import (
-	"github.com/18F/cf-deck/controllers"
+	"github.com/18F/cg-deck/controllers"
 	"github.com/gocraft/web"
 	"net/http"
 	"net/http/pprof"

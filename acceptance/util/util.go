@@ -3,7 +3,7 @@
 package util
 
 import (
-	"github.com/18F/cf-deck/helpers"
+	"github.com/18F/cg-deck/helpers"
 	"github.com/sclevine/agouti"
 	"time"
 )
