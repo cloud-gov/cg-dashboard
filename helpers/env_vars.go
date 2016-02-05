@@ -29,6 +29,8 @@ var (
 	BuildInfoEnvVar = "BUILD_INFO"
 	// NewRelicLicenseEnvVar is the New Relic License key so it can collect data.
 	NewRelicLicenseEnvVar = "CONSOLE_NEW_RELIC_LICENSE"
+	// UserCertPemEnvVar is the content of a pem file to use the self-certificate for a user
+	UserCertPemEnvVar = "USER_CERTIFICATE_PEM"
 )
 
 // EnvVars holds all the environment variable values that a non-test server should have.
@@ -43,4 +45,5 @@ type EnvVars struct {
 	PProfEnabled    string
 	BuildInfo       string
 	NewRelicLicense string
+	UserCertPem     string
 }

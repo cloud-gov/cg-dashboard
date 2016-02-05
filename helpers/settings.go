@@ -5,33 +5,38 @@ import (
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
-
+	"crypto/x509"
 	"encoding/gob"
 	"errors"
+	"crypto/tls"
+	"net/http"
 )
 
 // Settings is the object to hold global values and objects for the service.
 type Settings struct {
 	// OAuthConfig is the OAuth client with all the paramters to talk with CF's UAA OAuth Provider.
-	OAuthConfig *oauth2.Config
+	OAuthConfig               *oauth2.Config
 	// Console API
-	ConsoleAPI string
+	ConsoleAPI                string
 	// Login URL - used to redirect users to the logout page
-	LoginURL string
+	LoginURL                  string
 	// Sessions is the session store for all connected users.
-	Sessions sessions.Store
+	Sessions                  sessions.Store
 	// context.Context var from golang.org/x/net/context to make token Client work
-	TokenContext context.Context
+	TokenContext              context.Context
 	// UAA API
-	UaaURL string
+	UaaURL                    string
 	// Log API
-	LogURL string
+	LogURL                    string
 	// High Privileged OauthConfig
 	HighPrivilegedOauthConfig *clientcredentials.Config
 	// A flag to indicate whether profiling should be included (debug purposes).
-	PProfEnabled bool
+	PProfEnabled              bool
 	// Build Info
-	BuildInfo string
+	BuildInfo                 string
+	//Http client
+	HTTPClient                *http.Client
+
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -58,9 +63,33 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	if len(envVars.LogURL) == 0 {
 		return errors.New("Unable to find '" + LogURLEnvVar + "' in environment. Exiting.\n")
 	}
+
+	// load user certificate if exist in env var
+	if len(envVars.UserCertPem) == 0 {
+		s.HTTPClient = http.DefaultClient
+	} else {
+
+		roots := x509.NewCertPool()
+		ok := roots.AppendCertsFromPEM([]byte(envVars.UserCertPem))
+		if !ok {
+			return errors.New("failed to parse user certificate")
+		}
+		tlsConfig := &tls.Config{
+			ClientCAs: roots,
+			RootCAs: roots,
+			ClientAuth: tls.RequireAndVerifyClientCert,
+		}
+		var transport http.RoundTripper
+
+		transport = &http.Transport{
+			TLSClientConfig: tlsConfig,
+		}
+		s.HTTPClient = &http.Client{Transport: transport}
+	}
+
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
-	s.TokenContext = context.TODO()
+	s.TokenContext = context.WithValue(context.TODO(), oauth2.HTTPClient, s.HTTPClient)
 	s.UaaURL = envVars.UAAURL
 	s.LogURL = envVars.LogURL
 	s.PProfEnabled = ((envVars.PProfEnabled == "true") || (envVars.PProfEnabled == "1"))
