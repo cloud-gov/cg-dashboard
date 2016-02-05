@@ -25,6 +25,7 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.LogURL = os.Getenv(helpers.LogURLEnvVar)
 	envVars.PProfEnabled = os.Getenv(helpers.PProfEnabledEnvVar)
 	envVars.BuildInfo = os.Getenv(helpers.BuildInfoEnvVar)
+	envVars.UserCertPem = os.Getenv(helpers.UserCertPemEnvVar)
 	return envVars
 }
 
