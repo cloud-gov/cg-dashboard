@@ -119,7 +119,16 @@ All the acceptance tests are in the 'acceptance' folder.
 - `CONSOLE_TEST_DOMAIN`: The domain for the mock route.
 
 #### Running acceptance tests
-- `cd acceptance && go test -tags acceptance`
+##### Make sure you have docker installed on your computer
+
+For automated mode:
+
+- `acceptance/scripts/run_test.sh -a`
+
+For debug mode where the developer can vnc into the container and the browser execute the commands:
+
+- `acceptance/scripts/run_test.sh -d`
+- Once inside the container, run `acceptance/scripts/debug.sh`
 
 ## Deploying
 - `cf push <optional-app-name>`

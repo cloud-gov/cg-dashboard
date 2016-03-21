@@ -1,6 +1,6 @@
 // +build acceptance
 
-package util
+package views
 
 import (
 	. "github.com/18F/cg-deck/acceptance/util"

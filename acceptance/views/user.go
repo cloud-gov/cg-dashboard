@@ -1,6 +1,6 @@
 // +build acceptance
 
-package util
+package views
 
 import (
 	. "github.com/18F/cg-deck/acceptance/util"
@@ -35,6 +35,9 @@ func (u User) LoginTo(page *agouti.Page) {
 }
 
 func (u User) LogoutOf(page *agouti.Page) {
+	Expect(page.Navigate(u.testEnvVars.Hostname + "/v2/logout")).To(Succeed())
+	/*
 	Expect(page.Find("#logout-btn").Click()).To(Succeed())
 	Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
+	*/
 }

@@ -157,7 +157,6 @@ var _ = Describe("Services", func() {
 			app.BindToService("testService01")
 		})
 
-		Skip("")
 		By("unbinding the service from the app", func() {
 			app.UnbindFromService("testService01")
 		})
@@ -194,7 +193,7 @@ var _ = Describe("Services", func() {
 
 	AfterEach(func() {
 		// Logout user
-		// user.LogoutOf(page)
+		user.LogoutOf(page)
 		// Destroy the page
 		Expect(page.Destroy()).To(Succeed())
 		// Close the server.

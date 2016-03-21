@@ -38,6 +38,9 @@ var _ = Describe("UserManagement", func() {
 		// Create a fresh page to navigate.
 		page = createPage()
 
+		// Reset page
+		resetPage(page, testEnvVars)
+
 		// Create user
 		user = StartUserSessionWith(testEnvVars)
 
@@ -55,24 +58,24 @@ var _ = Describe("UserManagement", func() {
 
 		By("allowing manager to click on a certain space", func() {
 			Eventually(spaces.ViewSpace(testEnvVars.TestSpaceName))
-			Eventually(page).Should(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
-				"/#/org/%s/spaces/%s", testOrg, testSpace)))
+			Eventually(page).Should(HaveURL(fmt.Sprintf(
+				"%s/#/org/%s/spaces/%s", testEnvVars.Hostname, testOrg, testSpace)))
 		})
 
 		By("allowing manager to click on user management tab", func() {
 			spaces.ClickUserManagement()
-			Eventually(page).Should(HaveURL(fmt.Sprintf(testEnvVars.Hostname+
-				"/#/org/%s/spaces/%s/users", testOrg, testSpace)))
+			Eventually(page).Should(HaveURL(fmt.Sprintf(
+				"%s/#/org/%s/spaces/%s/users", testEnvVars.Hostname, testOrg, testSpace)))
 		})
 
 		By("having the active tab set to default space users", func() {
-			Eventually(Expect(page.First(".test-subnav-users")).Should(BeVisible()))
-			Eventually(Expect(page.First(".test-subnav-users .active").Text()).To(Equal("Current space users")))
+			Eventually(page.First(".test-subnav-users")).Should(BeVisible())
+			Expect(page.First(".test-subnav-users .active").Text()).To(Equal("Current space users"))
 		})
 
 		By("seeing a user list for spaces on the first page by default", func() {
-			Eventually(Expect(page.First(".table")).Should(BeFound()))
-			Eventually(Expect(page.First(".table tbody tr")).Should(BeFound()))
+			Eventually(page.First(".table")).Should(BeFound())
+			Eventually(page.First(".table tbody tr")).Should(BeFound())
 		})
 	})
 
@@ -99,6 +102,8 @@ var _ = Describe("UserManagement", func() {
 	})
 
 	AfterEach(func() {
+		// Logout user
+		user.LogoutOf(page)
 		// Destroy the page
 		Expect(page.Destroy()).To(Succeed())
 		// Close the server.
