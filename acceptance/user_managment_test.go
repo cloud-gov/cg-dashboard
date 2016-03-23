@@ -105,8 +105,8 @@ var _ = Describe("UserManagement", func() {
 		var userRow *agouti.Selection
 
 		By("allowing the user to navigate to the space users page", func() {
-			Expect(page.Navigate(fmt.Sprintf("%s/#/org/%s/spaces/%s/users", 
-			testEnvVars.Hostname, testOrg, testSpace))).To(Succeed())
+			Expect(page.Navigate(fmt.Sprintf("%s/#/org/%s/spaces/%s/users",
+				testEnvVars.Hostname, testOrg, testSpace))).To(Succeed())
 		})
 
 		By("seeing a user list for the whole org", func() {
@@ -126,9 +126,10 @@ var _ = Describe("UserManagement", func() {
 
 			var _ = user.DeactivatePermission(userRow, "Billing Manager")
 			checked = userPerms.All("input:checked[type='checkbox']")
+			Eventually(checked).Should(HaveCount(checkedStartNum - 1))
 			var _ = user.ActivatePermission(userRow, "Billing Manager")
 			checked = userPerms.All("input:checked[type='checkbox']")
-			Expect(checked.Count()).Should(BeNumerically("==", checkedStartNum))
+			Eventually(checked).Should(HaveCount(checkedStartNum))
 		})
 	})
 
