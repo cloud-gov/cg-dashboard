@@ -105,9 +105,8 @@ var _ = Describe("UserManagement", func() {
 		var userRow *agouti.Selection
 
 		By("allowing the user to navigate to the space users page", func() {
-			Expect(page.Navigate(fmt.Sprintf(testEnvVars.Hostname+
-				"/#/org/%s/spaces/%s/users",
-				testOrg, testSpace))).To(Succeed())
+			Expect(page.Navigate(fmt.Sprintf("%s/#/org/%s/spaces/%s/users", 
+			testEnvVars.Hostname, testOrg, testSpace))).To(Succeed())
 		})
 
 		By("seeing a user list for the whole org", func() {
