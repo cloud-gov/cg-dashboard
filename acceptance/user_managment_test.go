@@ -101,6 +101,37 @@ var _ = Describe("UserManagement", func() {
 		})
 	})
 
+	It("should allow an org manager to change a space users pemissions", func() {
+		var userRow *agouti.Selection
+
+		By("allowing the user to navigate to the space users page", func() {
+			Expect(page.Navigate(fmt.Sprintf("%s/#/org/%s/spaces/%s/users", 
+			testEnvVars.Hostname, testOrg, testSpace))).To(Succeed())
+		})
+
+		By("seeing a user list for the whole org", func() {
+			var table = page.First(".table")
+			Eventually(table).Should(BeFound())
+			var row = table.First("tbody tr")
+			Eventually(row).Should(BeFound())
+			userRow = row
+			Expect(row.Count()).Should(BeNumerically(">=", 1))
+		})
+
+		By("Setting the permissions for a user", func() {
+			var userPerms = userRow.FindByXPath("following-sibling::*[1]")
+			var checked = userPerms.All("input:checked[type='checkbox']")
+			Eventually(checked).Should(BeFound())
+			var checkedStartNum, _ = checked.Count()
+
+			var _ = user.DeactivatePermission(userRow, "Billing Manager")
+			checked = userPerms.All("input:checked[type='checkbox']")
+			var _ = user.ActivatePermission(userRow, "Billing Manager")
+			checked = userPerms.All("input:checked[type='checkbox']")
+			Expect(checked.Count()).Should(BeNumerically("==", checkedStartNum))
+		})
+	})
+
 	AfterEach(func() {
 		// Logout user
 		user.LogoutOf(page)

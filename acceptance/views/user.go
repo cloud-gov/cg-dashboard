@@ -3,6 +3,7 @@
 package views
 
 import (
+	"fmt"
 	. "github.com/18F/cg-deck/acceptance/util"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
@@ -37,7 +38,35 @@ func (u User) LoginTo(page *agouti.Page) {
 func (u User) LogoutOf(page *agouti.Page) {
 	Expect(page.Navigate(u.testEnvVars.Hostname + "/v2/logout")).To(Succeed())
 	/*
-	Expect(page.Find("#logout-btn").Click()).To(Succeed())
-	Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
+		Expect(page.Find("#logout-btn").Click()).To(Succeed())
+		Eventually(Expect(page).To(HaveURL(u.testEnvVars.LoginURL + "login")))
 	*/
+}
+
+func (u User) GetPermission(userRow *agouti.Selection, permission string) *agouti.Selection {
+	var userPerms = userRow.FindByXPath("following-sibling::*[1]")
+	Eventually(userPerms).Should(BeFound())
+	var userPerm = userPerms.FindByXPath(fmt.Sprintf("td/div/span/span/*[.=\"%s\"]",
+		permission))
+	Eventually(userPerm).Should(BeFound())
+	var userPermRow = userPerm.FirstByXPath("ancestor::span")
+	Eventually(userPermRow).Should(BeFound())
+	var userPermCheckbox = userPermRow.Find("input")
+	Eventually(userPermCheckbox).Should(BeFound())
+
+	return userPermCheckbox
+}
+
+func (u User) ActivatePermission(userRow *agouti.Selection, permission string) *agouti.Selection {
+	var userPermCheckbox = u.GetPermission(userRow, permission)
+	Expect(userPermCheckbox.Check()).To(Succeed())
+
+	return userPermCheckbox
+}
+
+func (u User) DeactivatePermission(userRow *agouti.Selection, permission string) *agouti.Selection {
+	var userPermCheckbox = u.GetPermission(userRow, permission)
+	Expect(userPermCheckbox.Uncheck()).To(Succeed())
+
+	return userPermCheckbox
 }
