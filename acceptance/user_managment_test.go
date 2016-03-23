@@ -127,6 +127,7 @@ var _ = Describe("UserManagement", func() {
 			var _ = user.DeactivatePermission(userRow, "Billing Manager")
 			checked = userPerms.All("input:checked[type='checkbox']")
 			Eventually(checked).Should(BeFound())
+			Expect(checked.Count()).Should(BeNumerically("==", checkedStartNum-1))
 			var _ = user.ActivatePermission(userRow, "Billing Manager")
 			checked = userPerms.All("input:checked[type='checkbox']")
 			Eventually(checked).Should(BeFound())
