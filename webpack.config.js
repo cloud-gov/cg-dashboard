@@ -17,7 +17,6 @@ module.exports = {
     filename: 'bundle.js'
   },
 
-
   module: {
     loaders: [
       {
@@ -40,28 +39,18 @@ module.exports = {
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
       },
       { test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader')
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass?sourceMap')
       },
       { test: /\.css$/,
         include: path.resolve(__dirname, 'node_modules'),
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
       },
-      { test: /\.(woff|woff2)$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-      },
-      {
-        test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=application/font-woff'},
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=application/octet-stream'},
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=image/svg+xml'
-      },
-      { test: /\.png$/,  loader: "url?limit=10000&mimetype=image/png" },
+      { test: /\.(svg|png|jpe?g|ttf|woff2?|eot)$/, loader: 'url?limit=8182' }
     ]
+  },
+
+  sassLoader: {
+    data: '$static-font-path: \'../../node_modules/cloudgov-style/font\';'
   },
 
   resolve: {
@@ -69,10 +58,23 @@ module.exports = {
       'bootstrap.css':  path.resolve(__dirname, 'node_modules/bootstrap/dist/css/bootstrap.css'),
       'bootstrap.less': path.resolve(__dirname, 'node_modules/bootstrap/less/bootstrap.less')
     },
-    modulesDirectories: ['node_modules', 'components']
+
+    modulesDirectories: [
+      'node_modules',
+      'components',
+      path.resolve('node_modules/cloudgov-style/css')
+      ]
+  },
+
+  resolveUrlLoader: {
+    modulesDirectories: [
+      path.resolve('node_modules')
+    ]
   },
 
   plugins: [
     new ExtractTextPlugin('style.css', { allChunks: true })
-  ]
+  ],
+
+  publicPath: './static'
 };
