@@ -17,7 +17,6 @@ module.exports = {
     filename: 'bundle.js'
   },
 
-
   module: {
     loaders: [
       {
@@ -40,16 +39,24 @@ module.exports = {
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
       },
       { test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader')
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass?sourceMap')
       },
       { test: /\.css$/,
         include: path.resolve(__dirname, 'node_modules'),
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
       },
-      { test: /\.(woff|woff2)$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+      {
+        test: /\.(svg|png|jpe?g)$/,
+        loader: 'url-loader?limit=1024&name=img/[name].[ext]'
+      },
+      { test: /\.(ttf|woff2?|eot)$/,
+        loader: 'url-loader?limit=1024&name=font/[name].[ext]'
       }
     ]
+  },
+
+  sassLoader: {
+    data: '$static-font-path: \'../../node_modules/cloudgov-style/font\';'
   },
 
   resolve: {
@@ -57,10 +64,23 @@ module.exports = {
       'bootstrap.css':  path.resolve(__dirname, 'node_modules/bootstrap/dist/css/bootstrap.css'),
       'bootstrap.less': path.resolve(__dirname, 'node_modules/bootstrap/less/bootstrap.less')
     },
-    modulesDirectories: ['node_modules', 'components']
+
+    modulesDirectories: [
+      'node_modules',
+      'components',
+      path.resolve('node_modules/cloudgov-style/css')
+      ]
+  },
+
+  resolveUrlLoader: {
+    modulesDirectories: [
+      path.resolve('node_modules')
+    ]
   },
 
   plugins: [
     new ExtractTextPlugin('style.css', { allChunks: true })
-  ]
+  ],
+
+  publicPath: './static'
 };
