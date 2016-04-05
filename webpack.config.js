@@ -45,7 +45,9 @@ module.exports = {
         include: path.resolve(__dirname, 'node_modules'),
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
       },
-      { test: /\.(svg|png|jpe?g|ttf|woff2?|eot)$/, loader: 'url?limit=8182' }
+      { test: /\.(svg|png|jpe?g|ttf|woff2?|eot)$/,
+        loader: 'url-loader?limit=8182'
+      }
     ]
   },
 
@@ -64,6 +66,10 @@ module.exports = {
       'node_modules',
       'components'
     ]
+  },
+
+  resolveLoader: {
+    fallback: path.resolve(__dirname, 'node_modules')
   },
 
   plugins: [
