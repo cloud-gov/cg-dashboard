@@ -1,6 +1,6 @@
 
 import 'bootstrap.css';
-import 'cloudgov-style/src/css/base.scss';
+import 'cloudgov-style/base.scss';
 
 import './css/main.css';
 

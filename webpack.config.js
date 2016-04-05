@@ -56,25 +56,19 @@ module.exports = {
   },
 
   sassLoader: {
-    data: '$static-font-path: \'../../node_modules/cloudgov-style/font\';'
+    data: '$static-font-path: \'../../font\'; $static-img-path: \'../../img\';'
   },
 
   resolve: {
     alias: {
+      'cloudgov-style': path.resolve(__dirname, 'node_modules/cloudgov-style/src/css'),
       'bootstrap.css':  path.resolve(__dirname, 'node_modules/bootstrap/dist/css/bootstrap.css'),
       'bootstrap.less': path.resolve(__dirname, 'node_modules/bootstrap/less/bootstrap.less')
     },
 
     modulesDirectories: [
       'node_modules',
-      'components',
-      path.resolve('node_modules/cloudgov-style/css')
-      ]
-  },
-
-  resolveUrlLoader: {
-    modulesDirectories: [
-      path.resolve('node_modules')
+      'components'
     ]
   },
 
