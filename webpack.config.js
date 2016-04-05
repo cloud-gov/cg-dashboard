@@ -72,6 +72,10 @@ module.exports = {
     ]
   },
 
+  resolveLoader: {
+    fallback: path.resolve(__dirname, 'node_modules')
+  },
+
   plugins: [
     new ExtractTextPlugin('style.css', { allChunks: true })
   ],
