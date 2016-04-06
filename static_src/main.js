@@ -3,7 +3,7 @@ import 'bootstrap.css';
 
 import './css/main.css';
 
-import {Router} from 'director';
+import { Router } from 'director';
 import React from 'react';
 
 import App from './app.jsx';
@@ -19,7 +19,7 @@ const mainEl = document.querySelector('.js-app');
 
 
 function login() {
-  React.render(<App><Login/></App>, mainEl);
+  React.render(<App><Login /></App>, mainEl);
 }
 
 function dashboard() {
@@ -52,7 +52,8 @@ function space(orgGuid, spaceGuid, potentialPage) {
       <Space
         initialSpaceGuid={ spaceGuid}
         initialOrgGuid={ orgGuid }
-        currentPage={ potentialPage }  />
+        currentPage={ potentialPage }
+      />
     </App>, mainEl);
 }
 
@@ -64,8 +65,7 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   }
   React.render(
     <App>
-      <Marketplace
-        initialOrgGuid={ orgGuid } />
+      <Marketplace initialOrgGuid={ orgGuid } />
     </App>,
   mainEl);
 }
@@ -79,7 +79,7 @@ function notFound() {
   React.render(<h1>Not Found</h1>, mainEl);
 }
 
-let routes = {
+const routes = {
   '/': dashboard,
   '/dashboard': dashboard,
   '/login': login,
@@ -99,12 +99,12 @@ let routes = {
         },
         on: marketplace
       },
-      on: org,
+      on: org
     }
   }
-}
+};
 
-let router = new Router(routes);
+const router = new Router(routes);
 router.configure({
   before: checkAuth,
   notfound: notFound
