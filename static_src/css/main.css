@@ -44,3 +44,21 @@ body {
 .main .page-header {
   margin-top: 0;
 }
+
+/*
+ * Override WDS fancy checkboxes/radios
+ **/
+input[type="checkbox"],
+input[type="radio"] {
+  left: 0;
+  position: static;
+}
+
+input[type="checkbox"]:checked + label::before {
+  display: none;
+}
+
+input[type="checkbox"] + label::before,
+input[type="radio"] + label::before {
+  display: none;
+}
