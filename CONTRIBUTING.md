@@ -33,6 +33,8 @@ Tracking work and progress is currently being done through [Zenhub](https://www.
 - Should code be pulled down and tested for each review?
 - Any time you change a file, you should turn on linting for that file and fix the errors
 - Any new files should be linted.
+- Currently, only main cg-deck repo will work for CI tests, forks can't run it due to privacy issues.
+- How to share credentials required to run things?
 
 #### Current considerations
 - Working off a branch that gets deployed to a non-used site (no feedback on bugs/etc)
