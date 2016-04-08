@@ -36,7 +36,4 @@ static_src/components/service_list.jsx
 static_src/components/service_plan_list.jsx
 static_src/components/user_role_list_control.jsx
 static_src/components/user_role_control.jsx
-#static_src/util/cf_api.js
-#static_src/app.jsx
 static_src/constants.js
-#static_src/main.js
