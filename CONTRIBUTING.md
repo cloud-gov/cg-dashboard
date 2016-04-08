@@ -19,6 +19,7 @@ Tracking work and progress is currently being done through [Zenhub](https://www.
 - No need to estimate.
 - Put things in icebox first.
 - How things get prioritized into the backlog.
+- What to call branches? Should we put the issue number in them? Other conventions
 
 ### Code reviewing
 - Have ready to merge label which anybody can merge. (helps async work)
