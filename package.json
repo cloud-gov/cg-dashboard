@@ -12,7 +12,7 @@
     "codecov": "cat ./coverage/coverage-final.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "clean": "rm -rf ./static/assets/*",
     "lint": "eslint -c .eslintrc ./static_src",
-    "test": "karma start --single-run --browsers PhantomJS2",
+    "test": "npm run lint && karma start --single-run --browsers PhantomJS2",
     "watch-test": "karma start --browsers Chrome",
     "watch": "watch 'npm run build' ./static_src"
   },
