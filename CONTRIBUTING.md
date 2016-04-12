@@ -4,24 +4,35 @@ We're so glad you're thinking about contributing to an 18F open source project! 
 
 Before contributing, we encourage you to read our CONTRIBUTING policy (you are here), our LICENSE, and our README, all of which should be in this repository. If you have any questions, or want to read more about our underlying policies, you can consult the 18F Open Source Policy GitHub repository at https://github.com/18f/open-source-policy, or just shoot us an email/official government letterhead note to [18f@gsa.gov](mailto:18f@gsa.gov).
 
-## Information
-
-### High-level roadmap
+## High-level roadmap
 The cloud.gov deck is currently being refactored to port the codebase from angular to unit-tested react. In doing so, it will take UI/UX cues from the  [community web ui](https://github.com/icclab/cf-webui), and merge that design with the visual [cloudgov-style](https://github.com/18F/cg-style) to create a unified cloud.gov experience. This refactor work is accumulated into the `staging-alpha` branch which will eventually be merged with `master` when it's feature complete and bug free. This means all work should be merged into the `staging-alpha` branch, unless working with the deprecated angular codebase.
 
-### Workflow
+## Workflow
 Tracking work and progress is currently being done through [Zenhub](https://www.zenhub.io/), which adds a browser extension to add additional agile features to github. The main feature Zenhub adds is a "Boards" page which is an agile bboard detailing the state of work for the deck.
 
-#### Board workflow
-- Stories or ideas for features can start in backlog.
-- For a story to be past "ready" it must have a value statement and acceptance criteria
-  - A value statement that has who the user is, what the value is to them and what the deliverable is.
+### Board workflow
+- Stories or ideas for features can start in backlog or icebox.
+
+#### Criteria for moving through colums
+- For a story to move past "new" or "icebox" it should have a user value statement.
+- For a story to be past "ready" it must have a user value statement, acceptance criteria and scope of less then a few days.
+  - A value statement must have who the user is, what the value is to them and what the deliverable is.
+  - Testable acceptance critera should be a checklist of one or more items that specify whether the work has been completed.
+- For a story to be past "in progress" and in "awaiting acceptance" it should:
+  - be peer-reviewed by at least one other team member.
+  - has fulfilled all acceptance criteria
+  - have all new files and newly touched files linted (new files can skip linting if under tight deadline)
+  - have all previous unit tests and acceptance tests running
+  - covered in units tests and potentially covered with acceptance/functional tests if it makes modifications to the UI.
+  - is deployed on a staging site or live site so other team members can see/use it.
 - A story is put into "awaiting acceptance" when it's been merged and is available on a staging or live site.
-  - Ensure to not use the github "fixes" feature as it will close a branch too early.
+  - ensure to not use the github "fixes" feature as it will close an issue too early.
+- For a story to be past "awaiting acceptance" to "done" it should:
+  - stakeholders see and approve the work as meeting acceptance criteria
+  - if the work has a visual aspect, post a screenshot attached for later documentation/announcement/demo purposes
 - A product owner or team member will check a story waiting acceptance and put it into "done" if it meets the criteria.
 
-
-- What to call branches? Should we put the issue number in them? Other conventions
+For more information, see the high-level [cloud.gov respository](https://github.com/18F/cg-product) and [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md).
 
 
 #### Code reviewing
