@@ -41,7 +41,7 @@ For more information, see the high-level [cloud.gov respository](https://github.
 - Add the "ready for review" label when the code is ready to be reviewed by another team member.
 - As another team member, review the code and ensure it conforms to the coding standards and exit criteria
 - When it's reviewed and ready to be merged, they add the "ready for merge" label, and take off "ready for review" label.
-- The person that wrote the code merges once it has the "ready for merge" label.
+- The person that wrote the code, or any other person merges once it has the "ready for merge" label.
   - Updates on PRs in the repo will be posted in the #cloud-gov-frontend Slack channel
 - It's fine to merge code that isn't "feature complete". The staging branch is not currently in use, so is fine to have some work on it that still needs work.
 
