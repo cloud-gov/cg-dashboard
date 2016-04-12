@@ -35,81 +35,74 @@ Tracking work and progress is currently being done through [Zenhub](https://www.
 For more information, see the high-level [cloud.gov respository](https://github.com/18F/cg-product) and [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md).
 
 
-#### Code reviewing
-- Open a PR whenever you want
-- Add the "ready for review" label.
-- Another person the the team reviews it
-- When it's ready, they add the "ready for merge" label, and take off "ready for review"
-- The person that wrote the code merges after they get a thumbs up. 
-  - Ensure integration slack to get updates on comments for PRs.
+## Code standards
+### Workflow
+- Open branches off main repo due to secure travis CI env vars.
+- Add the "ready for review" label when the code is ready to be reviewed by another team member.
+- As another team member, review the code and ensure it conforms to the coding standards and exit criteria
+- When it's reviewed and ready to be merged, they add the "ready for merge" label, and take off "ready for review" label.
+- The person that wrote the code merges once it has the "ready for merge" label.
+  - Updates on PRs in the repo will be posted in the #cloud-gov-frontend Slack channel
+- It's fine to merge code that isn't "feature complete". The staging branch is not currently in use, so is fine to have some work on it that still needs work.
 
-#### Branches and PRs
+### Branches
 - Open branches off main repo due to travis CI env var problem
-- Put in your initials
-- Put what the feature is
+- Name your branch with your initials first
+- Include a short description of the feature that's being developed after your initial.
 
-### Code reviewing
+### Commit message
+In general, commit messages can be written in whatever way the author decides, but here are some guidelines:
+- Focus on the "why" rather then the "what"
+- Have the first line be the "what"
+- Discuss the "why" in more detail on subsequent lines
 
-#### Linting
-- Theres a lint ignore file with all file not being linted.
-- If you touch another file that isn't linted yet, you generally fix it and remove it from the ignore.
-  - Unless under strict time constraints.
-
-
-- It's fine if staging-alpha isn't feature perfect.
-- One person at least reviews each PR.
-- What is a good commit message?
-  - Focus on the "why" rather then the "what"
-  - Have the first line be the "what"
-  - Discuss the "why" in more detail
-- What to look for in code review?
-  - Hopefully don't need to look for linting
-- Should code be pulled down and tested for each review?
-  - Yes, although for super easy code, not necessary.
-- Can we give the staging url to people at 18f?
-  - Would be good to find bugs.
-  - Have the url more prominent on the readme of the branch
-- How to share credentials required to run things?
-
-#### Current considerations
-- Working off a branch that gets deployed to a non-used site (no feedback on bugs/etc)
-- Incorporating a separate CSS style library that have to likely work in a lot.
-- Using some fast moving libraries like React and Babel (already a little out of date)
-  - Should shrinkwrap our dependencies
-  - Every two weeks, attempt to update
-
-### Coding standards
-- Airbnb styleguide for JS
+### Coding style
+- [Airbnb styleguide for JS](https://github.com/airbnb/javascript)
   - Re-add deprecation warnings on linter when upgrade react.
-- 18F styleguide for CSS
-- Should linting be part of test run or main build?
-  - Test run
-- How should linting fail? Fail only on CI, or all the time? Stop the build? Stop watching?
-  - Fail on CI
-  - Should not stop watching
-  - Should fail test runs
-- Documenting the code. probably wont' document right now
+- [18F styleguide for CSS](https://pages.18f.gov/frontend/css-coding-styleguide/)
+- Linting will be run before tests run, so will fail the tests if files are not linted.
+- Additionally, linting should always
+  - fail on CI
+  - should not stop watching commands
+  - should not fail builds
+  - should fail test runs
+- Documentation will not be a focus right now.
 
-#### Stuff that's in cg-style already
-- Browser support, IE10 and up
-- Javascript support
-  - If its easy, make it work without JS
-- Dependency management, shrinking etc
-- CSS modules and local scope
-- CSS Architecture
-  - Anything shared shoudl be in cg-style
+### Linting
+The code base includes linting configurations and tools, but is currently not fully linted. This means that there's an "opt-in" policy to linting: you decide when to add a file to linting.
+- Theres a lint ignore file, `.eslintignore` with all non-linted files.
+- If you touch another file that isn't linted yet, you should generally fix it and remove it from the lint ignore.
+  - Unless under strict time constraints.
+- No new files should be added to the lint ignore, so all new files should be linted.
 
+### Dependency management
+- The only language level dependencies should be `nodejs` and `go`.
+- front end dependencies (as in `package.json`) should be pinned to a specific version
+- front end dependencies should be shrink-wrapped with `npm`.
+- every two weeks, front end dependencies will go through an upgrade, where they are upgraded.
+
+### Code review
+- When doing code reviews, the reviewer should pull down the code and test on their local computer. This is because currently, the staging site the code gets merged into is not often use, meaning bugs could be present for long amounts of time.
+  - If a code change is very simple, or is not a code change (but maybe a document change) it doesn't need to be pulled down.
+- We can give other members of 18F the public URL to the staging site.
+
+### Device support
+- Browser support is all major browsers and Internet Explorer 10 and up.
+- Pages and views should work on different device screen-sizes, and should work as specified in design mockups.
+  - If making a feature work on mobile is time-consuming, and there isnt' an official design for the mobile view of the feature yet, the mobile view can be held off until a design becomes available.
+- Support for browsers not running javascript should be attempted if it's easy, but not a major focus
+  - Eventually the react code base will allow server-sided, isomorphic rendering for both performance and support reasons. This means code should attempt to ensure things work without it when it's not detrimental to project timeline to do so.
+- CSS in component files should opt to use CSS Modules first, and will use normal CSS class architecture after.
+- Any shared styles across cloud.gov should be put in the `cg-style` project, not `cg-deck` or others.
 
 ## Performance
-Table this for now, and if we have time
-- How do we measure performance?
-- Should certain PRs talk about performance difference?
-- Metrics?
+Adding performance tracking and metrics is currently a TODO. Here are some items in consideration:
+- What metrics should be tracked? ie: page load, speed index, custom events, number of requests, total request size, etc.
+- When should performance be measured? ie: on live staging site, locally during test runs.
+- How should performance be measured? ie: with what tools
+- What should performance budgets for decided metrics be? ie: faster then 1000 for speed index, faster then 1s for certain custom event, total request size below 2mb.
+- How should performance metrics and budgets be incorporated into workflow? Going over a budget requires re-implementation, or issue.
 - Any library added that's total file size is above 25kb should be evaluated for performance affect.
-
-### Project setup
-- Should we move it here from main README?
-  No, or either way.
 
 ## Public domain
 
