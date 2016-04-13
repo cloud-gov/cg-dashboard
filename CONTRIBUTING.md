@@ -87,6 +87,13 @@ The code base includes linting configurations and tools, but is currently not fu
 - Front end dependencies should be shrink-wrapped with `npm`.
 - Every two weeks, front end dependencies will be upgraded.
 
+#### Steps for dependency upgrades
+- React and Babel are moving very quick, so they're the largest concern
+- Remove `npm-shrinkwrap.json`
+- Use `npm update --save --saveDev` to update any devDependencies
+- Make sure it works (run linting, tests, and acceptance tests)
+- Add back the shrinkwrap with `npm shrinkwrap --dev` and check it in
+
 ### Code review
 - When doing code reviews, the reviewer should pull down the code and test on their local computer. This is because the staging site is not often used, meaning bugs could be present for long amounts of time.
   - If a code change is very simple, or is not a code change (but maybe a document change) it doesn't need to be pulled down.
