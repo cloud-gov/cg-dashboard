@@ -4,24 +4,22 @@ import React from 'react';
 
 import styles from './css/main.css';
 
-import loginActions from './actions/login_actions.js';
 import Login from './components/login.jsx';
 import LoginStore from './stores/login_store.js';
 import { Nav } from './components/navbar.jsx';
 
 function getState() {
-  return {isLoggedIn: LoginStore.isLoggedIn()};
+  return { isLoggedIn: LoginStore.isLoggedIn() };
 }
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {isLoggedIn: false};
+    this.state = { isLoggedIn: false };
     this._onChange = this._onChange.bind(this);
   }
 
   componentDidMount() {
-    this.setState(getState());
     LoginStore.addChangeListener(this._onChange);
   }
 
@@ -30,8 +28,8 @@ export default class App extends React.Component {
   }
 
   render() {
-    var content,
-        sidebar;
+    let content;
+    let sidebar;
 
     if (this.state.isLoggedIn) {
       content = this.props.children;
@@ -68,6 +66,7 @@ export default class App extends React.Component {
     </div>
     );
   }
-};
-App.propTypes = { currentOrgGuid: React.PropTypes.string };
-App.defaultProps = { currentOrgGuid: '0' };
+}
+App.propTypes = { children: React.PropTypes.element,
+  currentOrgGuid: React.PropTypes.string };
+App.defaultProps = { children: [], currentOrgGuid: '0' };

@@ -19,7 +19,7 @@ module.exports = {
 
   module: {
     loaders: [
-      { 
+      {
         test: /\.jsx?$/,
         loader: 'babel',
         exclude: [
@@ -30,10 +30,10 @@ module.exports = {
           plugins: ['transform-runtime']
         }
       },
-      { test: /\.css$/, 
+      { test: /\.css$/,
         include: path.resolve(__dirname, 'static_src/css'),
         loader: ExtractTextPlugin.extract('style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader') 
+          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader')
       },
       { test: /\.less$/,
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
@@ -42,8 +42,8 @@ module.exports = {
         include: path.resolve(__dirname, 'node_modules'),
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
       },
-      { test: /\.(woff|woff2)$/,  
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff' 
+      { test: /\.(woff|woff2)$/,
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
       },
       { test: /\.ttf$/,    loader: 'file-loader' },
       { test: /\.eot$/,    loader: 'file-loader' },

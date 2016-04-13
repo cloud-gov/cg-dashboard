@@ -1,20 +1,17 @@
 {
-    "parser": "babel-eslint",
-    "env": {
-        "browser": true,
-        "node": true
+  "extends": "airbnb",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "jsx": true
     },
-    "settings": {
-        "ecmascript": 6,
-        "jsx": true
-    },
-    "plugins": [
-        "react"
-    ],
-    "rules": {
-        "strict": 0,
-        "quotes": [2, "single"],
-        "camelcase": 0,
-        "no-underscore-dangle": 0
-    }
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "comma-dangle": [2, "never"],
+    "react/no-deprecated": 0
+  }
 }
