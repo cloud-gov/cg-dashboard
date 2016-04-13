@@ -39,11 +39,17 @@ For more information, see the high-level [cloud.gov respository](https://github.
 ### Workflow
 - Open branches off main repo due to secure travis CI env vars.
 - Add the "ready for review" label when the code is ready to be reviewed by another team member.
+  - Work-in-progress PRs are allowed. Be sure ot tag the review with "ready for review" when it's ready though.
 - As another team member, review the code and ensure it conforms to the coding standards and exit criteria
+  - PR's do not need to be assigned due to small team size
 - When it's reviewed and ready to be merged, they add the "ready for merge" label, and take off "ready for review" label.
 - The person that wrote the code, or any other person merges once it has the "ready for merge" label.
   - Updates on PRs in the repo will be posted in the #cloud-gov-frontend Slack channel
 - It's fine to merge code that isn't "feature complete". The staging branch is not currently in use, so is fine to have some work on it that still needs work.
+- 
+#### Other git standards
+- Squashing commits is allowed but discouraged, except in rare instances.
+- The team prefers rebasing over merging.
 
 ### Branches
 - Open branches off main repo due to travis CI env var problem
