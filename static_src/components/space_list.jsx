@@ -13,7 +13,7 @@ function stateSetter() {
   var currentOrgGuid = OrgStore.currentOrgGuid,
       currentOrg = OrgStore.get(currentOrgGuid);
 
-  return { 
+  return {
     currentOrg: currentOrg,
     currentOrgGuid: currentOrgGuid,
     rows: (currentOrg && currentOrg.spaces) || []
@@ -62,22 +62,22 @@ export default class SpaceList extends React.Component {
   render() {
     let rows = this.state.rows;
     for (let row of rows) {
-      row.name =  unsafe('<a href="' + this.spaceLink(row.guid) + '">' + 
+      row.name =  unsafe('<a href="' + this.spaceLink(row.guid) + '">' +
         row.name +'</a>');
     }
 
     let content = this.noneFound;
     if (rows.length) {
-      content = <SpaceList.Table data={ rows } columns={ this.columns } 
-        sortable={ true } className="table" />;
+      content = <SpaceList.Table data={ rows } columns={ this.columns }
+        sortable={ true } />;
     }
 
     return (
       <div>
-        <div className="page-header">
-          <h3 className="text-center">{ this.title }  Spaces</h3>
+        <div>
+          <h3>{ this.title }  Spaces</h3>
         </div>
-        <div className="tableWrapper"> 
+        <div className="tableWrapper">
           { content }
         </div>
       </div>

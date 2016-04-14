@@ -25,15 +25,12 @@ export default class Dropdown extends React.Component {
 
     return (
       <div className={ classes }>
-      <a id= { 'dropdown-' + this.props.title }
-            className="dropdown-toggle" role="button"
+      <a id= { 'dropdown-' + this.props.title } role="button"
             aria-haspopup="true" aria-expanded={ id }
             onClick={ this.handleTitleClick }>
           { this.props.title }
-          <span className="caret"></span>
         </a>
-        <ul className="dropdown-menu" 
-            aria-labelledby={ id }>
+        <ul aria-labelledby={ id }>
           { this.props.items.map((item) => {
             return (
               <li key={ item.key }>{ item.element }</li>
@@ -45,9 +42,8 @@ export default class Dropdown extends React.Component {
   }
 };
 
-Dropdown.propTypes = { 
+Dropdown.propTypes = {
   title: React.PropTypes.string.isRequired,
   items: React.PropTypes.any,
   classes: React.PropTypes.array
 };
-

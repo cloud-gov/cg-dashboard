@@ -59,9 +59,9 @@ export default class Users extends React.Component {
       currentTab: tab
     });
     if (tab === TAB_SPACE_NAME) {
-       userActions.fetchSpaceUsers(this.state.currentSpaceGuid); 
+       userActions.fetchSpaceUsers(this.state.currentSpaceGuid);
     } else {
-       userActions.fetchOrgUsers(this.state.currentOrgGuid); 
+       userActions.fetchOrgUsers(this.state.currentOrgGuid);
     }
     this.setState(stateSetter(this.state));
   }
@@ -77,15 +77,15 @@ export default class Users extends React.Component {
   }
 
   handleAddPermissions(roleKey, userGuid) {
-    userActions.addUserRoles(roleKey, 
-                                userGuid, 
+    userActions.addUserRoles(roleKey,
+                                userGuid,
                                 this.resourceGuid,
                                 this.resourceType);
   }
 
   handleRemovePermissions(roleKey, userGuid) {
-    userActions.deleteUserRoles(roleKey, 
-                                userGuid, 
+    userActions.deleteUserRoles(roleKey,
+                                userGuid,
                                 this.resourceGuid,
                                 this.resourceType);
   }
@@ -97,7 +97,7 @@ export default class Users extends React.Component {
   }
 
   get resourceGuid() {
-    var resourceGuid = this.state.currentTab === TAB_ORG_NAME ? 
+    var resourceGuid = this.state.currentTab === TAB_ORG_NAME ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
     return resourceGuid;
   }
@@ -128,7 +128,7 @@ export default class Users extends React.Component {
         errorMessage;
 
     if (this.state.currentTab === TAB_ORG_NAME) {
-      removeHandler = this.handleRemove;  
+      removeHandler = this.handleRemove;
     }
 
     if (this.state.error) {
@@ -141,15 +141,15 @@ export default class Users extends React.Component {
 
     return (
       <div>
-      <Tabnav items={ this.subNav } 
+      <Tabnav items={ this.subNav }
         classes={ ['test-subnav-users'] }
         initialItem={ this.state.currentTab } />
         { errorMessage }
-        <div className="tab-content">
-          <div role="tabpanel" className="tab-pane active">
-            <UserList 
-                initialUsers={ this.state.users } 
-                onRemove={ removeHandler } 
+        <div>
+          <div role="tabpanel">
+            <UserList
+                initialUsers={ this.state.users }
+                onRemove={ removeHandler }
                 onAddPermissions={ this.handleAddPermissions }
                 onRemovePermissions={ this.handleRemovePermissions }
             />

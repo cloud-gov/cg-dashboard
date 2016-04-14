@@ -69,13 +69,13 @@ export default class AppList extends React.Component {
     var content = <h4 className="test-none_message">No apps</h4>;
     // TODO format rows in table
     if (this.state.apps.length) {
-      content = <Table data={ this.getRows(this.state.apps) } 
+      content = <Table data={ this.getRows(this.state.apps) }
         columns={ this.columns }
-        sortable={ true } className="table" />;
+        sortable={ true } />;
     }
 
     return (
-      <div className="tableWrapper"> 
+      <div className="tableWrapper">
         { content }
       </div>
     );

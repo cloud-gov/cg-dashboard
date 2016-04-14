@@ -57,7 +57,7 @@ export default class ServiceInstanceList extends React.Component {
 
     if (this.state.serviceInstances.length) {
       content = (
-        <Table className="table" sortable={ true }>
+        <Table sortable={ true }>
           <Thead>
             { this.columns.map((column) => {
               return (
@@ -75,9 +75,9 @@ export default class ServiceInstanceList extends React.Component {
                   { instance.last_operation.updated_at }
                 </Td>
                 <Td column="Delete">
-                  <Button 
+                  <Button
                   classes={ ["test-delete_instance"] }
-                  onClickHandler={ this._handleDelete.bind(this, instance.guid) } 
+                  onClickHandler={ this._handleDelete.bind(this, instance.guid) }
                   label="delete">
                     <span>Delete Instance</span>
                   </Button>
@@ -90,7 +90,7 @@ export default class ServiceInstanceList extends React.Component {
     }
 
     return (
-      <div className="tableWrapper"> 
+      <div className="tableWrapper">
         { content }
       </div>
     );
@@ -101,4 +101,3 @@ ServiceInstanceList.propTypes = {
   initialOrgGuid: React.PropTypes.string,
   initialSpaceGuid: React.PropTypes.string
 };
-
