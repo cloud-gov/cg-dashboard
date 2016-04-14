@@ -1,10 +1,10 @@
 
-var path = require('path');
+const path = require('path');
 
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var srcDir = './static_src';
-var compiledDir = './static/assets';
+const srcDir = './static_src';
+const compiledDir = './static/assets';
 
 module.exports = {
   entry: [
@@ -23,7 +23,7 @@ module.exports = {
         test: /\.jsx?$/,
         loader: 'babel',
         exclude: [
-          path.resolve(__dirname, 'node_modules'),
+          path.resolve(__dirname, 'node_modules')
         ],
         query: {
           presets: ['es2015', 'react'],
@@ -61,9 +61,7 @@ module.exports = {
 
   resolve: {
     alias: {
-      'cloudgov-style': path.resolve(__dirname, 'node_modules/cloudgov-style/src/css'),
-      'bootstrap.css':  path.resolve(__dirname, 'node_modules/bootstrap/dist/css/bootstrap.css'),
-      'bootstrap.less': path.resolve(__dirname, 'node_modules/bootstrap/less/bootstrap.less')
+      'cloudgov-style': path.resolve(__dirname, 'node_modules/cloudgov-style/src/css')
     },
 
     modulesDirectories: [
