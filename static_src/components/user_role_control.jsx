@@ -22,12 +22,14 @@ export default class UserRoleControl extends React.Component {
   render() {
     return (
       <span>
-        <input type="checkbox" 
+        <input type="checkbox"
           onChange={ this._handleChange }
           name={ this.props.roleKey }
           checked={ this.state.checked }
         />
-        { this.props.roleName }
+        <label htmlFor={ this.props.roleKey }>
+          { this.props.roleName }
+        </label>
       </span>
     );
   }

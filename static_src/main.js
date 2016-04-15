@@ -1,5 +1,6 @@
 
 import 'bootstrap.css';
+import 'cloudgov-style/base.scss';
 
 import './css/main.css';
 
