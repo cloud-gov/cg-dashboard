@@ -1,6 +1,8 @@
 # 18F Cloud Foundry Deck
 
+<a href="https://zenhub.io"><img src="https://raw.githubusercontent.com/ZenHubIO/support/master/zenhub-badge.png"></a>
 [![Build Status](https://travis-ci.org/18F/cg-deck.svg?branch=master)](https://travis-ci.org/18F/cg-deck)
+
 
 
 ## Tech Stack
@@ -101,6 +103,10 @@ This project uses Travis-CI
   - `travis encrypt CONSOLE_TEST_USERNAME='<the test user account username>' --add env.global`
   - `travis encrypt CF_USERNAME='<the user account username used to deploy>' --add env.global`
   - `travis encrypt CF_PASSWORD='<the user account password used to deploy>' --add env.global`
+
+## Kanban board
+This repository uses a cardwall implemented via [ZenHub](https://zenhub.io) to track the state and priority of issues and pull requests. Install the plugin for your browser, then click [`Boards`](#boards) above to view it. Progress of cards  across the board is tied to the shared [cloud.gov Definition of Done](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md).
+
 
 ## What’s a Deck?
 
