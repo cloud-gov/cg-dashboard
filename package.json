@@ -11,8 +11,9 @@
     "build": "npm run clean && node_modules/webpack/bin/webpack.js",
     "codecov": "cat ./coverage/coverage-final.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "clean": "rm -rf ./static/assets/*",
-    "install-git": "npm install git+https://git@github.com/18F/cg-style.git#master && cd node_modules/cloudgov-style && npm install && npm run build; cd ../../",
+    "cloudgov-style": "npm install git+https://git@github.com/18F/cg-style.git#master && cd node_modules/cloudgov-style && npm install && npm run build; cd ../../",
     "lint": "eslint -c .eslintrc ./static_src",
+    "postinstall": "npm run cloudgov-style",
     "test": "npm run lint && karma start --single-run --browsers PhantomJS2",
     "watch-test": "karma start --browsers Chrome",
     "watch": "watch 'npm run build' ./static_src"

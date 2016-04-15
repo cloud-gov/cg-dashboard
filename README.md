@@ -36,9 +36,14 @@ If you are testing locally, export these variables. If you are deploying to clou
 - `PPROF_ENABLED`: An optional variable. If set to `true` or `1`, will turn on `/debug/pprof` endpoints as seen [here](https://golang.org/pkg/net/http/pprof/)
 
 ## Front end
-Install front end dependencies
+Install front end dependencies, including the `cloudgov-style` library
 ```
 npm install
+```
+
+Install and build `cloudgov-style`
+```
+npm run cloudgov-style
 ```
 
 Build the code:
@@ -115,7 +120,7 @@ All the acceptance tests are in the 'acceptance' folder.
 - `CONSOLE_TEST_ORG_NAME`: The test organization the user should be navigating to.
 - `CONSOLE_TEST_SPACE_NAME`: The test space the user should be navigating to.
 - `CONSOLE_TEST_APP_NAME`: The test app the user should be navigating to.
-- `CONSOLE_TEST_HOST`: The host that the app can create a mock route for. 
+- `CONSOLE_TEST_HOST`: The host that the app can create a mock route for.
 - `CONSOLE_TEST_DOMAIN`: The domain for the mock route.
 
 #### Running acceptance tests
@@ -151,6 +156,6 @@ From [Wikipedia](https://en.wikipedia.org/wiki/Sprawl_trilogy#Glossary):
 
 The Sprawl trilogy (also known as the Neuromancer, Cyberspace, or Matrix trilogy) is William Gibson's first set of novels, composed of Neuromancer (1984), Count Zero (1986), and Mona Lisa Overdrive (1988).
 
-**Cyberspace Deck** 
+**Cyberspace Deck**
 
 Also called a "deck" for short, it is used to access the virtual representation of the matrix. The deck is connected to a tiara-like device that operates by using electrodes to stimulate the user's brain while drowning out other external stimulation. As Case describes them, decks are basically simplified simstim units.
