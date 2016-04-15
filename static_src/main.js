@@ -6,6 +6,7 @@ import './css/main.css';
 
 import { Router } from 'director';
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import App from './app.jsx';
 import cfApi from './util/cf_api.js';
@@ -20,11 +21,11 @@ const mainEl = document.querySelector('.js-app');
 
 
 function login() {
-  React.render(<App><Login /></App>, mainEl);
+  ReactDOM.render(<App><Login /></App>, mainEl);
 }
 
 function dashboard() {
-  React.render(<App>
+  ReactDOM.render(<App>
     <h3>Welcome to CF-Deck</h3>
     <h5>Pick an organization to get started</h5>
   </App>, mainEl);
@@ -33,7 +34,7 @@ function dashboard() {
 function org(orgGuid) {
   orgActions.changeCurrentOrg(orgGuid);
   cfApi.fetchOrg(orgGuid);
-  React.render(
+  ReactDOM.render(
     <App>
       <SpaceList initialOrgGuid={ orgGuid } />
     </App>, mainEl);
@@ -48,7 +49,7 @@ function space(orgGuid, spaceGuid, potentialPage) {
   if (potentialPage === 'users') {
     cfApi.fetchOrgUserRoles(orgGuid);
   }
-  React.render(
+  ReactDOM.render(
     <App>
       <Space
         initialSpaceGuid={ spaceGuid}
@@ -64,7 +65,7 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   if (serviceGuid && servicePlanGuid) {
     serviceActions.createInstanceForm(serviceGuid, servicePlanGuid);
   }
-  React.render(
+  ReactDOM.render(
     <App>
       <Marketplace initialOrgGuid={ orgGuid } />
     </App>,
@@ -77,7 +78,7 @@ function checkAuth() {
 }
 
 function notFound() {
-  React.render(<h1>Not Found</h1>, mainEl);
+  ReactDOM.render(<h1>Not Found</h1>, mainEl);
 }
 
 const routes = {
@@ -111,4 +112,3 @@ router.configure({
   notfound: notFound
 });
 router.init('/');
-
