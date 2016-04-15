@@ -46,7 +46,7 @@ For more information, see the high-level [cloud.gov respository](https://github.
 - Any team member (code author or otherwise) can merge the code once it has the "ready for merge" label.
   - Updates on PRs in the repo will be posted in the #cloud-gov-frontend Slack channel
 - It's fine to merge code that isn't "feature complete." The staging branch is not currently in use, so is fine to have some work on it that still needs work.
--
+
 #### Other git standards
 - Squashing commits is allowed but discouraged, except in rare instances.
 - The team prefers rebasing over merging, though we use Github to close out pull requests. This means that PRs will be merged, but if you're refreshing a local branch make sure to use rebase. For example, if you want to update your `staging-alpha` branch to reflect the most recent changes on Github use `git pull --rebase origin staging-alpha`.
