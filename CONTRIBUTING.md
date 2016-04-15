@@ -7,6 +7,8 @@ Before contributing, we encourage you to read our CONTRIBUTING policy (you are h
 ## High-level roadmap
 The cloud.gov deck is currently being refactored to port the codebase from angular to unit-tested react. In doing so, it will take UI/UX cues from the  [community web ui](https://github.com/icclab/cf-webui), and merge that design with the visual [cloudgov-style](https://github.com/18F/cg-style) to create a unified cloud.gov experience. This refactor work is accumulated into the `staging-alpha` branch which will eventually be merged with `master` when it's feature complete and bug free. This means all work should be merged into the `staging-alpha` branch, unless working with the deprecated angular codebase.
 
+The work on cloud.gov front end fits into a higher level roadmap for all of cloud.gov. For now, this is in [another tool](https://18f.aha.io/products/CGP/bookmarks/project_timelines/new) only accessible by 18F personnel. Soon we will publish the information.
+
 ## Workflow
 Tracking work and progress is currently being done through [Zenhub](https://www.zenhub.io/), which adds a browser extension to add additional agile features to github. The main feature Zenhub adds is a "Boards" page which is an agile board detailing the state of work for the deck.
 
@@ -14,18 +16,12 @@ Tracking work and progress is currently being done through [Zenhub](https://www.
 - Stories or ideas for features can start in backlog or icebox.
 
 #### Criteria for moving through colums
-- For a story to move past "new" or "icebox" it should have a user value statement.
-- For a story to be past "ready" it must have a user value statement, acceptance criteria and scope of less then a few days.
-  - A value statement must have who the user is, what the value is to them and what the deliverable is.
-  - Testable acceptance criteria should be a checklist of one or more items that specify whether the work has been completed.
+The main criteria for moving a card through the columsn can be found on the main cloud.gov product repo: [cloud.gov Delivery Process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md). Some aspects that differ or extend for that process as related to cloud.gov front end:
 - For a story to be past "in progress" and in "awaiting acceptance" it should:
-  - be peer-reviewed by at least one other team member
-  - has fulfilled all acceptance criteria
   - have all new files and newly touched files linted (new files can skip linting if under tight deadline)
-  - have all previous unit tests and acceptance tests running
+  - have all previous unit tests and acceptance tests running without error
   - covered in units tests and potentially covered with acceptance/functional tests if it makes modifications to the UI.
   - is deployed on a staging site or live site so other team members can see/use it.
-- A story is put into "awaiting acceptance" when it has been merged and is available on a staging or live site.
   - ensure to not use the github "fixes" or "closes" feature as it will close an issue too early.
 - For a story to be past "awaiting acceptance" to "done" it should:
   - stakeholders see and approve the work as meeting acceptance criteria
