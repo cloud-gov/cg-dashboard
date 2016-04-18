@@ -21,7 +21,7 @@ type Service struct {
 }
 
 func (m Marketplace) FindService(serviceType string) Service {
-	var table = m.page.First(".table")
+	var table = m.page.First("table")
 	Eventually(table).Should(BeFound())
 	var rows = table.First("tbody tr")
 	Eventually(rows).Should(BeFound())
@@ -33,7 +33,7 @@ func (m Marketplace) FindService(serviceType string) Service {
 	var planList = serviceSel.FindByXPath("ancestor::tr/following-sibling::*[1]")
 	Eventually(row).Should(BeFound())
 	Eventually(planList).Should(BeFound())
-	planList = planList.Find(".table")
+	planList = planList.Find("table")
 	var service = Service{
 		m.page,
 		row,

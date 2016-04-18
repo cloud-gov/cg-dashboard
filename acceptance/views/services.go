@@ -15,7 +15,7 @@ type Services struct {
 }
 
 func (s Services) DeleteServiceInstance(instanceName string) {
-	var table = s.page.First(".table")
+	var table = s.page.First("table")
 	Eventually(table).Should(BeFound())
 	var instanceNameCell = table.FirstByXPath(
 		fmt.Sprintf("tbody/tr/td/*[.=\"%s\"]", instanceName))
