@@ -17,12 +17,12 @@ function stateSetter() {
 
   services.forEach(function(service) {
     var plan = ServicePlanStore.getAllFromService(service.guid);
-    service.servicePlans = plan; 
+    service.servicePlans = plan;
   });
 
   return {
     services: services,
-    createInstanceForm: ServiceInstanceStore.createInstanceForm 
+    createInstanceForm: ServiceInstanceStore.createInstanceForm
   };
 }
 
@@ -61,8 +61,8 @@ export default class Marketplace extends React.Component {
 
     return (
       <div>
-        <div className="page-header">
-          <h3 className="text-center">Marketplace</h3>
+        <div>
+          <h3>Marketplace</h3>
         </div>
         <ServiceList initialServices={ this.state.services } />
         { form }

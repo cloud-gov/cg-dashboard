@@ -20,7 +20,7 @@ export default class Button extends React.Component {
   }
 
   render() {
-    var classes = classNames('btn', 'btn-default', ...this.props.classes);
+    var classes = classNames(...this.props.classes);
     return (
       <button type="button" className={ classes }
           aria-label={ this.props.label } onClick={ this._handleClick }>

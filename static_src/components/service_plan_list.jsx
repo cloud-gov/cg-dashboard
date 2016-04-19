@@ -71,11 +71,11 @@ export default class ServicePlanList extends React.Component {
     var content = <h4 className="test-none_message">No service plans</h4>;
     if (this.state.servicePlans.length) {
       content = (
-      <Table sortable={ true } className="table">
+      <Table sortable={ true }>
         <Thead>
           { this.columns.map((column) => {
             return (
-              <Th column={ column.label } className={ column.key } 
+              <Th column={ column.label } className={ column.key }
                   key={ column.key }>
                 { column.label }</Th>
             )
@@ -90,14 +90,14 @@ export default class ServicePlanList extends React.Component {
               <Td column={ this.columns[2].label }>{ plan.updated_at }</Td>
               <Td column={ this.columns[3].label }>
                 <span>
-                  ${ (plan.extra && plan.extra.costs && 
+                  ${ (plan.extra && plan.extra.costs &&
                       plan.extra.costs[0].amount.usd || 0).toFixed(2) } monthly
                 </span>
               </Td>
               <Td column={ this.columns[4].label }>
-                <Button 
+                <Button
                   classes={ ["test-create_service_instance"] }
-                  onClickHandler={ this._handleAdd.bind(this, plan.guid) } 
+                  onClickHandler={ this._handleAdd.bind(this, plan.guid) }
                   label="create">
                     <span>Create service instance</span>
                 </Button>
@@ -110,7 +110,7 @@ export default class ServicePlanList extends React.Component {
     }
 
     return (
-    <div className="tableWrapper"> 
+    <div className="tableWrapper">
       { content }
     </div>
     );

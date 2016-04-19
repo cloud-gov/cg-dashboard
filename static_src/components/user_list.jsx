@@ -44,7 +44,7 @@ export default class UserList extends React.Component {
     var content = <h4 className="test-none_message">No users</h4>;
     if (this.state.users.length) {
       content = (
-      <table sortable={ true } className="table">
+      <table sortable={ true }>
         <thead>
           { this.columns.map((column) => {
             return (
@@ -60,14 +60,14 @@ export default class UserList extends React.Component {
           if (this.props.onRemove) {
             actions = (
               <td column="Actions">
-                <Button 
-                onClickHandler={ this._handleDelete.bind(this, user.guid) } 
+                <Button
+                onClickHandler={ this._handleDelete.bind(this, user.guid) }
                 label="delete">
                   <span>Remove User From Org</span>
                 </Button>
                 </td>
             );
-          } 
+          }
           return ([
             <tr key={ user.guid }>
               <td column="Name"><span>{ user.username }</span></td>
@@ -76,10 +76,10 @@ export default class UserList extends React.Component {
             </tr>,
             <tr key={ user.guid + '-role' }>
               <td colSpan="2">
-                <UserRoleListControl 
+                <UserRoleListControl
                   onAddPermissions={ this.props.onAddPermissions }
                   onRemovePermissions={ this.props.onRemovePermissions }
-                  user={ user } 
+                  user={ user }
                 />
               </td>
             </tr>
@@ -91,7 +91,7 @@ export default class UserList extends React.Component {
     }
 
     return (
-    <div className="tableWrapper"> 
+    <div className="tableWrapper">
       { content }
     </div>
     );

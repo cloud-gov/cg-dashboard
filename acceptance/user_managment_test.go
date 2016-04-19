@@ -74,8 +74,8 @@ var _ = Describe("UserManagement", func() {
 		})
 
 		By("seeing a user list for spaces on the first page by default", func() {
-			Eventually(page.First(".table")).Should(BeFound())
-			Eventually(page.First(".table tbody tr")).Should(BeFound())
+			Eventually(page.First("table")).Should(BeFound())
+			Eventually(page.First("table tbody tr")).Should(BeFound())
 		})
 	})
 
@@ -93,7 +93,7 @@ var _ = Describe("UserManagement", func() {
 		})
 
 		By("seeing a user list for the whole org", func() {
-			var table = page.First(".table")
+			var table = page.First("table")
 			Eventually(table).Should(BeFound())
 			var rows = table.First("tbody tr")
 			Eventually(rows).Should(BeFound())
@@ -110,7 +110,7 @@ var _ = Describe("UserManagement", func() {
 		})
 
 		By("seeing a user list for the whole org", func() {
-			var table = page.First(".table")
+			var table = page.First("table")
 			Eventually(table).Should(BeFound())
 			var row = table.First("tbody tr")
 			Eventually(row).Should(BeFound())

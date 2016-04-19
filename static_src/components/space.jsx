@@ -69,12 +69,12 @@ export default class Space extends React.Component {
 
     return (
       <div>
-        <div className="page-header">
-          <h3 className="text-center">{ this.state.spaceName } Space</h3>
+        <div>
+          <h3>{ this.state.spaceName } Space</h3>
         </div>
         { tabNav }
-        <div className="tab-content">
-          <div role="tabpanel" className="tab-pane active">
+        <div>
+          <div role="tabpanel">
             <Content
               initialOrgGuid={ this.state.currentOrgGuid }
               initialSpaceGuid={ this.state.currentSpaceGuid }

@@ -27,7 +27,7 @@ NavLink.propTypes = {
   name: React.PropTypes.string,
   onClick: React.PropTypes.func
 };
-NavLink.defaultProps = { 
+NavLink.defaultProps = {
   name: '',
   onClick: function() { }
 };
@@ -39,11 +39,11 @@ export class NavList extends React.Component {
   }
 
   render() {
-    var classes = classNames('nav', styles.sidebar);
+    var classes = classNames(styles.sidebar);
 
     return (
       <ul className={ classes }>
-        { this.props.children } 
+        { this.props.children }
       </ul>
     );
   }
@@ -107,7 +107,7 @@ export class Nav extends React.Component {
             <NavList>
               { this.props.subLinks.map((sub) => {
                 return (
-                  <NavLink 
+                  <NavLink
                     href={ this.orgSubHref(org, sub.link) }
                     name={ sub.name } />
                 )

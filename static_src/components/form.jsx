@@ -8,7 +8,7 @@ import classNames from 'classnames';
 var currid = 0;
 
 function nextId() {
-  currid += 1; 
+  currid += 1;
   return currid;
 }
 
@@ -128,7 +128,7 @@ export class FormElement extends React.Component {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
   }
-  
+
   componentWillMount() {
     this.props.attachToForm && this.props.attachToForm(this);
   }
@@ -181,7 +181,7 @@ export class FormError extends React.Component {
   }
 
   render() {
-    return <p className="alert alert-danger">{ this.props.message }</p>;
+    return <p>{ this.props.message }</p>;
   }
 }
 FormError.propTypes = { message: React.PropTypes.string };
@@ -199,7 +199,7 @@ export class FormText extends FormElement {
   }
 
   _handleChange(ev) {
-    this.setState({value: ev.target.value}); 
+    this.setState({value: ev.target.value});
   }
 
   render() {
@@ -210,7 +210,7 @@ export class FormText extends FormElement {
       error = <FormError message={ this.state.err.message } />
     }
     return (
-      <div className="form-group">
+      <div>
         { error }
         <label htmlFor={ this.key }>{ this.props.label }</label>
         <input type="text" id={ this.key } value={ this.state.value }
@@ -237,18 +237,18 @@ export class FormSelect extends FormElement {
 
   render() {
     var error;
-    var classes = classNames('form-control', ...this.props.classes);
+    var classes = classNames(...this.props.classes);
 
     if (this.state.err) {
       error = <FormError message={ this.state.err.message } />
     }
     return (
-      <div className="form-group">
+      <div>
         { error }
         <label htmlFor={ this.key }>{ this.props.label }</label>
-        <select 
+        <select
             className={ classes }
-            name={ this.key } 
+            name={ this.key }
             id={ this.key }
             onChange={ this._handleChange }
             value={ this.state.value }>
@@ -257,7 +257,7 @@ export class FormSelect extends FormElement {
           </option>
           { this.props.options.map((option, i) => {
             return (
-              <option 
+              <option
                   value={ option.value }
                   key={ this.key + '-' + i }>
                 { option.label }

@@ -46,7 +46,7 @@ export default class ServiceList extends React.Component {
     var content = <h4 className="test-none_message">No services</h4>;
     if (this.state.services.length) {
       content = (
-      <table className="table">
+      <table>
         <thead>
           { this.columns.map((column) => {
             return (
@@ -80,7 +80,7 @@ export default class ServiceList extends React.Component {
     }
 
     return (
-    <div className="tableWrapper"> 
+    <div className="tableWrapper">
       { content }
     </div>
     );
