@@ -1,6 +1,5 @@
 
-import 'cloudgov-style/base.scss';
-
+import 'cloudgov-style/base.css';
 import './css/main.css';
 
 import { Router } from 'director';

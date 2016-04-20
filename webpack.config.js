@@ -3,13 +3,15 @@ const path = require('path');
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+const CG_STYLE_PATH = process.env.CG_STYLE_PATH;
+
 const srcDir = './static_src';
 const compiledDir = './static/assets';
 
 module.exports = {
   entry: [
     'babel-polyfill',
-    srcDir + '/main.js'
+    `${srcDir}/main.js`
   ],
 
   output: {
@@ -30,20 +32,15 @@ module.exports = {
           plugins: ['transform-runtime']
         }
       },
-      { test: /\.css$/,
-        include: path.resolve(__dirname, 'static_src/css'),
+      {
+        test: /\.css$/,
+        include: [
+          path.resolve(__dirname, 'static_src/css'),
+          path.resolve(__dirname, 'node_modules/cloudgov-style'),
+          CG_STYLE_PATH || ''
+        ],
         loader: ExtractTextPlugin.extract('style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader')
-      },
-      { test: /\.less$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
-      },
-      { test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass?sourceMap')
-      },
-      { test: /\.css$/,
-        include: path.resolve(__dirname, 'node_modules'),
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
+          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]')
       },
       {
         test: /\.(svg|png|jpe?g)$/,
@@ -55,19 +52,12 @@ module.exports = {
     ]
   },
 
-  sassLoader: {
-    data: '$static-font-path: \'../../font\'; $static-img-path: \'../../img\';'
-  },
-
   resolve: {
     alias: {
-      'cloudgov-style': path.resolve(__dirname, 'node_modules/cloudgov-style/src/css')
+      'cloudgov-style': 'cloudgov-style/css'
     },
 
-    modulesDirectories: [
-      'node_modules',
-      'components'
-    ]
+    modulesDirectories: ['node_modules']
   },
 
   resolveLoader: {
