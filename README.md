@@ -34,6 +34,7 @@ If you are testing locally, export these variables. If you are deploying to clou
 - `CONSOLE_API_URL`: The URL of the API service. i.e. `http://api.domain.com`
 - `CONSOLE_LOG_URL`: The URL of the loggregator service. i.e. `http://loggregator.domain.com`
 - `PPROF_ENABLED`: An optional variable. If set to `true` or `1`, will turn on `/debug/pprof` endpoints as seen [here](https://golang.org/pkg/net/http/pprof/)
+- `CG_STYLE_PATH`: The absolute path to your `cg-style` repo. Used for webpack in development
 
 ## Front end
 Install front end dependencies, including the `cloudgov-style` library
