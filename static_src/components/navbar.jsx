@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import styles from '../css/components/navbar.css';
+import cgStyles from 'cloudgov-style/components/sidenav.css';
 
 import Dropdown from '../components/dropdown.jsx';
 import orgActions from '../actions/org_actions.js';
@@ -16,7 +17,7 @@ export class NavLink extends React.Component {
 
   render() {
     return (
-      <li className={ styles.sublink }>
+      <li className={ styles['sub-menu'] }>
         <a href={ this.props.href }>{ this.props.name }</a>
       </li>
     );
@@ -39,7 +40,8 @@ export class NavList extends React.Component {
   }
 
   render() {
-    var classes = classNames(styles.sidebar);
+    var classes = classNames(cgStyles.sidenav, cgStyles['sidenav-list'],
+    cgStyles['sidenav-level-one']);
 
     return (
       <ul className={ classes }>
