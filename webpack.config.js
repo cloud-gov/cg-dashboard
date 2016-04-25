@@ -48,13 +48,13 @@ module.exports = {
       },
       { test: /\.(ttf|woff2?|eot)$/,
         loader: 'url-loader?limit=1024&name=font/[name].[ext]'
-      }
+      },
     ]
   },
 
   resolve: {
     alias: {
-      'cloudgov-style': 'cloudgov-style/css'
+      'cloudgov-style': 'cloudgov-style'
     },
 
     modulesDirectories: ['node_modules']
