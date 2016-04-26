@@ -61,8 +61,6 @@
     "sass-loader": "^3.2.0",
     "scss-loader": "0.0.1",
     "style-loader": "^0.13.0",
-    "svgo": "^0.6.6",
-    "svgo-loader": "^1.1.0",
     "url-loader": "^0.5.7",
     "watch": "^0.16.0",
     "webpack": "^1.12.9"

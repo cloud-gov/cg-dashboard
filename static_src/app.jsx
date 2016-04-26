@@ -46,7 +46,7 @@ export default class App extends React.Component {
     return (
     <div>
       { /* TODO use a separate navbar component for this. */ }
-      <Icon name="i-download" />
+      <Icon name="download" />
       <nav className="navbar navbar-inverse navbar-fixed-top">
         <div className="container-fluid">
           <a className="navbar-brand" href="#/dashboard">

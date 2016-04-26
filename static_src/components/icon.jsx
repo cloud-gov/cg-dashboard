@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import IconDownload from '-!babel!svg-react!svgo-loader?{"plugins":[{"removeStyleElement":true}]}!cloudgov-style/img/i-download.svg?name=IconDownload';
+import styles from 'cloudgov-style/css/components/icon.css';
 
 export default class Icon extends React.Component {
   constructor(props) {
@@ -11,12 +11,30 @@ export default class Icon extends React.Component {
   }
 
   getImagePath(iconName) {
-    return `cloudgov-style/img/i-${iconName}.svg`;
+    var img = require('cloudgov-style/img/cloudgov-sprite.svg');
+    return `assets/${img}#i-${iconName}.svg`;
   }
 
   render() {
+    var iconClasses = classNames(styles.icon,
+        styles[`icon-${ this.props.styleType }`]);
+
     return (
-      <IconDownload />
+      <div className={ styles['icon-container'] }>
+        <svg className={ iconClasses }>
+          <use
+            xlinkHref={ this.getImagePath(this.props.name) }>
+          </use>
+        </svg>
+      </div>
     );
   }
+}
+
+Icon.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  styleType: React.PropTypes.string
+}
+Icon.defaultProps = {
+  styleType: 'alt'
 }
