@@ -8,8 +8,6 @@ import Login from './components/login.jsx';
 import LoginStore from './stores/login_store.js';
 import { Nav } from './components/navbar.jsx';
 
-import Icon from './components/icon.jsx';
-
 function getState() {
   return { isLoggedIn: LoginStore.isLoggedIn() };
 }
@@ -46,7 +44,6 @@ export default class App extends React.Component {
     return (
     <div>
       { /* TODO use a separate navbar component for this. */ }
-      <Icon name="download" />
       <nav className="navbar navbar-inverse navbar-fixed-top">
         <div className="container-fluid">
           <a className="navbar-brand" href="#/dashboard">
