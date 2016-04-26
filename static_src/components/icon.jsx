@@ -12,7 +12,7 @@ export default class Icon extends React.Component {
 
   getImagePath(iconName) {
     var img = require('cloudgov-style/img/cloudgov-sprite.svg');
-    return `assets/${img}#i-${iconName}.svg`;
+    return `assets/${img}#i-${iconName}`;
   }
 
   render() {
