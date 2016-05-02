@@ -6,7 +6,8 @@ import { Router } from 'director';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import App from './app.jsx';
+import AppPage from './app_page.jsx';
+import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
 import Login from './components/login.jsx';
 import Marketplace from './components/marketplace.jsx';
@@ -58,9 +59,10 @@ function space(orgGuid, spaceGuid, potentialPage) {
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
+  appActions.fetch(appGuid);
   ReactDOM.render(
     <App>
-      <App
+      <AppPage
         initialSpaceGuid={ spaceGuid}
         initialOrgGuid={ orgGuid }
         initialAppGuid={ appGuid }
