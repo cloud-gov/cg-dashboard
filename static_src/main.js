@@ -57,6 +57,17 @@ function space(orgGuid, spaceGuid, potentialPage) {
     </App>, mainEl);
 }
 
+function app(orgGuid, spaceGuid, appGuid) {
+  ReactDOM.render(
+    <App>
+      <App
+        initialSpaceGuid={ spaceGuid}
+        initialOrgGuid={ orgGuid }
+        initialAppGuid={ appGuid }
+      />
+    </App>, mainEl);
+}
+
 function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   cfApi.fetchOrg(orgGuid);
   cfApi.fetchAllServices(orgGuid);
@@ -89,6 +100,11 @@ const routes = {
         '/:spaceGuid': {
           '/:page': {
             on: space
+          },
+          '/app': {
+            '/:appGuid': {
+              on: app
+            }
           },
           on: space
         }
