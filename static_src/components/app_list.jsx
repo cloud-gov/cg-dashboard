@@ -34,6 +34,10 @@ export default class AppList extends React.Component {
     this.setState(stateSetter(nextProps));
   }
 
+  componentWillUnmount() {
+    SpaceStore.removeChangeListener(this._onChange);
+  }
+
   _onChange() {
     this.setState(stateSetter(this.props));
   }
@@ -45,13 +49,10 @@ export default class AppList extends React.Component {
   }
 
   getRows(apps) {
-    var rows = [];
-    for (let app of apps) {
-      let row = app;
-      row.name = unsafe(`<a href="${ this.appUrl(app) }">${ app.name }</a>`);
-      rows.push(row);
-    }
-    return rows;
+    return apps.map((app) => {
+      const name = unsafe(`<a href="${this.appUrl(app)}">${app.name}</a>`);
+      return Object.assign(app, { name });
+    });
   }
 
   get columns() {
