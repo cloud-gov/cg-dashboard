@@ -46,6 +46,20 @@ export default {
       type: orgActionTypes.ORGS_RECEIVED,
       orgs: orgs
     });
+  },
+
+  receivedOrgsSummaries(orgs) {
+    AppDispatcher.handleServerAction({
+      type: orgActionTypes.ORGS_SUMMARIES_RECEIVED,
+      orgs: orgs
+    });
+  },
+
+  toggleSpaceMenu(orgGuid) {
+    AppDispatcher.handleUIAction({
+      type: orgActionTypes.ORG_TOGGLE_SPACE_MENU,
+      orgGuid: orgGuid
+    });
   }
 
 };

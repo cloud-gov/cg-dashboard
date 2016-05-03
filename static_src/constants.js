@@ -23,8 +23,12 @@ var orgActionTypes = keymirror({
   ORGS_FETCH: null,
   // Action when all organizations are received from the server.
   ORGS_RECEIVED: null,
-  // Action when when organization is received from the server.
-  ORG_RECEIVED: null
+  // Action when organization is received from the server.
+  ORG_RECEIVED: null,
+  // Action when all organization summaries are received from the server.
+  ORGS_SUMMARIES_RECEIVED: null,
+  // Action when user toggles a space submenu in the sidenav
+  ORG_TOGGLE_SPACE_MENU: null,
 });
 
 var spaceActionTypes = keymirror({
@@ -49,7 +53,7 @@ var serviceActionTypes = keymirror({
   SERVICE_INSTANCE_DELETED: null,
   // Action to fetch a all service instances from the server.
   SERVICE_INSTANCES_FETCH: null,
-  // Action when all service instances were received from the server. 
+  // Action when all service instances were received from the server.
   SERVICE_INSTANCES_RECEIVED: null,
   // Action to open UI to create a service instance.
   SERVICE_INSTANCE_CREATE_FORM: null,
