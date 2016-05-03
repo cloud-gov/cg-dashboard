@@ -2,7 +2,6 @@
 import React from 'react';
 import Reactable from 'reactable';
 
-import orgActions from '../actions/org_actions';
 import AppDispatcher from '../dispatcher';
 import OrgStore from '../stores/org_store';
 
@@ -14,9 +13,9 @@ function stateSetter() {
       currentOrg = OrgStore.get(currentOrgGuid);
 
   return {
-    currentOrg: currentOrg,
-    currentOrgGuid: currentOrgGuid,
-    rows: (currentOrg && currentOrg.spaces) || []
+    currentOrg,
+    currentOrgGuid,
+    rows: (currentOrg) ? currentOrg.spaces : []
   };
 }
 
@@ -32,6 +31,10 @@ export default class SpaceList extends React.Component {
   componentDidMount() {
     OrgStore.addChangeListener(this._onChange);
     this.setState(stateSetter());
+  }
+
+  componentWillUnmount() {
+    OrgStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
@@ -56,20 +59,20 @@ export default class SpaceList extends React.Component {
   }
 
   spaceLink(spaceGuid) {
-    return `/#/org/${ this.state.currentOrgGuid }/spaces/${ spaceGuid }`;
+    return `/#/org/${this.state.currentOrgGuid}/spaces/${spaceGuid}`;
   }
 
   render() {
-    let rows = this.state.rows;
-    for (let row of rows) {
-      row.name =  unsafe('<a href="' + this.spaceLink(row.guid) + '">' +
-        row.name +'</a>');
-    }
+    let rows = this.state.rows.map((row) => {
+      const name = unsafe(`<a href=${this.spaceLink(row.guid)}>${row.name}</a>`);
+      return Object.assign({}, row, { name });
+    });
 
     let content = this.noneFound;
     if (rows.length) {
-      content = <SpaceList.Table data={ rows } columns={ this.columns }
-        sortable={ true } />;
+      content = (
+        <SpaceList.Table data={ rows } columns={ this.columns } sortable />
+      );
     }
 
     return (
@@ -87,4 +90,4 @@ export default class SpaceList extends React.Component {
 SpaceList.Table = Table;
 SpaceList.propTypes = {
   initialOrgGuid: React.PropTypes.string.isRequired
-}
+};
