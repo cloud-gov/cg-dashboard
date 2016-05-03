@@ -48,6 +48,10 @@ export default {
       res.data.entity);
   },
 
+  fetchOrgSummary(guid) {
+    return this.fetchOrgDetails(guid);
+  },
+
   fetchOrgDetails(guid) {
     return http.get(`${APIV}/organizations/${guid}/summary`)
         .then((res) => res.data);
@@ -88,6 +92,14 @@ export default {
     return http.get(`${APIV}/organizations`).done((res) => {
       orgActions.receivedOrgs(res.data.resources);
     }, (err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
+  fetchOrgsSummaries(guids) {
+    return Promise.all(guids.map((guid) => this.fetchOrgSummary(guid)))
+    .then((res) => orgActions.receivedOrgsSummaries(res))
+    .catch((err) => {
       errorActions.errorFetch(err);
     });
   },
