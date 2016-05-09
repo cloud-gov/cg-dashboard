@@ -49,7 +49,7 @@ func (n Nav) ClickOrgSpaces(orgName string) Spaces {
 	var orgNav = n.ClickOrg(orgName)
 	var currentNavList = orgNav.base.FindByXPath("ancestor::ul")
 
-	var spacesLink = currentNavList.FindByLink("Spaces")
+	var spacesLink = currentNavList.FirstByLink("Spaces")
 
 	Eventually(spacesLink).Should(BeFound())
 	Eventually(Expect(spacesLink.Click()).To(Succeed()))
@@ -59,7 +59,7 @@ func (n Nav) ClickOrgSpaces(orgName string) Spaces {
 func (n Nav) ClickOrgMarketplace(orgName string) Marketplace {
 	var orgNav = n.ClickOrg(orgName)
 	var currentNavList = orgNav.base.FindByXPath("ancestor::ul")
-	var marketplaceLink = currentNavList.FindByLink("Marketplace")
+	var marketplaceLink = currentNavList.FirstByLink("Marketplace")
 
 	Eventually(marketplaceLink).Should(BeFound())
 	Expect(marketplaceLink.Click()).To(Succeed())
