@@ -2,8 +2,8 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import cgBaseStyles from 'cloudgov-style/base.css';
-import cgSidenavStyles from 'cloudgov-style/components/sidenav.css';
+import cgBaseStyles from 'cloudgov-style/css/base.css';
+import cgSidenavStyles from 'cloudgov-style/css/components/sidenav.css';
 
 import orgActions from '../actions/org_actions.js';
 import OrgStore from '../stores/org_store.js';
