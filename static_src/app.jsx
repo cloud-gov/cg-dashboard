@@ -67,6 +67,8 @@ export default class App extends React.Component {
     );
   }
 }
-App.propTypes = { children: React.PropTypes.element,
-  currentOrgGuid: React.PropTypes.string };
+App.propTypes = {
+  children: React.PropTypes.array,
+  currentOrgGuid: React.PropTypes.string
+};
 App.defaultProps = { children: [], currentOrgGuid: '0' };

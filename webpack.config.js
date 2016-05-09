@@ -54,7 +54,7 @@ module.exports = {
 
   resolve: {
     alias: {
-      'cloudgov-style': 'cloudgov-style/css'
+      'cloudgov-style': 'cloudgov-style'
     },
 
     modulesDirectories: ['node_modules']
