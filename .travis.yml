@@ -15,7 +15,6 @@ install:
 script:
 - npm test
 - "./codecheck.sh -u"
-- go test ./...
 - acceptance/scripts/run_test.sh -a
 branches:
   only:
@@ -52,7 +51,6 @@ deploy:
   on:
     branch:
     - master
-    - production
     - staging-alpha
 env:
   global:

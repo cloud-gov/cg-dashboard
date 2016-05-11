@@ -1,5 +1,5 @@
 ---
-buildpack: https://github.com/ddollar/heroku-buildpack-multi.git
+buildpack: https://github.com/cloudfoundry/go-buildpack.git#v1.7.8
 domain: cloud.gov
 env:
   CONSOLE_CLIENT_ID: CLIENT_ID
@@ -8,3 +8,6 @@ env:
   CONSOLE_UAA_URL: https://uaa.cloud.gov/
   CONSOLE_API_URL: https://api.cloud.gov/
   CONSOLE_LOG_URL: https://loggregator.cloud.gov/
+  GOVERSION: go1.6.2
+  GOPACKAGENAME: github.com/18F/cg-deck
+  GO15VENDOREXPERIMENT: 1
