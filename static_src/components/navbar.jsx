@@ -4,7 +4,6 @@ import React from 'react';
 
 import styles from '../css/components/navbar.css';
 
-import Dropdown from '../components/dropdown.jsx';
 import orgActions from '../actions/org_actions.js';
 import OrgStore from '../stores/org_store.js';
 
