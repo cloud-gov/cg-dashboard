@@ -58,8 +58,11 @@ export default class App extends React.Component {
       </nav>
       <div className={ titleBarStyles['title_bar'] }>
         <div className="nav_toggle">
-          <i className="fa fa-bars nav_toggle-icon"></i>
-          <div className="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom">
+          <i className="nav_toggle-icon"></i>
+          <div className="icon-reorder tooltips"
+            data-original-title="Toggle Navigation"
+            data-placement="bottom"
+          >
           </div>
         </div>
         <h1 className={ titleBarStyles['title_bar-title'] }>Organizations</h1>
