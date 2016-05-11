@@ -43,6 +43,12 @@ export default class Marketplace extends React.Component {
     ServiceInstanceStore.addChangeListener(this._onChange);
   }
 
+  componentWillUnmount() {
+    ServiceStore.removeChangeListener(this._onChange);
+    ServicePlanStore.removeChangeListener(this._onChange);
+    ServiceInstanceStore.removeChangeListener(this._onChange);
+  }
+
   _onChange() {
     this.setState(stateSetter());
   }

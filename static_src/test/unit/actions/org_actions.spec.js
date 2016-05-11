@@ -1,7 +1,7 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import { assertAction, setupViewSpy, setupServerSpy } from '../helpers.js';
+import { assertAction, setupUISpy, setupViewSpy, setupServerSpy } from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import orgActions from '../../../actions/org_actions.js';
 import { orgActionTypes } from '../../../constants.js';
@@ -73,6 +73,17 @@ describe('orgActions', () => {
       orgActions.changeCurrentOrg(expected);
 
       assertAction(spy, orgActionTypes.ORG_CHANGE_CURRENT, expectedParams);
+    });
+  });
+
+  describe('changeCurrentOrg()', function() {
+    it('should send a space menu toggle UI action', function() {
+      let expected = 'asdlfka';
+      let spy = setupUISpy(sandbox)
+
+      orgActions.toggleSpaceMenu(expected);
+      
+      assertAction(spy, orgActionTypes.ORG_TOGGLE_SPACE_MENU);
     });
   });
 });

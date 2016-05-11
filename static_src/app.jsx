@@ -2,7 +2,9 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import styles from './css/main.css';
+import cgBaseStyles from 'cloudgov-style/css/base.css';
+import sidenavStyles from 'cloudgov-style/css/components/sidenav.css';
+import titleBarStyles from 'cloudgov-style/css/components/title_bar.css';
 
 import Login from './components/login.jsx';
 import LoginStore from './stores/login_store.js';
@@ -23,6 +25,10 @@ export default class App extends React.Component {
     LoginStore.addChangeListener(this._onChange);
   }
 
+  componentWillUnmount() {
+    LoginStore.removeChangeListener(this._onChange);
+  }
+
   _onChange() {
     this.setState(getState());
   }
@@ -38,9 +44,6 @@ export default class App extends React.Component {
       content = <Login />;
     }
 
-    let sidebarClasses = classNames('col-sm-3', 'col-md-2', styles.sidebar);
-    let mainClasses = classNames('col-sm-9', 'col-sm-offset-3', 'col-md-10',
-                                 'col-md-offset-2', styles.main);
     return (
     <div>
       { /* TODO use a separate navbar component for this. */ }
@@ -53,22 +56,32 @@ export default class App extends React.Component {
           </a>
         </div>
       </nav>
-      <div className="container-fluid">
-        <div className="row">
-          <nav className={ sidebarClasses }>
-            { sidebar }
-          </nav>
-          <main className={ mainClasses }>
-            { content }
-          </main>
+      <div className={ titleBarStyles['title_bar'] }>
+        <div className="nav_toggle">
+          <i className="nav_toggle-icon"></i>
+          <div className="icon-reorder tooltips"
+            data-original-title="Toggle Navigation"
+            data-placement="bottom"
+          >
+          </div>
         </div>
+        <h1 className={ titleBarStyles['title_bar-title'] }>Organizations</h1>
+      </div>
+      <div className={ sidenavStyles['sidenav-parent'] }>
+        <nav className={ sidenavStyles.sidenav }>
+          { sidebar }
+        </nav>
+        <main className={ classNames(sidenavStyles['sidenav-main'], cgBaseStyles['usa-content'])}>
+          { content }
+        </main>
       </div>
     </div>
     );
   }
 }
 App.propTypes = {
-  children: React.PropTypes.array,
+  children: React.PropTypes.element,
   currentOrgGuid: React.PropTypes.string
 };
+
 App.defaultProps = { children: [], currentOrgGuid: '0' };

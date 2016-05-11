@@ -39,7 +39,7 @@ class OrgStore extends BaseStore {
         if (action.org) {
           var toUpdate = this.get(action.org.guid);
           if (toUpdate) {
-            toUpdate = Object.assign(toUpdate, action.org); 
+            toUpdate = Object.assign(toUpdate, action.org);
           } else {
             this._data.push(action.org);
           }
@@ -49,7 +49,24 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORGS_RECEIVED:
         var updates = this.formatSplitResponse(action.orgs);
-        this._data = this._merge(this._data, updates);
+        cfApi.fetchOrgsSummaries(updates.map((u) => { return u.guid; }));
+        this._data = this._merge(this._data, updates).map((d) => {
+          if (d.spaces) {
+            return d;
+          }
+          return Object.assign(d, { spaces: []});
+        });
+        this.emitChange();
+        break;
+
+      case orgActionTypes.ORGS_SUMMARIES_RECEIVED:
+        this._data = action.orgs.map((summary) => {
+          let same = this._data.find((d) => {
+            return d.guid === summary.guid;
+          });
+          if (!same) return;
+          return Object.assign(same, { 'spaces': summary.spaces });
+        });
         this.emitChange();
         break;
 
@@ -59,6 +76,15 @@ class OrgStore extends BaseStore {
         if (org) {
           this.emitChange();
         }
+        break;
+
+      case orgActionTypes.ORG_TOGGLE_SPACE_MENU:
+        let org = this._data.find((i) => {
+          return i.guid === action.orgGuid;
+        });
+        let open = org.space_menu_open || false;
+        Object.assign(org, { space_menu_open: !open })
+        this.emitChange();
         break;
 
       default:

@@ -62,9 +62,9 @@ describe('OrgStore', () => {
 
       expect(spy).toHaveBeenCalledOnce();
     });
-    
+
     it('should merge data with existing orgs', () => {
-      var updates = wrapInRes([{guid: 'aaa1', name: 'sue'}, 
+      var updates = wrapInRes([{guid: 'aaa1', name: 'sue'},
             {guid: 'aaa2', name: 'see'}]),
           current = [{guid: 'aaa1', memory: 1024}];
 
@@ -149,6 +149,22 @@ describe('OrgStore', () => {
       });
 
       expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on a space menu toggle', function() {
+    it('should toggle space_menu_open on the correct org', function() {
+      var spy = sandbox.spy(OrgStore, 'emitChange');
+      var expected = { guid: 'sdsf' };
+      OrgStore._data.push(expected);
+
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORG_TOGGLE_SPACE_MENU,
+        orgGuid: expected.guid
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(OrgStore._data[0].space_menu_open).toEqual(true);
     });
   });
 });

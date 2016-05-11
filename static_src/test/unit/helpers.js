@@ -27,6 +27,10 @@ export function assertAction(spy, type, params) {
   }
 }
 
+export function setupUISpy(sandbox) {
+  return sandbox.stub(AppDispatcher, 'handleUIAction');
+}
+
 export function setupViewSpy(sandbox) {
   return sandbox.stub(AppDispatcher, 'handleViewAction');
 }
@@ -34,4 +38,3 @@ export function setupViewSpy(sandbox) {
 export function setupServerSpy(sandbox) {
   return sandbox.stub(AppDispatcher, 'handleServerAction');
 }
-

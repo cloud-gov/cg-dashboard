@@ -80,7 +80,7 @@ var _ = Describe("Services", func() {
 		})
 	})
 
-	It("should allow an org manager to create a service instance", func() {
+	XIt("should allow an org manager to create a service instance", func() {
 		var service Service
 
 		By("allowing the user to click on the org marketplace in navigation", func() {
@@ -101,7 +101,7 @@ var _ = Describe("Services", func() {
 		})
 	})
 
-	It("should allow a user to delete a service instance", func() {
+	XIt("should allow a user to delete a service instance", func() {
 		var spaces Spaces
 
 		By("allowing the manager to navigate to the org spaces in the navigation", func() {
