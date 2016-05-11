@@ -1,6 +1,6 @@
 
 import 'cloudgov-style/css/base.css';
-import './css/main.css';
+// import './css/main.css';
 
 import { Router } from 'director';
 import React from 'react';

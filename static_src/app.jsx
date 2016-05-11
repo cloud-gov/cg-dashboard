@@ -1,9 +1,8 @@
 
-import classNames from 'classnames';
 import React from 'react';
 
-import styles from './css/main.css';
-
+import Disclaimer from './components/disclaimer.jsx';
+import Header from './components/header.jsx';
 import Login from './components/login.jsx';
 import LoginStore from './stores/login_store.js';
 import { Nav } from './components/navbar.jsx';
@@ -38,32 +37,19 @@ export default class App extends React.Component {
       content = <Login />;
     }
 
-    let sidebarClasses = classNames('col-sm-3', 'col-md-2', styles.sidebar);
-    let mainClasses = classNames('col-sm-9', 'col-sm-offset-3', 'col-md-10',
-                                 'col-md-offset-2', styles.main);
     return (
-    <div>
-      { /* TODO use a separate navbar component for this. */ }
-      <nav className="navbar navbar-inverse navbar-fixed-top">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#/dashboard">
-            <i className="glyphicon glyphicon-cloud"></i>
-            Deck
-            <span className="label label-info">Alpha</span>
-          </a>
-        </div>
-      </nav>
-      <div className="container-fluid">
-        <div className="row">
-          <nav className={ sidebarClasses }>
+      <div>
+        <Disclaimer />
+        <Header />
+        <div>
+          <nav>
             { sidebar }
           </nav>
-          <main className={ mainClasses }>
+          <main>
             { content }
           </main>
         </div>
       </div>
-    </div>
     );
   }
 }
