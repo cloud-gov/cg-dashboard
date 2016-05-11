@@ -1,11 +1,13 @@
 
-import classNames from 'classnames';
+import classNames from 'clasnames';
 import React from 'react';
 
 import cgBaseStyles from 'cloudgov-style/css/base.css';
 import sidenavStyles from 'cloudgov-style/css/components/sidenav.css';
 import titleBarStyles from 'cloudgov-style/css/components/title_bar.css';
 
+import Disclaimer from './components/disclaimer.jsx';
+import Header from './components/header.jsx';
 import Login from './components/login.jsx';
 import LoginStore from './stores/login_store.js';
 import { Nav } from './components/navbar.jsx';
@@ -45,37 +47,28 @@ export default class App extends React.Component {
     }
 
     return (
-    <div>
-      { /* TODO use a separate navbar component for this. */ }
-      <nav className="navbar navbar-inverse navbar-fixed-top">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#/dashboard">
-            <i className="glyphicon glyphicon-cloud"></i>
-            Deck
-            <span className="label label-info">Alpha</span>
-          </a>
-        </div>
-      </nav>
-      <div className={ titleBarStyles['title_bar'] }>
-        <div className="nav_toggle">
-          <i className="nav_toggle-icon"></i>
-          <div className="icon-reorder tooltips"
-            data-original-title="Toggle Navigation"
-            data-placement="bottom"
-          >
+      <div>
+        <Disclaimer />
+        <Header />
+        <div className={ titleBarStyles['title_bar'] }>
+          <div className="nav_toggle">
+            <i className="nav_toggle-icon"></i>
+            <div className="icon-reorder tooltips"
+              data-original-title="Toggle Navigation"
+              data-placement="bottom">
+            </div>
           </div>
+          <h1 className={ titleBarStyles['title_bar-title'] }>Organizations</h1>
         </div>
-        <h1 className={ titleBarStyles['title_bar-title'] }>Organizations</h1>
+        <div className={ sidenavStyles['sidenav-parent'] }>
+          <nav className={ sidenavStyles.sidenav }>
+            { sidebar }
+          </nav>
+          <main className={ classNames(sidenavStyles['sidenav-main'], cgBaseStyles['usa-content'])}>
+            { content }
+          </main>
+        </div>
       </div>
-      <div className={ sidenavStyles['sidenav-parent'] }>
-        <nav className={ sidenavStyles.sidenav }>
-          { sidebar }
-        </nav>
-        <main className={ classNames(sidenavStyles['sidenav-main'], cgBaseStyles['usa-content'])}>
-          { content }
-        </main>
-      </div>
-    </div>
     );
   }
 }
