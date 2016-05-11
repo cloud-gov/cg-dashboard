@@ -19,8 +19,8 @@ Tracking work and progress is currently being done through [Zenhub](https://www.
 The main criteria for moving a card through the columsn can be found on the main cloud.gov product repo: [cloud.gov Delivery Process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md). Some aspects that differ or extend for that process as related to cloud.gov front end:
 - For a story to be past "in progress" and in "awaiting acceptance" it should:
   - have all new files and newly touched files linted (new files can skip linting if under tight deadline)
-  - have all previous unit tests and acceptance tests running without error
-  - covered in units tests and potentially covered with acceptance/functional tests if it makes modifications to the UI.
+  - have all previous unit tests and acceptance tests running without error.
+  - covered in units tests.
   - is deployed on a staging site or live site so other team members can see/use it.
   - ensure to not use the github "fixes" or "closes" feature as it will close an issue too early.
 - For a story to be past "awaiting acceptance" to "done" it should:
@@ -42,6 +42,7 @@ For more information, see the high-level [cloud.gov respository](https://github.
 - Any team member (code author or otherwise) can merge the code once it has the "ready for merge" label.
   - Updates on PRs in the repo will be posted in the #cloud-gov-frontend Slack channel
 - It's fine to merge code that isn't "feature complete." The staging branch is not currently in use, so is fine to have some work on it that still needs work.
+- We're currently not focusing on acceptance tests right now due to the tests not being easily repeatable and having a clean data state. If a change breaks an acceptance test, spend 10 minutes trying to fix it before disabling the test. Do not write new tests.
 
 #### Other git standards
 - Squashing commits is allowed but discouraged, except in rare instances.
