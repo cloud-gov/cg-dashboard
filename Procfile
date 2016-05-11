@@ -1,1 +1,1 @@
-web: cf-deck -port=$PORT
+web: cg-deck -port=$PORT
