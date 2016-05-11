@@ -34,6 +34,7 @@ func main() {
 	if port = os.Getenv("PORT"); len(port) == 0 {
 		port = defaultPort
 	}
+	fmt.Println("using port: " + port)
 	startApp(port)
 }
 
@@ -52,6 +53,7 @@ func startApp(port string) {
 	if settings.PProfEnabled {
 		pprof.InitPProfRouter(app)
 	}
+	fmt.Println("starting app now...")
 
 	// TODO add better timeout message. By default it will just say "Timeout"
 	http.ListenAndServe(":"+port, http.TimeoutHandler(context.ClearHandler(app), helpers.TimeoutConstant, ""))

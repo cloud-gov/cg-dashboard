@@ -10,3 +10,5 @@ Godeps/_workspace/
 cg-deck
 acceptance/scripts/.env_docker
 static/assets
+vendor/*
+!vendor/vendor.json

@@ -9,9 +9,9 @@ before_install:
 - npm install
 - npm run build
 - pip install --user ruamel.yaml
-- wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
-- tar -xjf phantomjs-2.0.0-ubuntu-12.04.tar.bz2
-- export PHANTOMJS_BIN=./phantomjs
+- go get github.com/kardianos/govendor
+install:
+- govendor sync
 script:
 - npm test
 - "./codecheck.sh -u"
