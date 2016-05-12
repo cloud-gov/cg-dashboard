@@ -2,6 +2,15 @@
 
 [![Build Status](https://travis-ci.org/18F/cg-deck.svg?branch=master)](https://travis-ci.org/18F/cg-deck)
 
+[https://console-staging.cloud.gov](https://console-staging.cloud.gov)
+
+The `staging-alpha` branch is being used for our React based rewrite and is continuously deployed to the URL above.
+
+## Introduction
+
+This ["deck"](#whats-a-deck) is a web application to manage cloud.gov organizations, spaces, services, and apps.
+
+Learn more about [cloud.gov](https://cloud.gov).
 
 ## Tech Stack
 - `Go` (v1.5 required) for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
@@ -137,7 +146,8 @@ For debug mode where the developer can vnc into the container and the browser ex
 - Once inside the container, run `acceptance/scripts/debug.sh`
 
 ## Deploying
-- `cf push <optional-app-name>`
+
+The cloud.gov deck is continuously deployed by Travis-CI.
 
 ## CI
 This project uses Travis-CI
