@@ -42,7 +42,7 @@ For more information, see the high-level [cloud.gov respository](https://github.
 - Any team member (code author or otherwise) can merge the code once it has the "ready for merge" label.
   - Updates on PRs in the repo will be posted in the #cloud-gov-frontend Slack channel
 - It's fine to merge code that isn't "feature complete." The staging branch is not currently in use, so is fine to have some work on it that still needs work.
-- We're currently not focusing on acceptance tests right now due to the tests not being easily repeatable and having a clean data state. If a change breaks an acceptance test, spend 10 minutes trying to fix it before disabling the test. Do not write new tests.
+- We're currently not focusing on acceptance tests right now due to the tests not being easily repeatable and having a clean data state. If a change breaks an acceptance test, spend 10 minutes trying to fix it before disabling the test. Do not write new acceptance tests.
 
 #### Other git standards
 - Squashing commits is allowed but discouraged, except in rare instances.
