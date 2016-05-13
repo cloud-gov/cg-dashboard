@@ -1,24 +1,11 @@
 
-import classNames from 'classnames';
 import React from 'react';
+
+import createStyler from '../util/create_styler';
 
 import headerStyle from 'cloudgov-style/css/components/header.css';
 import navStyle from 'cloudgov-style/css/components/nav.css';
 import logoStyle from 'cloudgov-style/css/components/logo.css';
-
-function createStyler(...args) {
-  function uniqueOnly(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
-  return (className) => {
-    const classes = args.map((f) => {
-      if (f[className]) return f[className];
-      return className;
-    }).filter(uniqueOnly);
-    return classNames.apply([], classes);
-  };
-}
 
 export default class Header extends React.Component {
 
@@ -37,7 +24,7 @@ export default class Header extends React.Component {
     <header className={ this.styler('header') }>
       <div className={ this.styler('header-wrap') }>
         <h2 className={ this.styler('header-title') }>
-          <a href="#/dashboard" className={ this.styler('logo') } title="Home">
+          <a href="/" className={ this.styler('logo') } title="Home">
             <svg className={ this.styler('logo') }>
               <use
                 xlinkHref={ this.getImagePath('logo') }>
@@ -50,14 +37,19 @@ export default class Header extends React.Component {
             <li className={ this.styler('nav-link') }>
               <a href="https://cloud.gov/#about">About</a>
             </li>
-            <li className={ this.styler('nav-link', 'usa-current') }>
-              <a href="/">Documentation</a>
+            <li className={ this.styler('nav-link') }>
+              <a href="https://docs.cloud.gov">Documentation</a>
             </li>
             <li className={ this.styler('nav-link') }>
               <a href="https://cloud.gov/updates/">Updates</a>
             </li>
             <li className={ this.styler('nav-link') }>
-              <a href="https://cloudgov.statuspage.io/">Status</a>
+              <a href="https://cloudgov.statuspage.io/">
+                Status
+              </a>
+            </li>
+            <li className={ this.styler('nav-link') }>
+              <a href="https://cloud.gov/#contact">Contact</a>
             </li>
           </ul>
         </nav>
