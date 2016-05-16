@@ -16,7 +16,7 @@ script:
 - npm test
 - "./codecheck.sh -u"
 - go test ./...
-- acceptance/scripts/run_test.sh -a
+- 'if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then bash acceptance/scripts/run_test.sh -a; fi'
 branches:
   only:
   - master
