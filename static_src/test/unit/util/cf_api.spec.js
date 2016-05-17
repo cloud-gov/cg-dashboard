@@ -17,16 +17,10 @@ import { wrapInRes, unwrapOfRes } from '../helpers.js';
 
 function createPromise(res, err) {
   // TODO figure out how to do this with actual Promise object.
-  var fakePromise = function(cb, errCb) {
-    if (!err) {
-      cb(res);
-    } else {
-      errCb(err);
-    }
-  };
-  return {
-    then: fakePromise,
-    done: fakePromise
+  if (!err) {
+    return Promise.resolve(res);
+  } else {
+    return Promise.reject(err);
   }
 };
 
@@ -50,7 +44,7 @@ describe('cfApi', function() {
 
     let testPromise = createPromise(true, expected);
     stub.returns(testPromise);
-    
+
     return spy;
   };
 
@@ -190,7 +184,7 @@ describe('cfApi', function() {
       let thing = cfApi.fetchOrg(testRes.guid);
       thing.then(function() {
         expect(spy).toHaveBeenCalledOnce();
-        done(); 
+        done();
       });
     });
   });
@@ -264,8 +258,8 @@ describe('cfApi', function() {
     it('calls http get request for orgs memory usage', function() {
       var spy = sandbox.spy(http, 'get'),
           expectedGuid = 'asdfad',
-          expectedOrg = {guid: expectedGuid, 
-              quota_definition_url: 'http://api.gov/quota_definitions/' + 
+          expectedOrg = {guid: expectedGuid,
+              quota_definition_url: 'http://api.gov/quota_definitions/' +
                 expectedGuid};
 
       cfApi.fetchOrgMemoryLimit(expectedOrg);
@@ -348,7 +342,7 @@ describe('cfApi', function() {
           expectedName,
           expectedSpaceGuid,
           expectedServicePlanGuid);
-      
+
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp('accepts_incomplete'));
@@ -481,11 +475,11 @@ describe('cfApi', function() {
   });
 
   describe('fetchOrgUserRoles()', function() {
-    it(`should call fetch org user roles with org guid and received org user 
+    it(`should call fetch org user roles with org guid and received org user
         roles action and org guid`, function() {
       var expectedOrgGuid = 'zkjvczcvzwexdvzdfa',
           spy = sandbox.stub(cfApi, 'fetchMany');
-          
+
       cfApi.fetchOrgUserRoles(expectedOrgGuid);
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];

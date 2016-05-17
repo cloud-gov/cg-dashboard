@@ -1,6 +1,5 @@
 
 import http from 'axios';
-import 'promises-done-polyfill';
 
 import appActions from '../actions/app_actions.js';
 import errorActions from '../actions/error_actions.js';
@@ -16,13 +15,13 @@ export default {
   version: APIV,
 
   fetch(url, action, multiple, ...params) {
-    return http.get(APIV + url).done((res) => {
+    return http.get(APIV + url).then((res) => {
       if (!multiple) {
         action(res.data, ...params);
       } else {
         action(res.data.resources, ...params);
       }
-    }, (err) => {
+    }).catch((err) => {
       errorActions.errorFetch(err);
     });
   },
@@ -36,9 +35,9 @@ export default {
   },
 
   getAuthStatus() {
-    return http.get(`${APIV}/authstatus`).done((res) => {
+    return http.get(`${APIV}/authstatus`).then((res) => {
       loginActions.receivedStatus(res.data.status);
-    }, () => {
+    }).catch(() => {
       loginActions.receivedStatus(false);
     });
   },
@@ -89,9 +88,9 @@ export default {
   },
 
   fetchOrgs() {
-    return http.get(`${APIV}/organizations`).done((res) => {
+    return http.get(`${APIV}/organizations`).then((res) => {
       orgActions.receivedOrgs(res.data.resources);
-    }, (err) => {
+    }).catch((err) => {
       errorActions.errorFetch(err);
     });
   },
@@ -122,18 +121,18 @@ export default {
     };
 
     return http.post(`${APIV}/service_instances?accepts_incomplete=true`, payload)
-      .done((res) => {
+      .then((res) => {
         serviceActions.createdInstance(res.data);
-      }, (err) => {
+      }).catch((err) => {
         serviceActions.errorCreateInstance(err.data);
       });
   },
 
   deleteUnboundServiceInstance(serviceInstance) {
     return http.delete(serviceInstance.url)
-    .done(() => {
+    .then(() => {
       serviceActions.deletedInstance(serviceInstance.guid);
-    }, () => {
+    }).catch(() => {
       // Do nothing.
     });
   },
@@ -173,9 +172,9 @@ export default {
 
   deleteUser(userGuid, orgGuid) {
     return http.delete(`${APIV}/organizations/${orgGuid}/users/${userGuid}`)
-      .done(() => {
+      .then(() => {
         userActions.deletedUser(userGuid, orgGuid);
-      }, (err) => {
+      }).catch((err) => {
         userActions.errorRemoveUser(userGuid, err.data);
       });
   },

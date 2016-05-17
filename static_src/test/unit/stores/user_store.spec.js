@@ -98,7 +98,7 @@ describe('UserStore', function() {
 
       expect(spy).not.toHaveBeenCalled();
     });
-    
+
     it('should merge and update new users with existing users in data',
         function() {
       var sharedGuid = 'wpqoifesadkzcvn';
@@ -183,7 +183,7 @@ describe('UserStore', function() {
           expectedOrgGuid = 'zxcvzcxvzxroiter';
 
       let testPromise = {
-        done: function() { }
+        then: function() { }
       };
       spy.returns(testPromise);
 
@@ -193,8 +193,8 @@ describe('UserStore', function() {
         expectedOrgGuid,
         'organization'
       );
-      
-      expect(spy).toHaveBeenCalledOnce(); 
+
+      expect(spy).toHaveBeenCalledOnce();
       let args = spy.getCall(0).args;
       expect(args[0]).toEqual(expectedUserGuid);
       expect(args[1]).toEqual(expectedOrgGuid);
@@ -251,7 +251,8 @@ describe('UserStore', function() {
           expectedOrgGuid = 'zxcvzcxvzxroiter';
 
       let testPromise = {
-        done: function() { }
+        then: function() { },
+        catch: function() { }
       };
       spy.returns(testPromise);
 
@@ -261,8 +262,8 @@ describe('UserStore', function() {
         expectedOrgGuid,
         'organization'
       );
-      
-      expect(spy).toHaveBeenCalledOnce(); 
+
+      expect(spy).toHaveBeenCalledOnce();
       let args = spy.getCall(0).args;
       expect(args[0]).toEqual(expectedUserGuid);
       expect(args[1]).toEqual(expectedOrgGuid);
@@ -328,7 +329,7 @@ describe('UserStore', function() {
       expect(args[1]).toEqual(expectedOrgGuid);
       expect(args[2]).toEqual(expectedCategory);
     });
-    
+
     it('should delete the user on the server', function() {
       var spy = sandbox.spy(cfApi, 'deleteUser'),
           stub = sandbox.stub(cfApi, 'deleteOrgUserPermissions'),
