@@ -68,7 +68,8 @@ describe('cfApi', function() {
       expect(actual).toEqual(cfApi.version + expectedUrl);
     });
 
-    it('should call the action with the response data on success', function() {
+    it('should call the action with the response data on success',
+        function(done) {
       var expected = { data: { guid: 'q39g08hgdih' }},
           stub = sandbox.stub(http, 'get'),
           spy = sandbox.spy();
@@ -76,21 +77,24 @@ describe('cfApi', function() {
       let testPromise = createPromise(expected);
       stub.returns(testPromise);
 
-      cfApi.fetchOne('/thing/adjfk', spy);
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toEqual(expected.data);
+      cfApi.fetchOne('/thing/adjfk', spy).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let actual = spy.getCall(0).args[0];
+        expect(actual).toEqual(expected.data);
+        done();
+      });;
     });
 
-    it('should call the fetch error action on failure', function() {
+    it('should call the fetch error action on failure', function(done) {
       var spy = fetchErrorSetup();
 
-      cfApi.fetchOne();
-
-      assertFetchError(spy);
+      cfApi.fetchOne().then(() => {
+        assertFetchError(spy);
+        done();
+      });
     });
 
-    it('should pass any additional arguments to the action', function() {
+    it('should pass any additional arguments to the action', function(done) {
       var spy = sandbox.spy(),
           stub = sandbox.stub(http, 'get'),
           expectedArgA = 'arga',
@@ -98,26 +102,29 @@ describe('cfApi', function() {
 
       let testPromise = createPromise('asdf');
       stub.returns(testPromise);
-      cfApi.fetchOne('/thing/asdfz', spy, expectedArgA, expectedArgB);
-      let actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(expectedArgA);
-      actual = spy.getCall(0).args[2];
-      expect(actual).toEqual(expectedArgB);
+      cfApi.fetchOne('/thing/asdfz', spy, expectedArgA, expectedArgB).then(() => {
+        let actual = spy.getCall(0).args[1];
+        expect(actual).toEqual(expectedArgA);
+        actual = spy.getCall(0).args[2];
+        expect(actual).toEqual(expectedArgB);
+        done();
+      });;
     });
   });
 
   describe('getAuthStatus()', function() {
-    it('calls http get request for auth status', () => {
+    it('calls http get request for auth status', (done) => {
       var spy = sandbox.spy(http, 'get');
 
-      cfApi.getAuthStatus();
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch('authstatus');
+      cfApi.getAuthStatus().then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let actual = spy.getCall(0).args[0];
+        expect(actual).toMatch('authstatus');
+        done();
+      });
     });
 
-    it('calls received status with status on success', () => {
+    it('calls received status with status on success', (done) => {
       var expectedStatus = 'logged_in',
           expected = { data: { status: expectedStatus } },
           stub = sandbox.stub(http, 'get'),
@@ -127,13 +134,14 @@ describe('cfApi', function() {
 
       stub.returns(testPromise);
 
-      cfApi.getAuthStatus();
-
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected.data.status);
+      cfApi.getAuthStatus().then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        expect(spy).toHaveBeenCalledWith(expected.data.status);
+        done();
+      });;
     });
 
-    it('calls received status with false on failure', () => {
+    it('calls received status with false on failure', (done) => {
       // Note: the getAuthStatus call will return 401 when not logged in, so
       // failure here means the user was likely not logged in. Although there
       // could be the additional problem that there was a problem with the req.
@@ -144,10 +152,11 @@ describe('cfApi', function() {
       let testPromise = createPromise(true, expected);
       stub.returns(testPromise);
 
-      let actual = cfApi.getAuthStatus();
-
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(false);
+      let actual = cfApi.getAuthStatus().then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        expect(spy).toHaveBeenCalledWith(false);
+        done();
+      });
     });
   });
 
@@ -190,17 +199,19 @@ describe('cfApi', function() {
   });
 
   describe('fetchOrgs()', function() {
-    it('calls http get request for orgs', function() {
+    it('calls http get request for orgs', function(done) {
       var spy = sandbox.spy(http, 'get');
 
-      cfApi.fetchOrgs();
+      cfApi.fetchOrgs().then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let actual = spy.getCall(0).args[0];
+        expect(actual).toMatch('organizations');
+        done();
+      });;
 
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch('organizations');
     });
 
-    it('calls orgs received with orgs on success', function() {
+    it('calls orgs received with orgs on success', function(done) {
       var expectedOrgs = [
         { metadata: { guid: 'xxxaasdf' }, entity: { name: 'testA' }},
         { metadata: { guid: 'xxxaasdg' }, entity: { name: 'testB' }}
@@ -212,18 +223,21 @@ describe('cfApi', function() {
       let testPromise = createPromise(expected);
       stub.returns(testPromise);
 
-      let actual = cfApi.fetchOrgs();
+      let actual = cfApi.fetchOrgs().then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        expect(spy).toHaveBeenCalledWith(expectedOrgs);
+        done();
+      });;
 
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expectedOrgs);
     });
 
-    it('calls error action with error on failure', function() {
+    it('calls error action with error on failure', function(done) {
       var spy = fetchErrorSetup();
 
-      cfApi.fetchOrgs();
-
-      assertFetchError(spy);
+      cfApi.fetchOrgs().then(() => {
+        assertFetchError(spy);
+        done();
+      });
     });
   });
 
@@ -348,7 +362,8 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('accepts_incomplete'));
     });
 
-    it('should call service action for instance created on success', function() {
+    it('should call service action for instance created on success',
+        function(done) {
       var stub = sandbox.stub(http, 'post'),
           spy = sandbox.spy(serviceActions, 'createdInstance'),
           expected = { data: { guid: 'znvmjahskf' }};
@@ -359,14 +374,15 @@ describe('cfApi', function() {
       cfApi.createServiceInstance(
           expectedName,
           expectedSpaceGuid,
-          expectedServicePlanGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toEqual(expected.data);
+          expectedServicePlanGuid).then(() => {
+            expect(spy).toHaveBeenCalledOnce();
+            let actual = spy.getCall(0).args[0];
+            expect(actual).toEqual(expected.data);
+            done();
+          });
     });
 
-    it('should call an service error action on failure', function() {
+    it('should call an service error action on failure', function(done) {
       var stub = sandbox.stub(http, 'post'),
           spy = sandbox.stub(serviceActions, 'errorCreateInstance'),
           expectedErr = { status: 'error' };
@@ -377,11 +393,12 @@ describe('cfApi', function() {
       cfApi.createServiceInstance(
           expectedName,
           expectedSpaceGuid,
-          expectedServicePlanGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toEqual(expectedErr);
+          expectedServicePlanGuid).then(() => {
+            expect(spy).toHaveBeenCalledOnce();
+            let actual = spy.getCall(0).args[0];
+            expect(actual).toEqual(expectedErr);
+            done();
+        });
     });
   });
 
@@ -399,7 +416,7 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp(expectedGuid));
     });
 
-    it('should call service deleted action with guid', function() {
+    it('should call service deleted action with guid', function(done) {
       var stub = sandbox.stub(http, 'delete'),
           spy = sandbox.spy(serviceActions, 'deletedInstance'),
           expectedGuid = '38wofjasd',
@@ -408,11 +425,12 @@ describe('cfApi', function() {
       let testPromise = createPromise({status: true});
       stub.returns(testPromise);
 
-      cfApi.deleteUnboundServiceInstance(expected);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toEqual(expectedGuid);
+      cfApi.deleteUnboundServiceInstance(expected).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let actual = spy.getCall(0).args[0];
+        expect(actual).toEqual(expectedGuid);
+        done();
+      });
     });
 
     // TODO should be error action for non fetch errors.
@@ -507,7 +525,7 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp(expectedOrgGuid));
     });
 
-    it('should call org deleted action with guid', function() {
+    it('should call org deleted action with guid', function(done) {
       var stub = sandbox.stub(http, 'delete'),
           spy = sandbox.spy(userActions, 'deletedUser'),
           expectedUserGuid = 'aldfskjmcx',
@@ -516,12 +534,13 @@ describe('cfApi', function() {
       let testPromise = createPromise({status: true});
       stub.returns(testPromise);
 
-      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let args = spy.getCall(0).args;
-      expect(args[0]).toEqual(expectedUserGuid);
-      expect(args[1]).toEqual(expectedOrgGuid);
+      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let args = spy.getCall(0).args;
+        expect(args[0]).toEqual(expectedUserGuid);
+        expect(args[1]).toEqual(expectedOrgGuid);
+        done();
+      });
     });
   });
 
@@ -546,7 +565,7 @@ describe('cfApi', function() {
     });
   });
 
-  describe('deleteOrgUserPermissions()', function() {
+  describe('deleteOrgUserPermissions()', function(done) {
     it('should call an http delete request on org user with permissions',
         function() {
       var spy = sandbox.spy(http, 'delete'),
@@ -557,17 +576,18 @@ describe('cfApi', function() {
       cfApi.deleteOrgUserPermissions(
         expectedUserGuid,
         expectedOrgGuid,
-        expectedPermission);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp(expectedUserGuid));
-      expect(actual).toMatch(new RegExp(expectedOrgGuid));
-      expect(actual).toMatch(new RegExp(expectedPermission));
+        expectedPermission).then(() => {
+          expect(spy).toHaveBeenCalledOnce();
+          let actual = spy.getCall(0).args[0];
+          expect(actual).toMatch(new RegExp(expectedUserGuid));
+          expect(actual).toMatch(new RegExp(expectedOrgGuid));
+          expect(actual).toMatch(new RegExp(expectedPermission));
+          done();
+        });
     });
 
     it(`should call user action on a 400 response that has code 10006 with
-        message about the error from cf`, function() {
+        message about the error from cf`, function(done) {
       var stub = sandbox.stub(http, 'delete'),
           spy = sandbox.spy(userActions, 'errorRemoveUser'),
           expectedUserGuid = 'zcvmzxncbvpafd',
@@ -580,12 +600,14 @@ describe('cfApi', function() {
       let testPromise = createPromise(true, { data: expected });
       stub.returns(testPromise);
 
-      cfApi.deleteOrgUserPermissions(expectedUserGuid, 'asdf', 'role');
-
-      expect(spy).toHaveBeenCalledOnce();
-      let args = spy.getCall(0).args;
-      expect(args[0]).toEqual(expectedUserGuid);
-      expect(args[1]).toEqual(expected);
+      cfApi.deleteOrgUserPermissions(expectedUserGuid, 'asdf', 'role').then(
+        () => {
+        expect(spy).toHaveBeenCalledOnce();
+        let args = spy.getCall(0).args;
+        expect(args[0]).toEqual(expectedUserGuid);
+        expect(args[1]).toEqual(expected);
+        done();
+      });
     });
   });
 

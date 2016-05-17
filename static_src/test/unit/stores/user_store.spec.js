@@ -182,9 +182,7 @@ describe('UserStore', function() {
           expectedUserGuid = 'zjkxcvadfzxcvz',
           expectedOrgGuid = 'zxcvzcxvzxroiter';
 
-      let testPromise = {
-        then: function() { }
-      };
+      let testPromise = Promise.resolve()
       spy.returns(testPromise);
 
       userActions.addUserRoles(
@@ -250,10 +248,7 @@ describe('UserStore', function() {
           expectedUserGuid = 'zjkxcvz234asdf',
           expectedOrgGuid = 'zxcvzcxvzxroiter';
 
-      let testPromise = {
-        then: function() { },
-        catch: function() { }
-      };
+      let testPromise = Promise.resolve()
       spy.returns(testPromise);
 
       userActions.deleteUserRoles(
