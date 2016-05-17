@@ -116,7 +116,7 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 - 
 
 ## Onboarding checklist
-- [ ] Join the `#cloud-gov-frontend` channel on Slack
+- [ ] Join the `#cloud-gov-liberator` channel on Slack
 - [ ] Ping @standup-bot for instructions on front end channel standup (or view them in channel history)
 - [ ] Review the main [front end board](https://github.com/18F/cg-deck#boards?repos=39210774)
 - [ ] Review the cloud.gov [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md) to understand how the agile boards and workflow works.
