@@ -48,6 +48,10 @@ module.exports = {
       },
       { test: /\.(ttf|woff2?|eot)$/,
         loader: 'url-loader?limit=1024&name=font/[name].[ext]'
+      },
+      {
+        test: /\.json$/,
+        loaders: ['json-loader']
       }
     ]
   },
