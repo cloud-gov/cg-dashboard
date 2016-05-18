@@ -9,9 +9,9 @@ before_install:
 - npm install
 - npm run build
 - pip install --user ruamel.yaml
-- go get github.com/kardianos/govendor
+- go get github.com/Masterminds/glide
 install:
-- govendor sync
+- glide install
 script:
 - npm test
 - "./codecheck.sh -u"

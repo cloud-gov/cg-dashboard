@@ -81,8 +81,8 @@ npm install -g eslint-plugin-react
 
 ## Running locally
 - Make sure all of your environment variables are set as mentioned above.
-- Install [govendor](https://github.com/kardianos/govendor)
-- Run `govendor sync` to get all third party code
+- Install [glide](https://github.com/Masterminds/glide)
+- Run `glide install` to get all third party code
 - `go run server.go`
 - Navigate browser to `http://localhost:9999`
 

@@ -20,7 +20,7 @@ go install github.com/GeertJohan/fgt
 go get -u github.com/golang/lint/golint
 
 # Get the list of packages.
-pkgs=`govendor list --no-status +local`
+pkgs=`glide novendor`
 
 # Lint check
 echo
