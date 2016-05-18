@@ -20,7 +20,7 @@ go install github.com/GeertJohan/fgt
 go get -u github.com/golang/lint/golint
 
 # Get the list of packages.
-pkgs=`glide novendor`
+pkgs=`glide novendor -x`
 
 # Lint check
 echo
@@ -65,7 +65,8 @@ echo '---------------------------------------------------------'
 echo "mode: count" > profile.cov
 for pkg in $pkgs
 do
-	go test -v -covermode=count $pkg -coverprofile=tmp.cov
+	echo "testing package $pkg"
+	testCmd go test -v -covermode=count $pkg -coverprofile=tmp.cov
 	if [ -f tmp.cov ]
 	then
 		cat tmp.cov | tail -n +2 >> profile.cov
@@ -73,7 +74,7 @@ do
 	fi
 done
 
-go tool cover -func profile.cov
+testCmd go tool cover -func profile.cov
 
 # Determine whether to upload to coveralls
 while getopts ":u" opt; do
