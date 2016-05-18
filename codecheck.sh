@@ -9,6 +9,7 @@ function testCmd() {
 	ret=$?
 	if (($ret > 0)); then
 		scriptreturn=$ret
+		echo "FAILURE: $@"
 	fi
 }
 
@@ -66,7 +67,7 @@ echo "mode: count" > profile.cov
 for pkg in $pkgs
 do
 	echo "testing package $pkg"
-	testCmd go test -v -covermode=count $pkg -coverprofile=tmp.cov
+	go test -v -covermode=count $pkg -coverprofile=tmp.cov
 	if [ -f tmp.cov ]
 	then
 		cat tmp.cov | tail -n +2 >> profile.cov
@@ -74,7 +75,7 @@ do
 	fi
 done
 
-testCmd go tool cover -func profile.cov
+go tool cover -func profile.cov
 
 # Determine whether to upload to coveralls
 while getopts ":u" opt; do
