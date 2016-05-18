@@ -3,20 +3,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import baseStyle from 'cloudgov-style/css/base.css';
-
-function createStyler(...args) {
-  function uniqueOnly(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
-  return (className) => {
-    const classes = args.map((f) => {
-      if (f[className]) return f[className];
-      return className;
-    }).filter(uniqueOnly);
-    return classNames.apply([], classes);
-  };
-}
+import createStyler from '../util/create_styler';
 
 export default class Disclaimer extends React.Component {
 
