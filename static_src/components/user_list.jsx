@@ -5,6 +5,8 @@
 
 import React from 'react';
 
+import formatDateTime from '../util/format_date';
+
 import Button from './button.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 
@@ -41,7 +43,8 @@ export default class UserList extends React.Component {
   }
 
   render() {
-    var content = <h4 className="test-none_message">No users</h4>;
+    let content = <h4 className="test-none_message">No users</h4>;
+
     if (this.state.users.length) {
       content = (
       <table sortable={ true }>
@@ -71,7 +74,7 @@ export default class UserList extends React.Component {
           return ([
             <tr key={ user.guid }>
               <td column="Name"><span>{ user.username }</span></td>
-              <td column="Date Created">{ user.created_at }</td>
+              <td column="Date Created">{ formatDateTime(user.created_at) }</td>
               { actions }
             </tr>,
             <tr key={ user.guid + '-role' }>
