@@ -13,7 +13,7 @@ This ["deck"](#whats-a-deck) is a web application to manage cloud.gov organizati
 Learn more about [cloud.gov](https://cloud.gov).
 
 ## Tech Stack
-- `Go` (v1.5 required) for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
+- `Go` (v1.6.2 required) for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
 
 - `AngularJS` for the frontend. [![JS Code Coverage Status](http://codecov.io/github/18F/cg-deck/coverage.svg?branch=master)](http://codecov.io/github/18F/cg-deck?branch=master)
 
@@ -89,16 +89,16 @@ npm install -g eslint-plugin-react
 ```
 
 ## Running locally
-- Make sure all of your environment variables are set as mentioned above.
-- Install [godep](https://github.com/tools/godep)
-- Run `godep restore` to get all third party code
+- Make sure all of your environment variables are set and you are using the Go version as mentioned above.
+- Install [glide](https://github.com/Masterminds/glide)
+- Run `glide install` to get all third party code
 - `go run server.go`
 - Navigate browser to `http://localhost:9999`
 
 
 ## Unit Testing
 ### Running Go unit tests
-- `go test ./...`
+- `go test $(glide nv)`
 
 ### Running Angular unit tests
 Test can then be run with the command:

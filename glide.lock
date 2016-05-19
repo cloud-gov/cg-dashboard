@@ -1,0 +1,88 @@
+hash: 088f353f14eca208452af270e000d1a0b923fd7826ce42f5f493978e3f216af2
+updated: 2016-05-18T12:09:34.378003431-04:00
+imports:
+- name: github.com/cloudfoundry/loggregatorlib
+  version: 03bfd6ee4743a1a21433092663292b65aa4ee14e
+  subpackages:
+  - logmessage
+  - signature
+- name: github.com/gocraft/web
+  version: 12b4630b4fee3e485b334c4d544bd9dd68fb3d4f
+- name: github.com/gogo/protobuf
+  version: c18eea6ad611eecf94a9ba38471f59706199409e
+  subpackages:
+  - proto
+- name: github.com/golang/protobuf
+  version: 7cc19b78d562895b13596ddce7aafb59dd789318
+  subpackages:
+  - proto
+- name: github.com/gorilla/context
+  version: a8d44e7d8e4d532b6a27a02dd82abb31cc1b01bd
+- name: github.com/gorilla/securecookie
+  version: 667fe4e3466a040b780561fe9b51a83a3753eefc
+- name: github.com/gorilla/sessions
+  version: a4e6dd28f9e9274729417506b9bd0a6c3edb91ce
+- name: github.com/onsi/ginkgo
+  version: 5437a97bf824dec14e58d68c56ee36e772670c2e
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/failer
+  - internal/remote
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - types
+  - internal/containernode
+  - internal/leafnodes
+  - internal/spec
+  - internal/specrunner
+- name: github.com/onsi/gomega
+  version: c73e51675ad2455a4515b6213eb7145eaade4824
+  subpackages:
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/testingtsupport
+  - matchers
+  - types
+  - internal/oraclematcher
+  - format
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+- name: github.com/sclevine/agouti
+  version: e5378e70dca437a9e16cc6d71a85aa0045dd94c7
+  subpackages:
+  - matchers
+  - api
+  - internal/element
+  - internal/target
+  - matchers/internal
+  - api/internal/bus
+  - api/internal/service
+  - matchers/internal/colorparser
+- name: golang.org/x/net
+  version: 3b993948b6f0e651ffb58ba135d8538a68b1cddf
+  subpackages:
+  - context
+- name: golang.org/x/oauth2
+  version: e86e2718db89775a4604abc10a5d3a5672e7336e
+  subpackages:
+  - clientcredentials
+  - internal
+- name: google.golang.org/appengine
+  version: e234e71924d4aa52444bc76f2f831f13fa1eca60
+  subpackages:
+  - urlfetch
+  - internal
+  - internal/urlfetch
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
+- name: gopkg.in/yaml.v2
+  version: a83829b6f1293c91addabc89d0571c246397bbf4
+devImports: []

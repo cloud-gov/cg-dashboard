@@ -9,6 +9,7 @@ function testCmd() {
 	ret=$?
 	if (($ret > 0)); then
 		scriptreturn=$ret
+		echo "FAILURE: $@"
 	fi
 }
 
@@ -20,7 +21,7 @@ go install github.com/GeertJohan/fgt
 go get -u github.com/golang/lint/golint
 
 # Get the list of packages.
-pkgs=`go list ./...`
+pkgs=`glide novendor -x`
 
 # Lint check
 echo
@@ -65,6 +66,7 @@ echo '---------------------------------------------------------'
 echo "mode: count" > profile.cov
 for pkg in $pkgs
 do
+	echo "testing package $pkg"
 	go test -v -covermode=count $pkg -coverprofile=tmp.cov
 	if [ -f tmp.cov ]
 	then

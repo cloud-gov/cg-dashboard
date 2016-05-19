@@ -1,0 +1,22 @@
+package: github.com/18F/cg-deck
+import:
+- package: github.com/cloudfoundry/loggregatorlib
+  subpackages:
+  - logmessage
+- package: github.com/gocraft/web
+- package: github.com/gogo/protobuf
+  subpackages:
+  - proto
+- package: github.com/gorilla/context
+- package: github.com/gorilla/sessions
+- package: github.com/onsi/ginkgo
+- package: github.com/onsi/gomega
+- package: github.com/sclevine/agouti
+  subpackages:
+  - matchers
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: golang.org/x/oauth2
+  subpackages:
+  - clientcredentials
