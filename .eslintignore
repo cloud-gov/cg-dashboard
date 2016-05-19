@@ -15,6 +15,5 @@ static_src/stores/org_store.js
 static_src/stores/base_store.js
 static_src/stores/login_store.js
 static_src/stores/service_instance_store.js
-static_src/stores/user_store.js
 static_src/tests.bundle.js
 static_src/constants.js
