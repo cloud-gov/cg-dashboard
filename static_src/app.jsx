@@ -1,11 +1,15 @@
 
-import classNames from 'classnames';
 import React from 'react';
 
 import cgBaseStyles from 'cloudgov-style/css/base.css';
 import sidenavStyles from 'cloudgov-style/css/components/sidenav.css';
 import titleBarStyles from 'cloudgov-style/css/components/title_bar.css';
+import navToggleStyles from 'cloudgov-style/css/components/nav_toggle.css';
 
+import createStyler from './util/create_styler';
+
+import Disclaimer from './components/disclaimer.jsx';
+import Header from './components/header.jsx';
 import Login from './components/login.jsx';
 import LoginStore from './stores/login_store.js';
 import { Nav } from './components/navbar.jsx';
@@ -17,6 +21,12 @@ function getState() {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    this.styler = createStyler(
+      cgBaseStyles,
+      sidenavStyles,
+      titleBarStyles,
+      navToggleStyles
+    );
     this.state = { isLoggedIn: false };
     this._onChange = this._onChange.bind(this);
   }
@@ -45,37 +55,28 @@ export default class App extends React.Component {
     }
 
     return (
-    <div>
-      { /* TODO use a separate navbar component for this. */ }
-      <nav className="navbar navbar-inverse navbar-fixed-top">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#/dashboard">
-            <i className="glyphicon glyphicon-cloud"></i>
-            Deck
-            <span className="label label-info">Alpha</span>
-          </a>
-        </div>
-      </nav>
-      <div className={ titleBarStyles['title_bar'] }>
-        <div className="nav_toggle">
-          <i className="nav_toggle-icon"></i>
-          <div className="icon-reorder tooltips"
-            data-original-title="Toggle Navigation"
-            data-placement="bottom"
-          >
+      <div>
+        <Disclaimer />
+        <Header />
+        <div className={ this.styler('title_bar') }>
+          <div className={ this.styler('nav_toggle') }>
+            <i className={ this.styler('nav_toggle-icon') }></i>
+            <div className="icon-reorder tooltips"
+              data-original-title="Toggle Navigation"
+              data-placement="bottom">
+            </div>
           </div>
+          <h1 className={ this.styler('title_bar-title') }>Organizations</h1>
         </div>
-        <h1 className={ titleBarStyles['title_bar-title'] }>Organizations</h1>
+        <div className={ this.styler('sidenav-parent') }>
+          <nav className={ this.styler('sidenav') }>
+            { sidebar }
+          </nav>
+          <main className={ this.styler('sidenav-main', 'usa-content') }>
+            { content }
+          </main>
+        </div>
       </div>
-      <div className={ sidenavStyles['sidenav-parent'] }>
-        <nav className={ sidenavStyles.sidenav }>
-          { sidebar }
-        </nav>
-        <main className={ classNames(sidenavStyles['sidenav-main'], cgBaseStyles['usa-content'])}>
-          { content }
-        </main>
-      </div>
-    </div>
     );
   }
 }
