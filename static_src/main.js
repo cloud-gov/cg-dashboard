@@ -6,7 +6,8 @@ import { Router } from 'director';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import AppPage from './app_page.jsx';
+import App from './app.jsx';
+import AppPage from './components/app_page.jsx';
 import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
 import Login from './components/login.jsx';
@@ -63,8 +64,6 @@ function app(orgGuid, spaceGuid, appGuid) {
   ReactDOM.render(
     <App>
       <AppPage
-        initialSpaceGuid={ spaceGuid}
-        initialOrgGuid={ orgGuid }
         initialAppGuid={ appGuid }
       />
     </App>, mainEl);
@@ -103,7 +102,7 @@ const routes = {
           '/:page': {
             on: space
           },
-          '/app': {
+          '/apps': {
             '/:appGuid': {
               on: app
             }
