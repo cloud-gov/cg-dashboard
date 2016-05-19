@@ -16,7 +16,8 @@
     "postinstall": "npm run cloudgov-style",
     "test": "npm run lint && karma start --single-run --browsers PhantomJS2",
     "watch-test": "karma start --browsers Chrome",
-    "watch": "watch 'npm run build' ./static_src"
+    "watch": "watch 'npm run build' ./static_src",
+    "shrinkwrap": "npm shrinkwrap --dev"
   },
   "author": "",
   "license": "ISC",
@@ -73,8 +74,10 @@
     "director": "^1.2.8",
     "events": "^1.0.2",
     "flux": "^2.0.3",
+    "json-loader": "^0.5.4",
     "keymirror": "^0.1.1",
     "less": "^2.5.3",
+    "moment-timezone": "^0.5.4",
     "normalize.css": "^3.0.3",
     "react": "^0.14.0",
     "react-dom": "^0.14.8",

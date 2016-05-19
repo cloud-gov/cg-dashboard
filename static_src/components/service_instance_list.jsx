@@ -2,23 +2,23 @@
 import React from 'react';
 import Reactable from 'reactable';
 
+import formatDateTime from '../util/format_date';
+
 import Button from './button.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 
-var Table = Reactable.Table,
-    Thead = Reactable.Thead,
-    Th = Reactable.Th,
-    Tr = Reactable.Tr,
-    Td = Reactable.Td;
+const Table = Reactable.Table;
+const Thead = Reactable.Thead;
+const Th = Reactable.Th;
+const Tr = Reactable.Tr;
+const Td = Reactable.Td;
 
 function stateSetter(props) {
   return {
     serviceInstances: ServiceInstanceStore.getAll(),
     currentSpaceGuid: props.initialSpaceGuid
   };
-  this._onChange = this._onChange.bind(this);
-  this._handleDelete = this._handleDelete.bind(this);
 }
 
 export default class ServiceInstanceList extends React.Component {
@@ -27,6 +27,7 @@ export default class ServiceInstanceList extends React.Component {
     this.props = props;
     this.state = stateSetter(props);
     this._onChange = this._onChange.bind(this);
+    this._handleDelete = this._handleDelete.bind(this);
   }
 
   componentDidMount() {
@@ -53,7 +54,7 @@ export default class ServiceInstanceList extends React.Component {
   }
 
   render() {
-    var content = <h4 className="test-none_message">No service instances</h4>;
+    let content = <h4 className="test-none_message">No service instances</h4>;
 
     if (this.state.serviceInstances.length) {
       content = (
@@ -67,12 +68,14 @@ export default class ServiceInstanceList extends React.Component {
             })}
           </Thead>
           { this.state.serviceInstances.map((instance) => {
+            const lastOp = instance.last_operation;
+            const lastOpTime = lastOp.updated_at || lastOp.created_at;
             return (
               <Tr key={ instance.guid }>
                 <Td column="Name"><span>{ instance.name }</span></Td>
                 <Td column="Last operation">{ instance.last_operation.type }</Td>
                 <Td column="Updated at">
-                  { instance.last_operation.updated_at }
+                  { formatDateTime(lastOpTime) }
                 </Td>
                 <Td column="Delete">
                   <Button
@@ -95,7 +98,7 @@ export default class ServiceInstanceList extends React.Component {
       </div>
     );
   }
-};
+}
 
 ServiceInstanceList.propTypes = {
   initialOrgGuid: React.PropTypes.string,
