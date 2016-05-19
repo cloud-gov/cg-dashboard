@@ -16,7 +16,8 @@
     "postinstall": "npm run cloudgov-style",
     "test": "npm run lint && karma start --single-run --browsers PhantomJS2",
     "watch-test": "karma start --browsers Chrome",
-    "watch": "watch 'npm run build' ./static_src"
+    "watch": "watch 'npm run build' ./static_src",
+    "shrinkwrap": "npm shrinkwrap --dev"
   },
   "author": "",
   "license": "ISC",
