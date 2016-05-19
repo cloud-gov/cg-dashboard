@@ -113,6 +113,30 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 - What should performance budgets for decided metrics be? ie: faster then 1000 for speed index, faster then 1s for certain custom event, total request size below 2mb.
 - How should performance metrics and budgets be incorporated into workflow? Going over a budget requires re-implementation, or issue.
 - Any library added that's total file size is above 25kb should be evaluated for performance affect.
+- 
+
+## Onboarding checklist
+- [ ] Join the `#cloud-gov-liberator` channel on Slack
+- [ ] Ping @standup-bot for instructions on front end channel standup (or view them in channel history)
+- [ ] Review the main [front end board](https://github.com/18F/cg-deck#boards?repos=39210774)
+- [ ] Review the cloud.gov [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md) to understand how the agile boards and workflow works.
+- [ ] Bookmark link to [design folder](https://drive.google.com/drive/u/1/folders/0BwLqM4Nicmq-bUt0NjRjclFMUEU)
+- [ ] Review the primary cloud.gov sites: [the deck](https://console.cloud.gov/#/), [main landing page](https://cloud.gov/), and [documentation](https://docs.cloud.gov/).
+
+#### If developing
+- [ ] Set up [the landing page site](https://github.com/18F/cg-landing) and/or [the deck](https://github.com/18F/cg-deck/tree/staging-alpha) and/or [the docs site](https://github.com/18F/cg-docs) and/or [style](https://github.com/18F/cg-style) locally
+- [ ] Setup cloudgov-style to be [linked to the other sites locally](https://github.com/18F/cg-style#development-and-contributing-setup).
+- [ ] Have cloud.gov person send the cg-deck testing env vars through fugacious
+- [ ] Review [deck contributing guide](https://github.com/18F/cg-deck/blob/staging-alpha/CONTRIBUTING.md) and [cloudgov-style standards](https://github.com/18F/cg-style/blob/master/documentation/frontend_standards.md)
+
+#### For review
+- Review the [design resource request document](https://docs.google.com/document/d/1s96VP6PB7fbc8g_GwgAZ1hCPmew-J35ZOJx772c1AZ4/edit) if you haven’t already to get a sense of your role on the project
+- Review the [design principals](https://docs.google.com/spreadsheets/d/14Y3RKaLUt6RPX5w13iz7oaSCpojEQ-Wqjnd8Ie_VkCc/edit#gid=259774738) to get a sense of how the cloud.gov team feels about the product
+- Review the [competitive analysis](https://docs.google.com/spreadsheets/u/1/d/194tGz75NFwFyH8jT7zY_n-O0I7N4yAGYtIG4hw9qPcQ/edit?usp=drive_web) to get a sense of our "competitors" and their console/deck.
+- Review the [cloudgov-style styleguide](https://pages.18f.gov/cg-style/) to get a sense of the global cloud.gov visual style.
+- Review the [US Web Design Standards](https://standards.usa.gov/) as cloudgov-style was built from it.
+- Review the deck, current [prod](https://console.cloud.gov/#/) and react refactor [staging](https://console-staging.cloud.gov/#/)
+- Review the cloud foundry [community UI](http://ui.apps.cloud.gov/), a UI that members of the cloud foundry community created and is being used as a basis for our own deck design.
 
 ## Public domain
 
