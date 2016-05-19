@@ -40,7 +40,7 @@ before_deploy:
 - export CLIPATH=$HOME/gopath/src/github.com/cloudfoundry/cli
 - export GOPATH=$HOME/gopath/$CLIPATH/Godeps/_workspace:$HOME/gopath
 - mkdir -p $CLIPATH
-- git clone --branch v6.12.3 https://github.com/cloudfoundry/cli.git $CLIPATH
+- git clone --branch v6.12.3 https://github.com/cloudfoundry/cli.git $CLIPATH || true # download if not there
 # Build the CF CLI
 - chmod a+x deploy/prepare_deploy.sh
 - deploy/prepare_deploy.sh
