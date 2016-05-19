@@ -1,4 +1,5 @@
 
+import dedent from 'dedent';
 import React from 'react';
 import Reactable from 'reactable';
 
@@ -43,9 +44,9 @@ export default class AppList extends React.Component {
   }
 
   appUrl(app) {
-    return `/#/org/${ this.state.currentOrgGuid }
-      /spaces/${ this.state.currentSpaceGuid }
-      /apps/${ app.guid }`;
+    return dedent`/#/org/${ this.state.currentOrgGuid }
+            /spaces/${ this.state.currentSpaceGuid }
+            /apps/${ app.guid }`;
   }
 
   getRows(apps) {

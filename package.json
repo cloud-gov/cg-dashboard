@@ -71,6 +71,7 @@
     "babel-runtime": "^6.3.19",
     "classnames": "^2.1.5",
     "cloudgov-style": "^0.4.0",
+    "dedent": "^0.6.0",
     "director": "^1.2.8",
     "events": "^1.0.2",
     "flux": "^2.0.3",
