@@ -61,6 +61,7 @@ function space(orgGuid, spaceGuid, potentialPage) {
 
 function app(orgGuid, spaceGuid, appGuid) {
   appActions.fetch(appGuid);
+  appActions.fetchStats(appGuid);
   ReactDOM.render(
     <App>
       <AppPage
