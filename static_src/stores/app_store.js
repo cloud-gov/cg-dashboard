@@ -23,6 +23,10 @@ class AppStore extends BaseStore {
         cfApi.fetchApp(action.appGuid);
         break;
 
+      case appActionTypes.APP_STATS_FETCH:
+        cfApi.fetchAppStats(action.appGuid);
+        break;
+
       case appActionTypes.APP_RECEIVED:
         this.merge('guid', action.app, (changed) => {
           if (changed) this.emitChange();
@@ -37,8 +41,9 @@ class AppStore extends BaseStore {
           };
           newApp = Object.assign({}, newApp, action.app);
           this._data.push(newApp);
+        } else {
+          this._data[idx] = Object.assign({}, this._data[idx], action.app);
         }
-        this._data[idx] = Object.assign({}, this._data[idx], action.app);
         this.emitChange();
         break;
       }

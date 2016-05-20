@@ -43,6 +43,22 @@ describe('AppStore', function() {
     });
   });
 
+  describe('on app stats fetch', function() {
+    it('should fetch app stats with guid from api', function() {
+      var spy = sandbox.spy(cfApi, 'fetchAppStats'),
+          expectedGuid = 'adfasddksazxcvzxcvz';
+
+      AppDispatcher.handleViewAction({
+        type: appActionTypes.APP_STATS_FETCH,
+        appGuid: expectedGuid
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+    });
+  });
+
   describe('on app received', function() {
     it('should emit a change event if data was updated', function() {
       var spy = sandbox.spy(AppStore, 'emitChange');
