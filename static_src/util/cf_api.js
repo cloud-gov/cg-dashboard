@@ -143,8 +143,11 @@ export default {
   },
 
   fetchAppStats(appGuid) {
-    return this.fetchOne(`/apps/${appGuid}/stats`,
-                         appActions.receivedAppStats);
+    return http.get(`${APIV}/apps/${appGuid}/stats`).then((res) => {
+      appActions.receivedAppStats(appGuid, res.data[0]);
+    }).catch((err) => {
+      errorActions.errorFetch(err);
+    });
   },
 
   /**

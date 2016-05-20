@@ -456,7 +456,7 @@ describe('cfApi', function() {
   describe('fetchAppStats()', function() {
     it('should call fetch with apps url and received app space', function() {
       var expected = 'yyyybbaxbba1',
-          spy = sandbox.stub(cfApi, 'fetchOne');
+          spy = sandbox.spy(http, 'get');
 
       cfApi.fetchAppStats(expected);
 
@@ -465,8 +465,6 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('apps'));
       expect(actual).toMatch(new RegExp('stats'));
-      actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(appActions.receivedAppStats);
     });
   });
 
