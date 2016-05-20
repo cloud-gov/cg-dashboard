@@ -29,6 +29,17 @@ class AppStore extends BaseStore {
         });
         break;
 
+      case appActionTypes.APP_STATS_RECEIVED:
+        var idx = this._data.findIndex((app) => {
+          return app.guid === action.appGuid;
+        });
+        if (idx <  0) {
+          throw new Error(`Cannot find app with guid ${action.appGuid}`);
+        }
+        this._data[idx] = Object.assign({}, this._data[idx], action.app);
+        this.emitChange();
+        break;
+
       default:
         break;
     }
