@@ -72,12 +72,13 @@ describe('appActions', function() {
         function() {
       var expected = { guid: 'asdfazzzb', service: [] },
           expectedParams = {
+            appGuid: expected.guid,
             app: expected
           };
 
-      let spy = setupServerSpy(sandbox)
+      let spy = setupServerSpy(sandbox);
 
-      appActions.receivedAppStats(expected);
+      appActions.receivedAppStats(expected.guid, expected);
 
       assertAction(spy, appActionTypes.APP_STATS_RECEIVED,
                    expectedParams)

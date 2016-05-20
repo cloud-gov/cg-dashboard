@@ -29,9 +29,10 @@ export default {
     });
   },
 
-  receivedAppStats(app) {
+  receivedAppStats(appGuid, app) {
     AppDispatcher.handleServerAction({
       type: appActionTypes.APP_STATS_RECEIVED,
+      appGuid: appGuid,
       app: app
     });
   }
