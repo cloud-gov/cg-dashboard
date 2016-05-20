@@ -85,7 +85,7 @@ export default class App extends React.Component {
   }
 }
 App.propTypes = {
-  children: React.PropTypes.element,
+  children: React.PropTypes.array,
   currentOrgGuid: React.PropTypes.string
 };
 
