@@ -32,7 +32,11 @@ class AppStore extends BaseStore {
       case appActionTypes.APP_STATS_RECEIVED: {
         const idx = this._data.findIndex((app) => app.guid === action.appGuid);
         if (idx < 0) {
-          throw new Error(`Cannot find app with guid ${action.appGuid}`);
+          let newApp = {
+            guid: action.appGuid
+          };
+          newApp = Object.assign({}, newApp, action.app);
+          this._data.push(newApp);
         }
         this._data[idx] = Object.assign({}, this._data[idx], action.app);
         this.emitChange();

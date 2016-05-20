@@ -141,16 +141,20 @@ describe('AppStore', function() {
     });
 
     it('should throw an error if it doesn\'t already exist', function() {
-      var expectedGuid = 'adcasdc',
+      var expectedGuid = 'adcasdcccsss',
           expected = {stats: { mem_quota: 12 }};
 
-      var action = AppDispatcher.handleServerAction.bind({
-        type: appActionTypes.APP_RECEIVED,
+      AppDispatcher.handleServerAction({
+        type: appActionTypes.APP_STATS_RECEIVED,
         appGuid: expectedGuid,
         app: expected
       });
 
-      expect(action).toThrow();
+      let actual = AppStore.get(expectedGuid);
+      expect(actual).toEqual({
+        guid: expectedGuid,
+        stats: { mem_quota: 12 }
+      });
     });
   });
 });
