@@ -4,6 +4,7 @@
 .env
 static/bower_components/
 node_modules/
+npm-debug.log
 coverage
 .godeps/
 Godeps/_workspace/

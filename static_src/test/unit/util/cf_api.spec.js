@@ -453,6 +453,23 @@ describe('cfApi', function() {
     });
   });
 
+  describe('fetchAppStats()', function() {
+    it('should call fetch with apps url and received app space', function() {
+      var expected = 'yyyybbaxbba1',
+          spy = sandbox.stub(cfApi, 'fetchOne');
+
+      cfApi.fetchAppStats(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('apps'));
+      expect(actual).toMatch(new RegExp('stats'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(appActions.receivedAppStats);
+    });
+  });
+
   describe('fetchSpaceUsers()', function() {
     it('should call fetch with spaces user roles url with space guid and the' +
        ' received space users action', function() {

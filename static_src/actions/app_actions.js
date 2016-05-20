@@ -20,5 +20,19 @@ export default {
       type: appActionTypes.APP_RECEIVED,
       app: app
     });
+  },
+
+  fetchStats(appGuid) {
+    AppDispatcher.handleViewAction({
+      type: appActionTypes.APP_STATS_FETCH,
+      appGuid: appGuid
+    });
+  },
+
+  receivedAppStats(app) {
+    AppDispatcher.handleServerAction({
+      type: appActionTypes.APP_STATS_RECEIVED,
+      app: app
+    });
   }
 };

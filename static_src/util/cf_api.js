@@ -142,6 +142,11 @@ export default {
                           appActions.receivedApp);
   },
 
+  fetchAppStats(appGuid) {
+    return this.fetchOne(`/apps/${appGuid}/stats`,
+                         appActions.receivedAppStats);
+  },
+
   /**
    * Fetch all users that belong to a certain space.
    *

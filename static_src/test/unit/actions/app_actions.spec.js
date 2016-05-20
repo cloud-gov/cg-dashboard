@@ -29,13 +29,29 @@ describe('appActions', function() {
 
       appActions.fetch(expectedAppGuid);
 
-      assertAction(spy, appActionTypes.APP_FETCH, 
+      assertAction(spy, appActionTypes.APP_FETCH,
+                   expectedParams)
+    });
+  });
+
+  describe('fetchStats()', function() {
+    it('should dispatch a view event of type app stats fetch', function() {
+      var expectedAppGuid = 'asdflkjzzz1',
+          expectedParams = {
+            appGuid: expectedAppGuid
+          };
+
+      let spy = setupViewSpy(sandbox)
+
+      appActions.fetchStats(expectedAppGuid);
+
+      assertAction(spy, appActionTypes.APP_STATS_FETCH,
                    expectedParams)
     });
   });
 
   describe('receivedApp()', function() {
-    it('should dispatch a server event of type app resv with app data', 
+    it('should dispatch a server event of type app resv with app data',
         function() {
       var expected = { guid: 'asdfa', service: [] },
           expectedParams = {
@@ -46,7 +62,24 @@ describe('appActions', function() {
 
       appActions.receivedApp(expected);
 
-      assertAction(spy, appActionTypes.APP_RECEIVED, 
+      assertAction(spy, appActionTypes.APP_RECEIVED,
+                   expectedParams)
+    });
+  });
+
+  describe('receivedAppStats()', function() {
+    it('should dispatch a server event of type app stat resv with app data',
+        function() {
+      var expected = { guid: 'asdfazzzb', service: [] },
+          expectedParams = {
+            app: expected
+          };
+
+      let spy = setupServerSpy(sandbox)
+
+      appActions.receivedAppStats(expected);
+
+      assertAction(spy, appActionTypes.APP_STATS_RECEIVED,
                    expectedParams)
     });
   });
