@@ -4,6 +4,8 @@
  * server.
  */
 
+import Immutable from 'immutable';
+
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
@@ -12,28 +14,25 @@ import { orgActionTypes, spaceActionTypes } from '../constants.js';
 class SpaceStore extends BaseStore {
   constructor() {
     super();
+    this._data = Immutable.List();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = [];
   }
 
   _registerToActions(action) {
     switch (action.type) {
       case orgActionTypes.ORG_RECEIVED:
-        var spaces = action.org.spaces;
-        if (spaces) {
-          this._data = this._merge(this._data, spaces);  
-          this.emitChange();
-        }
+        let spaces = action.org.spaces;
+        if (spaces) this.mergeMany('guid', spaces, (changed) => {
+          console.log('CHANGED', changed);
+          if (changed) this.emitChange();
+        });
+
         break;
 
       case spaceActionTypes.SPACE_RECEIVED:
-        var toUpdate = this.get(action.space.guid);
-        if (toUpdate) {
-          toUpdate = Object.assign(toUpdate, action.space); 
-        } else {
-          this._data.push(action.space);
-        }
-        this.emitChange();
+        this.merge('guid', action.space, (changed) => {
+          if (changed) this.emitChange();
+        });
         break;
     }
   }

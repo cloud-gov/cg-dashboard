@@ -1,8 +1,10 @@
 
 /*
  * Store for service plans data. Service plans belong to a service so there's
- * separate functionality to get all plans under a particiular service. 
+ * separate functionality to get all plans under a particiular service.
  */
+
+import Immutable from 'immutable';
 
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
@@ -14,13 +16,15 @@ class ServicePlanStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = [];
+    this._data = Immutable.List();
   }
 
   getAllFromService(serviceGuid) {
-    return this._data.filter((servicePlan) => {
-      return servicePlan.service_guid == serviceGuid;
+    let fromService = this._data.filter((servicePlan) => {
+      return servicePlan.get('service_guid') == serviceGuid;
     });
+
+    return fromService.toJS();
   }
 
   parseJson(entities, key) {
@@ -50,9 +54,11 @@ class ServicePlanStore extends BaseStore {
       case serviceActionTypes.SERVICE_PLANS_RECEIVED:
         if (action.servicePlans) {
           var servicePlans = this.formatSplitResponse(action.servicePlans);
-          servicePlans = this.parseJson(servicePlans, 'extra')
-          this._data = this._merge(this._data, servicePlans);
-          this.emitChange();
+          servicePlans = this.parseJson(servicePlans, 'extra');
+
+          this.mergeMany('guid', servicePlans, (changed) => {
+            if (changed) this.emitChange();
+          });
         }
         break;
 
@@ -66,4 +72,3 @@ class ServicePlanStore extends BaseStore {
 let _ServicePlanStore = new ServicePlanStore();
 
 export default _ServicePlanStore;
-

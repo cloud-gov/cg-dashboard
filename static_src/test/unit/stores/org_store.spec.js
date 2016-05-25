@@ -1,4 +1,6 @@
 
+import Immutable from 'immutable';
+
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
@@ -11,8 +13,8 @@ describe('OrgStore', () => {
   var sandbox;
 
   beforeEach(() => {
-    OrgStore._data = [];
     OrgStore._currentOrgGuid = null;
+    OrgStore._data = Immutable.List();
     sandbox = sinon.sandbox.create();
   });
 
@@ -21,8 +23,8 @@ describe('OrgStore', () => {
   });
 
   describe('constructor()', () => {
-    it('should set _data to empty array', () => {
-      expect(OrgStore._data).toBeEmptyArray();
+    it('should start with an empty array', () => {
+      expect(OrgStore.getAll()).toBeEmptyArray();
     });
   });
 
@@ -52,12 +54,24 @@ describe('OrgStore', () => {
       expect(OrgStore.getAll()).toEqual(unwrapOfRes(expected));
     });
 
-    it('should emit a change event', () => {
+    it('should not emit a change event if data is unchanged', () => {
       var spy = sandbox.spy(OrgStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORGS_RECEIVED,
         orgs: []
+      });
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should emit a change event if data has changed', () => {
+      var spy = sandbox.spy(OrgStore, 'emitChange');
+      var expected = wrapInRes([{guid: '1as'}, {guid: '2as'}]);
+
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORGS_RECEIVED,
+        orgs: expected
       });
 
       expect(spy).toHaveBeenCalledOnce();
@@ -68,7 +82,7 @@ describe('OrgStore', () => {
             {guid: 'aaa2', name: 'see'}]),
           current = [{guid: 'aaa1', memory: 1024}];
 
-      OrgStore._data = current;
+      OrgStore._data = Immutable.fromJS(current);
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORGS_RECEIVED,
         orgs: updates
@@ -121,9 +135,7 @@ describe('OrgStore', () => {
             ]
           };
 
-      OrgStore._data = [
-        { guid: testGuid, spaceUrl: 'https://space' }
-      ];
+      OrgStore.push({ guid: testGuid, spaceUrl: 'https://space' });
       expect(OrgStore.get(testGuid)).toBeObject();
 
       AppDispatcher.handleViewAction({
@@ -131,17 +143,21 @@ describe('OrgStore', () => {
         org: expected
       });
 
-      expect(OrgStore._data[0].guid).toEqual(expected.guid);
-      expect(OrgStore._data[0].spaces).toEqual(expected.spaces);
+      expect(OrgStore.get(testGuid).guid).toEqual(expected.guid);
+      expect(OrgStore.get(testGuid).spaces).toEqual(expected.spaces);
     });
   });
 
   describe('on org change current', function() {
-    it('should emit a change event if it finds the org', function() {
-      var spy = sandbox.spy(OrgStore, 'emitChange'),
-          expected = { guid: 'sdsf', name: 'testA' };
+    let expected;
 
-      OrgStore._data.push(expected);
+    beforeEach(function () {
+      expected = { guid: 'sdsf', name: 'testA' };
+      OrgStore.push(expected);
+    });
+
+    it('should emit a change event if it finds the org', function() {
+      var spy = sandbox.spy(OrgStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORG_CHANGE_CURRENT,
@@ -153,10 +169,14 @@ describe('OrgStore', () => {
   });
 
   describe('on a space menu toggle', function() {
+    let expected;
+    beforeEach(function () {
+      expected = { guid: 'sdsf', name: 'testA' };
+      OrgStore.push(expected);
+    });
+
     it('should toggle space_menu_open on the correct org', function() {
       var spy = sandbox.spy(OrgStore, 'emitChange');
-      var expected = { guid: 'sdsf' };
-      OrgStore._data.push(expected);
 
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORG_TOGGLE_SPACE_MENU,
@@ -164,7 +184,7 @@ describe('OrgStore', () => {
       });
 
       expect(spy).toHaveBeenCalledOnce();
-      expect(OrgStore._data[0].space_menu_open).toEqual(true);
+      expect(OrgStore.get(expected.guid).space_menu_open).toEqual(true);
     });
   });
 });

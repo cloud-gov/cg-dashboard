@@ -3,6 +3,7 @@
  * Store for services data. Will store and update services data on changes from
  * UI and server.
  */
+import Immutable from 'immutable';
 
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
@@ -15,7 +16,8 @@ class ServiceInstanceStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = [];
+
+    this._data = Immutable.List();
     this._createInstanceForm = null;
     this._createError = null;
   }
@@ -36,7 +38,7 @@ class ServiceInstanceStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED:
         var services = this.formatSplitResponse(action.serviceInstances);
-        this._data = services;
+        this._data = Immutable.fromJS(services);
         this.emitChange();
         break;
 
@@ -58,21 +60,17 @@ class ServiceInstanceStore extends BaseStore {
         break;
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATED:
-        var existing = this.get(action.serviceInstance.guid);
-        if (existing) {
-          //this.update
-          existing = Object.assign(existing, action.serviceInstance);
+        this.merge('guid', action.serviceInstance, (changed) => {
+          if (!changed) return;
 
-        } else {
-          this._data.push(action.serviceInstance);
-        }
-        this._createInstanceForm = null;
-        this.emitChange();
+          this._createInstanceForm = null;
+          this.emitChange();
+        });
         break;
 
       case serviceActionTypes.SERVICE_INSTANCE_ERROR:
-        var error = action.error;
-        this._createError = error;
+
+        this._createError = action.error;
         this.emitChange();
         break;
 
@@ -84,12 +82,15 @@ class ServiceInstanceStore extends BaseStore {
         break;
 
       case serviceActionTypes.SERVICE_INSTANCE_DELETED:
-        var deleted = this.get(action.serviceInstanceGuid);
-        if (deleted) {
-          var index = this._data.indexOf(deleted);
-          this._data.splice(index, 1);
+        let index = this._data.findIndex((d) => {
+          return d.get('guid') === action.serviceInstanceGuid;
+        });
+
+        if (index > -1) {
+          this._data = this._data.delete(index);
           this.emitChange();
         }
+
         break;
 
       default:

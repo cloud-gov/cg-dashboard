@@ -4,6 +4,8 @@
  * server.
  */
 
+import Immutable from 'immutable';
+
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
@@ -20,8 +22,8 @@ class OrgStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = [];
     this._currentOrgGuid = null;
+    this._data = Immutable.List();
   }
 
   _registerToActions(action) {
@@ -36,55 +38,46 @@ class OrgStore extends BaseStore {
         break;
 
       case orgActionTypes.ORG_RECEIVED:
-        if (action.org) {
-          var toUpdate = this.get(action.org.guid);
-          if (toUpdate) {
-            toUpdate = Object.assign(toUpdate, action.org);
-          } else {
-            this._data.push(action.org);
-          }
-          this.emitChange();
-        }
+        debugger;
+        if (action.org) this.merge('guid', action.org, (changed) => {
+          if (changed) this.emitChange();
+        });
         break;
 
       case orgActionTypes.ORGS_RECEIVED:
-        var updates = this.formatSplitResponse(action.orgs);
-        cfApi.fetchOrgsSummaries(updates.map((u) => { return u.guid; }));
-        this._data = this._merge(this._data, updates).map((d) => {
+        let updates = this.formatSplitResponse(action.orgs).map((d) => {
           if (d.spaces) {
             return d;
           }
           return Object.assign(d, { spaces: []});
         });
-        this.emitChange();
+        cfApi.fetchOrgsSummaries(updates.map((u) => { return u.guid; }));
+
+        this.mergeMany('guid', updates, (changed) => {
+          if (changed) this.emitChange();
+        });
         break;
 
       case orgActionTypes.ORGS_SUMMARIES_RECEIVED:
-        this._data = action.orgs.map((summary) => {
-          let same = this._data.find((d) => {
-            return d.guid === summary.guid;
-          });
-          if (!same) return;
-          return Object.assign(same, { 'spaces': summary.spaces });
+        this.mergeMany('guid', actions.orgs, (changed) => {
+          if (changed) this.emitChange();
         });
-        this.emitChange();
         break;
 
       case orgActionTypes.ORG_CHANGE_CURRENT:
         this._currentOrgGuid = action.orgGuid;
-        var org = this.get(action.orgGuid);
-        if (org) {
+        if (this.get(action.orgGuid)) {
           this.emitChange();
         }
         break;
 
       case orgActionTypes.ORG_TOGGLE_SPACE_MENU:
-        let org = this._data.find((i) => {
-          return i.guid === action.orgGuid;
-        });
+        let org = this.get(action.orgGuid);
         let open = org.space_menu_open || false;
-        Object.assign(org, { space_menu_open: !open })
-        this.emitChange();
+        let toUpdate = Object.assign(org, { space_menu_open: !open });
+        this.merge('guid', toUpdate, (changed) => {
+          if (changed) this.emitChange();
+        });
         break;
 
       default:

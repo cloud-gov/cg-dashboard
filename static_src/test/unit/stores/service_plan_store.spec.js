@@ -1,6 +1,8 @@
 
 import '../../global_setup.js';
 
+import Immutable from 'immutable';
+
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
@@ -12,7 +14,7 @@ describe('ServicePlanStore', function() {
   var sandbox;
 
   beforeEach(() => {
-    ServicePlanStore._data = [];
+    ServicePlanStore._data = Immutable.List();
     sandbox = sinon.sandbox.create();
   });
 
@@ -22,7 +24,7 @@ describe('ServicePlanStore', function() {
 
   describe('constructor()', () => {
     it('should set _data to empty array', () => {
-      expect(ServicePlanStore._data).toBeEmptyArray();
+      expect(ServicePlanStore.getAll()).toBeEmptyArray();
     });
   });
 
@@ -36,8 +38,8 @@ describe('ServicePlanStore', function() {
       ];
       let unexpectedService = { service_guid: 'zxklcjv', guid: 'qwpoerui' };
 
-      ServicePlanStore._data = ServicePlanStore._data.concat(expectedServices);
-      ServicePlanStore._data.push(unexpectedService);
+      ServicePlanStore._data = Immutable.fromJS(expectedServices);
+      ServicePlanStore.push(unexpectedService);
 
       let actual = ServicePlanStore.getAllFromService(expectedServiceGuid);
 
@@ -70,7 +72,7 @@ describe('ServicePlanStore', function() {
       let existing = { guid: 'alkdjsfzxcv' };
 
       let testRes = wrapInRes(expected);
-      ServicePlanStore._data.push(existing);
+      ServicePlanStore.push(existing);
 
       serviceActions.receivedPlans(testRes);
 
@@ -104,7 +106,7 @@ describe('ServicePlanStore', function() {
     it('should do nothing if there are no service plans', function() {
       var spy = sandbox.spy(ServicePlanStore, 'emitChange');
 
-      ServicePlanStore._data = [{ guid: 'adsfklj'}];
+      ServicePlanStore._data = Immutable.fromJS([{ guid: 'adsfklj'}]);
 
       serviceActions.receivedPlans();
 
@@ -121,4 +123,3 @@ describe('ServicePlanStore', function() {
     });
   });
 });
-

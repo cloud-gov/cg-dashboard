@@ -4,6 +4,8 @@
  * UI and server.
  */
 
+import Immutable from 'immutable';
+
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
@@ -13,7 +15,7 @@ class ServiceStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = [];
+    this._data = Immutable.List();
   }
 
   _registerToActions(action) {
@@ -23,9 +25,14 @@ class ServiceStore extends BaseStore {
         break;
 
       case serviceActionTypes.SERVICES_RECEIVED:
-        var services = this.formatSplitResponse(action.services);
-        this._data = services;
-        this.emitChange();
+        let services = this.formatSplitResponse(action.services);
+        let immutableServices = Immutable.fromJS(services);
+
+        if (this.dataHasChanged(immutableServices)) {
+          this._data = immutableServices;
+          this.emitChange();
+        }
+        
         break;
 
       default:

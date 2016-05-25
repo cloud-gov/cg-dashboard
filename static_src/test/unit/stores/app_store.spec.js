@@ -1,4 +1,6 @@
 
+import Immutable from 'immutable';
+
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
@@ -11,7 +13,7 @@ describe('AppStore', function() {
   var sandbox;
 
   beforeEach(() => {
-    AppStore._data = [];
+    AppStore._data = Immutable.List();
     sandbox = sinon.sandbox.create();
   });
 
@@ -53,13 +55,28 @@ describe('AppStore', function() {
       expect(spy).toHaveBeenCalledOnce();
     });
 
+    it('should not emit a change event if data was not changed', function() {
+      var spy = sandbox.spy(AppStore, 'emitChange');
+      var app = { guid: 'asdf' };
+
+      AppStore.push(app);
+
+      AppDispatcher.handleViewAction({
+        type: appActionTypes.APP_RECEIVED,
+        app: app
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
     it('should merge app with existing app if it exists', function() {
       var sharedGuid = 'cmadkljcsa';
 
       let existingApp = { guid: sharedGuid, name: 'adsfa' };
       let newApp = { guid: sharedGuid, instances: [{ guid: 'dfs' }] }
 
-      AppStore._data.push(existingApp);
+      AppStore.push(existingApp);
+
       expect(AppStore.get(sharedGuid)).toEqual(existingApp);
 
       AppDispatcher.handleServerAction({

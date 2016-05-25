@@ -4,6 +4,8 @@
  * server.
  */
 
+import Immutable from 'immutable';
+
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import userActions from '../actions/user_actions.js';
@@ -19,7 +21,7 @@ class UserStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = [];
+    this._data = Immutable.List();
     this._error = null;
   }
 
@@ -43,8 +45,9 @@ class UserStore extends BaseStore {
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
         const updates = this.formatSplitResponse(action.orgUserRoles);
         if (updates.length) {
-          this._data = this._merge(this._data, updates);
-          this.emitChange();
+          this.mergeMany('guid', updates, (changed) => {
+            if (changed) this.emitChange();
+          });
         }
         break;
       }
@@ -78,8 +81,10 @@ class UserStore extends BaseStore {
           if (user.organization_roles &&
               user.organization_roles.indexOf(role) === -1) {
             user.organization_roles.push(role);
-            this.emitChange();
           }
+          this.merge('guid', user, (changed) => {
+            if (changed) this.emitChange();
+          });
         }
         break;
       }
@@ -114,8 +119,11 @@ class UserStore extends BaseStore {
             user.organization_roles.indexOf(role);
           if (idx > -1) {
             user.organization_roles.splice(idx, 1);
-            this.emitChange();
           }
+
+          this.merge('guid', user, (changed) => {
+            if (changed) this.emitChange();
+          });
         }
         break;
       }
@@ -124,7 +132,7 @@ class UserStore extends BaseStore {
       case userActionTypes.ORG_USERS_RECEIVED: {
         let updates = this.formatSplitResponse(action.users);
         updates = updates.map((update) => {
-          const updateCopy = Object.assign({}, update);
+          let updateCopy = Object.assign({}, update);
           if (action.orgGuid) {
             updateCopy.orgGuid = action.orgGuid;
           }
@@ -134,9 +142,12 @@ class UserStore extends BaseStore {
           return updateCopy;
         });
         if (updates.length) {
-          this._data = this._merge(this._data, updates);
-          this._error = null;
-          this.emitChange();
+          this.mergeMany('guid', updates, (changed) => {
+            if (changed) {
+              this._error = null;
+              this.emitChange();
+            }
+          });
         }
         break;
       }
@@ -155,13 +166,15 @@ class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_DELETED: {
-        const deleted = this.get(action.userGuid);
-        if (deleted) {
-          const index = this._data.indexOf(deleted);
-          this._data.splice(index, 1);
-          this._error = null;
+        const index = this._data.findIndex((d) => {
+          return d.get('guid') === action.userGuid;
+        });
+
+        if (index > -1) {
+          this._data = this._data.delete(index);
           this.emitChange();
         }
+
         break;
       }
 
@@ -180,11 +193,17 @@ class UserStore extends BaseStore {
    * Get all users in a certain space
    */
   getAllInSpace(spaceGuid) {
-    return this._data.filter((user) => user.spaceGuid === spaceGuid);
+    const inSpace = this._data.filter((user) => {
+      return user.get('spaceGuid') === spaceGuid;
+    });
+    return inSpace.toJS();
   }
 
   getAllInOrg(orgGuid) {
-    return this._data.filter((user) => user.orgGuid === orgGuid);
+    const inOrg = this._data.filter((user) => {
+      return user.get('orgGuid') === orgGuid;
+    });
+    return inOrg.toJS();
   }
 
   getError() {
