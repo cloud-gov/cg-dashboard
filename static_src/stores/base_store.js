@@ -76,25 +76,6 @@ export default class BaseStore extends EventEmitter {
     this.removeListener('CHANGE', cb);
   }
 
-  // TODO determine if we can remove this function
-  _merge(currents, updates) {
-    if (!currents.length) return updates;
-
-    updates.forEach((update) => {
-      const same = currents.find((current) =>
-        current.guid === update.guid
-      );
-
-      if (same) {
-        Object.assign(same, update);
-      } else {
-        currents.push(update);
-      }
-    });
-
-    return currents;
-  }
-
   /* merge with no side effects
    *
    * If the dataToMerge exists in the store (as found by
