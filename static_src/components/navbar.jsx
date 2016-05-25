@@ -44,7 +44,8 @@ export class Nav extends React.Component {
     orgActions.changeCurrentOrg(orgGuid);
   }
 
-  _toggleSpacesMenu(orgGuid) {
+  _toggleSpacesMenu(orgGuid, ev) {
+    ev.preventDefault();
     orgActions.toggleSpaceMenu(orgGuid);
   }
 
@@ -105,7 +106,7 @@ export class Nav extends React.Component {
               </a>
               <ul className={ secondList }>
                 <li className={ subMenu }>
-                  <a onClick={ toggleSpaceHandler }>
+                  <a onClick={ toggleSpaceHandler } href="#">
                     <span>Spaces</span>
                     <span className={ arrowClasses }>
                     </span>
