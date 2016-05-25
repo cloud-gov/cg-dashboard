@@ -8,11 +8,15 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../dispatcher.js';
 
+function defaultChangedCallback(changed) {
+  if (changed) this.emitChange();
+}
+
 export default class BaseStore extends EventEmitter {
 
   constructor() {
     super();
-    this._data = Immutable.List();
+    this._data = new Immutable.List();
   }
 
   subscribe(actionSubscribe) {
@@ -29,7 +33,7 @@ export default class BaseStore extends EventEmitter {
   }
 
   push(val) {
-    let newData = Immutable.fromJS(val);
+    const newData = Immutable.fromJS(val);
     this._data = this._data.push(newData);
     this.emitChange();
 
@@ -38,12 +42,13 @@ export default class BaseStore extends EventEmitter {
 
   get(guid) {
     if (guid && !this.isEmpty()) {
-      let item =  this._data.find((space) => {
-        return space.get('guid') === guid;
-      });
+      const item = this._data.find((space) =>
+        space.get('guid') === guid
+      );
 
       if (item) return item.toJS();
     }
+    return undefined;
   }
 
   getAll() {
@@ -51,14 +56,12 @@ export default class BaseStore extends EventEmitter {
   }
 
   dataHasChanged(toCompare) {
-    let c = Immutable.fromJS(toCompare);
+    const c = Immutable.fromJS(toCompare);
     return !Immutable.is(this._data, c);
   }
 
   formatSplitResponse(resources) {
-    return resources.map((resource) => {
-      return Object.assign(resource.entity, resource.metadata);
-    });
+    return resources.map((r) => Object.assign(r.entity, r.metadata));
   }
 
   emitChange() {
@@ -75,17 +78,20 @@ export default class BaseStore extends EventEmitter {
 
   // TODO determine if we can remove this function
   _merge(currents, updates) {
-    if (currents.length) {
-      updates.forEach(function(update) {
-        var same = currents.find(function(current) {
-          return current.guid === update.guid;
-        });
+    if (!currents.length) return updates;
 
-        same ? Object.assign(same, update) : currents.push(update);
-      });
-    } else {
-      currents = updates;
-    }
+    updates.forEach((update) => {
+      const same = currents.find((current) =>
+        current.guid === update.guid
+      );
+
+      if (same) {
+        Object.assign(same, update);
+      } else {
+        currents.push(update);
+      }
+    });
+
     return currents;
   }
 
@@ -103,32 +109,30 @@ export default class BaseStore extends EventEmitter {
    *                  when the store's data has changed
    *
    */
-  merge(mergeKey, dataToMerge, cb) {
-    cb = cb || defaultChangedCallback.bind(this);
-    dataToMerge = Immutable.fromJS(dataToMerge);
-    let oldDataItem = this._data.find((d) => {
-      return d.get(mergeKey) === dataToMerge.get(mergeKey);
-    });
+  merge(mergeKey, dataToMerge, cb = defaultChangedCallback.bind(this)) {
+    const toMerge = Immutable.fromJS(dataToMerge);
+    const oldDataItem = this._data.find((d) =>
+      d.get(mergeKey) === toMerge.get(mergeKey)
+    );
 
     if (oldDataItem) {
-      if (Immutable.is(oldDataItem, dataToMerge)) {
+      if (Immutable.is(oldDataItem, toMerge)) {
         return cb(false);
       }
 
       this._data = this._data.map((d) => {
         if (Immutable.is(d, oldDataItem)) {
-          return oldDataItem.merge(dataToMerge);
+          return oldDataItem.merge(toMerge);
         }
         return d;
       });
     } else {
-      this._data = this._data.push(dataToMerge);
+      this._data = this._data.push(toMerge);
     }
     return cb(true);
   }
 
-  mergeMany(mergeKey, arrayOfDataToMerge, cb) {
-    cb = cb || defaultChangedCallback.bind(this);
+  mergeMany(mergeKey, arrayOfDataToMerge, cb = defaultChangedCallback.bind(this)) {
     let dataHasChanged = false;
     arrayOfDataToMerge.forEach((newData) => {
       this.merge(mergeKey, newData, (changed) => {
@@ -136,10 +140,6 @@ export default class BaseStore extends EventEmitter {
       });
     });
 
-    cb(dataHasChanged)
+    cb(dataHasChanged);
   }
-}
-
-function defaultChangedCallback(changed) {
-  if (changed) this.emitChange();
 }

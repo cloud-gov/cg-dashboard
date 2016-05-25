@@ -16,44 +16,48 @@ class ServicePlanStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = Immutable.List();
+    this._data = new Immutable.List();
   }
 
   getAllFromService(serviceGuid) {
-    let fromService = this._data.filter((servicePlan) => {
-      return servicePlan.get('service_guid') == serviceGuid;
-    });
+    const fromService = this._data.filter((servicePlan) =>
+      servicePlan.get('service_guid') === serviceGuid
+    );
 
     return fromService.toJS();
   }
 
   parseJson(entities, key) {
-    return entities.map((entity) => {
+    const e = entities.slice();
+    return e.map((entity) => {
+      const parsed = {};
       if (entity[key]) {
-        entity[key] = JSON.parse(entity[key]);
+        parsed[key] = JSON.parse(entity[key]);
       }
-      return entity;
+      return Object.assign({}, entity, parsed);
     });
   }
 
   _registerToActions(action) {
     switch (action.type) {
-      case serviceActionTypes.SERVICES_RECEIVED:
+      case serviceActionTypes.SERVICES_RECEIVED: {
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
-        var services = this.formatSplitResponse(action.services);
-        for (let service of services) {
+        const services = this.formatSplitResponse(action.services);
+        for (const service of services) {
           cfApi.fetchAllServicePlans(service.guid);
         }
         break;
+      }
 
-      case serviceActionTypes.SERVICE_PLANS_FETCH:
+      case serviceActionTypes.SERVICE_PLANS_FETCH: {
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         cfApi.fetchAllServicePlans(action.serviceGuid);
         break;
+      }
 
-      case serviceActionTypes.SERVICE_PLANS_RECEIVED:
+      case serviceActionTypes.SERVICE_PLANS_RECEIVED: {
         if (action.servicePlans) {
-          var servicePlans = this.formatSplitResponse(action.servicePlans);
+          let servicePlans = this.formatSplitResponse(action.servicePlans);
           servicePlans = this.parseJson(servicePlans, 'extra');
 
           this.mergeMany('guid', servicePlans, (changed) => {
@@ -61,14 +65,15 @@ class ServicePlanStore extends BaseStore {
           });
         }
         break;
+      }
 
       default:
         break;
 
     }
   }
+}
 
-};
-let _ServicePlanStore = new ServicePlanStore();
+const _ServicePlanStore = new ServicePlanStore();
 
 export default _ServicePlanStore;

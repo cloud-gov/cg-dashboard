@@ -7,13 +7,5 @@ static_src/actions/app_actions.js
 static_src/actions/error_actions.js
 static_src/actions/user_actions.js
 static_src/dispatcher.js
-static_src/stores/service_store.js
-static_src/stores/space_store.js
-static_src/stores/app_store.js
-static_src/stores/service_plan_store.js
-static_src/stores/org_store.js
-static_src/stores/base_store.js
-static_src/stores/login_store.js
-static_src/stores/service_instance_store.js
 static_src/tests.bundle.js
 static_src/constants.js

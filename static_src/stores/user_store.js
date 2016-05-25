@@ -21,7 +21,7 @@ class UserStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = Immutable.List();
+    this._data = new Immutable.List();
     this._error = null;
   }
 
@@ -132,7 +132,7 @@ class UserStore extends BaseStore {
       case userActionTypes.ORG_USERS_RECEIVED: {
         let updates = this.formatSplitResponse(action.users);
         updates = updates.map((update) => {
-          let updateCopy = Object.assign({}, update);
+          const updateCopy = Object.assign({}, update);
           if (action.orgGuid) {
             updateCopy.orgGuid = action.orgGuid;
           }
@@ -166,9 +166,9 @@ class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_DELETED: {
-        const index = this._data.findIndex((d) => {
-          return d.get('guid') === action.userGuid;
-        });
+        const index = this._data.findIndex((d) =>
+          d.get('guid') === action.userGuid
+        );
 
         if (index > -1) {
           this._data = this._data.delete(index);
@@ -193,16 +193,16 @@ class UserStore extends BaseStore {
    * Get all users in a certain space
    */
   getAllInSpace(spaceGuid) {
-    const inSpace = this._data.filter((user) => {
-      return user.get('spaceGuid') === spaceGuid;
-    });
+    const inSpace = this._data.filter((user) =>
+      user.get('spaceGuid') === spaceGuid
+    );
     return inSpace.toJS();
   }
 
   getAllInOrg(orgGuid) {
-    const inOrg = this._data.filter((user) => {
-      return user.get('orgGuid') === orgGuid;
-    });
+    const inOrg = this._data.filter((user) =>
+      user.get('orgGuid') === orgGuid
+    );
     return inOrg.toJS();
   }
 
