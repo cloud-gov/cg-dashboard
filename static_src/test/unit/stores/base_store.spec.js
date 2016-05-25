@@ -1,4 +1,6 @@
 
+import Immutable from 'immutable';
+
 import '../../global_setup.js';
 
 import BaseStore from '../../../stores/base_store.js';
@@ -76,23 +78,22 @@ describe('BaseStore', () => {
       var expectedGuid = 'adkfjlzcxv',
           expected = { guid: expectedGuid };
 
-      store._data.push(expected);
+      store.push(expected);
 
       let actual = store.get(expectedGuid);
 
       expect(actual).toEqual(expected);
     });
-    
+
     it('should returned undefined if entity with guid it doesn\'t exist',
         function() {
-      store._data = [];
       let actual = store.get('adjlfk');
 
       expect(actual).toBe(undefined);
     });
 
     it('should return undefined if not guid is passed in', function() {
-      store._data = [{ guid: 'adsf' }]; 
+      store.push({ guid: 'adsf' });
 
       let actual = store.get();
 
@@ -104,7 +105,7 @@ describe('BaseStore', () => {
     it('should get all entities if there are some', function() {
       var expected = [{ guid: 'adf' }, { guid: 'adsfjk' }];
 
-      store._data = expected;
+      expected.forEach((e) => store.push(e) );
 
       let actual = store.getAll();
 
@@ -114,11 +115,59 @@ describe('BaseStore', () => {
     });
 
     it('should return an empty array if there are no entities', function() {
-      store._data = [];
-
       let actual = store.getAll();
 
       expect(actual).toBeEmptyArray();
+    });
+  });
+
+  describe('push()', function() {
+    it('should increment the count when an item is added', function() {
+      let initialCount = store.getAll().length;
+      store.push({ guid: 'pushtest' });
+      let pushedCount = store.getAll().length;
+
+      expect(pushedCount).toEqual(initialCount + 1);
+    });
+
+    it('should convert any pushed data to immutable types', function() {
+      store.push({ guid: 'pushtest' });
+      let pushed = store._data.get(0);
+
+      expect(pushed.asImmutable).toBeDefined();
+    });
+  });
+
+  describe('dataHasChanged()', function() {
+    describe('passed regular JS objects', function() {
+      it('should return true if new data is different from _data', function() {
+        let oldData = { guid: 'pushtest'};
+        let newData = { guid: 'pushtestyetagain' };
+
+        store.push(oldData);
+
+        expect(store.dataHasChanged(newData)).toBe(true);
+      });
+
+      it('should return false if the data is the same as _data', function() {
+        let oldData = { guid: 'pushtest' };
+        let newData = Immutable.fromJS([oldData]);
+
+        store.push(oldData);
+
+        expect(store.dataHasChanged(newData)).toBe(false);
+      });
+    });
+
+    describe('passed ImmutableJS objects', function() {
+      it('should return true if new data is different from _data', function() {
+        let oldData = { guid: 'pushtest'};
+        let newData = { guid: 'pushtestyetagain' };
+
+        store.push(oldData);
+
+        expect(store.dataHasChanged(newData)).toBe(true);
+      });
     });
   });
 
@@ -147,19 +196,19 @@ describe('BaseStore', () => {
     });
   });
 
-  describe('merge()', function() {
+  describe('_merge()', function() {
     var existingEntityA = {
       guid: 'zznbmbz',
       name: 'ea',
       cpu: 34
-    }; 
+    };
     var existingEntityB = {
       guid: 'zzlkcxv',
       name: 'eb'
-    }; 
+    };
     var existingEntities = [existingEntityA, existingEntityB];
 
-    it('should update existing entities with updated with same guid ', 
+    it('should update existing entities with updated with same guid ',
         function() {
       var updateA = {
         guid: existingEntityA.guid,
@@ -199,6 +248,81 @@ describe('BaseStore', () => {
       let actual = store._merge([], updates);
 
       expect(actual).toEqual(updates);
+    });
+  });
+
+  describe('merge() -- no side effects function', function() {
+    var existingEntityA = {
+      guid: 'zznbmbz',
+      name: 'ea',
+      cpu: 34
+    };
+    var existingEntityB = {
+      guid: 'zzlkcxv',
+      name: 'eb'
+    };
+
+    beforeEach(function() {
+      store.push(existingEntityA);
+      store.push(existingEntityB);
+    });
+
+    it('should call cb with true when data is updated', function () {
+      var updateA = {
+        guid: existingEntityA.guid,
+        name: 'zzz',
+        memory: 1024
+      };
+
+      store.merge('guid', updateA, (changed) => {
+        expect(changed).toEqual(true);
+      });
+    });
+
+    it('should call cb with false when no data is updated', function () {
+      store.merge('guid', existingEntityA, (changed) => {
+        expect(changed).toEqual(false);
+      });
+    });
+
+    it('should update a single existing entity with the same guid ',
+        function() {
+      var updateA = {
+        guid: existingEntityA.guid,
+        name: 'zzz',
+        memory: 1024
+      };
+
+      store.merge('guid', updateA, (changed) => {
+        let updated = store.get(updateA.guid);
+        expect(updated).toEqual(Object.assign({}, existingEntityA, updateA));
+      });
+
+      expect(store.get(existingEntityB.guid)).toEqual(existingEntityB);
+    });
+
+    it('should update a multiple existing entities with the same guids ',
+        function() {
+      var toUpdateA = {
+        guid: existingEntityA.guid,
+        name: 'ea',
+        memory: 1024
+      };
+      var toUpdateB = {
+        guid: existingEntityB.guid,
+        name: 'eb',
+        memory: 1024
+      };
+
+      store.mergeMany('guid', [toUpdateA, toUpdateB], (changed) => {
+        expect(changed).toBeTruthy();
+
+        let updatedA = store.get(toUpdateA.guid);
+        expect(updatedA).toEqual(Object.assign({}, existingEntityA, toUpdateA));
+
+        let updatedB = store.get(toUpdateB.guid);
+        expect(updatedB).toEqual(Object.assign({}, existingEntityB, toUpdateB));
+      });
     });
   });
 });
