@@ -2,6 +2,7 @@
 import React from 'react';
 
 import cgBaseStyles from 'cloudgov-style/css/base.css';
+import mainContentStyles from 'cloudgov-style/css/components/main-content.css';
 import sidenavStyles from 'cloudgov-style/css/components/sidenav.css';
 import titleBarStyles from 'cloudgov-style/css/components/title_bar.css';
 import navToggleStyles from 'cloudgov-style/css/components/nav_toggle.css';
@@ -23,6 +24,7 @@ export default class App extends React.Component {
     super(props);
     this.styler = createStyler(
       cgBaseStyles,
+      mainContentStyles,
       sidenavStyles,
       titleBarStyles,
       navToggleStyles
@@ -73,7 +75,9 @@ export default class App extends React.Component {
             { sidebar }
           </nav>
           <main className={ this.styler('sidenav-main', 'usa-content') }>
-            { content }
+            <div className={ this.styler('content') }>
+              { content }
+            </div>
           </main>
         </div>
       </div>
