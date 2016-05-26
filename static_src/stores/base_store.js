@@ -60,6 +60,17 @@ export default class BaseStore extends EventEmitter {
     return !Immutable.is(this._data, c);
   }
 
+  delete(guid, cb = defaultChangedCallback.bind(this)) {
+    const index = this._data.findIndex((d) =>
+      d.get('guid') === guid
+    );
+
+    if (index === -1) return cb(false);
+
+    this._data = this._data.delete(index);
+    return cb(true);
+  }
+
   formatSplitResponse(resources) {
     return resources.map((r) => Object.assign(r.entity, r.metadata));
   }

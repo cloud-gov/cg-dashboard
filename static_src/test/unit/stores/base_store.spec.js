@@ -171,6 +171,34 @@ describe('BaseStore', () => {
     });
   });
 
+  describe('delete()', function() {
+    it('should remove items that match the guid and call .emitChange()', function () {
+      var spy = sandbox.spy(store, 'emitChange');
+      var guid = 'deleteFakeGuid';
+      store._data = Immutable.fromJS([{ guid }]);
+
+      expect(store.getAll().length).toEqual(1);
+
+      store.delete(guid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(store.getAll().length).toEqual(0);
+    });
+
+    it('should do nothing if the guid does not match', function () {
+      var spy = sandbox.spy(store, 'emitChange');
+      var guid = 'deleteFakeGuid';
+      store._data = Immutable.fromJS([{ guid }]);
+
+      expect(store.getAll().length).toEqual(1);
+
+      store.delete('nonExistentFakeGuid');
+
+      expect(spy).not.toHaveBeenCalledOnce();
+      expect(store.getAll().length).toEqual(1);
+    });
+  });
+
   describe('formatSplitResponse()', function() {
     var testRezs;
 
@@ -224,14 +252,15 @@ describe('BaseStore', () => {
       });
     });
 
-    it('should call cb with false when no data is updated', function () {
+    it('should call cb with false when no data is updated', function (done) {
       store.merge('guid', existingEntityA, (changed) => {
         expect(changed).toEqual(false);
+        done();
       });
     });
 
     it('should update a single existing entity with the same guid ',
-        function() {
+        function(done) {
       var updateA = {
         guid: existingEntityA.guid,
         name: 'zzz',
@@ -241,9 +270,10 @@ describe('BaseStore', () => {
       store.merge('guid', updateA, (changed) => {
         let updated = store.get(updateA.guid);
         expect(updated).toEqual(Object.assign({}, existingEntityA, updateA));
-      });
+        expect(store.get(existingEntityB.guid)).toEqual(existingEntityB);
 
-      expect(store.get(existingEntityB.guid)).toEqual(existingEntityB);
+        done();
+      });
     });
 
     it('should update a multiple existing entities with the same guids ',
