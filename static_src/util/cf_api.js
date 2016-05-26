@@ -239,6 +239,7 @@ export default {
 
   fetchRoutesForApp(appGuid) {
     return this.fetchMany(`/apps/${appGuid}/routes`,
-        routeActions.receivedRoutesForApp);
+        routeActions.receivedRoutesForApp,
+        appGuid);
   }
 };
