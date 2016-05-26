@@ -5,6 +5,7 @@ import appActions from '../actions/app_actions.js';
 import errorActions from '../actions/error_actions.js';
 import loginActions from '../actions/login_actions.js';
 import orgActions from '../actions/org_actions.js';
+import routeActions from '../actions/route_actions.js';
 import spaceActions from '../actions/space_actions.js';
 import serviceActions from '../actions/service_actions.js';
 import userActions from '../actions/user_actions.js';
@@ -234,6 +235,10 @@ export default {
   fetchAllServicePlans(serviceGuid) {
     return this.fetchMany(`/services/${serviceGuid}/service_plans`,
       serviceActions.receivedPlans);
-  }
+  },
 
+  fetchRoutesForApp(appGuid) {
+    return this.fetchMany(`/apps/${appGuid}/routes`,
+        routeActions.receivedRoutesForApp);
+  }
 };
