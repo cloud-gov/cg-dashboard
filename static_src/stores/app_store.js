@@ -34,17 +34,10 @@ class AppStore extends BaseStore {
         break;
 
       case appActionTypes.APP_STATS_RECEIVED: {
-        const idx = this._data.findIndex((app) => app.guid === action.appGuid);
-        if (idx < 0) {
-          let newApp = {
-            guid: action.appGuid
-          };
-          newApp = Object.assign({}, newApp, action.app);
-          this._data.push(newApp);
-        } else {
-          this._data[idx] = Object.assign({}, this._data[idx], action.app);
-        }
-        this.emitChange();
+        const app = Object.assign({}, action.app, { guid: action.appGuid });
+        this.merge('guid', app, (changed) => {
+          if (changed) this.emitChange();
+        });
         break;
       }
 

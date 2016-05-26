@@ -121,11 +121,12 @@ describe('AppStore', function() {
 
   describe('on app stats received', function() {
     it('should emit a change event if data was updated', function() {
-      var spy = sandbox.spy(AppStore, 'emitChange');
       const sharedGuid = '2893hazxcmv';
 
       let existingApp = { guid: sharedGuid, name: 'asddd' };
-      AppStore._data.push(existingApp);
+      AppStore.push(existingApp);
+
+      const spy = sandbox.spy(AppStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_STATS_RECEIVED,
@@ -142,7 +143,7 @@ describe('AppStore', function() {
       let existingApp = { guid: sharedGuid, name: 'adsfa' };
       let newApp = { stats: { mem_quota: 123543 }};
 
-      AppStore._data.push(existingApp);
+      AppStore.push(existingApp);
       expect(AppStore.get(sharedGuid)).toEqual(existingApp);
 
       AppDispatcher.handleServerAction({
@@ -156,7 +157,7 @@ describe('AppStore', function() {
           stats: { mem_quota: 123543 }});
     });
 
-    it('should throw an error if it doesn\'t already exist', function() {
+    it('should create a new app if it doesn\'t already exist', function() {
       var expectedGuid = 'adcasdcccsss',
           expected = {stats: { mem_quota: 12 }};
 

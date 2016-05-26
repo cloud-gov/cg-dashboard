@@ -18,6 +18,10 @@ export default class AppPage extends React.Component {
     AppStore.addChangeListener(this._onChange);
   }
 
+  componentWillUnmount() {
+    AppStore.removeChangeListener(this._onChange);
+  }
+
   _onChange() {
     this.setState({
       app: AppStore.get(this.state.currentAppGuid) || {}
@@ -56,19 +60,21 @@ export default class AppPage extends React.Component {
                   <td>{ this.state.app.buildpack }</td>
                 </tr>
                 <tr>
-                  <td><strong>Memory</strong></td>
+                  <td><strong>Memory usage</strong></td>
                   <td>
-                    { this.state.app.stats && this.formatMb(
-                        this.state.app.stats.usage.mem) }MB /
-                    { this.state.app.stats &&
+                    <strong>{ this.state.app.stats && this.formatMb(
+                        this.state.app.stats.usage.mem) }MB</strong> out of
+                      <span>&nbsp;</span>
+                     { this.state.app.stats &&
                       this.formatMb(this.state.app.stats.mem_quota) }MB
                   </td>
                 </tr>
                 <tr>
-                  <td><strong>Disk limit</strong></td>
+                  <td><strong>Disk usage</strong></td>
                   <td>
-                    { this.state.app.stats && this.formatMb(
-                        this.state.app.stats.usage.disk) }MB /
+                  <strong>{ this.state.app.stats && this.formatMb(
+                    this.state.app.stats.usage.disk) }MB</strong> out of
+                    <span>&nbsp;</span>
                     { this.state.app.stats &&
                       this.formatMb(this.state.app.stats.disk_quota) }MB
                   </td>
