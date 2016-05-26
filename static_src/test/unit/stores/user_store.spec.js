@@ -1,6 +1,8 @@
 
 import '../../global_setup.js';
 
+import Immutable from 'immutable';
+
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
@@ -12,7 +14,7 @@ describe('UserStore', function() {
   var sandbox;
 
   beforeEach(() => {
-    UserStore._data = [];
+    UserStore._data = Immutable.List();
     sandbox = sinon.sandbox.create();
   });
 
@@ -104,9 +106,9 @@ describe('UserStore', function() {
       var sharedGuid = 'wpqoifesadkzcvn';
 
       let existingUser = { guid: sharedGuid, name: 'Michael' };
-      let newUser = { guid: sharedGuid, email: 'michale@gsa.gov' };
+      let newUser = { guid: sharedGuid, email: 'michael@gsa.gov' };
 
-      UserStore._data.push(existingUser);
+      UserStore.push(existingUser);
       expect(UserStore.get(sharedGuid)).toEqual(existingUser);
 
       AppDispatcher.handleServerAction({
@@ -115,12 +117,11 @@ describe('UserStore', function() {
       });
 
       let actual = UserStore.get(sharedGuid);
-      expect(actual).toEqual(
-        { guid: sharedGuid,
-          name: 'Michael',
-          email: 'michale@gsa.gov'
-        }
-      );
+      expect(actual).toEqual({
+        guid: sharedGuid,
+        name: 'Michael',
+        email: 'michael@gsa.gov'
+      });
     });
 
     it('should add org and/or space guid to user', function() {
@@ -153,24 +154,22 @@ describe('UserStore', function() {
 
     it('should merge and update new users with existing users in data',
         function() {
-      var sharedGuid = 'wpqoifesadkzcvn';
+      const sharedGuid = 'wpqoifesadkzcvn';
+      const existingUser = { guid: sharedGuid, name: 'Michael' };
+      const newUser = { guid: sharedGuid, organization_roles: ['role'] };
 
-      let existingUser = { guid: sharedGuid, name: 'Michael' };
-      let newUser = { guid: sharedGuid, organization_roles: ['role'] };
-
-      UserStore._data.push(existingUser);
+      UserStore.push(existingUser);
       expect(UserStore.get(sharedGuid)).toEqual(existingUser);
+
+      console.log('yo', wrapInRes([newUser]));
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.ORG_USER_ROLES_RECEIVED,
         orgUserRoles: wrapInRes([newUser])
       });
       let actual = UserStore.get(sharedGuid);
-      expect(actual).toEqual({
-        guid: sharedGuid,
-        name: 'Michael',
-        organization_roles: ['role']
-      });
+      let expected = Object.assign({}, existingUser, newUser);
+      expect(actual).toEqual(expected);
     });
   });
 
@@ -216,7 +215,7 @@ describe('UserStore', function() {
         organization_roles: ['org_manager']
       };
 
-      UserStore._data.push(existingUser);
+      UserStore.push(existingUser);
 
       userActions.addedUserRoles(expectedRole, testGuid, 'organization');
 
@@ -226,10 +225,11 @@ describe('UserStore', function() {
     });
 
     it('should emit a change event if it finds the user', function() {
-      var spy = sandbox.spy(UserStore, 'emitChange'),
-          testUserGuid = '234xcvbqwn';
+      const spy = sandbox.spy(UserStore, 'emitChange');
+      const testUserGuid = '234xcvbqwn';
+      const initialData = [{guid: testUserGuid, organization_roles: []}]
 
-      UserStore._data.push({guid: testUserGuid, organization_roles: []});
+      UserStore._data = Immutable.fromJS(initialData);
       userActions.addedUserRoles('testrole', testUserGuid, 'organization');
 
       expect(spy).toHaveBeenCalledOnce();
@@ -282,7 +282,7 @@ describe('UserStore', function() {
         organization_roles: ['org_manager', expectedRole]
       };
 
-      UserStore._data.push(existingUser);
+      UserStore._data = Immutable.fromJS([existingUser]);
 
       userActions.deletedUserRoles(expectedRole, testGuid, 'organization');
 
@@ -296,8 +296,10 @@ describe('UserStore', function() {
           expectedRole = 'org_dark_lord',
           testUserGuid = '234xcvbqwn';
 
-      UserStore._data.push({guid: testUserGuid,
-        organization_roles: [expectedRole]});
+      UserStore._data = Immutable.fromJS([{
+        guid: testUserGuid,
+        organization_roles: [expectedRole]
+      }]);
       userActions.deletedUserRoles(expectedRole, testUserGuid, 'organization');
 
       expect(spy).toHaveBeenCalledOnce();
@@ -364,8 +366,8 @@ describe('UserStore', function() {
       var spy = sandbox.spy(UserStore, 'emitChange'),
           testUserGuid = 'qpweoiralkfdsj';
 
-      UserStore._data.push({guid: testUserGuid});
-      userActions.deletedUser(testUserGuid, 'adlsvjkadfa');
+      UserStore._data = Immutable.fromJS([{guid: testUserGuid}]);
+      userActions.deletedUser(testUserGuid, 'testOrgGuid');
 
       expect(spy).toHaveBeenCalledOnce();
     });
@@ -403,7 +405,7 @@ describe('UserStore', function() {
       var spaceGuid = 'asdfa';
       var testUser = { guid: 'adfzxcv', spaceGuid: spaceGuid };
 
-      UserStore._data.push(testUser);
+      UserStore.push(testUser);
 
       let actual = UserStore.getAllInSpace(spaceGuid);
 
@@ -416,7 +418,7 @@ describe('UserStore', function() {
       var orgGuid = 'asdfa';
       var testUser = { guid: 'adfzxcv', orgGuid: orgGuid };
 
-      UserStore._data.push(testUser);
+      UserStore.push(testUser);
 
       let actual = UserStore.getAllInOrg(orgGuid);
 

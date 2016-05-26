@@ -4,88 +4,83 @@
  * server.
  */
 
+import Immutable from 'immutable';
+
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import LoginStore from './login_store.js';
 import { orgActionTypes } from '../constants.js';
 
-function formatData(resources) {
-  return resources.map((resource) => {
-    return Object.assign(resource.entity, resource.metadata);
-  });
-}
-
 class OrgStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = [];
     this._currentOrgGuid = null;
+    this._data = new Immutable.List();
   }
 
   _registerToActions(action) {
     switch (action.type) {
-      case orgActionTypes.ORG_FETCH:
+      case orgActionTypes.ORG_FETCH: {
         cfApi.fetchOrg(action.orgGuid);
         break;
+      }
 
-      case orgActionTypes.ORGS_FETCH:
+      case orgActionTypes.ORGS_FETCH: {
         AppDispatcher.waitFor([LoginStore.dispatchToken]);
         cfApi.fetchOrgs();
         break;
+      }
 
-      case orgActionTypes.ORG_RECEIVED:
+      case orgActionTypes.ORG_RECEIVED: {
         if (action.org) {
-          var toUpdate = this.get(action.org.guid);
-          if (toUpdate) {
-            toUpdate = Object.assign(toUpdate, action.org);
-          } else {
-            this._data.push(action.org);
-          }
-          this.emitChange();
+          this.merge('guid', action.org, (changed) => {
+            if (changed) this.emitChange();
+          });
         }
         break;
+      }
 
-      case orgActionTypes.ORGS_RECEIVED:
-        var updates = this.formatSplitResponse(action.orgs);
-        cfApi.fetchOrgsSummaries(updates.map((u) => { return u.guid; }));
-        this._data = this._merge(this._data, updates).map((d) => {
+      case orgActionTypes.ORGS_RECEIVED: {
+        const updates = this.formatSplitResponse(action.orgs).map((d) => {
           if (d.spaces) {
             return d;
           }
-          return Object.assign(d, { spaces: []});
+          return Object.assign(d, { spaces: [] });
         });
-        this.emitChange();
-        break;
+        cfApi.fetchOrgsSummaries(updates.map((u) => u.guid));
 
-      case orgActionTypes.ORGS_SUMMARIES_RECEIVED:
-        this._data = action.orgs.map((summary) => {
-          let same = this._data.find((d) => {
-            return d.guid === summary.guid;
-          });
-          if (!same) return;
-          return Object.assign(same, { 'spaces': summary.spaces });
+        this.mergeMany('guid', updates, (changed) => {
+          if (changed) this.emitChange();
         });
-        this.emitChange();
         break;
+      }
 
-      case orgActionTypes.ORG_CHANGE_CURRENT:
+      case orgActionTypes.ORGS_SUMMARIES_RECEIVED: {
+        this.mergeMany('guid', action.orgs, (changed) => {
+          if (changed) this.emitChange();
+        });
+        break;
+      }
+
+      case orgActionTypes.ORG_CHANGE_CURRENT: {
         this._currentOrgGuid = action.orgGuid;
-        var org = this.get(action.orgGuid);
-        if (org) {
+        if (this.get(action.orgGuid)) {
           this.emitChange();
         }
         break;
+      }
 
-      case orgActionTypes.ORG_TOGGLE_SPACE_MENU:
-        let org = this._data.find((i) => {
-          return i.guid === action.orgGuid;
+      case orgActionTypes.ORG_TOGGLE_SPACE_MENU: {
+        const org = this.get(action.orgGuid);
+        const open = org.space_menu_open || false;
+        const toUpdate = Object.assign(org, { space_menu_open: !open });
+        this.merge('guid', toUpdate, (changed) => {
+          if (changed) this.emitChange();
         });
-        let open = org.space_menu_open || false;
-        Object.assign(org, { space_menu_open: !open })
-        this.emitChange();
         break;
+      }
 
       default:
         break;
@@ -97,6 +92,6 @@ class OrgStore extends BaseStore {
   }
 }
 
-let _OrgStore = new OrgStore();
+const _OrgStore = new OrgStore();
 
 export default _OrgStore;

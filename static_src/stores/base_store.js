@@ -4,13 +4,19 @@
  */
 
 import { EventEmitter } from 'events';
+import Immutable from 'immutable';
+
 import AppDispatcher from '../dispatcher.js';
+
+function defaultChangedCallback(changed) {
+  if (changed) this.emitChange();
+}
 
 export default class BaseStore extends EventEmitter {
 
   constructor() {
     super();
-    this._data = [];
+    this._data = new Immutable.List();
   }
 
   subscribe(actionSubscribe) {
@@ -19,6 +25,54 @@ export default class BaseStore extends EventEmitter {
 
   get dispatchToken() {
     return this._dispatchToken;
+  }
+
+  isEmpty() {
+    if (this._data.count() === 0) return true;
+    return false;
+  }
+
+  push(val) {
+    const newData = Immutable.fromJS(val);
+    this._data = this._data.push(newData);
+    this.emitChange();
+
+    return this._data;
+  }
+
+  get(guid) {
+    if (guid && !this.isEmpty()) {
+      const item = this._data.find((space) =>
+        space.get('guid') === guid
+      );
+
+      if (item) return item.toJS();
+    }
+    return undefined;
+  }
+
+  getAll() {
+    return this._data.toJS();
+  }
+
+  dataHasChanged(toCompare) {
+    const c = Immutable.fromJS(toCompare);
+    return !Immutable.is(this._data, c);
+  }
+
+  delete(guid, cb = defaultChangedCallback.bind(this)) {
+    const index = this._data.findIndex((d) =>
+      d.get('guid') === guid
+    );
+
+    if (index === -1) return cb(false);
+
+    this._data = this._data.delete(index);
+    return cb(true);
+  }
+
+  formatSplitResponse(resources) {
+    return resources.map((r) => Object.assign(r.entity, r.metadata));
   }
 
   emitChange() {
@@ -33,37 +87,51 @@ export default class BaseStore extends EventEmitter {
     this.removeListener('CHANGE', cb);
   }
 
-  get(guid) {
-    if (guid) {
-      return this._data.find((space) => {
-        return space.guid === guid;
-      });
-    }
-  }
+  /* merge with no side effects
+   *
+   * If the dataToMerge exists in the store (as found by
+   * the mergeKey), then merge in new data if there are
+   * changes. If it does not exist in the store, add it.
+   * When data changes, calls dataChangedCallback with
+   * true as the argument. Otherwise, false is used
+   *
+   * @param {string} mergeKey - use to match objects
+   * @param {object} dataToMerge - new object with data
+   * @param {fn} cb - defaults to calling this.emitChange()
+   *                  when the store's data has changed
+   *
+   */
+  merge(mergeKey, dataToMerge, cb = defaultChangedCallback.bind(this)) {
+    const toMerge = Immutable.fromJS(dataToMerge);
+    const oldDataItem = this._data.find((d) =>
+      d.get(mergeKey) === toMerge.get(mergeKey)
+    );
 
-  getAll() {
-    return this._data;
-  }
+    if (oldDataItem) {
+      if (Immutable.is(oldDataItem, toMerge)) {
+        return cb(false);
+      }
 
-  formatSplitResponse(resources) {
-    return resources.map((resource) => {
-      return Object.assign(resource.entity, resource.metadata);
-    });
-  }
-
-  // TODO make this have no side effects.
-  _merge(currents, updates) {
-    if (currents.length) {
-      updates.forEach(function(update) {
-        var same = currents.find(function(current) {
-          return current.guid === update.guid;
-        });
-         
-        same ? Object.assign(same, update) : currents.push(update);
+      this._data = this._data.map((d) => {
+        if (Immutable.is(d, oldDataItem)) {
+          return oldDataItem.merge(toMerge);
+        }
+        return d;
       });
     } else {
-      currents = updates;
+      this._data = this._data.push(toMerge);
     }
-    return currents;
+    return cb(true);
+  }
+
+  mergeMany(mergeKey, arrayOfDataToMerge, cb = defaultChangedCallback.bind(this)) {
+    let dataHasChanged = false;
+    arrayOfDataToMerge.forEach((newData) => {
+      this.merge(mergeKey, newData, (changed) => {
+        if (changed) dataHasChanged = true;
+      });
+    });
+
+    cb(dataHasChanged);
   }
 }

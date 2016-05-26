@@ -3,6 +3,7 @@
  * Store for services data. Will store and update services data on changes from
  * UI and server.
  */
+import Immutable from 'immutable';
 
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
@@ -15,7 +16,8 @@ class ServiceInstanceStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = [];
+
+    this._data = new Immutable.List();
     this._createInstanceForm = null;
     this._createError = null;
   }
@@ -30,17 +32,19 @@ class ServiceInstanceStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
-      case serviceActionTypes.SERVICE_INSTANCES_FETCH:
+      case serviceActionTypes.SERVICE_INSTANCES_FETCH: {
         cfApi.fetchServiceInstances(action.spaceGuid);
         break;
+      }
 
-      case serviceActionTypes.SERVICE_INSTANCES_RECEIVED:
-        var services = this.formatSplitResponse(action.serviceInstances);
-        this._data = services;
+      case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
+        const services = this.formatSplitResponse(action.serviceInstances);
+        this._data = Immutable.fromJS(services);
         this.emitChange();
         break;
+      }
 
-      case serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM:
+      case serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM: {
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         this._createInstanceForm = {
           service: ServiceStore.get(action.serviceGuid),
@@ -48,57 +52,55 @@ class ServiceInstanceStore extends BaseStore {
         };
         this.emitChange();
         break;
+      }
 
-      case serviceActionTypes.SERVICE_INSTANCE_CREATE:
+      case serviceActionTypes.SERVICE_INSTANCE_CREATE: {
         cfApi.createServiceInstance(
           action.name,
           action.spaceGuid,
           action.servicePlanGuid
         );
         break;
+      }
 
-      case serviceActionTypes.SERVICE_INSTANCE_CREATED:
-        var existing = this.get(action.serviceInstance.guid);
-        if (existing) {
-          //this.update
-          existing = Object.assign(existing, action.serviceInstance);
+      case serviceActionTypes.SERVICE_INSTANCE_CREATED: {
+        this.merge('guid', action.serviceInstance, (changed) => {
+          if (!changed) return;
 
-        } else {
-          this._data.push(action.serviceInstance);
-        }
-        this._createInstanceForm = null;
+          this._createInstanceForm = null;
+          this.emitChange();
+        });
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_INSTANCE_ERROR: {
+        this._createError = action.error;
         this.emitChange();
         break;
+      }
 
-      case serviceActionTypes.SERVICE_INSTANCE_ERROR:
-        var error = action.error;
-        this._createError = error;
-        this.emitChange();
-        break;
-
-      case serviceActionTypes.SERVICE_INSTANCE_DELETE:
-        var toDelete = this.get(action.serviceInstanceGuid);
+      case serviceActionTypes.SERVICE_INSTANCE_DELETE: {
+        const toDelete = this.get(action.serviceInstanceGuid);
         if (toDelete) {
           cfApi.deleteUnboundServiceInstance(toDelete);
         }
         break;
+      }
 
-      case serviceActionTypes.SERVICE_INSTANCE_DELETED:
-        var deleted = this.get(action.serviceInstanceGuid);
-        if (deleted) {
-          var index = this._data.indexOf(deleted);
-          this._data.splice(index, 1);
-          this.emitChange();
-        }
+      case serviceActionTypes.SERVICE_INSTANCE_DELETED: {
+        this.delete(action.serviceInstanceGuid, (changed) => {
+          if (changed) this.emitChange();
+        });
         break;
+      }
 
       default:
         break;
 
     }
   }
+}
 
-};
-let _ServiceInstanceStore = new ServiceInstanceStore();
+const _ServiceInstanceStore = new ServiceInstanceStore();
 
 export default _ServiceInstanceStore;

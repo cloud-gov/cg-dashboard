@@ -74,6 +74,7 @@
     "director": "^1.2.8",
     "events": "^1.0.2",
     "flux": "^2.0.3",
+    "immutable": "^3.8.1",
     "json-loader": "^0.5.4",
     "keymirror": "^0.1.1",
     "less": "^2.5.3",

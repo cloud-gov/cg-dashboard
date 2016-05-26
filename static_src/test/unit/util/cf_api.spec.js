@@ -2,6 +2,7 @@
 import '../../global_setup.js';
 
 import http from 'axios';
+import Immutable from 'immutable';
 
 import appActions from '../../../actions/app_actions.js';
 import cfApi from '../../../util/cf_api.js';
@@ -29,7 +30,7 @@ describe('cfApi', function() {
       errorFetchRes = { message: 'error' };
 
   beforeEach(() => {
-    OrgStore._data = [];
+    OrgStore._data = new Immutable.List();
     sandbox = sinon.sandbox.create();
   });
 

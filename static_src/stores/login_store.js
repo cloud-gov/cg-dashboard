@@ -10,12 +10,12 @@ import { loginActionTypes } from '../constants.js';
 class LoginStore extends BaseStore {
   constructor() {
     super();
-    this.subscribe(() => this._registerToActions.bind(this))
+    this.subscribe(() => this._registerToActions.bind(this));
     this._isAuthenticated = true;
   }
 
   _registerToActions(action) {
-    switch(action.type) {
+    switch (action.type) {
       case loginActionTypes.RECEIVED_STATUS:
         this._isAuthenticated = action.status;
         this.emitChange();
@@ -29,9 +29,8 @@ class LoginStore extends BaseStore {
   isLoggedIn() {
     return !!this._isAuthenticated;
   }
+}
 
-};
-
-let _LoginStore = new LoginStore();
+const _LoginStore = new LoginStore();
 
 export default _LoginStore;

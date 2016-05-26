@@ -1,6 +1,8 @@
 
 import '../../global_setup.js';
 
+import Immutable from 'immutable';
+
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
@@ -14,7 +16,7 @@ describe('ServiceInstanceStore', function() {
   var sandbox;
 
   beforeEach(() => {
-    ServiceInstanceStore._data = [];
+    ServiceInstanceStore._data = Immutable.List();
     ServiceInstanceStore._createError = null;
     sandbox = sinon.sandbox.create();
   });
@@ -25,7 +27,7 @@ describe('ServiceInstanceStore', function() {
 
   describe('constructor()', () => {
     it('should set _data to empty array', () => {
-      expect(ServiceInstanceStore._data).toBeEmptyArray();
+      expect(ServiceInstanceStore.getAll()).toBeEmptyArray();
     });
   });
 
@@ -95,7 +97,7 @@ describe('ServiceInstanceStore', function() {
 
       sandbox.stub(ServiceStore, 'get').returns(expectedService);
       sandbox.stub(ServicePlanStore, 'get').returns(expectedServicePlan);
-      
+
       serviceActions.createInstanceForm('adfkjvnzxczv', 'aldsfjalqwe');
 
       let actual = ServiceInstanceStore.createInstanceForm;
@@ -157,7 +159,7 @@ describe('ServiceInstanceStore', function() {
     it('should add received instance to the data', function() {
       var expectedInstance = { guid: 'asdf9a8fasss' };
 
-      ServiceInstanceStore._data.push({ guid: 'zzxcvz' });
+      ServiceInstanceStore.push({ guid: 'zzxcvz' });
 
       serviceActions.createdInstance(expectedInstance);
 
@@ -215,7 +217,7 @@ describe('ServiceInstanceStore', function() {
           expectedGuid = 'qp98wfj',
           expected = { guid: expectedGuid, url: '/' + expectedGuid };
 
-      ServiceInstanceStore._data.push(expected);
+      ServiceInstanceStore.push(expected);
 
       AppDispatcher.handleViewAction({
         type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
@@ -233,7 +235,7 @@ describe('ServiceInstanceStore', function() {
       var expectedGuid = 'macldksajpi',
           expected = { guid: expectedGuid, url: '/' + expectedGuid };
 
-      ServiceInstanceStore._data.push(expected);
+      ServiceInstanceStore.push(expected);
 
       expect(ServiceInstanceStore.get(expectedGuid)).toEqual(expected);
 
@@ -250,7 +252,7 @@ describe('ServiceInstanceStore', function() {
       var expectedGuid = 'macldksajpi',
           expected = { guid: expectedGuid, url: '/' + expectedGuid };
 
-      ServiceInstanceStore._data.push(expected);
+      ServiceInstanceStore._data = Immutable.fromJS([expected]);
 
       AppDispatcher.handleServerAction({
         type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
@@ -265,7 +267,7 @@ describe('ServiceInstanceStore', function() {
 
       AppDispatcher.handleServerAction({
         type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
-        serviceInstanceGuid: 'adsfas' 
+        serviceInstanceGuid: 'adsfas'
       });
 
       expect(spy).not.toHaveBeenCalled();
