@@ -3,18 +3,18 @@ import keymirror from 'keymirror';
 
 
 // All global error action types
-var errorActionTypes = keymirror({
+const errorActionTypes = keymirror({
   FETCH: null
 });
 
-var loginActionTypes = keymirror({
+const loginActionTypes = keymirror({
   // Action of fetching a login status, whether the user is logged in or not.
   FETCH_STATUS: null,
   // Action when the login status is received from the server.
-  RECEIVED_STATUS: null,
+  RECEIVED_STATUS: null
 });
 
-var orgActionTypes = keymirror({
+const orgActionTypes = keymirror({
   // When the user changes the current org they are looking at.
   ORG_CHANGE_CURRENT: null,
   // Action to fetch a single organization from the server.
@@ -28,17 +28,17 @@ var orgActionTypes = keymirror({
   // Action when all organization summaries are received from the server.
   ORGS_SUMMARIES_RECEIVED: null,
   // Action when user toggles a space submenu in the sidenav
-  ORG_TOGGLE_SPACE_MENU: null,
+  ORG_TOGGLE_SPACE_MENU: null
 });
 
-var spaceActionTypes = keymirror({
+const spaceActionTypes = keymirror({
   // Action to fetch a single space from the server.
   SPACE_FETCH: null,
   // Action when a single space is received from the server.
   SPACE_RECEIVED: null
 });
 
-var serviceActionTypes = keymirror({
+const serviceActionTypes = keymirror({
   // Action to fetch all services (for marketplace) for an org.
   SERVICES_FETCH: null,
   // Action when all services for an org were received from the server.
@@ -66,7 +66,7 @@ var serviceActionTypes = keymirror({
   SERVICE_INSTANCE_CREATED: null
 });
 
-var appActionTypes = keymirror({
+const appActionTypes = keymirror({
   // Action to fetch a single app from the server.
   APP_FETCH: null,
   // Action to fetch a single app's stats from the server.
@@ -77,7 +77,7 @@ var appActionTypes = keymirror({
   APP_STATS_RECEIVED: null
 });
 
-var userActionTypes = keymirror({
+const userActionTypes = keymirror({
   // Action to fetch users belonging to a organization from the server.
   ORG_USERS_FETCH: null,
   // Action to fetch the user roles for an org from the server.
@@ -106,5 +106,10 @@ var userActionTypes = keymirror({
   ERROR_REMOVE_USER: null
 });
 
+const routeActionTypes = keymirror({
+  ROUTES_FOR_APP_FETCH: null,
+  ROUTES_FOR_APP_RECEIVED: null
+});
+
 export { appActionTypes, errorActionTypes, loginActionTypes, orgActionTypes,
-  spaceActionTypes, serviceActionTypes, userActionTypes };
+  routeActionTypes, spaceActionTypes, serviceActionTypes, userActionTypes };

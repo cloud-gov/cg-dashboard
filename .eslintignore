@@ -7,4 +7,3 @@ static_src/actions/error_actions.js
 static_src/actions/user_actions.js
 static_src/dispatcher.js
 static_src/tests.bundle.js
-static_src/constants.js
