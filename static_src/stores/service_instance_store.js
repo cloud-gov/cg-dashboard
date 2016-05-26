@@ -88,13 +88,9 @@ class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_DELETED: {
-        const index = this._data.findIndex((d) =>
-          d.get('guid') === action.serviceInstanceGuid
-        );
-        if (index > -1) {
-          this._data = this._data.delete(index);
-          this.emitChange();
-        }
+        this.delete(action.serviceInstanceGuid, (changed) => {
+          if (changed) this.emitChange();
+        });
         break;
       }
 

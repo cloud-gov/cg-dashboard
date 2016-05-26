@@ -166,15 +166,9 @@ class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_DELETED: {
-        const index = this._data.findIndex((d) =>
-          d.get('guid') === action.userGuid
-        );
-
-        if (index > -1) {
-          this._data = this._data.delete(index);
-          this.emitChange();
-        }
-
+        this.delete(action.userGuid, (changed) => {
+          if (changed) this.emitChange();
+        });
         break;
       }
 
