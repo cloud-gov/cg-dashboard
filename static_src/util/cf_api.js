@@ -142,6 +142,14 @@ export default {
                           appActions.receivedApp);
   },
 
+  fetchAppStats(appGuid) {
+    return http.get(`${APIV}/apps/${appGuid}/stats`).then((res) => {
+      appActions.receivedAppStats(appGuid, res.data[0]);
+    }).catch((err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
   /**
    * Fetch all users that belong to a certain space.
    *

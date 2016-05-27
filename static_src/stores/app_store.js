@@ -23,11 +23,23 @@ class AppStore extends BaseStore {
         cfApi.fetchApp(action.appGuid);
         break;
 
+      case appActionTypes.APP_STATS_FETCH:
+        cfApi.fetchAppStats(action.appGuid);
+        break;
+
       case appActionTypes.APP_RECEIVED:
         this.merge('guid', action.app, (changed) => {
           if (changed) this.emitChange();
         });
         break;
+
+      case appActionTypes.APP_STATS_RECEIVED: {
+        const app = Object.assign({}, action.app, { guid: action.appGuid });
+        this.merge('guid', app, (changed) => {
+          if (changed) this.emitChange();
+        });
+        break;
+      }
 
       default:
         break;

@@ -7,6 +7,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './app.jsx';
+import AppPage from './components/app_page.jsx';
+import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
 import Login from './components/login.jsx';
 import Marketplace from './components/marketplace.jsx';
@@ -57,6 +59,17 @@ function space(orgGuid, spaceGuid, potentialPage) {
     </App>, mainEl);
 }
 
+function app(orgGuid, spaceGuid, appGuid) {
+  appActions.fetch(appGuid);
+  appActions.fetchStats(appGuid);
+  ReactDOM.render(
+    <App>
+      <AppPage
+        initialAppGuid={ appGuid }
+      />
+    </App>, mainEl);
+}
+
 function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   cfApi.fetchOrg(orgGuid);
   cfApi.fetchAllServices(orgGuid);
@@ -89,6 +102,11 @@ const routes = {
         '/:spaceGuid': {
           '/:page': {
             on: space
+          },
+          '/apps': {
+            '/:appGuid': {
+              on: app
+            }
           },
           on: space
         }

@@ -43,6 +43,22 @@ describe('AppStore', function() {
     });
   });
 
+  describe('on app stats fetch', function() {
+    it('should fetch app stats with guid from api', function() {
+      var spy = sandbox.spy(cfApi, 'fetchAppStats'),
+          expectedGuid = 'adfasddksazxcvzxcvz';
+
+      AppDispatcher.handleViewAction({
+        type: appActionTypes.APP_STATS_FETCH,
+        appGuid: expectedGuid
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+    });
+  });
+
   describe('on app received', function() {
     it('should emit a change event if data was updated', function() {
       var spy = sandbox.spy(AppStore, 'emitChange');
@@ -100,6 +116,62 @@ describe('AppStore', function() {
 
       let actual = AppStore.get(expectedGuid);
       expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('on app stats received', function() {
+    it('should emit a change event if data was updated', function() {
+      const sharedGuid = '2893hazxcmv';
+
+      let existingApp = { guid: sharedGuid, name: 'asddd' };
+      AppStore.push(existingApp);
+
+      const spy = sandbox.spy(AppStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: appActionTypes.APP_STATS_RECEIVED,
+        appGuid: sharedGuid,
+        app: { stats: {} }
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should merge app stats with existing app if it exists', function() {
+      var sharedGuid = 'cmadkljcsa';
+
+      let existingApp = { guid: sharedGuid, name: 'adsfa' };
+      let newApp = { stats: { mem_quota: 123543 }};
+
+      AppStore.push(existingApp);
+      expect(AppStore.get(sharedGuid)).toEqual(existingApp);
+
+      AppDispatcher.handleServerAction({
+        type: appActionTypes.APP_STATS_RECEIVED,
+        appGuid: sharedGuid,
+        app: newApp
+      });
+
+      let actual = AppStore.get(sharedGuid);
+      expect(actual).toEqual({ guid: sharedGuid, name: 'adsfa',
+          stats: { mem_quota: 123543 }});
+    });
+
+    it('should create a new app if it doesn\'t already exist', function() {
+      var expectedGuid = 'adcasdcccsss',
+          expected = {stats: { mem_quota: 12 }};
+
+      AppDispatcher.handleServerAction({
+        type: appActionTypes.APP_STATS_RECEIVED,
+        appGuid: expectedGuid,
+        app: expected
+      });
+
+      let actual = AppStore.get(expectedGuid);
+      expect(actual).toEqual({
+        guid: expectedGuid,
+        stats: { mem_quota: 12 }
+      });
     });
   });
 });

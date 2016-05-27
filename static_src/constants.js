@@ -69,8 +69,12 @@ var serviceActionTypes = keymirror({
 var appActionTypes = keymirror({
   // Action to fetch a single app from the server.
   APP_FETCH: null,
+  // Action to fetch a single app's stats from the server.
+  APP_STATS_FETCH: null,
   // Action when an app was received from the server.
-  APP_RECEIVED: null
+  APP_RECEIVED: null,
+  // Action when a app stats are received from the server.
+  APP_STATS_RECEIVED: null
 });
 
 var userActionTypes = keymirror({
