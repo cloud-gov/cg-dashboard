@@ -24,7 +24,7 @@ class RouteStore extends BaseStore {
         break;
 
       case routeActionTypes.ROUTES_FOR_APP_RECEIVED: {
-        const routes = action.routes.map((route) =>
+        const routes = this.formatSplitResponse(action.routes).map((route) =>
           Object.assign({}, route, { appGuid: action.appGuid })
         );
         this.mergeMany('guid', routes, (changed) => {

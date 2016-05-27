@@ -51,7 +51,7 @@ describe('RouteStore', function() {
       AppDispatcher.handleViewAction({
         type: routeActionTypes.ROUTES_FOR_APP_RECEIVED,
         appGuid: appGuid,
-        routes: [ { guid: 'adsfa' } ]
+        routes: wrapInRes([ { guid: 'adsfa' } ])
       });
 
       expect(spy).toHaveBeenCalledOnce();
@@ -65,7 +65,7 @@ describe('RouteStore', function() {
       AppDispatcher.handleServerAction({
         type: routeActionTypes.ROUTES_FOR_APP_RECEIVED,
         appGuid: sharedGuid,
-        routes: [routeA]
+        routes: wrapInRes([ routeA ])
       });
 
       let actual = RouteStore.get(routeA.guid);
@@ -86,7 +86,7 @@ describe('RouteStore', function() {
       AppDispatcher.handleServerAction({
         type: routeActionTypes.ROUTES_FOR_APP_RECEIVED,
         appGuid: sharedGuid,
-        routes: [newRoute]
+        routes: wrapInRes([newRoute])
       });
 
       expect(spy).toHaveBeenCalledOnce();
