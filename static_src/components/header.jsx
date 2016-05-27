@@ -1,6 +1,8 @@
 
 import React from 'react';
 
+import LoginStore from '../stores/login_store.js';
+
 import createStyler from '../util/create_styler';
 
 import headerStyle from 'cloudgov-style/css/components/header.css';
@@ -20,6 +22,8 @@ export default class Header extends React.Component {
   }
 
   render() {
+    const loggedIn = LoginStore.isLoggedIn();
+    let loginLink = (!loggedIn) ? <a href="/handshake">Login</a> : <a href="/v2/logout">Logout</a>;
     return (
     <header className={ this.styler('header') }>
       <div className={ this.styler('header-wrap') }>
@@ -50,6 +54,9 @@ export default class Header extends React.Component {
             </li>
             <li className={ this.styler('nav-link') }>
               <a href="https://cloud.gov/#contact">Contact</a>
+            </li>
+            <li className={ this.styler('nav-link') }>
+              { loginLink }
             </li>
           </ul>
         </nav>
