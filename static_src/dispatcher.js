@@ -1,6 +1,10 @@
 
 import {Dispatcher} from 'flux';
 
+function sendActionToGoogleAnalytics(action) {
+
+}
+
 class AppDispatcher extends Dispatcher {
   // User agent initiated actions that generally require data fetching
   // State mutations are related to core data domains like orgs, spaces, etc
@@ -8,6 +12,7 @@ class AppDispatcher extends Dispatcher {
     action.source = 'VIEW_ACTION';
     this.dispatch(action);
     console.log('::action::', action);
+    sendActionToGoogleAnalytics(action);
   }
 
   // UI actions are things like clicking to expand a menu
@@ -16,6 +21,7 @@ class AppDispatcher extends Dispatcher {
     action.source = 'UI_ACTION';
     this.dispatch(action);
     console.log('::action::', action);
+    sendActionToGoogleAnalytics(action);
   }
 
   // Server actions come from the network/API
@@ -23,6 +29,7 @@ class AppDispatcher extends Dispatcher {
     action.source = 'SERVER_ACTION';
     this.dispatch(action);
     console.log('::action::', action);
+    sendActionToGoogleAnalytics(action);
   }
 }
 
