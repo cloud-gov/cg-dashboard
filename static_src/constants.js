@@ -111,5 +111,11 @@ const routeActionTypes = keymirror({
   ROUTES_FOR_APP_RECEIVED: null
 });
 
-export { appActionTypes, errorActionTypes, loginActionTypes, orgActionTypes,
-  routeActionTypes, spaceActionTypes, serviceActionTypes, userActionTypes };
+const domainActionTypes = keymirror({
+  DOMAIN_FETCH: null,
+  DOMAIN_RECEIVED: null
+});
+
+export { appActionTypes, domainActionTypes, errorActionTypes, loginActionTypes,
+  orgActionTypes, routeActionTypes, spaceActionTypes, serviceActionTypes,
+  userActionTypes };
