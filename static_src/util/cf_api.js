@@ -2,6 +2,7 @@
 import http from 'axios';
 
 import appActions from '../actions/app_actions.js';
+import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
 import loginActions from '../actions/login_actions.js';
 import orgActions from '../actions/org_actions.js';
@@ -241,5 +242,10 @@ export default {
     return this.fetchMany(`/apps/${appGuid}/routes`,
         routeActions.receivedRoutesForApp,
         appGuid);
+  },
+
+  fetchDomain(domainGuid) {
+    return this.fetchOne(`/private_domains/${domainGuid}`,
+                         domainActions.receivedDomain);
   }
 };

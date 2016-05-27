@@ -6,6 +6,7 @@ import Immutable from 'immutable';
 
 import appActions from '../../../actions/app_actions.js';
 import cfApi from '../../../util/cf_api.js';
+import domainActions from '../../../actions/domain_actions.js';
 import errorActions from '../../../actions/error_actions.js';
 import loginActions from '../../../actions/login_actions.js';
 import loginActionTypes from '../../../constants.js';
@@ -698,6 +699,22 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('routes'));
       actual = spy.getCall(0).args[1];
       expect(actual).toEqual(routeActions.receivedRoutesForApp);
+    });
+  });
+
+  describe('fetchDomain()', function() {
+    it('should fetch domain with the domain guid', function() {
+      var expected = 'xcvxyyb1',
+          spy = sandbox.stub(cfApi, 'fetchOne');
+
+      cfApi.fetchDomain(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('domain'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(domainActions.receivedDomain);
     });
   });
 });
