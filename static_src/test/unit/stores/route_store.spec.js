@@ -7,7 +7,7 @@ import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import RouteStore from '../../../stores/route_store.js';
-import { routeActionTypes } from '../../../constants';
+import { domainActionTypes, routeActionTypes } from '../../../constants';
 
 describe('RouteStore', function() {
   var sandbox;
@@ -91,6 +91,40 @@ describe('RouteStore', function() {
 
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith('guid');
+    });
+  });
+
+  describe('on domain received', function() {
+    it('should add the domain to the existing route based on its guid',
+       function() {
+      const sharedDomainGuid = 'vxc234kjh';
+      const existingRoute = { guid: 'zxcvz', domain_guid: sharedDomainGuid };
+      const domain = { guid: sharedDomainGuid, name: '.gov' };
+
+      RouteStore.push(existingRoute);
+
+      AppDispatcher.handleServerAction({
+        type: domainActionTypes.DOMAIN_RECEIVED,
+        domain: wrapInRes([domain])[0]
+      });
+
+      const expected = Object.assign({}, existingRoute, { domain: domain });
+      const actual = RouteStore.get(existingRoute.guid);
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('should not do anything if matching route not found', function() {
+      const domain = { guid: 'vbxczzxcv', name: '.gov' };
+
+      expect(RouteStore.isEmpty).toBeTruthy();
+
+      AppDispatcher.handleServerAction({
+        type: domainActionTypes.DOMAIN_RECEIVED,
+        domain: wrapInRes([domain])[0]
+      });
+
+      expect(RouteStore.isEmpty).toBeTruthy();
     });
   });
 });

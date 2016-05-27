@@ -8,7 +8,7 @@ import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import { routeActionTypes } from '../constants.js';
+import { domainActionTypes, routeActionTypes } from '../constants.js';
 
 class RouteStore extends BaseStore {
   constructor() {
@@ -32,6 +32,19 @@ class RouteStore extends BaseStore {
         });
         break;
       }
+
+      case domainActionTypes.DOMAIN_RECEIVED: {
+        const formattedDomain = this.formatSplitResponse([action.domain])[0];
+        const domain = Object.assign({}, {
+          domain: formattedDomain,
+          domain_guid: formattedDomain.guid
+        });
+        this.merge('domain_guid', domain, (changed) => {
+          if (changed) this.emitChange();
+        });
+        break;
+      }
+
 
       default:
         break;
