@@ -82,10 +82,24 @@ export default class AppPage extends React.Component {
                 </tr>
               </tbody>
             </table>
+            <aside>
+              <p>To start or stop an app, view the <a
+                href="https://docs.cloudfoundry.org/devguide/deploy-apps/deploy-app.html"
+                target="_blank">
+                <span>&nbsp;</span>deployment guide</a> for more information.
+              </p>
+            </aside>
           </section>
 
           <h3>Routes</h3>
           <RouteList initialAppGuid={ this.state.app.guid } />
+
+          <h3>Services</h3>
+          <p>To bind or unbind a service instance to an app view<a
+            href="https://docs.cloud.gov/apps/managed-services/#bind-the-service-instance"
+            target="_blank">
+            <span>&nbsp;</span>managed services guide</a> for more information.
+          </p>
         </div>
       );
     }
