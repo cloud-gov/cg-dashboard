@@ -13,6 +13,7 @@ import cfApi from './util/cf_api.js';
 import Login from './components/login.jsx';
 import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
+import routeActions from './actions/route_actions.js';
 import serviceActions from './actions/service_actions.js';
 import Space from './components/space.jsx';
 import SpaceList from './components/space_list.jsx';
@@ -62,6 +63,7 @@ function space(orgGuid, spaceGuid, potentialPage) {
 function app(orgGuid, spaceGuid, appGuid) {
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
+  routeActions.fetchRoutesForApp(appGuid);
   ReactDOM.render(
     <App>
       <AppPage

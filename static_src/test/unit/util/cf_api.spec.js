@@ -6,11 +6,13 @@ import Immutable from 'immutable';
 
 import appActions from '../../../actions/app_actions.js';
 import cfApi from '../../../util/cf_api.js';
+import domainActions from '../../../actions/domain_actions.js';
 import errorActions from '../../../actions/error_actions.js';
 import loginActions from '../../../actions/login_actions.js';
 import loginActionTypes from '../../../constants.js';
 import orgActions from '../../../actions/org_actions.js';
 import OrgStore from '../../../stores/org_store.js';
+import routeActions from '../../../actions/route_actions.js';
 import spaceActions from '../../../actions/space_actions.js';
 import serviceActions from '../../../actions/service_actions.js';
 import userActions from '../../../actions/user_actions.js';
@@ -679,6 +681,40 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('service_plans'));
       actual = spy.getCall(0).args[1];
       expect(actual).toEqual(serviceActions.receivedPlans);
+    });
+  });
+
+  describe('fetchRoutesForApp()', function() {
+    it('calls fetch routes with app guid and received routes for app',
+        function() {
+      const expected = 'z098cvzxcv2983';
+      const spy = sandbox.stub(cfApi, 'fetchMany');
+
+      cfApi.fetchRoutesForApp(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('apps'));
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('routes'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(routeActions.receivedRoutesForApp);
+    });
+  });
+
+  describe('fetchDomain()', function() {
+    it('should fetch domain with the domain guid', function() {
+      var expected = 'xcvxyyb1',
+          spy = sandbox.stub(cfApi, 'fetchOne');
+
+      cfApi.fetchDomain(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('domain'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(domainActions.receivedDomain);
     });
   });
 });

@@ -2,6 +2,7 @@
 import React from 'react';
 
 import AppStore from '../stores/app_store.js';
+import RouteList from './route_list.jsx';
 
 export default class AppPage extends React.Component {
   constructor(props) {
@@ -82,6 +83,9 @@ export default class AppPage extends React.Component {
               </tbody>
             </table>
           </section>
+
+          <h3>Routes</h3>
+          <RouteList initialAppGuid={ this.state.app.guid } />
         </div>
       );
     }
