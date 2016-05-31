@@ -72,6 +72,13 @@ export default class RouteList extends React.Component {
     return (
       <div className="tableWrapper">
         { content }
+        <aside>
+          <p>To modify, create or delete a route, view <a
+            href="https://docs.cloud.gov/apps/custom-domains/#application-routes"
+            target="_blank">
+            <span>&nbsp;</span>application routes</a> for more information.
+          </p>
+        </aside>
       </div>
     );
   }
