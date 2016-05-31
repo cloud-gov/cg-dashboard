@@ -63,8 +63,6 @@
     "karma-sourcemap-loader": "^0.3.5",
     "karma-webpack": "^1.7.0",
     "keymirror": "^0.1.1",
-    "less": "^2.5.3",
-    "less-loader": "^2.2.2",
     "moment-timezone": "^0.5.4",
     "node-libs-browser": "^0.5.2",
     "node-sass": "^3.4.2",
