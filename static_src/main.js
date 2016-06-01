@@ -17,6 +17,7 @@ import routeActions from './actions/route_actions.js';
 import serviceActions from './actions/service_actions.js';
 import Space from './components/space.jsx';
 import SpaceList from './components/space_list.jsx';
+import { trackPageView } from './util/analytics.js';
 
 const mainEl = document.querySelector('.js-app');
 
@@ -127,6 +128,7 @@ const routes = {
 const router = new Router(routes);
 router.configure({
   before: checkAuth,
-  notfound: notFound
+  notfound: notFound,
+  on: () => trackPageView(window.location.hash)
 });
 router.init('/');
