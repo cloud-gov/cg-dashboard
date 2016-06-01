@@ -4,8 +4,7 @@ export function trackAction(action) {
   window.ga('send', {
     hitType: 'event',
     eventCategory: action.source,
-    eventAction: action.type,
-    eventLabel: action.type
+    eventAction: action.type
   });
 }
 
