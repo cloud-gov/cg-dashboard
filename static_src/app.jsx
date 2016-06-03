@@ -68,7 +68,6 @@ export default class App extends React.Component {
               data-placement="bottom">
             </div>
           </div>
-          <h1 className={ this.styler('title_bar-title') }>Organizations</h1>
         </div>
         <div className={ this.styler('sidenav-parent') }>
           <nav className={ this.styler('sidenav') }>
