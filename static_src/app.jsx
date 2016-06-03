@@ -6,6 +6,7 @@ import mainContentStyles from 'cloudgov-style/css/components/main-content.css';
 import sidenavStyles from 'cloudgov-style/css/components/sidenav.css';
 import titleBarStyles from 'cloudgov-style/css/components/title_bar.css';
 import navToggleStyles from 'cloudgov-style/css/components/nav_toggle.css';
+import overrideStyles from './css/overrides.css';
 
 import createStyler from './util/create_styler';
 
@@ -27,7 +28,8 @@ export default class App extends React.Component {
       mainContentStyles,
       sidenavStyles,
       titleBarStyles,
-      navToggleStyles
+      navToggleStyles,
+      overrideStyles
     );
     this.state = { isLoggedIn: false };
     this._onChange = this._onChange.bind(this);
@@ -56,6 +58,7 @@ export default class App extends React.Component {
       content = <Login />;
     }
 
+
     return (
       <div>
         <Disclaimer />
@@ -69,7 +72,7 @@ export default class App extends React.Component {
             </div>
           </div>
         </div>
-        <div className={ this.styler('sidenav-parent') }>
+        <div className={ this.styler('sidenav-parent', 'main_content') }>
           <nav className={ this.styler('sidenav') }>
             { sidebar }
           </nav>
