@@ -12,7 +12,7 @@ export default function createStyler(...args) {
   return (...classes) => {
     if (args.length === 0) return classNames(classes);
     const allClasses = args.map((f) => {
-      var foundClasses = classes.map((className) => {
+      const foundClasses = classes.map((className) => {
         if (f[className]) return f[className];
         return className;
       });
