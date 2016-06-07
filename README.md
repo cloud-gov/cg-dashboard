@@ -75,7 +75,7 @@ To run the tests:
 ```
 npm run test
 ```
-or to continually watch and test when theres changes:
+or to continually watch for changes and run test suite (does not build front end app):
 ```
 npm run watch-test
 ```
