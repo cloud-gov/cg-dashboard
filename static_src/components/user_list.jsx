@@ -32,6 +32,7 @@ export default class UserList extends React.Component {
   get columns() {
     var columns = [
       { label: 'Name', key: 'username' },
+      { label: 'Permissions', key: 'permissions' },
       { label: 'Date Created', key: 'created_at' }
     ];
 
@@ -74,18 +75,16 @@ export default class UserList extends React.Component {
           return ([
             <tr key={ user.guid }>
               <td column="Name"><span>{ user.username }</span></td>
-              <td column="Date Created">{ formatDateTime(user.created_at) }</td>
-              { actions }
-            </tr>,
-            <tr key={ user.guid + '-role' }>
-              <td colSpan="2">
+              <td column="Permissions" key={ user.guid + '-role' }>
                 <UserRoleListControl
                   onAddPermissions={ this.props.onAddPermissions }
                   onRemovePermissions={ this.props.onRemovePermissions }
                   user={ user }
                 />
               </td>
-            </tr>
+              <td column="Date Created">{ formatDateTime(user.created_at) }</td>
+              { actions }
+            </tr>,
           ])
         })}
         </tbody>
