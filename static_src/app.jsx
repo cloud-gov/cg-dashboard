@@ -63,15 +63,6 @@ export default class App extends React.Component {
       <div>
         <Disclaimer />
         <Header />
-        <div className={ this.styler('title_bar') }>
-          <div className={ this.styler('nav_toggle') }>
-            <i className={ this.styler('nav_toggle-icon') }></i>
-            <div className="icon-reorder tooltips"
-              data-original-title="Toggle Navigation"
-              data-placement="bottom">
-            </div>
-          </div>
-        </div>
         <div className={ this.styler('sidenav-parent', 'main_content') }>
           <nav className={ this.styler('sidenav') }>
             { sidebar }
