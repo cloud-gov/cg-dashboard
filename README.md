@@ -13,13 +13,17 @@ This ["deck"](#whats-a-deck) is a web application to manage cloud.gov organizati
 Learn more about [cloud.gov](https://cloud.gov).
 
 ## Tech Stack
-- `Go` (v1.6.2 required) for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
 
-- `Node` (v.4.2.3) and `React` for the frontend. [![JS Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=staging-alpha&service=github)](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=staging-alpha&service=github)
+### Backend Server [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
+- `Go` (version 1.6.2)
+
+### Front end application [![JS Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=staging-alpha&service=github)](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=staging-alpha&service=github)
+- `Node` (version 4.2.3)
+- `React` (version ^0.14.0)
 
 ## Setup
 ### Cloning the repository
-If you are unfamiliar with `Go` project directory structure, you want the code in this repository to be in something like `<your-code-directory>/cg-deck-ws/src/github.com/18f/cg-deck`. You can use that exact pattern by cloning the repository with:
+If you are unfamiliar with [`Go` project directory structure](https://golang.org/doc/code.html#Workspaces), you want the code in this repository to be in something like `<your-code-directory>/cg-deck-ws/src/github.com/18f/cg-deck`. You can use that exact pattern by cloning the repository with:
 
 ```
 git clone git@github.com:18F/cg-deck.git cg-deck-ws/src/github.com/18F/cg-deck
