@@ -7,6 +7,9 @@ import React from 'react';
 
 import formatDateTime from '../util/format_date';
 
+import baseStyle from 'cloudgov-style/css/base.css';
+import createStyler from '../util/create_styler';
+
 import Button from './button.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 
@@ -18,6 +21,7 @@ export default class UserList extends React.Component {
     this.state = {
       users: props.initialUsers
     };
+    this.styler = createStyler(baseStyle);
     this._handleDelete = this._handleDelete.bind(this);
   }
 
@@ -64,6 +68,7 @@ export default class UserList extends React.Component {
             actions = (
               <td column="Actions">
                 <Button
+                classes={[this.styler("usa-button-secondary")]}
                 onClickHandler={ this._handleDelete.bind(this, user.guid) }
                 label="delete">
                   <span>Remove User From Org</span>
