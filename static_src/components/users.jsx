@@ -146,6 +146,11 @@ export default class Users extends React.Component {
         initialItem={ this.state.currentTab } />
         { errorMessage }
         <div>
+          <p>For more information on different roles and what they mean see <a
+            href="http://docs.cloudfoundry.org/concepts/roles.html#roles"
+            target="_blank">
+            <span>&nbsp;</span>Cloud Foundry's roles information</a>.
+          </p>
           <p>To add a user to an organization see <a
             href="https://docs.cloud.gov/apps/managing-teammates/"
             target="_blank">
@@ -159,11 +164,6 @@ export default class Users extends React.Component {
                 onRemovePermissions={ this.handleRemovePermissions }
             />
           </div>
-          <p>For more information on different roles and what they mean see <a
-            href="http://docs.cloudfoundry.org/concepts/roles.html#roles"
-            target="_blank">
-            <span>&nbsp;</span>Cloud Foundry's roles information</a>.
-          </p>
         </div>
       </div>
     );
