@@ -15,7 +15,6 @@ install:
 script:
 - npm test
 - "./codecheck.sh -u"
-- acceptance/scripts/run_test.sh -a
 branches:
   only:
   - master
@@ -78,6 +77,3 @@ notifications:
     on_failure: always
     on_start: never
     secure: "CNhhGIo1ZvgxmqJ4f61TdbwP+lCXaLgR73sJGhO2vbFUpBhmHi+MApXlqdixzxvDb6I0EkvlR0HLKPp7jbwA/FafRHYaTkJf/5ZeJpMGWX/AQNpsfEITeIRLli7xGM9V9tfhw/EA6UfQLti09q7qw8Q0JKdEGTyyzczxdwN0f2t7WsgMEq68pEfaikIuztp7WBpZVBqkaam4CSi6g0lXTyMd5b321BE8cIitJEK1NQt/+wJ9x9AlAFqdKLZ5Gi/qwsSo53fRubMxbb75yyBRNPPi2tQiXdWa1IWYup5va5BvgfoJ+5KEQmneDwm+bgWV5lbfRb3PyCudBGHcEp5vtNtoaZLNxWIM6UFAcYQbsQEdHVdPvPd9seDHbmNXOzSeVSJXiyrncvWxJHZLmkY+l0vMWzdBNM9MTkc0QRmRIOK7jyuZs8eDoyfPra0zqYCaWA0riXOvKtGDT5zc6BXAwTNznOZ870yHTjpr2RscR0/E2YdRlbnl56geMZGCsTf8oW7PduQQUwFo/vMhbLgL9oBWSc5cDoEUFxIQTnA0PZc53ZO/Nvwog0tsCM9206C87bPwqhCy4TcabgDGgn67ahpi58gkiYHG+/S6jOyHfNqkMvIq9Tm1rFzyLO5xAOXLhkX793asC2x0+tSh5pfjhh7Q4Ll8Ml1x42y4E9azRm4="
-
-
-
