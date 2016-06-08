@@ -84,7 +84,7 @@ export default class UserList extends React.Component {
               </td>
               <td column="Date Created">{ formatDateTime(user.created_at) }</td>
               { actions }
-            </tr>,
+            </tr>
           ])
         })}
         </tbody>
