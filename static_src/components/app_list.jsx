@@ -69,11 +69,37 @@ export default class AppList extends React.Component {
 
   render() {
     var content = <h4 className="test-none_message">No apps</h4>;
-    // TODO format rows in table
     if (this.state.apps.length) {
-      content = <Table data={ this.getRows(this.state.apps) }
-        columns={ this.columns }
-        sortable={ true } />;
+      content = (
+        <table sortable={ true }>
+          <thead>
+          { this.columns.map((column) => {
+            return (
+              <th column={ column.label } className={ column.key }
+                  key={ column.key }>
+                { column.label }
+              </th>
+            )
+          })}
+          </thead>
+          <tbody>
+          { this.state.apps.map((app) => {
+            return ([
+              <tr key={ app.guid }>
+                <td label="Name">
+                  <a href={ this.appUrl(app) }>{ app.name }</a>
+                </td>
+                <td label="Buildpack">{ app.buildpack }</td>
+                <td label="Memory">{ app.memory } MB</td>
+                <td label="Instances">{ app.instances }</td>
+                <td label="State">{ app.state }</td>
+                <td label="Disk quota">{ app.disk_quota } MB</td>
+              </tr>
+            ])
+          })}
+          </tbody>
+        </table>
+      );
     }
 
     return (
