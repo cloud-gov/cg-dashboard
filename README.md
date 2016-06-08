@@ -1,6 +1,6 @@
 # 18F Cloud Foundry Deck
 
-[![Build Status](https://travis-ci.org/18F/cg-deck.svg?branch=master)](https://travis-ci.org/18F/cg-deck)
+[![Build Status](https://travis-ci.org/18F/cg-deck.svg?branch=staging-alpha)](https://travis-ci.org/18F/cg-deck)
 
 [https://console-staging.cloud.gov](https://console-staging.cloud.gov)
 
@@ -13,12 +13,22 @@ This ["deck"](#whats-a-deck) is a web application to manage cloud.gov organizati
 Learn more about [cloud.gov](https://cloud.gov).
 
 ## Tech Stack
-- `Go` (v1.6.2 required) for the backend server. [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
 
-- `AngularJS` for the frontend. [![JS Code Coverage Status](http://codecov.io/github/18F/cg-deck/coverage.svg?branch=master)](http://codecov.io/github/18F/cg-deck?branch=master)
+### Backend Server [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
+- `Go` (version 1.6.2)
 
+### Front end application [![JS Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=staging-alpha&service=github)](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=staging-alpha&service=github)
+- `Node` (version 4.2.3)
+- `React` (version ^0.14.0)
 
 ## Setup
+### Cloning the repository
+If you are unfamiliar with [`Go` project directory structure](https://golang.org/doc/code.html#Workspaces), you want the code in this repository to be in something like `<your-code-directory>/cg-deck-ws/src/github.com/18f/cg-deck`. You can use that exact pattern by cloning the repository with:
+
+```
+git clone git@github.com:18F/cg-deck.git cg-deck-ws/src/github.com/18F/cg-deck
+```
+
 ### Create a Client with UAAC
 - Make sure [UAAC](https://github.com/cloudfoundry/cf-uaac) is installed.
 - Target your UAA server. `uaac target <uaa.your-domain.com>`
@@ -34,7 +44,14 @@ uaac client add <your-client-id> \
 - Unable to create an account still? Troubleshoot [here](https://docs.cloudfoundry.org/adminguide/uaa-user-management.html#creating-admin-users)
 
 ### Set the environment variables
-If you are testing locally, export these variables. If you are deploying to cloud foundry, modify the manifest.yml
+If you are testing locally, export these variables. There is a sample file of environment variables called `env.sample`. Feel free to copy it and use the proper data. If you've never used environment variables before, you can run the following:
+`mkdir ~/.env && cp ./env.sample ~/.env/cg-deck`
+
+Then edit the file `~/.env/cg-deck` and provide the proper values. When you want to set all the environment variables, just run `source ~/.env/cg-deck`. You'll have to do this every time you open a new shell.
+
+If you are deploying to cloud foundry, modify the `manifest.yml`
+
+- `GOPATH`: The absolute path to your project root. If you followed the cloning instructions above, this path should end with `cg-deck-ws`
 - `CONSOLE_CLIENT_ID`: Registered client id with UAA.
 - `CONSOLE_CLIENT_SECRET`: The client secret.
 - `CONSOLE_HOSTNAME`: The URL of the service itself.
@@ -42,18 +59,15 @@ If you are testing locally, export these variables. If you are deploying to clou
 - `CONSOLE_UAA_URL`: The URL of the UAA service. i.e. `https://uaa.domain.com`
 - `CONSOLE_API_URL`: The URL of the API service. i.e. `http://api.domain.com`
 - `CONSOLE_LOG_URL`: The URL of the loggregator service. i.e. `http://loggregator.domain.com`
-- `PPROF_ENABLED`: An optional variable. If set to `true` or `1`, will turn on `/debug/pprof` endpoints as seen [here](https://golang.org/pkg/net/http/pprof/)
-- `CG_STYLE_PATH`: The absolute path to your `cg-style` repo. Used for webpack in development
+- `PPROF_ENABLED`: <optional> If set to `true` or `1`, will turn on `/debug/pprof` endpoints as seen [here](https://golang.org/pkg/net/http/pprof/)
+- `CG_STYLE_PATH`: <optional> The absolute path to your `cg-style` repo. If set, will use a local copy of `cloudgov-style` to build the front end application.
 
 ## Front end
-Install front end dependencies, including the `cloudgov-style` library
+Front end build commands should be run in the same directory as the `package.json` file. If you've used the cloning command from this README it should be something like `/path/to/cg-deck-ws/src/github.com/18F/cg-deck`
+
+Install front end dependencies:
 ```
 npm install
-```
-
-Install and build `cloudgov-style`
-```
-npm run cloudgov-style
 ```
 
 Build the code:
@@ -69,7 +83,7 @@ To run the tests:
 ```
 npm run test
 ```
-or to continually watch and test when theres changes:
+or to continually watch for changes and run test suite (does not build front end app):
 ```
 npm run watch-test
 ```
@@ -93,14 +107,14 @@ npm install -g eslint-plugin-react
 - Install [glide](https://github.com/Masterminds/glide)
 - Run `glide install` to get all third party code
 - `go run server.go`
-- Navigate browser to `http://localhost:9999`
+- Navigate browser to [`http://localhost:9999`](http://localhost:9999)
 
 
 ## Unit Testing
 ### Running Go unit tests
 - `go test $(glide nv)`
 
-### Running Angular unit tests
+### Running Javascript unit tests
 Test can then be run with the command:
 ```
 npm run tests
