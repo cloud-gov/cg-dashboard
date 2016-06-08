@@ -11,12 +11,8 @@ import Button from './button.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 
 import createStyler from '../util/create_styler';
-<<<<<<< 9f7e684f65bd49f02d0c0f70b5d7613accddfd7c
 import baseStyles from 'cloudgov-style/css/base.css';
-=======
-import tableStyles from 'cloudgov-style/css/base.css';
 import navStyles from 'cloudgov-style/css/components/nav.css';
->>>>>>> added all the tab nav calls into templates
 
 
 export default class UserList extends React.Component {
@@ -26,7 +22,7 @@ export default class UserList extends React.Component {
     this.state = {
       users: props.initialUsers
     };
-    this.styler = createStyler(baseStyles);
+    this.styler = createStyler(baseStyle, navStyles);
     this._handleDelete = this._handleDelete.bind(this);
   }
 
