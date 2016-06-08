@@ -10,6 +10,9 @@ import Button from './button.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 
+import createStyler from '../util/create_styler';
+import tableStyles from 'cloudgov-style/css/base.css';
+
 const Table = Reactable.Table;
 const Thead = Reactable.Thead;
 const Th = Reactable.Th;
@@ -30,7 +33,7 @@ export default class ServiceInstanceList extends React.Component {
     this.state = stateSetter(props);
     this._onChange = this._onChange.bind(this);
     this._handleDelete = this._handleDelete.bind(this);
-    this.styler = createStyler(baseStyle);
+    this.styler = createStyler(tableStyles);
   }
 
   componentDidMount() {
