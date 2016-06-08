@@ -12,6 +12,7 @@ import ServicePlanStore from '../stores/service_plan_store.js';
 
 import createStyler from '../util/create_styler';
 import tableStyles from 'cloudgov-style/css/base.css';
+import navStyles from 'cloudgov-style/css/components/nav.css';
 
 var Table = Reactable.Table,
     Thead = Reactable.Thead,
