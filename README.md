@@ -44,7 +44,13 @@ uaac client add <your-client-id> \
 - Unable to create an account still? Troubleshoot [here](https://docs.cloudfoundry.org/adminguide/uaa-user-management.html#creating-admin-users)
 
 ### Set the environment variables
-If you are testing locally, export these variables. If you are deploying to cloud foundry, modify the `manifest.yml`
+If you are testing locally, export these variables. There is a sample file of environment variables called `env.sample`. Feel free to copy it and use the proper data. If you've never used environment variables before, you can run the following:
+`mkdir ~/.env && cp ./env.sample ~/.env/cg-deck`
+
+Then edit the file `~/.env/cg-deck` and provide the proper values. When you want to set all the environment variables, just run `source ~/.env/cg-deck`. You'll have to do this every time you open a new shell.
+
+If you are deploying to cloud foundry, modify the `manifest.yml`
+
 - `GOPATH`: The absolute path to your project root. If you followed the cloning instructions above, this path should end with `cg-deck-ws`
 - `CONSOLE_CLIENT_ID`: Registered client id with UAA.
 - `CONSOLE_CLIENT_SECRET`: The client secret.
@@ -57,6 +63,8 @@ If you are testing locally, export these variables. If you are deploying to clou
 - `CG_STYLE_PATH`: <optional> The absolute path to your `cg-style` repo. If set, will use a local copy of `cloudgov-style` to build the front end application.
 
 ## Front end
+Front end build commands should be run in the same directory as the `package.json` file. If you've used the cloning command from this README it should be something like `/path/to/cg-deck-ws/src/github.com/18F/cg-deck`
+
 Install front end dependencies:
 ```
 npm install
