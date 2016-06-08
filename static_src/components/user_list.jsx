@@ -16,6 +16,7 @@ import UserRoleListControl from './user_role_list_control.jsx';
 
 import createStyler from '../util/create_styler';
 import tableStyles from 'cloudgov-style/css/base.css';
+import navStyles from 'cloudgov-style/css/components/nav.css';
 
 
 export default class UserList extends React.Component {
