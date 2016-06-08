@@ -10,7 +10,6 @@ import ServicePlanList from './service_plan_list.jsx';
 
 import createStyler from '../util/create_styler';
 import tableStyles from 'cloudgov-style/css/base.css';
-import navStyles from 'cloudgov-style/css/components/nav.css';
 
 var Table = Reactable.Table,
     Thead = Reactable.Thead,
@@ -25,7 +24,7 @@ export default class ServiceList extends React.Component {
     this.state = {
       services: props.initialServices
     };
-    this.styler = createStyler(navStyles);
+    this.styler = createStyler(tableStyles);
   }
 
   componentWillReceiveProps(nextProps) {

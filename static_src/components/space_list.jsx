@@ -7,7 +7,6 @@ import OrgStore from '../stores/org_store';
 
 import createStyler from '../util/create_styler';
 import tableStyles from 'cloudgov-style/css/base.css';
-import navStyles from 'cloudgov-style/css/components/nav.css';
 
 var Table = Reactable.Table,
     unsafe = Reactable.unsafe;
@@ -30,7 +29,7 @@ export default class SpaceList extends React.Component {
     this.state = { rows: [], currentOrgGuid: this.props.initialOrgGuid };
     this._onChange = this._onChange.bind(this);
     this.spaceLink = this.spaceLink.bind(this);
-    this.styler = createStyler(navStyles);
+    this.styler = createStyler(tableStyles);
   }
 
   componentDidMount() {
