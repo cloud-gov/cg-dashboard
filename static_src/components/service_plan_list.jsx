@@ -10,6 +10,9 @@ import Button from './button.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 
+import createStyler from '../util/create_styler';
+import tableStyles from 'cloudgov-style/css/base.css';
+
 var Table = Reactable.Table,
     Thead = Reactable.Thead,
     Th = Reactable.Th,
@@ -34,6 +37,7 @@ export default class ServicePlanList extends React.Component {
     };
     this._onChange = this._onChange.bind(this);
     this._handleAdd = this._handleAdd.bind(this);
+    this.styler = createStyler(navStyles);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -110,7 +114,7 @@ export default class ServicePlanList extends React.Component {
     }
 
     return (
-    <div className="tableWrapper">
+    <div className={ this.styler('tableWrapper') }>
       { content }
     </div>
     );
