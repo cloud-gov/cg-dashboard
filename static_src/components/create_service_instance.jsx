@@ -3,23 +3,20 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import Box from './box.jsx';
 import Button from './button.jsx';
 import { Form, FormText, FormSelect, FormElement, FormError } from './form.jsx';
 import SpaceStore from '../stores/space_store.js';
-import ServiceInstanceStore  from '../stores/service_instance_store.js';
+import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
-import serviceInstanceStore from '../stores/service_instance_store.js';
 
 function stateSetter() {
-  var spaces = SpaceStore.getAll(),
-      createError = ServiceInstanceStore.createError;
-
   return {
-    createError: createError,
-    spaces: spaces
-  }
+    createError: ServiceInstanceStore.createError,
+    spaces: SpaceStore.getAll()
+  };
 }
 
 export default class CreateServiceInstance extends React.Component {
@@ -37,16 +34,22 @@ export default class CreateServiceInstance extends React.Component {
 
   componentDidMount() {
     SpaceStore.addChangeListener(this._onChange);
-    serviceInstanceStore.addChangeListener(this._onChange);
+    ServiceInstanceStore.addChangeListener(this._onChange);
     this.setState(stateSetter());
+    this.scrollIntoView();
+  }
+
+  scrollIntoView() {
+    ReactDOM.findDOMNode(this).scrollIntoView(true);
   }
 
   _onChange() {
     this.setState(stateSetter());
+    this.scrollIntoView();
   }
 
   _onValidateForm(errs) {
-    this.setState({errs: errs});
+    this.setState({ errs });
   }
 
   _onValidForm(values) {
@@ -54,7 +57,7 @@ export default class CreateServiceInstance extends React.Component {
       values.name,
       values.space,
       this.props.servicePlan.guid
-    ); 
+    );
   }
 
   get serviceName() {
@@ -66,7 +69,7 @@ export default class CreateServiceInstance extends React.Component {
   }
 
   render() {
-    var createError;
+    let createError;
 
     if (this.state.createError) {
       createError = <FormError message={ this.state.createError.description } />
@@ -74,25 +77,25 @@ export default class CreateServiceInstance extends React.Component {
 
     return (
       <Box>
-        <h4>Create service instance for { this.serviceName } using { 
+        <h4>Create service instance for { this.serviceName } using {
           this.servicePlanName } plan.
         </h4>
         { createError }
-        <Form action="/service_instances" 
+        <Form action="/service_instances"
             classes={ ["test-create_service_instance_form"] }
             method="post"
             ref="form"
-            onValidate={ this._onValidateForm } 
+            onValidate={ this._onValidateForm }
             onValid={ this._onValidForm }>
-          <FormText 
+          <FormText
             classes={ ["test-create_service_instance_name"] }
-            label="Choose a name for the service" 
+            label="Choose a name for the service"
             name="name"
             validator={ FormElement.validatorString }
           />
-          <FormSelect 
+          <FormSelect
             classes={ ["test-create_service_instance_space"] }
-            label="Choose a name for the service" 
+            label="Choose a name for the service"
             label="Select the space for the service instance"
             name="space"
             options={ this.state.spaces.map((space) => {
@@ -105,7 +108,7 @@ export default class CreateServiceInstance extends React.Component {
       </Box>
     );
   }
-};
+}
 
 CreateServiceInstance.propTypes = {
   service: React.PropTypes.object,
@@ -114,4 +117,4 @@ CreateServiceInstance.propTypes = {
 
 CreateServiceInstance.defaultProps = {
   service: {}
-}
+};
