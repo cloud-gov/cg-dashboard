@@ -4,14 +4,22 @@ function uniqueOnly(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-export default function createStyler(...args) {
-  return (className) => {
-    if (args.length === 0) return classNames(className);
-    const classes = args.map((f) => {
-      if (f[className]) return f[className];
-      return className;
-    }).filter(uniqueOnly);
+function flatten(a, b) {
+  return a.concat(Array.isArray(b) ? flatten(b) : b);
+}
 
-    return classNames.apply([], classes);
+export default function createStyler(...args) {
+  return (...classes) => {
+    if (args.length === 0) return classNames(classes);
+    const allClasses = args.map((f) => {
+      const foundClasses = classes.map((className) => {
+        if (f[className]) return f[className];
+        return className;
+      });
+
+      return foundClasses;
+    }).reduce(flatten, []).filter(uniqueOnly);
+
+    return classNames.apply([], allClasses);
   };
 }

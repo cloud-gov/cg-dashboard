@@ -6,6 +6,7 @@ import mainContentStyles from 'cloudgov-style/css/components/main-content.css';
 import sidenavStyles from 'cloudgov-style/css/components/sidenav.css';
 import titleBarStyles from 'cloudgov-style/css/components/title_bar.css';
 import navToggleStyles from 'cloudgov-style/css/components/nav_toggle.css';
+import overrideStyles from './css/overrides.css';
 
 import createStyler from './util/create_styler';
 
@@ -27,7 +28,8 @@ export default class App extends React.Component {
       mainContentStyles,
       sidenavStyles,
       titleBarStyles,
-      navToggleStyles
+      navToggleStyles,
+      overrideStyles
     );
     this.state = { isLoggedIn: false };
     this._onChange = this._onChange.bind(this);
@@ -56,21 +58,12 @@ export default class App extends React.Component {
       content = <Login />;
     }
 
+
     return (
       <div>
         <Disclaimer />
         <Header />
-        <div className={ this.styler('title_bar') }>
-          <div className={ this.styler('nav_toggle') }>
-            <i className={ this.styler('nav_toggle-icon') }></i>
-            <div className="icon-reorder tooltips"
-              data-original-title="Toggle Navigation"
-              data-placement="bottom">
-            </div>
-          </div>
-          <h1 className={ this.styler('title_bar-title') }>Organizations</h1>
-        </div>
-        <div className={ this.styler('sidenav-parent') }>
+        <div className={ this.styler('sidenav-parent', 'main_content') }>
           <nav className={ this.styler('sidenav') }>
             { sidebar }
           </nav>

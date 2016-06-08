@@ -1,0 +1,7 @@
+
+/*
+ * Override max width of main content section
+ */
+.main_content {
+  max-width: 1400px;
+}
