@@ -9,12 +9,10 @@ import formatDateTime from '../util/format_date';
 
 import baseStyle from 'cloudgov-style/css/base.css';
 import createStyler from '../util/create_styler';
+import tableStyles from 'cloudgov-style/css/base.css';
 
 import Button from './button.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
-
-import createStyler from '../util/create_styler';
-import tableStyles from 'cloudgov-style/css/base.css';
 
 
 export default class UserList extends React.Component {

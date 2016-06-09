@@ -4,14 +4,12 @@ import Reactable from 'reactable';
 
 import formatDateTime from '../util/format_date';
 
-import baseStyle from 'cloudgov-style/css/base.css';
 import createStyler from '../util/create_styler';
+import baseStyle from 'cloudgov-style/css/base.css';
+import tableStyles from 'cloudgov-style/css/base.css';
 import Button from './button.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
-
-import createStyler from '../util/create_styler';
-import tableStyles from 'cloudgov-style/css/base.css';
 
 const Table = Reactable.Table;
 const Thead = Reactable.Thead;
