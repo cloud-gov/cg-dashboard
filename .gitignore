@@ -13,3 +13,4 @@ acceptance/scripts/.env_docker
 static/assets
 vendor/*
 !vendor/vendor.json
+.DS_Store
