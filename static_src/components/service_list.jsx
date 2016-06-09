@@ -52,6 +52,7 @@ export default class ServiceList extends React.Component {
       content = (
       <table>
         <thead>
+          <tr>
           { this.columns.map((column) => {
             return (
               <th className={ column.key } key={ column.key }>
@@ -59,7 +60,9 @@ export default class ServiceList extends React.Component {
               </th>
             )
           })}
+          </tr>
         </thead>
+        <tbody>
         { this.rows.map((row) => {
           return [
           <tr key={ row.guid }>
@@ -79,6 +82,7 @@ export default class ServiceList extends React.Component {
           </tr>
           ]
         })}
+        </tbody>
       </table>
       );
     }
