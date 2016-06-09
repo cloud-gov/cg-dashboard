@@ -9,6 +9,7 @@ import formatDateTime from '../util/format_date';
 
 import baseStyle from 'cloudgov-style/css/base.css';
 import createStyler from '../util/create_styler';
+import tableStyles from 'cloudgov-style/css/base.css';
 
 import Button from './button.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
@@ -23,6 +24,7 @@ export default class UserList extends React.Component {
     };
     this.styler = createStyler(baseStyle);
     this._handleDelete = this._handleDelete.bind(this);
+    this.styler = createStyler(tableStyles);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -98,7 +100,7 @@ export default class UserList extends React.Component {
     }
 
     return (
-    <div className="tableWrapper">
+    <div className={ this.styler('tableWrapper') }>
       { content }
     </div>
     );

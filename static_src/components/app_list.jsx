@@ -3,7 +3,10 @@ import dedent from 'dedent';
 import React from 'react';
 import Reactable from 'reactable';
 
+import createStyler from '../util/create_styler';
+
 import SpaceStore from '../stores/space_store.js';
+import tableStyles from 'cloudgov-style/css/base.css';
 
 var Table = Reactable.Table,
     unsafe = Reactable.unsafe;
@@ -25,6 +28,7 @@ export default class AppList extends React.Component {
     this.state = stateSetter(props);
     this.state.apps = props.initialApps;
     this._onChange = this._onChange.bind(this);
+    this.styler = createStyler(tableStyles);
   }
 
   componentDidMount() {
@@ -77,7 +81,7 @@ export default class AppList extends React.Component {
     }
 
     return (
-      <div className="tableWrapper">
+      <div className={ this.styler('tableWrapper') }>
         { content }
       </div>
     );

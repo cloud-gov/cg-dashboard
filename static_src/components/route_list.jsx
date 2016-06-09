@@ -3,6 +3,9 @@ import React from 'react';
 
 import RouteStore from '../stores/route_store.js';
 
+import createStyler from '../util/create_styler';
+import tableStyles from 'cloudgov-style/css/base.css';
+
 function stateSetter(appGuid) {
   const routes = RouteStore.getAll();
   const appRoutes = routes.filter((route) => route.appGuid === appGuid);
@@ -18,6 +21,7 @@ export default class RouteList extends React.Component {
     this.props = props;
     this.state = stateSetter(props.initialAppGuid);
     this._onChange = this._onChange.bind(this);
+    this.styler = createStyler(tableStyles);
   }
 
   componentDidMount() {
@@ -70,7 +74,7 @@ export default class RouteList extends React.Component {
     }
 
     return (
-      <div className="tableWrapper">
+      <div className={ this.styler('tableWrapper') }>
         { content }
         <aside>
           <p>To modify, create or delete a route, view <a
