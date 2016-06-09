@@ -71,20 +71,20 @@ export default class AppPage extends React.Component {
                   <td><strong>Memory usage</strong></td>
                   <td>
                     <strong>{ this.state.app.stats && this.formatMb(
-                        this.state.app.stats.usage.mem) }MB</strong> out of
+                        this.state.app.stats.usage.mem) } MB</strong> out of
                       <span>&nbsp;</span>
                      { this.state.app.stats &&
-                      this.formatMb(this.state.app.stats.mem_quota) }MB
+                      this.formatMb(this.state.app.stats.mem_quota) } MB
                   </td>
                 </tr>
                 <tr>
                   <td><strong>Disk usage</strong></td>
                   <td>
                   <strong>{ this.state.app.stats && this.formatMb(
-                    this.state.app.stats.usage.disk) }MB</strong> out of
+                    this.state.app.stats.usage.disk) } MB</strong> out of
                     <span>&nbsp;</span>
                     { this.state.app.stats &&
-                      this.formatMb(this.state.app.stats.disk_quota) }MB
+                      this.formatMb(this.state.app.stats.disk_quota) } MB
                   </td>
                 </tr>
               </tbody>
