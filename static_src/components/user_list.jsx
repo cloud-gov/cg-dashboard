@@ -56,6 +56,7 @@ export default class UserList extends React.Component {
       content = (
       <table sortable={ true }>
         <thead>
+          <tr>
           { this.columns.map((column) => {
             return (
               <th column={ column.label } className={ column.key }
@@ -63,6 +64,7 @@ export default class UserList extends React.Component {
                 { column.label }</th>
             )
           })}
+          </tr>
         </thead>
         <tbody>
         { this.state.users.map((user) => {
