@@ -1,5 +1,6 @@
 var data = require('./fixtures');
 
+var apps = data.apps;
 var organizations = data.organizations;
 var spaces = data.spaces;
 
@@ -34,5 +35,19 @@ module.exports = function api(smocks) {
         spaces: spaces
       });
     }
-  })
+  });
+
+  smocks.route({
+    id: 'space-summary',
+    label: 'Space summary',
+    path: `${BASE_URL}/spaces/{guid}/summary`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      reply({
+        guid: guid,
+        name: `space-${guid}`,
+        apps: apps
+      });
+    }
+  });
 };

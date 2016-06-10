@@ -1,5 +1,52 @@
 var URL_BASE = '/v2'
 
+var appGuids = [
+  'app-guid-one',
+  'app-guid-two',
+  'app-guid-three'
+]
+
+module.exports.appGuids = appGuids;
+
+var apps = appGuids.map(function(guid) {
+  return {
+    guid: guid,
+    name: `app-${guid}`,
+    production: false,
+    buildpack: 'https://github.com/cloudfoundry/staticfile-buildpack.git',
+    command: null,
+    console: false,
+    debug: null,
+    detected_buildpack: 'node.js 1.5.10',
+    disk_quota: 1024,
+    memory: 64,
+    package_state: 'STAGED',
+    ports: null,
+    instances: 2,
+    running_instances: 2,
+    service_count: 0,
+    service_names: [],
+    state: 'STARTED',
+    version: 'version',
+    urls: [
+      `${guid}.apps.cloud.gov`
+    ],
+    routes: [
+      {
+        guid: "d32ee365-637b-493d-874e-8fe93c7212e2",
+        host: "18f-site",
+        path: "",
+        domain: {
+          guid: "3750eb89-86c6-4882-96bf-66b8c6363290",
+          name: "18f.gov"
+        }
+      }
+    ]
+  }
+});
+
+module.exports.apps = apps;
+
 var organizationGuids = [
   'org-guid-one',
   'org-guid-two',
