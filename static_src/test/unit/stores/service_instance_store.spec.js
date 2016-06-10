@@ -260,6 +260,41 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
+  describe('on service instance delete cancel', function() {
+    it('should emit a change event if the instance exists', function() {
+      const instanceGuid = '2903fdkhzxcvzxcv';
+      let existingInstance = {
+        guid: instanceGuid
+      };
+
+      ServiceInstanceStore._data = Immutable.fromJS([existingInstance]);
+      serviceActions.deleteInstanceConfirm(instanceGuid);;
+
+      const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+      serviceActions.deleteInstanceCancel(instanceGuid);;
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should add a confirmDelete key on the service instance to delete',
+       function() {
+      const instanceGuid = 'zxcvqwehgasd980';
+      let existingInstance = {
+        guid: instanceGuid
+      };
+
+      ServiceInstanceStore._data = Immutable.fromJS([existingInstance]);
+      serviceActions.deleteInstanceConfirm(instanceGuid);;
+      let actual = ServiceInstanceStore.get(instanceGuid);
+      expect(actual.confirmDelete).toBeTruthy();
+
+      serviceActions.deleteInstanceCancel(instanceGuid);;
+      actual = ServiceInstanceStore.get(instanceGuid);
+
+      expect(actual.confirmDelete).toBeFalsy();
+    });
+  });
+
   describe('on service instance deleted', function() {
     it('should remove the service from the data', function() {
       var expectedGuid = 'macldksajpi',
