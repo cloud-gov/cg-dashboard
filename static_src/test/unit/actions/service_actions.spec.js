@@ -200,9 +200,10 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('deleteInstance()', function() {
-    it('should dispatch a instance delete view event with instance guid', () => {
-      var expectedInstanceGuid = 'asdfasdf';
+  describe('deleteInstanceConfirm()', function() {
+    it('should dispatch a instance delete confirm ui event with instance guid',
+       () => {
+      var expectedInstanceGuid = '09zxcn1dsf';
       var expectedParams = {
         serviceInstanceGuid: expectedInstanceGuid
       }
@@ -211,6 +212,22 @@ describe('serviceActions', function() {
       serviceActions.deleteInstanceConfirm(expectedInstanceGuid);
 
       assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETE_CONFIRM,
+                   expectedParams);
+    });
+  });
+
+  describe('deleteInstanceCancel()', function() {
+    it('should dispatch a instance delete cancel ui event with instance guid',
+       () => {
+      var expectedInstanceGuid = '23098znxb';
+      var expectedParams = {
+        serviceInstanceGuid: expectedInstanceGuid
+      }
+
+      let spy = setupUISpy(sandbox)
+      serviceActions.deleteInstanceCancel(expectedInstanceGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETE_CANCEL,
                    expectedParams);
     });
   });

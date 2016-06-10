@@ -90,6 +90,13 @@ export default {
     });
   },
 
+  deleteInstanceCancel(instanceGuid) {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_DELETE_CANCEL,
+      serviceInstanceGuid: instanceGuid
+    });
+  },
+
   deleteInstance(instanceGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
