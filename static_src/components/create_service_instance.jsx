@@ -81,7 +81,7 @@ export default class CreateServiceInstance extends React.Component {
     }
 
     return (
-      <div className = { this.styler('modal') }>
+      <div className = { this.styler('actions') }>
         <h4>Create service instance for <strong className = { this.styler('inline-block') }>{ this.serviceName }</strong> using <strong className = { this.styler('inline-block') }>{ this.servicePlanName }</strong> plan.
         </h4>
         { createError }
