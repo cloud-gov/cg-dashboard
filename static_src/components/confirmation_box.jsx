@@ -31,7 +31,11 @@ export default class ConfirmationBox extends React.Component {
 
   render() {
     return (
+<<<<<<< HEAD
       <div className={ this.styler('actions-confirm') }>
+=======
+      <div className={ this.styler('action_box') }>
+>>>>>>> Service isntance delete confirmation
         <Button label="Confirm"
             classes={[this.styler("usa-button-secondary")]}
             onClickHandler={ this._confirmHandler }>

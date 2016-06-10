@@ -239,6 +239,21 @@ describe('serviceActions', function() {
         serviceInstanceGuid: expectedInstanceGuid
       }
 
+      let spy = setupUISpy(sandbox)
+      serviceActions.deleteInstanceConfirm(expectedInstanceGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETE_CONFIRM,
+                   expectedParams);
+    });
+  });
+
+  describe('deleteInstance()', function() {
+    it('should dispatch a instance delete view event with instance guid', () => {
+      var expectedInstanceGuid = 'asdfasdf';
+      var expectedParams = {
+        serviceInstanceGuid: expectedInstanceGuid
+      }
+
       let spy = setupViewSpy(sandbox)
       serviceActions.deleteInstance(expectedInstanceGuid);
 
