@@ -58,6 +58,7 @@ export default class UserRoleListControl extends React.Component {
               roleKey={ role.key }
               initialValue={ this.checkRole(role.key) }
               onChange={ this._onChange.bind(this, role.key) }
+              userId={ this.props.user.guid }
             />
           </span>
         );
