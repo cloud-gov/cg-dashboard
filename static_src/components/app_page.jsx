@@ -4,7 +4,7 @@ import React from 'react';
 import AppStore from '../stores/app_store.js';
 import RouteList from './route_list.jsx';
 
-import navStyles from 'cloudgov-style/css/components/section.css';
+import sectionStyle from 'cloudgov-style/css/components/section.css';
 import createStyler from '../util/create_styler';
 
 
