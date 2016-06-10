@@ -2,7 +2,8 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import { assertAction, setupViewSpy, setupServerSpy } from '../helpers.js';
+import { assertAction, setupViewSpy, setupServerSpy, setupUISpy } from
+  '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
@@ -84,14 +85,14 @@ describe('serviceActions', function() {
       var expectedSpaceGuid = 'aksfdsaaa8899';
 
       let expectedParams = {
-        spaceGuid: expectedSpaceGuid 
+        spaceGuid: expectedSpaceGuid
       }
 
       let spy = setupViewSpy(sandbox)
 
       serviceActions.fetchAllInstances(expectedSpaceGuid);
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCES_FETCH, 
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCES_FETCH,
                    expectedParams)
     });
   });
@@ -195,6 +196,21 @@ describe('serviceActions', function() {
       serviceActions.receivedInstances(expected);
 
       assertAction(spy, serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
+                   expectedParams);
+    });
+  });
+
+  describe('deleteInstance()', function() {
+    it('should dispatch a instance delete view event with instance guid', () => {
+      var expectedInstanceGuid = 'asdfasdf';
+      var expectedParams = {
+        serviceInstanceGuid: expectedInstanceGuid
+      }
+
+      let spy = setupUISpy(sandbox)
+      serviceActions.deleteInstanceConfirm(expectedInstanceGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETE_CONFIRM,
                    expectedParams);
     });
   });

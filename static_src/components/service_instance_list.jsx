@@ -9,6 +9,7 @@ import baseStyle from 'cloudgov-style/css/base.css';
 import tableStyles from 'cloudgov-style/css/base.css';
 
 import Button from './button.jsx';
+import ConfirmationBox from './confirmation_box.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 
@@ -83,13 +84,16 @@ export default class ServiceInstanceList extends React.Component {
                   { formatDateTime(lastOpTime) }
                 </Td>
                 <Td column="Delete">
-                  <Button
-                    classes={ ["test-delete_instance",
-                      this.styler("usa-button-secondary")] }
-                    onClickHandler={ this._handleDelete.bind(this, instance.guid)}
-                    label="delete">
-                    <span>Delete Instance</span>
-                  </Button>
+                  <span>
+                    <Button
+                      classes={ ["test-delete_instance",
+                        this.styler("usa-button-secondary")] }
+                      onClickHandler={ this._handleDelete.bind(this, instance.guid)}
+                      label="delete">
+                      <span>Delete Instance</span>
+                    </Button>
+                    <ConfirmationBox />
+                  </span>
                 </Td>
               </Tr>
             )
