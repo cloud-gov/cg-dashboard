@@ -2,7 +2,6 @@
 inherit: manifest-base.yml
 applications:
 - name: cf-deck
-  memory: 256M
   host: console-staging
   env:
     CONSOLE_HOSTNAME: https://console-staging.cloud.gov
