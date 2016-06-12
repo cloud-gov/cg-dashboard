@@ -8,3 +8,4 @@ cf-deck
 cg-deck
 acceptance/
 static/tests/
+ci/
