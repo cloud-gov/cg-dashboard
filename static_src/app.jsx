@@ -63,7 +63,7 @@ export default class App extends React.Component {
       <div>
         <Disclaimer />
         <Header />
-        <div className={ this.styler('sidenav-parent', 'main_content') }>
+        <div className={ this.styler('sidenav-parent', 'main_content', 'content-dashboard') }>
           <nav className={ this.styler('sidenav') }>
             { sidebar }
           </nav>
