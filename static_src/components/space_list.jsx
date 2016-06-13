@@ -82,7 +82,7 @@ export default class SpaceList extends React.Component {
     return (
       <div>
         <div>
-          <h3>{ this.title }  Spaces</h3>
+          <h2>{ this.title }  Spaces</h2>
         </div>
         <div className={ this.styler('tableWrapper') }>
           { content }

@@ -75,7 +75,7 @@ export default class Space extends React.Component {
     return (
       <div>
         <div>
-          <h3>{ this.state.spaceName } Space</h3>
+          <h2>{ this.state.spaceName } Space</h2>
         </div>
         { tabNav }
         <div>
