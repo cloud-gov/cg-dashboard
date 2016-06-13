@@ -65,7 +65,7 @@ If you are deploying to cloud foundry, modify the `manifest.yml`
 ## Front end
 Front end build commands should be run in the same directory as the `package.json` file. If you've used the cloning command from this README it should be something like `/path/to/cg-deck-ws/src/github.com/18F/cg-deck`
 
-Install front end dependencies:
+Install front end dependencies (may require [special steps for node-gyp](https://github.com/nodejs/node-gyp#installation)):
 ```
 npm install
 ```
