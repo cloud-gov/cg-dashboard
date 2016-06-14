@@ -33,7 +33,10 @@ export default class ServiceInstanceList extends React.Component {
     this.state = stateSetter(props);
     this._onChange = this._onChange.bind(this);
     this._handleDelete = this._handleDelete.bind(this);
-    this.styler = createStyler(baseStyle, tableStyles);
+    this._handleDeleteConfirmation = this._handleDeleteConfirmation.bind(this);
+    this._handleDeleteCancel = this._handleDeleteCancel.bind(this);
+    this.renderConfirmationBox = this.renderConfirmationBox.bind(this);
+    this.styler = createStyler(baseStyle);
   }
 
   componentDidMount() {
@@ -50,6 +53,16 @@ export default class ServiceInstanceList extends React.Component {
     serviceActions.deleteInstance(instanceGuid);
   }
 
+  _handleDeleteConfirmation(instanceGuid, ev) {
+    ev.preventDefault();
+    serviceActions.deleteInstanceConfirm(instanceGuid);
+  }
+
+  _handleDeleteCancel(instanceGuid, ev) {
+    ev.preventDefault();
+    serviceActions.deleteInstanceCancel(instanceGuid);
+  }
+
   get columns() {
     return [
       { label: 'Name', key: 'name' },
@@ -57,6 +70,15 @@ export default class ServiceInstanceList extends React.Component {
       { label: 'Updated at', key: 'updated_at' },
       { label: 'Delete', key: 'delete_istance' }
     ];
+  }
+
+  renderConfirmationBox(instanceGuid) {
+    return (
+      <ConfirmationBox
+        confirmHandler={ this._handleDelete.bind(this, instanceGuid) }
+        cancelHandler={ this._handleDeleteCancel.bind(this, instanceGuid) }
+      />
+    );
   }
 
   render() {
@@ -68,7 +90,8 @@ export default class ServiceInstanceList extends React.Component {
           <Thead>
             { this.columns.map((column) => {
               return (
-                <Th column={ column.label } className={ column.key }>
+                <Th column={ column.label } className={ column.key }
+                    key={ column.key }>
                   { column.label }</Th>
               )
             })}
@@ -85,14 +108,18 @@ export default class ServiceInstanceList extends React.Component {
                 </Td>
                 <Td column="Delete">
                   <span>
-                    <Button
-                      classes={ ["test-delete_instance",
-                        this.styler("usa-button-secondary")] }
-                      onClickHandler={ this._handleDelete.bind(this, instance.guid)}
-                      label="delete">
-                      <span>Delete Instance</span>
-                    </Button>
-                    <ConfirmationBox />
+                    <div style={{float: 'left'}}>
+                      <Button
+                        classes={ ["test-delete_instance",
+                          this.styler("usa-button-secondary")] }
+                        onClickHandler={ this._handleDeleteConfirmation.bind(
+                            this, instance.guid)}
+                        label="delete">
+                        <span>Delete Instance</span>
+                      </Button>
+                    </div>
+                    { (instance.confirmDelete) ? this.renderConfirmationBox(
+                      instance.guid) : '' }
                   </span>
                 </Td>
               </Tr>
