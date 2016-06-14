@@ -11,7 +11,7 @@ import { Form, FormText, FormSelect, FormElement, FormError } from './form.jsx';
 import SpaceStore from '../stores/space_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
-import modalStyle from 'cloudgov-style/css/components/modal.css';
+import actionsStyle from 'cloudgov-style/css/components/actions.css';
 import baseStyle from 'cloudgov-style/css/base.css';
 import createStyler from '../util/create_styler';
 
@@ -34,7 +34,7 @@ export default class CreateServiceInstance extends React.Component {
     this._onChange = this._onChange.bind(this);
     this._onValidateForm = this._onValidateForm.bind(this);
     this._onValidForm = this._onValidForm.bind(this);
-    this.styler = createStyler(modalStyle, baseStyle);
+    this.styler = createStyler(actionsStyle, baseStyle);
   }
 
   componentDidMount() {
@@ -81,8 +81,8 @@ export default class CreateServiceInstance extends React.Component {
     }
 
     return (
-      <div className = { this.styler('actions') }>
-        <h4>Create service instance for <strong className = { this.styler('inline-block') }>{ this.serviceName }</strong> using <strong className = { this.styler('inline-block') }>{ this.servicePlanName }</strong> plan.
+      <div className = { this.styler('actions-large') }>
+        <h4>Create service instance for <strong className = { this.styler('actions-callout-inline-block') }>{ this.serviceName }</strong> using <strong className = { this.styler('actions-callout-inline-block') }>{ this.servicePlanName }</strong> plan.
         </h4>
         { createError }
         <Form action="/service_instances"
