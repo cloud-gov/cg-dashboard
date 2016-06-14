@@ -46,7 +46,9 @@ func startMonitoring(license string) {
 	agent.CollectHTTPStat = true
 	agent.NewrelicLicense = license
 	agent.NewrelicName = "Cloudgov Deck"
-	agent.Run()
+	if err := agent.Run(); err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 func startApp(port string) {
