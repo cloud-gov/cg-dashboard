@@ -6,7 +6,7 @@
 import React from 'react';
 
 import createStyler from '../util/create_styler';
-import actionBoxStyles from 'cloudgov-style/css/components/action_box.css';
+import actionStyles from 'cloudgov-style/css/components/actions.css';
 import baseStyles from 'cloudgov-style/css/base.css';
 
 import Button from './button.jsx';
@@ -16,7 +16,7 @@ export default class ConfirmationBox extends React.Component {
     super(props);
     this.props = props;
     this.state = {};
-    this.styler = createStyler(actionBoxStyles, baseStyles);
+    this.styler = createStyler(actionStyles, baseStyles);
     this._confirmHandler = this._confirmHandler.bind(this);
     this._cancelHandler = this._cancelHandler.bind(this);
   }
@@ -31,7 +31,7 @@ export default class ConfirmationBox extends React.Component {
 
   render() {
     return (
-      <div className={ this.styler('action_box') }>
+      <div className={ this.styler('actions-confirm') }>
         <Button label="Confirm"
             classes={[this.styler("usa-button-secondary")]}
             onClickHandler={ this._confirmHandler }>
