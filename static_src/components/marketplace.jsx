@@ -34,6 +34,7 @@ export default class Marketplace extends React.Component {
       currentOrgGuid: props.initialOrgGuid,
       services: []
     };
+    this.state = stateSetter();
     this._onChange = this._onChange.bind(this);
   }
 

@@ -19,7 +19,7 @@ export default class Space extends React.Component {
     super(props);
     this.props = props;
     this.state = {
-      space: {},
+      space: SpaceStore.get(this.props.initialSpaceGuid) || {},
       currentOrgGuid: this.props.initialOrgGuid,
       currentSpaceGuid: this.props.initialSpaceGuid,
     };
