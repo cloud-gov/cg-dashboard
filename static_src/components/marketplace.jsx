@@ -68,7 +68,7 @@ export default class Marketplace extends React.Component {
     return (
       <div>
         <div>
-          <h3>Marketplace</h3>
+          <h2>Marketplace</h2>
         </div>
         <ServiceList initialServices={ this.state.services } />
         { form }
