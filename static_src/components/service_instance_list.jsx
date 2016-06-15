@@ -111,7 +111,10 @@ export default class ServiceInstanceList extends React.Component {
                     <div style={{float: 'left'}}>
                       <Button
                         classes={ ["test-delete_instance",
-                                  this.styler("usa-button-secondary")] }
+                          (instance.confirmDelete) ?
+                          '' : this.styler("usa-button-secondary"),
+                          (instance.confirmDelete) ?
+                            this.styler('usa-button-disabled') : '']}
                         onClickHandler={ this._handleDeleteConfirmation.bind(
                             this, instance.guid)}
                         disabled={instance.confirmDelete}
