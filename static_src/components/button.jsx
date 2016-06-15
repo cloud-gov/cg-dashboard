@@ -35,7 +35,7 @@ Button.propTypes = {
   classes: React.PropTypes.array,
   label: React.PropTypes.string,
   onClickHandler: React.PropTypes.func,
-  disabled: React.PropTypes.boolean
+  disabled: React.PropTypes.bool
 };
 
 Button.defaultProps = {
