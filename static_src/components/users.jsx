@@ -50,6 +50,10 @@ export default class Users extends React.Component {
     this._setTab(this.props.initialCurrentTab);
   }
 
+  componentWillUnmount() {
+    UserStore.removeChangeListener(this._onChange);
+  }
+
   _onChange() {
     this.setState(stateSetter(this.state));
   }
