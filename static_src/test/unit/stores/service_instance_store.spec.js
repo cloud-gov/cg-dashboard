@@ -89,6 +89,24 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
+  describe('on service instance create form cancel', function() {
+    it('should emit a change event', function() {
+      var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+
+      serviceActions.createInstanceFormCancel();
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should set the create instance form to null', function() {
+      ServiceInstanceStore._createInstanceForm = true;
+
+      serviceActions.createInstanceFormCancel();
+
+      expect(ServiceInstanceStore.createInstanceForm).toBeFalsy();
+    });
+  });
+
   describe('on service instance create ui', function() {
     it('should set createInstanceForm to object with service and plan from stores',
         function() {
