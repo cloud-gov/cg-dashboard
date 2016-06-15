@@ -83,6 +83,20 @@ export default {
     });
   },
 
+  deleteInstanceConfirm(instanceGuid) {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_DELETE_CONFIRM,
+      serviceInstanceGuid: instanceGuid
+    });
+  },
+
+  deleteInstanceCancel(instanceGuid) {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_DELETE_CANCEL,
+      serviceInstanceGuid: instanceGuid
+    });
+  },
+
   deleteInstance(instanceGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCE_DELETE,

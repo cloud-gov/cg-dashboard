@@ -47,6 +47,10 @@ const serviceActionTypes = keymirror({
   SERVICE_PLANS_FETCH: null,
   // Action when all service plans for a service were received from the server.
   SERVICE_PLANS_RECEIVED: null,
+  // Action to decide whether to delete a single service instance.
+  SERVICE_INSTANCE_DELETE_CONFIRM: null,
+  // Action to decide whether to cancel deletion of a single service instance.
+  SERVICE_INSTANCE_DELETE_CANCEL: null,
   // Action to delete a single service instance.
   SERVICE_INSTANCE_DELETE: null,
   // Action when a single service instance was deleted on the server.

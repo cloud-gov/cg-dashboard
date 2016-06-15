@@ -23,7 +23,8 @@ export default class Button extends React.Component {
     var classes = classNames(...this.props.classes);
     return (
       <button type="button" className={ classes }
-          aria-label={ this.props.label } onClick={ this._handleClick }>
+          aria-label={ this.props.label } onClick={ this._handleClick }
+          disabled={this.props.disabled}>
         { this.props.children }
       </button>
     );
@@ -33,11 +34,13 @@ export default class Button extends React.Component {
 Button.propTypes = {
   classes: React.PropTypes.array,
   label: React.PropTypes.string,
-  onClickHandler: React.PropTypes.func
+  onClickHandler: React.PropTypes.func,
+  disabled: React.PropTypes.boolean
 };
 
 Button.defaultProps = {
   classes: [],
   label: '',
-  onClickHandler: function() { return true; }
+  onClickHandler: function() { return true; },
+  disabled: false
 };

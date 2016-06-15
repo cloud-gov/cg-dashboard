@@ -79,6 +79,35 @@ class ServiceInstanceStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_INSTANCE_DELETE_CONFIRM: {
+        const exists = this.get(action.serviceInstanceGuid);
+        if (exists) {
+          const toConfirm = {
+            guid: action.serviceInstanceGuid,
+            confirmDelete: true
+          };
+          this.merge('guid', toConfirm, (changed) => {
+            if (changed) this.emitChange();
+          });
+        }
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_INSTANCE_DELETE_CANCEL: {
+        const exists = this.get(action.serviceInstanceGuid);
+        if (exists) {
+          const toConfirm = {
+            guid: action.serviceInstanceGuid,
+            confirmDelete: false
+          };
+          this.merge('guid', toConfirm, (changed) => {
+            if (changed) this.emitChange();
+          });
+        }
+
+        break;
+      }
+
       case serviceActionTypes.SERVICE_INSTANCE_DELETE: {
         const toDelete = this.get(action.serviceInstanceGuid);
         if (toDelete) {
