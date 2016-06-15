@@ -7,9 +7,6 @@ import React from 'react';
 
 import formatDateTime from '../util/format_date';
 
-import createStyler from '../util/create_styler';
-import baseStyle from 'cloudgov-style/css/base.css';
-
 import Button from './button.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 
