@@ -45,6 +45,11 @@ export default class CreateServiceInstance extends React.Component {
     this.scrollIntoView();
   }
 
+  componentWillUnmount() {
+    SpaceStore.removeChangeListener(this._onChange);
+    ServiceInstanceStore.removeChangeListener(this._onChange);
+  }
+
   scrollIntoView() {
     ReactDOM.findDOMNode(this).scrollIntoView(true);
   }
