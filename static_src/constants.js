@@ -61,6 +61,8 @@ const serviceActionTypes = keymirror({
   SERVICE_INSTANCES_RECEIVED: null,
   // Action to open UI to create a service instance.
   SERVICE_INSTANCE_CREATE_FORM: null,
+  // Action to cancel the form to create a service instance.
+  SERVICE_INSTANCE_CREATE_FORM_CANCEL: null,
   // Action when an error happens attempting to create a service instance on
   // server.
   SERVICE_INSTANCE_ERROR: null,

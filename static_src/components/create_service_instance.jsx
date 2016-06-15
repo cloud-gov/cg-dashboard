@@ -112,7 +112,9 @@ export default class CreateServiceInstance extends React.Component {
             validator={ FormElement.validatorString }
           />
           <Button name="submit">Create service instance</Button>
-          <Button name="cancel" classes={ [this.styler("button-cancel")] }>Cancel</Button>
+          <Button name="cancel" classes={ [this.styler("button-cancel")] }>
+            Cancel
+          </Button>
         </Form>
       </div>
     );

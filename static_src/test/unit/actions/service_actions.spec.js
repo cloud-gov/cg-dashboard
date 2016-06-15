@@ -117,6 +117,18 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('createInstanceFormCancel', function() {
+    it('should dispatch a ui event of type create service instance form cancel',
+        function() {
+      let spy = setupUISpy(sandbox);
+
+      serviceActions.createInstanceFormCancel();
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM_CANCEL,
+        {});
+    });
+  });
+
   describe('createInstance()', function() {
     it(`should dispatch a view event of type service instance create with name
         space guid, and service plan guid`, function() {
