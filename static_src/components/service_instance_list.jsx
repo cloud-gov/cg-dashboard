@@ -1,6 +1,5 @@
 
 import React from 'react';
-import Reactable from 'reactable';
 
 import formatDateTime from '../util/format_date';
 
@@ -12,12 +11,6 @@ import Button from './button.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
-
-const Table = Reactable.Table;
-const Thead = Reactable.Thead;
-const Th = Reactable.Th;
-const Tr = Reactable.Tr;
-const Td = Reactable.Td;
 
 function stateSetter(props) {
   return {
@@ -83,37 +76,45 @@ export default class ServiceInstanceList extends React.Component {
 
   render() {
     let content = <h4 className="test-none_message">No service instances</h4>;
+    const specialtdStyles = {
+      whiteSpace: 'nowrap',
+      width: '25%'
+    };
 
     if (this.state.serviceInstances.length) {
       content = (
-        <Table sortable={ true }>
-          <Thead>
+        <table>
+          <thead>
+            <tr>
             { this.columns.map((column) => {
               return (
-                <Th column={ column.label } className={ column.key }
+                <th column={ column.label } className={ column.key }
                     key={ column.key }>
-                  { column.label }</Th>
+                  { column.label }</th>
               )
             })}
-          </Thead>
+            </tr>
+          </thead>
+          <tbody>
           { this.state.serviceInstances.map((instance) => {
             const lastOp = instance.last_operation;
             const lastOpTime = lastOp.updated_at || lastOp.created_at;
             return (
-              <Tr key={ instance.guid }>
-                <Td column="Name"><span>{ instance.name }</span></Td>
-                <Td column="Last operation">{ instance.last_operation.type }</Td>
-                <Td column="Updated at">
+              <tr key={ instance.guid }>
+                <td column="Name"><span>{ instance.name }</span></td>
+                <td column="Last operation">{ instance.last_operation.type }</td>
+                <td column="Updated at">
                   { formatDateTime(lastOpTime) }
-                </Td>
-                <Td column="Delete">
+                </td>
+                <td column="Delete" style={specialtdStyles}>
                   <span>
                     <div style={{float: 'left'}}>
                       <Button
                         classes={ ["test-delete_instance",
-                          this.styler("usa-button-secondary")] }
+                                  this.styler("usa-button-secondary")] }
                         onClickHandler={ this._handleDeleteConfirmation.bind(
                             this, instance.guid)}
+                        disabled={instance.confirmDelete}
                         label="delete">
                         <span>Delete Instance</span>
                       </Button>
@@ -121,11 +122,12 @@ export default class ServiceInstanceList extends React.Component {
                     { (instance.confirmDelete) ? this.renderConfirmationBox(
                       instance.guid) : '' }
                   </span>
-                </Td>
-              </Tr>
-            )
-          })}
-        </Table>
+                </td>
+              </tr>
+              )
+            })}
+          </tbody>
+        </table>
       );
     }
 
