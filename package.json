@@ -79,8 +79,5 @@
     "url-loader": "^0.5.7",
     "watch": "^0.16.0",
     "webpack": "^1.12.9"
-  },
-  "devDependencies": {
-    "cloudgov-style": "https://registry.npmjs.org/cloudgov-style/-/cloudgov-style-0.4.0.tgz"
   }
 }
