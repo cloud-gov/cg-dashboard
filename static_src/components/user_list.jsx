@@ -22,7 +22,7 @@ export default class UserList extends React.Component {
     this.state = {
       users: props.initialUsers
     };
-    this.styler = createStyler(baseStyle, navStyles);
+    this.styler = createStyler(baseStyles, navStyles);
     this._handleDelete = this._handleDelete.bind(this);
   }
 
