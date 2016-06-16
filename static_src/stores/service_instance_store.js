@@ -54,6 +54,11 @@ class ServiceInstanceStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM_CANCEL:
+        this._createInstanceForm = null;
+        this.emitChange();
+        break;
+
       case serviceActionTypes.SERVICE_INSTANCE_CREATE: {
         cfApi.createServiceInstance(
           action.name,

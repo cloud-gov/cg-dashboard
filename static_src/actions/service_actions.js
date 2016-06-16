@@ -53,6 +53,12 @@ export default {
     });
   },
 
+  createInstanceFormCancel() {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM_CANCEL
+    });
+  },
+
   createInstance(name, spaceGuid, servicePlanGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE,

@@ -34,6 +34,7 @@ export default class CreateServiceInstance extends React.Component {
     this._onChange = this._onChange.bind(this);
     this._onValidateForm = this._onValidateForm.bind(this);
     this._onValidForm = this._onValidForm.bind(this);
+    this._onCancelForm = this._onCancelForm.bind(this);
     this.styler = createStyler(actionStyle, baseStyle);
   }
 
@@ -42,6 +43,11 @@ export default class CreateServiceInstance extends React.Component {
     ServiceInstanceStore.addChangeListener(this._onChange);
     this.setState(stateSetter());
     this.scrollIntoView();
+  }
+
+  componentWillUnmount() {
+    SpaceStore.removeChangeListener(this._onChange);
+    ServiceInstanceStore.removeChangeListener(this._onChange);
   }
 
   scrollIntoView() {
@@ -63,6 +69,11 @@ export default class CreateServiceInstance extends React.Component {
       values.space,
       this.props.servicePlan.guid
     );
+  }
+
+  _onCancelForm(ev) {
+    ev.preventDefault();
+    serviceActions.createInstanceFormCancel();
   }
 
   get serviceName() {
@@ -112,7 +123,10 @@ export default class CreateServiceInstance extends React.Component {
             validator={ FormElement.validatorString }
           />
           <Button name="submit">Create service instance</Button>
-          <Button name="cancel" classes={ [this.styler("button-cancel")] }>Cancel</Button>
+          <Button name="cancel" classes={ [this.styler("button-cancel")] }
+            onClickHandler={this._onCancelForm.bind(this)}>
+            Cancel
+          </Button>
         </Form>
       </div>
     );
