@@ -3,8 +3,8 @@
 package acceptance
 
 import (
-	. "github.com/18F/cf-deck/acceptance/util"
-	. "github.com/18F/cf-deck/acceptance/views"
+	. "github.com/18F/cg-deck/acceptance/util"
+	. "github.com/18F/cg-deck/acceptance/views"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"

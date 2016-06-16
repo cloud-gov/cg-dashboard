@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/18F/cf-deck/controllers"
-	"github.com/18F/cf-deck/controllers/pprof"
-	"github.com/18F/cf-deck/helpers"
+	"github.com/18F/cg-deck/controllers"
+	"github.com/18F/cg-deck/controllers/pprof"
+	"github.com/18F/cg-deck/helpers"
 	"github.com/gorilla/context"
 
 	"fmt"
@@ -25,6 +25,7 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.LogURL = os.Getenv(helpers.LogURLEnvVar)
 	envVars.PProfEnabled = os.Getenv(helpers.PProfEnabledEnvVar)
 	envVars.BuildInfo = os.Getenv(helpers.BuildInfoEnvVar)
+	envVars.UserCertPem = os.Getenv(helpers.UserCertPemEnvVar)
 	return envVars
 }
 
