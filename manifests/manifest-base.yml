@@ -8,6 +8,7 @@ env:
   CONSOLE_UAA_URL: https://uaa.cloud.gov/
   CONSOLE_API_URL: https://api.cloud.gov/
   CONSOLE_LOG_URL: https://loggregator.cloud.gov/
+  CONSOLE_NEW_RELIC_LICENSE: NEW_RELIC_LICENSE
   GOVERSION: go1.6.2
   GOPACKAGENAME: github.com/18F/cg-deck
   GO15VENDOREXPERIMENT: 1
