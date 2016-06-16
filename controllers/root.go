@@ -2,10 +2,11 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/18F/cg-deck/helpers"
 	"github.com/gocraft/web"
 	"golang.org/x/oauth2"
-	"net/http"
 )
 
 // Context represents the context for all requests that do not need authentication.
@@ -62,4 +63,39 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 	// Redirect to the dashboard.
 	http.Redirect(rw, req.Request, "/#/dashboard", http.StatusFound)
 	// TODO. Redirect to the original route.
+}
+
+// LoginRequired is a middleware that requires a valid toker or redirects to the handshake page.
+func (c *Context) LoginRequired(rw web.ResponseWriter, r *web.Request, next web.NextMiddlewareFunc) {
+
+	// If there is no request just continue
+	if r == nil {
+		next(rw, r)
+		return
+	}
+
+	// Don't cache anything
+	// right now, there's a problem where when you initially logout and then
+	// revisit the server, you will get a bad view due to a caching issue.
+	// for now, we clear the cache for everything.
+	// TODO: revist and cache static assets.
+	rw.Header().Set("cache-control", "priviate, max-age=0, no-cache")
+	rw.Header().Set("pragma", "no-cache")
+	rw.Header().Set("expires", "-1")
+
+	token := helpers.GetValidToken(r.Request, c.Settings)
+	tokenPresent := token != nil
+	publicUrls := map[string]struct{}{
+		"/handshake":      {},
+		"/oauth2callback": {},
+		"/ping":           {},
+	}
+	// Check if URL is public so we skip validation
+	_, public := publicUrls[r.URL.EscapedPath()]
+	if public || tokenPresent {
+		next(rw, r)
+	} else {
+		http.Redirect(rw, r.Request, c.Settings.OAuthConfig.AuthCodeURL("state", oauth2.AccessTypeOnline), http.StatusFound)
+		return
+	}
 }
