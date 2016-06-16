@@ -7,6 +7,7 @@ import sys
 
 CONSOLE_CLIENT_ID = "CONSOLE_CLIENT_ID"
 CONSOLE_CLIENT_SECRET = "CONSOLE_CLIENT_SECRET"
+CONSOLE_NEW_RELIC_LICENSE = "CONSOLE_NEW_RELIC_LICENSE"
 BUILD_INFO = "BUILD_INFO"
 
 yaml_data = None
@@ -24,6 +25,7 @@ with open('manifests/manifest-base.yml', 'r') as base_manifest:
     if len(client_secret) < 1 or client_secret == "None":
         print CONSOLE_CLIENT_SECRET + " is empty"
         sys.exit(1)
+    new_relic_license = "" + str(os.environ.get(CONSOLE_NEW_RELIC_LICENSE))
     build_info = "" + str(os.environ.get(BUILD_INFO))
     if len(build_info) < 1 or build_info == "None":
         print BUILD_INFO + " is empty"
@@ -32,6 +34,7 @@ with open('manifests/manifest-base.yml', 'r') as base_manifest:
 # Put the environment vars into place.
     yaml_data['env'][CONSOLE_CLIENT_ID] = client_id
     yaml_data['env'][CONSOLE_CLIENT_SECRET] = client_secret
+    yaml_data['env'][CONSOLE_NEW_RELIC_LICENSE] = new_relic_license
     yaml_data['env'][BUILD_INFO] = build_info
 
 # Overwrite the manifest file.
