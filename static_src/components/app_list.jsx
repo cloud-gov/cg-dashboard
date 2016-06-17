@@ -77,14 +77,16 @@ export default class AppList extends React.Component {
       content = (
         <table sortable={ true }>
           <thead>
-          { this.columns.map((column) => {
-            return (
-              <th column={ column.label } className={ column.key }
-                  key={ column.key }>
-                { column.label }
-              </th>
-            )
-          })}
+            <tr>
+            { this.columns.map((column) => {
+              return (
+                <th column={ column.label } className={ column.key }
+                    key={ column.key }>
+                  { column.label }
+                </th>
+              )
+            })}
+            </tr>
           </thead>
           <tbody>
           { this.state.apps.map((app) => {

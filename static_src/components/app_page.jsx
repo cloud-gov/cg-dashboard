@@ -13,7 +13,7 @@ export default class AppPage extends React.Component {
     super(props);
     this.props = props;
     this.state = {
-      app: {},
+      app: AppStore.get(this.props.initialAppGuid) || {},
       currentAppGuid: this.props.initialAppGuid
     };
     this._onChange = this._onChange.bind(this);
