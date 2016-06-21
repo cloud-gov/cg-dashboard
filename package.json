@@ -15,6 +15,7 @@
     "lint": "eslint -c .eslintrc ./static_src",
     "postinstall": "npm run cloudgov-style",
     "test": "npm run lint && karma start --single-run --browsers PhantomJS2",
+    "testing-server": "node test/server.js",
     "watch-test": "karma start --browsers Chrome",
     "watch": "watch 'npm run build' ./static_src",
     "shrinkwrap": "npm shrinkwrap --dev"
@@ -75,6 +76,7 @@
     "reactable": "^0.11.5",
     "sass-loader": "^3.2.0",
     "scss-loader": "0.0.1",
+    "smocks": "^4.0.6",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
     "watch": "^0.16.0",
