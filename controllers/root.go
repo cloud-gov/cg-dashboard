@@ -79,7 +79,7 @@ func (c *Context) LoginRequired(rw web.ResponseWriter, r *web.Request, next web.
 	// revisit the server, you will get a bad view due to a caching issue.
 	// for now, we clear the cache for everything.
 	// TODO: revist and cache static assets.
-	rw.Header().Set("cache-control", "priviate, max-age=0, no-cache")
+	rw.Header().Set("cache-control", "no-cache, no-store, must-revalidate, private")
 	rw.Header().Set("pragma", "no-cache")
 	rw.Header().Set("expires", "-1")
 
