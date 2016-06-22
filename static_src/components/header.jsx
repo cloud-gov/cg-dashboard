@@ -27,7 +27,7 @@ export default class Header extends React.Component {
     return (
     <header className={ this.styler('header') }>
       <div className={ this.styler('header-wrap') }>
-        <h2 className={ this.styler('header-title') }>
+        <div className={ this.styler('header-title') }>
           <a href="/" className={ this.styler('logo') } title="Home">
             <svg className={ this.styler('logo') }>
               <use
@@ -35,7 +35,8 @@ export default class Header extends React.Component {
               </use>
             </svg>
           </a>
-        </h2>
+          <h1 className={ this.styler('usa-sr-only') }>cloud.gov</h1>
+        </div>
         <nav className={ this.styler('header-side') }>
           <ul className={ this.styler('nav') }>
             <li className={ this.styler('nav-link') }>
