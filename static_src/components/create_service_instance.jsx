@@ -93,27 +93,29 @@ export default class CreateServiceInstance extends React.Component {
 
     return (
       <div className = { this.styler('actions-large') }>
-        <h4>Create service instance for <strong
-          className={this.styler('actions-callout-inline-block') }>
-          { this.serviceName }</strong> using <strong
-          className={this.styler('actions-callout-inline-block')}>
-          { this.servicePlanName }</strong> plan.
-        </h4>
         { createError }
         <Form action="/service_instances"
-            classes={ ["test-create_service_instance_form"] }
-            method="post"
-            ref="form"
-            onValidate={ this._onValidateForm }
-            onValid={ this._onValidForm }>
+          classes={ ['test-create_service_instance_form'] }
+          method="post"
+          ref="form"
+          onValidate={ this._onValidateForm }
+          onValid={ this._onValidForm }
+        >
+          <legend>
+            Create a service instance for <strong
+              className={this.styler('actions-callout-inline-block') }>
+            { this.serviceName }</strong> using <strong
+              className={this.styler('actions-callout-inline-block')}>
+            { this.servicePlanName }</strong> plan.
+          </legend>
           <FormText
-            classes={ ["test-create_service_instance_name"] }
+            classes={ ['test-create_service_instance_name'] }
             label="Choose a name for the service"
             name="name"
             validator={ FormElement.validatorString }
           />
           <FormSelect
-            classes={ ["test-create_service_instance_space"] }
+            classes={ ['test-create_service_instance_space'] }
             label="Choose a name for the service"
             label="Select the space for the service instance"
             name="space"
@@ -122,9 +124,9 @@ export default class CreateServiceInstance extends React.Component {
             })}
             validator={ FormElement.validatorString }
           />
-          <Button name="submit">Create service instance</Button>
-          <Button name="cancel" classes={ [this.styler("button-cancel")] }
-            onClickHandler={this._onCancelForm.bind(this)}>
+          <Button name="submit" type="submit">Create service instance</Button>
+          <Button name="cancel" classes={ [this.styler('button-cancel')] }
+            onClickHandler={ this._onCancelForm.bind(this) }>
             Cancel
           </Button>
         </Form>
