@@ -28,11 +28,31 @@ describe('SpaceStore', function() {
   });
 
   describe('on org actions org received', function() {
+    it('should include the org guid in the space', function () {
+      var spaceGuid = 'spaceGuid';
+      var orgGuid = 'orgGuid';
+      var org = {
+        guid: orgGuid,
+        spaces: [
+          { guid: spaceGuid }
+        ]
+      };
+      var expected = {
+        guid: spaceGuid,
+        org: orgGuid
+      };
+
+      orgActions.receivedOrg(org);
+
+      expect(SpaceStore.getAll().pop()).toEqual(expected);
+    });
+
     it('should merge the org spaces data in with any current spaces', function() {
+      var orgGuid = 'adsfadzcxvzdfaew';
       var expectedSpace = { guid: 'adfadsbcvbqwrsdfadsf32' };
       var existingSpace = { guid: 'xczczxczczxcv2' };
       var org = {
-        guid: 'adsfadzcxvzdfaew',
+        guid: orgGuid,
         spaces: [expectedSpace]
       };
 
@@ -40,7 +60,7 @@ describe('SpaceStore', function() {
       orgActions.receivedOrg(org);
 
       expect(SpaceStore.getAll().length).toEqual(2);
-      expect(SpaceStore.get(expectedSpace.guid)).toEqual(expectedSpace);
+      expect(SpaceStore.get(expectedSpace.guid).org).toEqual(orgGuid);
     });
 
     it('should emit a change event if there are spaces', function() {
