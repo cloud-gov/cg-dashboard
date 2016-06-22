@@ -95,6 +95,9 @@ export class Nav extends React.Component {
     return (
       <div className={ classNames('test-nav-primary') }>
         <ul className={ mainList }>
+          <li key="overview">
+            <a href="/#">Overview</a>
+          </li>
         { this.state.orgs.map((org) => {
           let toggleSpaceHandler = this._toggleSpacesMenu.bind(this, org.guid);
           let arrowClasses = (org.space_menu_open) ? downArrow : rightArrow;
