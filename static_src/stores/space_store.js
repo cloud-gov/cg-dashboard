@@ -19,9 +19,13 @@ class SpaceStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case orgActionTypes.ORG_RECEIVED: {
-        const spaces = action.org.spaces;
-        if (spaces) {
-          this.mergeMany('guid', spaces, (changed) => {
+        const spaces = action.org.spaces || [];
+        const spacesWithOrgGuid = spaces.map((space) => {
+          const org = { org: action.org.guid };
+          return Object.assign({}, space, org);
+        });
+        if (spacesWithOrgGuid.length > 0) {
+          this.mergeMany('guid', spacesWithOrgGuid, (changed) => {
             if (changed) this.emitChange();
           });
         }

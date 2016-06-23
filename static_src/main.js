@@ -76,6 +76,7 @@ function app(orgGuid, spaceGuid, appGuid) {
 function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   cfApi.fetchOrg(orgGuid);
   cfApi.fetchAllServices(orgGuid);
+  orgActions.changeCurrentOrg(orgGuid);
   if (serviceGuid && servicePlanGuid) {
     serviceActions.createInstanceForm(serviceGuid, servicePlanGuid);
   }
