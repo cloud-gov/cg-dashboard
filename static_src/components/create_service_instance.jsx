@@ -8,13 +8,13 @@ import ReactDOM from 'react-dom';
 import Box from './box.jsx';
 import Button from './button.jsx';
 import { Form, FormText, FormSelect, FormElement, FormError } from './form.jsx';
+import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
 import actionStyle from 'cloudgov-style/css/components/actions.css';
 import baseStyle from 'cloudgov-style/css/base.css';
 import createStyler from '../util/create_styler';
-
 
 function stateSetter() {
   return {
@@ -85,6 +85,7 @@ export default class CreateServiceInstance extends React.Component {
   }
 
   render() {
+    const currentOrgGuid = OrgStore.currentOrgGuid;
     let createError;
 
     if (this.state.createError) {
@@ -119,7 +120,9 @@ export default class CreateServiceInstance extends React.Component {
             label="Choose a name for the service"
             label="Select the space for the service instance"
             name="space"
-            options={ this.state.spaces.map((space) => {
+            options={ this.state.spaces.filter((space) => {
+              return space.org === currentOrgGuid;
+            }).map((space) => {
               return { value: space.guid, label: space.name };
             })}
             validator={ FormElement.validatorString }
