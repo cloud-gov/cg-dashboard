@@ -20,8 +20,8 @@ export default class Button extends React.Component {
   }
 
   render() {
-    var classes = classNames(...this.props.classes);
-    let type = this.props.type || 'button';
+    const classes = classNames(...this.props.classes);
+    const type = this.props.type;
     return (
       <button type={ type } className={ classes }
           aria-label={ this.props.label } onClick={ this._handleClick }
@@ -42,7 +42,8 @@ Button.propTypes = {
 
 Button.defaultProps = {
   classes: [],
+  disabled: false,
   label: '',
-  onClickHandler: function() { return true; },
-  disabled: false
+  onClickHandler: () => true,
+  type: 'button'
 };
