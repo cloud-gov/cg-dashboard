@@ -17,12 +17,13 @@ const PAGES = {
 export default class Space extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.state = {
       space: SpaceStore.get(this.props.initialSpaceGuid) || {},
-      currentOrgGuid: this.props.initialOrgGuid,
-      currentSpaceGuid: this.props.initialSpaceGuid,
+      currentOrg: OrgStore.get(this.props.initialOrgGuid),
+      currentSpaceGuid: this.props.initialSpaceGuid
     };
+
     this._onChange = this._onChange.bind(this);
     this.spaceUrl = this.spaceUrl.bind(this);
   }
@@ -37,7 +38,7 @@ export default class Space extends React.Component {
 
   _onChange() {
     this.setState({
-      currentOrgGuid: OrgStore.currentOrgGuid,
+      currentOrg: OrgStore.get(OrgStore.currentOrgGuid),
       currentSpaceGuid: this.props.initialSpaceGuid,
       space: SpaceStore.get(this.props.initialSpaceGuid)
     });
@@ -45,7 +46,7 @@ export default class Space extends React.Component {
 
   spaceUrl(page) {
     // TODO fix this with a link somehow
-    return `/#/org/${this.state.currentOrgGuid}/spaces/${this.state.space.guid}/${page}`;
+    return `/#/org/${this.state.currentOrg.guid}/spaces/${this.state.space.guid}/${page}`;
   }
 
   get currentContent() {
@@ -75,13 +76,13 @@ export default class Space extends React.Component {
     return (
       <div>
         <div>
-          <h2>{ this.state.space.name } Space</h2>
+          <h2>{ this.state.space.name } Space of the { this.state.currentOrg.name } Organization</h2>
         </div>
         { tabNav }
         <div>
           <div role="tabpanel">
             <Content
-              initialOrgGuid={ this.state.currentOrgGuid }
+              initialOrgGuid={ this.state.currentOrg.guid }
               initialSpaceGuid={ this.state.currentSpaceGuid }
             />
           </div>
