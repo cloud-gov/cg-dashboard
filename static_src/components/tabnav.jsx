@@ -26,8 +26,14 @@ export default class Tabnav extends React.Component {
     <ul className={ classes } role="tablist">
       { this.props.items.map((item, i) => {
         if (item.name === this.state.current) {
+          const nav = React.cloneElement(item.element, {
+            controls: item.element.props.controls,
+            href: item.element.props.href,
+            content: item.element.props.content,
+            selected: true
+          });
           return <li role="presentation"
-              className={ this.styler('active') } key={ i }>{ item.element }</li>;
+              className={ this.styler('active') } key={ i }>{ nav }</li>;
         } else {
           return <li role="presentation" key={ i }>{ item.element }</li>;
         }
