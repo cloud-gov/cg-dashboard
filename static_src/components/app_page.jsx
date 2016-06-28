@@ -4,6 +4,8 @@ import React from 'react';
 import AppStore from '../stores/app_store.js';
 import RouteList from './route_list.jsx';
 
+window.A = AppStore;
+
 import sectionStyle from 'cloudgov-style/css/components/section.css';
 import createStyler from '../util/create_styler';
 
@@ -14,7 +16,8 @@ export default class AppPage extends React.Component {
     this.props = props;
     this.state = {
       app: AppStore.get(this.props.initialAppGuid) || {},
-      currentAppGuid: this.props.initialAppGuid
+      currentAppGuid: this.props.initialAppGuid,
+      loading: AppStore.fetching
     };
     this._onChange = this._onChange.bind(this);
     this.styler = createStyler(sectionStyle);
@@ -29,8 +32,10 @@ export default class AppPage extends React.Component {
   }
 
   _onChange() {
+    console.log('AppStore.fetching', AppStore.fetching);
     this.setState({
-      app: AppStore.get(this.state.currentAppGuid) || {}
+      app: AppStore.get(this.state.currentAppGuid) || {},
+      loading: AppStore.fetching
     });
   }
 
@@ -48,12 +53,15 @@ export default class AppPage extends React.Component {
 
   render() {
     let content = <h4 className="test-none_message">No app</h4>;
+    const loading = (this.state.loading) ? 'loading' : 'not loading';
+
     if (this.state.app.name) {
       content = (
         <div>
           <h2>{ this.state.app.name }</h2>
           <section className={this.styler("section-card")}>
             <h3>About</h3>
+            <h4>Loading: { loading }</h4>
             <table>
               <tbody>
                 <tr>
