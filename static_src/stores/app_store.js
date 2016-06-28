@@ -41,6 +41,17 @@ class AppStore extends BaseStore {
         break;
       }
 
+      case appActionTypes.APP_ALL_FETCH: {
+        cfApi.fetchAppAll(action.appGuid);
+        this.fetching = true;
+        break;
+      }
+
+      case appActionTypes.APP_ALL_RECEIVED: {
+        this.fetching = false;
+        break;
+      }
+
       default:
         break;
     }
