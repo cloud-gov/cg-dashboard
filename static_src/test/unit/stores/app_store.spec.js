@@ -59,6 +59,23 @@ describe('AppStore', function() {
     });
   });
 
+  describe('on app all fetch', function() {
+    it('should fetch all of an app\'s information from api', function() {
+      var spy = sandbox.spy(cfApi, 'fetchAppAll'),
+          expectedGuid = 'adfasddksazxcvzxcvz';
+
+      AppDispatcher.handleViewAction({
+        type: appActionTypes.APP_ALL_FETCH,
+        appGuid: expectedGuid
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+      expect(AppStore.fetching).toEqual(true);
+    });
+  });
+
   describe('on app received', function() {
     it('should emit a change event if data was updated', function() {
       var spy = sandbox.spy(AppStore, 'emitChange');
@@ -116,6 +133,21 @@ describe('AppStore', function() {
 
       let actual = AppStore.get(expectedGuid);
       expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('on app all received', function() {
+    it('should change fetching to false & emit change', function() {
+      var spy = sandbox.spy(AppStore, 'emitChange');
+      AppStore._fetching = true;
+
+      AppDispatcher.handleViewAction({
+        type: appActionTypes.APP_ALL_RECEIVED,
+        appGuid: 'asdf'
+      });
+
+      expect(AppStore.fetching).toEqual(false);
+      expect(spy).toHaveBeenCalledOnce();
     });
   });
 
