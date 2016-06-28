@@ -19,6 +19,7 @@ export function unwrapOfRes(entities) {
 }
 
 export function assertAction(spy, type, params) {
+  expect(type).toBeDefined();
   expect(spy).toHaveBeenCalledOnce();
   let actionInfo = spy.getCall(0).args[0];
   expect(actionInfo.type).toEqual(type);
