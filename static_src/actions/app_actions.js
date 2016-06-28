@@ -35,5 +35,19 @@ export default {
       appGuid,
       app
     });
+  },
+
+  fetchAll(appGuid) {
+    AppDispatcher.handleViewAction({
+      type: appActionTypes.APP_ALL_FETCH,
+      appGuid
+    });
+  },
+
+  receivedAppAll(appGuid) {
+    AppDispatcher.handleServerAction({
+      type: appActionTypes.APP_ALL_RECEIVED,
+      appGuid
+    });
   }
 };

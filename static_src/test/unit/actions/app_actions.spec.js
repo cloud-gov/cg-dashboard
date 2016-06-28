@@ -34,6 +34,21 @@ describe('appActions', function() {
     });
   });
 
+  describe('fetchAll()', function () {
+    it('should dispatch a view event of type app all fetch', function() {
+      const expectedAppGuid = 'asdflkjzzz1';
+      const expectedParams = {
+        appGuid: expectedAppGuid
+      };
+
+      const spy = setupViewSpy(sandbox);
+
+      appActions.fetchAll(expectedAppGuid);
+
+      assertAction(spy, appActionTypes.APP_ALL_FETCH, expectedParams);
+    });
+  });
+
   describe('fetchStats()', function() {
     it('should dispatch a view event of type app stats fetch', function() {
       var expectedAppGuid = 'asdflkjzzz1',
@@ -84,4 +99,16 @@ describe('appActions', function() {
                    expectedParams)
     });
   });
+
+  describe('receivedAppAll()', function() {
+    it('should dispatch a server event of type app all received', function() {
+      const appGuid = 'testingAppGuid';
+      const spy = setupServerSpy(sandbox);
+
+      appActions.receivedAppAll(appGuid);
+
+      assertAction(spy, appActionTypes.APP_ALL_RECEIVED, {});
+    });
+  });
+
 });
