@@ -199,6 +199,41 @@ describe('BaseStore', () => {
     });
   });
 
+  describe('fetching', function() {
+    it('should initially be false', function() {
+      expect(store.fetching).toEqual(false);
+    });
+
+    it('should be able to be set to true', function () {
+      store.fetching = true;
+      expect(store.fetching).toEqual(true);
+    });
+
+    it('should cast all values to booleans', function () {
+      store.fetching = 'true';
+      expect(store.fetching).toEqual(true);
+
+      store.fetching = undefined;
+      expect(store.fetching).toEqual(false);
+    });
+
+    it('should emit change if the value is different', function () {
+      var spy = sandbox.spy();
+
+      store.on('CHANGE', spy);
+      store.fetching = true;
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should not emit change if the value is the same', function () {
+      var spy = sandbox.spy();
+
+      store.on('CHANGE', spy);
+      store.fetching = false;
+      expect(spy).not.toHaveBeenCalledOnce();
+    });
+  });
+
   describe('formatSplitResponse()', function() {
     var testRezs;
 

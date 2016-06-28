@@ -16,6 +16,7 @@ export default class BaseStore extends EventEmitter {
 
   constructor() {
     super();
+    this._fetching = false;
     this._data = new Immutable.List();
   }
 
@@ -25,6 +26,17 @@ export default class BaseStore extends EventEmitter {
 
   get dispatchToken() {
     return this._dispatchToken;
+  }
+
+  get fetching() {
+    return this._fetching;
+  }
+
+  set fetching(value) {
+    if (!!value === this._fetching) return;
+
+    this._fetching = !!value;
+    this.emitChange();
   }
 
   isEmpty() {
