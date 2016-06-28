@@ -139,6 +139,15 @@ export default {
     });
   },
 
+  fetchAppAll(appGuid) {
+    return Promise.all([
+      this.fetchApp(appGuid),
+      this.fetchAppStats(appGuid)
+    ]).then(() => {
+      appActions.receivedAppAll(appGuid);
+    });
+  },
+
   fetchApp(appGuid) {
     return this.fetchOne(`/apps/${appGuid}/summary`,
                           appActions.receivedApp);
