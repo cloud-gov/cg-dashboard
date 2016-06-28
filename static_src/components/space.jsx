@@ -54,10 +54,10 @@ export default class Space extends React.Component {
 
   get subNav() {
     return [
-      { name: 'apps', element: <a href={ this.spaceUrl('apps') }>Apps</a> },
-      { name: 'services', element: <a href={ this.spaceUrl('services') }>
+      { name: 'apps', element: <a role="tab" aria-controls='apps' href={ this.spaceUrl('apps') }>Apps</a> },
+      { name: 'services', element: <a role="tab" aria-controls='services' href={ this.spaceUrl('services') }>
           Service Instances</a> },
-      { name: 'users', element: <a href={ this.spaceUrl('users') }>
+      { name: 'users', element: <a role="tab" aria-controls='users' href={ this.spaceUrl('users') }>
           User Management</a> }
     ];
   }
@@ -79,7 +79,7 @@ export default class Space extends React.Component {
         </div>
         { tabNav }
         <div>
-          <div role="tabpanel">
+          <div role="tabpanel" id={ this.props.currentPage }>
             <Content
               initialOrgGuid={ this.state.currentOrgGuid }
               initialSpaceGuid={ this.state.currentSpaceGuid }
