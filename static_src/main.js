@@ -62,8 +62,8 @@ function space(orgGuid, spaceGuid, potentialPage) {
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
-  appActions.fetch(appGuid);
-  appActions.fetchStats(appGuid);
+  appActions.fetchAll(appGuid);
+
   routeActions.fetchRoutesForApp(appGuid);
   ReactDOM.render(
     <App>
