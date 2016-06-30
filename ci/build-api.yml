@@ -9,14 +9,18 @@ inputs:
 - name: cg-deck-source
 outputs:
 - name: cg-deck-installed
+  path: gopath/src/github.com/18F/cg-deck
 
 run:
   path: sh
   args:
   - -exc
   - |
-    cp -R cg-deck-source/. cg-deck-installed
-    cd cg-deck-installed
+    export GOPATH=$(pwd)/gopath:$GOPATH
+    export PATH=$(pwd)/gopath/bin:$PATH
+
+    cp -R cg-deck-source/. gopath/src/github.com/18F/cg-deck
+    cd gopath/src/github.com/18F/cg-deck
 
     go get github.com/Masterminds/glide
     glide install
