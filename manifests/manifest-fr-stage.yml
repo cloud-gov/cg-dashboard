@@ -1,6 +1,6 @@
 ---
 buildpack: https://github.com/cloudfoundry/go-buildpack.git#v1.7.8
-domain: fr.cloud.gov
+domain: fr-stage.cloud.gov
 memory: 256M
 env:
   GOVERSION: go1.6.2

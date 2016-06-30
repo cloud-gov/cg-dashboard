@@ -1,0 +1,23 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: golang
+    tag: 1.6-wheezy
+
+inputs:
+- name: cg-deck-source
+outputs:
+- name: cg-deck-installed
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    cp -R cg-deck-source/. cg-deck-installed
+    cd cg-deck-installed
+
+    go get github.com/Masterminds/glide
+    glide install
+    ./codecheck.sh

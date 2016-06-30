@@ -1,0 +1,24 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: node
+    tag: "4.4"
+
+inputs:
+- name: cg-deck-source
+outputs:
+- name: cg-deck-compiled
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    cp -R cg-deck-source/. cg-deck-compiled
+    cd cg-deck-compiled
+
+    npm install
+    npm test
+    npm run build

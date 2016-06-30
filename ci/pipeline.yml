@@ -4,35 +4,22 @@ jobs:
   plan:
   - get: cg-deck-source
     trigger: true
-  - task: build
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: node
-          tag: "4.4"
-      inputs:
-      - name: cg-deck-source
-      outputs:
-      - name: cg-deck-compiled
-      run:
-        dir: cg-deck-source
-        path: sh
-        args:
-        - -exc
-        - |
-          npm install
-          npm test
-          npm run build
-
-          # copy files to output directory, so that they can be read by subsequent step
-          cp -R . ../cg-deck-compiled
+  - aggregate:
+    - task: build-static
+      file: cg-deck-source/ci/build-static.yml
+    - task: build-api
+      file: cg-deck-source/ci/build-api.yml
+  - task: collect-artifacts
+    file: cg-deck-source/ci/collect-artifacts.yml
   - put: cloud-gov-staging
     params:
-      manifest: cg-deck-compiled/manifests/manifest-fr-stage.yml
-      path: cg-deck-compiled
+      manifest: cg-deck-deploy/manifests/manifest-fr-stage.yml
+      path: cg-deck-deploy
       current_app_name: deck
+      environment_variables:
+        CONSOLE_CLIENT_ID: {{client-id-staging}}
+        CONSOLE_CLIENT_SECRET: {{client-secret-staging}}
+        CONSOLE_NEW_RELIC_LICENSE: {{new-relic-license-staging}}
     on_failure:
       put: slack
       params:

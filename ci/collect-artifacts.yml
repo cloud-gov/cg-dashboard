@@ -1,0 +1,21 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: alpine
+
+inputs:
+- name: cg-deck-source
+- name: cg-deck-compiled
+- name: cg-deck-installed
+outputs:
+- name: cg-deck-deploy
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    cp -R cg-deck-source/. cg-deck-deploy
+    cp -R cg-deck-compiled/static/assets cg-deck-deploy/static
+    cp -R cg-deck-installed/vendor cg-deck-deploy
