@@ -174,33 +174,6 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on sevice instance created', function() {
-    it('should add received instance to the data', function() {
-      var expectedInstance = { guid: 'asdf9a8fasss' };
-
-      ServiceInstanceStore.push({ guid: 'zzxcvz' });
-
-      serviceActions.createdInstance(expectedInstance);
-
-      expect(ServiceInstanceStore.get(expectedInstance.guid)).toEqual(
-        expectedInstance);
-    });
-
-    it('theres a store with the same guid, it should update that store',
-        function() {
-      var expectedInstance = { guid: 'asdf9a8fasss', name: 'nameA' };
-
-      ServiceInstanceStore._data.push(expectedInstance);
-
-      let newInstance = Object.assign({}, expectedInstance);
-      newInstance.name = 'nameB';
-
-      serviceActions.createdInstance(newInstance);
-
-      expect(ServiceInstanceStore.getAll().length).toEqual(1);
-      let actual = ServiceInstanceStore.get(expectedInstance.guid);
-      expect(actual.name).toEqual(newInstance.name);
-    });
-
     it('emits a change event', function() {
       var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
 

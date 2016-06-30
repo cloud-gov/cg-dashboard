@@ -188,6 +188,31 @@ describe('serviceActions', function() {
 
   describe('receivedInstance()', function() {
     it('should dispatch a server event of type service instance resv with ' +
+       'the service instance', function() {
+      const expected = {
+        metadata: {
+          guid: 'afds'
+        },
+        entity: {
+          type: 'someasdf'
+        }
+      };
+
+      let expectedParams = {
+        serviceInstance: expected
+      }
+
+      let spy = setupServerSpy(sandbox)
+
+      serviceActions.receivedInstance(expected);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_RECEIVED,
+                   expectedParams);
+    });
+  });
+
+  describe('receivedInstances()', function() {
+    it('should dispatch a server event of type service instance resv with ' +
        'the service instances', function() {
       var expected = [
         { metadata: {

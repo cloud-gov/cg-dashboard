@@ -69,12 +69,8 @@ class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATED: {
-        this.merge('guid', action.serviceInstance, (changed) => {
-          if (!changed) return;
-
-          this._createInstanceForm = null;
-          this.emitChange();
-        });
+        this._createInstanceForm = null;
+        this.emitChange();
         break;
       }
 

@@ -57,6 +57,8 @@ const serviceActionTypes = keymirror({
   SERVICE_INSTANCE_DELETED: null,
   // Action to fetch a all service instances from the server.
   SERVICE_INSTANCES_FETCH: null,
+  // Action when service instance was received from the server.
+  SERVICE_INSTANCE_RECEIVED: null,
   // Action when all service instances were received from the server.
   SERVICE_INSTANCES_RECEIVED: null,
   // Action to open UI to create a service instance.
