@@ -5,6 +5,7 @@ import (
 	"github.com/18F/cg-deck/controllers/pprof"
 	"github.com/18F/cg-deck/helpers"
 	"github.com/gorilla/context"
+	"github.com/yvasiyarov/gorelic"
 
 	"fmt"
 	"net/http"
@@ -25,6 +26,7 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.LogURL = os.Getenv(helpers.LogURLEnvVar)
 	envVars.PProfEnabled = os.Getenv(helpers.PProfEnabledEnvVar)
 	envVars.BuildInfo = os.Getenv(helpers.BuildInfoEnvVar)
+	envVars.NewRelicLicense = os.Getenv(helpers.NewRelicLicenseEnvVar)
 	return envVars
 }
 
@@ -36,6 +38,17 @@ func main() {
 	}
 	fmt.Println("using port: " + port)
 	startApp(port)
+}
+
+func startMonitoring(license string) {
+	agent := gorelic.NewAgent()
+	agent.Verbose = true
+	agent.CollectHTTPStat = true
+	agent.NewrelicLicense = license
+	agent.NewrelicName = "Cloudgov Deck"
+	if err := agent.Run(); err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 func startApp(port string) {
@@ -53,6 +66,12 @@ func startApp(port string) {
 	if settings.PProfEnabled {
 		pprof.InitPProfRouter(app)
 	}
+
+	if envVars.NewRelicLicense != "" {
+		fmt.Println("starting monitoring...")
+		startMonitoring(envVars.NewRelicLicense)
+	}
+
 	fmt.Println("starting app now...")
 
 	// TODO add better timeout message. By default it will just say "Timeout"

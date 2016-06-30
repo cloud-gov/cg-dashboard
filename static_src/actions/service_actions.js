@@ -53,6 +53,12 @@ export default {
     });
   },
 
+  createInstanceFormCancel() {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM_CANCEL
+    });
+  },
+
   createInstance(name, spaceGuid, servicePlanGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE,
@@ -80,6 +86,20 @@ export default {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
       serviceInstances: serviceInstances
+    });
+  },
+
+  deleteInstanceConfirm(instanceGuid) {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_DELETE_CONFIRM,
+      serviceInstanceGuid: instanceGuid
+    });
+  },
+
+  deleteInstanceCancel(instanceGuid) {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_DELETE_CANCEL,
+      serviceInstanceGuid: instanceGuid
     });
   },
 

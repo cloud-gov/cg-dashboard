@@ -66,9 +66,8 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORG_CHANGE_CURRENT: {
         this._currentOrgGuid = action.orgGuid;
-        if (this.get(action.orgGuid)) {
-          this.emitChange();
-        }
+        this.emitChange();
+
         break;
       }
 

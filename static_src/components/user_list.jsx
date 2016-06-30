@@ -7,12 +7,12 @@ import React from 'react';
 
 import formatDateTime from '../util/format_date';
 
-import baseStyle from 'cloudgov-style/css/base.css';
-import createStyler from '../util/create_styler';
-import tableStyles from 'cloudgov-style/css/base.css';
-
 import Button from './button.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
+
+import createStyler from '../util/create_styler';
+import baseStyles from 'cloudgov-style/css/base.css';
+import navStyles from 'cloudgov-style/css/components/nav.css';
 
 
 export default class UserList extends React.Component {
@@ -22,9 +22,8 @@ export default class UserList extends React.Component {
     this.state = {
       users: props.initialUsers
     };
-    this.styler = createStyler(baseStyle);
+    this.styler = createStyler(baseStyles, navStyles);
     this._handleDelete = this._handleDelete.bind(this);
-    this.styler = createStyler(tableStyles);
   }
 
   componentWillReceiveProps(nextProps) {

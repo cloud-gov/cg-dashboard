@@ -4,15 +4,20 @@ import React from 'react';
 import AppStore from '../stores/app_store.js';
 import RouteList from './route_list.jsx';
 
+import sectionStyle from 'cloudgov-style/css/components/section.css';
+import createStyler from '../util/create_styler';
+
+
 export default class AppPage extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
     this.state = {
-      app: {},
+      app: AppStore.get(this.props.initialAppGuid) || {},
       currentAppGuid: this.props.initialAppGuid
     };
     this._onChange = this._onChange.bind(this);
+    this.styler = createStyler(sectionStyle);
   }
 
   componentDidMount() {
@@ -47,7 +52,7 @@ export default class AppPage extends React.Component {
       content = (
         <div>
           <h2>{ this.state.app.name }</h2>
-          <section>
+          <section className={this.styler("section-card")}>
             <h3>About</h3>
             <table>
               <tbody>
@@ -97,11 +102,11 @@ export default class AppPage extends React.Component {
               </p>
             </aside>
           </section>
-          <section>
+          <section className={this.styler("section-card")}>
             <h3>Routes</h3>
             <RouteList initialAppGuid={ this.state.app.guid } />
           </section>
-          <section>
+          <section className={this.styler("section-card")}>
             <h3>Services</h3>
             <p>To bind or unbind a service instance to an app view<a
               href="https://docs.cloud.gov/apps/managed-services/#bind-the-service-instance"
@@ -109,11 +114,11 @@ export default class AppPage extends React.Component {
               <span>&nbsp;</span>managed services guide</a> for more information.
             </p>
           </section>
-          <section>
+          <section className={this.styler("section-card")}>
             <h3>Events</h3>
             <p>Event are currently available at <a href={ this.eventsLink(this.state.app.name) }>logs.cloud.gov</a></p>
           </section>
-          <section>
+          <section className={this.styler("section-card")}>
             <h3>Logs</h3>
             <p>Logs are currently available at <a href={ this.logsLink(this.state.app.name) }>logs.cloud.gov</a></p>
           </section>

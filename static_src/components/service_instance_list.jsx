@@ -1,20 +1,16 @@
 
 import React from 'react';
-import Reactable from 'reactable';
 
 import formatDateTime from '../util/format_date';
 
 import createStyler from '../util/create_styler';
 import baseStyle from 'cloudgov-style/css/base.css';
+import tableStyles from 'cloudgov-style/css/base.css';
+
 import Button from './button.jsx';
+import ConfirmationBox from './confirmation_box.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
-
-const Table = Reactable.Table;
-const Thead = Reactable.Thead;
-const Th = Reactable.Th;
-const Tr = Reactable.Tr;
-const Td = Reactable.Td;
 
 function stateSetter(props) {
   return {
@@ -30,12 +26,19 @@ export default class ServiceInstanceList extends React.Component {
     this.state = stateSetter(props);
     this._onChange = this._onChange.bind(this);
     this._handleDelete = this._handleDelete.bind(this);
+    this._handleDeleteConfirmation = this._handleDeleteConfirmation.bind(this);
+    this._handleDeleteCancel = this._handleDeleteCancel.bind(this);
+    this.renderConfirmationBox = this.renderConfirmationBox.bind(this);
     this.styler = createStyler(baseStyle);
   }
 
   componentDidMount() {
     ServiceInstanceStore.addChangeListener(this._onChange);
     serviceActions.fetchAllInstances(this.state.currentSpaceGuid);
+  }
+
+  componentWillUnmount() {
+    ServiceInstanceStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
@@ -47,6 +50,16 @@ export default class ServiceInstanceList extends React.Component {
     serviceActions.deleteInstance(instanceGuid);
   }
 
+  _handleDeleteConfirmation(instanceGuid, ev) {
+    ev.preventDefault();
+    serviceActions.deleteInstanceConfirm(instanceGuid);
+  }
+
+  _handleDeleteCancel(instanceGuid, ev) {
+    ev.preventDefault();
+    serviceActions.deleteInstanceCancel(instanceGuid);
+  }
+
   get columns() {
     return [
       { label: 'Name', key: 'name' },
@@ -56,43 +69,72 @@ export default class ServiceInstanceList extends React.Component {
     ];
   }
 
+  renderConfirmationBox(instanceGuid) {
+    return (
+      <ConfirmationBox
+        confirmHandler={ this._handleDelete.bind(this, instanceGuid) }
+        cancelHandler={ this._handleDeleteCancel.bind(this, instanceGuid) }
+      />
+    );
+  }
+
   render() {
     let content = <h4 className="test-none_message">No service instances</h4>;
+    const specialtdStyles = {
+      whiteSpace: 'nowrap',
+      width: '25%'
+    };
 
     if (this.state.serviceInstances.length) {
       content = (
-        <Table sortable={ true }>
-          <Thead>
+        <table>
+          <thead>
+            <tr>
             { this.columns.map((column) => {
               return (
-                <Th column={ column.label } className={ column.key }>
-                  { column.label }</Th>
+                <th column={ column.label } className={ column.key }
+                    key={ column.key }>
+                  { column.label }</th>
               )
             })}
-          </Thead>
+            </tr>
+          </thead>
+          <tbody>
           { this.state.serviceInstances.map((instance) => {
             const lastOp = instance.last_operation;
             const lastOpTime = lastOp.updated_at || lastOp.created_at;
             return (
-              <Tr key={ instance.guid }>
-                <Td column="Name"><span>{ instance.name }</span></Td>
-                <Td column="Last operation">{ instance.last_operation.type }</Td>
-                <Td column="Updated at">
+              <tr key={ instance.guid }>
+                <td column="Name"><span>{ instance.name }</span></td>
+                <td column="Last operation">{ instance.last_operation.type }</td>
+                <td column="Updated at">
                   { formatDateTime(lastOpTime) }
-                </Td>
-                <Td column="Delete">
-                  <Button
-                    classes={ ["test-delete_instance",
-                      this.styler("usa-button-secondary")] }
-                    onClickHandler={ this._handleDelete.bind(this, instance.guid)}
-                    label="delete">
-                    <span>Delete Instance</span>
-                  </Button>
-                </Td>
-              </Tr>
-            )
-          })}
-        </Table>
+                </td>
+                <td column="Delete" style={specialtdStyles}>
+                  <span>
+                    <div style={{float: 'left'}}>
+                      <Button
+                        classes={ ["test-delete_instance",
+                          (instance.confirmDelete) ?
+                          '' : this.styler("usa-button-secondary"),
+                          (instance.confirmDelete) ?
+                            this.styler('usa-button-disabled') : '']}
+                        onClickHandler={ this._handleDeleteConfirmation.bind(
+                            this, instance.guid)}
+                        disabled={instance.confirmDelete}
+                        label="delete">
+                        <span>Delete Instance</span>
+                      </Button>
+                    </div>
+                    { (instance.confirmDelete) ? this.renderConfirmationBox(
+                      instance.guid) : '' }
+                  </span>
+                </td>
+              </tr>
+              )
+            })}
+          </tbody>
+        </table>
       );
     }
 

@@ -8,9 +8,13 @@ import ReactDOM from 'react-dom';
 import Box from './box.jsx';
 import Button from './button.jsx';
 import { Form, FormText, FormSelect, FormElement, FormError } from './form.jsx';
+import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
+import actionStyle from 'cloudgov-style/css/components/actions.css';
+import baseStyle from 'cloudgov-style/css/base.css';
+import createStyler from '../util/create_styler';
 
 function stateSetter() {
   return {
@@ -30,6 +34,8 @@ export default class CreateServiceInstance extends React.Component {
     this._onChange = this._onChange.bind(this);
     this._onValidateForm = this._onValidateForm.bind(this);
     this._onValidForm = this._onValidForm.bind(this);
+    this._onCancelForm = this._onCancelForm.bind(this);
+    this.styler = createStyler(actionStyle, baseStyle);
   }
 
   componentDidMount() {
@@ -37,6 +43,11 @@ export default class CreateServiceInstance extends React.Component {
     ServiceInstanceStore.addChangeListener(this._onChange);
     this.setState(stateSetter());
     this.scrollIntoView();
+  }
+
+  componentWillUnmount() {
+    SpaceStore.removeChangeListener(this._onChange);
+    ServiceInstanceStore.removeChangeListener(this._onChange);
   }
 
   scrollIntoView() {
@@ -60,6 +71,11 @@ export default class CreateServiceInstance extends React.Component {
     );
   }
 
+  _onCancelForm(ev) {
+    ev.preventDefault();
+    serviceActions.createInstanceFormCancel();
+  }
+
   get serviceName() {
     return this.props.service.label || 'Unknown Service Name';
   }
@@ -69,6 +85,7 @@ export default class CreateServiceInstance extends React.Component {
   }
 
   render() {
+    const currentOrgGuid = OrgStore.currentOrgGuid;
     let createError;
 
     if (this.state.createError) {
@@ -76,36 +93,47 @@ export default class CreateServiceInstance extends React.Component {
     }
 
     return (
-      <Box>
-        <h4>Create service instance for { this.serviceName } using {
-          this.servicePlanName } plan.
-        </h4>
+      <div className = { this.styler('actions-large') }>
         { createError }
         <Form action="/service_instances"
-            classes={ ["test-create_service_instance_form"] }
-            method="post"
-            ref="form"
-            onValidate={ this._onValidateForm }
-            onValid={ this._onValidForm }>
+          classes={ ['test-create_service_instance_form'] }
+          method="post"
+          ref="form"
+          onValidate={ this._onValidateForm }
+          onValid={ this._onValidForm }
+        >
+          <legend>
+            Create a service instance for <strong
+              className={this.styler('actions-callout-inline-block') }>
+            { this.serviceName }</strong> using <strong
+              className={this.styler('actions-callout-inline-block')}>
+            { this.servicePlanName }</strong> plan.
+          </legend>
           <FormText
-            classes={ ["test-create_service_instance_name"] }
+            classes={ ['test-create_service_instance_name'] }
             label="Choose a name for the service"
             name="name"
             validator={ FormElement.validatorString }
           />
           <FormSelect
-            classes={ ["test-create_service_instance_space"] }
+            classes={ ['test-create_service_instance_space'] }
             label="Choose a name for the service"
             label="Select the space for the service instance"
             name="space"
-            options={ this.state.spaces.map((space) => {
+            options={ this.state.spaces.filter((space) => {
+              return space.org === currentOrgGuid;
+            }).map((space) => {
               return { value: space.guid, label: space.name };
             })}
             validator={ FormElement.validatorString }
           />
-          <Button name="submit">Create service instance</Button>
+          <Button name="submit" type="submit">Create service instance</Button>
+          <Button name="cancel" classes={ [this.styler('button-cancel')] }
+            onClickHandler={ this._onCancelForm.bind(this) }>
+            Cancel
+          </Button>
         </Form>
-      </Box>
+      </div>
     );
   }
 }

@@ -6,3 +6,4 @@ static_src/actions/space_actions.js
 static_src/actions/error_actions.js
 static_src/actions/user_actions.js
 static_src/tests.bundle.js
+test/**/*.js

@@ -29,7 +29,7 @@ module.exports = {
         ],
         query: {
           presets: ['es2015', 'react'],
-          plugins: ['transform-runtime']
+          plugins: ['transform-object-rest-spread', 'transform-runtime']
         }
       },
       {

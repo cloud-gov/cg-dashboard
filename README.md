@@ -65,7 +65,7 @@ If you are deploying to cloud foundry, modify the `manifest.yml`
 ## Front end
 Front end build commands should be run in the same directory as the `package.json` file. If you've used the cloning command from this README it should be something like `/path/to/cg-deck-ws/src/github.com/18F/cg-deck`
 
-Install front end dependencies:
+Install front end dependencies (may require [special steps for node-gyp](https://github.com/nodejs/node-gyp#installation)):
 ```
 npm install
 ```
@@ -109,6 +109,21 @@ npm install -g eslint-plugin-react
 - `go run server.go`
 - Navigate browser to [`http://localhost:9999`](http://localhost:9999)
 
+### Run locally without needing Go
+This is an easy way to test out front end changes without needing to set up environment variables or `Go`. We will use a small server with fake data (used for automated testing) to get going quickly. If you want to see live data, you'll need to follow the instructions above.
+
+The command `npm run testing-server` will run the server. We will still be using `npm run watch` to build the front end application when the file changes.
+
+#### Start it
+- `npm install` to get the Javascript dependencies
+- `npm run testing-server & npm run watch` to start the server and build process
+
+#### Stop it
+Now when you're done, you'll want to stop the `testing-server` that is running in the background. You can find it by running `jobs`, and the line that looks like this:
+
+`[N]  + running    npm run testing-server`
+
+To kill that process, run `kill %N` where "N" is the number from the line.
 
 ## Unit Testing
 ### Running Go unit tests

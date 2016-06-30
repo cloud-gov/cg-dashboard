@@ -27,17 +27,20 @@ var (
 	PProfEnabledEnvVar = "PPROF_ENABLED"
 	// BuildInfoEnvVar is the environment variable key that represents the particular build number
 	BuildInfoEnvVar = "BUILD_INFO"
+	// NewRelicLicenseEnvVar is the New Relic License key so it can collect data.
+	NewRelicLicenseEnvVar = "CONSOLE_NEW_RELIC_LICENSE"
 )
 
 // EnvVars holds all the environment variable values that a non-test server should have.
 type EnvVars struct {
-	ClientID     string
-	ClientSecret string
-	Hostname     string
-	LoginURL     string
-	UAAURL       string
-	APIURL       string
-	LogURL       string
-	PProfEnabled string
-	BuildInfo    string
+	ClientID        string
+	ClientSecret    string
+	Hostname        string
+	LoginURL        string
+	UAAURL          string
+	APIURL          string
+	LogURL          string
+	PProfEnabled    string
+	BuildInfo       string
+	NewRelicLicense string
 }
