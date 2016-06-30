@@ -205,7 +205,7 @@ describe('ServiceInstanceStore', function() {
       const spy = sandbox.spy(cfApi, 'fetchServiceInstance');
       const expectedGuid = 'akdfjzxcv32dfmnv23';
 
-      serviceActions.createdInstance({ guid: expectedGuid });
+      serviceActions.createdInstance({ metadata: {guid: expectedGuid }});
 
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];
@@ -215,7 +215,7 @@ describe('ServiceInstanceStore', function() {
     it('emits a change event', function() {
       var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
 
-      serviceActions.createdInstance({ guid: 'adsfavzxc' });
+      serviceActions.createdInstance({ metadata: {guid: 'adsfavzxc' }});
 
       expect(spy).toHaveBeenCalledOnce();
     });
@@ -223,7 +223,8 @@ describe('ServiceInstanceStore', function() {
     it('should set form to nothing', function() {
       ServiceInstanceStore._createInstanceForm = { service: {} };
       expect(ServiceInstanceStore.createInstanceForm).toBeTruthy();
-      serviceActions.createdInstance({ guid: 'asdf9a8fasss', name: 'nameA' });
+      serviceActions.createdInstance(
+        { metadata: { guid: 'asdf9a8fasss', name: 'nameA' }});
 
       expect(ServiceInstanceStore.createInstanceForm).toBeFalsy();
     });
