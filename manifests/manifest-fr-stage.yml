@@ -1,0 +1,16 @@
+---
+buildpack: https://github.com/cloudfoundry/go-buildpack.git#v1.7.8
+domain: fr.cloud.gov
+memory: 256M
+env:
+  GOVERSION: go1.6.2
+  GOPACKAGENAME: github.com/18F/cg-deck
+applications:
+- name: deck
+  host: console
+  env:
+    CONSOLE_HOSTNAME: https://console.fr-stage.cloud.gov
+    CONSOLE_LOGIN_URL: https://login.fr-stage.cloud.gov/
+    CONSOLE_UAA_URL: https://uaa.fr-stage.cloud.gov/
+    CONSOLE_API_URL: https://api.fr-stage.cloud.gov/
+    CONSOLE_LOG_URL: https://loggregator.fr-stage.cloud.gov/

@@ -1,6 +1,6 @@
 ---
 jobs:
-- name: deploy-production
+- name: deploy-staging
   plan:
   - get: cg-deck-source
     trigger: true
@@ -11,7 +11,7 @@ jobs:
         type: docker-image
         source:
           repository: node
-          tag: 4.4.5-slim
+          tag: "4.4"
       inputs:
       - name: cg-deck-source
       outputs:
@@ -23,13 +23,14 @@ jobs:
         - -exc
         - |
           npm install
+          npm test
           npm run build
 
           # copy files to output directory, so that they can be read by subsequent step
           cp -R . ../cg-deck-compiled
-  - put: cloud-gov-production
+  - put: cloud-gov-staging
     params:
-      manifest: cg-deck-compiled/ci/manifest.fr.yml
+      manifest: cg-deck-compiled/manifests/manifest-fr-stage.yml
       path: cg-deck-compiled
       current_app_name: docs
     on_failure:
@@ -57,15 +58,27 @@ resources:
   source:
     uri: {{cg-deck-git-url}}
     branch: {{cg-deck-branch}}
+
+- name: cloud-gov-staging
+  type: cf
+  source:
+    api: {{cf-api-url-staging}}
+    username: {{cf-deploy-username-staging}}
+    password: {{cf-deploy-password-staging}}
+    organization: {{cf-organization-staging}}
+    space: {{cf-space-staging}}
+    skip_cert_check: false
+
 - name: cloud-gov-production
   type: cf
   source:
     api: {{cf-api-url-production}}
     username: {{cf-deploy-username-production}}
     password: {{cf-deploy-password-production}}
-    organization: {{cf-organization}}
-    space: {{cf-space}}
+    organization: {{cf-organization-production}}
+    space: {{cf-space-production}}
     skip_cert_check: false
+
 - name: slack
   type: slack-notification
   source:
