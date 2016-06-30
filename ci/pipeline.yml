@@ -32,7 +32,7 @@ jobs:
     params:
       manifest: cg-deck-compiled/manifests/manifest-fr-stage.yml
       path: cg-deck-compiled
-      current_app_name: docs
+      current_app_name: deck
     on_failure:
       put: slack
       params:
