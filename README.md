@@ -1,10 +1,10 @@
-# 18F Cloud Foundry Deck
+# 18F Cloud Foundry Dashboard
 
-[![Build Status](https://travis-ci.org/18F/cg-deck.svg?branch=staging-alpha)](https://travis-ci.org/18F/cg-deck)
+[![Build Status](https://travis-ci.org/18F/cg-deck.svg?branch=master)](https://travis-ci.org/18F/cg-deck)
 
-[https://console-staging.cloud.gov](https://console-staging.cloud.gov)
+[Production](https://dashboard.cloud.gov)
+[Staging](https://dashboard-staging.cloud.gov)
 
-The `staging-alpha` branch is being used for our React based rewrite and is continuously deployed to the URL above.
 
 ## Introduction
 
@@ -17,7 +17,7 @@ Learn more about [cloud.gov](https://cloud.gov).
 ### Backend Server [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
 - `Go` (version 1.6.2)
 
-### Front end application [![JS Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=staging-alpha&service=github)](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=staging-alpha&service=github)
+### Front end application [![JS Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)
 - `Node` (version 4.2.3)
 - `React` (version ^0.14.0)
 

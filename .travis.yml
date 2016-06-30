@@ -18,10 +18,11 @@ script:
 branches:
   only:
   - master
-  - production
+  - staging
   - staging-alpha
+  - deprecated
 before_deploy:
-- export BUILD_INFO=build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d-%H-%M-%S")-$TRAVIS_BUILD_NUMBER
+- export BUILD_INFO=build::$TRAVIS_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$TRAVIS_BUILD_NUMBER::$(deploy/npm-version.sh)
 # Extract any encrypted env vars and put them into the manifests/manifest-master.yml
 - python deploy/travis-vars-to-manifest.py
 # Download the go-bindata binary, which is necessary for the CF CLI
@@ -50,7 +51,8 @@ deploy:
   on:
     branch:
     - master
-    - staging-alpha
+    - staging
+    - deprecated
 env:
   global:
   - TRAVIS_NODE_VERSION="4.2.3"

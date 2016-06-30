@@ -5,7 +5,7 @@ We're so glad you're thinking about contributing to an 18F open source project! 
 Before contributing, we encourage you to read our CONTRIBUTING policy (you are here), our LICENSE, and our README, all of which should be in this repository. If you have any questions, or want to read more about our underlying policies, you can consult the 18F Open Source Policy GitHub repository at https://github.com/18f/open-source-policy, or just shoot us an email/official government letterhead note to [18f@gsa.gov](mailto:18f@gsa.gov).
 
 ## High-level roadmap
-The cloud.gov deck is currently being refactored to port the codebase from angular to unit-tested react. In doing so, it will take UI/UX cues from the  [community web ui](https://github.com/icclab/cf-webui), and merge that design with the visual [cloudgov-style](https://github.com/18F/cg-style) to create a unified cloud.gov experience. This refactor work is accumulated into the `staging-alpha` branch which will eventually be merged with `master` when it's feature complete and bug free. This means all work should be merged into the `staging-alpha` branch, unless working with the deprecated angular codebase.
+The cloud.gov deck is currently being refactored to port the codebase from angular to unit-tested react. In doing so, it will take UI/UX cues from the  [community web ui](https://github.com/icclab/cf-webui), and merge that design with the visual [cloudgov-style](https://github.com/18F/cg-style) to create a unified cloud.gov experience.
 
 The work on cloud.gov front end fits into a higher level roadmap for all of cloud.gov. For now, this is in [another tool](https://18f.aha.io/products/CGP/bookmarks/project_timelines/new) only accessible by 18F personnel. Soon we will publish the information.
 
@@ -46,10 +46,10 @@ For more information, see the high-level [cloud.gov respository](https://github.
 
 #### Other git standards
 - Squashing commits is allowed but discouraged, except in rare instances.
-- The team prefers rebasing over merging, though we use Github to close out pull requests. This means that PRs will be merged, but if you're refreshing a local branch make sure to use rebase. For example, if you want to update your `staging-alpha` branch to reflect the most recent changes on Github use `git pull --rebase origin staging-alpha`.
+- The team prefers rebasing over merging, though we use Github to close out pull requests. This means that PRs will be merged, but if you're refreshing a local branch make sure to use rebase. For example, if you want to update your `staging` branch to reflect the most recent changes on Github use `git pull --rebase origin staging`.
 
 ### Branches
-- Open branches off main repo due to travis CI env var problem. For now, remember to branch off of the `staging-alpha` branch.
+- Open branches off main repo due to travis CI env var problem. For now, remember to branch off of the `master` branch.
 - Name your branch with your initials first.
 - Include a short description of the feature that's being developed after your initial.
 
@@ -113,7 +113,7 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 - What should performance budgets for decided metrics be? ie: faster then 1000 for speed index, faster then 1s for certain custom event, total request size below 2mb.
 - How should performance metrics and budgets be incorporated into workflow? Going over a budget requires re-implementation, or issue.
 - Any library added that's total file size is above 25kb should be evaluated for performance affect.
-- 
+-
 
 ## Onboarding checklist
 - [ ] Join the `#cloud-gov-liberator` channel on Slack
@@ -121,21 +121,21 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 - [ ] Review the main [front end board](https://github.com/18F/cg-deck#boards?repos=39210774)
 - [ ] Review the cloud.gov [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md) to understand how the agile boards and workflow works.
 - [ ] Bookmark link to [design folder](https://drive.google.com/drive/u/1/folders/0BwLqM4Nicmq-bUt0NjRjclFMUEU)
-- [ ] Review the primary cloud.gov sites: [the deck](https://console.cloud.gov/#/), [main landing page](https://cloud.gov/), and [documentation](https://docs.cloud.gov/).
+- [ ] Review the primary cloud.gov sites: [the deck](https://dashboard.cloud.gov/#/), [main landing page](https://cloud.gov/), and [documentation](https://docs.cloud.gov/).
 
 #### If developing
-- [ ] Set up [the landing page site](https://github.com/18F/cg-landing) and/or [the deck](https://github.com/18F/cg-deck/tree/staging-alpha) and/or [the docs site](https://github.com/18F/cg-docs) and/or [style](https://github.com/18F/cg-style) locally
+- [ ] Set up [the landing page site](https://github.com/18F/cg-landing) and/or [the deck](https://github.com/18F/cg-deck) and/or [the docs site](https://github.com/18F/cg-docs) and/or [style](https://github.com/18F/cg-style) locally
 - [ ] Setup cloudgov-style to be [linked to the other sites locally](https://github.com/18F/cg-style#development-and-contributing-setup).
 - [ ] Have cloud.gov person send the cg-deck testing env vars through fugacious
-- [ ] Review [deck contributing guide](https://github.com/18F/cg-deck/blob/staging-alpha/CONTRIBUTING.md) and [cloudgov-style standards](https://github.com/18F/cg-style/blob/master/documentation/frontend_standards.md)
+- [ ] Review [deck contributing guide](https://github.com/18F/cg-deck/CONTRIBUTING.md) and [cloudgov-style standards](https://github.com/18F/cg-style/blob/master/documentation/frontend_standards.md)
 
 #### For review
 - Review the [design resource request document](https://docs.google.com/document/d/1s96VP6PB7fbc8g_GwgAZ1hCPmew-J35ZOJx772c1AZ4/edit) if you haven’t already to get a sense of your role on the project
 - Review the [design principals](https://docs.google.com/spreadsheets/d/14Y3RKaLUt6RPX5w13iz7oaSCpojEQ-Wqjnd8Ie_VkCc/edit#gid=259774738) to get a sense of how the cloud.gov team feels about the product
-- Review the [competitive analysis](https://docs.google.com/spreadsheets/u/1/d/194tGz75NFwFyH8jT7zY_n-O0I7N4yAGYtIG4hw9qPcQ/edit?usp=drive_web) to get a sense of our "competitors" and their console/deck.
+- Review the [competitive analysis](https://docs.google.com/spreadsheets/u/1/d/194tGz75NFwFyH8jT7zY_n-O0I7N4yAGYtIG4hw9qPcQ/edit?usp=drive_web) to get a sense of our "competitors" and their dashboard.
 - Review the [cloudgov-style styleguide](https://pages.18f.gov/cg-style/) to get a sense of the global cloud.gov visual style.
 - Review the [US Web Design Standards](https://standards.usa.gov/) as cloudgov-style was built from it.
-- Review the deck, current [prod](https://console.cloud.gov/#/) and react refactor [staging](https://console-staging.cloud.gov/#/)
+- Review the deck, current [prod](https://dashboard.cloud.gov/#/) and [staging](https://dashboard-staging.cloud.gov/#/)
 - Review the cloud foundry [community UI](http://ui.apps.cloud.gov/), a UI that members of the cloud foundry community created and is being used as a basis for our own deck design.
 
 ## Public domain
