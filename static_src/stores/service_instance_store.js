@@ -78,7 +78,7 @@ class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATED: {
-        cfApi.fetchServiceInstance(action.serviceInstance.guid);
+        cfApi.fetchServiceInstance(action.serviceInstance.metadata.guid);
         this._createInstanceForm = null;
         this.emitChange();
         break;
