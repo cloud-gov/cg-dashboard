@@ -96,12 +96,14 @@ resources:
   source:
     uri: {{cg-deck-git-url}}
     branch: {{cg-deck-branch-staging}}
+    tag_filter: {{cg-deck-tag-filter-staging}}
 
 - name: cg-deck-source-production
   type: git
   source:
     uri: {{cg-deck-git-url}}
     branch: {{cg-deck-branch-production}}
+    tag_filter: {{cg-deck-tag-filter-production}}
 
 - name: cloud-gov-staging
   type: cf
