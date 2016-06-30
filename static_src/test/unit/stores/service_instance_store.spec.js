@@ -174,6 +174,17 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on sevice instance created', function() {
+    it('should fetch the created instance with guid', function() {
+      const spy = sandbox.spy(cfApi, 'fetchServiceInstance');
+      const expectedGuid = 'akdfjzxcv32dfmnv23';
+
+      serviceActions.createdInstance({ guid: expectedGuid });
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+    });
+
     it('emits a change event', function() {
       var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
 
