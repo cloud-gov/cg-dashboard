@@ -60,6 +60,33 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on service instances received', function() {
+    it('should merge in the service instance', function() {
+      const spy = sandbox.spy(ServiceInstanceStore, 'merge');
+      const instance = {
+        metadata: {
+          guid: 'zxmcvn23vlkxmcvn'
+        },
+        entity: {
+          name: 'testa'
+        }
+      };
+      const expected = unwrapOfRes([instance])[0];
+
+      serviceActions.receivedInstance(instance);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg1 = spy.getCall(0).args[0];
+      let arg2 = spy.getCall(0).args[1];
+      expect(arg1).toEqual('guid');
+      expect(arg2).toEqual(expected);
+    });
+
+    it('should emit a change event', function() {
+
+    });
+  });
+
+  describe('on service instances received', function() {
     it('should set data to unwrapped, passed in instances', function() {
       var expected = [
         {

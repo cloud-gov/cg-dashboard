@@ -37,6 +37,15 @@ class ServiceInstanceStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_INSTANCE_RECEIVED: {
+        const instance = this.formatSplitResponse(
+          [action.serviceInstance])[0];
+        this.merge('guid', instance, (changed) => {
+          if (changed) this.emitChange();
+        });
+        break;
+      }
+
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
         const services = this.formatSplitResponse(action.serviceInstances);
         this._data = Immutable.fromJS(services);
