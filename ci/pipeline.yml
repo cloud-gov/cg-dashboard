@@ -2,15 +2,21 @@
 jobs:
 - name: deploy-staging
   plan:
-  - get: cg-deck-source
+  - get: cg-deck-source-staging
     trigger: true
   - aggregate:
     - task: build-static
-      file: cg-deck-source/ci/build-static.yml
+      file: cg-deck-source-staging/ci/build-static.yml
+      input_mapping:
+        cg-deck-source: cg-deck-source-staging
     - task: build-api
-      file: cg-deck-source/ci/build-api.yml
+      file: cg-deck-source-staging/ci/build-api.yml
+      input_mapping:
+        cg-deck-source: cg-deck-source-staging
   - task: collect-artifacts
-    file: cg-deck-source/ci/collect-artifacts.yml
+    file: cg-deck-source-staging/ci/collect-artifacts.yml
+    input_mapping:
+      cg-deck-source: cg-deck-source-staging
   - put: cloud-gov-staging
     params:
       manifest: cg-deck-deploy/manifests/manifest-fr-stage.yml
@@ -24,7 +30,7 @@ jobs:
       put: slack
       params:
         text: |
-          :x: FAILED to deploy cg-deck to Production
+          :x: FAILED to deploy cg-deck to staging
           <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
@@ -33,18 +39,69 @@ jobs:
       put: slack
       params:
         text: |
-          :white_check_mark: Successfully deployed cg-deck to Production
+          :white_check_mark: Successfully deployed cg-deck to staging
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+
+- name: deploy-production
+  plan:
+  - get: cg-deck-source-production
+    trigger: true
+  - aggregate:
+    - task: build-static
+      file: cg-deck-source-production/ci/build-static.yml
+      input_mapping:
+        cg-deck-source: cg-deck-source-production
+    - task: build-api
+      file: cg-deck-source-production/ci/build-api.yml
+      input_mapping:
+        cg-deck-source: cg-deck-source-production
+  - task: collect-artifacts
+    file: cg-deck-source-production/ci/collect-artifacts.yml
+    input_mapping:
+      cg-deck-source: cg-deck-source-production
+  - put: cloud-gov-staging
+    params:
+      manifest: cg-deck-deploy/manifests/manifest-fr.yml
+      path: cg-deck-deploy
+      current_app_name: deck
+      environment_variables:
+        CONSOLE_CLIENT_ID: {{client-id-production}}
+        CONSOLE_CLIENT_SECRET: {{client-secret-production}}
+        CONSOLE_NEW_RELIC_LICENSE: {{new-relic-license-production}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: FAILED to deploy cg-deck to production
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: Successfully deployed cg-deck to production
           <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
 
 resources:
-- name: cg-deck-source
+- name: cg-deck-source-staging
   type: git
   source:
     uri: {{cg-deck-git-url}}
-    branch: {{cg-deck-branch}}
+    branch: {{cg-deck-branch-staging}}
+
+- name: cg-deck-source-production
+  type: git
+  source:
+    uri: {{cg-deck-git-url}}
+    branch: {{cg-deck-branch-production}}
 
 - name: cloud-gov-staging
   type: cf
