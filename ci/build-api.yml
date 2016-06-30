@@ -23,5 +23,13 @@ run:
     cd gopath/src/github.com/18F/cg-deck
 
     go get github.com/Masterminds/glide
-    glide install
+
+    n=0
+    until [ $n -ge 5 ]
+    do
+      glide install && break
+      n=$[$n+1]
+      sleep 5
+    done
+
     ./codecheck.sh
