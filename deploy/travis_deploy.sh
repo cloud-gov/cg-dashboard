@@ -10,14 +10,22 @@
 set -e
 
 CF_PATH="."
-if [ "$TRAVIS_BRANCH" == "master" ]
+if [[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)? ]]
+then
+	CF_MANIFEST="manifests/manifest-prod.yml"
+	CF_SPACE="deck-prod"
+elif [ "$TRAVIS_BRANCH" == "master" ]
 then
 	CF_MANIFEST="manifests/manifest-master.yml"
-	CF_SPACE="deck-prod"
+	CF_SPACE="deck-stage"
 elif [ "$TRAVIS_BRANCH" == "staging-alpha" ]
 then
 	CF_MANIFEST="manifests/manifest-staging.yml"
 	CF_SPACE="deck-stage"
+elif [ "$TRAVIS_BRANCH" == "deprecated" ]
+then
+	CF_MANIFEST="manifests/manifest-deprecated.yml"
+	CF_SPACE="deck-prod"
 fi
 
 echo $CF_MANIFEST

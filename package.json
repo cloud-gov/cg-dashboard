@@ -1,5 +1,5 @@
 {
-  "name": "tests",
+  "name": "cg-deck",
   "version": "1.0.0",
   "engines": {
     "node": "4.2.3",
