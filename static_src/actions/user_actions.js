@@ -113,6 +113,12 @@ export default {
       userGuid: userGuid,
       error: error
     });
-  }
+  },
 
+  changeCurrentlyViewedType(userType) {
+    AppDispatcher.handleUIAction({
+      type: userActionTypes.USER_CHANGE_VIEWED_TYPE,
+      userType
+    });
+  }
 };

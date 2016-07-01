@@ -109,7 +109,9 @@ const userActionTypes = keymirror({
   // Action when a user was deleted from an org on the server.
   USER_DELETED: null,
   // Action when there's an error when trying to remove a user.
-  ERROR_REMOVE_USER: null
+  ERROR_REMOVE_USER: null,
+  // Action when the type of users being looked at changes
+  USER_CHANGE_VIEWED_TYPE: null
 });
 
 const routeActionTypes = keymirror({

@@ -28,6 +28,10 @@ describe('UserStore', function() {
     it('should start data as empty array', function() {
       expect(UserStore.getAll()).toBeEmptyArray();
     });
+
+    it('should set currently viewed type to space', function() {
+      expect(UserStore.currentlyViewedType).toEqual('space');
+    });
   });
 
   describe('on space users fetch', function() {
