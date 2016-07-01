@@ -74,9 +74,14 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORG_TOGGLE_SPACE_MENU: {
         const org = this.get(action.orgGuid);
+        const otherOrgs = this.getAll().filter((sorg) => sorg.guid !== org.guid);
         const open = org.space_menu_open || false;
         const toUpdate = Object.assign(org, { space_menu_open: !open });
-        this.merge('guid', toUpdate, (changed) => {
+        const allUpdates = otherOrgs.map((otherOrg) =>
+          Object.assign({}, otherOrg, { space_menu_open: false })
+        );
+        allUpdates.push(toUpdate);
+        this.mergeMany('guid', allUpdates, (changed) => {
           if (changed) this.emitChange();
         });
         break;
