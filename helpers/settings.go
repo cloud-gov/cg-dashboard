@@ -1,13 +1,15 @@
 package helpers
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/gob"
+	"errors"
 	"github.com/gorilla/sessions"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
-
-	"encoding/gob"
-	"errors"
+	"net/http"
 )
 
 // Settings is the object to hold global values and objects for the service.
@@ -32,6 +34,8 @@ type Settings struct {
 	PProfEnabled bool
 	// Build Info
 	BuildInfo string
+	//Http client
+	HTTPClient *http.Client
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -58,9 +62,33 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	if len(envVars.LogURL) == 0 {
 		return errors.New("Unable to find '" + LogURLEnvVar + "' in environment. Exiting.\n")
 	}
+
+	// load user certificate if exist in env var
+	if len(envVars.UserCertPem) == 0 {
+		s.HTTPClient = http.DefaultClient
+	} else {
+
+		roots := x509.NewCertPool()
+		ok := roots.AppendCertsFromPEM([]byte(envVars.UserCertPem))
+		if !ok {
+			return errors.New("failed to parse user certificate")
+		}
+		tlsConfig := &tls.Config{
+			ClientCAs:  roots,
+			RootCAs:    roots,
+			ClientAuth: tls.RequireAndVerifyClientCert,
+		}
+		var transport http.RoundTripper
+
+		transport = &http.Transport{
+			TLSClientConfig: tlsConfig,
+		}
+		s.HTTPClient = &http.Client{Transport: transport}
+	}
+
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
-	s.TokenContext = context.TODO()
+	s.TokenContext = context.WithValue(context.TODO(), oauth2.HTTPClient, s.HTTPClient)
 	s.UaaURL = envVars.UAAURL
 	s.LogURL = envVars.LogURL
 	s.PProfEnabled = ((envVars.PProfEnabled == "true") || (envVars.PProfEnabled == "1"))

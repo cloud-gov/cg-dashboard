@@ -43,7 +43,7 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 	}
 
 	// Exchange the code for a token.
-	token, err := c.Settings.OAuthConfig.Exchange(oauth2.NoContext, code)
+	token, err := c.Settings.OAuthConfig.Exchange(c.Settings.TokenContext, code)
 	if err != nil {
 		fmt.Println("Unable to get access token from code " + code + " error " + err.Error())
 		return
