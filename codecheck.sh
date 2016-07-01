@@ -5,6 +5,17 @@ scriptreturn=0
 
 # Will modify the scriptreturn if anything non-zero comes back from fgt.
 function testCmd() {
+	eval "$@"
+	ret=$?
+	if (($ret > 0)); then
+		scriptreturn=$ret
+		echo "FAILURE: $@"
+	fi
+}
+
+# This will set the return to non zero if output is returned. useful for go fmt.
+# uses fgt instead of eval
+function testCmdOutput() {
 	fgt "$@"
 	ret=$?
 	if (($ret > 0)); then
@@ -31,7 +42,7 @@ echo 'Doing a lint check on go code'
 echo '---------------------------------------------------------'
 for pkg in $pkgs
 do
-	testCmd golint $pkg
+	testCmdOutput golint $pkg
 done
 
 # Vet check
@@ -42,7 +53,7 @@ echo 'Doing a vet check on go code'
 echo '---------------------------------------------------------'
 for pkg in $pkgs
 do
-	testCmd go vet $pkg
+	testCmdOutput go vet $pkg
 done
 
 # Fmt Check
@@ -53,7 +64,7 @@ echo 'Doing a format / style check on go code'
 echo '---------------------------------------------------------'
 for pkg in $pkgs
 do
-	testCmd go fmt $pkg
+	testCmdOutput go fmt $pkg
 done
 
 # Coverage Check
@@ -67,7 +78,7 @@ echo "mode: count" > profile.cov
 for pkg in $pkgs
 do
 	echo "testing package $pkg"
-	go test -v -covermode=count $pkg -coverprofile=tmp.cov
+	testCmd go test -v -covermode=count $pkg -coverprofile=tmp.cov
 	if [ -f tmp.cov ]
 	then
 		cat tmp.cov | tail -n +2 >> profile.cov
@@ -75,7 +86,7 @@ do
 	fi
 done
 
-go tool cover -func profile.cov
+testCmd go tool cover -func profile.cov
 
 # Determine whether to upload to coveralls
 while getopts ":u" opt; do

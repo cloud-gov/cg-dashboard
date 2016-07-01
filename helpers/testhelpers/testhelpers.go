@@ -120,6 +120,7 @@ type BasicSecureTest struct {
 	BasicConsoleUnitTest
 	ExpectedCode     int
 	ExpectedResponse string
+	ExpectedLocation string
 }
 
 // BasicProxyTest contains information for what our test 'external' server should do when the proxy methods contact it.

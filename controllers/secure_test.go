@@ -6,6 +6,7 @@ import (
 	. "github.com/18F/cg-deck/helpers/testhelpers"
 	"github.com/gocraft/web"
 	"golang.org/x/net/context"
+	"golang.org/x/oauth2"
 
 	"fmt"
 	"io/ioutil"
@@ -22,19 +23,33 @@ var oauthTests = []BasicSecureTest{
 			SessionData: ValidTokenData,
 		},
 		ExpectedResponse: "test",
+		ExpectedCode:     200,
+		ExpectedLocation: "",
 	},
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Invalid OAuth Session",
 			SessionData: InvalidTokenData,
 		},
-		ExpectedResponse: "{\"status\": \"unauthorized\"}",
+		ExpectedResponse: `<a href="http://loginURL.com/oauth/authorize?access_type=online&amp;client_id=ClientID&amp;redirect_uri=http%3A%2F%2Fhostname.com%2Foauth2callback&amp;response_type=code&amp;scope=openid&amp;state=state">Found</a>`,
+		ExpectedCode:     302,
+		ExpectedLocation: "http://loginURL.com/oauth/authorize?access_type=online&client_id=ClientID&redirect_uri=http%3A%2F%2Fhostname.com%2Foauth2callback&response_type=code&scope=openid&state=state",
 	},
 }
 
 func TestOAuth(t *testing.T) {
 	mockSettings := helpers.Settings{}
 	mockSettings.TokenContext = context.TODO()
+	mockSettings.OAuthConfig = &oauth2.Config{
+		ClientID:     "ClientID",
+		ClientSecret: "ClientSecret",
+		RedirectURL:  "http://hostname.com/oauth2callback",
+		Scopes:       []string{"openid"},
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  "http://loginURL.com/oauth/authorize",
+			TokenURL: "http://tokenURL.com/oauth/token",
+		},
+	}
 
 	for _, test := range oauthTests {
 		// Initialize a new session store.
@@ -54,8 +69,14 @@ func TestOAuth(t *testing.T) {
 
 		// Make the request and check.
 		router.ServeHTTP(response, request)
-		if strings.TrimSpace(response.Body.String()) != test.ExpectedResponse {
-			t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.TestName, test.ExpectedResponse, response.Body.String())
+		if response.Header().Get("Location") != test.ExpectedLocation {
+			t.Errorf("Test %s did not meet expected location header.\nExpected %s.\nFound %s.\n", test.TestName, test.ExpectedLocation, response.Header().Get("Location"))
+		}
+		if !strings.Contains(response.Body.String(), test.ExpectedResponse) {
+			t.Errorf("Test %s did not contain expected value.\nExpected %s.\n Found (%s)\n.", test.TestName, test.ExpectedResponse, response.Body.String())
+		}
+		if response.Code != test.ExpectedCode {
+			t.Errorf("Test %s did not meet expected code.\nExpected %d.\nFound %d.\n", test.TestName, test.ExpectedCode, response.Code)
 		}
 	}
 }
