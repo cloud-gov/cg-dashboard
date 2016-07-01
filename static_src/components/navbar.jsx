@@ -133,16 +133,15 @@ export class Nav extends React.Component {
           let activeOrgClasses = (org.space_menu_open) ?
             cgSidenavStyles['sidenav-active'] : '';
           return (
-            <li key={ org.guid } className={ activeOrgClasses }>
+            <li key={ org.guid } className={ subMenu }>
               <a href="#" onClick={ toggleSpaceHandler } >
                 <span>{ org.name }</span>
                 <span className={ arrowClasses }></span>
               </a>
               <ul className={ secondList } style={ spacesDisplayStyle }>
-                <li className={ header }>
+                <li className={ subMenu }>
                   <a href={ this.orgHref(org) }>
-                    <span className={cgSidenavStyles['sidenav-header-text']}>
-                      Spaces</span>
+                    <span>Spaces</span>
                   </a>
                   <ul className={ thirdList }>
                     { org.spaces.map((space) => {
