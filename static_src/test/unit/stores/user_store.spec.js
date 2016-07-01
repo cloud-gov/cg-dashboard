@@ -403,6 +403,24 @@ describe('UserStore', function() {
     });
   });
 
+  describe('on user change viewed type', function() {
+    it('should emit a change event if it changed', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange');
+
+      UserStore._currentViewedType = 'org';
+
+      userActions.changeCurrentlyViewedType('space');
+
+      userActions.changeCurrentlyViewedType('space');
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should change currentlyViewedType to whatever is passed in', function() {
+
+    });
+  });
+
   describe('getAllInSpace()', function() {
     // TODO possibly move this functionality to shared place.
     it('should find all user that have the space guid passed in', function() {

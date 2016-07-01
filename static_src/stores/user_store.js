@@ -179,6 +179,14 @@ class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_CHANGE_VIEWED_TYPE: {
+        if (this._currentViewedType !== action.userType) {
+          this._currentViewedType = action.userType;
+          this.emitChange();
+        }
+        break;
+      }
+
       default:
         break;
     }
