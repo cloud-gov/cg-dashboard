@@ -27,7 +27,6 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.PProfEnabled = os.Getenv(helpers.PProfEnabledEnvVar)
 	envVars.BuildInfo = os.Getenv(helpers.BuildInfoEnvVar)
 	envVars.NewRelicLicense = os.Getenv(helpers.NewRelicLicenseEnvVar)
-	envVars.UserCertPem = os.Getenv(helpers.UserCertPemEnvVar)
 	return envVars
 }
 
