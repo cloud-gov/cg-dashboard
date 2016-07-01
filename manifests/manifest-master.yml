@@ -1,0 +1,8 @@
+---
+inherit: manifest-base.yml
+applications:
+- name: cf-deck
+  memory: 256M
+  host: dashboard-master
+  env:
+    CONSOLE_HOSTNAME: https://dashboard-master.cloud.gov
