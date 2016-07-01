@@ -72,12 +72,13 @@ export class Nav extends React.Component {
       cgSidenavStyles['sidenav-list'], cgSidenavStyles['sidenav-level-one']
     );
     const secondList = classNames(
-      cgBaseStyles['usa-sidenav-sub_list'],
+      cgBaseStyles['usa-sidenav-list'],
       cgSidenavStyles['sidenav-list'],
       cgSidenavStyles['sidenav-level-two']
     );
     const thirdList = classNames(
       cgSidenavStyles['sidenav-list'],
+      cgBaseStyles['usa-sidenav-sub_list'],
       cgSidenavStyles['sidenav-level-three']
     );
     const downArrow = classNames(
@@ -104,17 +105,16 @@ export class Nav extends React.Component {
           let spacesDisplayStyle = { display: (org.space_menu_open) ? 'block' : 'none' };
           return (
             <li key={ org.guid } className={ subMenu }>
-              <a href={ this.orgHref(org) }>
+              <a href="#" onClick={ toggleSpaceHandler } >
                 <span>{ org.name }</span>
+                <span className={ arrowClasses }></span>
               </a>
-              <ul className={ secondList }>
+              <ul className={ secondList } style={ spacesDisplayStyle }>
                 <li className={ subMenu }>
-                  <a onClick={ toggleSpaceHandler } href="#">
+                  <a href={ this.orgHref(org) }>
                     <span>Spaces</span>
-                    <span className={ arrowClasses }>
-                    </span>
                   </a>
-                  <ul className={ thirdList } style={ spacesDisplayStyle }>
+                  <ul className={ thirdList }>
                     { org.spaces.map((space) => {
                       return (
                         <li key={ space.guid }>
