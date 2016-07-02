@@ -192,7 +192,7 @@ describe('UserStore', function() {
         expectedRoles,
         expectedUserGuid,
         expectedOrgGuid,
-        'organization'
+        'org'
       );
 
       expect(spy).toHaveBeenCalledOnce();
@@ -221,7 +221,7 @@ describe('UserStore', function() {
 
       UserStore.push(existingUser);
 
-      userActions.addedUserRoles(expectedRole, testGuid, 'organization');
+      userActions.addedUserRoles(expectedRole, testGuid, 'org');
 
       let actual = UserStore.get(testGuid);
       expect(actual).toBeTruthy();
@@ -234,7 +234,7 @@ describe('UserStore', function() {
       const initialData = [{guid: testUserGuid, organization_roles: []}]
 
       UserStore._data = Immutable.fromJS(initialData);
-      userActions.addedUserRoles('testrole', testUserGuid, 'organization');
+      userActions.addedUserRoles('testrole', testUserGuid, 'org');
 
       expect(spy).toHaveBeenCalledOnce();
     });
@@ -259,7 +259,7 @@ describe('UserStore', function() {
         expectedRoles,
         expectedUserGuid,
         expectedOrgGuid,
-        'organization'
+        'org'
       );
 
       expect(spy).toHaveBeenCalledOnce();
@@ -288,7 +288,7 @@ describe('UserStore', function() {
 
       UserStore._data = Immutable.fromJS([existingUser]);
 
-      userActions.deletedUserRoles(expectedRole, testGuid, 'organization');
+      userActions.deletedUserRoles(expectedRole, testGuid, 'org');
 
       let actual = UserStore.get(testGuid);
       expect(actual).toBeTruthy();
@@ -304,7 +304,7 @@ describe('UserStore', function() {
         guid: testUserGuid,
         organization_roles: [expectedRole]
       }]);
-      userActions.deletedUserRoles(expectedRole, testUserGuid, 'organization');
+      userActions.deletedUserRoles(expectedRole, testUserGuid, 'org');
 
       expect(spy).toHaveBeenCalledOnce();
     });
