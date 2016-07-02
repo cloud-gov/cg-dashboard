@@ -11,20 +11,22 @@ import UserList from './user_list.jsx';
 import UserStore from '../stores/user_store.js';
 import Tabnav from './tabnav.jsx';
 
-const TAB_SPACE_NAME = 'space_users',
-      TAB_ORG_NAME = 'org_users';
+const TAB_SPACE_NAME = 'space_users';
+const TAB_ORG_NAME = 'org_users';
 
 function stateSetter(currentState) {
-  var users = [];
-  if (currentState.currentTab === TAB_SPACE_NAME) {
+  let users = [];
+  const currentTab = UserStore.currentlyViewedType;
+  if (currentTab === TAB_SPACE_NAME) {
     users = UserStore.getAllInSpace(currentState.currentSpaceGuid);
   } else {
     users = UserStore.getAllInOrg(currentState.currentOrgGuid);
   }
   return {
     error: UserStore.getError(),
-    users: users
-  }
+    currentTab,
+    users
+  };
 }
 
 export default class Users extends React.Component {
@@ -35,8 +37,11 @@ export default class Users extends React.Component {
       currentOrgGuid: props.initialOrgGuid,
       currentSpaceGuid: props.initialSpaceGuid,
       currentTab: props.initialCurrentTab,
-      users: []
+      users: (props.initialCurrentTab === TAB_ORG_NAME) ?
+        UserStore.getAllInOrg(props.initialOrgGuid) :
+        UserStore.getAllInSpace(props.initialSpaceGuid)
     };
+
     this._onChange = this._onChange.bind(this);
     this._setTab = this._setTab.bind(this);
     this.handleTabClick = this.handleTabClick.bind(this);
@@ -47,7 +52,6 @@ export default class Users extends React.Component {
 
   componentDidMount() {
     UserStore.addChangeListener(this._onChange);
-    this._setTab(this.props.initialCurrentTab);
   }
 
   componentWillUnmount() {
@@ -59,15 +63,7 @@ export default class Users extends React.Component {
   }
 
   _setTab(tab) {
-    this.setState({
-      currentTab: tab
-    });
-    if (tab === TAB_SPACE_NAME) {
-       userActions.fetchSpaceUsers(this.state.currentSpaceGuid);
-    } else {
-       userActions.fetchOrgUsers(this.state.currentOrgGuid);
-    }
-    this.setState(stateSetter(this.state));
+    userActions.changeCurrentlyViewedType(tab);
   }
 
   handleTabClick(tab, ev) {

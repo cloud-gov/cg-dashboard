@@ -22,7 +22,7 @@ class UserStore extends BaseStore {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = new Immutable.List();
-    this._currentViewedType = 'space';
+    this._currentViewedType = 'space_users';
     this._error = null;
   }
 
