@@ -159,6 +159,7 @@ export default class Users extends React.Component {
           <div role="tabpanel">
             <UserList
                 initialUsers={ this.state.users }
+                initialUserType= { this.state.currentTab }
                 onRemove={ removeHandler }
                 onAddPermissions={ this.handleAddPermissions }
                 onRemovePermissions={ this.handleRemovePermissions }

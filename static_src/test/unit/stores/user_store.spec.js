@@ -30,7 +30,7 @@ describe('UserStore', function() {
     });
 
     it('should set currently viewed type to space', function() {
-      expect(UserStore.currentlyViewedType).toEqual('space');
+      expect(UserStore.currentlyViewedType).toEqual('space_users');
     });
   });
 
