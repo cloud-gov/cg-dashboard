@@ -25,7 +25,7 @@ const roleToResource = {
   billing_manager: 'billing_managers',
   org_auditor: 'auditors',
   space_developer: 'developers',
-  space_manager: 'manager',
+  space_manager: 'managers',
   space_auditor: 'auditors'
 };
 

@@ -91,7 +91,7 @@ export default class Users extends React.Component {
   }
 
   get resourceType() {
-    var resourceType = this.state.currentTab === TAB_ORG_NAME ? 'organization' :
+    var resourceType = this.state.currentTab === TAB_ORG_NAME ? 'org' :
       'space';
     return resourceType;
   }
@@ -158,11 +158,11 @@ export default class Users extends React.Component {
           </p>
           <div role="tabpanel">
             <UserList
-                initialUsers={ this.state.users }
-                initialUserType= { this.state.currentTab }
-                onRemove={ removeHandler }
-                onAddPermissions={ this.handleAddPermissions }
-                onRemovePermissions={ this.handleRemovePermissions }
+              initialUsers={ this.state.users }
+              initialUserType= { this.state.currentTab }
+              onRemove={ removeHandler }
+              onAddPermissions={ this.handleAddPermissions }
+              onRemovePermissions={ this.handleRemovePermissions }
             />
           </div>
         </div>
