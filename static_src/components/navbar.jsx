@@ -92,27 +92,38 @@ export class Nav extends React.Component {
       cgSidenavStyles['sidenav-arrow-right']
     );
     const subMenu = classNames('sub-menu');
+    const header = classNames(
+      cgSidenavStyles['sidenav-header']
+    );
 
     return (
       <div className={ classNames('test-nav-primary') }>
         <ul className={ mainList }>
-          <li key="overview">
+          <li key="overview" className={cgSidenavStyles['sidenav-entity']}>
             <a href="/#">Overview</a>
+          </li>
+          <li key="organizations" className={classNames(
+              cgSidenavStyles['sidenav-header'])}>
+            <span className={cgSidenavStyles['sidenav-header-text']}>
+              Organizations</span>
           </li>
         { this.state.orgs.map((org) => {
           let toggleSpaceHandler = this._toggleSpacesMenu.bind(this, org.guid);
           let arrowClasses = (org.space_menu_open) ? downArrow : rightArrow;
           let spacesDisplayStyle = { display: (org.space_menu_open) ? 'block' : 'none' };
+          let activeOrgClasses = (org.space_menu_open) ?
+            cgSidenavStyles['sidenav-active'] : '';
           return (
-            <li key={ org.guid } className={ subMenu }>
+            <li key={ org.guid } className={ activeOrgClasses }>
               <a href="#" onClick={ toggleSpaceHandler } >
                 <span>{ org.name }</span>
                 <span className={ arrowClasses }></span>
               </a>
               <ul className={ secondList } style={ spacesDisplayStyle }>
-                <li className={ subMenu }>
+                <li className={ header }>
                   <a href={ this.orgHref(org) }>
-                    <span>Spaces</span>
+                    <span className={cgSidenavStyles['sidenav-header-text']}>
+                      Spaces</span>
                   </a>
                   <ul className={ thirdList }>
                     { org.spaces.map((space) => {
