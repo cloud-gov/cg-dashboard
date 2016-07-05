@@ -110,6 +110,11 @@ export default {
                          spaceActions.receivedSpace);
   },
 
+  fetchServiceInstance(instanceGuid) {
+    return this.fetchOne(`/service_instances/${instanceGuid}`,
+                          serviceActions.receivedInstance);
+  },
+
   fetchServiceInstances(spaceGuid) {
     return this.fetchMany(`/spaces/${spaceGuid}/service_instances`,
                           serviceActions.receivedInstances);

@@ -60,6 +60,33 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on service instances received', function() {
+    it('should merge in the service instance', function() {
+      const spy = sandbox.spy(ServiceInstanceStore, 'merge');
+      const instance = {
+        metadata: {
+          guid: 'zxmcvn23vlkxmcvn'
+        },
+        entity: {
+          name: 'testa'
+        }
+      };
+      const expected = unwrapOfRes([instance])[0];
+
+      serviceActions.receivedInstance(instance);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg1 = spy.getCall(0).args[0];
+      let arg2 = spy.getCall(0).args[1];
+      expect(arg1).toEqual('guid');
+      expect(arg2).toEqual(expected);
+    });
+
+    it('should emit a change event', function() {
+
+    });
+  });
+
+  describe('on service instances received', function() {
     it('should set data to unwrapped, passed in instances', function() {
       var expected = [
         {
@@ -174,37 +201,21 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on sevice instance created', function() {
-    it('should add received instance to the data', function() {
-      var expectedInstance = { guid: 'asdf9a8fasss' };
+    it('should fetch the created instance with guid', function() {
+      const spy = sandbox.spy(cfApi, 'fetchServiceInstance');
+      const expectedGuid = 'akdfjzxcv32dfmnv23';
 
-      ServiceInstanceStore.push({ guid: 'zzxcvz' });
+      serviceActions.createdInstance({ metadata: {guid: expectedGuid }});
 
-      serviceActions.createdInstance(expectedInstance);
-
-      expect(ServiceInstanceStore.get(expectedInstance.guid)).toEqual(
-        expectedInstance);
-    });
-
-    it('theres a store with the same guid, it should update that store',
-        function() {
-      var expectedInstance = { guid: 'asdf9a8fasss', name: 'nameA' };
-
-      ServiceInstanceStore._data.push(expectedInstance);
-
-      let newInstance = Object.assign({}, expectedInstance);
-      newInstance.name = 'nameB';
-
-      serviceActions.createdInstance(newInstance);
-
-      expect(ServiceInstanceStore.getAll().length).toEqual(1);
-      let actual = ServiceInstanceStore.get(expectedInstance.guid);
-      expect(actual.name).toEqual(newInstance.name);
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
     });
 
     it('emits a change event', function() {
       var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
 
-      serviceActions.createdInstance({ guid: 'adsfavzxc' });
+      serviceActions.createdInstance({ metadata: {guid: 'adsfavzxc' }});
 
       expect(spy).toHaveBeenCalledOnce();
     });
@@ -212,7 +223,8 @@ describe('ServiceInstanceStore', function() {
     it('should set form to nothing', function() {
       ServiceInstanceStore._createInstanceForm = { service: {} };
       expect(ServiceInstanceStore.createInstanceForm).toBeTruthy();
-      serviceActions.createdInstance({ guid: 'asdf9a8fasss', name: 'nameA' });
+      serviceActions.createdInstance(
+        { metadata: { guid: 'asdf9a8fasss', name: 'nameA' }});
 
       expect(ServiceInstanceStore.createInstanceForm).toBeFalsy();
     });

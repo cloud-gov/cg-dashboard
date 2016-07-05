@@ -82,6 +82,13 @@ export default {
     });
   },
 
+  receivedInstance(serviceInstance) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_RECEIVED,
+      serviceInstance: serviceInstance
+    });
+  },
+
   receivedInstances(serviceInstances) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,

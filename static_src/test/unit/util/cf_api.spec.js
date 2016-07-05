@@ -304,6 +304,23 @@ describe('cfApi', function() {
     });
   });
 
+  describe('fetchServiceInstance()', function() {
+    it('should call fetch with spaces service instances url and recevied space',
+        function() {
+      var expected = '2qpofhskjdf',
+          spy = sandbox.stub(cfApi, 'fetchOne');
+
+      cfApi.fetchServiceInstance(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('service_instances'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(serviceActions.receivedInstance);
+    });
+  });
+
   describe('fetchServiceInstances()', function() {
     it('should call fetch with spaces service instances url and recevied space',
         function() {
