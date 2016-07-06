@@ -23,5 +23,12 @@ export default {
       type: spaceActionTypes.SPACE_RECEIVED,
       space: space
     });
+  },
+
+  changeCurrentSpace(spaceGuid) {
+    AppDispatcher.handleUIAction({
+      type: spaceActionTypes.SPACE_CHANGE_CURRENT,
+      spaceGuid: spaceGuid
+    });
   }
 };
