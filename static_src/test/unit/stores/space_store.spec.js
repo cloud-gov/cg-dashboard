@@ -75,24 +75,15 @@ describe('SpaceStore', function() {
   });
 
   describe('on space actions space received', function() {
-    it('should not emit a change event if data is the same', function() {
+    it('should change fetching to false', function () {
       let space = { guid: 'testSpaceGuid' };
-      let spy = sandbox.spy(SpaceStore, 'emitChange');
 
+      SpaceStore.fetching = true;
       SpaceStore._data = Immutable.fromJS([space]);
 
       spaceActions.receivedSpace(space);
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(SpaceStore.fetching).toEqual(false);
     });
-
-    it('should emit a change event if new data is present', function () {
-      let space = { guid: 'testSpaceGuid' };
-      let spy = sandbox.spy(SpaceStore, 'emitChange');
-
-      spaceActions.receivedSpace(space);
-
-      expect(spy).toHaveBeenCalledOnce();
-    })
   });
 });
