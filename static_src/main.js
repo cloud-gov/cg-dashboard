@@ -29,7 +29,7 @@ function login() {
 
 function dashboard() {
   ReactDOM.render(<App>
-    <Home/>
+    <Home />
   </App>, mainEl);
 }
 
