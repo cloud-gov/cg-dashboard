@@ -120,7 +120,9 @@ const userActionTypes = keymirror({
   // Action when there's an error when trying to remove a user.
   ERROR_REMOVE_USER: null,
   // Action when the type of users being looked at changes
-  USER_CHANGE_VIEWED_TYPE: null
+  USER_CHANGE_VIEWED_TYPE: null,
+  // Action when current user info received from server.
+  CURRENT_USER_INFO_RECEIVED: null
 });
 
 const routeActionTypes = keymirror({
