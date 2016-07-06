@@ -27,6 +27,13 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on services fetch', function() {
+    it('should set fetching to true', function() {
+      ServiceStore.fetching = false;
+
+      serviceActions.fetchAllServices('zxncvz8xcvhn32');
+
+      expect(ServiceStore.fetching).toEqual(true);
+    });
     it('should call the cf api for all services belonging to the org', function() {
       var spy = sandbox.spy(cfApi, 'fetchAllServices'),
           expectedOrgGuid = 'zxncvz8xcvhn32';
@@ -40,6 +47,15 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on services received', function() {
+    it('should set fetching to false', function() {
+      let testRes = wrapInRes([{ guid: '3981f', name: 'adlfskzxcv' }]);
+      ServiceStore.fetching = true;
+
+      serviceActions.receivedServices(testRes);
+
+      expect(ServiceStore.fetching).toEqual(false);
+    });
+
     it('should set the passed in services to current data', function() {
       var expected = [
         { guid: 'zxvcjz', name: 'zxkjv' },

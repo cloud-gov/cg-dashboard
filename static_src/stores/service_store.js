@@ -20,6 +20,7 @@ class ServiceStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICES_FETCH: {
+        this.fetching = true;
         cfApi.fetchAllServices(action.orgGuid);
         break;
       }
@@ -27,6 +28,8 @@ class ServiceStore extends BaseStore {
       case serviceActionTypes.SERVICES_RECEIVED: {
         const services = this.formatSplitResponse(action.services);
         const immutableServices = Immutable.fromJS(services);
+
+        this.fetching = false;
 
         if (this.dataHasChanged(immutableServices)) {
           this._data = immutableServices;
