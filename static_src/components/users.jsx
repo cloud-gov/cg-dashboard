@@ -6,6 +6,7 @@
 
 import React from 'react';
 
+import Loading from './loading.jsx';
 import userActions from '../actions/user_actions.js';
 import UserList from './user_list.jsx';
 import UserStore from '../stores/user_store.js';
@@ -22,9 +23,11 @@ function stateSetter(currentState) {
   } else {
     users = UserStore.getAllInOrg(currentState.currentOrgGuid);
   }
+
   return {
     error: UserStore.getError(),
     currentTab,
+    loading: UserStore.fetching,
     users
   };
 }
@@ -37,6 +40,7 @@ export default class Users extends React.Component {
       currentOrgGuid: props.initialOrgGuid,
       currentSpaceGuid: props.initialSpaceGuid,
       currentTab: props.initialCurrentTab,
+      loading: UserStore.fetching,
       users: (props.initialCurrentTab === TAB_ORG_NAME) ?
         UserStore.getAllInOrg(props.initialOrgGuid) :
         UserStore.getAllInSpace(props.initialSpaceGuid)
@@ -91,19 +95,18 @@ export default class Users extends React.Component {
   }
 
   get resourceType() {
-    var resourceType = this.state.currentTab === TAB_ORG_NAME ? 'org' :
-      'space';
+    var resourceType = this.state.currentTab === TAB_ORG_NAME ? 'org' : 'space';
     return resourceType;
   }
 
   get resourceGuid() {
-    var resourceGuid = this.state.currentTab === TAB_ORG_NAME ?
+    const resourceGuid = this.state.currentTab === TAB_ORG_NAME ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
     return resourceGuid;
   }
 
   get subNav() {
-    var tabs = [
+    const tabs = [
       { name: 'space_users' },
       { name: 'org_users' }
     ];
@@ -124,11 +127,22 @@ export default class Users extends React.Component {
   }
 
   render() {
-    var removeHandler,
-        errorMessage;
+    let removeHandler;
+    let errorMessage;
+    let content = (<UserList
+      initialUsers={ this.state.users }
+      initialUserType= { this.state.currentTab }
+      onRemove={ removeHandler }
+      onAddPermissions={ this.handleAddPermissions }
+      onRemovePermissions={ this.handleRemovePermissions }
+    />);
 
     if (this.state.currentTab === TAB_ORG_NAME) {
       removeHandler = this.handleRemove;
+    }
+
+    if (this.state.loading) {
+      content = <Loading text="Loading users" />;
     }
 
     if (this.state.error) {
@@ -143,7 +157,8 @@ export default class Users extends React.Component {
       <div>
       <Tabnav items={ this.subNav }
         classes={ ['test-subnav-users'] }
-        initialItem={ this.state.currentTab } />
+        initialItem={ this.state.currentTab }
+      />
         { errorMessage }
         <div>
           <p>For more information on different roles and what they mean see <a
@@ -157,13 +172,7 @@ export default class Users extends React.Component {
             <span>&nbsp;</span>managing teammates</a> for more information.
           </p>
           <div role="tabpanel">
-            <UserList
-              initialUsers={ this.state.users }
-              initialUserType= { this.state.currentTab }
-              onRemove={ removeHandler }
-              onAddPermissions={ this.handleAddPermissions }
-              onRemovePermissions={ this.handleRemovePermissions }
-            />
+            { content }
           </div>
         </div>
       </div>
@@ -180,4 +189,4 @@ Users.propTypes = {
 
 Users.defaultProps = {
   initialCurrentTab: 'space_users'
-}
+};
