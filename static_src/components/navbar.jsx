@@ -5,6 +5,7 @@ import React from 'react';
 import cgBaseStyles from 'cloudgov-style/css/base.css';
 import cgSidenavStyles from 'cloudgov-style/css/components/sidenav.css';
 
+import spaceActions from '../actions/space_actions.js';
 import orgActions from '../actions/org_actions.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
@@ -27,9 +28,10 @@ export class Nav extends React.Component {
     this.state = {
       currentOrg: OrgStore.get(this.props.initialCurrentOrgGuid),
       currentSpace: SpaceStore.get(this.props.initialSpaceGuid),
-      orgs: []
+      orgs: OrgStore.getAll() || []
     };
     this._onChange = this._onChange.bind(this);
+    this._handleOverviewClick = this._handleOverviewClick.bind(this);
   }
 
   componentDidMount() {
@@ -44,6 +46,11 @@ export class Nav extends React.Component {
 
   _onChange() {
     this.setState(stateSetter());
+  }
+
+  _handleOverviewClick() {
+    // orgActions.changeCurrentOrg('0');
+    spaceActions.changeCurrentSpace('0');
   }
 
   _handleOrgClick(orgGuid) {
@@ -73,7 +80,6 @@ export class Nav extends React.Component {
   }
 
   isCurrentSpace(spaceGuid) {
-    console.log('is current space', this.state);
     if (!this.state.currentSpace) return false;
     if (this.state.currentSpace.guid === spaceGuid) return true;
     return false;
@@ -113,7 +119,7 @@ export class Nav extends React.Component {
       <div className={ classNames('test-nav-primary') }>
         <ul className={ mainList }>
           <li key="overview" className={cgSidenavStyles['sidenav-entity']}>
-            <a href="/#">Overview</a>
+            <a href="/#" onClick={this._handleOverviewClick}>Overview</a>
           </li>
           <li key="organizations" className={classNames(
               cgSidenavStyles['sidenav-header'])}>
