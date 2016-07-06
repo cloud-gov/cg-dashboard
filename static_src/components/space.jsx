@@ -7,6 +7,7 @@ import ServiceInstanceList from '../components/service_instance_list.jsx';
 import SpaceStore from '../stores/space_store.js';
 import Users from './users.jsx';
 import Tabnav from './tabnav.jsx';
+import TabnavItem from './tabnav_item.jsx';
 
 const PAGES = {
   'apps': AppList,
@@ -55,11 +56,18 @@ export default class Space extends React.Component {
 
   get subNav() {
     return [
-      { name: 'apps', element: <a href={ this.spaceUrl('apps') }>Apps</a> },
-      { name: 'services', element: <a href={ this.spaceUrl('services') }>
-          Service Instances</a> },
-      { name: 'users', element: <a href={ this.spaceUrl('users') }>
-          User Management</a> }
+      { name: 'apps',
+        element: <TabnavItem controls="apps" href={this.spaceUrl('apps')}
+          content="Apps" />
+      },
+      { name: 'services',
+        element: <TabnavItem controls="services" href={this.spaceUrl('services')}
+          content="Service Instances" />
+      },
+      { name: 'users',
+        element: <TabnavItem controls="users" href={this.spaceUrl('users')}
+          content="User Management" />
+      }
     ];
   }
 
@@ -80,7 +88,7 @@ export default class Space extends React.Component {
         </div>
         { tabNav }
         <div>
-          <div role="tabpanel">
+          <div role="tabpanel" id={ this.props.currentPage }>
             <Content
               initialOrgGuid={ this.state.currentOrg.guid }
               initialSpaceGuid={ this.state.currentSpaceGuid }
