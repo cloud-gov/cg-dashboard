@@ -84,7 +84,9 @@ export default class Space extends React.Component {
     return (
       <div>
         <div>
-          <h2>{ this.state.space.name } Space of the { this.state.currentOrg.name } Organization</h2>
+          <h2>
+            <strong>{this.state.space.name}</strong> space in your <strong>{ this.state.currentOrg.name }</strong> organization
+          </h2>
         </div>
         { tabNav }
         <div>

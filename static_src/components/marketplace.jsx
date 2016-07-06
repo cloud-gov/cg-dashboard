@@ -56,7 +56,7 @@ export default class Marketplace extends React.Component {
   render() {
     let form;
     const state = this.state;
-    let marketplace = 'Marketplace';
+    let marketplace = <h2>Marketplace</h2>;
 
     if (state.createInstanceForm) {
       form = (
@@ -68,13 +68,13 @@ export default class Marketplace extends React.Component {
     }
 
     if (state.currentOrg) {
-      marketplace = `${state.currentOrg.name} Marketplace`;
+      marketplace = <h2>Marketplace for your <strong>{state.currentOrg.name}</strong> organization</h2>;
     }
 
     return (
       <div>
         <div>
-          <h2>{ marketplace }</h2>
+          { marketplace }
         </div>
         <ServiceList initialServices={ state.services } />
         { form }
