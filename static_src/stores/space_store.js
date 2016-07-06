@@ -13,6 +13,7 @@ class SpaceStore extends BaseStore {
   constructor() {
     super();
     this._data = new Immutable.List();
+    this._currentSpaceGuid = null;
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
@@ -43,9 +44,24 @@ class SpaceStore extends BaseStore {
         break;
       }
 
+      case spaceActionTypes.SPACE_CHANGE_CURRENT: {
+        const foundSpace = this.get(action.spaceGuid);
+        if (foundSpace) {
+          if (this._currentSpaceGuid !== action.spaceGuid) {
+            this._currentSpaceGuid = action.spaceGuid;
+            this.emitChange();
+          }
+        }
+        break;
+      }
+
       default:
         break;
     }
+  }
+
+  get currentSpaceGuid() {
+    return this._currentSpaceGuid;
   }
 }
 
