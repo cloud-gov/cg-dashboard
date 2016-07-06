@@ -1,11 +1,11 @@
 {
-  "name": "cg-deck",
+  "name": "cloudgov-dashboard",
   "version": "1.0.0",
   "engines": {
     "node": "4.2.3",
     "npm": "2.14.x"
   },
-  "description": "test suite",
+  "description": "A web console for managing Cloud Foundry apps",
   "main": "null",
   "scripts": {
     "build": "npm run clean && node_modules/webpack/bin/webpack.js",
@@ -20,8 +20,30 @@
     "watch": "watch 'npm run build' ./static_src",
     "shrinkwrap": "npm shrinkwrap --dev"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Marco Segreto (marco.segreto@gsa.gov)",
+  "contributors": [
+    {
+      "name": "Jeremia Kimelman",
+      "email": "jeremia.kimelman@gsa.gov"
+    },
+    {
+      "name": "Britta Gustafson",
+      "email": "britta.gustafson@gsa.gov"
+    },
+    {
+      "name": "Julia Elman",
+      "email": "juila.elman@gsa.gov"
+    },
+    {
+      "name": "Dan Williams",
+      "email": "daniel.williams@gsa.gov"
+    },
+    {
+      "name": "James C Scott III",
+      "email": "jamesc.scott@gsa.gov"
+    }
+  ],
+  "license": "CC0-1.0",
   "dependencies": {
     "axios": "^0.5.4",
     "babel-core": "^6.3.17",
