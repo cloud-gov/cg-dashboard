@@ -203,8 +203,8 @@ export default {
   },
 
   deleteOrgUserPermissions(userGuid, orgGuid, permissions) {
-    return http.delete(`${APIV}/organizations/${orgGuid}/${permissions}
-       /${userGuid}`).then((res) =>
+    return http.delete(`${APIV}/organizations/${orgGuid}/${permissions}/${userGuid}`)
+      .then((res) =>
         res.response
       , (err) => {
         userActions.errorRemoveUser(userGuid, err.data);
@@ -212,8 +212,8 @@ export default {
   },
 
   putOrgUserPermissions(userGuid, orgGuid, permissions) {
-    return http.put(`${APIV}/organizations/${orgGuid}/${permissions}
-        /${userGuid}`).then((res) => res.response
+    return http.put(`${APIV}/organizations/${orgGuid}/${permissions}/${userGuid}`)
+      .then((res) => res.response
     );
   },
 

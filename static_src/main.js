@@ -18,6 +18,7 @@ import serviceActions from './actions/service_actions.js';
 import Space from './components/space.jsx';
 import SpaceList from './components/space_list.jsx';
 import { trackPageView } from './util/analytics.js';
+import userActions from './actions/user_actions.js';
 
 const mainEl = document.querySelector('.js-app');
 
@@ -49,7 +50,9 @@ function space(orgGuid, spaceGuid, potentialPage) {
   cfApi.fetchSpace(spaceGuid);
   // TODO use constant
   if (potentialPage === 'users') {
-    cfApi.fetchOrgUserRoles(orgGuid);
+    userActions.fetchOrgUsers(orgGuid);
+    userActions.fetchOrgUserRoles(orgGuid);
+    userActions.fetchSpaceUsers(spaceGuid);
   }
   ReactDOM.render(
     <App>

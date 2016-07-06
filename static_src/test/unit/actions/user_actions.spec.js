@@ -2,7 +2,8 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import { assertAction, setupViewSpy, setupServerSpy } from '../helpers.js';
+import { assertAction, setupViewSpy, setupUISpy, setupServerSpy } from
+  '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import userActions from '../../../actions/user_actions.js';
 import { userActionTypes } from '../../../constants.js';
@@ -70,7 +71,7 @@ describe('userActions', function() {
           expectedParams = {
             users: expected
           };
-      
+
       let spy = setupServerSpy(sandbox)
 
       userActions.receivedOrgUsers(expected);
@@ -103,7 +104,7 @@ describe('userActions', function() {
           expectedParams = {
             users: expected
           };
-      
+
       let spy = setupServerSpy(sandbox)
 
       userActions.receivedSpaceUsers(expected);
@@ -121,7 +122,7 @@ describe('userActions', function() {
             userGuid: expectedUserGuid,
             orgGuid: expectedOrgGuid
           };
-          
+
       let spy = setupViewSpy(sandbox)
 
       userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
@@ -139,7 +140,7 @@ describe('userActions', function() {
             userGuid: expectedUserGuid,
             orgGuid: expectedOrgGuid
           };
-          
+
       let spy = setupServerSpy(sandbox)
 
       userActions.deletedUser(expectedUserGuid, expectedOrgGuid);
@@ -156,7 +157,7 @@ describe('userActions', function() {
             userGuid: expectedUserGuid,
             error: expectedError
           };
-          
+
       let spy = setupServerSpy(sandbox)
 
       userActions.errorRemoveUser(expectedUserGuid, expectedError);
@@ -166,7 +167,7 @@ describe('userActions', function() {
   });
 
   describe('addUserRoles()', function() {
-    it(`should call a view action to add user roles with current roles 
+    it(`should call a view action to add user roles with current roles
         user guid and guid and type`, function() {
       var expectedRole = 'org_manager',
           expectedUserGuid = 'akdfjadzxcvzxcvzxvzx',
@@ -179,7 +180,7 @@ describe('userActions', function() {
         resourceGuid: expectedGuid,
         resourceType: expectedType
       };
-          
+
       let spy = setupViewSpy(sandbox)
 
       userActions.addUserRoles(
@@ -204,7 +205,7 @@ describe('userActions', function() {
         userGuid: expectedUserGuid,
         resourceType: expectedType
       };
-          
+
       let spy = setupServerSpy(sandbox)
 
       userActions.addedUserRoles(
@@ -217,7 +218,7 @@ describe('userActions', function() {
   });
 
   describe('deleteUserRoles()', function() {
-    it(`should call a view action to remove user roles with current roles 
+    it(`should call a view action to remove user roles with current roles
         user guid and org guid and type`, function() {
       var expectedRole = 'org_manager',
           expectedUserGuid = 'akdfjasdfjasdfadzxcvzxcvzxvzx',
@@ -230,7 +231,7 @@ describe('userActions', function() {
         resourceGuid: expectedGuid,
         resourceType: expectedType
       };
-          
+
       let spy = setupViewSpy(sandbox)
 
       userActions.deleteUserRoles(
@@ -255,7 +256,7 @@ describe('userActions', function() {
         userGuid: expectedUserGuid,
         resourceType: expectedType
       };
-          
+
       let spy = setupServerSpy(sandbox)
 
       userActions.deletedUserRoles(
@@ -264,6 +265,22 @@ describe('userActions', function() {
         expectedType);
 
       assertAction(spy, userActionTypes.USER_ROLES_DELETED, expectedParams);
+    });
+  });
+
+  describe('changeCurrentlyViewedType()', function() {
+    it('should call a ui action for changing currently viewed type', function() {
+      var expectedUserType = 'space',
+          expectedParams = {
+            userType: expectedUserType
+          };
+
+      let spy = setupUISpy(sandbox);
+
+      userActions.changeCurrentlyViewedType(expectedUserType);
+
+      assertAction(spy, userActionTypes.USER_CHANGE_VIEWED_TYPE,
+        expectedParams);
     });
   });
 });

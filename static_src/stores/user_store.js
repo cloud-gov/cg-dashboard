@@ -11,10 +11,18 @@ import cfApi from '../util/cf_api.js';
 import userActions from '../actions/user_actions.js';
 import { userActionTypes } from '../constants.js';
 
+// TODO why is this role mapping needed?
 const resourceToRole = {
-  managers: 'org_manager',
-  billing_managers: 'billing_manager',
-  auditors: 'org_auditor'
+  space: {
+    managers: 'space_manager',
+    developers: 'space_developer',
+    auditors: 'space_auditor'
+  },
+  org: {
+    managers: 'org_manager',
+    billing_managers: 'billing_manager',
+    auditors: 'org_auditor'
+  }
 };
 
 class UserStore extends BaseStore {
@@ -22,6 +30,7 @@ class UserStore extends BaseStore {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = new Immutable.List();
+    this._currentViewedType = 'space_users';
     this._error = null;
   }
 
@@ -54,7 +63,7 @@ class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_ADD: {
         const apiMethodMap = {
-          organization: cfApi.putOrgUserPermissions,
+          org: cfApi.putOrgUserPermissions,
           space: cfApi.putSpaceUserPermissions
         };
         const api = apiMethodMap[action.resourceType];
@@ -67,7 +76,7 @@ class UserStore extends BaseStore {
           userActions.addedUserRoles(
             action.roles,
             action.userGuid,
-            action.resouceType);
+            action.resourceType);
         }).catch((err) => {
           window.console.error(err);
         });
@@ -77,10 +86,11 @@ class UserStore extends BaseStore {
       case userActionTypes.USER_ROLES_ADDED: {
         const user = this.get(action.userGuid);
         if (user) {
-          const role = resourceToRole[action.roles] || action.roles;
-          if (user.organization_roles &&
-              user.organization_roles.indexOf(role) === -1) {
-            user.organization_roles.push(role);
+          const role = this.getResourceToRole(action.roles, action.resourceType);
+          const userRole = (action.resourceType === 'space') ? user.space_roles :
+            user.organization_roles;
+          if (userRole && userRole.indexOf(role) === -1) {
+            userRole.push(role);
           }
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
@@ -91,7 +101,7 @@ class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_DELETE: {
         const apiMethodMap = {
-          organization: cfApi.deleteOrgUserPermissions,
+          org: cfApi.deleteOrgUserPermissions,
           space: cfApi.deleteSpaceUserPermissions
         };
         const api = apiMethodMap[action.resourceType];
@@ -114,11 +124,12 @@ class UserStore extends BaseStore {
       case userActionTypes.USER_ROLES_DELETED: {
         const user = this.get(action.userGuid);
         if (user) {
-          const role = resourceToRole[action.roles] || action.roles;
-          const idx = user.organization_roles &&
-            user.organization_roles.indexOf(role);
+          const role = this.getResourceToRole(action.roles, action.resourceType);
+          const userRole = (action.resourceType === 'space') ? user.space_roles :
+            user.organization_roles;
+          const idx = userRole && userRole.indexOf(role);
           if (idx > -1) {
-            user.organization_roles.splice(idx, 1);
+            userRole.splice(idx, 1);
           }
 
           this.merge('guid', user, (changed) => {
@@ -178,6 +189,14 @@ class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_CHANGE_VIEWED_TYPE: {
+        if (this._currentViewedType !== action.userType) {
+          this._currentViewedType = action.userType;
+          this.emitChange();
+        }
+        break;
+      }
+
       default:
         break;
     }
@@ -202,6 +221,18 @@ class UserStore extends BaseStore {
 
   getError() {
     return this._error;
+  }
+
+  getResourceToRole(resource, resourceType) {
+    if (resourceType !== 'space' && resourceType !== 'org') {
+      throw new Error(`unknown resource type ${resourceType}`);
+    }
+    const role = resourceToRole[resourceType][resource] || resource;
+    return role;
+  }
+
+  get currentlyViewedType() {
+    return this._currentViewedType;
   }
 
 }
