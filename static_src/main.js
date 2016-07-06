@@ -16,6 +16,7 @@ import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
 import routeActions from './actions/route_actions.js';
 import serviceActions from './actions/service_actions.js';
+import spaceActions from './actions/space_actions.js';
 import Space from './components/space.jsx';
 import SpaceList from './components/space_list.jsx';
 import { trackPageView } from './util/analytics.js';
@@ -47,7 +48,7 @@ function space(orgGuid, spaceGuid, potentialPage) {
   orgActions.changeCurrentOrg(orgGuid);
   // TODO what happens if the space arrives before the changelistener is added?
   cfApi.fetchOrg(orgGuid);
-  cfApi.fetchSpace(spaceGuid);
+  spaceActions.fetch(spaceGuid);
   // TODO use constant
   if (potentialPage === 'users') {
     userActions.fetchOrgUsers(orgGuid);
