@@ -28,7 +28,7 @@ export class Nav extends React.Component {
     this.state = {
       currentOrg: OrgStore.get(this.props.initialCurrentOrgGuid),
       currentSpace: SpaceStore.get(this.props.initialSpaceGuid),
-      orgs: []
+      orgs: OrgStore.getAll() || []
     };
     this._onChange = this._onChange.bind(this);
     this._handleOverviewClick = this._handleOverviewClick.bind(this);
@@ -49,7 +49,7 @@ export class Nav extends React.Component {
   }
 
   _handleOverviewClick() {
-    orgActions.toggleSpaceMenu('0');
+    // orgActions.changeCurrentOrg('0');
     spaceActions.changeCurrentSpace('0');
   }
 
@@ -80,7 +80,6 @@ export class Nav extends React.Component {
   }
 
   isCurrentSpace(spaceGuid) {
-    console.log('is current space', this.state);
     if (!this.state.currentSpace) return false;
     if (this.state.currentSpace.guid === spaceGuid) return true;
     return false;
@@ -120,7 +119,7 @@ export class Nav extends React.Component {
       <div className={ classNames('test-nav-primary') }>
         <ul className={ mainList }>
           <li key="overview" className={cgSidenavStyles['sidenav-entity']}>
-            <a href="/#">Overview</a>
+            <a href="/#" onClick={this._handleOverviewClick}>Overview</a>
           </li>
           <li key="organizations" className={classNames(
               cgSidenavStyles['sidenav-header'])}>
