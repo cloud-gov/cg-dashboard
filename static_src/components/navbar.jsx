@@ -7,12 +7,15 @@ import cgSidenavStyles from 'cloudgov-style/css/components/sidenav.css';
 
 import orgActions from '../actions/org_actions.js';
 import OrgStore from '../stores/org_store.js';
+import SpaceStore from '../stores/space_store.js';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
+  const currentSpaceGuid = SpaceStore.currentSpaceGuid;
 
   return {
     currentOrg: OrgStore.get(currentOrgGuid),
+    currentSpace: SpaceStore.get(currentSpaceGuid),
     orgs: OrgStore.getAll()
   };
 }
@@ -23,6 +26,7 @@ export class Nav extends React.Component {
     this.props = props;
     this.state = {
       currentOrg: OrgStore.get(this.props.initialCurrentOrgGuid),
+      currentSpace: SpaceStore.get(this.props.initialSpaceGuid),
       orgs: []
     };
     this._onChange = this._onChange.bind(this);
@@ -30,10 +34,12 @@ export class Nav extends React.Component {
 
   componentDidMount() {
     OrgStore.addChangeListener(this._onChange);
+    SpaceStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     OrgStore.removeChangeListener(this._onChange);
+    SpaceStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
@@ -64,6 +70,13 @@ export class Nav extends React.Component {
 
   spaceHref(org, spaceGuid) {
     return this.orgSubHref(org, `/spaces/${spaceGuid}`);
+  }
+
+  isCurrentSpace(spaceGuid) {
+    console.log('is current space', this.state);
+    if (!this.state.currentSpace) return false;
+    if (this.state.currentSpace.guid === spaceGuid) return true;
+    return false;
   }
 
   render() {
@@ -127,8 +140,10 @@ export class Nav extends React.Component {
                   </a>
                   <ul className={ thirdList }>
                     { org.spaces.map((space) => {
+                      let activeSpaceClasses = (this.isCurrentSpace(space.guid)) ?
+                          cgSidenavStyles['sidenav-active'] : '';
                       return (
-                        <li key={ space.guid }>
+                        <li key={ space.guid } className={activeSpaceClasses}>
                           <a href={ this.spaceHref(org, space.guid) }>
                             <span>{ space.name }</span>
                           </a>
@@ -151,8 +166,10 @@ export class Nav extends React.Component {
 }
 Nav.propTypes = {
   subLinks: React.PropTypes.array,
-  initialCurrentOrgGuid: React.PropTypes.string
-}
+  initialCurrentOrgGuid: React.PropTypes.string,
+  initialSpaceGuid: React.PropTypes.string
+};
 Nav.defaultProps = {
-  initialCurrentOrgGuid: '0'
+  initialCurrentOrgGuid: '0',
+  initialSpaceGuid: '0'
 };

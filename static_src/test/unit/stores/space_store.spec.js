@@ -88,7 +88,7 @@ describe('SpaceStore', function() {
   });
 
   describe('on space change current', function() {
-    it('should emit a change event if space exists', function() {
+    it('should emit a change event', function() {
       const spaceGuid = 'zcxvadsjfcvbnm';
       const space = {
         guid: spaceGuid
@@ -96,7 +96,7 @@ describe('SpaceStore', function() {
       let spy = sandbox.spy(SpaceStore, 'emitChange');
 
       spaceActions.changeCurrentSpace(spaceGuid);
-      expect(spy).not.toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledOnce();
 
       SpaceStore.push(space);
       spy.reset();
@@ -107,12 +107,8 @@ describe('SpaceStore', function() {
     it('should should change the current space to the passed in guid',
         function() {
       const spaceGuid = 'zcxvadsjfcvbnm';
-      const space = {
-        guid: spaceGuid
-      };
 
       SpaceStore._currentSpaceGuid = 'adskfjxvb';
-      SpaceStore.push(space);
 
       spaceActions.changeCurrentSpace(spaceGuid);
 
