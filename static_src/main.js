@@ -10,6 +10,7 @@ import App from './app.jsx';
 import AppPage from './components/app_page.jsx';
 import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
+import Home from './components/home.jsx';
 import Login from './components/login.jsx';
 import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
@@ -28,8 +29,7 @@ function login() {
 
 function dashboard() {
   ReactDOM.render(<App>
-    <h3>Welcome to CF-Deck</h3>
-    <h5>Pick an organization to get started</h5>
+    <Home/>
   </App>, mainEl);
 }
 
