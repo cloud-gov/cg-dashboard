@@ -117,4 +117,39 @@ describe('SpaceStore', function() {
       expect(actual).toEqual(spaceGuid);
     });
   });
+
+  describe('on space change current', function() {
+    it('should emit a change event if space exists', function() {
+      const spaceGuid = 'zcxvadsjfcvbnm';
+      const space = {
+        guid: spaceGuid
+      };
+      let spy = sandbox.spy(SpaceStore, 'emitChange');
+
+      spaceActions.changeCurrentSpace(spaceGuid);
+      expect(spy).not.toHaveBeenCalledOnce();
+
+      SpaceStore.push(space);
+      spy.reset();
+      spaceActions.changeCurrentSpace(spaceGuid);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should should change the current space to the passed in guid',
+        function() {
+      const spaceGuid = 'zcxvadsjfcvbnm';
+      const space = {
+        guid: spaceGuid
+      };
+
+      SpaceStore._currentSpaceGuid = 'adskfjxvb';
+      SpaceStore.push(space);
+
+      spaceActions.changeCurrentSpace(spaceGuid);
+
+      const actual = SpaceStore.currentSpaceGuid;
+
+      expect(actual).toEqual(spaceGuid);
+    });
+  });
 });
