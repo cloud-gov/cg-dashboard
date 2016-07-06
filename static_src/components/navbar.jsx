@@ -157,10 +157,10 @@ export class Nav extends React.Component {
                         </li>
                       );
                     })}
+                    <li className={cgSidenavStyles['marketplace']}>
+                      <a href={ this.marketplaceHref(org) }>Marketplace</a>
+                    </li>
                   </ul>
-                </li>
-                <li className={ subMenu }>
-                  <a href={ this.marketplaceHref(org) }>Marketplace</a>
                 </li>
               </ul>
             </li>
