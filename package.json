@@ -2,7 +2,7 @@
   "name": "tests",
   "version": "1.0.0",
   "description": "test suite",
-  "main": "null",
+  "main": "cloudgov dashboard",
   "scripts": {
     "codecov": "cat ./coverage/coverage-final.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "postinstall": "./node_modules/bower/bin/bower install",
