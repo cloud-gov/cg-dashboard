@@ -11,8 +11,7 @@ script:
 - go test ./...
 branches:
   only:
-  - master
-  - production
+  - deprecated
 before_deploy:
 - export BUILD_INFO=build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d-%H-%M-%S")-$TRAVIS_BUILD_NUMBER
 # Extract any encrypted env vars and put them into the manifests/manifest-master.yml
@@ -42,8 +41,7 @@ deploy:
   script: deploy/travis_deploy.sh
   on:
     branch:
-    - master
-    - production
+      - deprecated
 env:
   global:
   - CF_API=https://api.cloud.gov
