@@ -24,25 +24,27 @@ class OrgStore extends BaseStore {
     switch (action.type) {
       case orgActionTypes.ORG_FETCH: {
         cfApi.fetchOrg(action.orgGuid);
+        this.fetching = true;
         break;
       }
 
       case orgActionTypes.ORGS_FETCH: {
         AppDispatcher.waitFor([LoginStore.dispatchToken]);
         cfApi.fetchOrgs();
+        this.fetching = true;
         break;
       }
 
       case orgActionTypes.ORG_RECEIVED: {
+        this.fetching = false;
         if (action.org) {
-          this.merge('guid', action.org, (changed) => {
-            if (changed) this.emitChange();
-          });
+          this.merge('guid', action.org, () => {});
         }
         break;
       }
 
       case orgActionTypes.ORGS_RECEIVED: {
+        this.fetching = false;
         const updates = this.formatSplitResponse(action.orgs).map((d) => {
           if (d.spaces) {
             return d;
@@ -51,13 +53,12 @@ class OrgStore extends BaseStore {
         });
         cfApi.fetchOrgsSummaries(updates.map((u) => u.guid));
 
-        this.mergeMany('guid', updates, (changed) => {
-          if (changed) this.emitChange();
-        });
+        this.mergeMany('guid', updates, () => {});
         break;
       }
 
       case orgActionTypes.ORGS_SUMMARIES_RECEIVED: {
+        this.fetching = false;
         this.mergeMany('guid', action.orgs, (changed) => {
           if (changed) this.emitChange();
         });
