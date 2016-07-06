@@ -54,7 +54,7 @@ export default class App extends React.Component {
     if (this.state.isLoggedIn) {
       content = this.props.children;
       sidebar = <Nav
-        initialCurrentOrgGuid={ this.props.currentOrgGuid }
+        initialtOrgGuid={ this.props.initialOrgGuid }
         initialSpaceGuid={ this.props.initialSpaceGuid }
       />;
     } else {
@@ -82,12 +82,12 @@ export default class App extends React.Component {
 }
 App.propTypes = {
   children: React.PropTypes.any,
-  currentOrgGuid: React.PropTypes.string,
+  initialOrgGuid: React.PropTypes.string,
   initialSpaceGuid: React.PropTypes.string
 };
 
 App.defaultProps = {
   children: [],
-  currentOrgGuid: '0',
+  initialOrgGuid: '0',
   initialSpaceGuid: '0'
 };

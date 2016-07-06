@@ -26,7 +26,7 @@ export class Nav extends React.Component {
     super(props);
     this.props = props;
     this.state = {
-      currentOrg: OrgStore.get(this.props.initialCurrentOrgGuid),
+      currentOrg: OrgStore.get(this.props.initialOrgGuid),
       currentSpace: SpaceStore.get(this.props.initialSpaceGuid),
       orgs: OrgStore.getAll() || []
     };
@@ -49,7 +49,6 @@ export class Nav extends React.Component {
   }
 
   _handleOverviewClick() {
-    // orgActions.changeCurrentOrg('0');
     orgActions.toggleSpaceMenu('0');
     spaceActions.changeCurrentSpace('0');
   }
@@ -173,10 +172,10 @@ export class Nav extends React.Component {
 }
 Nav.propTypes = {
   subLinks: React.PropTypes.array,
-  initialCurrentOrgGuid: React.PropTypes.string,
+  initialOrgGuid: React.PropTypes.string,
   initialSpaceGuid: React.PropTypes.string
 };
 Nav.defaultProps = {
-  initialCurrentOrgGuid: '0',
+  initialOrgGuid: '0',
   initialSpaceGuid: '0'
 };

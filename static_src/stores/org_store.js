@@ -76,15 +76,15 @@ class OrgStore extends BaseStore {
         const org = this.get(action.orgGuid);
         if (!org) {
           const allOrgs = this.getAll();
-          const updates = allOrgs.map((sorg) =>
-            Object.assign({}, sorg, { space_menu_open: false })
+          const updates = allOrgs.map((updatedOrg) =>
+            Object.assign({}, updatedOrg, { space_menu_open: false })
           );
           this.mergeMany('guid', updates, (changed) => {
             if (changed) this.emitChange();
           });
           break;
         }
-        const otherOrgs = this.getAll().filter((sorg) => sorg.guid !== org.guid);
+        const otherOrgs = this.getAll().filter((otherOrg) => otherOrg.guid !== org.guid);
         const open = org.space_menu_open || false;
         const toUpdate = Object.assign(org, { space_menu_open: !open });
         const allUpdates = otherOrgs.map((otherOrg) =>
