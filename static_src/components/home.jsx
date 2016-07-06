@@ -35,7 +35,7 @@ export default class Home extends React.Component {
           <p>This Dashboard is a good way to get an overview of your organizations, spaces, and applications. For full management and deployment of applications, use the <a href="https://docs.cloud.gov/getting-started/setup/">command line interface</a>.
           </p>
 
-          <h3>Cheatsheet</h3>
+          <h3 style={ {marginBottom: '0.5rem' }}>Cheatsheet</h3>
           <section className={ this.styler('usa-width-one-half') }>
             <h4>A few things you can do here</h4>
             <ul>
@@ -44,7 +44,8 @@ export default class Home extends React.Component {
               <li>Create service instances for your spaces.</li>
             </ul>
           </section>
-          <section className={ this.styler('usa-width-one-half') }>
+          <section className={ this.styler('usa-width-one-half') }
+            style={{ width: '45.82117%' }}>
             <h4>Basic cloud.gov structure</h4>
             <ul>
             <li><strong>Organization:</strong> Each org is a <a href="https://docs.cloud.gov/intro/terminology/pricing-terminology/">system</a> (<a href="https://docs.cloud.gov/getting-started/concepts/">shared perimeter</a>) that contains <a href="https://docs.cloud.gov/intro/pricing/system-stuffing/">related spaces holding related applications</a>.
@@ -55,7 +56,8 @@ export default class Home extends React.Component {
               </li>
             </ul>
           </section>
-          <section className={ this.styler('usa-width-one-half') }>
+          <section className={ this.styler('usa-width-one-half') }
+            style={{marginTop: '-4rem'}}>
             <h4>Looking at an empty sandbox?</h4>
             <p><a href="https://docs.cloud.gov/getting-started/your-first-deploy/">Try making a “hello world” app</a>.</p>
           </section>
