@@ -26,9 +26,9 @@ export class Nav extends React.Component {
     super(props);
     this.props = props;
     this.state = {
-      currentOrg: OrgStore.get(this.props.initialOrgGuid),
+      currentOrg: OrgStore.get(this.props.initialCurrentOrgGuid),
       currentSpace: SpaceStore.get(this.props.initialSpaceGuid),
-      orgs: OrgStore.getAll() || []
+      orgs: []
     };
     this._onChange = this._onChange.bind(this);
     this._handleOverviewClick = this._handleOverviewClick.bind(this);
@@ -80,6 +80,7 @@ export class Nav extends React.Component {
   }
 
   isCurrentSpace(spaceGuid) {
+    console.log('is current space', this.state);
     if (!this.state.currentSpace) return false;
     if (this.state.currentSpace.guid === spaceGuid) return true;
     return false;
@@ -172,10 +173,10 @@ export class Nav extends React.Component {
 }
 Nav.propTypes = {
   subLinks: React.PropTypes.array,
-  initialOrgGuid: React.PropTypes.string,
+  initialCurrentOrgGuid: React.PropTypes.string,
   initialSpaceGuid: React.PropTypes.string
 };
 Nav.defaultProps = {
-  initialOrgGuid: '0',
+  initialCurrentOrgGuid: '0',
   initialSpaceGuid: '0'
 };

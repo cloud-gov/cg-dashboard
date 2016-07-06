@@ -51,13 +51,8 @@ class SpaceStore extends BaseStore {
       }
 
       case spaceActionTypes.SPACE_CHANGE_CURRENT: {
-        const foundSpace = this.get(action.spaceGuid);
-        if (foundSpace) {
-          if (this._currentSpaceGuid !== action.spaceGuid) {
-            this._currentSpaceGuid = action.spaceGuid;
-            this.emitChange();
-          }
-        }
+        this._currentSpaceGuid = action.spaceGuid;
+        this.emitChange();
         break;
       }
 
