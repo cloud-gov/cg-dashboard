@@ -84,7 +84,12 @@ export default class Space extends React.Component {
     return (
       <div>
         <div>
-          <h2>{ this.state.space.name } Space of the { this.state.currentOrg.name } Organization</h2>
+          <h2>
+            <strong>{this.state.space.name}</strong> space in your <strong>{ this.state.currentOrg.name }</strong> organization
+          </h2>
+          <p><em>
+            Each <a href="https://docs.cloud.gov/getting-started/concepts/">space</a> provides an environment for related applications (<a href="https://docs.cloud.gov/intro/overview/using-cloudgov-paas/">example use</a>).
+          </em></p>
         </div>
         { tabNav }
         <div>

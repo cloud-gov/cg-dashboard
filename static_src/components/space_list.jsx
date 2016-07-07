@@ -82,7 +82,10 @@ export default class SpaceList extends React.Component {
     return (
       <div>
         <div>
-          <h2>{ this.title }  Spaces</h2>
+          <h2>All spaces in your <strong>{this.title}</strong> organization</h2>
+          <p><em>
+          Each organization is a <a href="https://docs.cloud.gov/intro/terminology/pricing-terminology/">system</a> (<a href="https://docs.cloud.gov/getting-started/concepts/">shared perimeter</a>) that contains <a href="https://docs.cloud.gov/intro/pricing/system-stuffing/">related spaces holding related applications</a>.
+          </em></p>
         </div>
         <div className={ this.styler('tableWrapper') }>
           { content }
