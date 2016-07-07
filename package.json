@@ -5,7 +5,7 @@
     "node": "4.2.3",
     "npm": "2.14.x"
   },
-  "description": "A web console for managing Cloud Foundry apps",
+  "description": "A web dashboard for managing Cloud Foundry apps",
   "main": "null",
   "scripts": {
     "build": "npm run clean && node_modules/webpack/bin/webpack.js",
