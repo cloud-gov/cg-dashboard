@@ -5,7 +5,7 @@ go:
 services:
   - docker
 before_install:
-- rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+- nvm install
 - npm install
 - npm run build
 - pip install --user ruamel.yaml
@@ -54,7 +54,6 @@ deploy:
     - deprecated
 env:
   global:
-  - TRAVIS_NODE_VERSION="4.2.3"
   - CF_API=https://api.cloud.gov
   - CF_ORGANIZATION=cf
   - CONSOLE_UAA_URL=https://uaa.cloud.gov/
