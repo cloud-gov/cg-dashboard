@@ -4809,9 +4809,9 @@
       "resolved": "https://registry.npmjs.org/classnames/-/classnames-2.2.3.tgz"
     },
     "cloudgov-style": {
-      "version": "0.7.0",
-      "from": "cloudgov-style@0.7.0",
-      "resolved": "https://registry.npmjs.org/cloudgov-style/-/cloudgov-style-0.7.0.tgz",
+      "version": "0.7.1",
+      "from": "cloudgov-style@0.7.1",
+      "resolved": "https://registry.npmjs.org/cloudgov-style/-/cloudgov-style-0.7.1.tgz",
       "dependencies": {
         "uswds": {
           "version": "0.9.1",
@@ -4938,9 +4938,16 @@
               "resolved": "https://registry.npmjs.org/jquery/-/jquery-2.2.4.tgz"
             },
             "politespace": {
-              "version": "0.1.12",
+              "version": "0.1.13",
               "from": "politespace@>=0.1.4 <0.2.0",
-              "resolved": "https://registry.npmjs.org/politespace/-/politespace-0.1.12.tgz"
+              "resolved": "https://registry.npmjs.org/politespace/-/politespace-0.1.13.tgz",
+              "dependencies": {
+                "jquery": {
+                  "version": "3.0.0",
+                  "from": "jquery@>=3.0.0 <4.0.0",
+                  "resolved": "https://registry.npmjs.org/jquery/-/jquery-3.0.0.tgz"
+                }
+              }
             }
           }
         }
