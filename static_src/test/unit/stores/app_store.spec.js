@@ -14,7 +14,7 @@ describe('AppStore', function() {
 
   beforeEach(() => {
     AppStore._data = Immutable.List();
-    AppStore.fetching = false;
+    AppStore._fetching = false;
     sandbox = sinon.sandbox.create();
   });
 
