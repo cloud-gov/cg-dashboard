@@ -1,8 +1,8 @@
 ---
 inherit: manifest-base.yml
 applications:
-- name: cf-deck
+- name: cg-dashboard
   memory: 256M
-  host: console
+  host: dashboard
   env:
-    CONSOLE_HOSTNAME: https://console.cloud.gov
+    CONSOLE_HOSTNAME: https://dashboard.cloud.gov
