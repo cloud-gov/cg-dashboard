@@ -477,6 +477,45 @@ describe('UserStore', function() {
     });
   });
 
+  describe('currentUserHasOrgRole()', function() {
+    it('should return false if user not found', function() {
+      const role = 'test';
+      UserStore._currentUserGuid = 'alkdsjf';
+      const actual = UserStore.currentUserHasOrgRole(role);
+
+      expect(actual).toBeFalsy();
+    });
+
+    it('should return false if user doesn\'t have role', function() {
+      const userGuid = 'adfadsfa';
+      const user = { guid: userGuid, user_name: 'poop', organization_roles: [
+        'iron_throne_manager']};
+      const role = 'vale_manager';
+
+      UserStore._currentUserGuid = userGuid;
+      UserStore.push(user);
+
+      const actual = UserStore.currentUserHasOrgRole(role);
+
+      expect(actual).toBeFalsy();
+    });
+
+    it('should true if it finds the role on the user', function() {
+      const role = 'highgarden_manager';
+      const userGuid = 'adfadsfa';
+      const user = { guid: userGuid, user_name: 'poop', organization_roles: [
+        'iron_throne_manager', role]};
+
+      UserStore._currentUserGuid = userGuid;
+      UserStore.push(user);
+
+      const actual = UserStore.currentUserHasOrgRole(role);
+
+      expect(actual).toBeTruthy();
+
+    });
+  });
+
   describe('getAllInOrg()', function() {
     it('should find all users that have the org guid passed in', function() {
       var orgGuid = 'asdfa';

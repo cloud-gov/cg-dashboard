@@ -250,6 +250,12 @@ class UserStore extends BaseStore {
     return this._currentViewedType;
   }
 
+  currentUserHasOrgRole(role) {
+    const user = this.currentUser;
+    if (!user) return false;
+    return !!(user.organization_roles.find((orgRole) => orgRole === role));
+  }
+
   get currentUser() {
     return this.get(this._currentUserGuid);
   }
