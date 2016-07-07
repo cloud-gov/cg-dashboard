@@ -48,15 +48,6 @@ deploy:
   skip_cleanup: true
   script: deploy/travis_deploy.sh
   on:
-    branch:
-    - master
-    - staging
-    - deprecated
-deploy:
-- provider: script
-  skip_cleanup: true
-  script: deploy/travis_deploy.sh
-  on:
     tags: true
 env:
   global:
