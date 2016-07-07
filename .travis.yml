@@ -48,6 +48,7 @@ deploy:
   skip_cleanup: true
   script: deploy/travis_deploy.sh
   on:
+    tags: true
     branch:
     - master
     - staging
