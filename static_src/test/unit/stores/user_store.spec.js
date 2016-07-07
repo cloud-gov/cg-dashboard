@@ -15,6 +15,7 @@ describe('UserStore', function() {
 
   beforeEach(() => {
     UserStore._data = Immutable.List();
+    UserStore._currentUserGuid = null;
     sandbox = sinon.sandbox.create();
   });
 
@@ -429,6 +430,36 @@ describe('UserStore', function() {
 
     it('should change currentlyViewedType to whatever is passed in', function() {
 
+    });
+  });
+
+  describe('on current user info received', function() {
+    it('should emit a change event if user found', function() {
+      const userGuid = 'zxsdkfjasdfladsf';
+      const user = { user_id: userGuid, user_name: 'mr' };
+      const existingUser = { guid: userGuid };
+      const spy = sandbox.spy(UserStore, 'emitChange');
+      userActions.receivedCurrentUserInfo(user);
+
+      expect(spy).not.toHaveBeenCalled();
+
+      UserStore._data = Immutable.fromJS([existingUser]);
+      userActions.receivedCurrentUserInfo(user);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should set the currentUser to user object if exists', function() {
+      const userGuid = 'zxsdkfjasdfladsf';
+      const currentUserInfo = { user_id: userGuid, user_name: 'mr' };
+      const existingUser = { guid: userGuid };
+      UserStore._data = Immutable.fromJS([existingUser]);
+
+      userActions.receivedCurrentUserInfo(currentUserInfo);
+
+      const actual = UserStore.currentUser;
+
+      expect(actual).toEqual(existingUser);
     });
   });
 

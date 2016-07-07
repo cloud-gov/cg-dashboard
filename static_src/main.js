@@ -20,6 +20,7 @@ import serviceActions from './actions/service_actions.js';
 import Space from './components/space.jsx';
 import SpaceList from './components/space_list.jsx';
 import { trackPageView } from './util/analytics.js';
+import uaaApi from './util/uaa_api.js';
 import userActions from './actions/user_actions.js';
 
 const mainEl = document.querySelector('.js-app');
@@ -98,7 +99,9 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
 }
 
 function checkAuth() {
-  cfApi.getAuthStatus();
+  cfApi.getAuthStatus().then(() => {
+    uaaApi.fetchUserInfo();
+  });
   orgActions.fetchAll();
 }
 
