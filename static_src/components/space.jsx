@@ -95,7 +95,8 @@ export default class Space extends React.Component {
           <div role="tabpanel" id={ this.props.currentPage }>
             <Content
               initialOrgGuid={ this.state.currentOrg.guid }
-              initialSpaceGuid={ this.state.currentSpaceGuid }
+              initialSpaceGuid={ this.state.space.guid }
+              intitialApps={ this.state.space.apps || [] }
             />
           </div>
         </div>
