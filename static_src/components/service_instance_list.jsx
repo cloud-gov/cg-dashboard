@@ -5,17 +5,18 @@ import formatDateTime from '../util/format_date';
 
 import createStyler from '../util/create_styler';
 import baseStyle from 'cloudgov-style/css/base.css';
-import tableStyles from 'cloudgov-style/css/base.css';
 
 import Button from './button.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
+import Loading from './loading.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 
 function stateSetter(props) {
   return {
     serviceInstances: ServiceInstanceStore.getAll(),
-    currentSpaceGuid: props.initialSpaceGuid
+    currentSpaceGuid: props.initialSpaceGuid,
+    loading: ServiceInstanceStore.fetching
   };
 }
 
@@ -85,7 +86,9 @@ export default class ServiceInstanceList extends React.Component {
       width: '25%'
     };
 
-    if (this.state.serviceInstances.length) {
+    if (this.state.loading) {
+      content = <Loading text="Loading service instances" />;
+    } else if (this.state.serviceInstances.length) {
       content = (
         <table>
           <thead>

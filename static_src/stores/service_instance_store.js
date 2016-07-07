@@ -33,6 +33,7 @@ class ServiceInstanceStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_INSTANCES_FETCH: {
+        this.fetching = true;
         cfApi.fetchServiceInstances(action.spaceGuid);
         break;
       }
@@ -40,6 +41,7 @@ class ServiceInstanceStore extends BaseStore {
       case serviceActionTypes.SERVICE_INSTANCE_RECEIVED: {
         const instance = this.formatSplitResponse(
           [action.serviceInstance])[0];
+        this.fetching = false;
         this.merge('guid', instance, (changed) => {
           if (changed) this.emitChange();
         });
@@ -49,7 +51,7 @@ class ServiceInstanceStore extends BaseStore {
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
         const services = this.formatSplitResponse(action.serviceInstances);
         this._data = Immutable.fromJS(services);
-        this.emitChange();
+        this.fetching = false;
         break;
       }
 

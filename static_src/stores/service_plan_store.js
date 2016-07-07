@@ -43,6 +43,7 @@ class ServicePlanStore extends BaseStore {
       case serviceActionTypes.SERVICES_RECEIVED: {
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         const services = this.formatSplitResponse(action.services);
+        this.fetching = true;
         for (const service of services) {
           cfApi.fetchAllServicePlans(service.guid);
         }
@@ -50,6 +51,7 @@ class ServicePlanStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_PLANS_FETCH: {
+        this.fetching = true;
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         cfApi.fetchAllServicePlans(action.serviceGuid);
         break;
@@ -60,8 +62,8 @@ class ServicePlanStore extends BaseStore {
           let servicePlans = this.formatSplitResponse(action.servicePlans);
           servicePlans = this.parseJson(servicePlans, 'extra');
 
-          this.mergeMany('guid', servicePlans, (changed) => {
-            if (changed) this.emitChange();
+          this.mergeMany('guid', servicePlans, () => {
+            this.fetching = false;
           });
         }
         break;

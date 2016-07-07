@@ -44,6 +44,17 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on service instances fetch', function() {
+    it('should set fetching to true', function() {
+      ServiceInstanceStore.fetching = false;
+
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
+        spaceGuid: 'fakeguid'
+      });
+
+      expect(ServiceInstanceStore.fetching).toEqual(true);
+    });
+
     it('should fetch service instances from api with space guid', function() {
       var spy = sandbox.spy(cfApi, 'fetchServiceInstances'),
           expectedSpaceGuid = '9998sdfa;dksa';
@@ -87,6 +98,17 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on service instances received', function() {
+    it('should set fetching to false', function() {
+      ServiceInstanceStore.fetching = true;
+
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
+        serviceInstances: []
+      });
+
+      expect(ServiceInstanceStore.fetching).toEqual(false);
+    });
+
     it('should set data to unwrapped, passed in instances', function() {
       var expected = [
         {
@@ -102,17 +124,6 @@ describe('ServiceInstanceStore', function() {
 
       expect(ServiceInstanceStore.getAll().length).toEqual(1);
       expect(ServiceInstanceStore.getAll()).toEqual(expected);
-    });
-
-    it('should emit a change event', function() {
-      var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
-
-      AppDispatcher.handleViewAction({
-        type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
-        serviceInstances: []
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
     });
   });
 

@@ -67,6 +67,17 @@ describe('UserStore', function() {
   });
 
   describe('on org user roles fetch', function() {
+    it('should set fetching to true', function() {
+      UserStore.fetching = false;
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.ORG_USER_ROLES_FETCH,
+        orgGuid: 'axckzvjxcov'
+      });
+
+      expect(UserStore.fetching).toEqual(true);
+    });
+
     it('should fetch org user roles through api', function() {
       var spy = sandbox.spy(cfApi, 'fetchOrgUserRoles'),
           expectedGuid = 'axckzvjxcov';
@@ -83,26 +94,26 @@ describe('UserStore', function() {
   });
 
   describe('on space or org users received', function() {
-    it('should emit a change event if data was updated', function() {
-      var spy = sandbox.spy(UserStore, 'emitChange');
+    it('should set fetching to false on SPACE_USERS_RECEIVED', function() {
+      UserStore.fetching = true;
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.SPACE_USERS_RECEIVED,
         users: wrapInRes([{ guid: 'adsfa' }])
       });
 
-      expect(spy).toHaveBeenCalledOnce();
+      expect(UserStore.fetching).toEqual(false);
     });
 
-    it('should not emit a change if no users was passed in', function() {
-      var spy = sandbox.spy(UserStore, 'emitChange');
+    it('should set fetching to false on ORG_USERS_RECEIVED', function() {
+      UserStore.fetching = true;
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.ORG_USERS_RECEIVED,
         users: []
       });
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(UserStore.fetching).toEqual(false);
     });
 
     it('should merge and update new users with existing users in data',

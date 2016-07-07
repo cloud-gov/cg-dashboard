@@ -54,19 +54,7 @@ describe('OrgStore', () => {
       expect(OrgStore.getAll()).toEqual(unwrapOfRes(expected));
     });
 
-    it('should not emit a change event if data is unchanged', () => {
-      var spy = sandbox.spy(OrgStore, 'emitChange');
-
-      AppDispatcher.handleViewAction({
-        type: orgActionTypes.ORGS_RECEIVED,
-        orgs: []
-      });
-
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('should emit a change event if data has changed', () => {
-      var spy = sandbox.spy(OrgStore, 'emitChange');
+    it('should set fetching to false', () => {
       var expected = wrapInRes([{guid: '1as'}, {guid: '2as'}]);
 
       AppDispatcher.handleViewAction({
@@ -74,7 +62,7 @@ describe('OrgStore', () => {
         orgs: expected
       });
 
-      expect(spy).toHaveBeenCalledOnce();
+      expect(OrgStore.fetching).toEqual(false);
     });
 
     it('should merge data with existing orgs', () => {
@@ -97,6 +85,17 @@ describe('OrgStore', () => {
   });
 
   describe('on org fetch', function() {
+    it('should set fetching to true', function() {
+      expect(OrgStore.fetching).toEqual(false);
+
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORG_FETCH,
+        orgGuid: 'orgGuid'
+      });
+
+      expect(OrgStore.fetching).toEqual(true);
+    });
+
     it('should call the api org fetch function', function() {
       var spy = sandbox.spy(cfApi, 'fetchOrg'),
           expected = 'xsfewq';

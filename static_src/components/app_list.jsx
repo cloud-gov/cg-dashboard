@@ -4,21 +4,21 @@ import React from 'react';
 import Reactable from 'reactable';
 
 import createStyler from '../util/create_styler';
-
+import Loading from './loading.jsx';
 import SpaceStore from '../stores/space_store.js';
 import tableStyles from 'cloudgov-style/css/base.css';
 
-var Table = Reactable.Table,
-    unsafe = Reactable.unsafe;
+const unsafe = Reactable.unsafe;
 
 function stateSetter(props) {
-  var space = SpaceStore.get(props.initialSpaceGuid);
+  const space = SpaceStore.get(props.initialSpaceGuid);
 
   return {
     apps: space && space.apps || [],
     currentOrgGuid: props.initialOrgGuid,
-    currentSpaceGuid: props.initialSpaceGuid
-  }
+    currentSpaceGuid: props.initialSpaceGuid,
+    loading: SpaceStore.fetching
+  };
 }
 
 export default class AppList extends React.Component {
@@ -43,10 +43,6 @@ export default class AppList extends React.Component {
     SpaceStore.removeChangeListener(this._onChange);
   }
 
-  _onChange() {
-    this.setState(stateSetter(this.props));
-  }
-
   appUrl(app) {
     return dedent`/#/org/${ this.state.currentOrgGuid }
             /spaces/${ this.state.currentSpaceGuid }
@@ -58,6 +54,10 @@ export default class AppList extends React.Component {
       const name = unsafe(`<a href="${this.appUrl(app)}">${app.name}</a>`);
       return Object.assign(app, { name });
     });
+  }
+
+  _onChange() {
+    this.setState(stateSetter(this.props));
   }
 
   get columns() {
@@ -72,10 +72,13 @@ export default class AppList extends React.Component {
   }
 
   render() {
-    var content = <h4 className="test-none_message">No apps</h4>;
-    if (this.state.apps.length) {
+    let content = <h4 className="test-none_message">No apps</h4>;
+
+    if (this.state.loading) {
+      content = <Loading text="Loading apps" />;
+    } else if (this.state.apps.length) {
       content = (
-        <table sortable={ true }>
+        <table sortable>
           <thead>
             <tr>
             { this.columns.map((column) => {
@@ -114,7 +117,7 @@ export default class AppList extends React.Component {
       </div>
     );
   }
-};
+}
 
 AppList.propTypes = {
   initialApps: React.PropTypes.array,
@@ -124,4 +127,4 @@ AppList.propTypes = {
 
 AppList.defaultProps = {
   initialApps: []
-}
+};

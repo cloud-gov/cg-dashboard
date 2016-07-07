@@ -487,6 +487,29 @@ describe('cfApi', function() {
     });
   });
 
+  describe('fetchAppAll()', function () {
+    it('should call fetchApp() and fetchAppStats()', function () {
+      const guid = 'shouldCallTwoFnsGuid';
+      const fetchAppSpy = sandbox.stub(cfApi, 'fetchApp');
+      const fetchAppStatsSpy = sandbox.stub(cfApi, 'fetchAppStats');
+
+      cfApi.fetchAppAll(guid);
+
+      expect(fetchAppSpy).toHaveBeenCalledOnce();
+      expect(fetchAppStatsSpy).toHaveBeenCalledOnce();
+    });
+
+    it('should call the receivedAppAll app action', function (done) {
+      const guid = 'shouldCallActionCreatorGuid';
+      const actionCreatorSpy = sandbox.spy(appActions, 'receivedAppAll');
+
+      cfApi.fetchAppAll(guid).then(() => {
+        expect(actionCreatorSpy).toHaveBeenCalled();
+        done();
+      });
+    });
+  });
+
   describe('fetchSpaceUsers()', function() {
     it('should call fetch with spaces user roles url with space guid and the' +
        ' received space users action', function() {

@@ -49,6 +49,15 @@ describe('ServicePlanStore', function() {
 
   });
 
+  describe('on services received', function() {
+    it('should set fetching to true', function() {
+      const services = wrapInRes([{ guid: '3981f', name: 'adlfskzxcv' }]);
+      ServicePlanStore.fetching = false;
+      serviceActions.receivedServices(services);
+      expect(ServicePlanStore.fetching).toEqual(true);
+    });
+  });
+
   describe('on service plans fetch', function() {
     it('should call the cf api for all service plans belonging to the service',
         function() {
@@ -60,6 +69,12 @@ describe('ServicePlanStore', function() {
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];
       expect(arg).toEqual(expectedServiceGuid);
+    });
+
+    it('should set fetching to true', function() {
+      ServicePlanStore.fetching = false;
+      serviceActions.fetchAllPlans('zxncvz8xcvhn32');
+      expect(ServicePlanStore.fetching).toEqual(true);
     });
   });
 
@@ -114,12 +129,11 @@ describe('ServicePlanStore', function() {
       expect(ServicePlanStore.getAll().length).toEqual(1);
     });
 
-    it('should emit a change event', function() {
-      var spy = sandbox.spy(ServicePlanStore, 'emitChange');
-
+    it('should set fetching to false', function() {
+      ServicePlanStore.fetching = true;
       serviceActions.receivedPlans(wrapInRes([{ guid: 'adfklj' }]));
 
-      expect(spy).toHaveBeenCalledOnce();
+      expect(ServicePlanStore.fetching).toEqual(false);
     });
   });
 });
