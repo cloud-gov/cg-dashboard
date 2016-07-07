@@ -15,11 +15,6 @@ install:
 script:
 - npm test
 - "./codecheck.sh -u"
-branches:
-  only:
-  - master
-  - staging
-  - deprecated
 before_deploy:
 - export BUILD_INFO=build::$TRAVIS_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$TRAVIS_BUILD_NUMBER::$(deploy/npm-version.sh)
 # Extract any encrypted env vars and put them into the manifests/manifest-master.yml
