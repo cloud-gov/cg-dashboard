@@ -26,6 +26,7 @@ function stateSetter(currentState) {
 
   return {
     error: UserStore.getError(),
+    currentUserAccess: UserStore.currentUserHasOrgRole('org_manager'),
     currentTab,
     loading: UserStore.fetching,
     users
@@ -41,6 +42,7 @@ export default class Users extends React.Component {
       currentSpaceGuid: props.initialSpaceGuid,
       currentTab: props.initialCurrentTab,
       loading: UserStore.fetching,
+      currentUserAccess: UserStore.currentUserHasOrgRole('org_manager'),
       users: (props.initialCurrentTab === TAB_ORG_NAME) ?
         UserStore.getAllInOrg(props.initialOrgGuid) :
         UserStore.getAllInSpace(props.initialSpaceGuid)
@@ -132,6 +134,7 @@ export default class Users extends React.Component {
     let content = (<UserList
       initialUsers={ this.state.users }
       initialUserType= { this.state.currentTab }
+      initialCurrentUserAccess={ this.state.currentUserAccess }
       onRemove={ removeHandler }
       onAddPermissions={ this.handleAddPermissions }
       onRemovePermissions={ this.handleRemovePermissions }
