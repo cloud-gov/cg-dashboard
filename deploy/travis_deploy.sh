@@ -27,7 +27,6 @@ then
 	CF_MANIFEST="manifests/manifest-deprecated.yml"
 	CF_SPACE="deck-prod"
 else
-then
   exit
 fi
 
