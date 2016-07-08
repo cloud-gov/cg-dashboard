@@ -36,9 +36,10 @@ git clone git@github.com:18F/cg-deck.git cg-deck-ws/src/github.com/18F/cg-deck
 - Create client account:
 ```
 uaac client add <your-client-id> \
- --authorities cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read \
+ --authorities uaa.none \
  --authorized_grant_types authorization_code,client_credentials,refresh_token \
  --scope cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read \
+ --autoapprove true \
 -s <your-client-secret>
 ```
 - Unable to create an account still? Troubleshoot [here](https://docs.cloudfoundry.org/adminguide/uaa-user-management.html#creating-admin-users)
