@@ -17,7 +17,6 @@ import orgActions from './actions/org_actions.js';
 import routeActions from './actions/route_actions.js';
 import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
-import spaceActions from './actions/space_actions.js';
 import Space from './components/space.jsx';
 import SpaceList from './components/space_list.jsx';
 import { trackPageView } from './util/analytics.js';
