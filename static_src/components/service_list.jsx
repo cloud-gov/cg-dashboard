@@ -4,18 +4,12 @@
  */
 
 import React from 'react';
-import Reactable from 'reactable';
 
 import ServicePlanList from './service_plan_list.jsx';
 
 import createStyler from '../util/create_styler';
 import tableStyles from 'cloudgov-style/css/base.css';
 
-var Table = Reactable.Table,
-    Thead = Reactable.Thead,
-    Th = Reactable.Th,
-    Tr = Reactable.Tr,
-    Td = Reactable.Td;
 
 export default class ServiceList extends React.Component {
   constructor(props) {
@@ -28,11 +22,11 @@ export default class ServiceList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({services: nextProps.initialServices});
+    this.setState({ services: nextProps.initialServices });
   }
 
   get columns() {
-    var columns = [
+    const columns = [
       { label: 'Name', key: 'label' },
       { label: 'Description', key: 'description' },
       { label: 'Date Created', key: 'created_at' }
@@ -42,48 +36,47 @@ export default class ServiceList extends React.Component {
   }
 
   get rows() {
-    var rows = this.state.services;
+    const rows = this.state.services;
     return rows;
   }
 
   render() {
-    var content = <h4 className="test-none_message">No services</h4>;
+    let content = <h4 className="test-none_message">No services</h4>;
     if (this.state.services.length) {
       content = (
-      <table>
-        <thead>
-          <tr>
-          { this.columns.map((column) => {
-            return (
+      <div>
+        <table>
+          <thead>
+            <tr>
+            { this.columns.map((column) =>
               <th className={ column.key } key={ column.key }>
                 { column.label }
               </th>
-            )
-          })}
-          </tr>
-        </thead>
-        <tbody>
-        { this.rows.map((row) => {
-          return [
-          <tr key={ row.guid }>
-            { this.columns.map((rowcolumn) => {
-              return (
-                <td key={ rowcolumn.key }><span>
-                  { row[rowcolumn.key] }
-                </span></td>
-              )
-            })}
-          </tr>,
-          <tr colSpan="3">
-            <td colSpan="3">
-            <ServicePlanList initialServiceGuid={ row.guid }
-                initialServicePlans={ row.servicePlans } />
-            </td>
-          </tr>
-          ]
-        })}
-        </tbody>
-      </table>
+            )}
+            </tr>
+          </thead>
+          <tbody>
+          { this.rows.map((row) =>
+            [
+              <tr key={ row.guid }>
+                { this.columns.map((rowcolumn) =>
+                  <td key={ rowcolumn.key }><span>
+                    { row[rowcolumn.key] }
+                  </span></td>
+                )}
+              </tr>,
+              <tr colSpan="3">
+                <td colSpan="3">
+                <ServicePlanList initialServiceGuid={ row.guid }
+                  initialServicePlans={ row.servicePlans }
+                />
+                </td>
+              </tr>
+            ]
+          )}
+          </tbody>
+        </table>
+      </div>
       );
     }
 
@@ -101,4 +94,4 @@ ServiceList.propTypes = {
 
 ServiceList.defaultProps = {
   initialServices: []
-}
+};
