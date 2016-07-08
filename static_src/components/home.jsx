@@ -59,6 +59,8 @@ export default class Home extends React.Component {
             style={{marginTop: '-4rem'}}>
             <h4>Looking at an empty sandbox?</h4>
             <p><a href="https://docs.cloud.gov/getting-started/your-first-deploy/">Try making a “hello world” app</a>.</p>
+            <h4>About this Dashboard</h4>
+            <p>This is an alpha version. You can check out the <a href="https://github.com/18F/cg-deck">source code</a> and <a href="https://github.com/18F/cg-deck/issues">issue tracker</a>.</p>
           </section>
         </div>
       </div>
