@@ -130,16 +130,13 @@ export class Nav extends React.Component {
         { this.state.orgs.map((org) => {
           let toggleSpaceHandler = this._toggleSpacesMenu.bind(this, org.guid);
           let arrowClasses = (org.space_menu_open) ? downArrow : rightArrow;
-          let spacesDisplayStyle = { display: (org.space_menu_open) ? 'block' : 'none' };
           let activeOrgClasses = (org.space_menu_open) ?
             cgSidenavStyles['sidenav-active'] : '';
-          return (
-            <li key={ org.guid } className={ activeOrgClasses }>
-              <a href="#" onClick={ toggleSpaceHandler } >
-                <span>{ org.name }</span>
-                <span className={ arrowClasses }></span>
-              </a>
-              <ul className={ secondList } style={ spacesDisplayStyle }>
+          let subList = <div></div>;
+
+          if (org.space_menu_open) {
+            subList = (
+              <ul className={ secondList }>
                 <li className={ header }>
                   <a href={ this.orgHref(org) }>
                     <span className={cgSidenavStyles['sidenav-header-text']}>
@@ -159,10 +156,20 @@ export class Nav extends React.Component {
                     })}
                   </ul>
                 </li>
-                <li className={cgSidenavStyles['marketplace']}>
+                <li className={cgSidenavStyles.marketplace}>
                   <a href={ this.marketplaceHref(org) }>Marketplace</a>
                 </li>
               </ul>
+            );
+          }
+
+          return (
+            <li key={ org.guid } className={ activeOrgClasses }>
+              <a href="#" onClick={ toggleSpaceHandler } >
+                <span>{ org.name }</span>
+                <span className={ arrowClasses }></span>
+              </a>
+              { subList }
             </li>
           );
         })}

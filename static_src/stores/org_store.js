@@ -49,6 +49,10 @@ class OrgStore extends BaseStore {
           if (d.spaces) {
             return d;
           }
+          const currentSpaces = this.get(d.guid) ? this.get(d.guid).spaces : null;
+          if (currentSpaces) {
+            return Object.assign(d, { spaces: currentSpaces });
+          }
           return Object.assign(d, { spaces: [] });
         });
         cfApi.fetchOrgsSummaries(updates.map((u) => u.guid));
@@ -60,12 +64,17 @@ class OrgStore extends BaseStore {
       case orgActionTypes.ORGS_SUMMARIES_RECEIVED: {
         this.fetching = false;
         this.mergeMany('guid', action.orgs, (changed) => {
-          if (changed) this.emitChange();
+          if (changed) {
+            const orgUpdates = this.updateOpenOrgs(this._currentOrgGuid);
+            this.mergeMany('guid', orgUpdates, () => {});
+            this.emitChange();
+          }
         });
         break;
       }
 
       case orgActionTypes.ORG_CHANGE_CURRENT: {
+        // TODO is this needed anymore or should we use toggle space menu?
         this._currentOrgGuid = action.orgGuid;
         this.emitChange();
 
@@ -73,25 +82,8 @@ class OrgStore extends BaseStore {
       }
 
       case orgActionTypes.ORG_TOGGLE_SPACE_MENU: {
-        const org = this.get(action.orgGuid);
-        if (!org) {
-          const allOrgs = this.getAll();
-          const updates = allOrgs.map((sorg) =>
-            Object.assign({}, sorg, { space_menu_open: false })
-          );
-          this.mergeMany('guid', updates, (changed) => {
-            if (changed) this.emitChange();
-          });
-          break;
-        }
-        const otherOrgs = this.getAll().filter((sorg) => sorg.guid !== org.guid);
-        const open = org.space_menu_open || false;
-        const toUpdate = Object.assign(org, { space_menu_open: !open });
-        const allUpdates = otherOrgs.map((otherOrg) =>
-          Object.assign({}, otherOrg, { space_menu_open: false })
-        );
-        allUpdates.push(toUpdate);
-        this.mergeMany('guid', allUpdates, (changed) => {
+        const updates = this.updateOpenOrgs(action.orgGuid);
+        this.mergeMany('guid', updates, (changed) => {
           if (changed) this.emitChange();
         });
         break;
@@ -104,6 +96,18 @@ class OrgStore extends BaseStore {
 
   get currentOrgGuid() {
     return this._currentOrgGuid;
+  }
+
+  updateOpenOrgs(openOrgGuid) {
+    const allOrgs = this.getAll();
+    const updates = allOrgs.map((org) => {
+      if (org.guid === openOrgGuid) {
+        const alreadyOpen = org.space_menu_open;
+        return Object.assign({}, org, { space_menu_open: !alreadyOpen });
+      }
+      return Object.assign({}, org, { space_menu_open: false });
+    });
+    return updates;
   }
 }
 

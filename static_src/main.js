@@ -37,6 +37,7 @@ function dashboard() {
 
 function org(orgGuid) {
   orgActions.changeCurrentOrg(orgGuid);
+  orgActions.toggleSpaceMenu(orgGuid);
   cfApi.fetchOrg(orgGuid);
   ReactDOM.render(
     <App>
@@ -46,6 +47,7 @@ function org(orgGuid) {
 
 function space(orgGuid, spaceGuid, potentialPage) {
   orgActions.changeCurrentOrg(orgGuid);
+  orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
   // TODO what happens if the space arrives before the changelistener is added?
   cfApi.fetchOrg(orgGuid);
@@ -83,6 +85,8 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   orgActions.fetch(orgGuid);
   serviceActions.fetchAllServices(orgGuid);
   orgActions.changeCurrentOrg(orgGuid);
+  orgActions.toggleSpaceMenu(orgGuid);
+  spaceActions.changeCurrentSpace('0');
   if (serviceGuid && servicePlanGuid) {
     serviceActions.createInstanceForm(serviceGuid, servicePlanGuid);
   }
