@@ -58,7 +58,7 @@ export default class AppPage extends React.Component {
         <div>
           <h2>{ this.state.app.name }</h2>
           <section className={this.styler('section-card')}>
-            <h3>About this</h3>
+            <h3>About this application</h3>
             <table>
               <tbody>
                 <tr>
@@ -102,8 +102,7 @@ export default class AppPage extends React.Component {
             <aside>
               <p>To start or stop an app, follow the <a
                 href="https://docs.cloudfoundry.org/devguide/deploy-apps/deploy-app.html"
-                target="_blank">
-                <span>&nbsp;</span>Cloud Foundry deployment guide.</a>
+                target="_blank">Cloud Foundry deployment guide.</a>
               </p>
             </aside>
           </section>
@@ -113,10 +112,9 @@ export default class AppPage extends React.Component {
           </section>
           <section className={this.styler("section-card")}>
             <h3>Services</h3>
-            <p>To bind or unbind a service instance to an app, follow the<a
+            <p>To bind or unbind a service instance to an app, follow the <a
               href="https://docs.cloud.gov/apps/managed-services/#bind-the-service-instance"
-              target="_blank">
-              <span>&nbsp;</span>managed services guide</a>.
+              target="_blank">managed services guide</a>.
             </p>
           </section>
           <section className={this.styler("section-card")}>

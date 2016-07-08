@@ -68,10 +68,10 @@ export default class UserList extends React.Component {
           Only { this.userTypePretty } Managers have permission to change these roles. To change a role, click a checkbox and wait a moment for the request to process, then see what happens:
         </em></p>
         <ul>
-          <li>If you tried adding a role and this was successful, the checkbox will become checked (and you won’t get an error message).</li>
-          <li>If you tried adding a role but didn’t have permission, the checkbox won’t update.</li>
-          <li>If you tried removing a role and this was successful, the checkbox will become unchecked (and you won’t get an error message).</li>
-          <li>If you tried removing a role but didn’t have permission, the checkbox will become unchecked and you’ll get an error message (“You are not authorized to perform the requested action”).</li>
+          <li><em>If you tried adding a role and this was successful, the checkbox will become checked (and you won’t get an error message).</em></li>
+          <li><em>If you tried adding a role but didn’t have permission, the checkbox won’t update.</em></li>
+          <li><em>If you tried removing a role and this was successful, the checkbox will become unchecked (and you won’t get an error message).</em></li>
+          <li><em>If you tried removing a role but didn’t have permission, the checkbox will become unchecked and you’ll get an error message (“You are not authorized to perform the requested action”).</em></li>
         </ul>
         <p><em>
           <a href="https://github.com/18F/cg-deck/issues/409">We’ll improve this.</a>

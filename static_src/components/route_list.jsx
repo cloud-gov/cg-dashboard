@@ -79,8 +79,7 @@ export default class RouteList extends React.Component {
         <aside>
           <p>To create, modify, or delete a route for an app, follow the <a
             href="https://docs.cloud.gov/apps/custom-domains/#application-routes"
-            target="_blank">
-            <span>&nbsp;</span>application routes</a>.
+            target="_blank">application routes guide</a>.
           </p>
         </aside>
       </div>
