@@ -25,9 +25,8 @@ export default class Home extends React.Component {
           <p className={ this.styler('usa-alert-body') }><em>
             We updated the Deck and renamed it the Dashboard!
             <a href="https://cloud.gov/2016/07/07/deck-update.html"> Here’s what
-            changed and how to give feedback</a>. The old Deck will
-            be available at <a href="https://console.cloud.gov/">
-            console.cloud.gov</a> until July 11.
+            changed and how to give feedback</a> on this alpha version. The <a href="https://console.cloud.gov/">old Deck</a> will
+            be available until July 11.
           </em></p>
         </aside>
         <div className={ this.styler('usa-grid') }>
@@ -60,6 +59,8 @@ export default class Home extends React.Component {
             style={{marginTop: '-4rem'}}>
             <h4>Looking at an empty sandbox?</h4>
             <p><a href="https://docs.cloud.gov/getting-started/your-first-deploy/">Try making a “hello world” app</a>.</p>
+            <h4>About this Dashboard</h4>
+            <p>This is an alpha version. You can check out the <a href="https://github.com/18F/cg-deck">source code</a> and <a href="https://github.com/18F/cg-deck/issues">issue tracker</a>.</p>
           </section>
         </div>
       </div>
