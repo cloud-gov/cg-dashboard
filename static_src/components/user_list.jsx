@@ -50,56 +50,76 @@ export default class UserList extends React.Component {
     return columns;
   }
 
+  get userTypePretty() {
+    return (this.state.userType === 'org_users') ? 'Organization' : 'Space';
+  }
+
   render() {
     let content = <h4 className="test-none_message">No users</h4>;
 
     if (this.state.users.length) {
       content = (
-      <table sortable={ true }>
-        <thead>
-          <tr>
-          { this.columns.map((column) => {
-            return (
+      <div>
+        <p><em>
+        { this.userTypePretty } Managers can change these roles. For details about these roles, see <a href="https://docs.cloudfoundry.org/concepts/roles.html#roles">Cloud Foundry roles and permissions</a>. To invite a new user, see <a href="https://docs.cloud.gov/apps/managing-teammates/">Managing Teammates</a>.
+        </em></p>
+
+        <p><em><strong>To add or remove a role:</strong><br />
+          Only { this.userTypePretty } Managers have permission to change these roles. To change a role, click a checkbox and wait a moment for the request to process, then see what happens:
+        </em></p>
+        <ul>
+          <li>If you tried adding a role and this was successful, the checkbox will become checked (and you won’t get an error message).</li>
+          <li>If you tried adding a role but didn’t have permission, the checkbox won’t update.</li>
+          <li>If you tried removing a role and this was successful, the checkbox will become unchecked (and you won’t get an error message).</li>
+          <li>If you tried removing a role but didn’t have permission, the checkbox will become unchecked and you’ll get an error message (“You are not authorized to perform the requested action”).</li>
+        </ul>
+        <p><em>
+          <a href="https://github.com/18F/cg-deck/issues/409">We’ll improve this.</a>
+        </em></p>
+        <table sortable={ true }>
+          <thead>
+            <tr>
+            { this.columns.map((column) =>
               <th column={ column.label } className={ column.key }
                   key={ column.key }>
                 { column.label }</th>
-            )
-          })}
-          </tr>
-        </thead>
-        <tbody>
-        { this.state.users.map((user) => {
-          var actions;
-          if (this.props.onRemove) {
-            actions = (
-              <td column="Actions">
-                <Button
-                  classes={[this.styler('usa-button-secondary')]}
-                  onClickHandler={ this._handleDelete.bind(this, user.guid) }
-                  label="delete">
-                  <span>Remove User From Org</span>
-                </Button>
-                </td>
-            );
-          }
-          return ([
-            <tr key={ user.guid }>
-              <td column="Name"><span>{ user.username }</span></td>
-              <td column="Permissions" key={ `${user.guid}-role` }>
-                <UserRoleListControl
-                  initialUserType={ this.state.userType }
-                  onAddPermissions={ this.props.onAddPermissions }
-                  onRemovePermissions={ this.props.onRemovePermissions }
-                  user={ user }
-                />
-              </td>
-              <td column="Date Created">{ formatDateTime(user.created_at) }</td>
-              { actions }
+            )}
             </tr>
-          ])
-        })}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+          { this.state.users.map((user) => {
+            let actions;
+            if (this.props.onRemove) {
+              actions = (
+                <td column="Actions">
+                  <Button
+                    classes={[this.styler('usa-button-secondary')]}
+                    onClickHandler={ this._handleDelete.bind(this, user.guid) }
+                    label="delete">
+                    <span>Remove User From Org</span>
+                  </Button>
+                  </td>
+              );
+            }
+            return ([
+              <tr key={ user.guid }>
+                <td column="Name"><span>{ user.username }</span></td>
+                <td column="Permissions" key={ `${user.guid}-role` }>
+                  <UserRoleListControl
+                    initialUserType={ this.state.userType }
+                    onAddPermissions={ this.props.onAddPermissions }
+                    onRemovePermissions={ this.props.onRemovePermissions }
+                    user={ user }
+                  />
+                </td>
+                <td column="Date Created">{ formatDateTime(user.created_at) }</td>
+                { actions }
+              </tr>
+            ]);
+          })}
+          </tbody>
+        </table>
+      </div>
       );
     }
 

@@ -58,7 +58,7 @@ export default class AppPage extends React.Component {
         <div>
           <h2>{ this.state.app.name }</h2>
           <section className={this.styler('section-card')}>
-            <h3>About</h3>
+            <h3>About this</h3>
             <table>
               <tbody>
                 <tr>
@@ -100,10 +100,10 @@ export default class AppPage extends React.Component {
               </tbody>
             </table>
             <aside>
-              <p>To start or stop an app, view the <a
+              <p>To start or stop an app, follow the <a
                 href="https://docs.cloudfoundry.org/devguide/deploy-apps/deploy-app.html"
                 target="_blank">
-                <span>&nbsp;</span>deployment guide</a> for more information.
+                <span>&nbsp;</span>Cloud Foundry deployment guide.</a>
               </p>
             </aside>
           </section>
@@ -113,19 +113,22 @@ export default class AppPage extends React.Component {
           </section>
           <section className={this.styler("section-card")}>
             <h3>Services</h3>
-            <p>To bind or unbind a service instance to an app view<a
+            <p>To bind or unbind a service instance to an app, follow the<a
               href="https://docs.cloud.gov/apps/managed-services/#bind-the-service-instance"
               target="_blank">
-              <span>&nbsp;</span>managed services guide</a> for more information.
+              <span>&nbsp;</span>managed services guide</a>.
             </p>
           </section>
           <section className={this.styler("section-card")}>
             <h3>Events</h3>
-            <p>Event are currently available at <a href={ this.eventsLink(this.state.app.name) }>logs.cloud.gov</a></p>
+            <p><a href={ this.eventsLink(this.state.app.name) }>
+              View this app’s events on logs.cloud.gov.</a>
+            </p>
           </section>
           <section className={this.styler("section-card")}>
             <h3>Logs</h3>
-            <p>Logs are currently available at <a href={ this.logsLink(this.state.app.name) }>logs.cloud.gov</a></p>
+            <p><a href={ this.logsLink(this.state.app.name) }>
+            View this app’s logs on logs.cloud.gov.</a></p>
           </section>
         </div>
       );

@@ -90,16 +90,18 @@ export default class ServiceInstanceList extends React.Component {
       content = <Loading text="Loading service instances" />;
     } else if (this.state.serviceInstances.length) {
       content = (
+      <div>
+        <p><em>
+          To create service instances for this space, use this org’s marketplace (at left or on the command line). Then bind instances to apps using the command line. (<a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.)
+        </em></p>
         <table>
           <thead>
             <tr>
-            { this.columns.map((column) => {
-              return (
-                <th column={ column.label } className={ column.key }
-                    key={ column.key }>
-                  { column.label }</th>
-              )
-            })}
+            { this.columns.map((column) =>
+              <th column={ column.label } className={ column.key }
+                key={ column.key }>
+                { column.label }</th>
+            )}
             </tr>
           </thead>
           <tbody>
@@ -115,11 +117,11 @@ export default class ServiceInstanceList extends React.Component {
                 </td>
                 <td column="Delete" style={specialtdStyles}>
                   <span>
-                    <div style={{float: 'left'}}>
+                    <div style={{ float: 'left' }}>
                       <Button
-                        classes={ ["test-delete_instance",
+                        classes={ ['test-delete_instance',
                           (instance.confirmDelete) ?
-                          '' : this.styler("usa-button-secondary"),
+                          '' : this.styler('usa-button-secondary'),
                           (instance.confirmDelete) ?
                             this.styler('usa-button-disabled') : '']}
                         onClickHandler={ this._handleDeleteConfirmation.bind(
@@ -134,10 +136,11 @@ export default class ServiceInstanceList extends React.Component {
                   </span>
                 </td>
               </tr>
-              )
-            })}
+              );
+          })}
           </tbody>
         </table>
+      </div>
       );
     }
 
