@@ -1,0 +1,7 @@
+---
+inherit: manifest-region-base.yml
+applications:
+- name: cf-deck
+  host: dashboard-master
+  env:
+    CONSOLE_HOSTNAME: https://dashboard-master.fr.cloud.gov

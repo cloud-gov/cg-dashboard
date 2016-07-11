@@ -1,14 +1,10 @@
 ---
 buildpack: https://github.com/cloudfoundry/go-buildpack.git#v1.7.8
 domain: cloud.gov
+memory: 256M
+services:
+  - deck-ups
 env:
-  CONSOLE_CLIENT_ID: CLIENT_ID
-  CONSOLE_CLIENT_SECRET: CLIENT_SECRET
-  CONSOLE_LOGIN_URL: https://login.cloud.gov/
-  CONSOLE_UAA_URL: https://uaa.cloud.gov/
-  CONSOLE_API_URL: https://api.cloud.gov/
-  CONSOLE_LOG_URL: https://loggregator.cloud.gov/
-  CONSOLE_NEW_RELIC_LICENSE: NEW_RELIC_LICENSE
   GOVERSION: go1.6.2
   GOPACKAGENAME: github.com/18F/cg-deck
   GO15VENDOREXPERIMENT: 1
