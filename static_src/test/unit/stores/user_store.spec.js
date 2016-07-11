@@ -477,11 +477,35 @@ describe('UserStore', function() {
     });
   });
 
+  describe('currentUserHasSpaceRole()', function() {
+    it('should call _hasRole() with role and userType of space', function() {
+      const spy = sandbox.spy(UserStore, '_hasRole');
+      const testRole = 'space';
+
+      UserStore.currentUserHasSpaceRole(testRole);
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(testRole, 'space_roles');
+    });
+  });
+
   describe('currentUserHasOrgRole()', function() {
+    it('should call _hasRole() with role and userType of org', function() {
+      const spy = sandbox.spy(UserStore, '_hasRole');
+      const testRole = 'person';
+
+      UserStore.currentUserHasOrgRole(testRole);
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(testRole, 'organization_roles');
+    });
+  });
+
+  describe('_hasRole()', function() {
     it('should return false if user not found', function() {
       const role = 'test';
       UserStore._currentUserGuid = 'alkdsjf';
-      const actual = UserStore.currentUserHasOrgRole(role);
+      const actual = UserStore._hasRole(role, 'organization_roles');
 
       expect(actual).toBeFalsy();
     });
@@ -495,7 +519,7 @@ describe('UserStore', function() {
       UserStore._currentUserGuid = userGuid;
       UserStore.push(user);
 
-      const actual = UserStore.currentUserHasOrgRole(role);
+      const actual = UserStore._hasRole(role, 'organization_roles');
 
       expect(actual).toBeFalsy();
     });
@@ -509,7 +533,7 @@ describe('UserStore', function() {
       UserStore._currentUserGuid = userGuid;
       UserStore.push(user);
 
-      const actual = UserStore.currentUserHasOrgRole(role);
+      const actual = UserStore._hasRole(role, 'organization_roles');
 
       expect(actual).toBeTruthy();
 
