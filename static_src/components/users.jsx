@@ -18,15 +18,19 @@ const TAB_ORG_NAME = 'org_users';
 function stateSetter(currentState) {
   let users = [];
   const currentTab = UserStore.currentlyViewedType;
+  let currentUserAccess: false;
+
   if (currentTab === TAB_SPACE_NAME) {
     users = UserStore.getAllInSpace(currentState.currentSpaceGuid);
+    currentUserAccess = UserStore.currentUserHasSpaceRole('space_manager');
   } else {
     users = UserStore.getAllInOrg(currentState.currentOrgGuid);
+    currentUserAccess = UserStore.currentUserHasOrgRole('org_manager');
   }
 
   return {
     error: UserStore.getError(),
-    currentUserAccess: UserStore.currentUserHasOrgRole('org_manager'),
+    currentUserAccess: currentUserAccess,
     currentTab,
     loading: UserStore.fetching,
     users
@@ -131,6 +135,11 @@ export default class Users extends React.Component {
   render() {
     let removeHandler;
     let errorMessage;
+
+    if (this.state.currentTab === TAB_ORG_NAME) {
+      removeHandler = this.handleRemove;
+    }
+
     let content = (<UserList
       initialUsers={ this.state.users }
       initialUserType= { this.state.currentTab }
@@ -139,10 +148,6 @@ export default class Users extends React.Component {
       onAddPermissions={ this.handleAddPermissions }
       onRemovePermissions={ this.handleRemovePermissions }
     />);
-
-    if (this.state.currentTab === TAB_ORG_NAME) {
-      removeHandler = this.handleRemove;
-    }
 
     if (this.state.loading) {
       content = <Loading text="Loading users" />;

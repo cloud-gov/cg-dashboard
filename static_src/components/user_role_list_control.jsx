@@ -35,7 +35,8 @@ export default class UserRoleListControl extends React.Component {
     this.props = props;
     this.state = {
       user: props.user,
-      userType: props.initialUserType
+      userType: props.initialUserType,
+      currentUserAccess: props.initialCurrentUserAccess
     };
     this._onChange = this._onChange.bind(this);
     this.checkRole = this.checkRole.bind(this);
@@ -44,7 +45,8 @@ export default class UserRoleListControl extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       user: nextProps.user,
-      userType: nextProps.initialUserType
+      userType: nextProps.initialUserType,
+      currentUserAccess: nextProps.initialCurrentUserAccess
     });
   }
 
@@ -81,6 +83,7 @@ export default class UserRoleListControl extends React.Component {
             roleName={ role.label }
             roleKey={ role.key }
             initialValue={ this.checkRole(role.key) }
+            initialEnableControl={ this.state.currentUserAccess }
             onChange={ this._onChange.bind(this, role.key) }
             userId={ this.props.user.guid }
           />
@@ -93,11 +96,13 @@ export default class UserRoleListControl extends React.Component {
 UserRoleListControl.propTypes = {
   user: React.PropTypes.object.isRequired,
   initialUserType: React.PropTypes.string,
+  initialCurrentUserAccess: React.PropTypes.bool,
   onRemovePermissions: React.PropTypes.func,
-  onAddPermissions: React.PropTypes.func
+  onAddPermissions: React.PropTypes.func,
 };
 UserRoleListControl.defaultProps = {
   initialUserType: 'space_users',
+  initialCurrentUserAccess: false,
   onRemovePermissions: function defaultRemove() { },
   onAddPermissions: function defaultAdd() { }
 };

@@ -117,6 +117,7 @@ export default class UserList extends React.Component {
                 <td column="Permissions" key={ `${user.guid}-role` }>
                   <UserRoleListControl
                     initialUserType={ this.state.userType }
+                    initialCurrentUserAccess={ this.state.currentUserAccess }
                     onAddPermissions={ this.props.onAddPermissions }
                     onRemovePermissions={ this.props.onRemovePermissions }
                     user={ user }
