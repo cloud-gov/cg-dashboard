@@ -21,3 +21,4 @@ import:
   subpackages:
   - clientcredentials
 - package: github.com/yvasiyarov/gorelic
+- package: github.com/cloudfoundry-community/go-cfenv

@@ -4,6 +4,7 @@ import (
 	"github.com/18F/cg-deck/controllers"
 	"github.com/18F/cg-deck/controllers/pprof"
 	"github.com/18F/cg-deck/helpers"
+	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gorilla/context"
 	"github.com/yvasiyarov/gorelic"
 
@@ -12,7 +13,10 @@ import (
 	"os"
 )
 
-var defaultPort = "9999"
+const (
+	defaultPort           = "9999"
+	cfUserProvidedService = "deck-ups"
+)
 
 func loadEnvVars() helpers.EnvVars {
 	envVars := helpers.EnvVars{}
@@ -28,6 +32,43 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.BuildInfo = os.Getenv(helpers.BuildInfoEnvVar)
 	envVars.NewRelicLicense = os.Getenv(helpers.NewRelicLicenseEnvVar)
 	return envVars
+}
+
+func replaceEnvVar(envVars *helpers.EnvVars, envVar string, value interface{}) {
+	if stringValue, ok := value.(string); ok {
+		// only replace if non empty.
+		if len(stringValue) < 1 {
+			return
+		}
+		switch envVar {
+		case helpers.ClientIDEnvVar:
+			envVars.ClientID = stringValue
+		case helpers.ClientSecretEnvVar:
+			envVars.ClientSecret = stringValue
+		case helpers.NewRelicLicenseEnvVar:
+			envVars.NewRelicLicense = stringValue
+		}
+	}
+}
+
+func loadUPSVars(envVars *helpers.EnvVars) {
+	// Try to load the user-provided-service
+	// for backup of certain environment variables.
+	cfEnv, err := cfenv.Current()
+	if err != nil || cfEnv == nil {
+		return
+	}
+	if cfUPS, err := cfEnv.Services.WithName(cfUserProvidedService); err != nil {
+		if clientID, found := cfUPS.Credentials[helpers.ClientIDEnvVar]; found {
+			replaceEnvVar(envVars, helpers.ClientIDEnvVar, clientID)
+		}
+		if clientSecret, found := cfUPS.Credentials[helpers.ClientSecretEnvVar]; found {
+			replaceEnvVar(envVars, helpers.ClientSecretEnvVar, clientSecret)
+		}
+		if newRelic, found := cfUPS.Credentials[helpers.NewRelicLicenseEnvVar]; found {
+			replaceEnvVar(envVars, helpers.NewRelicLicenseEnvVar, newRelic)
+		}
+	}
 }
 
 func main() {
@@ -54,6 +95,8 @@ func startMonitoring(license string) {
 func startApp(port string) {
 	// Load environment variables
 	envVars := loadEnvVars()
+	// Override with cloud foundry user provided service credentials if specified.
+	loadUPSVars(&envVars)
 
 	app, settings, err := controllers.InitApp(envVars)
 	if err != nil {
