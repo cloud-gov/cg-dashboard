@@ -84,7 +84,6 @@ class OrgStore extends BaseStore {
       case orgActionTypes.ORG_TOGGLE_SPACE_MENU: {
         this._currentOrgGuid = action.orgGuid;
         const updates = this.updateOpenOrgs(action.orgGuid);
-        console.log('on org toggle space menu, orgs', this.getAll());
         this.mergeMany('guid', updates, (changed) => {
           if (changed) this.emitChange();
         });

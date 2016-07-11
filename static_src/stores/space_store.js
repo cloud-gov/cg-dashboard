@@ -50,12 +50,6 @@ class SpaceStore extends BaseStore {
         break;
       }
 
-      case spaceActionTypes.SPACE_CHANGE_CURRENT: {
-        this._currentSpaceGuid = action.spaceGuid;
-        this.emitChange();
-        break;
-      }
-
       default:
         break;
     }
