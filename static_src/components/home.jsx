@@ -11,17 +11,9 @@ export default class Home extends React.Component {
   }
 
   render() {
-    // TODO remove once fixed in cg-style
-    const alertOverrideStyles = {
-      backgroundColor: '#d9f1ff',
-      backgroundPosition: '1rem 1rem',
-      marginTop: 0,
-      marginBottom: '1rem'
-    };
     return (
       <div>
-        <aside className={ this.styler('usa-alert', 'usa-alert-info') }
-          style={alertOverrideStyles}>
+        <aside className={ this.styler('usa-alert', 'usa-alert-info') }>
           <p className={ this.styler('usa-alert-body') }><em>
             We updated the Deck and renamed it the Dashboard!
             <a href="https://cloud.gov/2016/07/07/deck-update.html"> Here’s what
