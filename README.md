@@ -185,7 +185,7 @@ In each space that you plan on deploying, you need to create a `user-provided-se
 Run:
 ```
 # For applications without New Relic monitoring
-cf cups deck-ups -p '{"client_id":"your-client-id","client_secret":"your-client-secret"}'
+cf cups deck-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret"}'
 
 # For applications with New Relic monitoring
 cf cups deck-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret","CONSOLE_NEW_RELIC_LICENSE":"your-new-relic-license"}'
