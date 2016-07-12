@@ -3,7 +3,9 @@ var data = require('./fixtures');
 var apps = data.apps;
 var organizations = data.organizations;
 var routes = data.routes;
+var services = data.services;
 var serviceInstances = data.serviceInstances;
+var servicePlans = data.servicePlans;
 var spaces = data.spaces;
 var users = data.users;
 
@@ -115,6 +117,23 @@ module.exports = function api(smocks) {
   });
 
   smocks.route({
+    id: 'service-service-plans',
+    label: 'Service service plans',
+    path: `${BASE_URL}/services/{guid}/service_plans`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      var plans = servicePlans(guid);
+      reply({
+        total_results: plans.length,
+        total_pages: 1,
+        prev_url: null,
+        next_url: null,
+        resources: plans
+      });
+    }
+  });
+
+  smocks.route({
     id: 'space-summary',
     label: 'Space summary',
     path: `${BASE_URL}/spaces/{guid}/summary`,
@@ -124,6 +143,22 @@ module.exports = function api(smocks) {
         guid: guid,
         name: `space-${guid}`,
         apps: apps
+      });
+    }
+  });
+
+  smocks.route({
+    id: 'organization-services',
+    label: 'Organization services',
+    path: `${BASE_URL}/organizations/{guid}/services`,
+    handler: function(req, reply) {
+      var guid = req.params.guid;
+      reply({
+        total_results: services.length,
+        total_pages: 1,
+        prev_url: null,
+        next_url: null,
+        resources: services
       });
     }
   });

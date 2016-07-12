@@ -24,6 +24,15 @@ var routeGuids = [
 
 module.exports.routeGuids = routeGuids;
 
+var serviceGuids = [
+  'serivce-guid-one',
+  'service-guid-two',
+  'service-guid-three',
+  'service-guid-four'
+];
+
+module.exports.serviceGuids = serviceGuids;
+
 var serviceInstanceGuids = [
   'service-instance-guid-one',
   'service-instance-guid-two',
@@ -31,6 +40,14 @@ var serviceInstanceGuids = [
 ];
 
 module.exports.serviceInstanceGuids = serviceInstanceGuids;
+
+var servicePlanGuids = [
+  'service-plan-guid-one',
+  'service-plan-guid-two',
+  'service-plan-guid-three'
+];
+
+module.exports.servicePlanGuids = servicePlanGuids;
 
 var spaceGuids = [
   'space-guid-one',
@@ -73,12 +90,12 @@ var apps = appGuids.map(function(guid) {
     ],
     routes: [
       {
-        guid: "d32ee365-637b-493d-874e-8fe93c7212e2",
-        host: "18f-site",
-        path: "",
+        guid: 'd32ee365-637b-493d-874e-8fe93c7212e2',
+        host: '18f-site',
+        path: '',
         domain: {
-          guid: "3750eb89-86c6-4882-96bf-66b8c6363290",
-          name: "18f.gov"
+          guid: '3750eb89-86c6-4882-96bf-66b8c6363290',
+          name: '18f.gov'
         }
       }
     ]
@@ -92,8 +109,8 @@ var organizations = organizationGuids.map(function(guid) {
     metadata: {
       guid: guid,
       url: `${URL_BASE}/organizations/${guid}`,
-      created_at: "2015-03-02T19:58:26Z",
-      updated_at: "2015-03-02T19:58:26Z",
+      created_at: '2015-03-02T19:58:26Z',
+      updated_at: '2015-03-02T19:58:26Z',
     },
     entity: {
       name: `org-${guid}`,
@@ -151,6 +168,43 @@ var routes = routeGuids.map(function(guid, i){
 
 module.exports.routes = routes;
 
+var services = serviceGuids.map(function(guid, i) {
+  return {
+    metadata: {
+      guid: guid,
+      url: `${URL_BASE}/services/${guid}`,
+      created_at: '2015-04-23T21:40:06Z',
+      updated_at: '2015-07-22T19:14:50Z'
+    },
+    entity: {
+      label: `service-${guid}`,
+      provider: null,
+      url: null,
+      description: 'Generic cloud.gov Service',
+      long_description: null,
+      version: null,
+      info_url: null,
+      active: true,
+      bindable: true,
+      unique_id: 'db80ca29-2d1b-4fbc-aad3-d03c0bfa7593',
+      extra: '{\'displayName\':\'Generic cloud.gov Service\',\'imageUrl\':\'\',\'longDescription\':\'\',\'providerDisplayName\':\'RDS\',\'documentationUrl\':\'\',\'supportUrl\':\'\'}',
+      tags: [
+        'amazing',
+        'service',
+      ],
+      requires: [
+
+      ],
+      documentation_url: null,
+      service_broker_guid: '9f97e259-93de-4fc8-96e6-b3cb1dd7835e',
+      plan_updateable: false,
+      service_plans_url: '/v2/services/be2de43d-bf57-4bd3-98d3-6ae021268030/service_plans'
+    }
+  }
+});
+
+module.exports.services = services;
+
 var serviceInstances = serviceInstanceGuids.map(function(guid, i) {
   return {
     metadata: {
@@ -186,6 +240,33 @@ var serviceInstances = serviceInstanceGuids.map(function(guid, i) {
 
 module.exports.serviceInstances = serviceInstances;
 
+var servicePlans = function(serviceGuid) {
+  return servicePlanGuids.map(function(guid, i) {
+    return {
+      metadata: {
+        guid: guid,
+        url: `${URL_BASE}/service_plans/${guid}`,
+        created_at: '2015-07-14T04:02:30Z',
+        updated_at: null
+      },
+      entity: {
+        active: true,
+        description: 'Shared infrastructure for Postgres DB',
+        extra: "{\"bullets\":[\"Shared RDS Instance\",\"Postgres instance\"],\"costs\":[{\"amount\":{\"usd\":0},\"unit\":\"MONTHLY\"}],\"displayName\":\"Free Shared Plan\"}",
+        free: true,
+        name: 'shared-psql',
+        public: true,
+        service_guid: serviceGuid,
+        service_instances_url: '/v2/service_plans/fca6b5c2-2e57-4436-a68e-562c1ee3b8b8/service_instances',
+        service_url: '/v2/services/be2de43d-bf57-4bd3-98d3-6ae021268030',
+        unique_id: '44d24fc7-f7a4-4ac1-b7a0-de82836e89a3'
+      }
+    }
+  });
+};
+
+module.exports.servicePlans = servicePlans;
+
 var spaces = spaceGuids.map(function(guid){
   return {
     guid: guid,
@@ -204,7 +285,7 @@ var users = userGuids.map(function(guid, i) {
     metadata: {
       guid: guid,
       url: `${URL_BASE}/users/${guid}`,
-      created_at: "2015-02-19T08:46:28Z",
+      created_at: '2015-02-19T08:46:28Z',
       updated_at: null
     },
     entity: {
