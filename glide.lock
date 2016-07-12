@@ -1,185 +1,79 @@
-hash: 862eacf7206e5b330b6c2fa6ab359c2292731ca5a3a52fed4c485d3d5395e64c
-updated: 2016-06-14T12:02:25.634354916-07:00
+hash: a4b420f72607edde04826c390792c192290624fdbd47069408e1888258fa6055
+updated: 2016-07-11T10:16:53.426002312-04:00
 imports:
-- name: collectd.org
-  version: 9fc824c70f713ea0f058a07b49a4c563ef2a3b98
-- name: github.com/apcera/nats
-  version: ce9cdc9addff268b4b75b72f7b6dcca012954c6a
-  repo: https://github.com/apcera/nats
-- name: github.com/armon/go-metrics
-  version: 345426c77237ece5dab0e1605c3e4b35c3f54757
-- name: github.com/beorn7/perks
-  version: 3ac7bf7a47d159a033b107610db8a1b6575507a4
-  repo: https://github.com/beorn7/perks
-- name: github.com/bmizerany/pat
-  version: b8a35001b773c267eb260a691f4e5499a3531600
-- name: github.com/boltdb/bolt
-  version: 2f846c3551b76d7710f159be840d66c3d064abbe
-- name: github.com/BurntSushi/toml
-  version: a4eecd407cf4129fc902ece859a0114e4cf1a7f4
-- name: github.com/cloudfoundry/gosteno
-  version: 0c8581caea35ac903728230e447792e2365dcc34
-  repo: https://github.com/cloudfoundry/gosteno
-- name: github.com/cloudfoundry/gunk
-  version: 2d71148a246a2a51d2dae8139f7f66a1a3e2468a
-  repo: https://github.com/cloudfoundry/gunk
+- name: github.com/cloudfoundry-community/go-cfenv
+  version: 96ad7376813bfd13c95af69ca5b4ef5725f6b335
 - name: github.com/cloudfoundry/loggregatorlib
   version: 03bfd6ee4743a1a21433092663292b65aa4ee14e
   subpackages:
   - logmessage
-- name: github.com/cloudfoundry/storeadapter
-  version: 13bef986dc913cca8f43622f6b3625adf5fa5e7a
-  repo: https://github.com/cloudfoundry/storeadapter
-- name: github.com/cloudfoundry/yagnats
-  version: 6bbfbf6a9a16a5b4b2cde6c9907a656a1b0853a3
-  repo: https://github.com/cloudfoundry/yagnats
-- name: github.com/coreos/go-etcd
-  version: 003851be7bb0694fe3cc457a49529a19388ee7cf
-  repo: https://github.com/coreos/go-etcd
-- name: github.com/DataDog/datadog-go
-  version: cc2f4770f4d61871e19bfee967bc767fe730b0d9
-  repo: https://github.com/DataDog/datadog-go
-- name: github.com/davecgh/go-spew
-  version: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
-  subpackages:
-  - spew
-- name: github.com/dgrijalva/jwt-go
-  version: a2c85815a77d0f951e33ba4db5ae93629a1530af
-- name: github.com/dgryski/go-bits
-  version: 86c69b3c986f9d40065df5bd8f765796549eef2e
-- name: github.com/dgryski/go-bitstream
-  version: 27cd5973303fde7d914860be1ea4b927a6be0c92
+  - signature
 - name: github.com/gocraft/web
   version: 12b4630b4fee3e485b334c4d544bd9dd68fb3d4f
 - name: github.com/gogo/protobuf
   version: 74b6e9deaff6ba6da1389ec97351d337f0d08b06
   subpackages:
   - proto
-- name: github.com/golang/glog
-  version: 23def4e6c14b4da8ac2ed8007337bc5eb5007998
-  repo: https://github.com/golang/glog
 - name: github.com/golang/protobuf
   version: 7cc19b78d562895b13596ddce7aafb59dd789318
-- name: github.com/golang/snappy
-  version: 5979233c5d6225d4a8e438cdd0b411888449ddab
-- name: github.com/googleapis/gax-go
-  version: 617a035dbedc98c90386b28e4972ca6a84fcfad7
-  repo: https://github.com/googleapis/gax-go
-- name: github.com/googleapis/proto-client-go
-  version: 43a2ab8c54baf68a3ce9a4792bd62f0331bab554
-  repo: https://github.com/googleapis/proto-client-go
+  subpackages:
+  - proto
 - name: github.com/gorilla/context
   version: a8d44e7d8e4d532b6a27a02dd82abb31cc1b01bd
 - name: github.com/gorilla/securecookie
   version: 667fe4e3466a040b780561fe9b51a83a3753eefc
 - name: github.com/gorilla/sessions
   version: a4e6dd28f9e9274729417506b9bd0a6c3edb91ce
-- name: github.com/gorilla/websocket
-  version: a68708917c6a4f06314ab4e52493cc61359c9d42
-  repo: https://github.com/gorilla/websocket
-- name: github.com/hashicorp/go-msgpack
-  version: fa3f63826f7c23912c15263591e65d54d080b458
-- name: github.com/hashicorp/raft
-  version: 8fd9a2fdfd154f4b393aa24cff91e3c317efe839
-- name: github.com/hashicorp/raft-boltdb
-  version: d1e82c1ec3f15ee991f7cc7ffd5b67ff6f5bbaee
-- name: github.com/influxdata/usage-client
-  version: 475977e68d79883d9c8d67131c84e4241523f452
-- name: github.com/influxdb/influxdb
-  version: a96f96c024643dfd95a14919ff5f37a3c2b430fb
-  repo: https://github.com/influxdb/influxdb
-- name: github.com/julienschmidt/httprouter
-  version: 77366a47451a56bb3ba682481eed85b64fea14e8
-  repo: https://github.com/julienschmidt/httprouter
-- name: github.com/jwilder/encoding
-  version: b421ab402545ef5a119f4f827784c6551d9bfc37
-- name: github.com/kimor79/gollectd
-  version: 61d0deeb4ffcc167b2a1baa8efd72365692811bc
-- name: github.com/matttproud/golang_protobuf_extensions
-  version: c12348ce28de40eed0136aa2b644d0ee0650e56c
-  repo: https://github.com/matttproud/golang_protobuf_extensions
-- name: github.com/nats-io/gnatsd
-  version: 5a42a9a54e91fdd2be2820416912991c68446a11
-  repo: https://github.com/nats-io/gnatsd
-- name: github.com/nats-io/nats
-  version: ce9cdc9addff268b4b75b72f7b6dcca012954c6a
-  repo: https://github.com/nats-io/nats
-- name: github.com/nats-io/nuid
-  version: a5152d67cf63cbfb5d992a395458722a45194715
-  repo: https://github.com/nats-io/nuid
-- name: github.com/nu7hatch/gouuid
-  version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
-  repo: https://github.com/nu7hatch/gouuid
+- name: github.com/mitchellh/mapstructure
+  version: d2dd0262208475919e1a362f675cfc0e7c10e905
 - name: github.com/onsi/ginkgo
   version: 5437a97bf824dec14e58d68c56ee36e772670c2e
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/failer
+  - internal/remote
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - types
+  - internal/containernode
+  - internal/leafnodes
+  - internal/spec
+  - internal/specrunner
 - name: github.com/onsi/gomega
   version: c73e51675ad2455a4515b6213eb7145eaade4824
-- name: github.com/paulbellamy/ratecounter
-  version: 5a11f585a31379765c190c033b6ad39956584447
-- name: github.com/peterh/liner
-  version: 82a939e738b0ee23e84ec7a12d8e216f4d95c53f
-- name: github.com/pivotal-golang/clock
-  version: 3fd3c1944c59d9742e1cd333672181cd1a6f9fa0
-  repo: https://github.com/pivotal-golang/clock
-- name: github.com/pivotal-golang/lager
-  version: 7639e31ce6622c55c15aa64144b85d5f4873d127
-  repo: https://github.com/pivotal-golang/lager
-- name: github.com/pmezard/go-difflib
-  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:
-  - difflib
-- name: github.com/prometheus/client_golang
-  version: 488edd04dc224ba64c401747cd0a4b5f05dfb234
-  repo: https://github.com/prometheus/client_golang
-- name: github.com/prometheus/client_model
-  version: fa8ad6fec33561be4280a8f0514318c79d7f6cb6
-  repo: https://github.com/prometheus/client_model
-- name: github.com/prometheus/common
-  version: 3a184ff7dfd46b9091030bf2e56c71112b0ddb0e
-  repo: https://github.com/prometheus/common
-- name: github.com/prometheus/procfs
-  version: abf152e5f3e97f2fafac028d2cc06c1feb87ffa5
-  repo: https://github.com/prometheus/procfs
-- name: github.com/rakyll/statik
-  version: 274df120e9065bdd08eb1120e0375e3dc1ae8465
-- name: github.com/rcrowley/go-metrics
-  version: cfa5a85e9f0abbdf1701b59082c36fc7bff10759
-  repo: https://github.com/rcrowley/go-metrics
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/testingtsupport
+  - matchers
+  - types
+  - internal/oraclematcher
+  - format
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
 - name: github.com/sclevine/agouti
   version: e5378e70dca437a9e16cc6d71a85aa0045dd94c7
   subpackages:
   - matchers
-- name: github.com/Sirupsen/logrus
-  version: f3cfb454f4c209e6668c95216c4744b8fddb2356
-  repo: https://github.com/Sirupsen/logrus
-- name: github.com/stathat/go
-  version: c828dca0ee6eadc566bfcbcc00e4a992f12821a3
-  repo: https://github.com/stathat/go
-- name: github.com/stretchr/objx
-  version: cbeaeb16a013161a98496fad62933b1d21786672
-- name: github.com/stretchr/testify
-  version: 8d64eb7173c7753d6419fd4a9caf057398611364
-  repo: https://github.com/stretchr/testify
-- name: github.com/tedsuo/ifrit
-  version: dc9cce059aa32c53806fc6b4382b5d62751df0ce
-  repo: https://github.com/tedsuo/ifrit
-- name: github.com/ugorji/go
-  version: b94837a2404ab90efe9289e77a70694c355739cb
-  repo: https://github.com/ugorji/go
+  - api
+  - internal/element
+  - internal/target
+  - matchers/internal
+  - api/internal/bus
+  - api/internal/service
+  - matchers/internal/colorparser
 - name: github.com/yvasiyarov/go-metrics
   version: c25f46c4b94079672242ec48a545e7ca9ebe3aec
-  repo: https://github.com/yvasiyarov/go-metrics
 - name: github.com/yvasiyarov/gorelic
   version: 62638bfdaebd09d74b8b07366c23bdc5654866ca
 - name: github.com/yvasiyarov/newrelic_platform_go
   version: 9c099fbc30e90de5bb5c5f94aa5fd08f2daeaacd
-  repo: https://github.com/yvasiyarov/newrelic_platform_go
-- name: golang.org/x/crypto
-  version: 9e7f5dc375abeb9619ea3c5c58502c428f457aa2
-  repo: https://go.googlesource.com/crypto
-  subpackages:
-  - bcrypt
-  - blowfish
 - name: golang.org/x/net
   version: 3b993948b6f0e651ffb58ba135d8538a68b1cddf
   subpackages:
@@ -188,27 +82,17 @@ imports:
   version: e86e2718db89775a4604abc10a5d3a5672e7336e
   subpackages:
   - clientcredentials
-- name: golang.org/x/text
-  version: e4775119bd79944a15a741ac4be61e43509a70d9
-- name: google.golang.org/api
-  version: 63ade871fd3aec1225809d496e81ec91ab76ea29
-  repo: https://google.golang.org/api
+  - internal
 - name: google.golang.org/appengine
   version: e234e71924d4aa52444bc76f2f831f13fa1eca60
-- name: google.golang.org/cloud
-  version: 4a23f97e60c9a14de1269e78812e59ca94033d85
-  repo: https://google.golang.org/cloud
-- name: google.golang.org/grpc
-  version: 88aeffff979aa77aa502cb011423d0a08fa12c5a
-  repo: https://google.golang.org/grpc
-- name: gopkg.in/airbrake/gobrake.v2
-  version: 31c8ff1fb8b79a6947e6565e9a6df535f98a6b94
-  repo: https://gopkg.in/airbrake/gobrake.v2
-- name: gopkg.in/fatih/pool.v2
-  version: cba550ebf9bce999a02e963296d4bc7a486cb715
-- name: gopkg.in/gemnasium/logrus-airbrake-hook.v2
-  version: 31e6fd4bd5a98d8ee7673d24bc54ec73c31810dd
-  repo: https://gopkg.in/gemnasium/logrus-airbrake-hook.v2
+  subpackages:
+  - urlfetch
+  - internal
+  - internal/urlfetch
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
 - name: gopkg.in/yaml.v2
   version: a83829b6f1293c91addabc89d0571c246397bbf4
 devImports: []

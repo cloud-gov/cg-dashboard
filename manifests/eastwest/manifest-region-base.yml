@@ -1,0 +1,8 @@
+---
+inherit: ../manifest-base.yml
+domain: cloud.gov
+env:
+  CONSOLE_LOGIN_URL: https://login.cloud.gov/
+  CONSOLE_UAA_URL: https://uaa.cloud.gov/
+  CONSOLE_API_URL: https://api.cloud.gov/
+  CONSOLE_LOG_URL: https://loggregator.cloud.gov/

@@ -179,14 +179,23 @@ For debug mode where the developer can vnc into the container and the browser ex
 
 The cloud.gov deck is continuously deployed by Travis-CI.
 
-## CI
+### Bootstrap Deployment Spaces
+In each space that you plan on deploying, you need to create a `user-provided-service`.
+
+Run:
+```
+# For applications without New Relic monitoring
+cf cups deck-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret"}'
+
+# For applications with New Relic monitoring
+cf cups deck-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret","CONSOLE_NEW_RELIC_LICENSE":"your-new-relic-license"}'
+```
+
+### CI
 This project uses Travis-CI
 - The following environment variables need to be set in plain text in the global env section:
   - `CONSOLE_API_URL`, `CONSOLE_UAA_URL`, `CONSOLE_LOG_URL`, `CONSOLE_LOGIN_URL`, `CONSOLE_HOSTNAME="http://localhost:9999"`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, and `CONSOLE_TEST_APP_NAME`
 - In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the Travis-CI CLI tool to re-encrypt all the environment variables.
-  - `travis encrypt CONSOLE_CLIENT_ID='<your client id>' --add env.global`
-  - `travis encrypt CONSOLE_CLIENT_SECRET='<your client secret>' --add env.global`
-  - `travis encrypt CONSOLE_TEST_PASSWORD='<the test user account password>' --add env.global`
   - `travis encrypt CONSOLE_TEST_USERNAME='<the test user account username>' --add env.global`
   - `travis encrypt CF_USERNAME='<the user account username used to deploy>' --add env.global`
   - `travis encrypt CF_PASSWORD='<the user account password used to deploy>' --add env.global`
