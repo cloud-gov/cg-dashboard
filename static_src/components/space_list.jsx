@@ -1,19 +1,14 @@
 
 import React from 'react';
-import Reactable from 'reactable';
 
-import AppDispatcher from '../dispatcher';
 import OrgStore from '../stores/org_store';
 
 import createStyler from '../util/create_styler';
 import tableStyles from 'cloudgov-style/css/base.css';
 
-var Table = Reactable.Table,
-    unsafe = Reactable.unsafe;
-
 function stateSetter() {
-  var currentOrgGuid = OrgStore.currentOrgGuid,
-      currentOrg = OrgStore.get(currentOrgGuid);
+  const currentOrgGuid = OrgStore.currentOrgGuid;
+  const currentOrg = OrgStore.get(currentOrgGuid);
 
   return {
     currentOrg,
@@ -58,24 +53,41 @@ export default class SpaceList extends React.Component {
     return this.state.currentOrg && this.state.currentOrg.name || '';
   }
 
-  get noneFound() {
-    return <h4 className="test-none_message">No spaces found</h4>
-  }
-
   spaceLink(spaceGuid) {
     return `/#/org/${this.state.currentOrgGuid}/spaces/${spaceGuid}`;
   }
 
   render() {
-    let rows = this.state.rows.map((row) => {
-      const name = unsafe(`<a href=${this.spaceLink(row.guid)}>${row.name}</a>`);
-      return Object.assign({}, row, { name });
-    });
+    let content = <h4 className="test-none_message">No spaces found</h4>;
 
-    let content = this.noneFound;
-    if (rows.length) {
+    if (this.state.rows.length) {
       content = (
-        <SpaceList.Table data={ rows } columns={ this.columns } sortable />
+        <table sortable>
+          <thead>
+            <tr>
+            { this.columns.map((column) =>
+              <th column={ column.label } className={ column.key }
+                key={ column.key }>
+                { column.label }
+              </th>
+            )}
+            </tr>
+          </thead>
+          <tbody>
+          { this.state.rows.map((space) => {
+            return (
+              <tr key={ space.guid }>
+                <td label="Name">
+                  <a href={ this.spaceLink(space.guid) }>{ space.name }</a>
+                </td>
+                <td label="Number of Apps">{ space.app_count }</td>
+                <td label="Total Development Memory">{ space.mem_dev_total } MB</td>
+                <td label="Total Production Memory">{ space.mem_prod_total } MB</td>
+              </tr>
+            );
+          })}
+          </tbody>
+        </table>
       );
     }
 
@@ -94,7 +106,7 @@ export default class SpaceList extends React.Component {
     );
   }
 }
-SpaceList.Table = Table;
+
 SpaceList.propTypes = {
   initialOrgGuid: React.PropTypes.string.isRequired
 };
