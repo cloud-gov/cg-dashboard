@@ -86,4 +86,66 @@ describe('SpaceStore', function() {
       expect(SpaceStore.fetching).toEqual(false);
     });
   });
+
+  describe('on space change current', function() {
+    it('should emit a change event', function() {
+      const spaceGuid = 'zcxvadsjfcvbnm';
+      const space = {
+        guid: spaceGuid
+      };
+      let spy = sandbox.spy(SpaceStore, 'emitChange');
+
+      spaceActions.changeCurrentSpace(spaceGuid);
+      expect(spy).toHaveBeenCalledOnce();
+
+      SpaceStore.push(space);
+      spy.reset();
+      spaceActions.changeCurrentSpace(spaceGuid);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should should change the current space to the passed in guid',
+        function() {
+      const spaceGuid = 'zcxvadsjfcvbnm';
+
+      SpaceStore._currentSpaceGuid = 'adskfjxvb';
+
+      spaceActions.changeCurrentSpace(spaceGuid);
+
+      const actual = SpaceStore.currentSpaceGuid;
+
+      expect(actual).toEqual(spaceGuid);
+    });
+  });
+
+  describe('on space change current', function() {
+    it('should emit a change event', function() {
+      const spaceGuid = 'zcxvadsjfcvbnm';
+      const space = {
+        guid: spaceGuid
+      };
+      let spy = sandbox.spy(SpaceStore, 'emitChange');
+
+      spaceActions.changeCurrentSpace(spaceGuid);
+      expect(spy).toHaveBeenCalledOnce();
+
+      SpaceStore.push(space);
+      spy.reset();
+      spaceActions.changeCurrentSpace(spaceGuid);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should should change the current space to the passed in guid',
+        function() {
+      const spaceGuid = 'zcxvadsjfcvbnm';
+
+      SpaceStore._currentSpaceGuid = 'adskfjxvb';
+
+      spaceActions.changeCurrentSpace(spaceGuid);
+
+      const actual = SpaceStore.currentSpaceGuid;
+
+      expect(actual).toEqual(spaceGuid);
+    });
+  });
 });

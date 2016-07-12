@@ -53,7 +53,10 @@ export default class App extends React.Component {
 
     if (this.state.isLoggedIn) {
       content = this.props.children;
-      sidebar = <Nav initialCurrentOrgGuid={ this.props.currentOrgGuid } />;
+      sidebar = <Nav
+        initialCurrentOrgGuid={ this.props.currentOrgGuid }
+        initialSpaceGuid={ this.props.initialSpaceGuid }
+      />;
     } else {
       content = <Login />;
     }
@@ -79,7 +82,12 @@ export default class App extends React.Component {
 }
 App.propTypes = {
   children: React.PropTypes.any,
-  currentOrgGuid: React.PropTypes.string
+  currentOrgGuid: React.PropTypes.string,
+  initialSpaceGuid: React.PropTypes.string
 };
 
-App.defaultProps = { children: [], currentOrgGuid: '0' };
+App.defaultProps = {
+  children: [],
+  currentOrgGuid: '0',
+  initialSpaceGuid: '0'
+};

@@ -72,16 +72,15 @@ export default class Space extends React.Component {
   }
 
   render() {
-    var Content = this.currentContent,
-        tabNav;
+    let Content = this.currentContent;
+    let tabNav = <div></div>;
+    let main = <h4>Space not found</h4>;
 
-    if (this.state.space.guid) {
+    if (this.state.space && this.state.space.guid) {
       tabNav = (
         <Tabnav items={ this.subNav } initialItem={ this.props.currentPage } />
       );
-    }
-
-    return (
+      main = (
       <div>
         <div>
           <h2>
@@ -96,10 +95,18 @@ export default class Space extends React.Component {
           <div role="tabpanel" id={ this.props.currentPage }>
             <Content
               initialOrgGuid={ this.state.currentOrg.guid }
-              initialSpaceGuid={ this.state.currentSpaceGuid }
+              initialSpaceGuid={ this.state.space.guid }
+              intitialApps={ this.state.space.apps || [] }
             />
           </div>
         </div>
+      </div>
+      );
+    }
+
+    return (
+      <div>
+        { main }
       </div>
     );
   }

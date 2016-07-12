@@ -2,7 +2,8 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import { assertAction, setupViewSpy, setupServerSpy } from '../helpers.js';
+import { assertAction, setupViewSpy, setupUISpy, setupServerSpy }
+  from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import spaceActions from '../../../actions/space_actions.js';
 import { spaceActionTypes } from '../../../constants.js';
@@ -50,6 +51,20 @@ describe('spaceActions', () => {
       spaceActions.receivedSpace(expected);
 
       assertAction(spy, spaceActionTypes.SPACE_RECEIVED, expectedParams);
+    });
+  });
+
+  describe('changeCurrentSpace()', function() {
+    it('should dispatch a ui even of type current space changed', function() {
+      const expected = 'asdf';
+      const spy = setupUISpy(sandbox);
+      const expectedParams = {
+        spaceGuid: expected
+      };
+
+      spaceActions.changeCurrentSpace(expected);
+
+      assertAction(spy, spaceActionTypes.SPACE_CHANGE_CURRENT, expectedParams);
     });
   });
 });

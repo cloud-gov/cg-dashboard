@@ -15,8 +15,8 @@ import Login from './components/login.jsx';
 import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
 import routeActions from './actions/route_actions.js';
-import serviceActions from './actions/service_actions.js';
 import spaceActions from './actions/space_actions.js';
+import serviceActions from './actions/service_actions.js';
 import Space from './components/space.jsx';
 import SpaceList from './components/space_list.jsx';
 import { trackPageView } from './util/analytics.js';
@@ -37,6 +37,7 @@ function dashboard() {
 
 function org(orgGuid) {
   orgActions.changeCurrentOrg(orgGuid);
+  orgActions.toggleSpaceMenu(orgGuid);
   cfApi.fetchOrg(orgGuid);
   ReactDOM.render(
     <App>
@@ -46,6 +47,8 @@ function org(orgGuid) {
 
 function space(orgGuid, spaceGuid, potentialPage) {
   orgActions.changeCurrentOrg(orgGuid);
+  orgActions.toggleSpaceMenu(orgGuid);
+  spaceActions.changeCurrentSpace(spaceGuid);
   // TODO what happens if the space arrives before the changelistener is added?
   cfApi.fetchOrg(orgGuid);
   spaceActions.fetch(spaceGuid);
@@ -56,7 +59,7 @@ function space(orgGuid, spaceGuid, potentialPage) {
     userActions.fetchSpaceUsers(spaceGuid);
   }
   ReactDOM.render(
-    <App>
+    <App initialSpaceGuid={spaceGuid}>
       <Space
         initialSpaceGuid={ spaceGuid}
         initialOrgGuid={ orgGuid }
@@ -66,11 +69,12 @@ function space(orgGuid, spaceGuid, potentialPage) {
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
-  appActions.fetchAll(appGuid);
-
+  spaceActions.changeCurrentSpace(spaceGuid);
+  appActions.fetch(appGuid);
+  appActions.fetchStats(appGuid);
   routeActions.fetchRoutesForApp(appGuid);
   ReactDOM.render(
-    <App>
+    <App initialSpaceGuid={ spaceGuid }>
       <AppPage
         initialAppGuid={ appGuid }
       />
@@ -81,6 +85,8 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   orgActions.fetch(orgGuid);
   serviceActions.fetchAllServices(orgGuid);
   orgActions.changeCurrentOrg(orgGuid);
+  orgActions.toggleSpaceMenu(orgGuid);
+  spaceActions.changeCurrentSpace('0');
   if (serviceGuid && servicePlanGuid) {
     serviceActions.createInstanceForm(serviceGuid, servicePlanGuid);
   }

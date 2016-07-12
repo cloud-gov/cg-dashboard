@@ -14,7 +14,7 @@ function stateSetter(props) {
   const space = SpaceStore.get(props.initialSpaceGuid);
 
   return {
-    apps: space && space.apps || [],
+    apps: (space && space.apps) ? space.apps : [],
     currentOrgGuid: props.initialOrgGuid,
     currentSpaceGuid: props.initialSpaceGuid,
     loading: SpaceStore.fetching
@@ -26,7 +26,6 @@ export default class AppList extends React.Component {
     super(props);
     this.props = props;
     this.state = stateSetter(props);
-    this.state.apps = props.initialApps;
     this._onChange = this._onChange.bind(this);
     this.styler = createStyler(tableStyles);
   }

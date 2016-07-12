@@ -14,6 +14,7 @@ describe('AppStore', function() {
 
   beforeEach(() => {
     AppStore._data = Immutable.List();
+    AppStore.fetching = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -80,6 +81,7 @@ describe('AppStore', function() {
     it('should emit a change event if data was updated', function() {
       var spy = sandbox.spy(AppStore, 'emitChange');
 
+      AppStore._fetching = true;
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_RECEIVED,
         app: { guid: 'asdf' }
