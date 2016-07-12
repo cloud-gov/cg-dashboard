@@ -56,7 +56,7 @@ env:
   global:
   - CF_API=https://api.cloud.gov
   - CF_ORGANIZATION=cf
-  - CF_API_GC=https://api.cloud.gov
+  - CF_API_GC=https://api.fr.cloud.gov
   - CF_ORGANIZATION_GC=cloud-gov
   - CONSOLE_UAA_URL=https://uaa.cloud.gov/
   - CONSOLE_API_URL=https://api.cloud.gov/
