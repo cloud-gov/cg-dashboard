@@ -1,5 +1,6 @@
 ---
 inherit: ../manifest-base.yml
+domain: fr.cloud.gov
 env:
   CONSOLE_LOGIN_URL: https://login.fr.cloud.gov/
   CONSOLE_UAA_URL: https://uaa.fr.cloud.gov/
