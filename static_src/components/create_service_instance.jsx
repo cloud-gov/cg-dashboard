@@ -111,13 +111,12 @@ export default class CreateServiceInstance extends React.Component {
           </legend>
           <FormText
             classes={ ['test-create_service_instance_name'] }
-            label="Choose a name for the service"
+            label="Choose a name for the service instance"
             name="name"
             validator={ FormElement.validatorString }
           />
           <FormSelect
             classes={ ['test-create_service_instance_space'] }
-            label="Choose a name for the service"
             label="Select the space for the service instance"
             name="space"
             options={ this.state.spaces.filter((space) => {
@@ -128,6 +127,9 @@ export default class CreateServiceInstance extends React.Component {
             validator={ FormElement.validatorString }
           />
           <Button name="submit" type="submit">Create service instance</Button>
+          <p><em>
+            After you create a service instance, you can look at your space to check whether your service instance was created. (<a href="https://github.com/18F/cg-deck/issues/457">We’ll make this better.</a>) Then you can bind the service instance to an app <a href="https://docs.cloud.gov/apps/managed-services/">using the command line</a>.
+          </em></p>
           <Button name="cancel" classes={ [this.styler('button-cancel')] }
             onClickHandler={ this._onCancelForm.bind(this) }>
             Cancel

@@ -47,7 +47,7 @@ export default class SpaceList extends React.Component {
 
   get columns() {
     return [
-      { label: 'Name', key: 'name' },
+      { label: 'Space Name', key: 'name' },
       { label: 'Number of Apps', key: 'app_count' },
       { label: 'Total Development Memory', key: 'mem_dev_total' },
       { label: 'Total Production Memory', key: 'mem_prod_total' }

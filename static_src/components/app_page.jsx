@@ -3,37 +3,47 @@ import React from 'react';
 
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
+import OrgStore from '../stores/org_store.js';
+import SpaceStore from '../stores/space_store.js';
 import RouteList from './route_list.jsx';
 
 import sectionStyle from 'cloudgov-style/css/components/section.css';
 import createStyler from '../util/create_styler';
 
+function stateSetter(current) {
+
+  return {
+    app: AppStore.get(current.currentAppGuid) || {},
+    currentAppGuid: current.currentAppGuid,
+    currentOrgName: OrgStore.currentOrgName(),
+    currentSpaceName: SpaceStore.currentSpaceName(),
+    loading: AppStore.fetching
+  };
+}
+
 export default class AppPage extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      app: AppStore.get(this.props.initialAppGuid) || {},
-      currentAppGuid: this.props.initialAppGuid,
-      loading: AppStore.fetching
-    };
+    this.state = stateSetter({ currentAppGuid: this.props.initialAppGuid });
     this._onChange = this._onChange.bind(this);
     this.styler = createStyler(sectionStyle);
   }
 
   componentDidMount() {
     AppStore.addChangeListener(this._onChange);
+    OrgStore.addChangeListener(this._onChange);
+    SpaceStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     AppStore.removeChangeListener(this._onChange);
+    OrgStore.removeChangeListener(this._onChange);
+    SpaceStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
-    this.setState({
-      app: AppStore.get(this.state.currentAppGuid) || {},
-      loading: AppStore.fetching
-    });
+    this.setState(stateSetter(this.state));
   }
 
   logsLink(appName) {
@@ -48,6 +58,14 @@ export default class AppPage extends React.Component {
     return Math.round(bytes / 1000000);
   }
 
+  get fullTitle() {
+    let content = <span><strong>{ this.state.app.name }</strong> application</span>
+    if (this.state.currentSpaceName && this.state.currentOrgName) {
+      content = <span><strong>{ this.state.app.name }</strong> application in your <strong>{ this.state.currentSpaceName }</strong> space, which is in your <strong>{ this.state.currentOrgName }</strong> organization</span>;
+    }
+    return content;
+  }
+
   render() {
     let content = <h4 className="test-none_message">No app</h4>;
 
@@ -56,7 +74,7 @@ export default class AppPage extends React.Component {
     } else if (this.state.app.name) {
       content = (
         <div>
-          <h2>{ this.state.app.name }</h2>
+          <h2>{ this.fullTitle }</h2>
           <section className={this.styler('section-card')}>
             <h3>About this application</h3>
             <table>

@@ -63,7 +63,7 @@ export default class ServiceInstanceList extends React.Component {
 
   get columns() {
     return [
-      { label: 'Name', key: 'name' },
+      { label: 'Service Instance Name', key: 'name' },
       { label: 'Last operation', key: 'type' },
       { label: 'Updated at', key: 'updated_at' },
       { label: 'Delete', key: 'delete_istance' }

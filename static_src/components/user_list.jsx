@@ -38,8 +38,8 @@ export default class UserList extends React.Component {
 
   get columns() {
     const columns = [
-      { label: 'Name', key: 'username' },
-      { label: 'Permissions', key: 'permissions' },
+      { label: 'User Name', key: 'username' },
+      { label: 'Roles', key: 'permissions' },
       { label: 'Date Created', key: 'created_at' }
     ];
 

@@ -58,6 +58,12 @@ class SpaceStore extends BaseStore {
   get currentSpaceGuid() {
     return this._currentSpaceGuid;
   }
+
+  currentSpaceName() {
+    const space = this.get(this._currentSpaceGuid);
+    if (!space) return '';
+    return space.name;
+  }
 }
 
 const _SpaceStore = new SpaceStore();

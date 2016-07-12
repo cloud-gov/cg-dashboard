@@ -83,6 +83,7 @@ export default class Marketplace extends React.Component {
       <div>
         <div>
           { marketplace }
+          <p><em>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</em></p>
         </div>
         { content }
         { form }

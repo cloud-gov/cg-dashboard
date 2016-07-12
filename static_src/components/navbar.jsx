@@ -115,16 +115,6 @@ export class Nav extends React.Component {
       cgSidenavStyles['sidenav-header']
     );
 
-    if (this.state.orgs) {
-      const openOrg = this.state.orgs.find((org) => {
-        return org.space_menu_open;
-      });
-      console.log('render open', openOrg);
-      if (openOrg) {
-        console.log('render spaces', openOrg.spaces);
-      }
-    }
-
     return (
       <div className={ classNames('test-nav-primary') }>
         <ul className={ mainList }>

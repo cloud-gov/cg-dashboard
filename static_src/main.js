@@ -69,7 +69,9 @@ function space(orgGuid, spaceGuid, potentialPage) {
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
+  orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
+  spaceActions.fetch(spaceGuid);
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
   routeActions.fetchRoutesForApp(appGuid);
