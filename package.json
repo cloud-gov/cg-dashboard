@@ -2,8 +2,8 @@
   "name": "cloudgov-dashboard",
   "version": "1.0.0",
   "engines": {
-    "node": "4.2.3",
-    "npm": "2.14.x"
+    "node": "5.12.x",
+    "npm": "3.8.x"
   },
   "description": "A web dashboard for managing Cloud Foundry apps",
   "main": "null",
