@@ -40,6 +40,36 @@ describe('OrgStore', () => {
     });
   });
 
+  describe('updateOpenOrgs()', function() {
+    it('should return an array', function() {
+      var guid = 'orgguid';
+      var actual = OrgStore.updateOpenOrgs(guid);
+      expect(actual.length).toEqual(0);
+    });
+
+    it('should set the org to open', function (){
+      var guid = 'orgguid';
+      OrgStore._data = Immutable.fromJS([{ guid: guid }]);
+      var expected = [{ guid: guid, space_menu_open: true }];
+      var actual = OrgStore.updateOpenOrgs(guid);
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('should set all other orgs to not open', function () {
+      var guid = 'orgguid';
+      var initial = [{ guid: guid }, { guid: guid * 2 }, { guid: guid * 3 }];
+      var expected = [
+        { guid: guid, space_menu_open: true },
+        { guid: guid * 2, space_menu_open: false },
+        { guid: guid * 3, space_menu_open: false },
+      ];
+      OrgStore._data = Immutable.fromJS(initial);
+      var actual = OrgStore.updateOpenOrgs(guid);
+      expect(actual).toEqual(expected);
+    });
+  });
+
   describe('on orgs received', () => {
     it('should set data to passed in orgs', () => {
       var expected = wrapInRes([{guid: '1as'}, {guid: '2as'}]);
