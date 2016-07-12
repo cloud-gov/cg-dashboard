@@ -56,18 +56,26 @@ func loadUPSVars(envVars *helpers.EnvVars) {
 	// for backup of certain environment variables.
 	cfEnv, err := cfenv.Current()
 	if err != nil || cfEnv == nil {
+		fmt.Println("Warning: No Cloud Foundry Environment found")
 		return
 	}
-	if cfUPS, err := cfEnv.Services.WithName(cfUserProvidedService); err != nil {
+	fmt.Println("Cloud Foundry Environment found")
+	if cfUPS, err := cfEnv.Services.WithName(cfUserProvidedService); err == nil {
+		fmt.Println("User Provided Service found")
 		if clientID, found := cfUPS.Credentials[helpers.ClientIDEnvVar]; found {
+			fmt.Println("Replacing " + helpers.ClientIDEnvVar)
 			replaceEnvVar(envVars, helpers.ClientIDEnvVar, clientID)
 		}
 		if clientSecret, found := cfUPS.Credentials[helpers.ClientSecretEnvVar]; found {
+			fmt.Println("Replacing " + helpers.ClientSecretEnvVar)
 			replaceEnvVar(envVars, helpers.ClientSecretEnvVar, clientSecret)
 		}
 		if newRelic, found := cfUPS.Credentials[helpers.NewRelicLicenseEnvVar]; found {
+			fmt.Println("Replacing " + helpers.NewRelicLicenseEnvVar)
 			replaceEnvVar(envVars, helpers.NewRelicLicenseEnvVar, newRelic)
 		}
+	} else {
+		fmt.Println("CF Env error: " + err.Error())
 	}
 }
 
