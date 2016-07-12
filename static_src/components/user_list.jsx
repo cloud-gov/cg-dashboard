@@ -21,15 +21,19 @@ export default class UserList extends React.Component {
     this.props = props;
     this.state = {
       users: props.initialUsers,
-      userType: props.initialUserType
+      userType: props.initialUserType,
+      currentUserAccess: props.initialCurrentUserAccess
     };
     this.styler = createStyler(baseStyles, navStyles);
     this._handleDelete = this._handleDelete.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ users: nextProps.initialUsers,
-      userType: nextProps.initialUserType });
+    this.setState({
+      users: nextProps.initialUsers,
+      userType: nextProps.initialUserType,
+      currentUserAccess: nextProps.initialCurrentUserAccess
+    });
   }
 
   _handleDelete(userGuid, ev) {
@@ -90,15 +94,21 @@ export default class UserList extends React.Component {
           { this.state.users.map((user) => {
             let actions;
             if (this.props.onRemove) {
-              actions = (
-                <td column="Actions">
+              let button = <span></span>;
+              if (this.state.currentUserAccess) {
+                button = (
                   <Button
                     classes={[this.styler('usa-button-secondary')]}
                     onClickHandler={ this._handleDelete.bind(this, user.guid) }
                     label="delete">
                     <span>Remove User From Org</span>
                   </Button>
-                  </td>
+                );
+              }
+              actions = (
+                <td column="Actions" style={{ width: '14rem' }}>
+                  { button }
+                </td>
               );
             }
             return ([
@@ -107,6 +117,7 @@ export default class UserList extends React.Component {
                 <td column="Permissions" key={ `${user.guid}-role` }>
                   <UserRoleListControl
                     initialUserType={ this.state.userType }
+                    initialCurrentUserAccess={ this.state.currentUserAccess }
                     onAddPermissions={ this.props.onAddPermissions }
                     onRemovePermissions={ this.props.onRemovePermissions }
                     user={ user }
@@ -115,8 +126,8 @@ export default class UserList extends React.Component {
                 <td column="Date Created">{ formatDateTime(user.created_at) }</td>
                 { actions }
               </tr>
-            ]);
-          })}
+              ]);
+            })}
           </tbody>
         </table>
       </div>
@@ -135,6 +146,7 @@ export default class UserList extends React.Component {
 UserList.propTypes = {
   initialUsers: React.PropTypes.array,
   initialUserType: React.PropTypes.string,
+  initialCurrentUserAccess: React.PropTypes.bool,
   // Set to a function when there should be a remove button.
   onRemove: React.PropTypes.func,
   onRemovePermissions: React.PropTypes.func,
@@ -143,5 +155,6 @@ UserList.propTypes = {
 
 UserList.defaultProps = {
   initialUsers: [],
-  initialUserType: 'space_users'
+  initialUserType: 'space_users',
+  initialCurrentUserAccess: false
 };

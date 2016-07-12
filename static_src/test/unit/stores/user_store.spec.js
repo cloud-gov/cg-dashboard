@@ -15,6 +15,7 @@ describe('UserStore', function() {
 
   beforeEach(() => {
     UserStore._data = Immutable.List();
+    UserStore._currentUserGuid = null;
     sandbox = sinon.sandbox.create();
   });
 
@@ -432,6 +433,36 @@ describe('UserStore', function() {
     });
   });
 
+  describe('on current user info received', function() {
+    it('should emit a change event if user found', function() {
+      const userGuid = 'zxsdkfjasdfladsf';
+      const user = { user_id: userGuid, user_name: 'mr' };
+      const existingUser = { guid: userGuid };
+      const spy = sandbox.spy(UserStore, 'emitChange');
+      userActions.receivedCurrentUserInfo(user);
+
+      expect(spy).not.toHaveBeenCalled();
+
+      UserStore._data = Immutable.fromJS([existingUser]);
+      userActions.receivedCurrentUserInfo(user);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should set the currentUser to user object if exists', function() {
+      const userGuid = 'zxsdkfjasdfladsf';
+      const currentUserInfo = { user_id: userGuid, user_name: 'mr' };
+      const existingUser = { guid: userGuid };
+      UserStore._data = Immutable.fromJS([existingUser]);
+
+      userActions.receivedCurrentUserInfo(currentUserInfo);
+
+      const actual = UserStore.currentUser;
+
+      expect(actual).toEqual(existingUser);
+    });
+  });
+
   describe('getAllInSpace()', function() {
     // TODO possibly move this functionality to shared place.
     it('should find all user that have the space guid passed in', function() {
@@ -443,6 +474,69 @@ describe('UserStore', function() {
       let actual = UserStore.getAllInSpace(spaceGuid);
 
       expect(actual[0]).toEqual(testUser);
+    });
+  });
+
+  describe('currentUserHasSpaceRole()', function() {
+    it('should call _hasRole() with role and userType of space', function() {
+      const spy = sandbox.spy(UserStore, '_hasRole');
+      const testRole = 'space';
+
+      UserStore.currentUserHasSpaceRole(testRole);
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(testRole, 'space_roles');
+    });
+  });
+
+  describe('currentUserHasOrgRole()', function() {
+    it('should call _hasRole() with role and userType of org', function() {
+      const spy = sandbox.spy(UserStore, '_hasRole');
+      const testRole = 'person';
+
+      UserStore.currentUserHasOrgRole(testRole);
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith(testRole, 'organization_roles');
+    });
+  });
+
+  describe('_hasRole()', function() {
+    it('should return false if user not found', function() {
+      const role = 'test';
+      UserStore._currentUserGuid = 'alkdsjf';
+      const actual = UserStore._hasRole(role, 'organization_roles');
+
+      expect(actual).toBeFalsy();
+    });
+
+    it('should return false if user doesn\'t have role', function() {
+      const userGuid = 'adfadsfa';
+      const user = { guid: userGuid, user_name: 'poop', organization_roles: [
+        'iron_throne_manager']};
+      const role = 'vale_manager';
+
+      UserStore._currentUserGuid = userGuid;
+      UserStore.push(user);
+
+      const actual = UserStore._hasRole(role, 'organization_roles');
+
+      expect(actual).toBeFalsy();
+    });
+
+    it('should true if it finds the role on the user', function() {
+      const role = 'highgarden_manager';
+      const userGuid = 'adfadsfa';
+      const user = { guid: userGuid, user_name: 'poop', organization_roles: [
+        'iron_throne_manager', role]};
+
+      UserStore._currentUserGuid = userGuid;
+      UserStore.push(user);
+
+      const actual = UserStore._hasRole(role, 'organization_roles');
+
+      expect(actual).toBeTruthy();
+
     });
   });
 

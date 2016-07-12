@@ -120,5 +120,13 @@ export default {
       type: userActionTypes.USER_CHANGE_VIEWED_TYPE,
       userType
     });
+  },
+
+  receivedCurrentUserInfo(user) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.CURRENT_USER_INFO_RECEIVED,
+      currentUser: user
+    });
   }
+
 };

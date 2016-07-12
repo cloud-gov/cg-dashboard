@@ -31,6 +31,7 @@ class UserStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = new Immutable.List();
     this._currentViewedType = 'space_users';
+    this._currentUserGuid = null;
     this._error = null;
   }
 
@@ -194,6 +195,15 @@ class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.CURRENT_USER_INFO_RECEIVED: {
+        const user = this.get(action.currentUser.user_id);
+        if (user) {
+          this._currentUserGuid = user.guid;
+          this.emitChange();
+        }
+        break;
+      }
+
       case userActionTypes.USER_CHANGE_VIEWED_TYPE: {
         if (this._currentViewedType !== action.userType) {
           this._currentViewedType = action.userType;
@@ -238,6 +248,24 @@ class UserStore extends BaseStore {
 
   get currentlyViewedType() {
     return this._currentViewedType;
+  }
+
+  _hasRole(roleToCheck, userType) {
+    const user = this.currentUser;
+    if (!user) return false;
+    return !!(user[userType].find((role) => role === roleToCheck));
+  }
+
+  currentUserHasSpaceRole(role) {
+    return this._hasRole(role, 'space_roles');
+  }
+
+  currentUserHasOrgRole(role) {
+    return this._hasRole(role, 'organization_roles');
+  }
+
+  get currentUser() {
+    return this.get(this._currentUserGuid);
   }
 
 }

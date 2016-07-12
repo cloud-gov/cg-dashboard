@@ -283,4 +283,19 @@ describe('userActions', function() {
         expectedParams);
     });
   });
+
+  describe('receivedCurrentUserInfo()', function() {
+    it('should call a server action with user object passed in', function() {
+      const user = { user_id: 'zcxvkjadsuf', user_name: 'john' };
+      const expectedParams = {
+        currentUser: user
+      };
+      let spy = setupServerSpy(sandbox);
+
+      userActions.receivedCurrentUserInfo(user);
+
+      assertAction(spy, userActionTypes.CURRENT_USER_INFO_RECEIVED,
+        expectedParams);
+    });
+  });
 });
