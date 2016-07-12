@@ -49,7 +49,6 @@ export class Nav extends React.Component {
   }
 
   _handleOverviewClick() {
-    // orgActions.changeCurrentOrg('0');
     orgActions.toggleSpaceMenu('0');
     spaceActions.changeCurrentSpace('0');
   }
