@@ -2,8 +2,8 @@
   "name": "cloudgov-dashboard",
   "version": "1.0.0",
   "engines": {
-    "node": "5.12.x",
-    "npm": "3.8.x"
+    "node": "6.x.x",
+    "npm": "3.x.x"
   },
   "description": "A web dashboard for managing Cloud Foundry apps",
   "main": "null",
@@ -104,5 +104,8 @@
     "url-loader": "^0.5.7",
     "watch": "^0.16.0",
     "webpack": "^1.12.9"
+  },
+  "devDependencies": {
+    "karma-webpack": "^1.7.0"
   }
 }

@@ -18,7 +18,7 @@ Learn more about [cloud.gov](https://cloud.gov).
 - `Go` (version 1.6.2)
 
 ### Front end application [![JS Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)
-- `Node` (version 5.12.0)
+- `Node` (version 6.x.x)
 - `React` (version ^0.14.0)
 
 ## Setup
