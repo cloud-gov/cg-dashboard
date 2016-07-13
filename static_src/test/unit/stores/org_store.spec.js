@@ -216,4 +216,25 @@ describe('OrgStore', () => {
       expect(OrgStore.get(expected.guid).space_menu_open).toEqual(true);
     });
   });
+
+  describe('get currentOrgName()', function() {
+    it('should return emtpy string if no org', function() {
+      const actual = OrgStore.currentOrgName;
+
+      expect(actual).toEqual('');
+    });
+
+    it('should return org name if org', function() {
+      const guid = 'zmn,vweiqodnjt7';
+      const expected = 'orgname';
+      const org = { guid: guid, name: expected };
+
+      OrgStore.push(org);
+      OrgStore._currentOrgGuid = guid;
+
+      const actual = OrgStore.currentOrgName;
+
+      expect(actual).toEqual(expected);
+    });
+  });
 });

@@ -99,6 +99,12 @@ class OrgStore extends BaseStore {
     return this._currentOrgGuid;
   }
 
+  get currentOrgName() {
+    const org = this.get(this._currentOrgGuid);
+    if (!org) return '';
+    return org.name;
+  }
+
   updateOpenOrgs(openOrgGuid) {
     const allOrgs = this.getAll();
     const updates = allOrgs.map((org) => {

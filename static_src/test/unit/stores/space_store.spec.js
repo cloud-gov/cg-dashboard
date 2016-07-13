@@ -148,4 +148,25 @@ describe('SpaceStore', function() {
       expect(actual).toEqual(spaceGuid);
     });
   });
+
+  describe('get currentSpaceName()', function() {
+    it('should return emtpy string if no space', function() {
+      const actual = SpaceStore.currentSpaceName;
+
+      expect(actual).toEqual('');
+    });
+
+    it('should return space name if space', function() {
+      const guid = 'zmn,vweiqodnjt7';
+      const expected = 'spacename';
+      const space = { guid: guid, name: expected };
+
+      SpaceStore.push(space);
+      SpaceStore._currentSpaceGuid = guid;
+
+      const actual = SpaceStore.currentSpaceName;
+
+      expect(actual).toEqual(expected);
+    });
+  });
 });

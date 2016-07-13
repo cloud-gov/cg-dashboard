@@ -61,7 +61,7 @@ export default class AppList extends React.Component {
 
   get columns() {
     return [
-      { label: 'Name', key: 'name' },
+      { label: 'App Name', key: 'name' },
       { label: 'Buildpack', key: 'detected_buildpack' },
       { label: 'Memory', key: 'memory' },
       { label: 'Instances', key: 'instances' },

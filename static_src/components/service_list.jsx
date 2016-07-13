@@ -27,7 +27,7 @@ export default class ServiceList extends React.Component {
 
   get columns() {
     const columns = [
-      { label: 'Name', key: 'label' },
+      { label: 'Service Name', key: 'label' },
       { label: 'Description', key: 'description' },
       { label: 'Date Created', key: 'created_at' }
     ];
