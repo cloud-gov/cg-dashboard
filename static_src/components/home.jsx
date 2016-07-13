@@ -1,13 +1,13 @@
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
-import baseStyle from 'cloudgov-style/css/base.css';
 import createStyler from '../util/create_styler';
 
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.styler = createStyler(baseStyle);
+    this.styler = createStyler(style);
   }
 
   render() {

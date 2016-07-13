@@ -3,15 +3,14 @@
  * Renders a list of service plans
  */
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 import Reactable from 'reactable';
 
 import Button from './button.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
-
 import createStyler from '../util/create_styler';
-import tableStyles from 'cloudgov-style/css/base.css';
 
 function stateSetter(serviceGuid) {
   return {
@@ -29,7 +28,7 @@ export default class ServicePlanList extends React.Component {
     };
     this._onChange = this._onChange.bind(this);
     this._handleAdd = this._handleAdd.bind(this);
-    this.styler = createStyler(tableStyles);
+    this.styler = createStyler(style);
   }
 
   componentWillReceiveProps(nextProps) {

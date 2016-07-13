@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import styles from '../css/main.css';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import classNames from 'classnames';
 
@@ -19,7 +19,7 @@ export default class Dropdown extends React.Component {
 
   render() {
     var id = 'dropdown-' + this.props.title,
-        classes = classNames(styles.dropdown, this.props.classes, {
+        classes = classNames(style.dropdown, this.props.classes, {
           'open': !!this.state.open
         });
 

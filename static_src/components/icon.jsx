@@ -1,8 +1,7 @@
 
 import classNames from 'classnames';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
-
-import styles from 'cloudgov-style/css/components/icon.css';
 
 export default class Icon extends React.Component {
   constructor(props) {
@@ -16,11 +15,11 @@ export default class Icon extends React.Component {
   }
 
   render() {
-    var iconClasses = classNames(styles.icon,
-        styles[`icon-${ this.props.styleType }`]);
+    var iconClasses = classNames(style.icon,
+        style[`icon-${ this.props.styleType }`]);
 
     return (
-      <div className={ styles['icon-container'] }>
+      <div className={ style['icon-container'] }>
         <svg className={ iconClasses }>
           <use
             xlinkHref={ this.getImagePath(this.props.name) }>

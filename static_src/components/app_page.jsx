@@ -1,11 +1,11 @@
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import RouteList from './route_list.jsx';
 
-import sectionStyle from 'cloudgov-style/css/components/section.css';
 import createStyler from '../util/create_styler';
 
 export default class AppPage extends React.Component {
@@ -18,7 +18,7 @@ export default class AppPage extends React.Component {
       loading: AppStore.fetching
     };
     this._onChange = this._onChange.bind(this);
-    this.styler = createStyler(sectionStyle);
+    this.styler = createStyler(style);
   }
 
   componentDidMount() {

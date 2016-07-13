@@ -1,10 +1,10 @@
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import formatDateTime from '../util/format_date';
 
 import createStyler from '../util/create_styler';
-import baseStyle from 'cloudgov-style/css/base.css';
 
 import Button from './button.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
@@ -30,7 +30,7 @@ export default class ServiceInstanceList extends React.Component {
     this._handleDeleteConfirmation = this._handleDeleteConfirmation.bind(this);
     this._handleDeleteCancel = this._handleDeleteCancel.bind(this);
     this.renderConfirmationBox = this.renderConfirmationBox.bind(this);
-    this.styler = createStyler(baseStyle);
+    this.styler = createStyler(style);
   }
 
   componentDidMount() {
