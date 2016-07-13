@@ -18,18 +18,22 @@ if [[ "$TRAVIS_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)? ]]
 then
 	CF_MANIFEST="manifest-prod.yml"
 	CF_SPACE="deck-prod"
+	CF_APP="cf-deck"
 elif [ "$TRAVIS_BRANCH" == "master" ]
 then
 	CF_MANIFEST="manifest-master.yml"
 	CF_SPACE="deck-stage"
+	CF_APP="cf-deck"
 elif [ "$TRAVIS_BRANCH" == "staging" ]
 then
 	CF_MANIFEST="manifest-staging.yml"
 	CF_SPACE="deck-stage"
+	CF_APP="cf-deck-staging"
 elif [ "$TRAVIS_BRANCH" == "deprecated" ]
 then
 	CF_MANIFEST="manifest-deprecated.yml"
 	CF_SPACE="deck-prod"
+	CF_APP="cg-deck"
 else
   exit
 fi
@@ -47,7 +51,7 @@ $CF_BIN auth $CF_USERNAME $CF_PASSWORD && $CF_BIN target -o $CF_ORGANIZATION -s 
 # Set manifest path for eastwest
 MANIFEST_PATH=manifests/eastwest/$CF_MANIFEST
 # Run autopilot plugin
-$CF_BIN zero-downtime-push cf-deck -f $MANIFEST_PATH -p $CF_PATH
+$CF_BIN zero-downtime-push $CF_APP -f $MANIFEST_PATH -p $CF_PATH
 
 # Log in to govcloud
 $CF_BIN api $CF_API_GC
