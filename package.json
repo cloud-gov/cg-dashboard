@@ -85,7 +85,7 @@
     "karma-phantomjs2-launcher": "^0.3.2",
     "karma-sinon": "^1.0.4",
     "karma-sourcemap-loader": "^0.3.5",
-    "karma-webpack": "^1.7.0"
+    "karma-webpack": "^1.7.0",
     "keymirror": "^0.1.1",
     "moment-timezone": "^0.5.4",
     "node-libs-browser": "^0.5.2",
