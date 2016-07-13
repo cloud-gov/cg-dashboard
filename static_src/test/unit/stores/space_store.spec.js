@@ -149,9 +149,9 @@ describe('SpaceStore', function() {
     });
   });
 
-  describe('currentSpaceName()', function() {
+  describe('get currentSpaceName()', function() {
     it('should return emtpy string if no space', function() {
-      const actual = SpaceStore.currentSpaceName();
+      const actual = SpaceStore.currentSpaceName;
 
       expect(actual).toEqual('');
     });
@@ -164,7 +164,7 @@ describe('SpaceStore', function() {
       SpaceStore.push(space);
       SpaceStore._currentSpaceGuid = guid;
 
-      const actual = SpaceStore.currentSpaceName();
+      const actual = SpaceStore.currentSpaceName;
 
       expect(actual).toEqual(expected);
     });

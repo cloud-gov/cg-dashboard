@@ -217,9 +217,9 @@ describe('OrgStore', () => {
     });
   });
 
-  describe('currentOrgName()', function() {
+  describe('get currentOrgName()', function() {
     it('should return emtpy string if no org', function() {
-      const actual = OrgStore.currentOrgName();
+      const actual = OrgStore.currentOrgName;
 
       expect(actual).toEqual('');
     });
@@ -232,7 +232,7 @@ describe('OrgStore', () => {
       OrgStore.push(org);
       OrgStore._currentOrgGuid = guid;
 
-      const actual = OrgStore.currentOrgName();
+      const actual = OrgStore.currentOrgName;
 
       expect(actual).toEqual(expected);
     });

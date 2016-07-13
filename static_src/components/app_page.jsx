@@ -15,8 +15,8 @@ function stateSetter(current) {
   return {
     app: AppStore.get(current.currentAppGuid) || {},
     currentAppGuid: current.currentAppGuid,
-    currentOrgName: OrgStore.currentOrgName(),
-    currentSpaceName: SpaceStore.currentSpaceName(),
+    currentOrgName: OrgStore.currentOrgName,
+    currentSpaceName: SpaceStore.currentSpaceName,
     loading: AppStore.fetching
   };
 }

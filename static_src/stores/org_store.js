@@ -99,7 +99,7 @@ class OrgStore extends BaseStore {
     return this._currentOrgGuid;
   }
 
-  currentOrgName() {
+  get currentOrgName() {
     const org = this.get(this._currentOrgGuid);
     if (!org) return '';
     return org.name;

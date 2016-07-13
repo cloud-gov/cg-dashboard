@@ -59,7 +59,7 @@ class SpaceStore extends BaseStore {
     return this._currentSpaceGuid;
   }
 
-  currentSpaceName() {
+  get currentSpaceName() {
     const space = this.get(this._currentSpaceGuid);
     if (!space) return '';
     return space.name;
