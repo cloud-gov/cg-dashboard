@@ -9,7 +9,7 @@
 
 ### Updating version number
 
-Numbers are chosen based on whether the code changes will cause a breaking APIV
+Numbers are chosen based on whether the code changes will cause a breaking API
 change or not. Version numbers do not follow traditional semver, as this
 codebase isn't a library that's consumed but a user interface. Instead, breaking
 api changes should be a major change while all other changes can be a minor
@@ -27,10 +27,13 @@ change the version:
 
 ### Manual testing
 
-Currently, the site does not have visual regression testing so much be manually
+Currently, the site does not have visual regression testing so must be manually
 tested for breaking visual changes. Here is a simple script to assist in manual
 testing. Generally, it's best to look through all the pages and check if anything
-looks off.
+looks off. Testing shoudl generally be done on the master environment,
+dashboard-master.cloud.gov, when all the necessary code is on the master branch
+and has been deployed. To check that the master branch has been deployed, check
+travis CI.
 
 #### Script
 
@@ -77,7 +80,7 @@ and the `testSpace01` space.
 ## Tagging
 
 Once the site looks OK and ready to deploy, tagging a commit in git will trigger
-the deploy process to production.
+the deploy process to production, dashboard.cloud.gov.
 
 On the master branch:
 
