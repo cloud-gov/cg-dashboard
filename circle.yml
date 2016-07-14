@@ -15,28 +15,16 @@ dependencies:
     - go version
     - go get github.com/Masterminds/glide
     - mkdir -p /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && cp -R /home/ubuntu/cg-deck/* /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck
-    - glide install:
-      pwd:
-        "/home/ubuntu/.go_workspace/src/github.com/18F/cg-deck"
-    - npm install:
-      pwd:
-        "/home/ubuntu/.go_workspace/src/github.com/18F/cg-deck"
+    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && glide install
+    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && npm install
   override:
-    - go build:
-      pwd:
-        "/home/ubuntu/.go_workspace/src/github.com/18F/cg-deck"
-    - npm run build:
-      pwd:
-        "/home/ubuntu/.go_workspace/src/github.com/18F/cg-deck"
+    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && go build
+    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && npm run build
 test:
   pre:
     - go get github.com/axw/gocov/gocov
     - go get github.com/mattn/goveralls
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   override:
-    - ./codecheck.sh:
-      pwd:
-        "/home/ubuntu/.go_workspace/src/github.com/18F/cg-deck"
-    - npm test:
-      pwd:
-        "/home/ubuntu/.go_workspace/src/github.com/18F/cg-deck"
+    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && ./codecheck.sh
+    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && npm test
