@@ -67,15 +67,5 @@ describe('uaaApi', function() {
         done();
       });
     });
-
-    it('should call a fetch error on failure', function() {
-      var spy = fetchErrorSetup();
-
-      uaaApi.fetchUserInfo().then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        expect(spy).toHaveBeenCalledWith(errorFetchRes);
-        done();
-      });
-    });
   });
 });
