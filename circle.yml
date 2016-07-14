@@ -2,7 +2,7 @@ machine:
   environment:
     GODIST: "go1.6.linux-amd64.tar.gz"
   post:
-    - cd cg-deck && nvm use && nvm alias default $(nvm current)
+    - cd cg-deck && nvm install && nvm use && nvm alias default $(nvm current)
     - mkdir -p download
     - test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
     - sudo rm -rf /usr/local/go
