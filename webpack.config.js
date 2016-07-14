@@ -1,5 +1,6 @@
 
 const path = require('path');
+const webpack = require('webpack');
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
@@ -69,7 +70,12 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin('style.css', { allChunks: true })
+    new ExtractTextPlugin('style.css', { allChunks: true }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+      }
+    })
   ],
 
   publicPath: './static'

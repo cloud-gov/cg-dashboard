@@ -3,6 +3,8 @@ import { Dispatcher } from 'flux';
 
 import { trackAction } from './util/analytics';
 
+const PRODUCTION = ('production' === process.env.NODE_ENV);
+
 function logAction(action) {
   console.log('::action::', action);
 }
@@ -20,7 +22,7 @@ class AppDispatcher extends Dispatcher {
     const action = addSourceType(srcAction, 'VIEW_ACTION');
     this.dispatch(action);
     logAction(action);
-    trackAction(action);
+    if (PRODUCTION) trackAction(action);
   }
 
   // UI actions are things like clicking to expand a menu
@@ -29,7 +31,7 @@ class AppDispatcher extends Dispatcher {
     const action = addSourceType(srcAction, 'UI_ACTION');
     this.dispatch(action);
     logAction(action);
-    trackAction(action);
+    if (PRODUCTION) trackAction(action);
   }
 
   // Server actions come from the network/API
@@ -37,7 +39,7 @@ class AppDispatcher extends Dispatcher {
     const action = addSourceType(srcAction, 'SERVER_ACTION');
     this.dispatch(action);
     logAction(action);
-    trackAction(action);
+    if (PRODUCTION) trackAction(action);
   }
 }
 
