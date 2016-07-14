@@ -3,16 +3,14 @@
  * Renders a list of users.
  */
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import formatDateTime from '../util/format_date';
 
 import Button from './button.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
-
 import createStyler from '../util/create_styler';
-import baseStyles from 'cloudgov-style/css/base.css';
-import navStyles from 'cloudgov-style/css/components/nav.css';
 
 
 export default class UserList extends React.Component {
@@ -24,7 +22,7 @@ export default class UserList extends React.Component {
       userType: props.initialUserType,
       currentUserAccess: props.initialCurrentUserAccess
     };
-    this.styler = createStyler(baseStyles, navStyles);
+    this.styler = createStyler(style);
     this._handleDelete = this._handleDelete.bind(this);
   }
 

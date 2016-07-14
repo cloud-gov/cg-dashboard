@@ -1,4 +1,5 @@
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import dedent from 'dedent';
 import React from 'react';
 import Reactable from 'reactable';
@@ -6,7 +7,6 @@ import Reactable from 'reactable';
 import createStyler from '../util/create_styler';
 import Loading from './loading.jsx';
 import SpaceStore from '../stores/space_store.js';
-import tableStyles from 'cloudgov-style/css/base.css';
 
 const unsafe = Reactable.unsafe;
 
@@ -27,7 +27,7 @@ export default class AppList extends React.Component {
     this.props = props;
     this.state = stateSetter(props);
     this._onChange = this._onChange.bind(this);
-    this.styler = createStyler(tableStyles);
+    this.styler = createStyler(style);
   }
 
   componentDidMount() {

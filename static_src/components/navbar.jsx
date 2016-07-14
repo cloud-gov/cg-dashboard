@@ -1,10 +1,8 @@
 
-import classNames from 'classnames';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
-import cgBaseStyles from 'cloudgov-style/css/base.css';
-import cgSidenavStyles from 'cloudgov-style/css/components/sidenav.css';
-
+import createStyler from '../util/create_styler';
 import spaceActions from '../actions/space_actions.js';
 import orgActions from '../actions/org_actions.js';
 import OrgStore from '../stores/org_store.js';
@@ -30,6 +28,7 @@ export class Nav extends React.Component {
       currentSpace: SpaceStore.get(this.props.initialSpaceGuid),
       orgs: OrgStore.getAll() || []
     };
+    this.styler = createStyler(style);
     this._onChange = this._onChange.bind(this);
     this._handleOverviewClick = this._handleOverviewClick.bind(this);
   }
@@ -86,51 +85,27 @@ export class Nav extends React.Component {
   }
 
   render() {
-    const mainList = classNames(
-      cgBaseStyles['usa-sidenav-list'],
-      cgSidenavStyles['sidenav-list'], cgSidenavStyles['sidenav-level-one']
-    );
-    const secondList = classNames(
-      cgBaseStyles['usa-sidenav-list'],
-      cgSidenavStyles['sidenav-list'],
-      cgSidenavStyles['sidenav-level-two']
-    );
-    const thirdList = classNames(
-      cgSidenavStyles['sidenav-list'],
-      cgBaseStyles['usa-sidenav-sub_list'],
-      cgSidenavStyles['sidenav-level-three']
-    );
-    const downArrow = classNames(
-      cgSidenavStyles['menu-arrow'],
-      cgSidenavStyles['sidenav-arrow'],
-      cgSidenavStyles['sidenav-arrow-down']
-    );
-    const rightArrow = classNames(
-      cgSidenavStyles['menu-arrow'],
-      cgSidenavStyles['sidenav-arrow'],
-      cgSidenavStyles['sidenav-arrow-right']
-    );
-    const subMenu = classNames('sub-menu');
-    const header = classNames(
-      cgSidenavStyles['sidenav-header']
-    );
+    const mainList = this.styler('usa-sidenav-list', 'sidenav-list', 'sidenav-level-one');
+    const secondList = this.styler('usa-sidenav-list', 'sidenav-list', 'sidenav-level-two');
+    const thirdList = this.styler('sidenav-list', 'usa-sidenav-sub_list', 'sidenav-level-three');
+    const downArrow = this.styler('menu-arrow', 'sidenav-arrow', 'sidenav-arrow-down');
+    const rightArrow = this.styler('menu-arrow', 'sidenav-arrow', 'sidenav-arrow-right');
+    const header = this.styler('sidenav-header');
 
     return (
-      <div className={ classNames('test-nav-primary') }>
+      <div className={ this.styler('test-nav-primary') }>
         <ul className={ mainList }>
-          <li key="overview" className={cgSidenavStyles['sidenav-entity']}>
+          <li key="overview" className={ this.styler('sidenav-entity') }>
             <a href="/#" onClick={this._handleOverviewClick}>Overview</a>
           </li>
-          <li key="organizations" className={classNames(
-              cgSidenavStyles['sidenav-header'])}>
-            <span className={cgSidenavStyles['sidenav-header-text']}>
+          <li key="organizations" className={ this.styler('sidenav-header') }>
+            <span className={ this.styler('sidenav-header-text') }>
               Organizations</span>
           </li>
         { this.state.orgs.map((org) => {
           let toggleSpaceHandler = this._toggleSpacesMenu.bind(this, org.guid);
           let arrowClasses = (org.space_menu_open) ? downArrow : rightArrow;
-          let activeOrgClasses = (org.space_menu_open) ?
-            cgSidenavStyles['sidenav-active'] : '';
+          let activeOrgClasses = (org.space_menu_open) ? this.styler('sidenav-active') : '';
           let subList = <div></div>;
 
           if (org.space_menu_open) {
@@ -138,13 +113,13 @@ export class Nav extends React.Component {
               <ul className={ secondList }>
                 <li className={ header }>
                   <a href={ this.orgHref(org) }>
-                    <span className={cgSidenavStyles['sidenav-header-text']}>
+                    <span className={ this.styler('sidenav-header-text') }>
                       Spaces</span>
                   </a>
                   <ul className={ thirdList }>
                     { org.spaces.map((space) => {
                       let activeSpaceClasses = (this.isCurrentSpace(space.guid)) ?
-                          cgSidenavStyles['sidenav-active'] : '';
+                          this.styler('sidenav-active') : '';
                       return (
                         <li key={ space.guid } className={activeSpaceClasses}>
                           <a href={ this.spaceHref(org, space.guid) }>
@@ -155,7 +130,7 @@ export class Nav extends React.Component {
                     })}
                   </ul>
                 </li>
-                <li className={cgSidenavStyles.marketplace}>
+                <li className={ this.styler('marketplace') }>
                   <a href={ this.marketplaceHref(org) }>Marketplace</a>
                 </li>
               </ul>

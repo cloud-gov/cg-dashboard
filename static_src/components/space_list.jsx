@@ -1,10 +1,10 @@
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import OrgStore from '../stores/org_store';
 
 import createStyler from '../util/create_styler';
-import tableStyles from 'cloudgov-style/css/base.css';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
@@ -24,7 +24,7 @@ export default class SpaceList extends React.Component {
     this.state = { rows: [], currentOrgGuid: this.props.initialOrgGuid };
     this._onChange = this._onChange.bind(this);
     this.spaceLink = this.spaceLink.bind(this);
-    this.styler = createStyler(tableStyles);
+    this.styler = createStyler(style);
   }
 
   componentDidMount() {

@@ -1,10 +1,10 @@
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import RouteStore from '../stores/route_store.js';
 
 import createStyler from '../util/create_styler';
-import tableStyles from 'cloudgov-style/css/base.css';
 
 function stateSetter(appGuid) {
   const routes = RouteStore.getAll();
@@ -21,7 +21,7 @@ export default class RouteList extends React.Component {
     this.props = props;
     this.state = stateSetter(props.initialAppGuid);
     this._onChange = this._onChange.bind(this);
-    this.styler = createStyler(tableStyles);
+    this.styler = createStyler(style);
   }
 
   componentDidMount() {

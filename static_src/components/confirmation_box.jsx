@@ -3,11 +3,10 @@
  * A component that renders a box with a different style and background
  */
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
-import actionStyles from 'cloudgov-style/css/components/actions.css';
-import baseStyles from 'cloudgov-style/css/base.css';
 
 import Button from './button.jsx';
 
@@ -16,7 +15,7 @@ export default class ConfirmationBox extends React.Component {
     super(props);
     this.props = props;
     this.state = {};
-    this.styler = createStyler(actionStyles, baseStyles);
+    this.styler = createStyler(style);
     this._confirmHandler = this._confirmHandler.bind(this);
     this._cancelHandler = this._cancelHandler.bind(this);
   }
@@ -54,4 +53,3 @@ ConfirmationBox.defaultProps = {
   confirmHandler: (ev) => { console.log('confirm ev', ev); },
   cancelHandler: (ev) => { console.log('cancel ev', ev); }
 };
-

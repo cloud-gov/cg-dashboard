@@ -1,4 +1,5 @@
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import AppStore from '../stores/app_store.js';
@@ -7,7 +8,6 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import RouteList from './route_list.jsx';
 
-import sectionStyle from 'cloudgov-style/css/components/section.css';
 import createStyler from '../util/create_styler';
 
 function stateSetter(current) {
@@ -27,7 +27,7 @@ export default class AppPage extends React.Component {
     this.props = props;
     this.state = stateSetter({ currentAppGuid: this.props.initialAppGuid });
     this._onChange = this._onChange.bind(this);
-    this.styler = createStyler(sectionStyle);
+    this.styler = createStyler(style);
   }
 
   componentDidMount() {

@@ -2,6 +2,7 @@
  * Renders the form to create a service instance
  */
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -12,8 +13,6 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
-import actionStyle from 'cloudgov-style/css/components/actions.css';
-import baseStyle from 'cloudgov-style/css/base.css';
 import createStyler from '../util/create_styler';
 
 function stateSetter() {
@@ -35,7 +34,7 @@ export default class CreateServiceInstance extends React.Component {
     this._onValidateForm = this._onValidateForm.bind(this);
     this._onValidForm = this._onValidForm.bind(this);
     this._onCancelForm = this._onCancelForm.bind(this);
-    this.styler = createStyler(actionStyle, baseStyle);
+    this.styler = createStyler(style);
   }
 
   componentDidMount() {

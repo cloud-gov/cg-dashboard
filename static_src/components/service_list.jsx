@@ -3,12 +3,11 @@
  * Renders a list of services
  */
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import ServicePlanList from './service_plan_list.jsx';
-
 import createStyler from '../util/create_styler';
-import tableStyles from 'cloudgov-style/css/base.css';
 
 
 export default class ServiceList extends React.Component {
@@ -18,7 +17,7 @@ export default class ServiceList extends React.Component {
     this.state = {
       services: props.initialServices
     };
-    this.styler = createStyler(tableStyles);
+    this.styler = createStyler(style);
   }
 
   componentWillReceiveProps(nextProps) {

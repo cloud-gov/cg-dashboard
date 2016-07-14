@@ -1,19 +1,16 @@
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import LoginStore from '../stores/login_store.js';
 
 import createStyler from '../util/create_styler';
 
-import headerStyle from 'cloudgov-style/css/components/header.css';
-import navStyle from 'cloudgov-style/css/components/nav.css';
-import logoStyle from 'cloudgov-style/css/components/logo.css';
-
 export default class Header extends React.Component {
 
   constructor(props) {
     super(props);
-    this.styler = createStyler(headerStyle, navStyle, logoStyle);
+    this.styler = createStyler(style);
   }
 
   getImagePath(iconName) {
