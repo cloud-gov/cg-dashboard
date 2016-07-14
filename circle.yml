@@ -9,10 +9,14 @@ machine:
     - sudo tar -C /usr/local -xzf download/$GODIST
 
 dependencies:
-  override:
+  pre:
     - go version
     - go get github.com/Masterminds/glide
-    - mkdir -p /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && cp -R /home/ubuntu/cg-deck/* /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && go build
+    - mkdir -p /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && cp -R /home/ubuntu/cg-deck/* /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck
+    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && glide install && npm install
+  override:
+    - go build
+    - npm run build
 test:
   pre:
     - go get github.com/axw/gocov/gocov
