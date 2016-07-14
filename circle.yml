@@ -14,7 +14,7 @@ dependencies:
   pre:
     - go version
     - go get github.com/Masterminds/glide
-    - mkdir -p /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && cp -R /home/ubuntu/cg-deck/* /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck
+    - mkdir -p /home/ubuntu/.go_workspace/src/github.com/18F && mv /home/ubuntu/cg-deck /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck
     - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && glide install
     - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && npm install
   override:
