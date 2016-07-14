@@ -133,27 +133,27 @@ export default class AppPage extends React.Component {
             <table>
               <tbody>
                 <tr>
-                  <td><strong>Name</strong></td>
+                  <th scope="row">Name</th>
                   <td>{ this.state.app.name }</td>
                 </tr>
                 <tr>
-                  <td><strong>State</strong></td>
+                  <th scope="row">State</th>
                   <td>{ this.state.app.state }</td>
                 </tr>
                 <tr>
-                  <td><strong>Last push</strong></td>
+                  <th scope="row">Last push</th>
                   <td>{ this.state.app.package_updated_at }</td>
                 </tr>
                 <tr>
-                  <td><strong>Buildpack</strong></td>
+                  <th scope="row">Buildpack</th>
                   <td>{ this.state.app.buildpack }</td>
                 </tr>
                 <tr>
-                  <td><strong>Memory usage</strong></td>
+                  <th scope="row"><strong>Memory usage</strong></th>
                   <td>{ this.memoryUsage }</td>
                 </tr>
                 <tr>
-                  <td><strong>Disk usage</strong></td>
+                  <th scope="row"><strong>Disk usage</strong></th>
                   <td>{ this.diskUsage }</td>
                 </tr>
               </tbody>
