@@ -108,7 +108,7 @@ describe('RouteStore', function() {
         domain: wrapInRes([domain])[0]
       });
 
-      const expected = Object.assign({}, existingRoute, { domain: domain });
+      const expected = Object.assign({}, existingRoute, { domain: domain.name });
       const actual = RouteStore.get(existingRoute.guid);
 
       expect(actual).toEqual(expected);

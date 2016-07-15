@@ -335,4 +335,62 @@ describe('BaseStore', () => {
       });
     });
   });
+
+  describe('mergeAll()', function () {
+    var existingEntityA = {
+      guid: 'fakeguidone',
+      name: 'ea',
+      cpu: 34
+    };
+    var existingEntityB = {
+      guid: 'fakeguidtwo',
+      name: 'eb'
+    };
+    var existingEntityC = {
+      guid: 'fakeguidthree',
+      name: 'eb'
+    };
+
+    beforeEach(function() {
+      store.push(existingEntityA);
+      store.push(existingEntityB);
+      store.push(existingEntityC);
+    });
+
+    it('should do nothing if there is no match', function () {
+      const oldData = Immutable.fromJS(store.getAll());
+      const toMerge = {
+        guid: 'mergeguid',
+        name: 'fakename'
+      };
+
+      store.mergeAll('name', toMerge, function(changed) {
+        const data = Immutable.fromJS(store.getAll());
+        const merged = store.get(toMerge.guid);
+
+        expect(Immutable.is(data, oldData)).toEqual(true);
+        expect(merged).toEqual(undefined);
+        expect(changed).toEqual(false);
+      });
+    });
+
+    it('should merge into all matching entities based on the merge key', function () {
+      const oldData = Immutable.fromJS(store.getAll());
+      const toMerge = {
+        name: 'eb',
+        green: true
+      };
+
+      store.mergeAll('name', toMerge, function(changed) {
+        const first = store.get('fakeguidone');
+        const second = store.get('fakeguidtwo');
+        const third = store.get('fakeguidthree');
+
+        expect(first.green).toEqual(undefined);
+        expect(second.green).toEqual(true);
+        expect(third.green).toEqual(true);
+        expect(changed).toEqual(true);
+      });
+    });
+  });
 });
