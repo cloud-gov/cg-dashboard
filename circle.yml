@@ -2,6 +2,10 @@ machine:
   environment:
     GODIST: "go1.6.linux-amd64.tar.gz"
     WS: "/home/ubuntu/.go_workspace/src/github.com/18F/cg-deck"
+    CF_API: "https://api.cloud.gov"
+    CF_ORGANIZATION: "cf"
+    CF_API_GC: "https://api.fr.cloud.gov"
+    CF_ORGANIZATION_GC: "cloud-gov"
   post:
     - cd cg-deck && nvm install && nvm use && nvm alias default $(nvm current)
     - mkdir -p download
@@ -29,3 +33,17 @@ test:
   override:
     - cd $WS && ./codecheck.sh -u
     - cd $WS && npm test
+
+deployment:
+  deploy:
+    branch: [master, staging, deprecated]
+    owner: jcscottiii
+    commands:
+      - export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
+      - chmod a+x deploy/circle_deploy.sh && deploy/circle_deploy.sh
+  production:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: 18F
+    commands:
+      - export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
+      - chmod a+x deploy/circle_deploy.sh && deploy/circle_deploy.sh
