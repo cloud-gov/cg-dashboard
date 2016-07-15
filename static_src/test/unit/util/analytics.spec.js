@@ -4,13 +4,14 @@ import '../../global_setup.js';
 import { trackAction, trackPageView } from '../../../util/analytics';
 
 describe('analytics helpers', function () {
-  describe('with GA loaded', function () {
+  describe('with GA loaded and on production', function () {
     var sandbox;
     var window = (window) ? window : global;
 
     beforeEach(() => {
       sandbox = sinon.sandbox.create();
       window.ga = function() { return; }
+      window.PRODUCTION = 1;
     });
 
     afterEach(() => {
