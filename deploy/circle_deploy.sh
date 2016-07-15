@@ -24,7 +24,7 @@ cf install-plugin -f $GOPATH/bin/autopilot
 
 
 CF_PATH="."
-if [[ "$TRAVIS_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)? ]]
+if [[ "$CIRCLE_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)? ]]
 then
 	CF_MANIFEST="manifest-prod.yml"
 	CF_SPACE="deck-prod"
