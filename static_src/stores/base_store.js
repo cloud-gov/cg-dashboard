@@ -112,7 +112,7 @@ export default class BaseStore extends EventEmitter {
    * @param {fn} cb - defaults to calling this.emitChange()
    *                  when the store's data has changed
    *
-   */
+  */
   merge(mergeKey, dataToMerge, cb = defaultChangedCallback.bind(this)) {
     const toMerge = Immutable.fromJS(dataToMerge);
     const oldDataItem = this._data.find((d) =>
@@ -134,6 +134,48 @@ export default class BaseStore extends EventEmitter {
       this._data = this._data.push(toMerge);
     }
     return cb(true);
+  }
+
+  /* mergeAll
+   *
+   * If the dataToMerge exists in the store (as found by
+   * the mergeKey), then merge in new data if there are
+   * changes. The merge algorithm differs from the one
+   * in .merge() as this will merge the new data into all
+   * entities in the store that match on the merge key and
+   * not just the first one.
+   *
+   * If it does not exist in the store, then do nothing.
+   *
+   * @param {string} mergeKey - use to match objects
+   * @param {object} dataToMerge - new object with data
+   * @param {fn} cb - defaults to calling this.emitChange()
+   *                  when the store's data has changed
+   *
+  */
+  mergeAll(mergeKey, dataToMerge, cb = defaultChangedCallback.bind(this)) {
+    let dataHasChanged = false;
+    const toMerge = Immutable.fromJS(dataToMerge);
+    const matches = this._data.find((d) =>
+      d.get(mergeKey) === toMerge.get(mergeKey)
+    );
+
+    if (!matches) return cb(false);
+
+    this._data = this._data.map((d) => {
+      const shouldMerge = (d.get(mergeKey) === toMerge.get(mergeKey));
+      if (!shouldMerge) return d;
+
+      const merged = d.merge(toMerge);
+      if (Immutable.is(d, merged)) {
+        return d;
+      }
+
+      dataHasChanged = true;
+      return merged;
+    });
+
+    return cb(dataHasChanged);
   }
 
   mergeMany(mergeKey, arrayOfDataToMerge, cb = defaultChangedCallback.bind(this)) {
