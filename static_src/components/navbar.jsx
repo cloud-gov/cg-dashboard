@@ -91,6 +91,7 @@ export class Nav extends React.Component {
     const downArrow = this.styler('menu-arrow', 'sidenav-arrow', 'sidenav-arrow-down');
     const rightArrow = this.styler('menu-arrow', 'sidenav-arrow', 'sidenav-arrow-right');
     const header = this.styler('sidenav-header');
+    const sortedOrgs = this.state.orgs.sort((a, b) => a.name < b.name ? -1 : 1);
 
     return (
       <div className={ this.styler('test-nav-primary') }>
@@ -102,11 +103,12 @@ export class Nav extends React.Component {
             <span className={ this.styler('sidenav-header-text') }>
               Organizations</span>
           </li>
-        { this.state.orgs.map((org) => {
+        { sortedOrgs.map((org) => {
           let toggleSpaceHandler = this._toggleSpacesMenu.bind(this, org.guid);
           let arrowClasses = (org.space_menu_open) ? downArrow : rightArrow;
           let activeOrgClasses = (org.space_menu_open) ? this.styler('sidenav-active') : '';
           let subList = <div></div>;
+          const sortedSpaces = org.spaces.sort((a, b) => a.name < b.name ? -1 : 1);
 
           if (org.space_menu_open) {
             subList = (
@@ -117,7 +119,7 @@ export class Nav extends React.Component {
                       Spaces</span>
                   </a>
                   <ul className={ thirdList }>
-                    { org.spaces.map((space) => {
+                    { sortedSpaces.map((space) => {
                       let activeSpaceClasses = (this.isCurrentSpace(space.guid)) ?
                           this.styler('sidenav-active') : '';
                       return (
