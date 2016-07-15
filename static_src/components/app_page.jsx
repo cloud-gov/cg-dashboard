@@ -27,6 +27,7 @@ export default class AppPage extends React.Component {
     this.props = props;
     this.state = stateSetter({ currentAppGuid: this.props.initialAppGuid });
     this._onChange = this._onChange.bind(this);
+    this.getStat = this.getStat.bind(this);
     this.styler = createStyler(style);
   }
 
@@ -54,7 +55,21 @@ export default class AppPage extends React.Component {
     return `https://logs.cloud.gov/app/kibana?#/dashboard/App-Events?_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now%2Fy,mode:quick,to:now))&_a=(filters:!(),options:(darkTheme:!f),panels:!((col:1,columns:!(app_event.app_name,'@message',app_event.actor_type,app_event.actor_name,app_event.actee_type,app_event.actee_name),id:AppEvent,panelIndex:1,row:3,size_x:12,size_y:6,sort:!('@timestamp',desc),type:search),(col:1,id:App-events,panelIndex:2,row:1,size_x:12,size_y:2,type:visualization)),query:(query_string:(analyze_wildcard:!t,query:'app_event.app_name:%20${appName}')),title:'App%20-%20Events',uiState:())`;
   }
 
+  getStat(statName) {
+    if (statName.indexOf('quota') > -1) {
+      return (this.state.app.stats &&
+              this.formatMb(this.state.app.stats[statName]) ||
+              0);
+    } else {
+      return (this.state.app.stats &&
+              this.formatMb(this.state.app.stats.usage[statName]) ||
+              0);
+
+    }
+  }
+
   formatMb(bytes) {
+    if (!bytes) return '0';
     return Math.round(bytes / 1000000);
   }
 
@@ -63,6 +78,44 @@ export default class AppPage extends React.Component {
     if (this.state.currentSpaceName && this.state.currentOrgName) {
       content = <span><strong>{ this.state.app.name }</strong> application in your <strong>{ this.state.currentSpaceName }</strong> space, which is in your <strong>{ this.state.currentOrgName }</strong> organization</span>;
     }
+    return content;
+  }
+
+  get memoryUsage() {
+    let content = (
+      <span>
+        <strong>{ this.getStat('mem') }  MB</strong> out of <span>&nbsp;</span>
+        { this.getStat('mem_quota') } MB
+      </span>
+    );
+
+    if (this.state.app.state.toUpperCase() === 'STOPPED') {
+      content = (
+        <span>
+          <strong>0 MB</strong>. <em>Stopped apps don't use memory.</em>
+        </span>
+      );
+    }
+
+    return content;
+  }
+
+  get diskUsage() {
+    let content = (
+      <span>
+        <strong>{ this.getStat('disk') }  MB</strong> out of <span>&nbsp;</span>
+        { this.getStat('disk_quota') } MB
+      </span>
+    );
+
+    if (this.state.app.state.toUpperCase() === 'STOPPED') {
+      content = (
+        <span>
+          <strong>0 MB</strong>. <em>Stopped apps don't use disk space.</em>
+        </span>
+      );
+    }
+
     return content;
   }
 
@@ -97,23 +150,11 @@ export default class AppPage extends React.Component {
                 </tr>
                 <tr>
                   <td><strong>Memory usage</strong></td>
-                  <td>
-                    <strong>{ this.state.app.stats && this.formatMb(
-                        this.state.app.stats.usage.mem) } MB</strong> out of
-                      <span>&nbsp;</span>
-                     { this.state.app.stats &&
-                      this.formatMb(this.state.app.stats.mem_quota) } MB
-                  </td>
+                  <td>{ this.memoryUsage }</td>
                 </tr>
                 <tr>
                   <td><strong>Disk usage</strong></td>
-                  <td>
-                  <strong>{ this.state.app.stats && this.formatMb(
-                    this.state.app.stats.usage.disk) } MB</strong> out of
-                    <span>&nbsp;</span>
-                    { this.state.app.stats &&
-                      this.formatMb(this.state.app.stats.disk_quota) } MB
-                  </td>
+                  <td>{ this.diskUsage }</td>
                 </tr>
               </tbody>
             </table>
