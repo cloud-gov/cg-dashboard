@@ -81,6 +81,44 @@ export default class AppPage extends React.Component {
     return content;
   }
 
+  get memoryUsage() {
+    let content = (
+      <span>
+        <strong>{ this.getStat('mem') }  MB</strong> out of <span>&nbsp;</span>
+        { this.getStat('mem_quota') } MB
+      </span>
+    );
+
+    if (this.state.app.state.toUpperCase() === 'STOPPED') {
+      content = (
+        <span>
+          <strong>0 MB</strong>. <em>Stopped apps don't use memory.</em>
+        </span>
+      );
+    }
+
+    return content;
+  }
+
+  get diskUsage() {
+    let content = (
+      <span>
+        <strong>{ this.getStat('disk') }  MB</strong> out of <span>&nbsp;</span>
+        { this.getStat('disk_quota') } MB
+      </span>
+    );
+
+    if (this.state.app.state.toUpperCase() === 'STOPPED') {
+      content = (
+        <span>
+          <strong>0 MB</strong>. <em>Stopped apps don't use disk space.</em>
+        </span>
+      );
+    }
+
+    return content;
+  }
+
   render() {
     let content = <h4 className="test-none_message">No app</h4>;
 
@@ -112,20 +150,11 @@ export default class AppPage extends React.Component {
                 </tr>
                 <tr>
                   <td><strong>Memory usage</strong></td>
-                  <td>
-                    <strong>{ this.getStat('mem') }  MB</strong> out of
-                      <span>&nbsp;</span>
-                      { this.getStat('mem_quota') } MB
-                  </td>
+                  <td>{ this.memoryUsage }</td>
                 </tr>
                 <tr>
                   <td><strong>Disk usage</strong></td>
-                  <td>
-                    <strong>
-                    { this.getStat('disk') }  MB</strong> out of
-                    <span>&nbsp;</span>
-                    { this.getStat('disk_quota') } MB
-                  </td>
+                  <td>{ this.diskUsage }</td>
                 </tr>
               </tbody>
             </table>
