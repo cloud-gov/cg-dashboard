@@ -43,6 +43,7 @@ export default class RouteList extends React.Component {
   get columns() {
     return [
       { label: 'Host', key: 'host' },
+      { label: 'Domain', key: 'domain' },
       { label: 'Path', key: 'path' }
     ];
   }
