@@ -66,4 +66,4 @@ cf auth $CF_USERNAME $CF_PASSWORD_GC && $CF_BIN target -o $CF_ORGANIZATION_GC -s
 # Set manifest path for eastwest
 MANIFEST_PATH=manifests/govcloud/$CF_MANIFEST
 # Run autopilot plugin
-cf zero-downtime-push cf-deck -f $MANIFEST_PATH -p $CF_PATH
+cf zero-downtime-push $CF_APP -f $MANIFEST_PATH -p $CF_PATH
