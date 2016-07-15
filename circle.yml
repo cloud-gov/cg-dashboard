@@ -1,6 +1,7 @@
 machine:
   environment:
     GODIST: "go1.6.linux-amd64.tar.gz"
+    WS: "/home/ubuntu/.go_workspace/src/github.com/18F/cg-deck"
   post:
     - cd cg-deck && nvm install && nvm use && nvm alias default $(nvm current)
     - mkdir -p download
@@ -10,21 +11,21 @@ machine:
 
 dependencies:
   cache_directories:
-    - "~/.go_workspace/src/github.com/18F/cg-deck/node_modules/"
+    - "$WS/node_modules/"
   pre:
     - go version
     - go get github.com/Masterminds/glide
-    - mkdir -p /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && cp -R /home/ubuntu/cg-deck/. /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck
-    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && glide install
-    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && npm install
+    - mkdir -p $WS && cp -R /home/ubuntu/cg-deck/. $WS
+    - PWD=$WS glide install
+    - PWD=$WS npm install
   override:
-    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && go build
-    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && npm run build
+    - PWD=$WS go build
+    - PWD=$WS npm run build
 test:
   pre:
     - go get github.com/axw/gocov/gocov
     - go get github.com/mattn/goveralls
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   override:
-    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && ./codecheck.sh -u
-    - cd /home/ubuntu/.go_workspace/src/github.com/18F/cg-deck && npm test
+    - PWD=$WS ./codecheck.sh -u
+    - PWD=$WS npm test
