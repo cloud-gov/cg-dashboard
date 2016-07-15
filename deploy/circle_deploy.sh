@@ -15,7 +15,7 @@ cf -v
 
 # Install autopilot
 go get github.com/contraband/autopilot
-cf install-plugin -f $GOPATH/bin/autopilot
+cf install-plugin -f /home/ubuntu/.go_workspace/bin/autopilot
 
 
 
