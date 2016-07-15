@@ -16,16 +16,16 @@ dependencies:
     - go version
     - go get github.com/Masterminds/glide
     - mkdir -p $WS && cp -R /home/ubuntu/cg-deck/. $WS
-    - PWD=$WS glide install
-    - PWD=$WS npm install
+    - cd $WS && glide install
+    - cd $WS && npm install
   override:
-    - PWD=$WS go build
-    - PWD=$WS npm run build
+    - cd $WS && go build
+    - cd $WS && npm run build
 test:
   pre:
     - go get github.com/axw/gocov/gocov
     - go get github.com/mattn/goveralls
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   override:
-    - PWD=$WS ./codecheck.sh -u
-    - PWD=$WS npm test
+    - cd $WS && ./codecheck.sh -u
+    - cd $WS && npm test
