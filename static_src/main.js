@@ -1,6 +1,7 @@
 
 import 'cloudgov-style/css/base.css';
 import './css/main.css';
+import './img/dashboard-uaa-icon.jpg';
 
 import { Router } from 'director';
 import React from 'react';
