@@ -165,6 +165,8 @@ class UserStore extends BaseStore {
               this.emitChange();
             }
           });
+        } else {
+          this.fetching = false;
         }
         break;
       }
