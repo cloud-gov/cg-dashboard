@@ -71,20 +71,30 @@ export default class Space extends React.Component {
     ];
   }
 
+  get currentOrgName() {
+    return this.state.currentOrg ? this.state.currentOrg.name : '';
+  }
+
+  get currentOrgGuid() {
+    return this.state.currentOrg ? this.state.currentOrg.guid : '0';
+  }
+
   render() {
     let Content = this.currentContent;
     let tabNav = <div></div>;
     let main = <h4>Space not found</h4>;
 
     if (this.state.space && this.state.space.guid) {
-      tabNav = (
-        <Tabnav items={ this.subNav } initialItem={ this.props.currentPage } />
-      );
+      if (this.state.currentOrg) {
+        tabNav = (
+          <Tabnav items={ this.subNav } initialItem={ this.props.currentPage } />
+        );
+      }
       main = (
       <div>
         <div>
           <h2>
-            <strong>{this.state.space.name}</strong> space in your <strong>{ this.state.currentOrg.name }</strong> organization
+            <strong>{this.state.space.name}</strong> space in your <strong>{ this.currentOrgName }</strong> organization
           </h2>
           <p><em>
             Each <a href="https://docs.cloud.gov/getting-started/concepts/">space</a> provides an environment for related applications (<a href="https://docs.cloud.gov/intro/overview/using-cloudgov-paas/">example use</a>).
@@ -94,7 +104,7 @@ export default class Space extends React.Component {
         <div>
           <div role="tabpanel" id={ this.props.currentPage }>
             <Content
-              initialOrgGuid={ this.state.currentOrg.guid }
+              initialOrgGuid={ this.currentOrgGuid }
               initialSpaceGuid={ this.state.space.guid }
               intitialApps={ this.state.space.apps || [] }
             />
