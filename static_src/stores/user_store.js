@@ -157,9 +157,9 @@ class UserStore extends BaseStore {
           }
           return updateCopy;
         });
-        this.fetching = false;
         if (updates.length) {
           this.mergeMany('guid', updates, (changed) => {
+            this.fetching = false;
             if (changed) {
               this._error = null;
               this.emitChange();

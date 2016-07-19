@@ -29,8 +29,9 @@ class AppStore extends BaseStore {
         break;
 
       case appActionTypes.APP_RECEIVED:
-        this.merge('guid', action.app, () => {});
-        this.fetching = false;
+        this.merge('guid', action.app, () => {
+          this.fetching = false;
+        });
         break;
 
       case appActionTypes.APP_STATS_RECEIVED: {

@@ -36,15 +36,15 @@ class OrgStore extends BaseStore {
       }
 
       case orgActionTypes.ORG_RECEIVED: {
-        this.fetching = false;
         if (action.org) {
-          this.merge('guid', action.org, () => {});
+          this.merge('guid', action.org, () => {
+            this.fetching = false;
+          });
         }
         break;
       }
 
       case orgActionTypes.ORGS_RECEIVED: {
-        this.fetching = false;
         const updates = this.formatSplitResponse(action.orgs).map((d) => {
           if (d.spaces) {
             return d;
@@ -56,14 +56,15 @@ class OrgStore extends BaseStore {
           return Object.assign(d, { spaces: [] });
         });
         cfApi.fetchOrgsSummaries(updates.map((u) => u.guid));
-
+        // we don't set .fetching here because we triggered subsequent requests
+        // and will just set .fetching to false when they come back
         this.mergeMany('guid', updates, () => {});
         break;
       }
 
       case orgActionTypes.ORGS_SUMMARIES_RECEIVED: {
-        this.fetching = false;
         this.mergeMany('guid', action.orgs, (changed) => {
+          this.fetching = false;
           if (changed) {
             const orgUpdates = this.updateOpenOrgs(this._currentOrgGuid);
             this.mergeMany('guid', orgUpdates, () => {});
