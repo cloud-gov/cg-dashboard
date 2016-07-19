@@ -35,7 +35,6 @@ export default class ServiceInstanceList extends React.Component {
 
   componentDidMount() {
     ServiceInstanceStore.addChangeListener(this._onChange);
-    serviceActions.fetchAllInstances(this.state.currentSpaceGuid);
   }
 
   componentWillUnmount() {

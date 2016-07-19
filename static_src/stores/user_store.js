@@ -255,6 +255,7 @@ class UserStore extends BaseStore {
   _hasRole(roleToCheck, userType) {
     const user = this.currentUser;
     if (!user) return false;
+    if (!user[userType]) return false;
     return !!(user[userType].find((role) => role === roleToCheck));
   }
 
