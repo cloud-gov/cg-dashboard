@@ -8,6 +8,7 @@ import Dispatcher from '../dispatcher.js';
 
 export default {
   errorFetch(err) {
+    throw err;
     console.error('failure', err);
     // Do nothing
   },
