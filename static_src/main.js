@@ -41,7 +41,7 @@ function dashboard() {
 function org(orgGuid) {
   orgActions.changeCurrentOrg(orgGuid);
   orgActions.toggleSpaceMenu(orgGuid);
-  cfApi.fetchOrg(orgGuid);
+  orgActions.fetch(orgGuid);
   ReactDOM.render(
     <App>
       <SpaceList initialOrgGuid={ orgGuid } />
