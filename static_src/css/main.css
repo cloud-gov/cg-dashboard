@@ -19,8 +19,9 @@
 /*
  * Override WDS fancy checkboxes/radios
  **/
-input[type="checkbox"],
-input[type="radio"] {
+input[type="checkbox"]:not(.fancy),
+input[type="radio"]:not(.fancy) {
+  -webkit-appearance: checkbox;
   left: 0;
   position: static;
 }
