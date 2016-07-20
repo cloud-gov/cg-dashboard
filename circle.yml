@@ -17,6 +17,7 @@ dependencies:
   cache_directories:
     - "$WS/node_modules/"
   pre:
+    - sudo curl --output /usr/local/bin/phantomjs https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
     - go version
     - go get github.com/Masterminds/glide
     - mkdir -p $WS && cp -R /home/ubuntu/cg-deck/. $WS
