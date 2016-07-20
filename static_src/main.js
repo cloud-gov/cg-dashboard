@@ -56,6 +56,9 @@ function space(orgGuid, spaceGuid, potentialPage) {
   cfApi.fetchOrg(orgGuid);
   spaceActions.fetch(spaceGuid);
   // TODO use constant
+  if (potentialPage === 'services') {
+    serviceActions.fetchAllInstances(spaceGuid);
+  }
   if (potentialPage === 'users') {
     userActions.fetchOrgUsers(orgGuid);
     userActions.fetchOrgUserRoles(orgGuid);
