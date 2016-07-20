@@ -6,5 +6,6 @@ static/bower_components/
 node_modules/
 cf-deck
 cg-deck
+cg-dashboard
 acceptance/
 static/tests/
