@@ -27,22 +27,22 @@ CF_PATH="."
 if [[ "$CIRCLE_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)? ]]
 then
 	CF_MANIFEST="manifest-prod.yml"
-	CF_SPACE="deck-prod"
-	CF_APP="cf-deck"
+	CF_SPACE="dashboard-prod"
+	CF_APP="cg-dashboard"
 elif [ "$CIRCLE_BRANCH" == "master" ]
 then
 	CF_MANIFEST="manifest-master.yml"
-	CF_SPACE="deck-stage"
-	CF_APP="cf-deck"
+	CF_SPACE="dashboard-stage"
+	CF_APP="cg-dashboard"
 elif [ "$CIRCLE_BRANCH" == "staging" ]
 then
 	CF_MANIFEST="manifest-staging.yml"
-	CF_SPACE="deck-stage"
-	CF_APP="cf-deck-staging"
+	CF_SPACE="dashboard-stage"
+	CF_APP="cg-dashboard-staging"
 elif [ "$CIRCLE_BRANCH" == "deprecated" ]
 then
 	CF_MANIFEST="manifest-deprecated.yml"
-	CF_SPACE="deck-prod"
+	CF_SPACE="dashboard-prod"
 	CF_APP="cg-deck"
 else
   exit
