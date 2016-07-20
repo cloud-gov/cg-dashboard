@@ -18,7 +18,7 @@ script:
 before_deploy:
 - export BUILD_INFO=build::$TRAVIS_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$TRAVIS_BUILD_NUMBER::$(deploy/npm-version.sh)
 # Extract any encrypted env vars and put them into the manifests/manifest-master.yml
-- python deploy/travis-vars-to-manifest.py
+- python deploy/vars-to-manifest.py
 # Download the go-bindata binary, which is necessary for the CF CLI
 - go get -u github.com/jteeuwen/go-bindata/...
 - export GOBINDATA_BIN=$(which go-bindata)
