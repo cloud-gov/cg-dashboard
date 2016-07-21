@@ -89,6 +89,7 @@ func (c *Context) LoginRequired(rw web.ResponseWriter, r *web.Request, next web.
 		"/handshake":      {},
 		"/oauth2callback": {},
 		"/ping":           {},
+		"/assets/img/dashboard-uaa-icon.jpg": {},
 	}
 	// Check if URL is public so we skip validation
 	_, public := publicUrls[r.URL.EscapedPath()]
