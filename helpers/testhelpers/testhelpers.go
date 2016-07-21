@@ -1,8 +1,8 @@
 package testhelpers
 
 import (
-	"github.com/18F/cg-deck/controllers"
-	"github.com/18F/cg-deck/helpers"
+	"github.com/18F/cg-dashboard/controllers"
+	"github.com/18F/cg-dashboard/helpers"
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
 	"golang.org/x/net/context"

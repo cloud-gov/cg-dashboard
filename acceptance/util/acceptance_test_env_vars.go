@@ -4,7 +4,7 @@ package util
 
 import (
 	"fmt"
-	"github.com/18F/cg-deck/helpers"
+	"github.com/18F/cg-dashboard/helpers"
 	"os"
 )
 

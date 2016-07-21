@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/18F/cg-deck/controllers"
-	"github.com/18F/cg-deck/controllers/pprof"
-	"github.com/18F/cg-deck/helpers"
+	"github.com/18F/cg-dashboard/controllers"
+	"github.com/18F/cg-dashboard/controllers/pprof"
+	"github.com/18F/cg-dashboard/helpers"
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gorilla/context"
 	"github.com/yvasiyarov/gorelic"

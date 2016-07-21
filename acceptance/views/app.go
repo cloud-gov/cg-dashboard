@@ -3,7 +3,7 @@
 package views
 
 import (
-	. "github.com/18F/cg-deck/acceptance/util"
+	. "github.com/18F/cg-dashboard/acceptance/util"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 	. "github.com/sclevine/agouti/matchers"
