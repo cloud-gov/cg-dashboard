@@ -1,6 +1,6 @@
 # 18F Cloud Foundry Dashboard
 
-[![Build Status](https://travis-ci.org/18F/cg-deck.svg?branch=master)](https://travis-ci.org/18F/cg-deck)
+[![CircleCI](https://circleci.com/gh/18F/cg-deck.svg?style=svg)](https://circleci.com/gh/18F/cg-deck)
 
 [Production](https://dashboard.cloud.gov)
 [Staging](https://dashboard-staging.cloud.gov)
