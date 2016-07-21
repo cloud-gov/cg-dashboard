@@ -1,7 +1,7 @@
 machine:
   environment:
     GODIST: "go1.6.linux-amd64.tar.gz"
-    WS: "/home/ubuntu/.go_workspace/src/github.com/18F/cg-deck"
+    WS: "/home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard"
     CF_API: "https://api.cloud.gov"
     CF_ORGANIZATION: "cf"
     CF_API_GC: "https://api.fr.cloud.gov"
