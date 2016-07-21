@@ -8,25 +8,25 @@
 
 ## Introduction
 
-This ["deck"](#whats-a-deck) is a web application to manage cloud.gov organizations, spaces, services, and apps.
+This dashboard is a web application to manage cloud.gov organizations, spaces, services, and apps.
 
 Learn more about [cloud.gov](https://cloud.gov).
 
 ## Tech Stack
 
-### Backend Server [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-deck?branch=master)
+### Backend Server [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-dashboard/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-dashboard?branch=master)
 - `Go` (version 1.6.2)
 
-### Front end application [![JS Code Coverage Status](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)](https://coveralls.io/repos/18F/cg-deck/badge.svg?branch=master&service=github)
+### Front end application [![JS Code Coverage Status](https://coveralls.io/repos/18F/cg-dashboard/badge.svg?branch=master&service=github)](https://coveralls.io/repos/18F/cg-dashboard/badge.svg?branch=master&service=github)
 - `Node` (version 6.x.x)
 - `React` (version ^0.14.0)
 
 ## Setup
 ### Cloning the repository
-If you are unfamiliar with [`Go` project directory structure](https://golang.org/doc/code.html#Workspaces), you want the code in this repository to be in something like `<your-code-directory>/cg-deck-ws/src/github.com/18f/cg-deck`. You can use that exact pattern by cloning the repository with:
+If you are unfamiliar with [`Go` project directory structure](https://golang.org/doc/code.html#Workspaces), you want the code in this repository to be in something like `<your-code-directory>/cg-dashboard-ws/src/github.com/18f/cg-dashboard`. You can use that exact pattern by cloning the repository with:
 
 ```
-git clone git@github.com:18F/cg-deck.git cg-deck-ws/src/github.com/18F/cg-deck
+git clone git@github.com:18F/cg-dashboard.git cg-dashboard-ws/src/github.com/18F/cg-dashboard
 ```
 
 ### Create a Client with UAAC
@@ -46,13 +46,13 @@ uaac client add <your-client-id> \
 
 ### Set the environment variables
 If you are testing locally, export these variables. There is a sample file of environment variables called `env.sample`. Feel free to copy it and use the proper data. If you've never used environment variables before, you can run the following:
-`mkdir ~/.env && cp ./env.sample ~/.env/cg-deck`
+`mkdir ~/.env && cp ./env.sample ~/.env/cg-dashboard`
 
-Then edit the file `~/.env/cg-deck` and provide the proper values. When you want to set all the environment variables, just run `source ~/.env/cg-deck`. You'll have to do this every time you open a new shell.
+Then edit the file `~/.env/cg-dashboard` and provide the proper values. When you want to set all the environment variables, just run `source ~/.env/cg-dashboard`. You'll have to do this every time you open a new shell.
 
 If you are deploying to cloud foundry, modify the `manifest.yml`
 
-- `GOPATH`: The absolute path to your project root. If you followed the cloning instructions above, this path should end with `cg-deck-ws`
+- `GOPATH`: The absolute path to your project root. If you followed the cloning instructions above, this path should end with `cg-dashboard-ws`
 - `CONSOLE_CLIENT_ID`: Registered client id with UAA.
 - `CONSOLE_CLIENT_SECRET`: The client secret.
 - `CONSOLE_HOSTNAME`: The URL of the service itself.
@@ -64,7 +64,7 @@ If you are deploying to cloud foundry, modify the `manifest.yml`
 - `CG_STYLE_PATH`: <optional> The absolute path to your `cg-style` repo. If set, will use a local copy of `cloudgov-style` to build the front end application.
 
 ## Front end
-Front end build commands should be run in the same directory as the `package.json` file. If you've used the cloning command from this README it should be something like `/path/to/cg-deck-ws/src/github.com/18F/cg-deck`
+Front end build commands should be run in the same directory as the `package.json` file. If you've used the cloning command from this README it should be something like `/path/to/cg-dashboard-ws/src/github.com/18F/cg-dashboard`
 
 Install front end dependencies (may require [special steps for node-gyp](https://github.com/nodejs/node-gyp#installation)):
 ```
@@ -177,7 +177,7 @@ For debug mode where the developer can vnc into the container and the browser ex
 
 ## Deploying
 
-The cloud.gov deck is continuously deployed by Travis-CI.
+The cloud.gov dashboard is continuously deployed by CircleCI.
 
 ### Bootstrap Deployment Spaces
 In each space that you plan on deploying, you need to create a `user-provided-service`.
@@ -185,27 +185,14 @@ In each space that you plan on deploying, you need to create a `user-provided-se
 Run:
 ```
 # For applications without New Relic monitoring
-cf cups deck-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret"}'
+cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret"}'
 
 # For applications with New Relic monitoring
-cf cups deck-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret","CONSOLE_NEW_RELIC_LICENSE":"your-new-relic-license"}'
+cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret","CONSOLE_NEW_RELIC_LICENSE":"your-new-relic-license"}'
 ```
 
 ### CI
-This project uses Travis-CI
+This project uses CircleCI
 - The following environment variables need to be set in plain text in the global env section:
   - `CONSOLE_API_URL`, `CONSOLE_UAA_URL`, `CONSOLE_LOG_URL`, `CONSOLE_LOGIN_URL`, `CONSOLE_HOSTNAME="http://localhost:9999"`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, and `CONSOLE_TEST_APP_NAME`
-- In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the Travis-CI CLI tool to re-encrypt all the environment variables.
-  - `travis encrypt CONSOLE_TEST_USERNAME='<the test user account username>' --add env.global`
-  - `travis encrypt CF_USERNAME='<the user account username used to deploy>' --add env.global`
-  - `travis encrypt CF_PASSWORD='<the user account password used to deploy>' --add env.global`
-
-## What’s a Deck?
-
-From [Wikipedia](https://en.wikipedia.org/wiki/Sprawl_trilogy#Glossary):
-
-The Sprawl trilogy (also known as the Neuromancer, Cyberspace, or Matrix trilogy) is William Gibson's first set of novels, composed of Neuromancer (1984), Count Zero (1986), and Mona Lisa Overdrive (1988).
-
-**Cyberspace Deck**
-
-Also called a "deck" for short, it is used to access the virtual representation of the matrix. The deck is connected to a tiara-like device that operates by using electrodes to stimulate the user's brain while drowning out other external stimulation. As Case describes them, decks are basically simplified simstim units.
+- In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the CircleCI CLI UI to set the variables
