@@ -54,7 +54,7 @@ echo $CF_SPACE
 
 # Log in to east-west
 cf api $CF_API
-cf auth $CF_USERNAME $CF_PASSWORD && $CF_BIN target -o $CF_ORGANIZATION -s $CF_SPACE
+cf auth $CF_USERNAME $CF_PASSWORD && cf target -o $CF_ORGANIZATION -s $CF_SPACE
 # Set manifest path for eastwest
 MANIFEST_PATH=manifests/eastwest/$CF_MANIFEST
 # Run autopilot plugin
@@ -62,7 +62,7 @@ cf zero-downtime-push $CF_APP -f $MANIFEST_PATH -p $CF_PATH
 
 # Log in to govcloud
 cf api $CF_API_GC
-cf auth $CF_USERNAME $CF_PASSWORD_GC && $CF_BIN target -o $CF_ORGANIZATION_GC -s $CF_SPACE
+cf auth $CF_USERNAME $CF_PASSWORD_GC && cf target -o $CF_ORGANIZATION_GC -s $CF_SPACE
 # Set manifest path for eastwest
 MANIFEST_PATH=manifests/govcloud/$CF_MANIFEST
 # Run autopilot plugin
