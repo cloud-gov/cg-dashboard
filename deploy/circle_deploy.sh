@@ -33,7 +33,7 @@ elif [ "$CIRCLE_BRANCH" == "master" ]
 then
 	CF_MANIFEST="manifest-master.yml"
 	CF_SPACE="dashboard-stage"
-	CF_APP="cg-dashboard"
+	CF_APP="cg-dashboard-master"
 elif [ "$CIRCLE_BRANCH" == "staging" ]
 then
 	CF_MANIFEST="manifest-staging.yml"
