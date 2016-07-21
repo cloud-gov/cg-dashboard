@@ -127,7 +127,7 @@ export default class CreateServiceInstance extends React.Component {
           />
           <Button name="submit" type="submit">Create service instance</Button>
           <p><em>
-            After you create a service instance, you can look at your space to check whether your service instance was created. (<a href="https://github.com/18F/cg-deck/issues/457">We’ll make this better.</a>) Then you can bind the service instance to an app <a href="https://docs.cloud.gov/apps/managed-services/">using the command line</a>.
+            After you create a service instance, you can look at your space to check whether your service instance was created. (<a href="https://github.com/18F/cg-dashboard/issues/457">We’ll make this better.</a>) Then you can bind the service instance to an app <a href="https://docs.cloud.gov/apps/managed-services/">using the command line</a>.
           </em></p>
           <Button name="cancel" classes={ [this.styler('button-cancel')] }
             onClickHandler={ this._onCancelForm.bind(this) }>
