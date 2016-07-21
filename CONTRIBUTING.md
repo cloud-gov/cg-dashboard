@@ -5,12 +5,12 @@ We're so glad you're thinking about contributing to an 18F open source project! 
 Before contributing, we encourage you to read our CONTRIBUTING policy (you are here), our LICENSE, and our README, all of which should be in this repository. If you have any questions, or want to read more about our underlying policies, you can consult the 18F Open Source Policy GitHub repository at https://github.com/18f/open-source-policy, or just shoot us an email/official government letterhead note to [18f@gsa.gov](mailto:18f@gsa.gov).
 
 ## High-level roadmap
-The cloud.gov deck is currently being refactored to port the codebase from angular to unit-tested react. In doing so, it will take UI/UX cues from the  [community web ui](https://github.com/icclab/cf-webui), and merge that design with the visual [cloudgov-style](https://github.com/18F/cg-style) to create a unified cloud.gov experience.
+The cloud.gov dashboard is a unit-tested react single page application. It's previous version, available at [console.cloud.gov](https://console.cloud.gov) was an angular app, and is available at the `deprecated` branch.
 
 The work on cloud.gov front end fits into a higher level roadmap for all of cloud.gov. For now, this is in [another tool](https://18f.aha.io/products/CGP/bookmarks/project_timelines/new) only accessible by 18F personnel. Soon we will publish the information.
 
 ## Workflow
-Tracking work and progress is currently being done through [Zenhub](https://www.zenhub.io/), which adds a browser extension to add additional agile features to github. The main feature Zenhub adds is a "Boards" page which is an agile board detailing the state of work for the deck.
+Tracking work and progress is currently being done through [Zenhub](https://www.zenhub.io/), which adds a browser extension to add additional agile features to github. The main feature Zenhub adds is a "Boards" page which is an agile board detailing the state of work for the dashboard.
 
 ### Board workflow
 - Stories or ideas for features can start in backlog or icebox.
@@ -33,7 +33,7 @@ For more information, see the high-level [cloud.gov respository](https://github.
 
 ## Code standards
 ### Workflow
-- Open branches off main repo due to secure travis CI env vars.
+- Open branches off main repo due to secure CircleCI env vars.
 - Add the "ready for review" label when the code is ready to be reviewed by another team member.
   - Work-in-progress PRs are allowed. Be sure to tag the review with "ready for review" when it's ready though.
 - As another team member, review the code and ensure it conforms to the coding standards and exit criteria
@@ -103,7 +103,7 @@ The code base includes linting configurations and tools, but is currently not fu
 - Support for browsers not running javascript should be attempted if it's easy, but not a major focus
   - Eventually the react code base will allow server-sided, isomorphic rendering for both performance and support reasons. This means code should attempt to ensure things work without it when it's not detrimental to project timeline to do so.
 - CSS in component files should opt to use CSS Modules first, and will use normal CSS class architecture after.
-- Any shared styles across cloud.gov should be put in the `cg-style` project, not `cg-deck` or others.
+- Any shared styles across cloud.gov should be put in the `cg-style` project, not `cg-dashboard` or others.
 
 ## Performance
 Adding performance tracking and metrics is currently a TODO. Here are some items in consideration:
@@ -118,16 +118,16 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 ## Onboarding checklist
 - [ ] Join the `#cloud-gov-liberator` channel on Slack
 - [ ] Ping @standup-bot for instructions on front end channel standup (or view them in channel history)
-- [ ] Review the main [front end board](https://github.com/18F/cg-deck#boards?repos=39210774)
+- [ ] Review the main [front end board](https://github.com/18F/cg-dashboard#boards?repos=39210774)
 - [ ] Review the cloud.gov [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md) to understand how the agile boards and workflow works.
 - [ ] Bookmark link to [design folder](https://drive.google.com/drive/u/1/folders/0BwLqM4Nicmq-bUt0NjRjclFMUEU)
-- [ ] Review the primary cloud.gov sites: [the deck](https://dashboard.cloud.gov/#/), [main landing page](https://cloud.gov/), and [documentation](https://docs.cloud.gov/).
+- [ ] Review the primary cloud.gov sites: [the dashboard](https://dashboard.cloud.gov/#/), [main landing page](https://cloud.gov/), and [documentation](https://docs.cloud.gov/).
 
 #### If developing
-- [ ] Set up [the landing page site](https://github.com/18F/cg-landing) and/or [the deck](https://github.com/18F/cg-deck) and/or [the docs site](https://github.com/18F/cg-docs) and/or [style](https://github.com/18F/cg-style) locally
+- [ ] Set up [the landing page site](https://github.com/18F/cg-landing) and/or [the dashboard](https://github.com/18F/cg-dashboard) and/or [the docs site](https://github.com/18F/cg-docs) and/or [style](https://github.com/18F/cg-style) locally
 - [ ] Setup cloudgov-style to be [linked to the other sites locally](https://github.com/18F/cg-style#development-and-contributing-setup).
-- [ ] Have cloud.gov person send the cg-deck testing env vars through fugacious
-- [ ] Review [deck contributing guide](https://github.com/18F/cg-deck/CONTRIBUTING.md) and [cloudgov-style standards](https://github.com/18F/cg-style/blob/master/documentation/frontend_standards.md)
+- [ ] Have cloud.gov person send the cg-dashboard testing env vars through fugacious
+- [ ] Review [dashboard contributing guide](https://github.com/18F/cg-dashboard/CONTRIBUTING.md) and [cloudgov-style standards](https://github.com/18F/cg-style/blob/master/documentation/frontend_standards.md)
 
 #### For review
 - Review the [design resource request document](https://docs.google.com/document/d/1s96VP6PB7fbc8g_GwgAZ1hCPmew-J35ZOJx772c1AZ4/edit) if you haven’t already to get a sense of your role on the project
@@ -135,8 +135,8 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 - Review the [competitive analysis](https://docs.google.com/spreadsheets/u/1/d/194tGz75NFwFyH8jT7zY_n-O0I7N4yAGYtIG4hw9qPcQ/edit?usp=drive_web) to get a sense of our "competitors" and their dashboard.
 - Review the [cloudgov-style styleguide](https://pages.18f.gov/cg-style/) to get a sense of the global cloud.gov visual style.
 - Review the [US Web Design Standards](https://standards.usa.gov/) as cloudgov-style was built from it.
-- Review the deck, current [prod](https://dashboard.cloud.gov/#/) and [staging](https://dashboard-staging.cloud.gov/#/)
-- Review the cloud foundry [community UI](http://ui.apps.cloud.gov/), a UI that members of the cloud foundry community created and is being used as a basis for our own deck design.
+- Review the dashboard, current [prod](https://dashboard.cloud.gov/#/), [master](https://dashboard-master.cloud.gov/#/) and [staging](https://dashboard-staging.cloud.gov/#/)
+- Review the cloud foundry [community UI](http://ui.apps.cloud.gov/), a UI that members of the cloud foundry community created and is being used as a basis for our own dashboard design.
 
 ## Public domain
 
