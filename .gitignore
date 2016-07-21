@@ -9,6 +9,7 @@ coverage
 .godeps/
 Godeps/_workspace/
 cg-deck
+cg-dashboard
 acceptance/scripts/.env_docker
 static/assets
 vendor/*

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/18F/cg-deck/helpers"
+	"github.com/18F/cg-dashboard/helpers"
 	"github.com/gocraft/web"
 	"golang.org/x/oauth2"
 )

@@ -1,8 +1,8 @@
 package controllers_test
 
 import (
-	"github.com/18F/cg-deck/controllers"
-	. "github.com/18F/cg-deck/helpers/testhelpers"
+	"github.com/18F/cg-dashboard/controllers"
+	. "github.com/18F/cg-dashboard/helpers/testhelpers"
 
 	"strings"
 	"testing"

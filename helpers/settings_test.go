@@ -1,7 +1,7 @@
 package helpers_test
 
 import (
-	"github.com/18F/cg-deck/helpers"
+	"github.com/18F/cg-dashboard/helpers"
 	"testing"
 )
 

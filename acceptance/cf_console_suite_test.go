@@ -3,8 +3,8 @@
 package acceptance
 
 import (
-	. "github.com/18F/cg-deck/acceptance/util"
-	"github.com/18F/cg-deck/controllers"
+	. "github.com/18F/cg-dashboard/acceptance/util"
+	"github.com/18F/cg-dashboard/controllers"
 	"github.com/gocraft/web"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

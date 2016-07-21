@@ -4,8 +4,8 @@ package acceptance
 
 import (
 	"fmt"
-	. "github.com/18F/cg-deck/acceptance/util"
-	. "github.com/18F/cg-deck/acceptance/views"
+	. "github.com/18F/cg-dashboard/acceptance/util"
+	. "github.com/18F/cg-dashboard/acceptance/views"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/agouti"

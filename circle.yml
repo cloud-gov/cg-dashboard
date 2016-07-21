@@ -1,13 +1,13 @@
 machine:
   environment:
     GODIST: "go1.6.linux-amd64.tar.gz"
-    WS: "/home/ubuntu/.go_workspace/src/github.com/18F/cg-deck"
+    WS: "/home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard"
     CF_API: "https://api.cloud.gov"
     CF_ORGANIZATION: "cf"
     CF_API_GC: "https://api.fr.cloud.gov"
     CF_ORGANIZATION_GC: "cloud-gov"
   post:
-    - cd cg-deck && nvm install && nvm use && nvm alias default $(nvm current)
+    - cd cg-dashboard && nvm install && nvm use && nvm alias default $(nvm current)
     - mkdir -p download
     - test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
     - sudo rm -rf /usr/local/go
@@ -24,7 +24,7 @@ dependencies:
     - sudo ln -s --force /home/ubuntu/bin/phantomjs-2.0.1-linux-x86_64-dynamic /usr/local/bin/phantomjs
     - go version
     - go get github.com/Masterminds/glide
-    - mkdir -p $WS && chmod -R u+rw $WS && cp -R /home/ubuntu/cg-deck/. $WS
+    - mkdir -p $WS && chmod -R u+rw $WS && cp -R /home/ubuntu/cg-dashboard/. $WS
     - cd $WS && glide install
     - cd $WS && npm install
   override:
