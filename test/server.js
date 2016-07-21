@@ -5,7 +5,7 @@ var smocks = require('smocks');
 var authstatus = require('./authstatus');
 var api = require('./api');
 
-smocks.id('cg-deck-testing');
+smocks.id('cg-dashboard-testing');
 
 // add auth status route
 authstatus(smocks);
