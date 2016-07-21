@@ -1,1 +1,1 @@
-web: cg-deck -port=$PORT
+web: cg-dashboard -port=$PORT
