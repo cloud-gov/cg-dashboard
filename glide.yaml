@@ -1,4 +1,4 @@
-package: github.com/18F/cg-deck
+package: github.com/18F/cg-dashboard
 import:
 - package: github.com/cloudfoundry/loggregatorlib
   subpackages:
