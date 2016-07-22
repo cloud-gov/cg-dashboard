@@ -63,7 +63,7 @@ export default class UserList extends React.Component {
       content = (
       <div>
         <p><em>
-        { this.userTypePretty } Managers can change these roles. For details about these roles, see <a href="https://docs.cloudfoundry.org/concepts/roles.html#roles">Cloud Foundry roles and permissions</a>. To invite a new user, see <a href="https://docs.cloud.gov/apps/managing-teammates/">Managing Teammates</a>.
+        { this.userTypePretty } Managers can change these roles. For details about these roles, see <a href="https://docs.cloudfoundry.org/concepts/roles.html#roles">Cloud Foundry roles and permissions</a>. To invite a new user or change a role, see <a href="https://docs.cloud.gov/apps/managing-teammates/">Managing Teammates</a>.
         </em></p>
 
         <p><em><strong>To add or remove a role:</strong><br />
