@@ -8,7 +8,7 @@ import createStyler from '../util/create_styler';
 
 function stateSetter(appGuid) {
   const routes = RouteStore.getAll();
-  const appRoutes = routes.filter((route) => route.appGuid === appGuid);
+  const appRoutes = routes.filter((route) => route.app_guid === appGuid);
 
   return {
     routes: appRoutes
@@ -67,7 +67,7 @@ export default class RouteList extends React.Component {
                 { this.columns.map((column) =>
                    <td key={route.guid + column.key}>{route[column.key]}</td>) }
               </tr>
-            )
+            );
           })}
           </tbody>
         </table>
@@ -86,7 +86,7 @@ export default class RouteList extends React.Component {
       </div>
     );
   }
-};
+}
 
 RouteList.propTypes = {
   initialAppGuid: React.PropTypes.string.isRequired

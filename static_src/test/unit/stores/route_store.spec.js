@@ -71,13 +71,13 @@ describe('RouteStore', function() {
       let actual = RouteStore.get(routeA.guid);
 
       expect(actual).toEqual(
-        Object.assign({}, routeA, { appGuid: sharedGuid }));
+        Object.assign({}, routeA, { app_guid: sharedGuid }));
     });
 
     it('should merge all the routes in', function() {
       const sharedGuid = 'zxcb234nvc654ad';
       const spy = sandbox.spy(RouteStore, 'mergeMany');
-      const existingRoute = { guid: 'zxcb', appGuid: sharedGuid };
+      const existingRoute = { guid: 'zxcb', app_guid: sharedGuid };
 
       RouteStore.push(existingRoute);
 

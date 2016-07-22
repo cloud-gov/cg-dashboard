@@ -8,7 +8,7 @@ import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import { domainActionTypes, routeActionTypes } from '../constants.js';
+import { appActionTypes, domainActionTypes, routeActionTypes } from '../constants.js';
 
 class RouteStore extends BaseStore {
   constructor() {
@@ -25,7 +25,7 @@ class RouteStore extends BaseStore {
 
       case routeActionTypes.ROUTES_FOR_APP_RECEIVED: {
         const routes = this.formatSplitResponse(action.routes).map((route) =>
-          Object.assign({}, route, { appGuid: action.appGuid })
+          Object.assign({}, route, { app_guid: action.appGuid })
         );
         this.mergeMany('guid', routes, (changed) => {
           if (changed) this.emitChange();
@@ -51,6 +51,28 @@ class RouteStore extends BaseStore {
         this.mergeAll('domain_guid', domain, (changed) => {
           if (changed) this.emitChange();
         });
+        break;
+      }
+
+      case appActionTypes.APP_RECEIVED: {
+        if (!action.app.routes) break;
+        const routes = action.app.routes.map((route) => {
+          const r = {
+            app_guid: action.app.guid,
+            guid: route.guid,
+            host: route.host,
+            path: route.path,
+            domain_guid: route.domain.guid,
+            domain: route.domain.name
+          };
+
+          return r;
+        });
+
+        this.mergeMany('domain_guid', routes, (changed) => {
+          if (changed) this.emitChange();
+        });
+
         break;
       }
 
