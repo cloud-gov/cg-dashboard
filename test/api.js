@@ -42,11 +42,7 @@ module.exports = function api(smocks) {
     label: 'App stats',
     path: `${BASE_URL}/apps/{guid}/stats`,
     handler: function (req, reply) {
-      var app = apps.filter((a) => a.guid === req.params.guid).pop();
-      var response = Object.assign({}, appStats, {
-        state: app.state
-      });
-      reply({ 0: response });
+      reply(appStats);
     }
   });
 
