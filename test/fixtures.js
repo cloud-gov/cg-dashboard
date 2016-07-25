@@ -57,7 +57,12 @@ var spaceGuids = [
 
 module.exports.spaceGuids = spaceGuids;
 
+var currentUserGuid = 'user-guid-current';
+
+module.exports.currentUserGuid = currentUserGuid;
+
 var userGuids = [
+  currentUserGuid,
   'user-guid-one',
   'user-guid-two',
   'user-guid-three'
@@ -244,7 +249,7 @@ var servicePlans = function(serviceGuid) {
   return servicePlanGuids.map(function(guid, i) {
     return {
       metadata: {
-        guid: guid,
+        guid: `${serviceGuid}-${guid}`,
         url: `${URL_BASE}/service_plans/${guid}`,
         created_at: '2015-07-14T04:02:30Z',
         updated_at: null
@@ -280,6 +285,18 @@ var spaces = spaceGuids.map(function(guid){
 
 module.exports.spaces = spaces;
 
+var currentUser = {
+  email: "current.user@gsa.gov",
+  family_name: "gsa.gov",
+  given_name: "current.user",
+  name: "current.user gsa.gov",
+  user_id: currentUserGuid,
+  user_name: "current.user@gsa.gov"
+};
+
+module.exports.currentUser = currentUser;
+module.exports.currentUserGuid = currentUser;
+
 var users = userGuids.map(function(guid, i) {
   return {
     metadata: {
@@ -293,7 +310,6 @@ var users = userGuids.map(function(guid, i) {
       active: true,
       default_space_guid: null,
       username: `user-${guid}`,
-      organization_roles: [ 'org_user' ],
       spaces_url: `${URL_BASE}/users/${guid}/spaces`,
       organizations_url: `${URL_BASE}/users/${guid}/organizations`,
       managed_organizations_url: `${URL_BASE}/users/${guid}/managed_organizations_url`,
@@ -306,3 +322,31 @@ var users = userGuids.map(function(guid, i) {
 });
 
 module.exports.users = users;
+module.exports.orgUsers = users;
+
+var orgUserRoles = users.map(function(user, i) {
+  var roles = [];
+  if (i % 2 === 0 || user.guid === currentUserGuid) {
+    roles.push('org_manager');
+  }
+  if (i % 3 === 0) {
+    roles.push('org_auditor');
+  }
+  var entity = Object.assign({}, user.entity, { organization_roles: roles});
+  return Object.assign({}, user, {entity: entity});
+});
+
+module.exports.orgUserRoles = orgUserRoles;
+
+var spaceUsers = users.map(function(user, i) {
+  var roles = ['space_developer'];
+  if (i % 2 === 0 && user.guid !== currentUserGuid) {
+    roles.push('space_manager');
+  }
+  var entity = Object.assign({}, user.entity, { space_roles: roles});
+  return Object.assign({}, user, {entity: entity});
+});
+spaceUsers.pop();
+
+module.exports.spaceUsers = spaceUsers;
+

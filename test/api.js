@@ -7,7 +7,10 @@ var services = data.services;
 var serviceInstances = data.serviceInstances;
 var servicePlans = data.servicePlans;
 var spaces = data.spaces;
-var users = data.users;
+var currentUser = data.currentUser;
+var spaceUsers = data.spaceUsers;
+var orgUsers = data.orgUsers;
+var orgUserRoles = data.orgUserRoles;
 
 var BASE_URL = '/v2';
 
@@ -20,8 +23,16 @@ module.exports = function api(smocks) {
     handler: function (req, reply) {
       var guid = req.params.guid;
       var route = routes.pop();
-      console.log('guid', guid);
       reply(route);
+    }
+  });
+
+  smocks.route({
+    id: 'uaa-userinfo',
+    label: 'UAA user info',
+    path: '/uaa/userinfo',
+    handler: function(req, reply) {
+      reply(currentUser);
     }
   });
 
@@ -101,17 +112,33 @@ module.exports = function api(smocks) {
   });
 
   smocks.route({
+    id: 'organization-users',
+    label: 'Organization users',
+    path: `${BASE_URL}/organizations/{guid}/users`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      reply({
+        total_results: orgUsers.length,
+        total_pages: 1,
+        prev_url: null,
+        next_url: null,
+        resources: orgUsers
+      });
+    }
+  });
+
+  smocks.route({
     id: 'organization-user-roles',
     label: 'Organization user roles',
     path: `${BASE_URL}/organizations/{guid}/user_roles`,
     handler: function (req, reply) {
       var guid = req.params.guid;
       reply({
-        total_results: users.length,
+        total_results: orgUserRoles.length,
         total_pages: 1,
         prev_url: null,
         next_url: null,
-        resources: users
+        resources: orgUserRoles
       });
     }
   });
@@ -186,11 +213,11 @@ module.exports = function api(smocks) {
     handler: function (req, reply) {
       var guid = req.params.guid;
       reply({
-        total_results: users.length,
+        total_results: spaceUsers.length,
         total_pages: 1,
         prev_url: null,
         next_url: null,
-        resources: users
+        resources: spaceUsers
       });
     }
   });
