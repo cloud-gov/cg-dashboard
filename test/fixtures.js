@@ -109,6 +109,32 @@ var apps = appGuids.map(function(guid) {
 
 module.exports.apps = apps;
 
+var appStats = {
+  0: {
+    state: "RUNNING",
+    stats: {
+      name: "testapp01",
+      uris: [
+        "testapp01.18f.gov"
+      ],
+      host: "10.10.1.103",
+      port: 61035,
+      uptime: 324582,
+      mem_quota: 16777216,
+      disk_quota: 33554432,
+      fds_quota: 16384,
+      usage: {
+        time: "2016-07-25 20:51:32 +0000",
+        cpu: 0,
+        mem: 5042176,
+        disk: 13221888
+      }
+    }
+  }
+}
+
+module.exports.appStats = appStats;
+
 var organizations = organizationGuids.map(function(guid) {
   return {
     metadata: {

@@ -41,9 +41,7 @@ module.exports = function api(smocks) {
     label: 'App stats',
     path: `${BASE_URL}/apps/{guid}/stats`,
     handler: function (req, reply) {
-      reply({
-        "yo": "fool"
-      });
+      reply(appStats);
     }
   });
 
