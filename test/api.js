@@ -1,6 +1,7 @@
 var data = require('./fixtures');
 
 var apps = data.apps;
+var appStats = data.appStats;
 var organizations = data.organizations;
 var routes = data.routes;
 var services = data.services;
