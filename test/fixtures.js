@@ -70,7 +70,8 @@ var userGuids = [
 
 module.exports.userGuids = userGuids;
 
-var apps = appGuids.map(function(guid) {
+var apps = appGuids.map(function(guid, i) {
+  var state = ((i % 2) !== 0) ? 'STOPPED' : 'STARTED';
   return {
     guid: guid,
     name: `app-${guid}`,
@@ -88,7 +89,7 @@ var apps = appGuids.map(function(guid) {
     running_instances: 2,
     service_count: 0,
     service_names: [],
-    state: 'STARTED',
+    state,
     version: 'version',
     urls: [
       `${guid}.apps.cloud.gov`
@@ -375,4 +376,3 @@ var spaceUsers = users.map(function(user, i) {
 spaceUsers.pop();
 
 module.exports.spaceUsers = spaceUsers;
-

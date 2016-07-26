@@ -42,6 +42,14 @@ module.exports = function api(smocks) {
     label: 'App stats',
     path: `${BASE_URL}/apps/{guid}/stats`,
     handler: function (req, reply) {
+      var app = apps.filter((app) => app.guid === req.params.guid).pop();
+      if (app.state === 'STOPPED') {
+        return reply({
+          code: 200003,
+          description: `Could not fetch stats for stopped app: ${app.name}`,
+          error_code: 'CF-AppStoppedStatsError'
+        }).code(400);
+      }
       reply(appStats);
     }
   });
