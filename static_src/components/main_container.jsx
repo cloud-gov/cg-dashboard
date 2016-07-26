@@ -1,12 +1,7 @@
 
 import React from 'react';
-
-import cgBaseStyles from 'cloudgov-style/css/base.css';
-import mainContentStyles from 'cloudgov-style/css/components/main-content.css';
-import sidenavStyles from 'cloudgov-style/css/components/sidenav.css';
-import titleBarStyles from 'cloudgov-style/css/components/title_bar.css';
-import navToggleStyles from 'cloudgov-style/css/components/nav_toggle.css';
-import overrideStyles from '../css/overrides.css';
+import style from 'cloudgov-style/css/cloudgov-style.css';
+import overrideStyle from '../css/overrides.css';
 
 import createStyler from '../util/create_styler';
 
@@ -23,14 +18,7 @@ function getState() {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.styler = createStyler(
-      cgBaseStyles,
-      mainContentStyles,
-      sidenavStyles,
-      titleBarStyles,
-      navToggleStyles,
-      overrideStyles
-    );
+    this.styler = createStyler(style, overrideStyle);
     this.state = { isLoggedIn: false };
     this._onChange = this._onChange.bind(this);
   }
