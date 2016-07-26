@@ -8,17 +8,17 @@ import { Router } from 'director';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import App from './app.jsx';
-import AppPage from './components/app_page.jsx';
+import AppContainer from './components/app_container.jsx';
 import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
 import Home from './components/home.jsx';
 import Login from './components/login.jsx';
+import MainContainer from './components/main_container.jsx';
 import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
 import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
-import Space from './components/space.jsx';
+import SpaceContainer from './components/space_container.jsx';
 import SpaceList from './components/space_list.jsx';
 import { trackPageView } from './util/analytics.js';
 import uaaApi from './util/uaa_api.js';
@@ -26,15 +26,14 @@ import userActions from './actions/user_actions.js';
 
 const mainEl = document.querySelector('.js-app');
 
-
 function login() {
-  ReactDOM.render(<App><Login /></App>, mainEl);
+  ReactDOM.render(<MainContainer><Login /></MainContainer>, mainEl);
 }
 
 function dashboard() {
-  ReactDOM.render(<App>
+  ReactDOM.render(<MainContainer>
     <Home />
-  </App>, mainEl);
+  </MainContainer>, mainEl);
 }
 
 function org(orgGuid) {
@@ -42,9 +41,9 @@ function org(orgGuid) {
   orgActions.toggleSpaceMenu(orgGuid);
   orgActions.fetch(orgGuid);
   ReactDOM.render(
-    <App>
+    <MainContainer>
       <SpaceList initialOrgGuid={ orgGuid } />
-    </App>, mainEl);
+    </MainContainer>, mainEl);
 }
 
 function space(orgGuid, spaceGuid, potentialPage) {
@@ -64,13 +63,13 @@ function space(orgGuid, spaceGuid, potentialPage) {
     userActions.fetchSpaceUsers(spaceGuid);
   }
   ReactDOM.render(
-    <App initialSpaceGuid={spaceGuid}>
-      <Space
+    <MainContainer initialSpaceGuid={spaceGuid}>
+      <SpaceContainer
         initialSpaceGuid={ spaceGuid}
         initialOrgGuid={ orgGuid }
         currentPage={ potentialPage }
       />
-    </App>, mainEl);
+    </MainContainer>, mainEl);
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
@@ -80,11 +79,11 @@ function app(orgGuid, spaceGuid, appGuid) {
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
   ReactDOM.render(
-    <App initialSpaceGuid={ spaceGuid }>
-      <AppPage
+    <MainContainer initialSpaceGuid={ spaceGuid }>
+      <AppContainer
         initialAppGuid={ appGuid }
       />
-    </App>, mainEl);
+    </MainContainer>, mainEl);
 }
 
 function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
@@ -97,9 +96,9 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
     serviceActions.createInstanceForm(serviceGuid, servicePlanGuid);
   }
   ReactDOM.render(
-    <App>
+    <MainContainer>
       <Marketplace initialOrgGuid={ orgGuid } />
-    </App>,
+    </MainContainer>,
   mainEl);
 }
 

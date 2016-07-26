@@ -15,7 +15,7 @@ const PAGES = {
   'users': Users
 }
 
-export default class Space extends React.Component {
+export default class SpaceContainer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -122,12 +122,12 @@ export default class Space extends React.Component {
   }
 };
 
-Space.propTypes = {
+SpaceContainer.propTypes = {
   currentPage: React.PropTypes.string,
   initialOrgGuid: React.PropTypes.string.isRequired,
   initialSpaceGuid: React.PropTypes.string.isRequired
 };
 
-Space.defaultProps = {
+SpaceContainer.defaultProps = {
   currentPage: 'apps'
 };
