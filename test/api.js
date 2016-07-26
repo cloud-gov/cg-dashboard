@@ -1,11 +1,17 @@
 var data = require('./fixtures');
 
 var apps = data.apps;
+var appStats = data.appStats;
 var organizations = data.organizations;
 var routes = data.routes;
+var services = data.services;
 var serviceInstances = data.serviceInstances;
+var servicePlans = data.servicePlans;
 var spaces = data.spaces;
-var users = data.users;
+var currentUser = data.currentUser;
+var spaceUsers = data.spaceUsers;
+var orgUsers = data.orgUsers;
+var orgUserRoles = data.orgUserRoles;
 
 var BASE_URL = '/v2';
 
@@ -18,8 +24,16 @@ module.exports = function api(smocks) {
     handler: function (req, reply) {
       var guid = req.params.guid;
       var route = routes.pop();
-      console.log('guid', guid);
       reply(route);
+    }
+  });
+
+  smocks.route({
+    id: 'uaa-userinfo',
+    label: 'UAA user info',
+    path: '/uaa/userinfo',
+    handler: function(req, reply) {
+      reply(currentUser);
     }
   });
 
@@ -28,9 +42,15 @@ module.exports = function api(smocks) {
     label: 'App stats',
     path: `${BASE_URL}/apps/{guid}/stats`,
     handler: function (req, reply) {
-      reply({
-        "yo": "fool"
-      });
+      var app = apps.filter((app) => app.guid === req.params.guid).pop();
+      if (app.state === 'STOPPED') {
+        return reply({
+          code: 200003,
+          description: `Could not fetch stats for stopped app: ${app.name}`,
+          error_code: 'CF-AppStoppedStatsError'
+        }).code(400);
+      }
+      reply(appStats);
     }
   });
 
@@ -99,17 +119,50 @@ module.exports = function api(smocks) {
   });
 
   smocks.route({
+    id: 'organization-users',
+    label: 'Organization users',
+    path: `${BASE_URL}/organizations/{guid}/users`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      reply({
+        total_results: orgUsers.length,
+        total_pages: 1,
+        prev_url: null,
+        next_url: null,
+        resources: orgUsers
+      });
+    }
+  });
+
+  smocks.route({
     id: 'organization-user-roles',
     label: 'Organization user roles',
     path: `${BASE_URL}/organizations/{guid}/user_roles`,
     handler: function (req, reply) {
       var guid = req.params.guid;
       reply({
-        total_results: users.length,
+        total_results: orgUserRoles.length,
         total_pages: 1,
         prev_url: null,
         next_url: null,
-        resources: users
+        resources: orgUserRoles
+      });
+    }
+  });
+
+  smocks.route({
+    id: 'service-service-plans',
+    label: 'Service service plans',
+    path: `${BASE_URL}/services/{guid}/service_plans`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      var plans = servicePlans(guid);
+      reply({
+        total_results: plans.length,
+        total_pages: 1,
+        prev_url: null,
+        next_url: null,
+        resources: plans
       });
     }
   });
@@ -124,6 +177,22 @@ module.exports = function api(smocks) {
         guid: guid,
         name: `space-${guid}`,
         apps: apps
+      });
+    }
+  });
+
+  smocks.route({
+    id: 'organization-services',
+    label: 'Organization services',
+    path: `${BASE_URL}/organizations/{guid}/services`,
+    handler: function(req, reply) {
+      var guid = req.params.guid;
+      reply({
+        total_results: services.length,
+        total_pages: 1,
+        prev_url: null,
+        next_url: null,
+        resources: services
       });
     }
   });
@@ -151,11 +220,11 @@ module.exports = function api(smocks) {
     handler: function (req, reply) {
       var guid = req.params.guid;
       reply({
-        total_results: users.length,
+        total_results: spaceUsers.length,
         total_pages: 1,
         prev_url: null,
         next_url: null,
-        resources: users
+        resources: spaceUsers
       });
     }
   });
