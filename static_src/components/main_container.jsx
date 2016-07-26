@@ -6,15 +6,15 @@ import mainContentStyles from 'cloudgov-style/css/components/main-content.css';
 import sidenavStyles from 'cloudgov-style/css/components/sidenav.css';
 import titleBarStyles from 'cloudgov-style/css/components/title_bar.css';
 import navToggleStyles from 'cloudgov-style/css/components/nav_toggle.css';
-import overrideStyles from './css/overrides.css';
+import overrideStyles from '../css/overrides.css';
 
-import createStyler from './util/create_styler';
+import createStyler from '../util/create_styler';
 
-import Disclaimer from './components/disclaimer.jsx';
-import Header from './components/header.jsx';
-import Login from './components/login.jsx';
-import LoginStore from './stores/login_store.js';
-import { Nav } from './components/navbar.jsx';
+import Disclaimer from './disclaimer.jsx';
+import Header from './header.jsx';
+import Login from './login.jsx';
+import LoginStore from '../stores/login_store.js';
+import { Nav } from './navbar.jsx';
 
 function getState() {
   return { isLoggedIn: LoginStore.isLoggedIn() };

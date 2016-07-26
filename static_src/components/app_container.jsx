@@ -21,7 +21,7 @@ function stateSetter(current) {
   };
 }
 
-export default class AppPage extends React.Component {
+export default class AppContainer extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -199,6 +199,6 @@ export default class AppPage extends React.Component {
   }
 }
 
-AppPage.propTypes = {
+AppContainer.propTypes = {
   initialAppGuid: React.PropTypes.string.isRequired
 };
