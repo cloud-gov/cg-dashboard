@@ -15,16 +15,20 @@ const PAGES = {
   'users': Users
 }
 
+function stateSetter() {
+  return {
+    space: SpaceStore.currentSpace(),
+    currentOrg: OrgStore.currentOrg(),
+    currentOrgGuid: OrgStore.currentOrgGuid
+    currentSpaceGuid: SpaceStore.currentSpaceGuid
+  };
+}
+
 export default class SpaceContainer extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      space: SpaceStore.get(this.props.initialSpaceGuid) || {},
-      currentOrg: OrgStore.get(this.props.initialOrgGuid),
-      currentSpaceGuid: this.props.initialSpaceGuid
-    };
-
+    this.props = props;
+    this.state = stateSetter();
     this._onChange = this._onChange.bind(this);
     this.spaceUrl = this.spaceUrl.bind(this);
   }
@@ -38,11 +42,7 @@ export default class SpaceContainer extends React.Component {
   }
 
   _onChange() {
-    this.setState({
-      currentOrg: OrgStore.get(OrgStore.currentOrgGuid),
-      currentSpaceGuid: this.props.initialSpaceGuid,
-      space: SpaceStore.get(this.props.initialSpaceGuid)
-    });
+    this.setState(stateSetter());
   }
 
   spaceUrl(page) {
@@ -76,7 +76,7 @@ export default class SpaceContainer extends React.Component {
   }
 
   get currentOrgGuid() {
-    return this.state.currentOrg ? this.state.currentOrg.guid : '0';
+    return this.state.currentOrg ? this.props.initialOrgGuid : '0';
   }
 
   render() {
@@ -123,9 +123,7 @@ export default class SpaceContainer extends React.Component {
 };
 
 SpaceContainer.propTypes = {
-  currentPage: React.PropTypes.string,
-  initialOrgGuid: React.PropTypes.string.isRequired,
-  initialSpaceGuid: React.PropTypes.string.isRequired
+  currentPage: React.PropTypes.string
 };
 
 SpaceContainer.defaultProps = {

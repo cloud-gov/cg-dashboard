@@ -37,17 +37,15 @@ function dashboard() {
 }
 
 function org(orgGuid) {
-  orgActions.changeCurrentOrg(orgGuid);
   orgActions.toggleSpaceMenu(orgGuid);
   orgActions.fetch(orgGuid);
   ReactDOM.render(
     <MainContainer>
-      <SpaceList initialOrgGuid={ orgGuid } />
+      <SpaceList />
     </MainContainer>, mainEl);
 }
 
 function space(orgGuid, spaceGuid, potentialPage) {
-  orgActions.changeCurrentOrg(orgGuid);
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
   // TODO what happens if the space arrives before the changelistener is added?
@@ -89,7 +87,6 @@ function app(orgGuid, spaceGuid, appGuid) {
 function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   orgActions.fetch(orgGuid);
   serviceActions.fetchAllServices(orgGuid);
-  orgActions.changeCurrentOrg(orgGuid);
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace('0');
   if (serviceGuid && servicePlanGuid) {

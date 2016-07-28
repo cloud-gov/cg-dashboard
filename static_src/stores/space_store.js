@@ -57,6 +57,10 @@ class SpaceStore extends BaseStore {
     }
   }
 
+  currentSpace() {
+    return this.get(this._currentSpaceGuid);
+  }
+
   get currentSpaceGuid() {
     return this._currentSpaceGuid;
   }
