@@ -30,8 +30,8 @@ change the version:
 Currently, the site does not have visual regression testing so must be manually
 tested for breaking visual changes. Here is a simple script to assist in manual
 testing. Generally, it's best to look through all the pages and check if anything
-looks off. Testing shoudl generally be done on the master environment,
-dashboard-master.cloud.gov, when all the necessary code is on the master branch
+looks off. Testing should generally be done on the master environment,
+dashboard-master.apps.cloud.gov, when all the necessary code is on the master branch
 and has been deployed. To check that the master branch has been deployed, check
 travis CI.
 
@@ -72,7 +72,7 @@ and the `testSpace01` space.
   - Ensure the checkbox becomes unchecked after a second of clicking on it.
 1. Click on the 'All organization users` link in the subnav.
 1 Repeat steps to check a user permission.
-1. Techinically, we shoudl test removing a user from an org here, but will not because theres no easy way to add them back.
+1. Techinically, we should test removing a user from an org here, but will not because theres no easy way to add them back.
 1. Click on the `Apps` link in the subnav
 1. Click on `testapp01` or any app available and ensure the page appears and looks OK.
 1. Click on the `Overview` link in the sidenav and ensure the homepage appears.
