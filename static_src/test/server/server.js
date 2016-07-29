@@ -19,7 +19,7 @@ smocks.route({
   path: '/{p*}',
   handler: function (req, reply) {
     var url = (req.params.p) ? req.params.p : 'index.html';
-    reply.file(path.resolve(__dirname, '../static', url));
+    reply.file(path.resolve(__dirname, '../../../static', url));
   }
 });
 
