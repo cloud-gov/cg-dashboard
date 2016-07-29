@@ -5,3 +5,4 @@ applications:
   host: dashboard
   env:
     CONSOLE_HOSTNAME: https://dashboard.cloud.gov
+    NODE_ENV: production
