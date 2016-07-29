@@ -4,4 +4,4 @@ applications:
 - name: cf-deck
   host: dashboard-staging
   env:
-    CONSOLE_HOSTNAME: https://dashboard-staging.fr.cloud.gov
+    CONSOLE_HOSTNAME: https://dashboard-staging.fr.apps.cloud.gov

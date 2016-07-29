@@ -135,7 +135,7 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 - Review the [competitive analysis](https://docs.google.com/spreadsheets/u/1/d/194tGz75NFwFyH8jT7zY_n-O0I7N4yAGYtIG4hw9qPcQ/edit?usp=drive_web) to get a sense of our "competitors" and their dashboard.
 - Review the [cloudgov-style styleguide](https://pages.18f.gov/cg-style/) to get a sense of the global cloud.gov visual style.
 - Review the [US Web Design Standards](https://standards.usa.gov/) as cloudgov-style was built from it.
-- Review the dashboard, current [prod](https://dashboard.cloud.gov/#/), [master](https://dashboard-master.cloud.gov/#/) and [staging](https://dashboard-staging.cloud.gov/#/)
+- Review the dashboard, current [prod](https://dashboard.cloud.gov/#/), [master](https://dashboard-master.apps.cloud.gov/#/) and [staging](https://dashboard-staging.apps.cloud.gov/#/)
 - Review the cloud foundry [community UI](http://ui.apps.cloud.gov/), a UI that members of the cloud foundry community created and is being used as a basis for our own dashboard design.
 
 ## Public domain
