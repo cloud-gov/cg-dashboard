@@ -39,6 +39,7 @@ class OrgStore extends BaseStore {
         if (action.org) {
           this.merge('guid', action.org, () => {
             this.fetching = false;
+            this.emitChange();
           });
         }
         break;

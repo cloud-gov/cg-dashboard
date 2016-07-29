@@ -36,7 +36,6 @@ export default class BaseStore extends EventEmitter {
     if (!!value === this._fetching) return;
 
     this._fetching = !!value;
-    this.emitChange();
   }
 
   isEmpty() {

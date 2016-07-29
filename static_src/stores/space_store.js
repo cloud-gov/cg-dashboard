@@ -41,6 +41,7 @@ class SpaceStore extends BaseStore {
       case spaceActionTypes.SPACE_RECEIVED: {
         this.merge('guid', action.space, () => {
           this.fetching = false;
+          this.emitChange();
         });
         break;
       }
