@@ -81,7 +81,6 @@ describe('AppStore', function() {
     it('should emit a change event if data was updated', function() {
       var spy = sandbox.spy(AppStore, 'emitChange');
 
-      AppStore._fetching = true;
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_RECEIVED,
         app: { guid: 'asdf' }
@@ -91,10 +90,11 @@ describe('AppStore', function() {
     });
 
     it('should not emit a change event if data was not changed', function() {
-      var spy = sandbox.spy(AppStore, 'emitChange');
       var app = { guid: 'asdf' };
 
       AppStore.push(app);
+
+      const spy = sandbox.spy(AppStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_RECEIVED,
