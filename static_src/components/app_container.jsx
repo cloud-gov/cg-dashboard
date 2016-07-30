@@ -17,6 +17,7 @@ function stateSetter(current) {
     currentAppGuid: current.currentAppGuid,
     currentOrgName: OrgStore.currentOrgName,
     currentSpaceName: SpaceStore.currentSpaceName,
+    empty: AppStore.isEmpty(),
     loading: AppStore.fetching
   };
 }
@@ -120,11 +121,18 @@ export default class AppContainer extends React.Component {
   }
 
   render() {
-    let content = <h4 className="test-none_message">No app</h4>;
+    let loading = <div></div>;
+    let content = <div></div>;
 
     if (this.state.loading) {
-      content = <Loading text="Loading app now" />
-    } else if (this.state.app.name) {
+      loading = <Loading text="Loading app now" />;
+    }
+
+    if (this.state.isEmpty) {
+      content = <h4 className="test-none_message">No app</h4>;
+    }
+
+    if (this.state.app.name) {
       content = (
         <div>
           <h2>{ this.fullTitle }</h2>
@@ -193,6 +201,7 @@ export default class AppContainer extends React.Component {
 
     return (
       <div>
+        { loading }
         { content }
       </div>
     );

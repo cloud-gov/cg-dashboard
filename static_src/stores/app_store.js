@@ -14,6 +14,8 @@ class AppStore extends BaseStore {
   constructor() {
     super();
     this._data = new Immutable.List();
+    this._fetchingStats = false;
+    this._currentlyEmpty = false;
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
@@ -26,19 +28,23 @@ class AppStore extends BaseStore {
 
       case appActionTypes.APP_STATS_FETCH:
         cfApi.fetchAppStats(action.appGuid);
+        this.fetchingStats = true;
         break;
 
       case appActionTypes.APP_RECEIVED:
-        this.merge('guid', action.app, () => {
-          this.fetching = false;
-          this.emitChange();
-        });
+        this.fetching = false;
+        if (!action.app.guid) {
+          this._currentlyEmpty = true;
+        }
+        this.merge('guid', action.app, () => { });
+        this.emitChange();
         break;
 
       case appActionTypes.APP_STATS_RECEIVED: {
         const app = Object.assign({}, action.app, { guid: action.appGuid });
-        this.merge('guid', app, (changed) => {
-          if (changed) this.emitChange();
+        this.fetchingStats = false;
+        this.merge('guid', app, () => {
+          this.emitChange();
         });
         break;
       }
@@ -58,6 +64,10 @@ class AppStore extends BaseStore {
       default:
         break;
     }
+  }
+
+  isEmpty() {
+    return this._currentlyEmpty;
   }
 }
 

@@ -15,6 +15,7 @@ describe('AppStore', function() {
   beforeEach(() => {
     AppStore._data = Immutable.List();
     AppStore._fetching = false;
+    AppStore._currentlyEmpty = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -122,6 +123,21 @@ describe('AppStore', function() {
       let actual = AppStore.get(sharedGuid);
       expect(actual).toEqual({ guid: sharedGuid, name: 'adsfa',
           instances: [{ guid: 'dfs' }] });
+    });
+
+    it('should set currently empty to true if no app there', function() {
+      var app = { guid: 'asdf' };
+
+      AppStore.push(app);
+
+      const spy = sandbox.spy(AppStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: appActionTypes.APP_RECEIVED,
+        app: {}
+      });
+
+      expect(AppStore.isEmpty()).toBeTruthy();
     });
 
     it('should add app to data if it doesn\'t already exist', function() {
