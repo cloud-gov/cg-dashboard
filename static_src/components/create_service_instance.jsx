@@ -28,7 +28,8 @@ export default class CreateServiceInstance extends React.Component {
     this.props = props;
     this.state = {
       errs: [],
-      spaces: []
+      spaces: SpaceStore.getAll(),
+      createError: ServiceInstanceStore.createError
     };
     this._onChange = this._onChange.bind(this);
     this._onValidateForm = this._onValidateForm.bind(this);
@@ -40,7 +41,6 @@ export default class CreateServiceInstance extends React.Component {
   componentDidMount() {
     SpaceStore.addChangeListener(this._onChange);
     ServiceInstanceStore.addChangeListener(this._onChange);
-    this.setState(stateSetter());
     this.scrollIntoView();
   }
 
