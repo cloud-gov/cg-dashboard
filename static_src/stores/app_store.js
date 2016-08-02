@@ -14,8 +14,6 @@ class AppStore extends BaseStore {
   constructor() {
     super();
     this._data = new Immutable.List();
-    this._fetchingStats = false;
-    this._currentlyEmpty = false;
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
@@ -28,7 +26,6 @@ class AppStore extends BaseStore {
 
       case appActionTypes.APP_STATS_FETCH:
         cfApi.fetchAppStats(action.appGuid);
-        this.fetchingStats = true;
         break;
 
       case appActionTypes.APP_RECEIVED:
@@ -42,7 +39,6 @@ class AppStore extends BaseStore {
 
       case appActionTypes.APP_STATS_RECEIVED: {
         const app = Object.assign({}, action.app, { guid: action.appGuid });
-        this.fetchingStats = false;
         this.merge('guid', app, () => {
           this.emitChange();
         });
