@@ -43,7 +43,7 @@ export default class BaseStore extends EventEmitter {
     return this._fetched;
   }
 
-  set fetched() {
+  set fetched(value) {
     if (!!value === this._fetched) return;
 
     this._fetched = !!value;

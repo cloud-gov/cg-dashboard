@@ -30,17 +30,15 @@ class AppStore extends BaseStore {
 
       case appActionTypes.APP_RECEIVED:
         this.fetching = false;
-        if (!action.app.guid) {
-          this._currentlyEmpty = true;
-        }
+        this.fetched = true;
         this.merge('guid', action.app, () => { });
         this.emitChange();
         break;
 
       case appActionTypes.APP_STATS_RECEIVED: {
         const app = Object.assign({}, action.app, { guid: action.appGuid });
-        this.merge('guid', app, () => {
-          this.emitChange();
+        this.merge('guid', app, (changed) => {
+          if (changed) this.emitChange();
         });
         break;
       }
@@ -53,6 +51,7 @@ class AppStore extends BaseStore {
 
       case appActionTypes.APP_ALL_RECEIVED: {
         this.fetching = false;
+        this.fetched = true;
         this.emitChange();
         break;
       }
@@ -63,7 +62,6 @@ class AppStore extends BaseStore {
   }
 
   isEmpty() {
-    return this._currentlyEmpty;
   }
 }
 

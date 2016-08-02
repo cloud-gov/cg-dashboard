@@ -238,7 +238,7 @@ describe('BaseStore', () => {
 
     it('should cast all values to booleans', function () {
       store.fetched = 'true';
-      expect(store.fetchied).toEqual(true);
+      expect(store.fetched).toEqual(true);
 
       store.fetched = undefined;
       expect(store.fetched).toEqual(false);
