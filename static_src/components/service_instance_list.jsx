@@ -13,10 +13,14 @@ import serviceActions from '../actions/service_actions.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 
 function stateSetter(props) {
+  const serviceInstances = ServiceInstanceStore.getAllBySpaceGuid(
+    props.initialSpaceGuid);
+
   return {
-    serviceInstances: ServiceInstanceStore.getAll(),
+    serviceInstances: serviceInstances,
     currentSpaceGuid: props.initialSpaceGuid,
-    loading: ServiceInstanceStore.fetching
+    loading: ServiceInstanceStore.fetching,
+    empty: ServiceInstanceStore.fetched && !serviceInstances.length
   };
 }
 
@@ -31,6 +35,10 @@ export default class ServiceInstanceList extends React.Component {
     this._handleDeleteCancel = this._handleDeleteCancel.bind(this);
     this.renderConfirmationBox = this.renderConfirmationBox.bind(this);
     this.styler = createStyler(style);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateSetter(nextProps));
   }
 
   componentDidMount() {
@@ -79,15 +87,24 @@ export default class ServiceInstanceList extends React.Component {
   }
 
   render() {
-    let content = <h4 className="test-none_message">No service instances</h4>;
+    let content = <div></div>;
+    let loading = <div></div>;
+
     const specialtdStyles = {
       whiteSpace: 'nowrap',
       width: '25%'
     };
 
+
     if (this.state.loading) {
-      content = <Loading text="Loading service instances" />;
-    } else if (this.state.serviceInstances.length) {
+      loading = <Loading text="Loading service instances" />;
+    }
+
+    if (this.state.empty) {
+      content = <h4 className="test-none_message">No service instances</h4>;
+    }
+
+    if (this.state.serviceInstances.length) {
       content = (
       <div>
         <p><em>
@@ -145,6 +162,7 @@ export default class ServiceInstanceList extends React.Component {
 
     return (
       <div className={ this.styler('tableWrapper') }>
+        { loading }
         { content }
       </div>
     );
