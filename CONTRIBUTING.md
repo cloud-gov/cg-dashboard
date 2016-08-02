@@ -113,7 +113,6 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 - What should performance budgets for decided metrics be? ie: faster then 1000 for speed index, faster then 1s for certain custom event, total request size below 2mb.
 - How should performance metrics and budgets be incorporated into workflow? Going over a budget requires re-implementation, or issue.
 - Any library added that's total file size is above 25kb should be evaluated for performance affect.
--
 
 ## Onboarding checklist
 - [ ] Join the `#cloud-gov-liberator` channel on Slack
