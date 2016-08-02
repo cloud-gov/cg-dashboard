@@ -60,9 +60,6 @@ class AppStore extends BaseStore {
         break;
     }
   }
-
-  isEmpty() {
-  }
 }
 
 const _AppStore = new AppStore();
