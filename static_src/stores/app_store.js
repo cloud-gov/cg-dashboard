@@ -21,7 +21,7 @@ class AppStore extends BaseStore {
     switch (action.type) {
       case appActionTypes.APP_FETCH:
         cfApi.fetchApp(action.appGuid);
-        this.fetching = true; // set fetching will .emitChange()
+        this.fetching = true;
         break;
 
       case appActionTypes.APP_STATS_FETCH:
@@ -31,6 +31,7 @@ class AppStore extends BaseStore {
       case appActionTypes.APP_RECEIVED:
         this.merge('guid', action.app, () => {
           this.fetching = false;
+          this.emitChange();
         });
         break;
 
@@ -50,6 +51,7 @@ class AppStore extends BaseStore {
 
       case appActionTypes.APP_ALL_RECEIVED: {
         this.fetching = false;
+        this.emitChange();
         break;
       }
 

@@ -64,6 +64,7 @@ class ServicePlanStore extends BaseStore {
 
           this.mergeMany('guid', servicePlans, () => {
             this.fetching = false;
+            this.emitChange();
           });
         }
         break;

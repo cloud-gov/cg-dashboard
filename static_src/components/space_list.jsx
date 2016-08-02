@@ -21,7 +21,7 @@ export default class SpaceList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = { rows: [], currentOrgGuid: this.props.initialOrgGuid };
+    this.state = { rows: [], currentOrgGuid: OrgStore.currentOrgGuid };
     this._onChange = this._onChange.bind(this);
     this.spaceLink = this.spaceLink.bind(this);
     this.styler = createStyler(style);
@@ -107,6 +107,4 @@ export default class SpaceList extends React.Component {
   }
 }
 
-SpaceList.propTypes = {
-  initialOrgGuid: React.PropTypes.string.isRequired
-};
+SpaceList.propTypes = {};

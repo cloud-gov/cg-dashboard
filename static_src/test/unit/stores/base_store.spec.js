@@ -217,14 +217,6 @@ describe('BaseStore', () => {
       expect(store.fetching).toEqual(false);
     });
 
-    it('should emit change if the value is different', function () {
-      var spy = sandbox.spy();
-
-      store.on('CHANGE', spy);
-      store.fetching = true;
-      expect(spy).toHaveBeenCalledOnce();
-    });
-
     it('should not emit change if the value is the same', function () {
       var spy = sandbox.spy();
 

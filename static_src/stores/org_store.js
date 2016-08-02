@@ -39,6 +39,7 @@ class OrgStore extends BaseStore {
         if (action.org) {
           this.merge('guid', action.org, () => {
             this.fetching = false;
+            this.emitChange();
           });
         }
         break;
@@ -74,14 +75,6 @@ class OrgStore extends BaseStore {
         break;
       }
 
-      case orgActionTypes.ORG_CHANGE_CURRENT: {
-        // TODO is this needed anymore or should we use toggle space menu?
-        this._currentOrgGuid = action.orgGuid;
-        this.emitChange();
-
-        break;
-      }
-
       case orgActionTypes.ORG_TOGGLE_SPACE_MENU: {
         this._currentOrgGuid = action.orgGuid;
         const updates = this.updateOpenOrgs(action.orgGuid);
@@ -94,6 +87,10 @@ class OrgStore extends BaseStore {
       default:
         break;
     }
+  }
+
+  currentOrg() {
+    return this.get(this._currentOrgGuid);
   }
 
   get currentOrgGuid() {

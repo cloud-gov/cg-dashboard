@@ -177,26 +177,6 @@ describe('OrgStore', () => {
     });
   });
 
-  describe('on org change current', function() {
-    let expected;
-
-    beforeEach(function () {
-      expected = { guid: 'sdsf', name: 'testA' };
-      OrgStore.push(expected);
-    });
-
-    it('should emit a change event if it finds the org', function() {
-      var spy = sandbox.spy(OrgStore, 'emitChange');
-
-      AppDispatcher.handleViewAction({
-        type: orgActionTypes.ORG_CHANGE_CURRENT,
-        orgGuid: expected.guid
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
-    });
-  });
-
   describe('on a space menu toggle', function() {
     let expected;
     beforeEach(function () {

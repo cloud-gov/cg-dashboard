@@ -52,6 +52,7 @@ class ServiceInstanceStore extends BaseStore {
         const services = this.formatSplitResponse(action.serviceInstances);
         this._data = Immutable.fromJS(services);
         this.fetching = false;
+        this.emitChange();
         break;
       }
 
