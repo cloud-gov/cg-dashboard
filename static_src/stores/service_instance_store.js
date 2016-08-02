@@ -56,7 +56,7 @@ class ServiceInstanceStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
         const services = this.formatSplitResponse(action.serviceInstances);
-        this.mergeAll('guid', services, () => { });
+        this.mergeMany('guid', services, () => { });
         this.fetching = false;
         this.fetched = true;
         this.emitChange();
