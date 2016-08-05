@@ -2,6 +2,7 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
+import ActivityLog from './activity_log.jsx';
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
@@ -139,6 +140,7 @@ export default class AppContainer extends React.Component {
     } else if (appReady(this.state.app)) {
       content = (
         <div>
+          <ActivityLog initialAppGuid={ this.state.app.guid } />
           <h2>{ this.fullTitle }</h2>
           <section className={this.styler('section-card')}>
             <h3>About this application</h3>
