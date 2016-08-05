@@ -19,7 +19,7 @@ function stateSetter() {
   return {
     space: SpaceStore.currentSpace(),
     currentOrg: OrgStore.currentOrg(),
-    currentOrgGuid: OrgStore.currentOrgGuid
+    currentOrgGuid: OrgStore.currentOrgGuid,
     currentSpaceGuid: SpaceStore.currentSpaceGuid
   };
 }
