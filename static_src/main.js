@@ -8,6 +8,7 @@ import { Router } from 'director';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import activityActions from './actions/activity_actions.js';
 import AppContainer from './components/app_container.jsx';
 import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
@@ -90,6 +91,7 @@ function app(orgGuid, spaceGuid, appGuid) {
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
   spaceActions.fetch(spaceGuid);
+  activityActions.fetchSpaceActivity(spaceGuid);
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
   ReactDOM.render(
