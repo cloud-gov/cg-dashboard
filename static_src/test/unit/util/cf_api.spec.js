@@ -4,6 +4,7 @@ import '../../global_setup.js';
 import http from 'axios';
 import Immutable from 'immutable';
 
+import activityActions from '../../../actions/activity_actions.js';
 import appActions from '../../../actions/app_actions.js';
 import cfApi from '../../../util/cf_api.js';
 import domainActions from '../../../actions/domain_actions.js';
@@ -112,6 +113,76 @@ describe('cfApi', function() {
         expect(actual).toEqual(expectedArgB);
         done();
       });;
+    });
+  });
+
+  describe('fetchAllPages()', function() {
+    it('should call the action if there is only one page', function () {
+      var stub = sandbox.stub(http, 'get');
+      var expectedUrl = '/org/asldfkj';
+      var data = {
+        data: {
+          next_url: false,
+          total_pages: 1,
+          resources: ['hey']
+        }
+      };
+
+      stub.onCall(0).returns(createPromise(data));
+
+      cfApi.fetchAllPages(expectedUrl, function(responses) {
+        expect(stub).toHaveBeenCalledOnce();
+        expect(responses).toEqual(['hey']);
+        done();
+      });
+    });
+
+    it('should call http.get once for every page', function (done) {
+      var stub = sandbox.stub(http, 'get');
+      var expectedUrl = '/org/asldfkj';
+      var response = {
+        data: {
+          next_url: true,
+          total_pages: 20,
+          resources: ['hey']
+        }
+      };
+
+      stub.returns(createPromise(response));
+
+      cfApi.fetchAllPages(expectedUrl, function() {
+        var callCount = stub.callCount;
+        expect(callCount).toEqual(response.data.total_pages);
+        done();
+      });
+    });
+
+    it('should combine the responses from all the requests', function(done) {
+      var stub = sandbox.stub(http, 'get');
+      var expectedUrl = '/org/asldfkj';
+      var dataOne = {
+        data: {
+          next_url: true,
+          total_pages: 2,
+          resources: ['hey']
+        }
+      };
+      var dataTwo = Object.assign({}, dataOne, {
+        data: {
+          next_url: false,
+          resources: ['yo', 'hello']
+        }
+      });
+
+      stub.onFirstCall().returns(createPromise(dataOne));
+      stub.onSecondCall().returns(createPromise(dataTwo));
+
+      cfApi.fetchAllPages(expectedUrl, function(responses) {
+        var combined = dataOne.data.resources.concat(dataTwo.data.resources);
+        expect(stub).toHaveBeenCalledTwice();
+        expect(responses).toEqual(combined);
+        done();
+      });
     });
   });
 
@@ -301,6 +372,20 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('space'));
       actual = spy.getCall(0).args[1];
       expect(actual).toEqual(spaceActions.receivedSpace);
+    });
+  });
+
+  describe('fetchSpaceEvents()', function () {
+    it('calls fetch all pages with space guid', function () {
+      var spaceGuid = 'yyyybba1',
+          spy = sandbox.stub(cfApi, 'fetchAllPages'),
+          action;
+
+        cfApi.fetchSpaceEvents(spaceGuid);
+        expect(spy).toHaveBeenCalledOnce();
+
+        action = spy.getCall(0).args[1];
+        expect(action).toEqual(activityActions.receivedActivity);
     });
   });
 
