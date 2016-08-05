@@ -42,9 +42,9 @@ export default class ActivityLog extends React.Component {
 
   render() {
     return (
-      <div className={ this.styler('activity-log') }>
+      <div>
         <h1>Activity Log</h1>
-        <ul>
+        <ul className={ this.styler('activity-log') }>
           { this.state.activity.map((item) => {
             return (
               <ActivityLogItem key={ item.guid } item={ item } />
