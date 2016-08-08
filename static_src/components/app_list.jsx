@@ -12,12 +12,14 @@ const unsafe = Reactable.unsafe;
 
 function stateSetter(props) {
   const space = SpaceStore.get(props.initialSpaceGuid);
+  const apps = (space && space.apps) ? space.apps : [];
 
   return {
-    apps: (space && space.apps) ? space.apps : [],
+    apps: apps,
     currentOrgGuid: props.initialOrgGuid,
     currentSpaceGuid: props.initialSpaceGuid,
-    loading: SpaceStore.fetching
+    loading: SpaceStore.fetching,
+    empty: SpaceStore.fetched && !apps.length
   };
 }
 
@@ -71,11 +73,18 @@ export default class AppList extends React.Component {
   }
 
   render() {
-    let content = <h4 className="test-none_message">No apps</h4>;
+    let content = <div></div>;
+    let loading = <div></div>;
 
     if (this.state.loading) {
-      content = <Loading text="Loading apps" />;
-    } else if (this.state.apps.length) {
+      loading = <Loading text="Loading apps" />;
+    }
+
+    if (this.state.empty) {
+      content = <h4 className="test-none_message">No apps</h4>;
+    }
+
+    if (this.state.apps.length) {
       content = (
         <table sortable>
           <thead>

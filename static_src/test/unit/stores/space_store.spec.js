@@ -75,7 +75,7 @@ describe('SpaceStore', function() {
   });
 
   describe('on space actions space received', function() {
-    it('should change fetching to false', function () {
+    it('should change fetching to false fetched to true', function () {
       let space = { guid: 'testSpaceGuid' };
 
       SpaceStore.fetching = true;
@@ -84,6 +84,7 @@ describe('SpaceStore', function() {
       spaceActions.receivedSpace(space);
 
       expect(SpaceStore.fetching).toEqual(false);
+      expect(SpaceStore.fetched).toEqual(true);
     });
   });
 
