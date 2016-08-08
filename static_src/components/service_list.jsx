@@ -6,22 +6,30 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
+import ServiceStore from '../stores/service_store.js';
 import ServicePlanList from './service_plan_list.jsx';
 import createStyler from '../util/create_styler';
+
+function stateSetter(props) {
+  const services = props.initialServices;
+
+  return {
+    empty: ServiceStore.fetched && !services.length,
+    services
+  }
+}
 
 
 export default class ServiceList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      services: props.initialServices
-    };
+    this.state = stateSetter(props);
     this.styler = createStyler(style);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ services: nextProps.initialServices });
+    this.setState(stateSetter(nextProps));
   }
 
   get columns() {
@@ -40,8 +48,11 @@ export default class ServiceList extends React.Component {
   }
 
   render() {
-    let content = <h4 className="test-none_message">No services</h4>;
-    if (this.state.services.length) {
+    let content = <div></div>;
+
+    if (this.state.empty) {
+      let content = <h4 className="test-none_message">No services</h4>;
+    } else if (this.state.services.length) {
       content = (
       <div>
         <table>

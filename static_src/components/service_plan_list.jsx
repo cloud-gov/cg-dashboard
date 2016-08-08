@@ -13,8 +13,11 @@ import ServicePlanStore from '../stores/service_plan_store.js';
 import createStyler from '../util/create_styler';
 
 function stateSetter(serviceGuid) {
+  const servicePlans = ServicePlanStore.getAllFromService(serviceGuid)
+
   return {
-    servicePlans: ServicePlanStore.getAllFromService(serviceGuid)
+    servicePlans,
+    empty: ServicePlanStore.fetched && !servicePlans.length,
   };
 }
 
@@ -62,9 +65,11 @@ export default class ServicePlanList extends React.Component {
   }
 
   render() {
-    var content = <h4 className="test-none_message">No service plans</h4>;
+    let content = <div></div>
 
-    if (this.rows.length) {
+    if (this.state.empty) {
+      content = <h4 className="test-none_message">No service plans</h4>;
+    } else if (this.rows.length) {
       content = (
       <table>
         <thead>

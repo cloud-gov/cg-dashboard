@@ -15,6 +15,8 @@ describe('ServicePlanStore', function() {
 
   beforeEach(() => {
     ServicePlanStore._data = Immutable.List();
+    ServicePlanStore._fetching = false;
+    ServicePlanStore._fetched = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -50,11 +52,13 @@ describe('ServicePlanStore', function() {
   });
 
   describe('on services received', function() {
-    it('should set fetching to true', function() {
+    it('should set fetching to true, fetched to false', function() {
       const services = wrapInRes([{ guid: '3981f', name: 'adlfskzxcv' }]);
       ServicePlanStore.fetching = false;
       serviceActions.receivedServices(services);
+
       expect(ServicePlanStore.fetching).toEqual(true);
+      expect(ServicePlanStore.fetched).toEqual(false);
     });
   });
 
@@ -71,10 +75,12 @@ describe('ServicePlanStore', function() {
       expect(arg).toEqual(expectedServiceGuid);
     });
 
-    it('should set fetching to true', function() {
+    it('should set fetching to true, fetched to false', function() {
       ServicePlanStore.fetching = false;
       serviceActions.fetchAllPlans('zxncvz8xcvhn32');
+
       expect(ServicePlanStore.fetching).toEqual(true);
+      expect(ServicePlanStore.fetched).toEqual(false);
     });
   });
 
@@ -129,11 +135,12 @@ describe('ServicePlanStore', function() {
       expect(ServicePlanStore.getAll().length).toEqual(1);
     });
 
-    it('should set fetching to false', function() {
+    it('should set fetching to false, fetched to true', function() {
       ServicePlanStore.fetching = true;
       serviceActions.receivedPlans(wrapInRes([{ guid: 'adfklj' }]));
 
       expect(ServicePlanStore.fetching).toEqual(false);
+      expect(ServicePlanStore.fetched).toEqual(true);
     });
   });
 });

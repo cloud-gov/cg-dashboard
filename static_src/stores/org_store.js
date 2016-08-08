@@ -25,6 +25,7 @@ class OrgStore extends BaseStore {
       case orgActionTypes.ORG_FETCH: {
         cfApi.fetchOrg(action.orgGuid);
         this.fetching = true;
+        this.fetched = false;
         break;
       }
 
@@ -32,15 +33,16 @@ class OrgStore extends BaseStore {
         AppDispatcher.waitFor([LoginStore.dispatchToken]);
         cfApi.fetchOrgs();
         this.fetching = true;
+        this.fetched = false;
         break;
       }
 
       case orgActionTypes.ORG_RECEIVED: {
         if (action.org) {
-          this.merge('guid', action.org, () => {
-            this.fetching = false;
-            this.emitChange();
-          });
+          this.fetching = false;
+          this.fetched = true;
+          this.merge('guid', action.org, () => { });
+          this.emitChange();
         }
         break;
       }
@@ -65,13 +67,14 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORGS_SUMMARIES_RECEIVED: {
         this.mergeMany('guid', action.orgs, (changed) => {
-          this.fetching = false;
           if (changed) {
             const orgUpdates = this.updateOpenOrgs(this._currentOrgGuid);
             this.mergeMany('guid', orgUpdates, () => {});
-            this.emitChange();
           }
         });
+        this.fetched = true;
+        this.fetching = false;
+        this.emitChange();
         break;
       }
 
