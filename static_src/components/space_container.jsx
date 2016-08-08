@@ -82,7 +82,7 @@ export default class SpaceContainer extends React.Component {
   render() {
     let Content = this.currentContent;
     let tabNav = <div></div>;
-    let main = <h4>Space not found</h4>;
+    let main = <div></div>;
 
     if (this.state.space && this.state.space.guid) {
       if (this.state.currentOrg) {
