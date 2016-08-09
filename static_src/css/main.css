@@ -23,6 +23,7 @@ input[type="checkbox"]:not(.fancy),
 input[type="radio"]:not(.fancy) {
   -webkit-appearance: checkbox;
   left: 0;
+  opacity: 1;
   position: static;
 }
 
