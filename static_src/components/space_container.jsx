@@ -104,8 +104,8 @@ export default class SpaceContainer extends React.Component {
         <div>
           <div role="tabpanel" id={ this.props.currentPage }>
             <Content
-              initialOrgGuid={ this.currentOrgGuid }
-              initialSpaceGuid={ this.state.space.guid }
+              initialOrgGuid={ this.state.currentOrgGuid }
+              initialSpaceGuid={ this.state.currentSpaceGuid }
               intitialApps={ this.state.space.apps || [] }
             />
           </div>
@@ -123,9 +123,11 @@ export default class SpaceContainer extends React.Component {
 };
 
 SpaceContainer.propTypes = {
-  currentPage: React.PropTypes.string
+  currentPage: React.PropTypes.string,
+  currentUserPage: React.PropTypes.string
 };
 
 SpaceContainer.defaultProps = {
-  currentPage: 'apps'
+  currentPage: 'apps',
+  currentUserPage: 'space'
 };

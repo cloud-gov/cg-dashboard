@@ -9,17 +9,23 @@ import Disclaimer from './disclaimer.jsx';
 import Header from './header.jsx';
 import Login from './login.jsx';
 import LoginStore from '../stores/login_store.js';
+import OrgStore from '../stores/org_store.js';
+import SpaceStore from '../stores/space_store.js';
 import { Nav } from './navbar.jsx';
 
-function getState() {
-  return { isLoggedIn: LoginStore.isLoggedIn() };
+function stateSetter() {
+  return {
+    currentOrgGuid: OrgStore.currentOrgGuid,
+    currentSpaceGuid: SpaceStore.currentSpaceGuid,
+    isLoggedIn: LoginStore.isLoggedIn()
+  };
 }
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.styler = createStyler(style, overrideStyle);
-    this.state = { isLoggedIn: false };
+    this.state = stateSetter();;
     this._onChange = this._onChange.bind(this);
   }
 
@@ -32,7 +38,7 @@ export default class App extends React.Component {
   }
 
   _onChange() {
-    this.setState(getState());
+    this.setState(stateSetter());
   }
 
   render() {
@@ -42,8 +48,8 @@ export default class App extends React.Component {
     if (this.state.isLoggedIn) {
       content = this.props.children;
       sidebar = <Nav
-        initialCurrentOrgGuid={ this.props.initialOrgGuid }
-        initialSpaceGuid={ this.props.initialSpaceGuid }
+        initialCurrentOrgGuid={ this.state.currentOrgGuid }
+        initialSpaceGuid={ this.state.currentSpaceGuid }
       />;
     } else {
       content = <Login />;
@@ -69,13 +75,9 @@ export default class App extends React.Component {
   }
 }
 App.propTypes = {
-  children: React.PropTypes.any,
-  initialOrgGuid: React.PropTypes.string,
-  initialSpaceGuid: React.PropTypes.string
+  children: React.PropTypes.any
 };
 
 App.defaultProps = {
-  children: [],
-  initialOrgGuid: '0',
-  initialSpaceGuid: '0'
+  children: []
 };
