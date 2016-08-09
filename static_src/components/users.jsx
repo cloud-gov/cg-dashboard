@@ -44,7 +44,7 @@ export default class Users extends React.Component {
     this.state = {
       currentOrgGuid: props.initialOrgGuid,
       currentSpaceGuid: props.initialSpaceGuid,
-      currentTab: props.initialCurrentTab,
+      currentTab: UserStore.currentlyViewedType,
       loading: UserStore.fetching,
       currentUserAccess: UserStore.currentUserHasOrgRole('org_manager'),
       users: (props.initialCurrentTab === TAB_ORG_NAME) ?
@@ -111,6 +111,10 @@ export default class Users extends React.Component {
     return resourceGuid;
   }
 
+  userUrl(page) {
+    return `/#/org/${this.state.currentOrgGuid}/spaces/${this.state.currentSpaceGuid}/users/${page}`;
+  }
+
   get subNav() {
     const tabs = [
       { name: 'space_users' },
@@ -118,13 +122,13 @@ export default class Users extends React.Component {
     ];
     // TODO refactor link, use a special link component.
     tabs[0].element = (
-      <a onClick={ this.handleTabClick.bind(this, tabs[0].name) }>
+      <a href={ this.userUrl('space') }>
         Current space users
       </a>
     );
 
     tabs[1].element = (
-      <a onClick={ this.handleTabClick.bind(this, tabs[1].name) }>
+      <a href={ this.userUrl('org') }>
         All organization users
       </a>
     );
@@ -180,11 +184,9 @@ export default class Users extends React.Component {
 }
 
 Users.propTypes = {
-  initialCurrentTab: React.PropTypes.string.isRequired,
   initialOrgGuid: React.PropTypes.string.isRequired,
   initialSpaceGuid: React.PropTypes.string.isRequired
 };
 
 Users.defaultProps = {
-  initialCurrentTab: 'space_users'
 };

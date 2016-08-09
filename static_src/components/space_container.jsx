@@ -15,6 +15,11 @@ const PAGES = {
   'users': Users
 }
 
+const USER_PAGES = {
+  'space': 'space_users',
+  'org': 'org_users'
+}
+
 function stateSetter() {
   return {
     space: SpaceStore.currentSpace(),
@@ -123,11 +128,9 @@ export default class SpaceContainer extends React.Component {
 };
 
 SpaceContainer.propTypes = {
-  currentPage: React.PropTypes.string,
-  currentUserPage: React.PropTypes.string
+  currentPage: React.PropTypes.string
 };
 
 SpaceContainer.defaultProps = {
-  currentPage: 'apps',
-  currentUserPage: 'space'
+  currentPage: 'apps'
 };

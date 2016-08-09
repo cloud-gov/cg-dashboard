@@ -53,12 +53,11 @@ function space(orgGuid, spaceGuid) {
   spaceActions.fetch(spaceGuid);
 }
 
-function renderSpaceContainer(page, potentialUserPage) {
+function renderSpaceContainer(page) {
   ReactDOM.render(
     <MainContainer>
       <SpaceContainer
         currentPage={ page }
-        currentUserPage={ potentialUserPage }
       />
     </MainContainer>, mainEl);
 }
@@ -76,13 +75,15 @@ function services(orgGuid, spaceGuid) {
 
 function users(orgGuid, spaceGuid, potentialPage) {
   space(orgGuid, spaceGuid);
-  if (potentialPage === 'organization') {
+  if (potentialPage === 'org') {
+    userActions.changeCurrentlyViewedType('org_users');
     userActions.fetchOrgUsers(orgGuid);
     userActions.fetchOrgUserRoles(orgGuid);
   } else {
+    userActions.changeCurrentlyViewedType('space_users');
     userActions.fetchSpaceUsers(spaceGuid);
   }
-  renderSpaceContainer('users', potentialPage);
+  renderSpaceContainer('users')
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
