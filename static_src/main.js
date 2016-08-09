@@ -83,7 +83,7 @@ function users(orgGuid, spaceGuid, potentialPage) {
     userActions.changeCurrentlyViewedType('space_users');
     userActions.fetchSpaceUsers(spaceGuid);
   }
-  renderSpaceContainer('users')
+  renderSpaceContainer('users');
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
