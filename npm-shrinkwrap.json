@@ -1,6 +1,6 @@
 {
   "name": "cloudgov-dashboard",
-  "version": "1.1.0",
+  "version": "1.2.2",
   "dependencies": {
     "amdefine": {
       "version": "1.0.0",
@@ -4839,9 +4839,9 @@
       "resolved": "https://registry.npmjs.org/classnames/-/classnames-2.2.3.tgz"
     },
     "cloudgov-style": {
-      "version": "0.7.3",
-      "from": "cloudgov-style@0.7.3",
-      "resolved": "https://registry.npmjs.com/cloudgov-style/-/cloudgov-style-0.7.3.tgz"
+      "version": "1.0.0",
+      "from": "cloudgov-style@1.0.0",
+      "resolved": "https://registry.npmjs.org/cloudgov-style/-/cloudgov-style-1.0.0.tgz"
     },
     "codecov.io": {
       "version": "0.1.6",
@@ -14183,6 +14183,11 @@
         }
       }
     },
+    "prismjs": {
+      "version": "1.5.1",
+      "from": "prismjs@>=1.5.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/prismjs/-/prismjs-1.5.1.tgz"
+    },
     "process-nextick-args": {
       "version": "1.0.7",
       "from": "process-nextick-args@>=1.0.6 <1.1.0",
@@ -14764,9 +14769,9 @@
       }
     },
     "uswds": {
-      "version": "0.9.1",
-      "from": "git+https://git@github.com/18F/web-design-standards.git#1007-var_for_asset_paths",
-      "resolved": "git+https://git@github.com/18F/web-design-standards.git#bcf50ca19b026e7e5773ada14e640efac2a2171e"
+      "version": "0.10.0",
+      "from": "uswds@>=0.10.0 <0.11.0",
+      "resolved": "https://registry.npmjs.org/uswds/-/uswds-0.10.0.tgz"
     },
     "util-deprecate": {
       "version": "1.0.2",
