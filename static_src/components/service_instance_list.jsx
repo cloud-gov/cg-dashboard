@@ -11,14 +11,16 @@ import ConfirmationBox from './confirmation_box.jsx';
 import Loading from './loading.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
+import SpaceStore from '../stores/space_store.js';
 
-function stateSetter(props) {
+function stateSetter() {
+  const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const serviceInstances = ServiceInstanceStore.getAllBySpaceGuid(
-    props.initialSpaceGuid);
+    currentSpaceGuid);
 
   return {
     serviceInstances: serviceInstances,
-    currentSpaceGuid: props.initialSpaceGuid,
+    currentSpaceGuid,
     loading: ServiceInstanceStore.fetching,
     empty: ServiceInstanceStore.fetched && !serviceInstances.length
   };
@@ -28,7 +30,8 @@ export default class ServiceInstanceList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = stateSetter(props);
+    this.state = stateSetter();
+
     this._onChange = this._onChange.bind(this);
     this._handleDelete = this._handleDelete.bind(this);
     this._handleDeleteConfirmation = this._handleDeleteConfirmation.bind(this);
@@ -38,7 +41,7 @@ export default class ServiceInstanceList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(stateSetter(nextProps));
+    this.setState(stateSetter());
   }
 
   componentDidMount() {
@@ -50,7 +53,7 @@ export default class ServiceInstanceList extends React.Component {
   }
 
   _onChange() {
-    this.setState(stateSetter(this.props));
+    this.setState(stateSetter());
   }
 
   _handleDelete(instanceGuid, ev) {
@@ -167,7 +170,4 @@ export default class ServiceInstanceList extends React.Component {
   }
 }
 
-ServiceInstanceList.propTypes = {
-  initialOrgGuid: React.PropTypes.string,
-  initialSpaceGuid: React.PropTypes.string
-};
+ServiceInstanceList.propTypes = { };

@@ -8,6 +8,8 @@ import React from 'react';
 
 import Loading from './loading.jsx';
 import userActions from '../actions/user_actions.js';
+import OrgStore from '../stores/org_store.js';
+import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UserStore from '../stores/user_store.js';
 import Tabnav from './tabnav.jsx';
@@ -15,24 +17,30 @@ import Tabnav from './tabnav.jsx';
 const TAB_SPACE_NAME = 'space_users';
 const TAB_ORG_NAME = 'org_users';
 
-function stateSetter(currentState) {
-  let users = [];
+function stateSetter() {
+  const currentOrgGuid = OrgStore.currentOrgGuid;
+  const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const currentTab = UserStore.currentlyViewedType;
-  let currentUserAccess: false;
+
+  let users = [];
+  let currentUserAccess = false;
 
   if (currentTab === TAB_SPACE_NAME) {
-    users = UserStore.getAllInSpace(currentState.currentSpaceGuid);
+    users = UserStore.getAllInSpace(currentSpaceGuid);
     currentUserAccess = UserStore.currentUserHasSpaceRole('space_manager');
   } else {
-    users = UserStore.getAllInOrg(currentState.currentOrgGuid);
+    users = UserStore.getAllInOrg(currentOrgGuid);
     currentUserAccess = UserStore.currentUserHasOrgRole('org_manager');
   }
 
   return {
     error: UserStore.getError(),
     currentUserAccess: currentUserAccess,
+    currentOrgGuid,
+    currentSpaceGuid,
     currentTab,
     loading: UserStore.fetching,
+    empty: UserStore.fetched && !users.length,
     users
   };
 }
@@ -41,16 +49,7 @@ export default class Users extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      currentOrgGuid: props.initialOrgGuid,
-      currentSpaceGuid: props.initialSpaceGuid,
-      currentTab: UserStore.currentlyViewedType,
-      loading: UserStore.fetching,
-      currentUserAccess: UserStore.currentUserHasOrgRole('org_manager'),
-      users: (props.initialCurrentTab === TAB_ORG_NAME) ?
-        UserStore.getAllInOrg(props.initialOrgGuid) :
-        UserStore.getAllInSpace(props.initialSpaceGuid)
-    };
+    this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
     this._setTab = this._setTab.bind(this);
@@ -69,7 +68,7 @@ export default class Users extends React.Component {
   }
 
   _onChange() {
-    this.setState(stateSetter(this.state));
+    this.setState(stateSetter());
   }
 
   _setTab(tab) {
@@ -149,6 +148,7 @@ export default class Users extends React.Component {
       initialUsers={ this.state.users }
       initialUserType= { this.state.currentTab }
       initialCurrentUserAccess={ this.state.currentUserAccess }
+      initialEmpty={ this.state.empty }
       onRemove={ removeHandler }
       onAddPermissions={ this.handleAddPermissions }
       onRemovePermissions={ this.handleRemovePermissions }
@@ -184,10 +184,6 @@ export default class Users extends React.Component {
 
 }
 
-Users.propTypes = {
-  initialOrgGuid: React.PropTypes.string.isRequired,
-  initialSpaceGuid: React.PropTypes.string.isRequired
-};
+Users.propTypes = { };
 
-Users.defaultProps = {
-};
+Users.defaultProps = { };

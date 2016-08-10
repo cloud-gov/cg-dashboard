@@ -93,7 +93,7 @@ function app(orgGuid, spaceGuid, appGuid) {
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
   ReactDOM.render(
-    <MainContainer initialSpaceGuid={ spaceGuid }>
+    <MainContainer>
       <AppContainer
         initialAppGuid={ appGuid }
       />
@@ -110,7 +110,7 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   }
   ReactDOM.render(
     <MainContainer>
-      <Marketplace initialOrgGuid={ orgGuid } />
+      <Marketplace />
     </MainContainer>,
   mainEl);
 }

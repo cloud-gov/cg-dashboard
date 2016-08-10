@@ -47,10 +47,7 @@ export default class App extends React.Component {
 
     if (this.state.isLoggedIn) {
       content = this.props.children;
-      sidebar = <Nav
-        initialCurrentOrgGuid={ this.state.currentOrgGuid }
-        initialSpaceGuid={ this.state.currentSpaceGuid }
-      />;
+      sidebar = <Nav />;
     } else {
       content = <Login />;
     }
