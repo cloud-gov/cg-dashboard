@@ -56,6 +56,7 @@ class ServicePlanStore extends BaseStore {
         this.fetched = false;
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         cfApi.fetchAllServicePlans(action.serviceGuid);
+        this.emitChange();
         break;
       }
 

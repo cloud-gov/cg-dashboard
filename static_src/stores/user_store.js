@@ -45,6 +45,7 @@ class UserStore extends BaseStore {
       case userActionTypes.ORG_USER_ROLES_FETCH: {
         this.fetching = true;
         this.fetched = false;
+        this.emitChange();
         cfApi.fetchOrgUserRoles(action.orgGuid);
         break;
       }
@@ -52,6 +53,7 @@ class UserStore extends BaseStore {
       case userActionTypes.SPACE_USERS_FETCH: {
         this.fetching = true;
         this.fetched = false;
+        this.emitChange();
         cfApi.fetchSpaceUsers(action.spaceGuid);
         break;
       }

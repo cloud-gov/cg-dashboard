@@ -41,6 +41,7 @@ class ServiceInstanceStore extends BaseStore {
         this.fetching = true;
         this.fetched = false;
         cfApi.fetchServiceInstances(action.spaceGuid);
+        this.emitChange();
         break;
       }
 

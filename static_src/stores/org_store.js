@@ -26,6 +26,7 @@ class OrgStore extends BaseStore {
         cfApi.fetchOrg(action.orgGuid);
         this.fetching = true;
         this.fetched = false;
+        this.emitChange();
         break;
       }
 
@@ -34,6 +35,7 @@ class OrgStore extends BaseStore {
         cfApi.fetchOrgs();
         this.fetching = true;
         this.fetched = false;
+        this.emitChange();
         break;
       }
 

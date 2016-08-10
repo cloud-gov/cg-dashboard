@@ -23,6 +23,7 @@ class AppStore extends BaseStore {
         cfApi.fetchApp(action.appGuid);
         this.fetching = true;
         this.fetched = false;
+        this.emitChange();
         break;
 
       case appActionTypes.APP_STATS_FETCH:
@@ -48,6 +49,7 @@ class AppStore extends BaseStore {
         cfApi.fetchAppAll(action.appGuid);
         this.fetching = true;
         this.fetched = false;
+        this.emitChange();
         break;
       }
 

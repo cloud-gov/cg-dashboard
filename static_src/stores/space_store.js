@@ -36,6 +36,7 @@ class SpaceStore extends BaseStore {
       case spaceActionTypes.SPACE_FETCH: {
         this.fetching = true;
         this.fetched = false;
+        this.emitChange();
         break;
       }
 
