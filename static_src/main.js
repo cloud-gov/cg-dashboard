@@ -45,29 +45,45 @@ function org(orgGuid) {
     </MainContainer>, mainEl);
 }
 
-function space(orgGuid, spaceGuid, potentialPage) {
+function space(orgGuid, spaceGuid) {
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
   // TODO what happens if the space arrives before the changelistener is added?
   cfApi.fetchOrg(orgGuid);
   spaceActions.fetch(spaceGuid);
-  // TODO use constant
-  if (potentialPage === 'services') {
-    serviceActions.fetchAllInstances(spaceGuid);
-  }
-  if (potentialPage === 'users') {
-    userActions.fetchOrgUsers(orgGuid);
-    userActions.fetchOrgUserRoles(orgGuid);
-    userActions.fetchSpaceUsers(spaceGuid);
-  }
+}
+
+function renderSpaceContainer(page) {
   ReactDOM.render(
-    <MainContainer initialSpaceGuid={spaceGuid}>
+    <MainContainer>
       <SpaceContainer
-        initialSpaceGuid={ spaceGuid}
-        initialOrgGuid={ orgGuid }
-        currentPage={ potentialPage }
+        currentPage={ page }
       />
     </MainContainer>, mainEl);
+}
+
+function apps(orgGuid, spaceGuid) {
+  space(orgGuid, spaceGuid);
+  renderSpaceContainer('apps');
+}
+
+function services(orgGuid, spaceGuid) {
+  space(orgGuid, spaceGuid);
+  serviceActions.fetchAllInstances(spaceGuid);
+  renderSpaceContainer('services');
+}
+
+function users(orgGuid, spaceGuid, potentialPage) {
+  space(orgGuid, spaceGuid);
+  if (potentialPage === 'org') {
+    userActions.changeCurrentlyViewedType('org_users');
+    userActions.fetchOrgUsers(orgGuid);
+    userActions.fetchOrgUserRoles(orgGuid);
+  } else {
+    userActions.changeCurrentlyViewedType('space_users');
+    userActions.fetchSpaceUsers(spaceGuid);
+  }
+  renderSpaceContainer('users');
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
@@ -118,15 +134,23 @@ const routes = {
     '/:orgGuid': {
       '/spaces': {
         '/:spaceGuid': {
-          '/:page': {
-            on: space
+          '/services': {
+            on: services
+          },
+          '/users': {
+            '/:page': {
+              on: users
+            },
+
+            on: users
           },
           '/apps': {
             '/:appGuid': {
               on: app
-            }
+            },
+            on: apps
           },
-          on: space
+          on: apps
         }
       },
       '/marketplace': {

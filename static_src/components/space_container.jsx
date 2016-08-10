@@ -15,6 +15,11 @@ const PAGES = {
   'users': Users
 }
 
+const USER_PAGES = {
+  'space': 'space_users',
+  'org': 'org_users'
+}
+
 function stateSetter() {
   return {
     space: SpaceStore.currentSpace(),
@@ -104,8 +109,8 @@ export default class SpaceContainer extends React.Component {
         <div>
           <div role="tabpanel" id={ this.props.currentPage }>
             <Content
-              initialOrgGuid={ this.currentOrgGuid }
-              initialSpaceGuid={ this.state.space.guid }
+              initialOrgGuid={ this.state.currentOrgGuid }
+              initialSpaceGuid={ this.state.currentSpaceGuid }
               intitialApps={ this.state.space.apps || [] }
             />
           </div>
