@@ -12,7 +12,7 @@ export default class ActivityLogItem extends React.Component {
     super(props);
     this.state = {
       showRawJson: false,
-      relativeTimestamp: true
+      relativeTimestamp: false
     };
 
     this.styler = createStyler(style);
@@ -36,7 +36,7 @@ export default class ActivityLogItem extends React.Component {
   formatTimestamp(timestamp) {
     if (this.state.relativeTimestamp) return moment(timestamp).fromNow();
 
-    return moment(timestamp).format('MMMM Do YYYY, h:mm:ss a');
+    return moment(timestamp).format('MMM DD YYYY HH:mm:ss');
   }
 
   toggleRawJson() {
@@ -52,7 +52,7 @@ export default class ActivityLogItem extends React.Component {
     let content;
     if (this.state.showRawJson) {
       content = (
-        <div className={ this.styler('activity-log-item-raw') }>
+        <div className={ this.styler('activity_log-item_raw') }>
           <code>
             <pre>
               { JSON.stringify(this.props.item, null, 2) }
@@ -76,7 +76,7 @@ export default class ActivityLogItem extends React.Component {
     // TODO: if route is not found, trigger fetch action to get it
 
     if (item.type === 'app.crash') {
-      content = (<p>The app crashed with { metadata.exit_description }.</p>);
+      content = (<p>The app crashed because it { metadata.exit_description }.</p>);
     } else if (item.type === 'audit.app.create') {
       content = (
         <p>{ item.actor_name } created the app with { metadata.request.memory } MBs of memory.</p>
@@ -110,21 +110,31 @@ export default class ActivityLogItem extends React.Component {
   }
 
   render() {
+    let usaClass;
+    switch (this.props.item.type) {
+      case 'app.crash':
+        usaClass = 'usa-alert-error';
+        break;
+      case 'audit.app.update':
+        usaClass = 'usa-alert-warning';
+        break;
+      case 'audit.app.create':
+        usaClass = 'usa-alert-success';
+        break;
+    }
     return (
-      <li>
-        <div className={ this.styler('activity-log-item') }>
-          <div className={ this.styler('activity-log-item-text') }
-            onClick={ this.toggleRawJson }
-          >
-            { this.content }
-          </div>
-          <div className={ this.styler('activity-log-item-timestamp') }>
-            <span onClick={ this.toggleTimestampType }>
-              { this.formatTimestamp(this.props.item.timestamp) }
-            </span>
-          </div>
-          { this.code }
+      <li className={ this.styler('activity_log-item', usaClass) }>
+        <div className={ this.styler('activity_log-item_text') }
+          onClick={ this.toggleRawJson }
+        >
+          { this.content }
         </div>
+        <div className={ this.styler('activity_log-item_timestamp') }>
+          <span onClick={ this.toggleTimestampType }>
+            { this.formatTimestamp(this.props.item.timestamp) }
+          </span>
+        </div>
+        { this.code }
       </li>
     );
   }
