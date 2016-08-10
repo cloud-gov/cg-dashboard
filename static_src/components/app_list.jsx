@@ -82,9 +82,7 @@ export default class AppList extends React.Component {
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No apps</h4>;
-    }
-
-    if (this.state.apps.length) {
+    } else if (this.state.apps.length) {
       content = (
         <table sortable>
           <thead>

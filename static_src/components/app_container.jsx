@@ -136,9 +136,7 @@ export default class AppContainer extends React.Component {
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
-    }
-
-    if (appReady(this.state.app)) {
+    } else if (appReady(this.state.app)) {
       content = (
         <div>
           <h2>{ this.fullTitle }</h2>

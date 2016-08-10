@@ -102,9 +102,7 @@ export default class ServiceInstanceList extends React.Component {
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No service instances</h4>;
-    }
-
-    if (this.state.serviceInstances.length) {
+    } else if (this.state.serviceInstances.length) {
       content = (
       <div>
         <p><em>
