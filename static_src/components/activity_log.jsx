@@ -19,6 +19,15 @@ function stateSetter(props) {
   };
 }
 
+const propTypes = {
+  initialAppGuid: React.PropTypes.string.isRequired,
+  title: React.PropTypes.string
+};
+
+const defaultProps = {
+  title: 'Activity Log'
+};
+
 export default class ActivityLog extends React.Component {
   constructor(props) {
     super(props);
@@ -43,8 +52,8 @@ export default class ActivityLog extends React.Component {
   render() {
     return (
       <div>
-        <h1>Activity Log</h1>
-        <ul className={ this.styler('activity-log') }>
+        <h1>{ this.props.title }</h1>
+        <ul className={ this.styler('activity_log') }>
           { this.state.activity.map((item) => {
             return (
               <ActivityLogItem key={ item.guid } item={ item } />
@@ -56,6 +65,5 @@ export default class ActivityLog extends React.Component {
   }
 }
 
-ActivityLog.propTypes = {
-  initialAppGuid: React.PropTypes.string.isRequired
-};
+ActivityLog.propTypes = propTypes;
+ActivityLog.defaultProps = defaultProps;

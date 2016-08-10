@@ -140,7 +140,7 @@ export default class AppContainer extends React.Component {
     } else if (appReady(this.state.app)) {
       content = (
         <div>
-          <ActivityLog initialAppGuid={ this.state.app.guid } />
+          <ActivityLog initialAppGuid={ this.state.app.guid } title="Recent activity" />
           <h2>{ this.fullTitle }</h2>
           <section className={this.styler('section-card')}>
             <h3>About this application</h3>
