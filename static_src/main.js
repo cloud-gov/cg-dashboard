@@ -48,7 +48,6 @@ function org(orgGuid) {
 function space(orgGuid, spaceGuid) {
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
-  // TODO what happens if the space arrives before the changelistener is added?
   cfApi.fetchOrg(orgGuid);
   spaceActions.fetch(spaceGuid);
 }

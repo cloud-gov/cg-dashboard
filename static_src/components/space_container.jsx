@@ -51,7 +51,6 @@ export default class SpaceContainer extends React.Component {
   }
 
   spaceUrl(page) {
-    // TODO fix this with a link somehow
     return `/#/org/${this.state.currentOrg.guid}/spaces/${this.state.space.guid}/${page}`;
   }
 

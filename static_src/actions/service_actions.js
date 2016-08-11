@@ -4,8 +4,6 @@
  * updating, etc should go here.
  */
 
-// TODO I'm still unsure of how to model services vs service entities.
-
 import AppDispatcher from '../dispatcher.js';
 import { serviceActionTypes } from '../constants';
 
