@@ -81,7 +81,7 @@ export default class ActivityLogItem extends React.Component {
         content = `it ${metadata.exit_description}`;
         break;
       default:
-        content = 'bad things happen';
+        content = 'bad things happened';
     }
     return (<p>The app crashed because { content }.</p>);
   }
