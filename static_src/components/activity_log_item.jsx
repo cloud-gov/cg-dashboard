@@ -113,13 +113,13 @@ export default class ActivityLogItem extends React.Component {
     let usaClass;
     switch (this.props.item.type) {
       case 'app.crash':
-        usaClass = 'usa-alert-error';
+        usaClass = 'activity_log-item-error';
         break;
       case 'audit.app.update':
-        usaClass = 'usa-alert-warning';
+        usaClass = 'activity_log-item-warning';
         break;
       case 'audit.app.create':
-        usaClass = 'usa-alert-success';
+        usaClass = 'activity_log-item-success';
         break;
     }
     return (
