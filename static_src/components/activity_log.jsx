@@ -12,7 +12,7 @@ function stateSetter(props) {
       return item.metadata.request.app_guid === props.initialAppGuid;
     }
     return item.actee === props.initialAppGuid;
-  }).sort((a, b) => a.timestamp < b.timestamp);
+  }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
   return {
     activity
@@ -51,7 +51,7 @@ export default class ActivityLog extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={ this.styler('activity_log-container') }>
         <h1>{ this.props.title }</h1>
         <ul className={ this.styler('activity_log') }>
           { this.state.activity.map((item) => {
