@@ -65,6 +65,27 @@ export default class ActivityLogItem extends React.Component {
     return content;
   }
 
+  get crashContent() {
+    const item = this.props.item;
+    const metadata = item.metadata;
+    let content;
+
+    switch (metadata.exit_description) {
+      case 'app instance exited':
+        content = `the app instance exited with ${metadata.exit_status} status`;
+        break;
+      case 'out of memory':
+        content = 'it ran out of memory';
+        break;
+      case 'failed to accept connections within health check timeout':
+        content = `it ${metadata.exit_description}`;
+        break;
+      default:
+        content = 'bad things happen';
+    }
+    return (<p>The app crashed because { content }.</p>);
+  }
+
   get content() {
     let content = `${this.props.item.type} isn't handled`;
     const item = this.props.item;
@@ -74,9 +95,10 @@ export default class ActivityLogItem extends React.Component {
     const link = (route) ? (<a href={ `//${url}` }>{ url }</a>) : url;
 
     // TODO: if route is not found, trigger fetch action to get it
+    // https://github.com/18F/cg-dashboard/pull/533#discussion_r73931508
 
     if (item.type === 'app.crash') {
-      content = (<p>The app crashed because it { metadata.exit_description }.</p>);
+      content = this.crashContent;
     } else if (item.type === 'audit.app.create') {
       content = (
         <p>{ item.actor_name } created the app with { metadata.request.memory } MBs of memory.</p>
@@ -116,6 +138,7 @@ export default class ActivityLogItem extends React.Component {
         usaClass = 'activity_log-item-error';
         break;
       case 'audit.app.update':
+      case 'audit.app.restage':
         usaClass = 'activity_log-item-warning';
         break;
       case 'audit.app.create':
