@@ -175,6 +175,7 @@ export default class Users extends React.Component {
         { errorMessage }
         <div>
           <div role="tabpanel">
+            { loading }
             { content }
           </div>
         </div>

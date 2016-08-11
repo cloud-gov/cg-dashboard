@@ -64,9 +64,7 @@ export default class Marketplace extends React.Component {
     let marketplace = <h2>Marketplace</h2>;
     let content = <ServiceList initialServices={ state.services } />;
 
-    if (state.loading) {
-      loading = <Loading text="Loading marketplace services" />;
-    }
+      loading = <Loading text="Loading marketplace services" active />;
 
     if (state.createInstanceForm) {
       form = (
