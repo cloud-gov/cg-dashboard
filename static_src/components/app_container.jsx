@@ -128,12 +128,9 @@ export default class AppContainer extends React.Component {
   }
 
   render() {
-    let loading = <div></div>;
     let content = <div></div>;
 
-    if (this.state.loading) {
-      loading = <Loading text="Loading app now" />;
-    }
+    let loading = <Loading text="Loading app now" active={ this.state.loading } />;
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
@@ -142,6 +139,7 @@ export default class AppContainer extends React.Component {
         <div>
           <ActivityLog initialAppGuid={ this.state.app.guid } title="Recent activity" />
           <h2>{ this.fullTitle }</h2>
+          { loading }
           <section className={this.styler('section-card')}>
             <h3>About this application</h3>
             <table>
@@ -207,7 +205,6 @@ export default class AppContainer extends React.Component {
 
     return (
       <div>
-        { loading }
         { content }
       </div>
     );

@@ -40,7 +40,7 @@ export default class AppList extends React.Component {
     SpaceStore.addChangeListener(this._onChange);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps() {
     this.setState(stateSetter());
   }
 
@@ -48,17 +48,17 @@ export default class AppList extends React.Component {
     SpaceStore.removeChangeListener(this._onChange);
   }
 
-  appUrl(app) {
-    return dedent`/#/org/${ this.state.currentOrgGuid }
-            /spaces/${ this.state.currentSpaceGuid }
-            /apps/${ app.guid }`;
-  }
-
   getRows(apps) {
     return apps.map((app) => {
       const name = unsafe(`<a href="${this.appUrl(app)}">${app.name}</a>`);
       return Object.assign(app, { name });
     });
+  }
+
+  appUrl(app) {
+    return dedent`/#/org/${this.state.currentOrgGuid}
+            /spaces/${this.state.currentSpaceGuid}
+            /apps/${app.guid}`;
   }
 
   _onChange() {
@@ -78,11 +78,7 @@ export default class AppList extends React.Component {
 
   render() {
     let content = <div></div>;
-    let loading = <div></div>;
-
-    if (this.state.loading) {
-      loading = <Loading text="Loading apps" />;
-    }
+    let loading = <Loading text="Loading apps" active={ this.state.loading } />;
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No apps</h4>;

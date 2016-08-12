@@ -27,16 +27,16 @@ class Loading extends React.Component {
 
     if (this.props.active) {
       content = (
-        <img src={ loadingImg } alt={ this.props.text } />
+        <img src={ `/assets/${loadingImg}` } alt={ this.props.text } />
       );
     }
 
     return (
-      <div class={ this.styler('loading') }
-           role="alertdialog"
-           ariaLive="assertive"
-           ariaBusy={ this.props.active }
-     >
+      <div className={ this.styler('loading') }
+        role="alertdialog"
+        ariaLive="assertive"
+        ariaBusy={ this.props.active }
+      >
         { content }
       </div>
     );
