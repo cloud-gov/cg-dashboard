@@ -15,28 +15,33 @@ module.exports = function(config) {
 
       plugins: [
         'karma-chrome-launcher',
+        'karma-failed-reporter',
         'karma-jasmine',
         'karma-jasmine-matchers',
         'karma-phantomjs2-launcher',
         'karma-phantomjs-shim',
         'karma-sinon',
         'karma-sourcemap-loader',
-        'karma-webpack',
+        'karma-webpack'
       ],
 
       preprocessors: {
-        'static_src/tests.bundle.js': [ 'webpack']
+        'static_src/tests.bundle.js': ['webpack']
       },
 
       webpack: webpackConfig,
 
-      reporters: ['progress'],
+      reporters: ['failed'],
+
+      client: {
+        captureConsole: false
+      },
 
       port: 9876,
 
       colors: true,
 
-      logLevel: config.LOG_INFO,
+      logLevel: config.LOG_ERROR,
 
       autoWatch: true,
 
