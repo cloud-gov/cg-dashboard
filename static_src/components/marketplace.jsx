@@ -15,8 +15,8 @@ import ServicePlanStore from '../stores/service_plan_store.js';
 
 const LOADING_TIME = 400;
 
-function stateSetter(showLoading=false) {
-  const loading = ServiceStore.fetching;
+function stateSetter(loadingTimer) {
+  const loading = ServiceStore.fetching || ServicePlanStore.fetching;
   const services = ServiceStore.getAll().map((service) => {
     const plan = ServicePlanStore.getAllFromService(service.guid);
     return { ...service, servicePlans: plan };
@@ -26,7 +26,8 @@ function stateSetter(showLoading=false) {
   return {
     services,
     currentOrgGuid,
-    loading: showLoading && loading,
+    loading: loading,
+    showLoading: !loadingTimer,
     currentOrg: OrgStore.get(currentOrgGuid),
     createInstanceForm: ServiceInstanceStore.createInstanceForm
   };
@@ -42,7 +43,7 @@ export default class Marketplace extends React.Component {
   }
 
   componentWillMount() {
-    window.setTimeout(() => {
+    this.timer = window.setTimeout(() => {
       this.showLoader();
     }, LOADING_TIME);
   }
@@ -62,11 +63,13 @@ export default class Marketplace extends React.Component {
   }
 
   _onChange() {
-    this.setState(stateSetter());
+    this.setState(stateSetter(this.timer));
   }
 
   showLoader() {
-    this.setState(stateSetter(true));
+    window.clearTimeout(this.timer);
+    this.timer = null;
+    this.setState(stateSetter(this.timer));
   }
 
   render() {
@@ -88,7 +91,8 @@ export default class Marketplace extends React.Component {
       marketplace = <h2>Marketplace for your <strong>{state.currentOrg.name}</strong> organization</h2>;
     }
 
-    let loading = <Loading text="Loading marketplace services" />;
+    let loading = <Loading text="Loading marketplace services"
+      active={ this.state.showLoading } />;
     let content = <div>{ loading }</div>;
     if (!this.state.loading) {
       content = (
