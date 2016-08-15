@@ -5,6 +5,8 @@ import loadingImg from 'cloudgov-style/img/loading.gif';
 
 import createStyler from '../util/create_styler';
 
+const LOADING_TIME = 400;
+
 const propTypes = {
   text: React.PropTypes.string,
   active: React.PropTypes.bool
@@ -20,12 +22,37 @@ class Loading extends React.Component {
     super(props);
     this.props = props;
     this.styler = createStyler(style);
+    this.state = {
+      loadingTimer: null
+    };
+    console.log('INIT');
+  }
+
+  componentWillReceiveProps() {
+    console.log('NEW PROPS');
+  }
+
+  componentDidMount() {
+    console.log('DID MOUNT');
+  }
+
+  componentWillMount() {
+    console.log('MOUNT');
+    const timer = window.setTimeout(() => {
+      this.showLoader();
+    }, LOADING_TIME);
+    this.setState({ loadingTimer: timer });
+  }
+
+  showLoader() {
+    window.clearTimeout(this.state.loadingTimer);
+    this.setState({ loadingTimer: null })
   }
 
   render() {
     let content = <div></div>;
 
-    if (this.props.active) {
+    if (this.props.active && !this.state.loadingTimer) {
       content = (
         <div className={ this.styler('loading') }
           role="alertdialog"
