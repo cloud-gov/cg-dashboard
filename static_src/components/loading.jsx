@@ -12,7 +12,7 @@ const propTypes = {
 
 const defaultProps = {
   text: 'Loading',
-  active: false
+  active: true
 };
 
 class Loading extends React.Component {
@@ -27,16 +27,19 @@ class Loading extends React.Component {
 
     if (this.props.active) {
       content = (
-        <img src={ `/assets/${loadingImg}` } alt={ this.props.text } />
+        <div className={ this.styler('loading') }
+          role="alertdialog"
+          ariaLive="assertive"
+          ariaBusy={ this.props.active }
+        >
+          <img className={ this.styler('loading-indicator') }
+            src={ `/assets/${loadingImg}` } alt={ this.props.text } />
+        </div>
       );
     }
 
     return (
-      <div className={ this.styler('loading') }
-        role="alertdialog"
-        ariaLive="assertive"
-        ariaBusy={ this.props.active }
-      >
+      <div>
         { content }
       </div>
     );

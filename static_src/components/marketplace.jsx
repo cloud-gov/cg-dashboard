@@ -14,7 +14,7 @@ import ServiceInstanceStore from '../stores/service_instance_store.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 
 function stateSetter() {
-  const loading = ServiceStore.fetching || ServicePlanStore.fetching;
+  const loading = ServiceStore.fetching;
   const services = ServiceStore.getAll().map((service) => {
     const plan = ServicePlanStore.getAllFromService(service.guid);
     return { ...service, servicePlans: plan };
@@ -58,14 +58,10 @@ export default class Marketplace extends React.Component {
   }
 
   render() {
-    let form;
     const state = this.state;
+    let form;
     let marketplace = <h2>Marketplace</h2>;
-    let content = <ServiceList initialServices={ state.services } />;
-
-    let loading = (<Loading text="Loading marketplace services"
-      active={ this.state.loading }
-    />);
+    let list = <ServiceList initialServices={ state.services } />;
 
     if (state.createInstanceForm) {
       form = (
@@ -80,15 +76,24 @@ export default class Marketplace extends React.Component {
       marketplace = <h2>Marketplace for your <strong>{state.currentOrg.name}</strong> organization</h2>;
     }
 
+    let loading = <Loading text="Loading marketplace services" />;
+    let content = <div>{ loading }</div>;
+    if (!this.state.loading) {
+      content = (
+        <div>
+          <div>
+            { marketplace }
+            <p><em>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</em></p>
+          </div>
+          { list }
+          { form }
+        </div>
+      );
+    }
+
     return (
       <div>
-        <div>
-          { marketplace }
-          <p><em>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</em></p>
-        </div>
-        { loading }
         { content }
-        { form }
       </div>
     );
   }
