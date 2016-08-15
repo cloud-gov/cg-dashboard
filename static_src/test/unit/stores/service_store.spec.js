@@ -1,4 +1,6 @@
 
+import Immutable from 'immutable';
+
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
@@ -8,11 +10,13 @@ import ServiceStore from '../../../stores/service_store.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
 
-describe('ServiceInstanceStore', function() {
+describe('ServiceStore', function() {
   var sandbox;
 
   beforeEach(() => {
     ServiceStore._data = [];
+    ServiceStore._fetched = false;
+    ServiceStore._fetching = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -27,13 +31,15 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on services fetch', function() {
-    it('should set fetching to true', function() {
+    it('should set fetching to true, fetched to false', function() {
       ServiceStore.fetching = false;
 
       serviceActions.fetchAllServices('zxncvz8xcvhn32');
 
       expect(ServiceStore.fetching).toEqual(true);
+      expect(ServiceStore.fetched).toEqual(false);
     });
+
     it('should call the cf api for all services belonging to the org', function() {
       var spy = sandbox.spy(cfApi, 'fetchAllServices'),
           expectedOrgGuid = 'zxncvz8xcvhn32';
@@ -47,30 +53,33 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on services received', function() {
-    it('should set fetching to false', function() {
+    it('should set fetching to false, fetched to true', function() {
       let testRes = wrapInRes([{ guid: '3981f', name: 'adlfskzxcv' }]);
       ServiceStore.fetching = true;
+      ServiceStore.fetched = false;
 
       serviceActions.receivedServices(testRes);
 
       expect(ServiceStore.fetching).toEqual(false);
+      expect(ServiceStore.fetched).toEqual(true);
     });
 
-    it('should set the passed in services to current data', function() {
-      var expected = [
+    it('should merge in services to current data', function() {
+      const sharedGuid = 'adxvcbxv';
+      const expected = [
         { guid: 'zxvcjz', name: 'zxkjv' },
-        { guid: '3981f', name: 'adlfskzxcv' }
+        { guid: sharedGuid, name: 'adlfskzxcv' }
       ];
 
       let testRes = wrapInRes(expected);
-      ServiceStore._data = [{ guid: 'alkdjsfzxcv' }];
+      ServiceStore._data = Immutable.fromJS([{ guid: sharedGuid }]);
+
 
       serviceActions.receivedServices(testRes);
 
       let actual = ServiceStore.getAll();
 
       expect(actual.length).toEqual(2);
-      expect(actual).toEqual(expected);
     });
 
     it('should emit a change event', function() {

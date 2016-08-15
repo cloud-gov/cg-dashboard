@@ -30,11 +30,18 @@ class ServiceInstanceStore extends BaseStore {
     return this._createError;
   }
 
+  getAllBySpaceGuid(spaceGuid) {
+    return this.getAll().filter((serviceInstance) =>
+      serviceInstance.space_guid === spaceGuid);
+  }
+
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_INSTANCES_FETCH: {
         this.fetching = true;
+        this.fetched = false;
         cfApi.fetchServiceInstances(action.spaceGuid);
+        this.emitChange();
         break;
       }
 
@@ -42,16 +49,17 @@ class ServiceInstanceStore extends BaseStore {
         const instance = this.formatSplitResponse(
           [action.serviceInstance])[0];
         this.fetching = false;
-        this.merge('guid', instance, (changed) => {
-          if (changed) this.emitChange();
-        });
+        this.fetched = true;
+        this.merge('guid', instance, () => { });
+        this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
         const services = this.formatSplitResponse(action.serviceInstances);
-        this._data = Immutable.fromJS(services);
+        this.mergeMany('guid', services, () => { });
         this.fetching = false;
+        this.fetched = true;
         this.emitChange();
         break;
       }

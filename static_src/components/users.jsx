@@ -139,6 +139,7 @@ export default class Users extends React.Component {
   render() {
     let removeHandler;
     let errorMessage;
+    let loading = <div></div>;
 
     if (this.state.currentTab === TAB_ORG_NAME) {
       removeHandler = this.handleRemove;
@@ -154,7 +155,7 @@ export default class Users extends React.Component {
     />);
 
     if (this.state.loading) {
-      content = <Loading text="Loading users" />;
+      loading = <Loading text="Loading users" />;
     }
 
     if (this.state.error) {

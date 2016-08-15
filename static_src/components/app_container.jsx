@@ -10,13 +10,19 @@ import RouteList from './route_list.jsx';
 
 import createStyler from '../util/create_styler';
 
+function appReady(app) {
+  return !!app && !!app.name;
+}
+
 function stateSetter(current) {
+  const app = AppStore.get(current.currentAppGuid);
 
   return {
-    app: AppStore.get(current.currentAppGuid) || {},
+    app: app || {},
     currentAppGuid: current.currentAppGuid,
     currentOrgName: OrgStore.currentOrgName,
     currentSpaceName: SpaceStore.currentSpaceName,
+    empty: AppStore.fetched && !appReady(app),
     loading: AppStore.fetching
   };
 }
@@ -26,6 +32,7 @@ export default class AppContainer extends React.Component {
     super(props);
     this.props = props;
     this.state = stateSetter({ currentAppGuid: this.props.initialAppGuid });
+
     this._onChange = this._onChange.bind(this);
     this.getStat = this.getStat.bind(this);
     this.styler = createStyler(style);
@@ -120,11 +127,16 @@ export default class AppContainer extends React.Component {
   }
 
   render() {
-    let content = <h4 className="test-none_message">No app</h4>;
+    let loading = <div></div>;
+    let content = <div></div>;
 
     if (this.state.loading) {
-      content = <Loading text="Loading app now" />
-    } else if (this.state.app.name) {
+      loading = <Loading text="Loading app now" />;
+    }
+
+    if (this.state.empty) {
+      content = <h4 className="test-none_message">No app</h4>;
+    } else if (appReady(this.state.app)) {
       content = (
         <div>
           <h2>{ this.fullTitle }</h2>
@@ -193,6 +205,7 @@ export default class AppContainer extends React.Component {
 
     return (
       <div>
+        { loading }
         { content }
       </div>
     );

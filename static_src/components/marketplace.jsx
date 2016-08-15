@@ -14,8 +14,7 @@ import ServiceInstanceStore from '../stores/service_instance_store.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 
 function stateSetter(orgGuid) {
-  const loading = OrgStore.fetching || ServiceStore.fetching
-                  || ServiceInstanceStore.fetching || ServicePlanStore.fetching;
+  const loading = ServiceStore.fetching || ServicePlanStore.fetching;
   const services = ServiceStore.getAll().map((service) => {
     const plan = ServicePlanStore.getAllFromService(service.guid);
     return { ...service, servicePlans: plan };
@@ -58,12 +57,13 @@ export default class Marketplace extends React.Component {
 
   render() {
     let form;
+    let loading = <div></div>;
     const state = this.state;
     let marketplace = <h2>Marketplace</h2>;
     let content = <ServiceList initialServices={ state.services } />;
 
     if (state.loading) {
-      content = <Loading text="Loading marketplace services" />;
+      loading = <Loading text="Loading marketplace services" />;
     }
 
     if (state.createInstanceForm) {
@@ -85,6 +85,7 @@ export default class Marketplace extends React.Component {
           { marketplace }
           <p><em>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</em></p>
         </div>
+        { loading }
         { content }
         { form }
       </div>

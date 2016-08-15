@@ -217,11 +217,38 @@ describe('BaseStore', () => {
       expect(store.fetching).toEqual(false);
     });
 
-    it('should not emit change if the value is the same', function () {
+    it('should not emit change', function () {
       var spy = sandbox.spy();
 
       store.on('CHANGE', spy);
       store.fetching = false;
+      expect(spy).not.toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('fetched', function() {
+    it('should initially be false', function() {
+      expect(store.fetched).toEqual(false);
+    });
+
+    it('should be able to be set to true', function () {
+      store.fetched = true;
+      expect(store.fetched).toEqual(true);
+    });
+
+    it('should cast all values to booleans', function () {
+      store.fetched = 'true';
+      expect(store.fetched).toEqual(true);
+
+      store.fetched = undefined;
+      expect(store.fetched).toEqual(false);
+    });
+
+    it('should not emit change if the value is the same', function () {
+      var spy = sandbox.spy();
+
+      store.on('CHANGE', spy);
+      store.fetched = false;
       expect(spy).not.toHaveBeenCalledOnce();
     });
   });

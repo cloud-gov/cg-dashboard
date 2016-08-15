@@ -18,6 +18,8 @@ describe('ServiceInstanceStore', function() {
   beforeEach(() => {
     ServiceInstanceStore._data = Immutable.List();
     ServiceInstanceStore._createError = null;
+    ServiceInstanceStore._fetching = false;
+    ServiceInstanceStore._fetched = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -44,8 +46,9 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on service instances fetch', function() {
-    it('should set fetching to true', function() {
+    it('should set fetching to true, fetched to false', function() {
       ServiceInstanceStore.fetching = false;
+      ServiceInstanceStore.fetched = true;
 
       AppDispatcher.handleViewAction({
         type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
@@ -53,6 +56,7 @@ describe('ServiceInstanceStore', function() {
       });
 
       expect(ServiceInstanceStore.fetching).toEqual(true);
+      expect(ServiceInstanceStore.fetched).toEqual(false);
     });
 
     it('should fetch service instances from api with space guid', function() {
@@ -70,7 +74,7 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
-  describe('on service instances received', function() {
+  describe('on service instance received', function() {
     it('should merge in the service instance', function() {
       const spy = sandbox.spy(ServiceInstanceStore, 'merge');
       const instance = {
@@ -92,13 +96,43 @@ describe('ServiceInstanceStore', function() {
       expect(arg2).toEqual(expected);
     });
 
-    it('should emit a change event', function() {
+    it('should set fetched to true, fetched to false', function() {
+      const instance = {
+        metadata: {
+          guid: 'zxmcvn23vlkxmcvn'
+        },
+        entity: {
+          name: 'testa'
+        }
+      };
+      const expected = unwrapOfRes([instance])[0];
 
+      serviceActions.receivedInstance(instance);
+
+      expect(ServiceInstanceStore.fetching).toEqual(false);
+      expect(ServiceInstanceStore.fetched).toEqual(true);
+    });
+
+    it('should emit a change event', function() {
+      const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+      const instance = {
+        metadata: {
+          guid: 'zxmcvn23vlkxmcvn'
+        },
+        entity: {
+          name: 'testa'
+        }
+      };
+      const expected = unwrapOfRes([instance])[0];
+
+      serviceActions.receivedInstance(instance);
+
+      expect(spy).toHaveBeenCalledOnce();
     });
   });
 
   describe('on service instances received', function() {
-    it('should set fetching to false', function() {
+    it('should set fetching to false, fetched to true', function() {
       ServiceInstanceStore.fetching = true;
 
       AppDispatcher.handleViewAction({
@@ -107,6 +141,7 @@ describe('ServiceInstanceStore', function() {
       });
 
       expect(ServiceInstanceStore.fetching).toEqual(false);
+      expect(ServiceInstanceStore.fetched).toEqual(true);
     });
 
     it('should set data to unwrapped, passed in instances', function() {

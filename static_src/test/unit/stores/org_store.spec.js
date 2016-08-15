@@ -14,6 +14,8 @@ describe('OrgStore', () => {
 
   beforeEach(() => {
     OrgStore._currentOrgGuid = null;
+    OrgStore._fetching = false;
+    OrgStore._fetched = false;
     OrgStore._data = Immutable.List();
     sandbox = sinon.sandbox.create();
   });
@@ -115,7 +117,7 @@ describe('OrgStore', () => {
   });
 
   describe('on org fetch', function() {
-    it('should set fetching to true', function() {
+    it('should set fetching to true, fetched to false', function() {
       expect(OrgStore.fetching).toEqual(false);
 
       AppDispatcher.handleViewAction({
@@ -124,6 +126,7 @@ describe('OrgStore', () => {
       });
 
       expect(OrgStore.fetching).toEqual(true);
+      expect(OrgStore.fetched).toEqual(false);
     });
 
     it('should call the api org fetch function', function() {

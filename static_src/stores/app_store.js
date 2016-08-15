@@ -22,6 +22,8 @@ class AppStore extends BaseStore {
       case appActionTypes.APP_FETCH:
         cfApi.fetchApp(action.appGuid);
         this.fetching = true;
+        this.fetched = false;
+        this.emitChange();
         break;
 
       case appActionTypes.APP_STATS_FETCH:
@@ -29,10 +31,10 @@ class AppStore extends BaseStore {
         break;
 
       case appActionTypes.APP_RECEIVED:
-        this.merge('guid', action.app, () => {
-          this.fetching = false;
-          this.emitChange();
-        });
+        this.fetching = false;
+        this.fetched = true;
+        this.merge('guid', action.app, () => { });
+        this.emitChange();
         break;
 
       case appActionTypes.APP_STATS_RECEIVED: {
@@ -46,11 +48,14 @@ class AppStore extends BaseStore {
       case appActionTypes.APP_ALL_FETCH: {
         cfApi.fetchAppAll(action.appGuid);
         this.fetching = true;
+        this.fetched = false;
+        this.emitChange();
         break;
       }
 
       case appActionTypes.APP_ALL_RECEIVED: {
         this.fetching = false;
+        this.fetched = true;
         this.emitChange();
         break;
       }

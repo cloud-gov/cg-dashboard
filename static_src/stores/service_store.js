@@ -21,20 +21,17 @@ class ServiceStore extends BaseStore {
     switch (action.type) {
       case serviceActionTypes.SERVICES_FETCH: {
         this.fetching = true;
+        this.fetched = false;
         cfApi.fetchAllServices(action.orgGuid);
         break;
       }
 
       case serviceActionTypes.SERVICES_RECEIVED: {
         const services = this.formatSplitResponse(action.services);
-        const immutableServices = Immutable.fromJS(services);
-
+        this.mergeMany('guid', services, () => { });
         this.fetching = false;
-
-        if (this.dataHasChanged(immutableServices)) {
-          this._data = immutableServices;
-          this.emitChange();
-        }
+        this.fetched = true;
+        this.emitChange();
         break;
       }
 
