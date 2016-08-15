@@ -13,7 +13,9 @@ import ServiceStore from '../stores/service_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 
-function stateSetter() {
+const LOADING_TIME = 400;
+
+function stateSetter(showLoading=false) {
   const loading = ServiceStore.fetching;
   const services = ServiceStore.getAll().map((service) => {
     const plan = ServicePlanStore.getAllFromService(service.guid);
@@ -22,9 +24,9 @@ function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
 
   return {
-    loading,
     services,
     currentOrgGuid,
+    loading: showLoading && loading,
     currentOrg: OrgStore.get(currentOrgGuid),
     createInstanceForm: ServiceInstanceStore.createInstanceForm
   };
@@ -37,6 +39,12 @@ export default class Marketplace extends React.Component {
     this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
+  }
+
+  componentWillMount() {
+    window.setTimeout(() => {
+      this.showLoader();
+    }, LOADING_TIME);
   }
 
   componentDidMount() {
@@ -55,6 +63,10 @@ export default class Marketplace extends React.Component {
 
   _onChange() {
     this.setState(stateSetter());
+  }
+
+  showLoader() {
+    this.setState(stateSetter(true));
   }
 
   render() {
