@@ -25,19 +25,9 @@ class Loading extends React.Component {
     this.state = {
       loadingTimer: null
     };
-    console.log('INIT');
-  }
-
-  componentWillReceiveProps() {
-    console.log('NEW PROPS');
-  }
-
-  componentDidMount() {
-    console.log('DID MOUNT');
   }
 
   componentWillMount() {
-    console.log('MOUNT');
     const timer = window.setTimeout(() => {
       this.showLoader();
     }, LOADING_TIME);

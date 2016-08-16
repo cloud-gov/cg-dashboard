@@ -47,7 +47,7 @@ class ServicePlanStore extends BaseStore {
         this.fetching = true;
         this.fetched = false;
         this.emitChange();
-        let planRequests = [];
+        const planRequests = [];
         for (const service of services) {
           planRequests.push(cfApi.fetchAllServicePlans(service.guid));
         }
@@ -67,7 +67,9 @@ class ServicePlanStore extends BaseStore {
         this.fetching = true;
         this.fetched = false;
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
-        cfApi.fetchAllServicePlans(action.serviceGuid);
+        if (action.serviceGuid) {
+          cfApi.fetchAllServicePlans(action.serviceGuid);
+        }
         this.emitChange();
         break;
       }

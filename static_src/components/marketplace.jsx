@@ -61,7 +61,6 @@ export default class Marketplace extends React.Component {
     const state = this.state;
     let form;
     let marketplace = <h2>Marketplace</h2>;
-    let list = <ServiceList initialServices={ state.services } />;
 
     if (state.createInstanceForm) {
       form = (
@@ -76,10 +75,10 @@ export default class Marketplace extends React.Component {
       marketplace = <h2>Marketplace for your <strong>{state.currentOrg.name}</strong> organization</h2>;
     }
 
-    console.log('RENDER');
     let loading = <Loading text="Loading marketplace services" />;
     let content = <div>{ loading }</div>;
     if (!this.state.loading) {
+      let list = <ServiceList initialServices={ state.services } />;
       content = (
         <div>
           <div>
