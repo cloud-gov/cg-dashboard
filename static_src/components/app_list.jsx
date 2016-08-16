@@ -77,12 +77,12 @@ export default class AppList extends React.Component {
   }
 
   render() {
-    let content = <div></div>;
-    let loading = <Loading text="Loading apps" active={ this.state.loading } />;
+    let loading = <Loading text="Loading apps" />;
+    let content = <div>{ loading }</div>;
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No apps</h4>;
-    } else if (this.state.apps.length) {
+    } else if (!this.state.loading && this.state.apps.length > 0) {
       content = (
         <table sortable>
           <thead>
@@ -117,7 +117,6 @@ export default class AppList extends React.Component {
 
     return (
       <div className={ this.styler('tableWrapper') }>
-        { loading }
         { content }
       </div>
     );

@@ -44,7 +44,7 @@ class Loading extends React.Component {
 
     if (this.props.active && !this.state.loadingTimer) {
       content = (
-        <div className={ this.styler('loading') }
+        <div className={ this.styler('loading', 'loading-relative') }
           role="alertdialog"
           ariaLive="assertive"
           ariaBusy={ this.props.active }
