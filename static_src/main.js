@@ -105,8 +105,6 @@ function app(orgGuid, spaceGuid, appGuid) {
 function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   orgActions.fetch(orgGuid);
   serviceActions.fetchAllServices(orgGuid);
-  // Fire a blank request for service plans to set fetching to true.
-  serviceActions.fetchAllPlans(0);
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace('0');
   if (serviceGuid && servicePlanGuid) {

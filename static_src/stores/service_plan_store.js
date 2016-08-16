@@ -42,7 +42,6 @@ class ServicePlanStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICES_RECEIVED: {
-        AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         const services = this.formatSplitResponse(action.services);
         this.fetching = true;
         this.fetched = false;
@@ -67,9 +66,7 @@ class ServicePlanStore extends BaseStore {
         this.fetching = true;
         this.fetched = false;
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
-        if (action.serviceGuid) {
-          cfApi.fetchAllServicePlans(action.serviceGuid);
-        }
+        cfApi.fetchAllServicePlans(action.serviceGuid);
         this.emitChange();
         break;
       }
