@@ -90,21 +90,17 @@ export default class ServiceInstanceList extends React.Component {
   }
 
   render() {
-    let content = <div></div>;
-
-    let loading = (<Loading text="Loading service instances"
-      active={ this.state.loading }
-    />);
+    let loading = <Loading text="Loading service instances" />;
+    let content = <div>{ loading }</div>;
 
     const specialtdStyles = {
       whiteSpace: 'nowrap',
       width: '25%'
     };
 
-
     if (this.state.empty) {
       content = <h4 className="test-none_message">No service instances</h4>;
-    } else if (this.state.serviceInstances.length) {
+    } else if (!this.state.loading && this.state.serviceInstances.length) {
       content = (
       <div>
         <p><em>
@@ -162,7 +158,6 @@ export default class ServiceInstanceList extends React.Component {
 
     return (
       <div className={ this.styler('tableWrapper') }>
-        { loading }
         { content }
       </div>
     );

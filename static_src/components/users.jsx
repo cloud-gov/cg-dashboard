@@ -6,7 +6,6 @@
 
 import React from 'react';
 
-import Loading from './loading.jsx';
 import userActions from '../actions/user_actions.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
@@ -148,13 +147,11 @@ export default class Users extends React.Component {
       initialUserType= { this.state.currentTab }
       initialCurrentUserAccess={ this.state.currentUserAccess }
       initialEmpty={ this.state.empty }
+      initialLoading={ this.state.loading }
       onRemove={ removeHandler }
       onAddPermissions={ this.handleAddPermissions }
       onRemovePermissions={ this.handleRemovePermissions }
     />);
-
-    // TODO move this to the user list component
-    let loading = <Loading text="Loading users" active={ this.state.loading } />;
 
     if (this.state.error) {
       // TODO make this an error message component
@@ -173,7 +170,6 @@ export default class Users extends React.Component {
         { errorMessage }
         <div>
           <div role="tabpanel">
-            { loading }
             { content }
           </div>
         </div>

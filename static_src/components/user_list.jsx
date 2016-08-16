@@ -9,6 +9,7 @@ import React from 'react';
 import formatDateTime from '../util/format_date';
 
 import Button from './button.jsx';
+import Loading from './loading.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 import createStyler from '../util/create_styler';
 
@@ -17,7 +18,8 @@ function stateSetter(props) {
     users: props.initialUsers,
     userType: props.initialUserType,
     currentUserAccess: props.initialCurrentUserAccess,
-    empty: props.initialEmpty
+    empty: props.initialEmpty,
+    loading: props.initialLoading
   };
 }
 
@@ -57,11 +59,12 @@ export default class UserList extends React.Component {
   }
 
   render() {
-    let content = <div></div>;
+    let loading = <Loading text="Loading users" />;
+    let content = <div>{ loading }</div>;
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No users</h4>;
-    } else if (this.state.users.length) {
+    } else if (!this.state.loading && this.state.users.length) {
       content = (
       <div>
         <p><em>
@@ -148,6 +151,7 @@ UserList.propTypes = {
   initialUserType: React.PropTypes.string,
   initialCurrentUserAccess: React.PropTypes.bool,
   initialEmpty: React.PropTypes.bool,
+  initialLoading: React.PropTypes.bool,
   // Set to a function when there should be a remove button.
   onRemove: React.PropTypes.func,
   onRemovePermissions: React.PropTypes.func,
@@ -158,5 +162,6 @@ UserList.defaultProps = {
   initialUsers: [],
   initialUserType: 'space_users',
   initialCurrentUserAccess: false,
-  initialEmpty: false
+  initialEmpty: false,
+  initialLoading: false
 };
