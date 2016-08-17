@@ -34,9 +34,15 @@ class Loading extends React.Component {
     this.setState({ loadingTimer: timer });
   }
 
+  componentWillUnmount() {
+    window.clearTimeout(this.state.timer);
+  }
+
   showLoader() {
-    window.clearTimeout(this.state.loadingTimer);
-    this.setState({ loadingTimer: null })
+    if (this.state.loadingTimer) {
+      window.clearTimeout(this.state.loadingTimer);
+      this.setState({ loadingTimer: null })
+    }
   }
 
   render() {

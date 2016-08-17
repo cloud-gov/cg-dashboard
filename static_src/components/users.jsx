@@ -51,8 +51,6 @@ export default class Users extends React.Component {
     this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
-    this._setTab = this._setTab.bind(this);
-    this.handleTabClick = this.handleTabClick.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
     this.handleAddPermissions = this.handleAddPermissions.bind(this);
     this.handleRemovePermissions = this.handleRemovePermissions.bind(this);
@@ -68,15 +66,6 @@ export default class Users extends React.Component {
 
   _onChange() {
     this.setState(stateSetter());
-  }
-
-  _setTab(tab) {
-    userActions.changeCurrentlyViewedType(tab);
-  }
-
-  handleTabClick(tab, ev) {
-    ev.preventDefault();
-    this._setTab(tab);
   }
 
   handleRemove(userGuid, ev) {
