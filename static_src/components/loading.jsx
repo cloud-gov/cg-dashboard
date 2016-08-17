@@ -23,7 +23,7 @@ class Loading extends React.Component {
     this.props = props;
     this.styler = createStyler(style);
     this.state = {
-      loadingTimer: null
+      waitTimer: false
     };
   }
 
@@ -31,24 +31,26 @@ class Loading extends React.Component {
     const timer = window.setTimeout(() => {
       this.showLoader();
     }, LOADING_TIME);
-    this.setState({ loadingTimer: timer });
+    this._timer = timer;
+    this.setState({ waitTimer: true });
   }
 
   componentWillUnmount() {
-    window.clearTimeout(this.state.timer);
+    window.clearTimeout(this._timer);
+    this._timer = null;
   }
 
   showLoader() {
-    if (this.state.loadingTimer) {
-      window.clearTimeout(this.state.loadingTimer);
-      this.setState({ loadingTimer: null })
+    if (this._timer) {
+      window.clearTimeout(this._timer);
+      this.setState({ waitTimer: false })
     }
   }
 
   render() {
     let content = <div></div>;
 
-    if (this.props.active && !this.state.loadingTimer) {
+    if (this.props.active && !this.state.waitTimer) {
       content = (
         <div className={ this.styler('loading', 'loading-relative') }
           role="alertdialog"
