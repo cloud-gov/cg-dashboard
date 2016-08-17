@@ -5,16 +5,18 @@ import loadingImg from 'cloudgov-style/img/loading.gif';
 
 import createStyler from '../util/create_styler';
 
-const LOADING_TIME = 400;
+const LOADING_TIME = 300;
 
 const propTypes = {
   text: React.PropTypes.string,
-  active: React.PropTypes.bool
+  active: React.PropTypes.bool,
+  loadingDelayMS: React.PropTypes.number
 };
 
 const defaultProps = {
   text: 'Loading',
-  active: true
+  active: true,
+  loadingDelayMS: LOADING_TIME
 };
 
 class Loading extends React.Component {
@@ -30,7 +32,7 @@ class Loading extends React.Component {
   componentWillMount() {
     const timer = window.setTimeout(() => {
       this.showLoader();
-    }, LOADING_TIME);
+    }, this.props.loadingDelayMS);
     this._timer = timer;
     this.setState({ waitTimer: true });
   }
