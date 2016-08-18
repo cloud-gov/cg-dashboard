@@ -136,8 +136,10 @@ const domainActionTypes = keymirror({
 });
 
 const activityActionTypes = keymirror({
-  ACTIVITY_FETCH: null,
-  ACTIVITY_RECEIVED: null
+  EVENTS_FETCH: null,
+  EVENTS_RECEIVED: null,
+  LOGS_FETCH: null,
+  LOGS_RECEIVED: null
 });
 
 export {
