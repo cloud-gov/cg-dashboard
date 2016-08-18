@@ -133,7 +133,7 @@ export default {
 
   fetchSpaceEvents(spaceGuid) {
     return this.fetchAllPages(`/spaces/${spaceGuid}/events`,
-                               activityActions.receivedActivity);
+                               activityActions.receivedSpaceEvents);
   },
 
   fetchServiceInstance(instanceGuid) {
@@ -187,6 +187,14 @@ export default {
   fetchAppStats(appGuid) {
     return http.get(`${APIV}/apps/${appGuid}/stats`).then((res) => {
       appActions.receivedAppStats(appGuid, res.data[0]);
+    }).catch((err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
+  fetchAppLogs(appGuid) {
+    return http.get(`log/recent?app=${appGuid}`).then((res) => {
+      activityActions.receivedAppLogs(appGuid, res.data);
     }).catch((err) => {
       errorActions.errorFetch(err);
     });

@@ -18,10 +18,10 @@ export default {
     });
   },
 
-  receivedSpaceEvents(activity) {
+  receivedSpaceEvents(events) {
     AppDispatcher.handleServerAction({
       type: activityActionTypes.EVENTS_RECEIVED,
-      activity
+      events
     });
   },
 
