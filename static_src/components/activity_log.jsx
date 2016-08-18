@@ -8,10 +8,14 @@ import createStyler from '../util/create_styler';
 
 function stateSetter(props) {
   const activity = ActivityStore.getAll().filter((item) => {
-    if (item.type === 'audit.service_binding.create') {
-      return item.metadata.request.app_guid === props.initialAppGuid;
+    if (item.activity_type === 'event') {
+      if (item.type === 'audit.service_binding.create') {
+        return item.metadata.request.app_guid === props.initialAppGuid;
+      }
+      return item.actee === props.initialAppGuid;
+    } else if (item.activity_type === 'log') {
+      return item.app_guid === props.initialAppGuid && item.status_code >= 400;
     }
-    return item.actee === props.initialAppGuid;
   }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
   return {

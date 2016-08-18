@@ -87,6 +87,14 @@ export default class ActivityLogItem extends React.Component {
   }
 
   get content() {
+    if (this.props.item.activity_type === 'log') {
+      return this.logContent;
+    } else {
+      return this.eventContent;
+    }
+  }
+
+  get eventContent() {
     let content = `${this.props.item.type} isn't handled`;
     const item = this.props.item;
     const metadata = item.metadata;
@@ -131,22 +139,39 @@ export default class ActivityLogItem extends React.Component {
     return content;
   }
 
-  render() {
-    let usaClass;
-    switch (this.props.item.type) {
-      case 'app.crash':
-        usaClass = 'activity_log-item-error';
-        break;
-      case 'audit.app.update':
-      case 'audit.app.restage':
-        usaClass = 'activity_log-item-warning';
-        break;
-      case 'audit.app.create':
-        usaClass = 'activity_log-item-success';
-        break;
-    }
+  get logContent() {
+    const item = this.props.item;
+
     return (
-      <li className={ this.styler('activity_log-item', usaClass) }>
+      <p>{ item.status_code } { item.requested_url }</p>
+    );
+  }
+
+  get cssClass() {
+    let css;
+    const item = this.props.item;
+    if (item.activity_type === 'log') {
+      css = 'activity_log-item-console';
+    } else if (item.activity_type === 'event') {
+      switch (item.type) {
+        case 'app.crash':
+          css = 'activity_log-item-error';
+          break;
+        case 'audit.app.update':
+        case 'audit.app.restage':
+          css = 'activity_log-item-warning';
+          break;
+        case 'audit.app.create':
+          css = 'activity_log-item-success';
+          break;
+      }
+    }
+    return css;
+  }
+
+  render() {
+    return (
+      <li className={ this.styler('activity_log-item', this.cssClass) }>
         <div className={ this.styler('activity_log-item_text') }
           onClick={ this.toggleRawJson }
         >
