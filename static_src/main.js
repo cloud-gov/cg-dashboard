@@ -91,7 +91,8 @@ function app(orgGuid, spaceGuid, appGuid) {
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
   spaceActions.fetch(spaceGuid);
-  activityActions.fetchSpaceActivity(spaceGuid);
+  activityActions.fetchSpaceEvents(spaceGuid);
+  activityActions.fetchAppLogs(appGuid);
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
   ReactDOM.render(
