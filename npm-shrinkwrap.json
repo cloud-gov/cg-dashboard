@@ -5085,11 +5085,6 @@
         }
       }
     },
-    "colors": {
-      "version": "0.6.2",
-      "from": "colors@>=0.6.0 <0.7.0",
-      "resolved": "https://registry.npmjs.org/colors/-/colors-0.6.2.tgz"
-    },
     "concat-stream": {
       "version": "1.5.1",
       "from": "concat-stream@>=1.4.7 <2.0.0",
@@ -11539,11 +11534,6 @@
           }
         }
       }
-    },
-    "karma-failed-reporter": {
-      "version": "0.0.3",
-      "from": "karma-failed-reporter@latest",
-      "resolved": "https://registry.npmjs.org/karma-failed-reporter/-/karma-failed-reporter-0.0.3.tgz"
     },
     "karma-jasmine": {
       "version": "0.2.3",

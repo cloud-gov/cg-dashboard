@@ -1,51 +1,50 @@
 // Karma configuration
 // Generated on Mon Jul 27 2015 12:17:38 GMT-0400 (EDT)
 
-var webpackConfig = require('./webpack.config');
+const webpackConfig = require('./webpack.config');
 
 module.exports = function(config) {
-    config.set({
-      browsers: ['PhantomJS2', 'Chrome'],
+  config.set({
+    browsers: ['PhantomJS2', 'Chrome'],
 
-      frameworks: ['jasmine', 'jasmine-matchers', 'sinon', 'phantomjs-shim'],
+    frameworks: ['jasmine', 'jasmine-matchers', 'sinon', 'phantomjs-shim'],
 
-      files: [ './static_src/tests.bundle.js' ],
+    files: ['./static_src/tests.bundle.js'],
 
-      exclude: [],
+    exclude: [],
 
-      plugins: [
-        'karma-chrome-launcher',
-        'karma-failed-reporter',
-        'karma-jasmine',
-        'karma-jasmine-matchers',
-        'karma-phantomjs2-launcher',
-        'karma-phantomjs-shim',
-        'karma-sinon',
-        'karma-sourcemap-loader',
-        'karma-webpack'
-      ],
+    plugins: [
+      'karma-chrome-launcher',
+      'karma-jasmine',
+      'karma-jasmine-matchers',
+      'karma-phantomjs2-launcher',
+      'karma-phantomjs-shim',
+      'karma-sinon',
+      'karma-sourcemap-loader',
+      'karma-webpack'
+    ],
 
-      preprocessors: {
-        'static_src/tests.bundle.js': ['webpack']
-      },
+    preprocessors: {
+      'static_src/tests.bundle.js': ['webpack']
+    },
 
-      webpack: webpackConfig,
+    webpack: webpackConfig,
 
-      reporters: ['failed'],
+    reporters: ['progress'],
 
-      client: {
-        captureConsole: false
-      },
+    client: {
+      captureConsole: process.env.CAPTURE_TEST_CONSOLE || false
+    },
 
-      port: 9876,
+    port: 9876,
 
-      colors: true,
+    colors: true,
 
-      logLevel: config.LOG_ERROR,
+    logLevel: config.LOG_ERROR,
 
-      autoWatch: true,
+    autoWatch: true,
 
-      singleRun: false
+    singleRun: false
 
-    })
-}
+  });
+};
