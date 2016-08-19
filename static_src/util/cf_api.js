@@ -1,6 +1,7 @@
 
 import http from 'axios';
 
+import activityActions from '../actions/activity_actions.js';
 import appActions from '../actions/app_actions.js';
 import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
@@ -34,6 +35,26 @@ export default {
 
   fetchMany(url, action, ...params) {
     return this.fetch(url, action, true, ...params);
+  },
+
+  fetchAllPages(url, action, ...params) {
+    return http.get(APIV + url).then((res) => {
+      const urls = [];
+
+      if (!res.data.next_url) return action(res.data.resources);
+
+      for (let i = 2; i <= res.data.total_pages; i++) {
+        urls.push(`${APIV}${url}?page=${i}`);
+      }
+
+      const reqs = urls.map((u) => http.get(u).then((r) => r.data.resources));
+
+      return Promise.all(reqs)
+        .then((all) => all.pop())
+        .then((all) => [].concat.call([], res.data.resources, all))
+        .then((all) => action(all, ...params))
+        .catch((err) => errorActions.errorFetch(err));
+    });
   },
 
   getAuthStatus() {
@@ -110,6 +131,11 @@ export default {
                          spaceActions.receivedSpace);
   },
 
+  fetchSpaceEvents(spaceGuid) {
+    return this.fetchAllPages(`/spaces/${spaceGuid}/events`,
+                               activityActions.receivedSpaceEvents);
+  },
+
   fetchServiceInstance(instanceGuid) {
     return this.fetchOne(`/service_instances/${instanceGuid}`,
                           serviceActions.receivedInstance);
@@ -161,6 +187,14 @@ export default {
   fetchAppStats(appGuid) {
     return http.get(`${APIV}/apps/${appGuid}/stats`).then((res) => {
       appActions.receivedAppStats(appGuid, res.data[0]);
+    }).catch((err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
+  fetchAppLogs(appGuid) {
+    return http.get(`log/recent?app=${appGuid}`).then((res) => {
+      activityActions.receivedAppLogs(appGuid, res.data);
     }).catch((err) => {
       errorActions.errorFetch(err);
     });

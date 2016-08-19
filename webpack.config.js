@@ -1,14 +1,16 @@
 
 const path = require('path');
+const webpack = require('webpack');
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+const PRODUCTION = (process.env.NODE_ENV === 'prod');
 const CG_STYLE_PATH = process.env.CG_STYLE_PATH;
 
 const srcDir = './static_src';
 const compiledDir = './static/assets';
 
-module.exports = {
+const config = {
   entry: [
     'babel-polyfill',
     `${srcDir}/main.js`
@@ -16,8 +18,11 @@ module.exports = {
 
   output: {
     path: path.resolve(compiledDir),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    sourceMapFilename: 'bundle.js.map'
   },
+
+  devtool: (PRODUCTION) ? '' : 'eval-source-map',
 
   module: {
     loaders: [
@@ -74,3 +79,10 @@ module.exports = {
 
   publicPath: './static'
 };
+
+if (PRODUCTION) {
+  config.plugins.push(new webpack.optimize.DedupePlugin());
+  config.plugins.push(new webpack.optimize.UglifyJsPlugin());
+}
+
+module.exports = config;

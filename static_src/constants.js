@@ -135,6 +135,22 @@ const domainActionTypes = keymirror({
   DOMAIN_RECEIVED: null
 });
 
-export { appActionTypes, domainActionTypes, errorActionTypes, loginActionTypes,
-  orgActionTypes, routeActionTypes, spaceActionTypes, serviceActionTypes,
-  userActionTypes };
+const activityActionTypes = keymirror({
+  EVENTS_FETCH: null,
+  EVENTS_RECEIVED: null,
+  LOGS_FETCH: null,
+  LOGS_RECEIVED: null
+});
+
+export {
+  activityActionTypes,
+  appActionTypes,
+  domainActionTypes,
+  errorActionTypes,
+  loginActionTypes,
+  orgActionTypes,
+  routeActionTypes,
+  spaceActionTypes,
+  serviceActionTypes,
+  userActionTypes
+};
