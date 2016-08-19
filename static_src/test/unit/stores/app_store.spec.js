@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 
 import '../../global_setup.js';
 
+import appActions from '../../../actions/app_actions.js';
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
@@ -14,6 +15,7 @@ describe('AppStore', function() {
 
   beforeEach(() => {
     AppStore._data = Immutable.List();
+    AppStore._currentAppGuid = null;
     AppStore._fetching = false;
     AppStore._fetched = false;
     sandbox = sinon.sandbox.create();
@@ -224,6 +226,24 @@ describe('AppStore', function() {
         guid: expectedGuid,
         stats: { mem_quota: 12 }
       });
+    });
+  });
+
+  describe('on app change current', function() {
+    it('should set the current app guid to passed guid', function() {
+      const expectedGuid = 'aldfjvcczxcv';
+
+      appActions.changeCurrentApp(expectedGuid);
+
+      expect(AppStore.currentAppGuid).toEqual(expectedGuid);
+    });
+
+    it('should emit a change event', function() {
+      const spy = sandbox.spy(AppStore, 'emitChange');
+
+      appActions.changeCurrentApp('0');
+
+      expect(spy).toHaveBeenCalledOnce();
     });
   });
 });

@@ -14,6 +14,7 @@ class AppStore extends BaseStore {
   constructor() {
     super();
     this._data = new Immutable.List();
+    this._currentAppGuid = null;
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
@@ -60,9 +61,19 @@ class AppStore extends BaseStore {
         break;
       }
 
+      case appActionTypes.APP_CHANGE_CURRENT: {
+        this._currentAppGuid = action.appGuid;
+        this.emitChange();
+        break;
+      }
+
       default:
         break;
     }
+  }
+
+  get currentAppGuid() {
+    return this._currentAppGuid;
   }
 }
 
