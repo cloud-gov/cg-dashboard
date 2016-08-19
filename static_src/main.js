@@ -92,13 +92,12 @@ function app(orgGuid, spaceGuid, appGuid) {
   spaceActions.fetch(spaceGuid);
   activityActions.fetchSpaceEvents(spaceGuid);
   activityActions.fetchAppLogs(appGuid);
+  appActions.changeCurrentApp(appGuid);
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
   ReactDOM.render(
     <MainContainer>
-      <AppContainer
-        initialAppGuid={ appGuid }
-      />
+      <AppContainer />
     </MainContainer>, mainEl);
 }
 

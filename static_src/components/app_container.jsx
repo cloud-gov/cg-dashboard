@@ -15,12 +15,13 @@ function appReady(app) {
   return !!app && !!app.name;
 }
 
-function stateSetter(current) {
-  const app = AppStore.get(current.currentAppGuid);
+function stateSetter() {
+  const currentAppGuid = AppStore.currentAppGuid;
+  const app = AppStore.get(currentAppGuid);
 
   return {
     app: app || {},
-    currentAppGuid: current.currentAppGuid,
+    currentAppGuid,
     currentOrgName: OrgStore.currentOrgName,
     currentSpaceName: SpaceStore.currentSpaceName,
     empty: AppStore.fetched && !appReady(app),
@@ -32,7 +33,7 @@ export default class AppContainer extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = stateSetter({ currentAppGuid: this.props.initialAppGuid });
+    this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
     this.getStat = this.getStat.bind(this);
@@ -52,7 +53,7 @@ export default class AppContainer extends React.Component {
   }
 
   _onChange() {
-    this.setState(stateSetter(this.state));
+    this.setState(stateSetter());
   }
 
   logsLink(appName) {
@@ -209,6 +210,4 @@ export default class AppContainer extends React.Component {
   }
 }
 
-AppContainer.propTypes = {
-  initialAppGuid: React.PropTypes.string.isRequired
-};
+AppContainer.propTypes = { };
