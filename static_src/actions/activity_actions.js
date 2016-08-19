@@ -4,13 +4,6 @@ import AppDispatcher from '../dispatcher.js';
 import { activityActionTypes } from '../constants';
 
 export default {
-  // fetch(appGuid) {
-  //   AppDispatcher.handleViewAction({
-  //     type: activityActionTypes.EVENTS_FETCH,
-  //     appGuid
-  //   });
-  // },
-
   fetchSpaceEvents(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: activityActionTypes.EVENTS_FETCH,

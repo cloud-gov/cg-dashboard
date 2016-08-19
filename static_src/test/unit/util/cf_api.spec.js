@@ -619,13 +619,6 @@ describe('cfApi', function() {
         expect(spy).toHaveBeenCalledOnce();
         done();
       });
-
-
-      // let actual = spy.getCall(0).args[0];
-      // expect(actual).toMatch(new RegExp(expected));
-      // expect(actual).toMatch(new RegExp('space'));
-      // actual = spy.getCall(0).args[1];
-      // expect(actual).toEqual(spaceActions.receivedSpace);
     });
   });
 
