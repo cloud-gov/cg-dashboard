@@ -51,7 +51,6 @@ export default class SpaceContainer extends React.Component {
   }
 
   spaceUrl(page) {
-    // TODO fix this with a link somehow
     return `/#/org/${this.state.currentOrg.guid}/spaces/${this.state.space.guid}/${page}`;
   }
 
@@ -81,7 +80,7 @@ export default class SpaceContainer extends React.Component {
   }
 
   get currentOrgGuid() {
-    return this.state.currentOrg ? this.props.initialOrgGuid : '0';
+    return this.state.currentOrg || '0';
   }
 
   render() {
@@ -109,8 +108,6 @@ export default class SpaceContainer extends React.Component {
         <div>
           <div role="tabpanel" id={ this.props.currentPage }>
             <Content
-              initialOrgGuid={ this.state.currentOrgGuid }
-              initialSpaceGuid={ this.state.currentSpaceGuid }
               intitialApps={ this.state.space.apps || [] }
             />
           </div>

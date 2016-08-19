@@ -23,11 +23,7 @@ export class Nav extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      currentOrg: OrgStore.get(this.props.initialOrgGuid),
-      currentSpace: SpaceStore.get(this.props.initialSpaceGuid),
-      orgs: OrgStore.getAll() || []
-    };
+    this.state = stateSetter();
     this.styler = createStyler(style);
     this._onChange = this._onChange.bind(this);
     this._handleOverviewClick = this._handleOverviewClick.bind(this);
@@ -155,11 +151,8 @@ export class Nav extends React.Component {
   }
 }
 Nav.propTypes = {
-  subLinks: React.PropTypes.array,
-  initialOrgGuid: React.PropTypes.string,
-  initialSpaceGuid: React.PropTypes.string
+  subLinks: React.PropTypes.array
 };
 Nav.defaultProps = {
-  initialOrgGuid: '0',
-  initialSpaceGuid: '0'
+  subLinks: []
 };

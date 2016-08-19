@@ -12,26 +12,26 @@ import Button from './button.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 import createStyler from '../util/create_styler';
 
+function stateSetter(props) {
+  return {
+    users: props.initialUsers,
+    userType: props.initialUserType,
+    currentUserAccess: props.initialCurrentUserAccess,
+    empty: props.initialEmpty
+  };
+}
 
 export default class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      users: props.initialUsers,
-      userType: props.initialUserType,
-      currentUserAccess: props.initialCurrentUserAccess
-    };
+    this.state = stateSetter(props);
     this.styler = createStyler(style);
     this._handleDelete = this._handleDelete.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      users: nextProps.initialUsers,
-      userType: nextProps.initialUserType,
-      currentUserAccess: nextProps.initialCurrentUserAccess
-    });
+    this.setState(stateSetter(nextProps));
   }
 
   _handleDelete(userGuid, ev) {
@@ -57,9 +57,11 @@ export default class UserList extends React.Component {
   }
 
   render() {
-    let content = <h4 className="test-none_message">No users</h4>;
+    let content = <div></div>;
 
-    if (this.state.users.length) {
+    if (this.state.empty) {
+      content = <h4 className="test-none_message">No users</h4>;
+    } else if (this.state.users.length) {
       content = (
       <div>
         <p><em>
@@ -145,6 +147,7 @@ UserList.propTypes = {
   initialUsers: React.PropTypes.array,
   initialUserType: React.PropTypes.string,
   initialCurrentUserAccess: React.PropTypes.bool,
+  initialEmpty: React.PropTypes.bool,
   // Set to a function when there should be a remove button.
   onRemove: React.PropTypes.func,
   onRemovePermissions: React.PropTypes.func,
@@ -154,5 +157,6 @@ UserList.propTypes = {
 UserList.defaultProps = {
   initialUsers: [],
   initialUserType: 'space_users',
-  initialCurrentUserAccess: false
+  initialCurrentUserAccess: false,
+  initialEmpty: false
 };

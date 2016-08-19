@@ -13,17 +13,19 @@ import ServiceStore from '../stores/service_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 
-function stateSetter(orgGuid) {
+function stateSetter() {
   const loading = ServiceStore.fetching || ServicePlanStore.fetching;
   const services = ServiceStore.getAll().map((service) => {
     const plan = ServicePlanStore.getAllFromService(service.guid);
     return { ...service, servicePlans: plan };
   });
+  const currentOrgGuid = OrgStore.currentOrgGuid;
 
   return {
     loading,
     services,
-    currentOrg: OrgStore.get(orgGuid),
+    currentOrgGuid,
+    currentOrg: OrgStore.get(currentOrgGuid),
     createInstanceForm: ServiceInstanceStore.createInstanceForm
   };
 }
@@ -32,7 +34,7 @@ export default class Marketplace extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = stateSetter(this.props.initialOrgGuid);
+    this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
   }
@@ -52,7 +54,7 @@ export default class Marketplace extends React.Component {
   }
 
   _onChange() {
-    this.setState(stateSetter(this.props.initialOrgGuid));
+    this.setState(stateSetter());
   }
 
   render() {
@@ -93,6 +95,4 @@ export default class Marketplace extends React.Component {
   }
 }
 
-Marketplace.propTypes = {
-  initialOrgGuid: React.PropTypes.string.isRequired
-};
+Marketplace.propTypes = { };

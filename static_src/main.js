@@ -48,7 +48,6 @@ function org(orgGuid) {
 function space(orgGuid, spaceGuid) {
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
-  // TODO what happens if the space arrives before the changelistener is added?
   cfApi.fetchOrg(orgGuid);
   spaceActions.fetch(spaceGuid);
 }
@@ -93,7 +92,7 @@ function app(orgGuid, spaceGuid, appGuid) {
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
   ReactDOM.render(
-    <MainContainer initialSpaceGuid={ spaceGuid }>
+    <MainContainer>
       <AppContainer
         initialAppGuid={ appGuid }
       />
@@ -110,7 +109,7 @@ function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
   }
   ReactDOM.render(
     <MainContainer>
-      <Marketplace initialOrgGuid={ orgGuid } />
+      <Marketplace />
     </MainContainer>,
   mainEl);
 }

@@ -66,24 +66,30 @@ export default class ServiceList extends React.Component {
             </tr>
           </thead>
           <tbody>
-          { this.rows.map((row) =>
-            [
+          { this.rows.map((row) => {
+            let instance = [];
+            instance.push(
               <tr key={ row.guid }>
                 { this.columns.map((rowcolumn) =>
                   <td key={ rowcolumn.key }><span>
                     { row[rowcolumn.key] }
                   </span></td>
                 )}
-              </tr>,
-              <tr colSpan="3">
-                <td colSpan="3">
-                <ServicePlanList initialServiceGuid={ row.guid }
-                  initialServicePlans={ row.servicePlans }
-                />
-                </td>
               </tr>
-            ]
-          )}
+            );
+            if (row.servicePlans.length) {
+              instance.push(
+                <tr colSpan="3">
+                  <td colSpan="3">
+                  <ServicePlanList initialServiceGuid={ row.guid }
+                    initialServicePlans={ row.servicePlans }
+                  />
+                  </td>
+                </tr>
+              );
+            }
+            return instance;
+          })}
           </tbody>
         </table>
       </div>

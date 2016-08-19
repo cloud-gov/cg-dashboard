@@ -6,18 +6,22 @@ import Reactable from 'reactable';
 
 import createStyler from '../util/create_styler';
 import Loading from './loading.jsx';
+import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 
 const unsafe = Reactable.unsafe;
 
-function stateSetter(props) {
-  const space = SpaceStore.get(props.initialSpaceGuid);
+function stateSetter() {
+  const currentOrgGuid = OrgStore.currentOrgGuid;
+  const currentSpaceGuid = SpaceStore.currentSpaceGuid;
+
+  const space = SpaceStore.get(currentSpaceGuid);
   const apps = (space && space.apps) ? space.apps : [];
 
   return {
     apps: apps,
-    currentOrgGuid: props.initialOrgGuid,
-    currentSpaceGuid: props.initialSpaceGuid,
+    currentOrgGuid,
+    currentSpaceGuid,
     loading: SpaceStore.fetching,
     empty: SpaceStore.fetched && !apps.length
   };
@@ -27,7 +31,7 @@ export default class AppList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = stateSetter(props);
+    this.state = stateSetter();
     this._onChange = this._onChange.bind(this);
     this.styler = createStyler(style);
   }
@@ -37,7 +41,7 @@ export default class AppList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(stateSetter(nextProps));
+    this.setState(stateSetter());
   }
 
   componentWillUnmount() {
@@ -124,9 +128,7 @@ export default class AppList extends React.Component {
 }
 
 AppList.propTypes = {
-  initialApps: React.PropTypes.array,
-  initialOrgGuid: React.PropTypes.string.isRequired,
-  initialSpaceGuid: React.PropTypes.string.isRequired
+  initialApps: React.PropTypes.array
 };
 
 AppList.defaultProps = {

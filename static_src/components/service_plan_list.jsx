@@ -65,7 +65,7 @@ export default class ServicePlanList extends React.Component {
   }
 
   render() {
-    let content = <div></div>
+    let content = <div></div>;
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No service plans</h4>;
