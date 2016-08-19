@@ -49,5 +49,12 @@ export default {
       type: appActionTypes.APP_ALL_RECEIVED,
       appGuid
     });
+  },
+
+  changeCurrentApp(appGuid) {
+    AppDispatcher.handleUIAction({
+      type: appActionTypes.APP_CHANGE_CURRENT,
+      appGuid
+    });
   }
 };

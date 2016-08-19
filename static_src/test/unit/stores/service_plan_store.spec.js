@@ -137,6 +137,7 @@ describe('ServicePlanStore', function() {
 
     it('should set fetching to false, fetched to true', function() {
       ServicePlanStore.fetching = true;
+      ServicePlanStore.waitingOnRequests = false;
       serviceActions.receivedPlans(wrapInRes([{ guid: 'adfklj' }]));
 
       expect(ServicePlanStore.fetching).toEqual(false);

@@ -89,7 +89,9 @@ const appActionTypes = keymirror({
   // The combined result of APP_FETCH and APP_STATS_FETCH
   APP_ALL_FETCH: null,
   // Action when all fetches come back from the server.
-  APP_ALL_RECEIVED: null
+  APP_ALL_RECEIVED: null,
+  // Action when user views a different app
+  APP_CHANGE_CURRENT: null
 });
 
 const userActionTypes = keymirror({
