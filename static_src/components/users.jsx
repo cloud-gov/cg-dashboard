@@ -6,7 +6,6 @@
 
 import React from 'react';
 
-import Loading from './loading.jsx';
 import userActions from '../actions/user_actions.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
@@ -52,8 +51,6 @@ export default class Users extends React.Component {
     this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
-    this._setTab = this._setTab.bind(this);
-    this.handleTabClick = this.handleTabClick.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
     this.handleAddPermissions = this.handleAddPermissions.bind(this);
     this.handleRemovePermissions = this.handleRemovePermissions.bind(this);
@@ -69,15 +66,6 @@ export default class Users extends React.Component {
 
   _onChange() {
     this.setState(stateSetter());
-  }
-
-  _setTab(tab) {
-    userActions.changeCurrentlyViewedType(tab);
-  }
-
-  handleTabClick(tab, ev) {
-    ev.preventDefault();
-    this._setTab(tab);
   }
 
   handleRemove(userGuid, ev) {
@@ -138,7 +126,6 @@ export default class Users extends React.Component {
   render() {
     let removeHandler;
     let errorMessage;
-    let loading = <div></div>;
 
     if (this.state.currentTab === TAB_ORG_NAME) {
       removeHandler = this.handleRemove;
@@ -149,14 +136,11 @@ export default class Users extends React.Component {
       initialUserType= { this.state.currentTab }
       initialCurrentUserAccess={ this.state.currentUserAccess }
       initialEmpty={ this.state.empty }
+      initialLoading={ this.state.loading }
       onRemove={ removeHandler }
       onAddPermissions={ this.handleAddPermissions }
       onRemovePermissions={ this.handleRemovePermissions }
     />);
-
-    if (this.state.loading) {
-      loading = <Loading text="Loading users" />;
-    }
 
     if (this.state.error) {
       // TODO make this an error message component

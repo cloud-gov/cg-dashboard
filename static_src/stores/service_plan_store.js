@@ -17,6 +17,7 @@ class ServicePlanStore extends BaseStore {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = new Immutable.List();
+    this.waitingOnRequests = false;
   }
 
   getAllFromService(serviceGuid) {
@@ -41,12 +42,22 @@ class ServicePlanStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICES_RECEIVED: {
-        AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         const services = this.formatSplitResponse(action.services);
         this.fetching = true;
         this.fetched = false;
+        this.emitChange();
+        const planRequests = [];
         for (const service of services) {
-          cfApi.fetchAllServicePlans(service.guid);
+          planRequests.push(cfApi.fetchAllServicePlans(service.guid));
+        }
+        if (planRequests.length) {
+          this.waitingOnRequests = true;
+          Promise.all(planRequests).then(() => {
+            this.waitingOnRequests = false;
+            this.fetching = false;
+            this.fetched = true;
+            this.emitChange();
+          });
         }
         break;
       }
@@ -65,8 +76,10 @@ class ServicePlanStore extends BaseStore {
           let servicePlans = this.formatSplitResponse(action.servicePlans);
           servicePlans = this.parseJson(servicePlans, 'extra');
 
-          this.fetching = false;
-          this.fetched = true;
+          if (!this.waitingOnRequests) {
+            this.fetching = false;
+            this.fetched = true;
+          }
 
           this.mergeMany('guid', servicePlans, () => { });
           this.emitChange();

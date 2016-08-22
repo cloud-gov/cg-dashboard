@@ -6,9 +6,11 @@
 
 import Immutable from 'immutable';
 
+import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import { serviceActionTypes } from '../constants.js';
+import ServicePlanStore from './service_plan_store.js';
 
 class ServiceStore extends BaseStore {
   constructor() {
@@ -27,6 +29,7 @@ class ServiceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICES_RECEIVED: {
+        AppDispatcher.waitFor([ServicePlanStore.dispatchToken]);
         const services = this.formatSplitResponse(action.services);
         this.mergeMany('guid', services, () => { });
         this.fetching = false;

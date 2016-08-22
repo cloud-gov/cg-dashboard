@@ -128,16 +128,12 @@ export default class AppContainer extends React.Component {
   }
 
   render() {
-    let loading = <div></div>;
-    let content = <div></div>;
-
-    if (this.state.loading) {
-      loading = <Loading text="Loading app now" />;
-    }
+    let loading = <Loading text="Loading app" />;
+    let content = <div>{ loading }</div>;
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
-    } else if (appReady(this.state.app)) {
+    } else if (!this.state.loading && appReady(this.state.app)) {
       content = (
         <div>
           <ActivityLog initialAppGuid={ this.state.app.guid } title="Recent activity" />
@@ -207,7 +203,6 @@ export default class AppContainer extends React.Component {
 
     return (
       <div>
-        { loading }
         { content }
       </div>
     );

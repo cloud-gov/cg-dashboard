@@ -22,9 +22,9 @@ function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
 
   return {
-    loading,
     services,
     currentOrgGuid,
+    loading: loading,
     currentOrg: OrgStore.get(currentOrgGuid),
     createInstanceForm: ServiceInstanceStore.createInstanceForm
   };
@@ -58,15 +58,9 @@ export default class Marketplace extends React.Component {
   }
 
   render() {
-    let form;
-    let loading = <div></div>;
     const state = this.state;
+    let form;
     let marketplace = <h2>Marketplace</h2>;
-    let content = <ServiceList initialServices={ state.services } />;
-
-    if (state.loading) {
-      loading = <Loading text="Loading marketplace services" />;
-    }
 
     if (state.createInstanceForm) {
       form = (
@@ -81,15 +75,25 @@ export default class Marketplace extends React.Component {
       marketplace = <h2>Marketplace for your <strong>{state.currentOrg.name}</strong> organization</h2>;
     }
 
+    let loading = <Loading text="Loading marketplace services" />;
+    let content = <div>{ loading }</div>;
+    if (!this.state.loading) {
+      let list = <ServiceList initialServices={ state.services } />;
+      content = (
+        <div>
+          <div>
+            { marketplace }
+            <p><em>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</em></p>
+          </div>
+          { list }
+          { form }
+        </div>
+      );
+    }
+
     return (
       <div>
-        <div>
-          { marketplace }
-          <p><em>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</em></p>
-        </div>
-        { loading }
         { content }
-        { form }
       </div>
     );
   }
