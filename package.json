@@ -54,7 +54,7 @@
     "babel-preset-react": "^6.3.13",
     "babel-runtime": "^6.3.19",
     "classnames": "^2.1.5",
-    "cloudgov-style": "^1.0.0",
+    "cloudgov-style": "^1.1.0",
     "codecov.io": "^0.1.5",
     "css-loader": "^0.23.0",
     "cssnext-loader": "^1.0.1",
