@@ -60,21 +60,33 @@ class ActivityStore extends BaseStore {
     super();
     this._data = new Immutable.List();
     this.subscribe(() => this._registerToActions.bind(this));
+    this.eventsFetched = false;
+    this.eventsFetching = false;
+    this.logsFetched = false;
+    this.logsFetching = false;
+  }
+
+  get fetched() {
+    return this.eventsFetched && this.logsFetched;
+  }
+
+  get fetching() {
+    return this.eventsFetching || this.logsFetching;
   }
 
   _registerToActions(action) {
     let activity;
     switch (action.type) {
       case activityActionTypes.EVENTS_FETCH:
-        this.fetching = true;
-        this.fetched = false;
+        this.eventsFetching = true;
+        this.eventsFetched = false;
         cfApi.fetchSpaceEvents(action.spaceGuid);
         this.emitChange();
         break;
 
       case activityActionTypes.EVENTS_RECEIVED:
-        this.fetching = false;
-        this.fetched = true;
+        this.eventsFetching = false;
+        this.eventsFetched = true;
         activity = this.formatSplitResponse(action.events).map((event) => {
           const item = Object.assign({}, event, {
             activity_type: 'event'
@@ -86,15 +98,15 @@ class ActivityStore extends BaseStore {
         break;
 
       case activityActionTypes.LOGS_FETCH:
-        this.fetching = true;
-        this.fetched = false;
+        this.logsFetching = true;
+        this.logsFetched = false;
         cfApi.fetchAppLogs(action.appGuid);
         this.emitChange();
         break;
 
       case activityActionTypes.LOGS_RECEIVED:
-        this.fetching = false;
-        this.fetched = true;
+        this.logsFetching = false;
+        this.logsFetched = true;
         activity = action.logs.map((log) => {
           const parsed = Object.assign({}, parseLogItem(log), {
             activity_type: 'log'
