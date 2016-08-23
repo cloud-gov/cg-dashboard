@@ -4839,9 +4839,9 @@
       "resolved": "https://registry.npmjs.org/classnames/-/classnames-2.2.3.tgz"
     },
     "cloudgov-style": {
-      "version": "1.1.0",
-      "from": "cloudgov-style@1.1.0",
-      "resolved": "https://registry.npmjs.org/cloudgov-style/-/cloudgov-style-1.1.0.tgz"
+      "version": "1.1.1",
+      "from": "cloudgov-style@1.1.1",
+      "resolved": "https://registry.npmjs.org/cloudgov-style/-/cloudgov-style-1.1.1.tgz"
     },
     "codecov.io": {
       "version": "0.1.6",
