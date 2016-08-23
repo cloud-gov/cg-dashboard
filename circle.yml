@@ -37,7 +37,6 @@ test:
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   override:
     - cd $WS && ./codecheck.sh -u
-    - cd $WS && npm test
 
 deployment:
   deploy:
