@@ -2,7 +2,7 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import { assertAction, setupViewSpy, setupServerSpy } from '../helpers.js';
+import { assertAction, setupUISpy, setupViewSpy, setupServerSpy } from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import appActions from '../../../actions/app_actions.js';
 import { appActionTypes } from '../../../constants.js';
@@ -111,4 +111,17 @@ describe('appActions', function() {
     });
   });
 
+  describe('changeCurrentApp()', function() {
+    it('should dispatch a ui event of type app changed with guid', function() {
+      const appGuid = 'testingAppGuid';
+      const expectedParams = {
+        appGuid
+      };
+      const spy = setupUISpy(sandbox);
+
+      appActions.changeCurrentApp(appGuid);
+
+      assertAction(spy, appActionTypes.APP_CHANGE_CURRENT, {}, expectedParams);
+    });
+  });
 });
