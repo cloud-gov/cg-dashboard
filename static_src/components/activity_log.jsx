@@ -19,7 +19,8 @@ function stateSetter(props) {
   }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
   return {
-    activity
+    activity,
+    empty: (ActivityStore.fetched && activity.length === 0)
   };
 }
 
@@ -54,9 +55,12 @@ export default class ActivityLog extends React.Component {
   }
 
   render() {
-    return (
-      <div className={ this.styler('activity_log-container') }>
-        <h1>{ this.props.title }</h1>
+    let content = <div></div>;
+
+    if (this.state.empty) {
+      content = <h5 className="test-none_message">No recent activity</h5>;
+    } else {
+      content = (
         <ul className={ this.styler('activity_log') }>
           { this.state.activity.map((item) => {
             return (
@@ -64,6 +68,13 @@ export default class ActivityLog extends React.Component {
             );
           })}
         </ul>
+      );
+    }
+
+    return (
+      <div className={ this.styler('activity_log-container') }>
+        <h1>{ this.props.title }</h1>
+        { content }
       </div>
     );
   }

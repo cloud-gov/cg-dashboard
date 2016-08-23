@@ -66,35 +66,43 @@ class ActivityStore extends BaseStore {
     let activity;
     switch (action.type) {
       case activityActionTypes.EVENTS_FETCH:
+        this.fetching = true;
+        this.fetched = false;
         cfApi.fetchSpaceEvents(action.spaceGuid);
+        this.emitChange();
         break;
 
       case activityActionTypes.EVENTS_RECEIVED:
+        this.fetching = false;
+        this.fetched = true;
         activity = this.formatSplitResponse(action.events).map((event) => {
           const item = Object.assign({}, event, {
             activity_type: 'event'
           });
           return item;
         });
-        this.mergeMany('guid', activity, (changed) => {
-          if (changed) this.emitChange();
-        });
+        this.mergeMany('guid', activity, () => {});
+        this.emitChange();
         break;
 
       case activityActionTypes.LOGS_FETCH:
+        this.fetching = true;
+        this.fetched = false;
         cfApi.fetchAppLogs(action.appGuid);
+        this.emitChange();
         break;
 
       case activityActionTypes.LOGS_RECEIVED:
+        this.fetching = false;
+        this.fetched = true;
         activity = action.logs.map((log) => {
           const parsed = Object.assign({}, parseLogItem(log), {
             activity_type: 'log'
           });
           return parsed;
         });
-        this.mergeMany('guid', activity, (changed) => {
-          if (changed) this.emitChange();
-        });
+        this.mergeMany('guid', activity, () => {});
+        this.emitChange();
         break;
 
       default:
