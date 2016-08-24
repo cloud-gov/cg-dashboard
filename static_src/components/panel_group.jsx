@@ -6,7 +6,15 @@ import panelCss from '../css/panel.css';
 
 import createStyler from '../util/create_styler';
 
-export default class PanelRow extends React.Component {
+const propTypes = {
+  title: React.PropTypes.string
+};
+
+const defaultProps = {
+  title: 'Panel group title'
+};
+
+export default class PanelGroup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -15,9 +23,13 @@ export default class PanelRow extends React.Component {
 
   render() {
     return (
-      <div className={ this.styler('panel-row') }>
+      <div className={ this.styler('panel-group') }>
+        <strong>{ this.props.title }</strong>
         { this.props.children }
       </div>
     );
   }
 }
+
+PanelGroup.propTypes = propTypes;
+PanelGroup.defaultProps = defaultProps;

@@ -1,0 +1,16 @@
+.panel {
+
+}
+
+.panel-rows {
+  border: 1px solid black;
+}
+
+.panel-row {
+  border-bottom: 2px solid green;
+  padding: .5em;
+}
+
+.panel-row:last-child {
+  border-bottom: 0;
+}
