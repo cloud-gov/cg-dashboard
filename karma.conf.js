@@ -5,7 +5,7 @@ const webpackConfig = require('./webpack.config');
 
 module.exports = function(config) {
   config.set({
-    browsers: ['PhantomJS2', 'Chrome'],
+    browsers: ['Chrome'],
 
     frameworks: ['jasmine', 'jasmine-matchers', 'sinon', 'phantomjs-shim'],
 
