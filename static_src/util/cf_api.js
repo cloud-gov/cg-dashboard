@@ -287,6 +287,11 @@ export default {
       });
   },
 
+  fetchServicePlan(servicePlanGuid) {
+    return this.fetchOne(`/service_plans/${servicePlanGuid}`,
+                         serviceActions.receivedPlan);
+  },
+
   fetchAllServices(orgGuid) {
     return this.fetchMany(`/organizations/${orgGuid}/services`,
       serviceActions.receivedServices);

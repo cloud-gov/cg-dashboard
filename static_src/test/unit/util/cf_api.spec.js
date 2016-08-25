@@ -820,6 +820,23 @@ describe('cfApi', function() {
     });
   });
 
+  describe('fetchServicePlan()', function() {
+    it('should fetch plan with the plan guid', function() {
+      const expected = 'zxbcjkladsfasdf';
+      const spy = sandbox.stub(cfApi, 'fetchOne');
+
+      cfApi.fetchServicePlan(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('service_plans'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(serviceActions.receivedPlan);
+    });
+
+  });
+
   describe('fetchAllServicePlans()', function() {
     it('calls fetch services plans with service guid and received plans',
          function() {
