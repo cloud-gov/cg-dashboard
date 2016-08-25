@@ -62,6 +62,27 @@ class ServicePlanStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
+        const instances = this.formatSplitResponse(action.serviceInstances);
+        this.fetched = false;
+        this.fetching = true;
+        this.emitChange();
+        const planRequests = [];
+        for (const instance of instances) {
+          planRequests.push(cfApi.fetchServicePlan(instance.service_plan_guid));
+        }
+        if (planRequests.length) {
+          this.waitingOnRequests = true;
+          Promise.all(planRequests).then(() => {
+            this.waitingOnRequests = false;
+            this.fetching = false;
+            this.fetched = true;
+            this.emitChange();
+          });
+        }
+        break;
+      }
+
       case serviceActionTypes.SERVICE_PLANS_FETCH: {
         this.fetching = true;
         this.fetched = false;

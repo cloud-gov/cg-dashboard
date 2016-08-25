@@ -57,7 +57,7 @@ describe('serviceActions', function() {
         entity: {
           name: 'azcvb'
         }
-      }
+      };
       const expectedParams = {
         servicePlan
       };
