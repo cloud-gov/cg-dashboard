@@ -27,6 +27,15 @@ class ServiceBindingStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_BINDINGS_RECEIVED: {
+        const bindings = this.formatSplitResponse(action.serviceBindings);
+        this.mergeMany('guid', bindings, () => { });
+        this.fetching = false;
+        this.fetched = true;
+        this.emitChange();
+        break;
+      }
+
       default:
         break;
     }

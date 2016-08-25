@@ -60,6 +60,32 @@ describe('ServiceBindingStore', function() {
   });
 
   describe('on service bindings received', function() {
+    const fakeBindings = [
+      { metadata: { guid: 'adsfa' }, entity: { service_instance_guid: 'zcv'} }
+    ];
+
+    it('should set fetching to false, fetched to true', function() {
+      ServiceBindingStore.fetching = true;
+      serviceActions.receivedServiceBindings(fakeBindings);
+
+      expect(ServiceBindingStore.fetching).toEqual(false);
+      expect(ServiceBindingStore.fetched).toEqual(true);
+    });
+
+    it('should emit a change', function() {
+      const spy = sandbox.spy(ServiceBindingStore, 'emitChange');
+      serviceActions.receivedServiceBindings(fakeBindings);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should merge many with guid', function() {
+      const spy = sandbox.spy(ServiceBindingStore, 'mergeMany');
+      serviceActions.receivedServiceBindings(fakeBindings);
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledWith('guid');
+    });
 
   });
 });
