@@ -315,4 +315,36 @@ describe('serviceActions', function() {
                    expectedParams);
     });
   });
+
+  describe('fetchServiceBindings()', function() {
+    it('should dispatch service bindings fetch view event with app guid',
+        function() {
+      const appGuid = 'aldkjfs';
+      const expectedParams = {
+        appGuid
+      };
+      const spy = setupViewSpy(sandbox)
+
+      serviceActions.fetchServiceBindings(appGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_BINDINGS_FETCH,
+                   expectedParams);
+    });
+  });
+
+  describe('receivedServiceBindings()', function() {
+    it('should dispatch service bindings resv server event with binding',
+        function() {
+      const bindings = [{ metadata: { guid: 'zcxbz' } }];
+      const expectedParams = {
+        serviceBindings: bindings
+      };
+      const spy = setupServerSpy(sandbox)
+
+      serviceActions.receivedServiceBindings(bindings);
+
+      assertAction(spy, serviceActionTypes.SERVICE_BINDINGS_RECEIVED,
+                   expectedParams);
+    });
+  });
 });
