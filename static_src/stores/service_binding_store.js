@@ -5,7 +5,6 @@
 
 import Immutable from 'immutable';
 
-import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import { serviceActionTypes } from '../constants.js';
@@ -15,6 +14,12 @@ class ServiceBindingStore extends BaseStore {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = new Immutable.List();
+  }
+
+  getAllByApp(appGuid) {
+    return this.getAll().filter((binding) =>
+      binding.app_guid === appGuid
+    );
   }
 
   _registerToActions(action) {

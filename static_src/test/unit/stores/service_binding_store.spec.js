@@ -59,6 +59,23 @@ describe('ServiceBindingStore', function() {
     });
   });
 
+  describe('getAllByApp()', function() {
+    it('should return all bindings by app guid', function() {
+      const appGuid = 'zxclvkjzxcvsdf23';
+      const bindingA = { guid: 'binda', app_guid: appGuid };
+      const bindingB = { guid: 'bindb', app_guid: appGuid };
+
+      ServiceBindingStore._data = Immutable.fromJS([bindingA, bindingB]);
+
+      const actual = ServiceBindingStore.getAllByApp(appGuid)
+
+      expect(actual).toBeTruthy();
+      expect(actual.length).toEqual(2);
+      expect(actual).toContain(bindingA);
+      expect(actual).toContain(bindingB);
+    });
+  });
+
   describe('on service bindings received', function() {
     const fakeBindings = [
       { metadata: { guid: 'adsfa' }, entity: { service_instance_guid: 'zcv'} }
