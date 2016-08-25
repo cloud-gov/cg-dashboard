@@ -20,6 +20,7 @@ class ServiceInstanceStore extends BaseStore {
     this._data = new Immutable.List();
     this._createInstanceForm = null;
     this._createError = null;
+    this.waitingOnRequests = false;
   }
 
   get createInstanceForm() {
@@ -61,6 +62,28 @@ class ServiceInstanceStore extends BaseStore {
         this.fetching = false;
         this.fetched = true;
         this.emitChange();
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_BINDINGS_RECEIVED: {
+        const bindings = this.formatSplitResponse(action.serviceBindings);
+        this.fetching = true;
+        this.fetched = false;
+        this.emitChange();
+        const instanceRequests = [];
+        for (const binding of bindings) {
+          instanceRequests.push(cfApi.fetchServiceInstance(
+            binding.service_instance_guid));
+        }
+        if (instanceRequests.length) {
+          this.waitingOnRequests = true;
+          Promise.all(instanceRequests).then(() => {
+            this.waitingOnRequests = false;
+            this.fetching = false;
+            this.fetched = true;
+            this.emitChange();
+          });
+        }
         break;
       }
 
