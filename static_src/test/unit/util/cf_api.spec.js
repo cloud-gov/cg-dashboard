@@ -915,4 +915,21 @@ describe('cfApi', function() {
       expect(actual).toEqual(quotaActions.receivedQuotasForAllSpaces);
     });
   });
+
+  describe('fetchServiceBindings()', function() {
+    it('should fetch bindings with app guid', function() {
+      const expected = 'xcvxyyb1zxcv';
+      const spy = sandbox.stub(cfApi, 'fetchOne');
+
+      cfApi.fetchServiceBindings(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('apps'));
+      expect(actual).toMatch(new RegExp('service_bindings'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(serviceActions.receivedServiceBindings);
+    });
+  });
 });

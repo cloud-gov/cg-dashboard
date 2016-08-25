@@ -311,5 +311,10 @@ export default {
   fetchDomain(domainGuid) {
     return this.fetchOne(`/private_domains/${domainGuid}`,
                          domainActions.receivedDomain);
+  },
+
+  fetchServiceBindings(appGuid) {
+    return this.fetchOne(`/apps/${appGuid}/service_bindings`,
+                         serviceActions.receivedServiceBindings);
   }
 };
