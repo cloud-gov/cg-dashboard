@@ -56,6 +56,8 @@ const serviceActionTypes = keymirror({
   SERVICES_FETCH: null,
   // Action when all services for an org were received from the server.
   SERVICES_RECEIVED: null,
+  // Action when a single service plan received from server.
+  SERVICE_PLAN_RECEIVED: null,
   // Action to fetch all service plans for a certain service.
   SERVICE_PLANS_FETCH: null,
   // Action when all service plans for a service were received from the server.

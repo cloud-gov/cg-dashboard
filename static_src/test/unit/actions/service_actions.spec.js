@@ -1,4 +1,5 @@
 
+// Action to fetch a single service plan for the server.
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
@@ -44,6 +45,29 @@ describe('serviceActions', function() {
       serviceActions.receivedServices(wrapInRes(expected));
 
       assertAction(spy, serviceActionTypes.SERVICES_RECEIVED, expectedParams);
+    });
+  });
+
+  describe('receivedPlan()', function() {
+    it('should dispatch a server event with service plan', function() {
+      const servicePlan = {
+        metadata: {
+          guid: 'xzclvkba328'
+        },
+        entity: {
+          name: 'azcvb'
+        }
+      }
+      const expectedParams = {
+        servicePlan
+      };
+
+      let spy = setupServerSpy(sandbox)
+
+      serviceActions.receivedPlan(servicePlan);
+
+      assertAction(spy, serviceActionTypes.SERVICE_PLAN_RECEIVED,
+                   expectedParams);
     });
   });
 

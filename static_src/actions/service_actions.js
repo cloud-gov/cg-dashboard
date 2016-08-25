@@ -22,6 +22,13 @@ export default {
     });
   },
 
+  receivedPlan(servicePlan) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_PLAN_RECEIVED,
+      servicePlan
+    });
+  },
+
   fetchAllPlans(serviceGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_PLANS_FETCH,
