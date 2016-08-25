@@ -49,8 +49,12 @@ class ServiceInstanceStore extends BaseStore {
       case serviceActionTypes.SERVICE_INSTANCE_RECEIVED: {
         const instance = this.formatSplitResponse(
           [action.serviceInstance])[0];
-        this.fetching = false;
-        this.fetched = true;
+
+        if (!this.waitingOnRequests) {
+          this.fetching = false;
+          this.fetched = true;
+        }
+
         this.merge('guid', instance, () => { });
         this.emitChange();
         break;
