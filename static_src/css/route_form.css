@@ -1,0 +1,88 @@
+
+:root {
+  --main-color: #e4e2e0;
+  --breathing-room: 1em;
+}
+
+.route-form {
+  background-color: var(--main-color);
+  padding: var(--breathing-room);
+  width: 100%;
+}
+
+.route-fields {
+  display: flex;
+  justify-content: space-between;
+}
+
+.route-fields > div {
+  flex-grow: 1;
+  margin-left: calc(var(--breathing-room) * 2);
+}
+
+.route-fields > div:first-of-type {
+  margin-left: 0;
+}
+
+.route-field-host,
+.route-field-domain {
+  position: relative;
+}
+
+.route-field-host:after {
+  content: '.';
+  font-size: 4.1rem;
+  position: absolute;
+  right: -1.4rem;
+  top: -0.3rem;
+}
+
+.route-field-domain:after {
+  content: '/';
+  font-size: 2.1rem;
+  position: absolute;
+  right: -1.4rem;
+  top: 1.8rem;
+}
+
+.route-form-actions {
+  align-items: flex-end;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.route-form-actions .panel-action {
+  flex-grow: 1;
+}
+
+.route-form-actions .panel-action a {
+  width: 100%;
+}
+
+.route-form-actions div {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.route-form-actions div .panel-action {
+  display: inline-block;
+}
+
+.route-form-actions div .panel-action + .panel-action {
+  margin-left: 1em;
+}
+
+.route-form input[readonly],
+.route-form input[readonly]:focus {
+  background-color: transparent;
+  border: none;
+  outline-color: transparent;
+}
+
+.route-form *[disabled] {
+  background-color: #aeb0b5;
+  cursor: not-allowed;
+}
