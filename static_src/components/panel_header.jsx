@@ -6,7 +6,7 @@ import panelCss from '../css/panel.css';
 
 import createStyler from '../util/create_styler';
 
-export default class PanelGroup extends React.Component {
+export default class PanelHeader extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -15,7 +15,7 @@ export default class PanelGroup extends React.Component {
 
   render() {
     return (
-      <div className={ this.styler('panel-group') }>
+      <div className={ this.styler('panel-header') }>
         { this.props.children }
       </div>
     );
