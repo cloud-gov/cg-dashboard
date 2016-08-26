@@ -14,11 +14,6 @@ export default class Home extends React.Component {
     return (
       <div>
         <aside className={ this.styler('usa-alert', 'usa-alert-info') }>
-          <p className={ this.styler('usa-alert-body') }><em>
-            We updated the Deck and renamed it the Dashboard!
-            <a href="https://cloud.gov/2016/07/07/deck-update.html"> Here’s what
-            changed and how to give feedback</a> on this alpha version. We’ll close the <a href="https://console.cloud.gov/">old Deck</a> soon.
-          </em></p>
         </aside>
         <div className={ this.styler('usa-grid') }>
           <h2>Dashboard</h2>
