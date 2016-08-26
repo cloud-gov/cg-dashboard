@@ -3,11 +3,14 @@ import style from 'cloudgov-style';
 import React from 'react';
 
 import Panel from './panel.jsx';
+import PanelGroup from './panel_group.jsx';
 import PanelRow from './panel_row.jsx';
+import RouteList from './route_list.jsx';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  title: React.PropTypes.string
+  title: React.PropTypes.string,
+  initialAppGuid: React.PropTypes.string.isRequired
 };
 
 const defaultProps = {
@@ -23,23 +26,8 @@ export default class AppSettingsPanel extends React.Component {
 
   render() {
     return (
-      <Panel title="Settings">
-        <PanelRow title="Routes">
-          Things can go here and should just work.
-          <input type="text"></input>
-        </PanelRow>
-        <PanelRow title="Framework">
-          Ruby
-        </PanelRow>
-        <PanelRow title="Buildpacks">
-          <select>
-            <options>buildpacks/ruby</options>
-            <options>buildpacks/python</options>
-          </select>
-        </PanelRow>
-        <PanelRow title="Scale">
-          <input type="range" min="1" max="6"></input>
-        </PanelRow>
+      <Panel title="Application settings">
+        <RouteList initialAppGuid={ this.props.initialAppGuid } />
       </Panel>
     );
   }
