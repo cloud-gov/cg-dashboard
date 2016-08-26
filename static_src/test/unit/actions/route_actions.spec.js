@@ -2,7 +2,7 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import { assertAction, setupViewSpy, setupServerSpy } from '../helpers.js';
+import { assertAction, setupViewSpy, setupServerSpy, setupUISpy } from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import routeActions from '../../../actions/route_actions.js';
 import { routeActionTypes } from '../../../constants.js';
@@ -53,6 +53,22 @@ describe('routeActions', function() {
       routeActions.receivedRoutesForApp(expected, appGuid);
 
       assertAction(spy, routeActionTypes.ROUTES_FOR_APP_RECEIVED,
+                   expectedParams)
+    });
+  });
+
+  describe('toggleEdit()', function () {
+    it('should dispatch a UI action with a route guid', function () {
+      var expectedRouteGuid = 'route-guid',
+          expectedParams = {
+            routeGuid: expectedRouteGuid
+          };
+
+      let spy = setupUISpy(sandbox)
+
+      routeActions.toggleEdit(expectedRouteGuid);
+
+      assertAction(spy, routeActionTypes.ROUTE_TOGGLE_EDIT,
                    expectedParams)
     });
   });

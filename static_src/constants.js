@@ -129,7 +129,8 @@ const userActionTypes = keymirror({
 
 const routeActionTypes = keymirror({
   ROUTES_FOR_APP_FETCH: null,
-  ROUTES_FOR_APP_RECEIVED: null
+  ROUTES_FOR_APP_RECEIVED: null,
+  ROUTE_TOGGLE_EDIT: null
 });
 
 const domainActionTypes = keymirror({
