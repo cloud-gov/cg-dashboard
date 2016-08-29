@@ -7,6 +7,7 @@ import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
 import loginActions from '../actions/login_actions.js';
 import orgActions from '../actions/org_actions.js';
+import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
 import spaceActions from '../actions/space_actions.js';
 import serviceActions from '../actions/service_actions.js';
@@ -124,6 +125,16 @@ export default {
     .catch((err) => {
       errorActions.errorFetch(err);
     });
+  },
+
+  fetchOrgsQuotas() {
+    return this.fetchAllPages('/quota_definitions',
+                              quotaActions.receivedQuotasForAllOrgs);
+  },
+
+  fetchSpacesQuotas() {
+    return this.fetchAllPages('/space_quota_definitions',
+                              quotaActions.receivedQuotasForAllSpaces);
   },
 
   fetchSpace(spaceGuid) {

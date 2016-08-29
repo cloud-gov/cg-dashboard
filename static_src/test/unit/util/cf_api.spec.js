@@ -13,6 +13,7 @@ import loginActions from '../../../actions/login_actions.js';
 import loginActionTypes from '../../../constants.js';
 import orgActions from '../../../actions/org_actions.js';
 import OrgStore from '../../../stores/org_store.js';
+import quotaActions from '../../../actions/quota_actions.js';
 import routeActions from '../../../actions/route_actions.js';
 import spaceActions from '../../../actions/space_actions.js';
 import serviceActions from '../../../actions/service_actions.js';
@@ -867,6 +868,34 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('domain'));
       actual = spy.getCall(0).args[1];
       expect(actual).toEqual(domainActions.receivedDomain);
+    });
+  });
+
+  describe('fetchOrgsQuotas()', function () {
+    it('should call receivedQuotasForAllOrgs action after fetchAllPages', function () {
+      var spy = sandbox.stub(cfApi, 'fetchAllPages');
+
+      cfApi.fetchOrgsQuotas();
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('quota_definitions'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(quotaActions.receivedQuotasForAllOrgs);
+    });
+  });
+
+  describe('fetchSpacesQuotas()', function () {
+    it('should call receivedQuotasForAllSpaces action after fetchAllPages', function () {
+      var spy = sandbox.stub(cfApi, 'fetchAllPages');
+
+      cfApi.fetchSpacesQuotas();
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('space_quota_definitions'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(quotaActions.receivedQuotasForAllSpaces);
     });
   });
 });
