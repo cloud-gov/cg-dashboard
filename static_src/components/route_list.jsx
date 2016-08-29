@@ -73,7 +73,6 @@ export default class RouteList extends React.Component {
           const handler = this._handleRouteAction.bind(this, route.guid);
           let rowContent;
           if (route.editing) {
-          // if (true) {
             rowContent = (
               <RouteForm route={ route } domains={ domains }
                 handleCancel={ handler }
