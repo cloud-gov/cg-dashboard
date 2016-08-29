@@ -8,7 +8,6 @@ import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
-import RouteList from './route_list.jsx';
 
 import createStyler from '../util/create_styler';
 
