@@ -57,12 +57,13 @@ export default class RouteList extends React.Component {
     if (this.state.routes.length === 0) {
       return (<h4 className="test-none_message">No routes</h4>);
     }
-
+    const routeLimit = (this.props.routeLimit > -1) ? this.props.routeLimit : 'unlimited';
     const domains = this.state.routes.map((route) => route.domain);
     return (
       <PanelGroup>
         <PanelHeader>
           <strong>Routes</strong>
+          <span>{ this.state.routes.length } of { routeLimit }</span>
           <PanelAction text="Add route" />
         </PanelHeader>
         { this.state.routes.map((route) => {
@@ -99,5 +100,10 @@ export default class RouteList extends React.Component {
 }
 
 RouteList.propTypes = {
-  initialAppGuid: React.PropTypes.string.isRequired
+  initialAppGuid: React.PropTypes.string.isRequired,
+  routeLimit: React.PropTypes.number
+};
+
+RouteList.defaultProps = {
+  routeLimit: -1
 };
