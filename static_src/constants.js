@@ -14,6 +14,17 @@ const loginActionTypes = keymirror({
   RECEIVED_STATUS: null
 });
 
+const quotaActionTypes = keymirror({
+  // Action of fetching quotas for all organizations
+  ORGS_QUOTAS_FETCH: null,
+  // Quotas for all orgs received
+  ORGS_QUOTAS_RECEIVED: null,
+  // Fetching quotas for all spaces
+  SPACES_QUOTAS_FETCH: null,
+  // Quotas for all spaces received
+  SPACES_QUOTAS_RECEIVED: null
+});
+
 const orgActionTypes = keymirror({
   // When the user changes the current org they are looking at.
   ORG_CHANGE_CURRENT: null,
@@ -152,6 +163,7 @@ export {
   errorActionTypes,
   loginActionTypes,
   orgActionTypes,
+  quotaActionTypes,
   routeActionTypes,
   spaceActionTypes,
   serviceActionTypes,
