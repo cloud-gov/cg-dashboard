@@ -15,9 +15,9 @@ export default class PanelHeader extends React.Component {
 
   render() {
     return (
-      <div className={ this.styler('panel-header') }>
+      <header className={ this.styler('panel-header') }>
         { this.props.children }
-      </div>
+      </header>
     );
   }
 }
