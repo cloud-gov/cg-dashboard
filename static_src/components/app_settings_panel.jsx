@@ -5,6 +5,7 @@ import React from 'react';
 import Panel from './panel.jsx';
 import RouteList from './route_list.jsx';
 
+import AppStore from '../stores/app_store.js';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import SpaceStore from '../stores/space_store.js';
@@ -12,8 +13,7 @@ import SpaceStore from '../stores/space_store.js';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  title: React.PropTypes.string,
-  initialAppGuid: React.PropTypes.string.isRequired
+  title: React.PropTypes.string
 };
 
 const defaultProps = {
@@ -25,10 +25,12 @@ function stateSetter() {
   const currentSpace = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const orgQuotaGuid = (currentOrg) ? currentOrg.quota_definition_guid : null;
   const spaceQuotaGuid = (currentSpace) ? currentSpace.space_quota_definition_guid : null;
+  const currentAppGuid = AppStore.currentAppGuid;
 
   return {
     orgQuota: QuotaStore.get(orgQuotaGuid),
-    spaceQuota: QuotaStore.get(spaceQuotaGuid)
+    spaceQuota: QuotaStore.get(spaceQuotaGuid),
+    currentAppGuid
   };
 }
 
@@ -67,7 +69,7 @@ export default class AppSettingsPanel extends React.Component {
 
     return (
       <Panel title="Application settings">
-        <RouteList initialAppGuid={ this.props.initialAppGuid } routeLimit={ routeLimit } />
+        <RouteList initialAppGuid={ this.state.currentAppGuid } routeLimit={ routeLimit } />
       </Panel>
     );
   }

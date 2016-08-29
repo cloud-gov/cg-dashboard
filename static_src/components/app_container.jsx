@@ -139,7 +139,7 @@ export default class AppContainer extends React.Component {
         <div>
           <ActivityLog initialAppGuid={ this.state.app.guid } title="Recent activity" />
           <h2>{ this.fullTitle }</h2>
-          <AppSettingsPanel initialAppGuid={ this.state.currentAppGuid } />
+          <AppSettingsPanel />
           <section className={this.styler('section-card')}>
             <h3>About this application</h3>
             <table>
