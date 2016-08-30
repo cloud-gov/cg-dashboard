@@ -8,7 +8,7 @@ import React from 'react';
 
 import formatDateTime from '../util/format_date';
 
-import Button from './button.jsx';
+import Action from './action.jsx';
 import Loading from './loading.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 import createStyler from '../util/create_styler';
@@ -100,12 +100,12 @@ export default class UserList extends React.Component {
               let button = <span></span>;
               if (this.state.currentUserAccess) {
                 button = (
-                  <Button
-                    classes={[this.styler('usa-button-secondary')]}
+                  <Action
+                    style="secondary"
                     onClickHandler={ this._handleDelete.bind(this, user.guid) }
                     label="delete">
                     <span>Remove User From Org</span>
-                  </Button>
+                  </Action>
                 );
               }
               actions = (

@@ -2,7 +2,8 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
-import PanelAction from './panel_action.jsx';
+import Action from './action.jsx';
+import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelHeader from './panel_header.jsx';
 import PanelRow from './panel_row.jsx';
@@ -64,7 +65,11 @@ export default class RouteList extends React.Component {
         <PanelHeader>
           <strong>Routes</strong>
           <span>{ this.state.routes.length } of { routeLimit }</span>
-          <PanelAction text="Add route" />
+          <PanelActions>
+            <Action label="Add route" type="link">
+              Add Route
+            </Action>
+          </PanelActions>
         </PanelHeader>
         { this.state.routes.map((route) => {
           const fullRoute = (route.path) ?
@@ -82,7 +87,9 @@ export default class RouteList extends React.Component {
             rowContent = (
               <div>
                 <span>{ fullRoute }</span>
-                <PanelAction handleClick={ handler } text="Edit" />
+                <Action onClickHandler={ handler } label="Edit" type="link">
+                  Edit
+                </Action>
               </div>
             );
           }

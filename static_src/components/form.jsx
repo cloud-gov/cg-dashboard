@@ -1,8 +1,6 @@
 
 import React from 'react';
 
-import Button from './button.jsx';
-
 import classNames from 'classnames';
 
 var currid = 0;

@@ -2,7 +2,8 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
-import PanelAction from './panel_action.jsx';
+import Action from './action.jsx';
+import PanelActions from './panel_actions.jsx';
 
 import createStyler from '../util/create_styler';
 
@@ -109,16 +110,23 @@ export default class RouteForm extends React.Component {
           ></input>
         </div>
         <div className={ this.styler('route-form-actions') }>
-          <PanelAction text="Delete route" />
-          <div>
-            <PanelAction handleClick={ this.props.handleCancel } text="Cancel"
-              type="outline"
-            />
-            <PanelAction handleClick={ this.props.handleCancel } text="Apply"
+          <PanelActions>
+            <Action label="Delete route" style="outline">
+              Delete route
+            </Action>
+          </PanelActions>
+          <PanelActions>
+            <Action onClickHandler={ this.props.handleCancel } label="Cancel"
+                style="outline">
+              Cancel
+            </Action>
+            <Action handleClick={ this.props.handleCancel } label="Apply"
+              style="primary"
               disabled={ !this.hasChanged }
-              type={ (this.hasChanged) ? 'primary' : 'disabled' }
-            />
-          </div>
+            >
+              Apply
+            </Action>
+          </PanelActions>
         </div>
       </form>
     );
