@@ -7,7 +7,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 import Reactable from 'reactable';
 
-import Button from './button.jsx';
+import Action from './action.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import createStyler from '../util/create_styler';
@@ -100,12 +100,12 @@ export default class ServicePlanList extends React.Component {
                   </span>
                 </td>
                 <td label="Actions">
-                  <Button
+                  <Action
                     classes={ ["test-create_service_instance"] }
                     onClickHandler={ this._handleAdd.bind(this, plan.guid) }
                     label="create">
                       <span>Create service instance</span>
-                  </Button>
+                  </Action>
                 </td>
               </tr>
             )

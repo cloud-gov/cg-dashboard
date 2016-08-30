@@ -1,0 +1,40 @@
+
+:root {
+  --panel-border-color: #e4e2e0;
+  --panel-padding: 1em;
+}
+
+.panel-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: var(--panel-padding);
+}
+
+.panel-header strong {
+  font-size: 1.3rem;
+}
+
+.panel-header .panel-action {
+  border: 1px solid black;
+  border-radius: 3px;
+  font-size: 1rem;
+  --padding: 1rem;
+  padding-left: var(--padding);
+  padding-right: var(--padding);
+}
+
+.panel-rows {
+  border: 3px solid var(--panel-border-color);
+  border-radius: 5px;
+}
+
+.panel-row {
+  border-top: 1px solid var(--panel-border-color);
+}
+
+.panel-row > div {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--panel-padding);
+}

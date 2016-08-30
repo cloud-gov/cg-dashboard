@@ -3,11 +3,11 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import ActivityLog from './activity_log.jsx';
+import AppSettingsPanel from './app_settings_panel.jsx';
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
-import RouteList from './route_list.jsx';
 
 import createStyler from '../util/create_styler';
 
@@ -139,6 +139,7 @@ export default class AppContainer extends React.Component {
         <div>
           <ActivityLog initialAppGuid={ this.state.app.guid } title="Recent activity" />
           <h2>{ this.fullTitle }</h2>
+          <AppSettingsPanel />
           <section className={this.styler('section-card')}>
             <h3>About this application</h3>
             <table>
@@ -175,10 +176,6 @@ export default class AppContainer extends React.Component {
                 target="_blank">Cloud Foundry deployment guide.</a>
               </p>
             </aside>
-          </section>
-          <section className={this.styler("section-card")}>
-            <h3>Routes</h3>
-            <RouteList initialAppGuid={ this.state.app.guid } />
           </section>
           <section className={this.styler("section-card")}>
             <h3>Services</h3>

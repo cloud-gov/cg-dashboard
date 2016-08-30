@@ -94,6 +94,27 @@ describe('RouteStore', function() {
     });
   });
 
+  describe('on route toggle edit', function () {
+    it('should toggle the "editing" value of the route', function () {
+      const routeGuid = 'route-guid';
+      const route = { guid: routeGuid };
+
+      RouteStore.push(route);
+
+      AppDispatcher.handleUIAction({
+        type: routeActionTypes.ROUTE_TOGGLE_EDIT,
+        routeGuid
+      });
+
+      const actual = RouteStore.get(routeGuid);
+      const expected = Object.assign({}, route, {
+        editing: true
+      });
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
   describe('on domain received', function() {
     it('should add the domain to the existing route based on its guid',
        function() {

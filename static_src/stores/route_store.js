@@ -36,6 +36,18 @@ class RouteStore extends BaseStore {
         break;
       }
 
+      case routeActionTypes.ROUTE_TOGGLE_EDIT: {
+        console.log('action', action);
+        const route = this.get(action.routeGuid);
+        const newRoute = Object.assign({}, route, {
+          editing: !route.editing
+        });
+        this.merge('guid', newRoute, (changed) => {
+          if (changed) this.emitChange();
+        });
+        break;
+      }
+
       case domainActionTypes.DOMAIN_FETCH: {
         cfApi.fetchDomain(action.domainGuid);
         break;

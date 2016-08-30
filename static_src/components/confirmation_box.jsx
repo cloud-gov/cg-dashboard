@@ -8,7 +8,7 @@ import React from 'react';
 
 import createStyler from '../util/create_styler';
 
-import Button from './button.jsx';
+import Action from './action.jsx';
 
 export default class ConfirmationBox extends React.Component {
   constructor(props) {
@@ -31,16 +31,16 @@ export default class ConfirmationBox extends React.Component {
   render() {
     return (
       <div className={ this.styler('actions-confirm') }>
-        <Button label="Confirm"
-            classes={[this.styler("usa-button-secondary")]}
+        <Action label="Confirm"
+            style="secondary"
             onClickHandler={ this._confirmHandler }>
           <span>Confirm delete</span>
-        </Button>
-        <Button label="cancel"
-            classes={[this.styler("usa-button-outline")]}
+        </Action>
+        <Action label="Cancel"
+            style="outline"
             onClickHandler={ this._cancelHandler }>
           <span>Cancel</span>
-        </Button>
+        </Action>
       </div>
     );
   }

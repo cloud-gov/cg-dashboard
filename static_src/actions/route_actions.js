@@ -21,5 +21,12 @@ export default {
       routes,
       appGuid
     });
+  },
+
+  toggleEdit(routeGuid) {
+    AppDispatcher.handleUIAction({
+      type: routeActionTypes.ROUTE_TOGGLE_EDIT,
+      routeGuid
+    });
   }
 };

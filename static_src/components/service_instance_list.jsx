@@ -6,7 +6,7 @@ import formatDateTime from '../util/format_date';
 
 import createStyler from '../util/create_styler';
 
-import Button from './button.jsx';
+import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import Loading from './loading.jsx';
 import serviceActions from '../actions/service_actions.js';
@@ -130,18 +130,15 @@ export default class ServiceInstanceList extends React.Component {
                 <td column="Delete" style={specialtdStyles}>
                   <span>
                     <div style={{ float: 'left' }}>
-                      <Button
-                        classes={ ['test-delete_instance',
-                          (instance.confirmDelete) ?
-                          '' : this.styler('usa-button-secondary'),
-                          (instance.confirmDelete) ?
-                            this.styler('usa-button-disabled') : '']}
+                      <Action
+                        style="secondary"
+                        classes={ ['test-delete_instance'] }
+                        disabled={instance.confirmDelete}
                         onClickHandler={ this._handleDeleteConfirmation.bind(
                             this, instance.guid)}
-                        disabled={instance.confirmDelete}
                         label="delete">
                         <span>Delete Instance</span>
-                      </Button>
+                      </Action>
                     </div>
                     { (instance.confirmDelete) ? this.renderConfirmationBox(
                       instance.guid) : '' }

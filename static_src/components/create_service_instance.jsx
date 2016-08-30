@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Box from './box.jsx';
-import Button from './button.jsx';
+import Action from './action.jsx';
 import { Form, FormText, FormSelect, FormElement, FormError } from './form.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
@@ -125,14 +125,14 @@ export default class CreateServiceInstance extends React.Component {
             })}
             validator={ FormElement.validatorString }
           />
-          <Button name="submit" type="submit">Create service instance</Button>
+          <Action label="submit" type="submit">Create service instance</Action>
           <p><em>
             After you create a service instance, you can look at your space to check whether your service instance was created. (<a href="https://github.com/18F/cg-dashboard/issues/457">We’ll make this better.</a>) Then you can bind the service instance to an app <a href="https://docs.cloud.gov/apps/managed-services/">using the command line</a>.
           </em></p>
-          <Button name="cancel" classes={ [this.styler('button-cancel')] }
-            onClickHandler={ this._onCancelForm.bind(this) }>
+                                                                                                                                       <Action label="cancel" style="secondary"
+              onClickHandler={ this._onCancelForm.bind(this) }>
             Cancel
-          </Button>
+          </Action>
         </Form>
       </div>
     );

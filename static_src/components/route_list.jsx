@@ -2,6 +2,13 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
+import Action from './action.jsx';
+import PanelActions from './panel_actions.jsx';
+import PanelGroup from './panel_group.jsx';
+import PanelHeader from './panel_header.jsx';
+import PanelRow from './panel_row.jsx';
+import routeActions from '../actions/route_actions.js';
+import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
 
 import createStyler from '../util/create_styler';
@@ -14,6 +21,8 @@ function stateSetter(appGuid) {
     routes: appRoutes
   };
 }
+
+window.RouteStore = RouteStore;
 
 export default class RouteList extends React.Component {
   constructor(props) {
@@ -37,57 +46,70 @@ export default class RouteList extends React.Component {
   }
 
   _onChange() {
-    this.setState(stateSetter(this.props));
+    this.setState(stateSetter(this.props.initialAppGuid));
   }
 
-  get columns() {
-    return [
-      { label: 'Host', key: 'host' },
-      { label: 'Domain', key: 'domain' },
-      { label: 'Path', key: 'path' }
-    ];
+  _handleRouteAction(routeGuid, ev) {
+    ev.preventDefault();
+    routeActions.toggleEdit(routeGuid);
   }
 
   render() {
-    let content = <h4 className="test-none_message">No routes</h4>;
-
-    if (this.state.routes.length) {
-      content = (
-        <table>
-          <thead>
-            <tr>
-              { this.columns.map((column) =>
-                               <th key={column.key}>{column.label}</th>) }
-            </tr>
-          </thead>
-          <tbody>
-          { this.state.routes.map((route) => {
-            return (
-              <tr key={route.guid}>
-                { this.columns.map((column) =>
-                   <td key={route.guid + column.key}>{route[column.key]}</td>) }
-              </tr>
-            );
-          })}
-          </tbody>
-        </table>
-      );
+    if (this.state.routes.length === 0) {
+      return (<h4 className="test-none_message">No routes</h4>);
     }
-
+    const routeLimit = (this.props.routeLimit > -1) ? this.props.routeLimit : 'unlimited';
+    const domains = this.state.routes.map((route) => route.domain);
     return (
-      <div className={ this.styler('tableWrapper') }>
-        { content }
-        <aside>
-          <p>To create, modify, or delete a route for an app, follow the <a
-            href="https://docs.cloud.gov/apps/custom-domains/#application-routes"
-            target="_blank">application routes guide</a>.
-          </p>
-        </aside>
-      </div>
+      <PanelGroup>
+        <PanelHeader>
+          <strong>Routes</strong>
+          <span>{ this.state.routes.length } of { routeLimit }</span>
+          <PanelActions>
+            <Action label="Add route" type="link">
+              Add Route
+            </Action>
+          </PanelActions>
+        </PanelHeader>
+        { this.state.routes.map((route) => {
+          const fullRoute = (route.path) ?
+            `${route.host}.${route.domain}/${route.path}` :
+            `${route.host}.${route.domain}`;
+          const handler = this._handleRouteAction.bind(this, route.guid);
+          let rowContent;
+          if (route.editing) {
+            rowContent = (
+              <RouteForm route={ route } domains={ domains }
+                handleCancel={ handler }
+              />
+            );
+          } else {
+            rowContent = (
+              <div>
+                <span>{ fullRoute }</span>
+                <Action onClickHandler={ handler } label="Edit" type="link">
+                  Edit
+                </Action>
+              </div>
+            );
+          }
+
+          return (
+            <PanelRow key={ route.guid }>
+             { rowContent }
+            </PanelRow>
+          );
+        })}
+      </PanelGroup>
     );
   }
 }
 
 RouteList.propTypes = {
-  initialAppGuid: React.PropTypes.string.isRequired
+  initialAppGuid: React.PropTypes.string.isRequired,
+  routeLimit: React.PropTypes.number
+};
+
+RouteList.defaultProps = {
+  routeLimit: -1
 };
