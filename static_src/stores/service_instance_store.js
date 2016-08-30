@@ -69,6 +69,7 @@ class ServiceInstanceStore extends BaseStore {
         break;
       }
 
+      /*
       case serviceActionTypes.SERVICE_BINDINGS_RECEIVED: {
         const bindings = this.formatSplitResponse(action.serviceBindings);
         this.fetching = true;
@@ -90,6 +91,7 @@ class ServiceInstanceStore extends BaseStore {
         }
         break;
       }
+      */
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM: {
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
