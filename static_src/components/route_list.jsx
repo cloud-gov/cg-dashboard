@@ -12,6 +12,7 @@ import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
 
 import createStyler from '../util/create_styler';
+import formatRoute from '../util/format_route';
 
 function stateSetter(appGuid) {
   const routes = RouteStore.getAll();
@@ -73,10 +74,9 @@ export default class RouteList extends React.Component {
         </PanelHeader>
         { this.state.routes.map((route) => {
           const handler = this._handleRouteAction.bind(this, route.guid);
+          const { domain, host, path } = route;
+          const url = formatRoute(domain, host, path);
           let rowContent;
-          let url = route.domain;
-          if (route.host) url = `${route.host}.${route.domain}`;
-          if (route.path) url = `${url}/${route.path}`;
 
           if (route.editing) {
             rowContent = (

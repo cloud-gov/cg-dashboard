@@ -6,6 +6,7 @@ import Action from './action.jsx';
 import PanelActions from './panel_actions.jsx';
 
 import createStyler from '../util/create_styler';
+import formatRoute from '../util/format_route';
 
 import panelCss from '../css/panel.css';
 import routeFormCss from '../css/route_form.css';
@@ -45,12 +46,8 @@ export default class RouteForm extends React.Component {
   }
 
   get fullUrl() {
-    const state = this.state;
-    let url = state.domain;
-    if (state.host) url = `${state.host}.${state.domain}`;
-    if (state.path) url = `${url}/${state.path}`;
-
-    return url;
+    const { domain, host, path } = this.state;
+    return formatRoute(domain, host, path);
   }
 
   get hasChanged() {
