@@ -72,11 +72,12 @@ export default class RouteList extends React.Component {
           </PanelActions>
         </PanelHeader>
         { this.state.routes.map((route) => {
-          const fullRoute = (route.path) ?
-            `${route.host}.${route.domain}/${route.path}` :
-            `${route.host}.${route.domain}`;
           const handler = this._handleRouteAction.bind(this, route.guid);
           let rowContent;
+          let url = route.domain;
+          if (route.host) url = `${route.host}.${route.domain}`;
+          if (route.path) url = `${url}/${route.path}`;
+
           if (route.editing) {
             rowContent = (
               <RouteForm route={ route } domains={ domains }
@@ -86,7 +87,7 @@ export default class RouteList extends React.Component {
           } else {
             rowContent = (
               <div>
-                <span>{ fullRoute }</span>
+                <span>{ url }</span>
                 <Action onClickHandler={ handler } label="Edit" type="link">
                   Edit
                 </Action>

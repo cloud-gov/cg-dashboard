@@ -45,8 +45,11 @@ export default class RouteForm extends React.Component {
   }
 
   get fullUrl() {
-    let url = `${this.state.host}.${this.state.domain}`;
-    if (this.state.path !== '') url += `/${this.state.path}`;
+    const state = this.state;
+    let url = state.domain;
+    if (state.host) url = `${state.host}.${state.domain}`;
+    if (state.path) url = `${url}/${state.path}`;
+
     return url;
   }
 
