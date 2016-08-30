@@ -20,6 +20,7 @@ describe('ServiceInstanceStore', function() {
     ServiceInstanceStore._createError = null;
     ServiceInstanceStore._fetching = false;
     ServiceInstanceStore._fetched = false;
+    ServiceInstanceStore.waitingOnRequests = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -159,6 +160,76 @@ describe('ServiceInstanceStore', function() {
 
       expect(ServiceInstanceStore.getAll().length).toEqual(1);
       expect(ServiceInstanceStore.getAll()).toEqual(expected);
+    });
+  });
+
+  describe('on service bindings received', function() {
+    const fakeServiceBindings = [
+      {
+        metadata: {
+          guid: 'adsfadcvb'
+        },
+        entity: {
+          app_guid: "2a3820bb-febd-4c90-ab66-80faa4362142",
+          service_instance_guid: "92f0f510-dbb1-4c04-aa7c-28a8dc0797b4"
+        }
+      }
+    ];
+
+    it('should request full service for each binding', function() {
+      const spy = sandbox.spy(cfApi, 'fetchServiceInstance');
+      const serviceInstanceGuidA = 'zcxl23rsdbjkzcvx';
+      const serviceInstanceGuidB = 'bzxcvzcxlbjkzcvx';
+      const serviceBindingA = {
+        metadata: {
+          guid: 'adsfadcvzcxvz'
+        },
+        entity: {
+          app_guid: "2a3820bb-febd-4c90-ab66-80faa4362142",
+          service_instance_guid: serviceInstanceGuidA
+        }
+      };
+      const serviceBindingB = {
+        metadata: {
+          guid: 'adsfadcvb234a'
+        },
+        entity: {
+          app_guid: "2a3820bb-febd-4c90-ab66-80faa4362142",
+          service_instance_guid: serviceInstanceGuidB
+        }
+      }
+      const serviceBindings = [serviceBindingA, serviceBindingB];
+
+      serviceActions.receivedServiceBindings(serviceBindings);
+
+      expect(spy).toHaveBeenCalledTwice();
+    });
+
+    it('should not set waiting on requests if there are no instances',
+        function() {
+      serviceActions.receivedServiceBindings([]);
+      expect(ServiceInstanceStore.waitingOnRequests).toEqual(false);
+    });
+
+    it('should set waitingOnRequests to true', function() {
+      serviceActions.receivedServiceBindings(fakeServiceBindings);
+
+      expect(ServiceInstanceStore.waitingOnRequests).toEqual(true);
+    });
+
+    it('should set fetching to true and fetched to false', function() {
+      serviceActions.receivedServiceBindings(fakeServiceBindings);
+
+      expect(ServiceInstanceStore.fetching).toEqual(true);
+      expect(ServiceInstanceStore.fetched).toEqual(false);
+    });
+
+    it('should emit a change event', function() {
+      var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+
+      serviceActions.receivedServiceBindings(fakeServiceBindings);
+
+      expect(spy).toHaveBeenCalledOnce();
     });
   });
 

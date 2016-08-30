@@ -287,6 +287,11 @@ export default {
       });
   },
 
+  fetchServicePlan(servicePlanGuid) {
+    return this.fetchOne(`/service_plans/${servicePlanGuid}`,
+                         serviceActions.receivedPlan);
+  },
+
   fetchAllServices(orgGuid) {
     return this.fetchMany(`/organizations/${orgGuid}/services`,
       serviceActions.receivedServices);
@@ -306,5 +311,10 @@ export default {
   fetchDomain(domainGuid) {
     return this.fetchOne(`/private_domains/${domainGuid}`,
                          domainActions.receivedDomain);
+  },
+
+  fetchServiceBindings(appGuid) {
+    return this.fetchOne(`/apps/${appGuid}/service_bindings`,
+                         serviceActions.receivedServiceBindings);
   }
 };

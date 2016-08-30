@@ -56,6 +56,8 @@ const serviceActionTypes = keymirror({
   SERVICES_FETCH: null,
   // Action when all services for an org were received from the server.
   SERVICES_RECEIVED: null,
+  // Action when a single service plan received from server.
+  SERVICE_PLAN_RECEIVED: null,
   // Action to fetch all service plans for a certain service.
   SERVICE_PLANS_FETCH: null,
   // Action when all service plans for a service were received from the server.
@@ -84,7 +86,11 @@ const serviceActionTypes = keymirror({
   // Action to create a service instance.
   SERVICE_INSTANCE_CREATE: null,
   // Action when a service instance was created on the server.
-  SERVICE_INSTANCE_CREATED: null
+  SERVICE_INSTANCE_CREATED: null,
+  // Action to fetch service bindins for an app.
+  SERVICE_BINDINGS_FETCH: null,
+  // Action when received service bindings from server.
+  SERVICE_BINDINGS_RECEIVED: null
 });
 
 const appActionTypes = keymirror({

@@ -22,6 +22,13 @@ export default {
     });
   },
 
+  receivedPlan(servicePlan) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_PLAN_RECEIVED,
+      servicePlan
+    });
+  },
+
   fetchAllPlans(serviceGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_PLANS_FETCH,
@@ -120,5 +127,19 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
       serviceInstanceGuid: serviceInstanceGuid
     });
-  }
+  },
+
+  fetchServiceBindings(appGuid) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_BINDINGS_FETCH,
+      appGuid
+    });
+  },
+
+  receivedServiceBindings(serviceBindings) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_BINDINGS_RECEIVED,
+      serviceBindings
+    });
+  },
 };

@@ -1,4 +1,5 @@
 
+// Action to fetch a single service plan for the server.
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
@@ -44,6 +45,29 @@ describe('serviceActions', function() {
       serviceActions.receivedServices(wrapInRes(expected));
 
       assertAction(spy, serviceActionTypes.SERVICES_RECEIVED, expectedParams);
+    });
+  });
+
+  describe('receivedPlan()', function() {
+    it('should dispatch a server event with service plan', function() {
+      const servicePlan = {
+        metadata: {
+          guid: 'xzclvkba328'
+        },
+        entity: {
+          name: 'azcvb'
+        }
+      };
+      const expectedParams = {
+        servicePlan
+      };
+
+      let spy = setupServerSpy(sandbox)
+
+      serviceActions.receivedPlan(servicePlan);
+
+      assertAction(spy, serviceActionTypes.SERVICE_PLAN_RECEIVED,
+                   expectedParams);
     });
   });
 
@@ -312,6 +336,38 @@ describe('serviceActions', function() {
       serviceActions.deletedInstance(expectedGuid);
 
       assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETED,
+                   expectedParams);
+    });
+  });
+
+  describe('fetchServiceBindings()', function() {
+    it('should dispatch service bindings fetch view event with app guid',
+        function() {
+      const appGuid = 'aldkjfs';
+      const expectedParams = {
+        appGuid
+      };
+      const spy = setupViewSpy(sandbox)
+
+      serviceActions.fetchServiceBindings(appGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_BINDINGS_FETCH,
+                   expectedParams);
+    });
+  });
+
+  describe('receivedServiceBindings()', function() {
+    it('should dispatch service bindings resv server event with binding',
+        function() {
+      const bindings = [{ metadata: { guid: 'zcxbz' } }];
+      const expectedParams = {
+        serviceBindings: bindings
+      };
+      const spy = setupServerSpy(sandbox)
+
+      serviceActions.receivedServiceBindings(bindings);
+
+      assertAction(spy, serviceActionTypes.SERVICE_BINDINGS_RECEIVED,
                    expectedParams);
     });
   });

@@ -51,6 +51,70 @@ describe('ServicePlanStore', function() {
 
   });
 
+  describe('on service instances received', function() {
+    const servicePlanGuid = 'zxkv,12398dajkh';
+    const fakeInstances = [
+      {
+        metadata: {
+          guid: 'zcvkzlxkcjvzxcz'
+        },
+        entity: {
+          name: 'adfadsf',
+          service_plan_guid: servicePlanGuid
+        }
+      }
+    ];
+    it('should set fetched to false, fetching to true', function() {
+      serviceActions.receivedInstances(fakeInstances);
+
+      expect(ServicePlanStore.fetching).toEqual(true);
+      expect(ServicePlanStore.fetched).toEqual(false);
+    });
+
+    it('should set waiting on requests to true if there are instances',
+        function() {
+      serviceActions.receivedInstances(fakeInstances);
+
+      expect(ServicePlanStore.waitingOnRequests).toEqual(true);
+    });
+
+    it('should emit a change', function() {
+      const spy = sandbox.spy(ServicePlanStore, 'emitChange');
+      serviceActions.receivedInstances(fakeInstances);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should fetch service plans with each instance plan guid', function() {
+      const spy = sandbox.spy(cfApi, 'fetchServicePlan');
+      const servicePlanGuidA = 'zcxlxbnlk;adsjfkzcvx';
+      const servicePlanGuidB = 'bzzcxvlkjzxcvldkzcvx';
+      const serviceInstanceA = {
+        metadata: {
+          guid: 'adsfadcvzczxcvxvz'
+        },
+        entity: {
+          service_plan_guid: servicePlanGuidA
+        }
+      };
+      const serviceInstanceB = {
+        metadata: {
+          guid: 'adsfadcvb234zxva'
+        },
+        entity: {
+          app_guid: "2a3820bb-febd-4c90-ab66-80faa4362142",
+          service_plan_guid: servicePlanGuidB
+        }
+      }
+      const serviceInstances = [serviceInstanceA, serviceInstanceB];
+
+      serviceActions.receivedInstances(serviceInstances);
+
+      expect(spy).toHaveBeenCalledTwice();
+
+    });
+  });
+
   describe('on services received', function() {
     it('should set fetching to true, fetched to false', function() {
       const services = wrapInRes([{ guid: '3981f', name: 'adlfskzxcv' }]);
