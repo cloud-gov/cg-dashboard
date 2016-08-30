@@ -368,7 +368,7 @@ export default {
   },
 
   fetchServiceBindings(appGuid) {
-    return this.fetchOne(`/apps/${appGuid}/service_bindings`,
-      serviceActions.receivedServiceBindings);
+    return this.fetchMany(`/apps/${appGuid}/service_bindings`,
+                         serviceActions.receivedServiceBindings);
   }
 };
