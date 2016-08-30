@@ -14,8 +14,10 @@ describe('ActivityStore', function() {
 
   beforeEach(() => {
     ActivityStore._data = Immutable.List();
-    ActivityStore._fetching = false;
-    ActivityStore._fetched = false;
+    ActivityStore._eventsFetched = false;
+    ActivityStore._eventsFetching = false;
+    ActivityStore._logsFetched = false;
+    ActivityStore._logsFetching = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -41,14 +43,14 @@ describe('ActivityStore', function() {
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should set fetching to true fetched to false', function() {
+    it('should set events fetching to true fetched to false', function() {
       AppDispatcher.handleViewAction({
         type: activityActionTypes.EVENTS_FETCH,
         spaceGuid: 'fakeSpaceGuid'
       });
 
-      expect(ActivityStore.fetched).toEqual(false);
-      expect(ActivityStore.fetching).toEqual(true);
+      expect(ActivityStore._eventsFetched).toEqual(false);
+      expect(ActivityStore._eventsFetching).toEqual(true);
     });
 
     it('should emit a change event', function() {
@@ -89,7 +91,7 @@ describe('ActivityStore', function() {
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should set fetched to true, fetching to false', function() {
+    it('should set events fetched to true, fetching to false', function() {
       const activity = [
         {
           guid: 'fakeActivityGuidOne',
@@ -102,8 +104,8 @@ describe('ActivityStore', function() {
         events: wrapInRes(activity)
       });
 
-      expect(ActivityStore.fetched).toEqual(true);
-      expect(ActivityStore.fetching).toEqual(false);
+      expect(ActivityStore._eventsFetched).toEqual(true);
+      expect(ActivityStore._eventsFetching).toEqual(false);
     });
   });
 
@@ -119,14 +121,14 @@ describe('ActivityStore', function() {
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should set fetching to true fetched to false', function() {
+    it('should set logs fetching to true fetched to false', function() {
       AppDispatcher.handleViewAction({
         type: activityActionTypes.LOGS_FETCH,
         appGuid: 'fakeAppGuid'
       });
 
-      expect(ActivityStore.fetched).toEqual(false);
-      expect(ActivityStore.fetching).toEqual(true);
+      expect(ActivityStore._logsFetched).toEqual(false);
+      expect(ActivityStore._logsFetching).toEqual(true);
     });
 
     it('should emit a change event', function() {
@@ -172,8 +174,40 @@ describe('ActivityStore', function() {
         logs
       });
 
-      expect(ActivityStore.fetched).toEqual(true);
+      expect(ActivityStore._logsFetched).toEqual(true);
+      expect(ActivityStore._logsFetching).toEqual(false);
+    });
+  });
+
+  describe('fetching', function() {
+    it('should be true when either events or logs fetching', function() {
       expect(ActivityStore.fetching).toEqual(false);
+
+      ActivityStore._logsFetching = true;
+      expect(ActivityStore.fetching).toEqual(true);
+
+      ActivityStore._logsFetching = false;
+      ActivityStore._eventsFetching = true;
+      expect(ActivityStore.fetching).toEqual(true);
+
+      ActivityStore._logsFetching = true;
+      expect(ActivityStore.fetching).toEqual(true);
+    });
+  });
+
+  describe('fetched', function() {
+    it('should only be true when both events and logs fetched', function() {
+      expect(ActivityStore.fetched).toEqual(false);
+
+      ActivityStore._logsFetched = true;
+      expect(ActivityStore.fetched).toEqual(false);
+
+      ActivityStore._logsFetched = false;
+      ActivityStore._eventsFetched = true;
+      expect(ActivityStore.fetched).toEqual(false);
+
+      ActivityStore._logsFetched = true;
+      expect(ActivityStore.fetched).toEqual(true);
     });
   });
 
