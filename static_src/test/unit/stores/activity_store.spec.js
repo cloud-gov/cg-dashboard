@@ -14,10 +14,10 @@ describe('ActivityStore', function() {
 
   beforeEach(() => {
     ActivityStore._data = Immutable.List();
-    ActivityStore.eventsFetched = false;
-    ActivityStore.eventsFetching = false;
-    ActivityStore.logsFetched = false;
-    ActivityStore.logsFetching = false;
+    ActivityStore._eventsFetched = false;
+    ActivityStore._eventsFetching = false;
+    ActivityStore._logsFetched = false;
+    ActivityStore._logsFetching = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -49,8 +49,8 @@ describe('ActivityStore', function() {
         spaceGuid: 'fakeSpaceGuid'
       });
 
-      expect(ActivityStore.eventsFetched).toEqual(false);
-      expect(ActivityStore.eventsFetching).toEqual(true);
+      expect(ActivityStore._eventsFetched).toEqual(false);
+      expect(ActivityStore._eventsFetching).toEqual(true);
     });
 
     it('should emit a change event', function() {
@@ -104,8 +104,8 @@ describe('ActivityStore', function() {
         events: wrapInRes(activity)
       });
 
-      expect(ActivityStore.eventsFetched).toEqual(true);
-      expect(ActivityStore.eventsFetching).toEqual(false);
+      expect(ActivityStore._eventsFetched).toEqual(true);
+      expect(ActivityStore._eventsFetching).toEqual(false);
     });
   });
 
@@ -127,8 +127,8 @@ describe('ActivityStore', function() {
         appGuid: 'fakeAppGuid'
       });
 
-      expect(ActivityStore.logsFetched).toEqual(false);
-      expect(ActivityStore.logsFetching).toEqual(true);
+      expect(ActivityStore._logsFetched).toEqual(false);
+      expect(ActivityStore._logsFetching).toEqual(true);
     });
 
     it('should emit a change event', function() {
@@ -174,8 +174,8 @@ describe('ActivityStore', function() {
         logs
       });
 
-      expect(ActivityStore.logsFetched).toEqual(true);
-      expect(ActivityStore.logsFetching).toEqual(false);
+      expect(ActivityStore._logsFetched).toEqual(true);
+      expect(ActivityStore._logsFetching).toEqual(false);
     });
   });
 
@@ -183,14 +183,14 @@ describe('ActivityStore', function() {
     it('should be true when either events or logs fetching', function() {
       expect(ActivityStore.fetching).toEqual(false);
 
-      ActivityStore.logsFetching = true;
+      ActivityStore._logsFetching = true;
       expect(ActivityStore.fetching).toEqual(true);
 
-      ActivityStore.logsFetching = false;
-      ActivityStore.eventsFetching = true;
+      ActivityStore._logsFetching = false;
+      ActivityStore._eventsFetching = true;
       expect(ActivityStore.fetching).toEqual(true);
 
-      ActivityStore.logsFetching = true;
+      ActivityStore._logsFetching = true;
       expect(ActivityStore.fetching).toEqual(true);
     });
   });
@@ -199,14 +199,14 @@ describe('ActivityStore', function() {
     it('should only be true when both events and logs fetched', function() {
       expect(ActivityStore.fetched).toEqual(false);
 
-      ActivityStore.logsFetched = true;
+      ActivityStore._logsFetched = true;
       expect(ActivityStore.fetched).toEqual(false);
 
-      ActivityStore.logsFetched = false;
-      ActivityStore.eventsFetched = true;
+      ActivityStore._logsFetched = false;
+      ActivityStore._eventsFetched = true;
       expect(ActivityStore.fetched).toEqual(false);
 
-      ActivityStore.logsFetched = true;
+      ActivityStore._logsFetched = true;
       expect(ActivityStore.fetched).toEqual(true);
     });
   });
