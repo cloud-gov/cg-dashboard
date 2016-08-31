@@ -5,6 +5,7 @@ import React from 'react';
 import Action from './panel_actions.jsx';
 import PanelActions from './panel_actions.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
+import ServiceInstanceStore from '../stores/service_instance_store.js';
 
 import createStyler from '../util/create_styler';
 
@@ -22,8 +23,6 @@ export default class ServiceInstanceListPanel extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {};
-
     this.styler = createStyler(style);
   }
 
@@ -32,7 +31,10 @@ export default class ServiceInstanceListPanel extends React.Component {
   }
 
   get instanceState() {
-    return 'Running';
+    if (!this.props.bound) return ServiceInstanceStore.OPERATION_STATES.inactive;
+    if (!this.props.serviceInstance) return '';
+    return ServiceInstanceStore.getInstanceReadableState(
+      this.props.serviceInstance);
   }
 
   render() {
@@ -54,13 +56,9 @@ export default class ServiceInstanceListPanel extends React.Component {
               <span>${ ServicePlanStore.getCost(serviceInstance.servicePlan) } monthly</span>
             }
           </span>
-          <PanelActions>
+          <span>
             <span>{ this.instanceState }</span>
-            <br />
-            <Action type="link">
-              Bind
-            </Action>
-          </PanelActions>
+          </span>
         </div>
       );
     }

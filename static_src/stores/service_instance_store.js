@@ -12,6 +12,14 @@ import { serviceActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 import ServicePlanStore from './service_plan_store.js';
 
+const OPERATION_STATES = {
+  failed: 'Failed',
+  deleting: 'Deleting',
+  processing: 'In progress',
+  running: 'Running',
+  inactive: 'Stopped'
+};
+
 class ServiceInstanceStore extends BaseStore {
   constructor() {
     super();
@@ -34,6 +42,28 @@ class ServiceInstanceStore extends BaseStore {
   getAllBySpaceGuid(spaceGuid) {
     return this.getAll().filter((serviceInstance) =>
       serviceInstance.space_guid === spaceGuid);
+  }
+
+  getInstanceState(serviceInstance) {
+    const lastOp = serviceInstance.last_operation;
+    if (!lastOp) return 'running';
+
+    if (lastOp.state === 'failed') {
+      return 'failed';
+    }
+    if (lastOp.type === 'delete') {
+      return 'deleting';
+    }
+    return 'running';
+  }
+
+  getInstanceReadableState(serviceInstance) {
+    if (!serviceInstance.last_operation) return OPERATION_STATES.running;
+    let state = this.getInstanceState(serviceInstance);
+    if (state === 'failed') {
+      state = `serviceInstance.last_operation.type ${OPERATION_STATES[state]}`;
+    }
+    return OPERATION_STATES[state];
   }
 
   _registerToActions(action) {
@@ -182,5 +212,7 @@ class ServiceInstanceStore extends BaseStore {
 }
 
 const _ServiceInstanceStore = new ServiceInstanceStore();
+
+_ServiceInstanceStore.OPERATION_STATES = OPERATION_STATES;
 
 export default _ServiceInstanceStore;

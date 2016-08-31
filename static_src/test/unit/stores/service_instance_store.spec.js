@@ -46,6 +46,48 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
+  describe('getInstanceState()', function() {
+    it('should return running if last op doesnt exist', function() {
+      const actual = ServiceInstanceStore.getInstanceState({});
+
+      expect(actual).toEqual('running');
+    });
+
+    it('should return failed if last op state was failed', function() {
+      const instance = {
+        last_operation: {
+          state: 'failed'
+        }
+      }
+      const actual = ServiceInstanceStore.getInstanceState(instance);
+
+      expect(actual).toEqual('failed');
+    });
+
+    it('should return deleting if last op type was delete', function() {
+      const instance = {
+        last_operation: {
+          type: 'delete'
+        }
+      }
+      const actual = ServiceInstanceStore.getInstanceState(instance);
+
+      expect(actual).toEqual('deleting');
+    });
+
+    it('should return running if not failed or deleting', function() {
+      const instance = {
+        last_operation: {
+          type: 'create',
+          state: 'success'
+        }
+      }
+      const actual = ServiceInstanceStore.getInstanceState(instance);
+
+      expect(actual).toEqual('running');
+    });
+  });
+
   describe('on service instances fetch', function() {
     it('should set fetching to true, fetched to false', function() {
       ServiceInstanceStore.fetching = false;
