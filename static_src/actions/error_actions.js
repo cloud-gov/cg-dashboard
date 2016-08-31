@@ -7,8 +7,19 @@ import errorActionTypes from '../constants.js';
 import Dispatcher from '../dispatcher.js';
 
 export default {
-  errorFetch(err) {
-    console.error('failure', err);
-    // Do nothing
+  errorDelete(err) {
+    console.error('delete failure', err);
   },
+
+  errorFetch(err) {
+    console.error('fetch failure', err);
+  },
+
+  errorPost(err) {
+    console.error('post failure', err);
+  },
+
+  errorPut(err) {
+    console.error('put failure', err);
+  }
 };
