@@ -45,8 +45,13 @@ const orgActionTypes = keymirror({
 const spaceActionTypes = keymirror({
   // Action to fetch a single space from the server.
   SPACE_FETCH: null,
+  // Action to fetch all spaces (gets different information from single fetch,
+  // such as quotas)
+  SPACES_FETCH: null,
   // Action when a single space is received from the server.
   SPACE_RECEIVED: null,
+  // Action when all spaces are received from the server.
+  SPACES_RECEIVED: null,
   // When the user changes the current space they are looking at.
   SPACE_CHANGE_CURRENT: null
 });

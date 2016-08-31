@@ -124,6 +124,7 @@ function checkAuth() {
     uaaApi.fetchUserInfo();
   });
   orgActions.fetchAll();
+  spaceActions.fetchAll();
 }
 
 function notFound() {

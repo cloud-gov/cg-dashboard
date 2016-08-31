@@ -376,6 +376,36 @@ describe('cfApi', function() {
     });
   });
 
+  describe('fetchSpaces()', function () {
+    it('calls fetch for the spaces endpoint', function () {
+      const stub = sandbox.stub(http, 'get');
+      const expected = [{ guid: 'fake-guid-one' }];
+      let testPromise = createPromise(wrapInRes(expected));
+      stub.returns(testPromise);
+
+      cfApi.fetchSpaces();
+
+      expect(stub).toHaveBeenCalledOnce();
+      let actual = stub.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('spaces'));
+    });
+
+    it('calls spaceActions.receivedSpaces action', function (done) {
+      const stub = sandbox.stub(http, 'get');
+      const actionSpy = sandbox.spy(spaceActions, 'receivedSpaces');
+      const expected = wrapInRes([{ guid: 'fake-guid-one' }]);
+      let testPromise = createPromise({ data: { resources: expected } });
+      stub.returns(testPromise);
+
+      cfApi.fetchSpaces().then(() => {
+        const args = actionSpy.getCall(0).args[0];
+        expect(args).toEqual(expected);
+        expect(actionSpy).toHaveBeenCalledOnce();
+        done();
+      });
+    });
+  });
+
   describe('fetchSpaceEvents()', function () {
     it('calls fetch all pages with space guid', function () {
       var spaceGuid = 'yyyybba1',

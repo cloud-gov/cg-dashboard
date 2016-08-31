@@ -137,6 +137,14 @@ export default {
                               quotaActions.receivedQuotasForAllSpaces);
   },
 
+  fetchSpaces() {
+    return http.get(`${APIV}/spaces`).then((res) => {
+      spaceActions.receivedSpaces(res.data.resources);
+    }).catch((err) => {
+      errorActions.errorFetch(err);
+    });
+  },
+
   fetchSpace(spaceGuid) {
     return this.fetchOne(`/spaces/${spaceGuid}/summary`,
                          spaceActions.receivedSpace);
