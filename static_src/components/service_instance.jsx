@@ -38,10 +38,6 @@ export default class ServiceInstanceListPanel extends React.Component {
   render() {
     let content = <div></div>;
     const serviceInstance = this.props.serviceInstance;
-    console.log('render instance', serviceInstance);
-    if (serviceInstance && serviceInstance.servicePlan) {
-      console.log('render cost', ServicePlanStore.getCost(serviceInstance.servicePlan));
-    }
 
     if (serviceInstance) {
       content = (
