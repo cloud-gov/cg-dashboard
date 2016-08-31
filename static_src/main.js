@@ -3,6 +3,7 @@ import 'cloudgov-style/css/base.css';
 import './css/main.css';
 // Icon used in cg-uaa.
 import './img/dashboard-uaa-icon.jpg';
+import 'cloudgov-style/img/favicon.ico';
 
 import { Router } from 'director';
 import React from 'react';
