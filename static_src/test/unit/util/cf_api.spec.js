@@ -1024,7 +1024,7 @@ describe('cfApi', function() {
   describe('fetchServiceBindings()', function() {
     it('should fetch bindings with app guid', function() {
       const expected = 'xcvxyyb1zxcv';
-      const spy = sandbox.stub(cfApi, 'fetchOne');
+      const spy = sandbox.stub(cfApi, 'fetchMany');
 
       cfApi.fetchServiceBindings(expected);
 

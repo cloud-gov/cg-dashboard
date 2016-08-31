@@ -4,6 +4,7 @@ import React from 'react';
 
 import Action from './panel_actions.jsx';
 import PanelActions from './panel_actions.jsx';
+import ServicePlanStore from '../stores/service_plan_store.js';
 
 import createStyler from '../util/create_styler';
 
@@ -37,6 +38,10 @@ export default class ServiceInstanceListPanel extends React.Component {
   render() {
     let content = <div></div>;
     const serviceInstance = this.props.serviceInstance;
+    console.log('render instance', serviceInstance);
+    if (serviceInstance && serviceInstance.servicePlan) {
+      console.log('render cost', ServicePlanStore.getCost(serviceInstance.servicePlan));
+    }
 
     if (serviceInstance) {
       content = (
@@ -46,7 +51,12 @@ export default class ServiceInstanceListPanel extends React.Component {
           </span>
           <span>
             { serviceInstance.servicePlan &&
-              <span>{ serviceInstance.servicePlan.name }</span>}
+              <span>{ serviceInstance.servicePlan.name }</span>
+            }
+            <br />
+            { serviceInstance.servicePlan &&
+              <span>${ ServicePlanStore.getCost(serviceInstance.servicePlan) } monthly</span>
+            }
           </span>
           <PanelActions>
             <span>{ this.instanceState }</span>

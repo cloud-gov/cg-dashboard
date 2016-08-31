@@ -95,8 +95,7 @@ export default class ServicePlanList extends React.Component {
                 <td label="Description">{ plan.description }</td>
                 <td label="Cost">
                   <span>
-                    ${ (plan.extra && plan.extra.costs &&
-                        plan.extra.costs[0].amount.usd || 0).toFixed(2) } monthly
+                    ${ ServicePlanStore.getCost(plan).toFixed(2) } monthly
                   </span>
                 </td>
                 <td label="Actions">
