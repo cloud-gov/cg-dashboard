@@ -92,6 +92,14 @@ class ServicePlanStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_PLAN_RECEIVED: {
+        const servicePlan = this.formatSplitResponse([action.servicePlan])[0];
+        this.merge('guid', servicePlan, () => {
+          this.emitChange();
+        });
+        break;
+      }
+
       case serviceActionTypes.SERVICE_PLANS_RECEIVED: {
         if (action.servicePlans) {
           let servicePlans = this.formatSplitResponse(action.servicePlans);

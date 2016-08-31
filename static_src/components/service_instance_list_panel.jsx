@@ -2,7 +2,8 @@
 import style from 'cloudgov-style';
 import React from 'react';
 
-import Panelrow from './panel_row.jsx';
+import PanelRow from './panel_row.jsx';
+import ServiceInstance from './service_instance.jsx';
 
 import createStyler from '../util/create_styler';
 
@@ -23,18 +24,6 @@ export default class ServiceInstanceListPanel extends React.Component {
     this.state = {};
 
     this.styler = createStyler(style);
-
-    this._onChange = this._onChange.bind(this);
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
-  _onChange() {
-    this.setState(stateSetter());
   }
 
   render() {
@@ -43,7 +32,10 @@ export default class ServiceInstanceListPanel extends React.Component {
       <div>
       { this.props.serviceInstances.map((serviceInstance) => {
         return (
-          <PanelRow>
+          <PanelRow key={serviceInstance.guid}>
+            <ServiceInstance serviceInstance={serviceInstance}
+              bound={this.props.bound}
+            />
           </PanelRow>
         );
       })}

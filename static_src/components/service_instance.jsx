@@ -2,6 +2,7 @@
 import style from 'cloudgov-style';
 import React from 'react';
 
+import Action from './panel_actions.jsx';
 import PanelActions from './panel_actions.jsx';
 
 import createStyler from '../util/create_styler';
@@ -12,7 +13,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  serviceInstances: {},
+  serviceInstance: {},
   bound: false
 };
 
@@ -23,26 +24,42 @@ export default class ServiceInstanceListPanel extends React.Component {
     this.state = {};
 
     this.styler = createStyler(style);
-
-    this._onChange = this._onChange.bind(this);
   }
 
-  componentDidMount() {
+  componentWillReceiveProps(nextProps) {
+    this.props = nextProps;
   }
 
-  componentWillUnmount() {
-  }
-
-  _onChange() {
-    this.setState(stateSetter());
+  get instanceState() {
+    return 'Running';
   }
 
   render() {
+    let content = <div></div>;
+    const serviceInstance = this.props.serviceInstance;
 
-    return (
-      <div>
-      </div>
-    );
+    if (serviceInstance) {
+      content = (
+        <div>
+          <span>
+            { serviceInstance.name }
+          </span>
+          <span>
+            { serviceInstance.servicePlan &&
+              <span>{ serviceInstance.servicePlan.name }</span>}
+          </span>
+          <PanelActions>
+            <span>{ this.instanceState }</span>
+            <br />
+            <Action type="link">
+              Bind
+            </Action>
+          </PanelActions>
+        </div>
+      );
+    }
+
+    return content;
   }
 }
 
