@@ -3,6 +3,7 @@ import style from 'cloudgov-style';
 import React from 'react';
 
 import AppStore from '../stores/app_store.js';
+import Loading from './loading.jsx';
 import Panel from './panel.jsx';
 import PanelHeader from './panel_header.jsx';
 import PanelGroup from './panel_group.jsx';
@@ -19,6 +20,17 @@ const propTypes = {
 
 const defaultProps = {
 };
+
+
+function boundReady(instances) {
+  return ServiceInstanceStore.fetched && ServicePlanStore.fetched &&
+      ServiceBindingStore.fetched && !instances.length;
+}
+
+function unboundReady(instances) {
+  return ServiceInstanceStore.fetched && ServicePlanStore.fetched &&
+    !instances.length;
+}
 
 function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
@@ -39,10 +51,14 @@ function stateSetter() {
       boundService.guid !== serviceInstance.guid
     )
   );
+  const loading = ServiceInstanceStore.fetching ||
+    ServicePlanStore.fetching ||
+    ServiceBindingStore.fetching;
 
   return {
     boundServiceInstances,
-    unboundServiceInstances
+    unboundServiceInstances,
+    loading
   };
 }
 
@@ -72,8 +88,11 @@ export default class ServiceInstancePanel extends React.Component {
   }
 
   render() {
-    return (
-      <Panel title="Services">
+    let loading = <Loading text="Loading services" />;
+    let content = <div>{ loading }</div>;
+
+    if (!this.state.loading) {
+      content = [
         <PanelGroup>
           <PanelHeader>
             <h3>Bound service instances</h3>
@@ -81,17 +100,24 @@ export default class ServiceInstancePanel extends React.Component {
           <ServiceInstanceListPanel
             serviceInstances={ this.state.boundServiceInstances }
             bound
+            empty={ boundReady(this.state.boundServiceInstances) }
           />
-        </PanelGroup>
-
+        </PanelGroup>,
         <PanelGroup>
           <PanelHeader>
             <h3>Unbound service instances</h3>
           </PanelHeader>
           <ServiceInstanceListPanel
             serviceInstances={ this.state.unboundServiceInstances }
+            empty={ unboundReady(this.state.unboundServiceInstances) }
           />
         </PanelGroup>
+      ];
+    }
+
+    return (
+      <Panel title="Services">
+        { content }
       </Panel>
     );
   }

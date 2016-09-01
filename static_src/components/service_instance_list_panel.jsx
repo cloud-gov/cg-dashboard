@@ -9,12 +9,14 @@ import createStyler from '../util/create_styler';
 
 const propTypes = {
   serviceInstances: React.PropTypes.array,
-  bound: React.PropTypes.bool
+  bound: React.PropTypes.bool,
+  empty: React.PropTypes.bool
 };
 
 const defaultProps = {
   serviceInstances: [],
-  bound: false
+  bound: false,
+  empty: false
 };
 
 export default class ServiceInstanceListPanel extends React.Component {
@@ -26,17 +28,25 @@ export default class ServiceInstanceListPanel extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-      { this.props.serviceInstances.map((serviceInstance) =>
-        <PanelRow key={serviceInstance.guid}>
-          <ServiceInstance serviceInstance={serviceInstance}
-            bound={this.props.bound}
-          />
-        </PanelRow>
-      )}
-      </div>
-    );
+    let content = <div></div>;
+
+    if (this.props.empty) {
+      content = <h4>No services</h4>;
+    } else {
+      content = (
+        <div>
+        { this.props.serviceInstances.map((serviceInstance) =>
+          <PanelRow key={serviceInstance.guid}>
+            <ServiceInstance serviceInstance={serviceInstance}
+              bound={this.props.bound}
+            />
+          </PanelRow>
+        )}
+        </div>
+      );
+    }
+
+    return content;
   }
 }
 
