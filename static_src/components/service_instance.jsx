@@ -2,6 +2,8 @@
 import style from 'cloudgov-style';
 import React from 'react';
 
+import panelCss from '../css/panel.css';
+
 import Action from './panel_actions.jsx';
 import PanelActions from './panel_actions.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
@@ -23,7 +25,7 @@ export default class ServiceInstanceListPanel extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.styler = createStyler(style);
+    this.styler = createStyler(style, panelCss);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -44,10 +46,10 @@ export default class ServiceInstanceListPanel extends React.Component {
     if (serviceInstance) {
       content = (
         <div>
-          <span>
+          <h5 className={ this.styler('panel-column') }>
             { serviceInstance.name }
-          </span>
-          <span>
+          </h5>
+          <span className={ this.styler('panel-column') }>
             { serviceInstance.servicePlan &&
               <span>{ serviceInstance.servicePlan.name }</span>
             }
@@ -56,7 +58,7 @@ export default class ServiceInstanceListPanel extends React.Component {
               <span>${ ServicePlanStore.getCost(serviceInstance.servicePlan) } monthly</span>
             }
           </span>
-          <span>
+          <span className={ this.styler('panel-column', 'panel-column-less') }>
             <span>{ this.instanceState }</span>
           </span>
         </div>
