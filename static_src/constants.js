@@ -150,6 +150,26 @@ const userActionTypes = keymirror({
 });
 
 const routeActionTypes = keymirror({
+  // Action when a route has been associated with an pp
+  ROUTE_APP_ASSOCIATED: null,
+  // Action for creating routes
+  ROUTE_CREATE: null,
+  // Action for receiving the created route
+  ROUTE_CREATED: null,
+  // Action to create a route and associate it with an app
+  ROUTE_CREATE_AND_ASSOCIATE: null,
+  // Action for hiding route creation form
+  ROUTE_CREATE_FORM_HIDE: null,
+  // Action for showing route creation form
+  ROUTE_CREATE_FORM_SHOW: null,
+  // Action for removing a route from an app
+  ROUTE_DELETE: null,
+  // Action when a route has been deleted
+  ROUTE_DELETED: null,
+  // Action for updating a route
+  ROUTE_UPDATE: null,
+  // Action when a route has been updated
+  ROUTE_UPDATED: null,
   ROUTES_FOR_APP_FETCH: null,
   ROUTES_FOR_APP_RECEIVED: null,
   ROUTE_TOGGLE_EDIT: null
