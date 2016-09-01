@@ -58,7 +58,16 @@ export default class RouteForm extends React.Component {
 
   _onSubmit(event) {
     event.preventDefault();
-    this.props.submitHandler(this.state);
+    const payload = {};
+    Object.keys(this.state).forEach((key) => {
+      let value = this.state[key];
+      // path needs to start with a / per the cf api docs
+      if (key === 'path' && value[0] !== '/' && value !== '') {
+        value = `/${value}`;
+      }
+      payload[key] = value;
+    });
+    this.props.submitHandler(payload);
   }
 
   get fullUrl() {
