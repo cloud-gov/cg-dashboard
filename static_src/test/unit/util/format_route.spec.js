@@ -30,4 +30,15 @@ describe('format_route util', () => {
     const actual = formatRoute(route.domain, route.host, route.path);
     expect(actual).toEqual(`${route.host}.${route.domain}/${route.path}`);
   });
+
+  it('should show a blank string if domain undefined', () => {
+    const route = {
+      domain: undefined
+      host: 'gopher',
+      path: 'about.html'
+    };
+    const actual = formatRoute(route.domain, route.host, route.path);
+
+    expect(actual).toEqual(`${route.host}./${route.path}`);
+  });
 });
