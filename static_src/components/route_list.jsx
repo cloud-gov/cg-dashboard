@@ -49,7 +49,6 @@ export default class RouteList extends React.Component {
     this.styler = createStyler(style);
 
     this._onChange = this._onChange.bind(this);
-    this._createRoute = this._createRoute.bind(this);
     this._createRouteAndAssociate = this._createRouteAndAssociate.bind(this);
     this._addCreateRouteForm = this._addCreateRouteForm.bind(this);
     this._removeCreateRouteForm = this._removeCreateRouteForm.bind(this);
@@ -85,13 +84,6 @@ export default class RouteList extends React.Component {
 
   _removeCreateRouteForm() {
     routeActions.hideCreateForm();
-  }
-
-  _createRoute(route) {
-    const { spaceGuid } = this.state;
-    const domainGuid = route.domain_guid;
-    routeActions.createRoute(domainGuid, spaceGuid, route);
-    // routeActions.createRouteAndBindForApp(appGuid, domainGuid, spaceGuid);
   }
 
   _createRouteAndAssociate(route) {
