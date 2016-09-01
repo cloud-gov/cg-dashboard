@@ -14,40 +14,56 @@ import routeFormCss from '../css/route_form.css';
 const propTypes = {
   domains: React.PropTypes.array.isRequired,
   route: React.PropTypes.object,
-  handleSubmit: React.PropTypes.func,
-  handleCancel: React.PropTypes.func
+  submitHandler: React.PropTypes.func,
+  cancelHandler: React.PropTypes.func,
+  deleteHandler: React.PropTypes.func
 };
 
 const defaultProps = {
   route: {},
-  handleSubmit: () => {},
-  handleCancel: () => {}
+  submitHandler: () => {},
+  cancelHandler: () => {}
 };
 
 export default class RouteForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      domain: props.route.domain,
+      domain_name: props.route.domain_name,
+      domain_guid: props.route.domain_guid, // snake_case since it's an api arg
+      guid: props.route.guid,
       host: props.route.host,
       path: props.route.path
     };
     this._onChange = this._onChange.bind(this);
+    this._onSubmit = this._onSubmit.bind(this);
     this.styler = createStyler(style, panelCss, routeFormCss);
   }
 
 
   // TODO: If there are multiple route forms on the page, does it matter if
   // they all have elements with the same names? IDs are unique
-  _onChange(ev) {
+  _onChange(event) {
     const newValue = {};
-    newValue[ev.target.name] = ev.target.value;
+    newValue[event.target.name] = event.target.value;
+
+    if (event.target.name === 'domain_guid') {
+      newValue.domain_name = this.props.domains.find((domain) => {
+        return domain.guid === event.target.value;
+      }).name;
+    }
+
     this.setState(newValue);
   }
 
+  _onSubmit(event) {
+    event.preventDefault();
+    this.props.submitHandler(this.state);
+  }
+
   get fullUrl() {
-    const { domain, host, path } = this.state;
-    return formatRoute(domain, host, path);
+    const { domain_name, host, path } = this.state;
+    return formatRoute(domain_name, host, path);
   }
 
   get hasChanged() {
@@ -55,13 +71,32 @@ export default class RouteForm extends React.Component {
 
     if (this.state.host !== this.props.route.host) {
       changed = true;
-    } else if (this.state.domain !== this.props.route.domain) {
+    } else if (this.state.domain_guid !== this.props.route.domain_guid) {
       changed = true;
     } else if (this.state.path !== this.props.route.path) {
       changed = true;
     }
 
     return changed;
+  }
+
+  get deleteAction() {
+    if (!this.props.deleteHandler) return null;
+    return (
+      <Action clickHandler={ this.props.deleteHandler } label="Delete route"
+        style="outline"
+      >
+        Delete route
+      </Action>
+    );
+  }
+
+  // If there is a delete handler, this form is for editing a route
+  // Otherwise, it is for a new route
+  // The submit action label should be adjusted accordingly
+  get submitActionText() {
+    if (this.props.deleteHandler) return 'Apply';
+    return 'Add route';
   }
 
   render() {
@@ -81,14 +116,15 @@ export default class RouteForm extends React.Component {
             </div>
             <div className={ this.styler('route-field-domain') }>
               <label htmlFor={`${route.guid}-domain`}>Domain</label>
-              <select id={`${route.guid}-domain`} name="domain"
+              <select id={`${route.guid}-domain`} name="domain_guid"
                 onChange={ this._onChange }
+                value={ this.props.route.domain_guid }
               >
+                <option key="none">---</option>
                 { domains.map((domain) => {
-                  let selected = (domain === this.state.domain);
                   return (
-                    <option key={ domain } selected={ selected }>
-                      { domain }
+                    <option key={ domain.guid } value={ domain.guid } >
+                      { domain.name }
                     </option>
                   );
                 })}
@@ -111,20 +147,19 @@ export default class RouteForm extends React.Component {
         </div>
         <div className={ this.styler('route-form-actions') }>
           <PanelActions>
-            <Action label="Delete route" style="outline">
-              Delete route
-            </Action>
+            { this.deleteAction }
           </PanelActions>
           <PanelActions>
-            <Action onClickHandler={ this.props.handleCancel } label="Cancel"
-                style="outline">
+            <Action clickHandler={ this.props.cancelHandler } label="Cancel"
+              style="outline"
+            >
               Cancel
             </Action>
-            <Action handleClick={ this.props.handleCancel } label="Apply"
-              style="primary"
+            <Action clickHandler={ this._onSubmit }
+              label={ this.submitActionText } style="primary"
               disabled={ !this.hasChanged }
             >
-              Apply
+              { this.submitActionText }
             </Action>
           </PanelActions>
         </div>
