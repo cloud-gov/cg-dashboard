@@ -58,6 +58,80 @@ describe('cfApi', function() {
     expect(spy).toHaveBeenCalledWith(errorFetchRes);
   }
 
+  describe('createRoute()', function() {
+    it('should POST to the versioned /routes endpoint with data', function(done) {
+      const domainGuid = 'fake-domain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const host = 'fake-host';
+      const path = 'fake-path';
+      const expectedPayload = {
+        domain_guid: domainGuid,
+        space_guid: spaceGuid,
+        host,
+        path
+      };
+      const spy = sandbox.stub(http, 'post');
+      spy.returns(createPromise(true, {}));
+
+      cfApi.createRoute(domainGuid, spaceGuid, host, path).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch('/routes');
+        expect(args[1]).toEqual(expectedPayload);
+        done();
+      });
+    });
+
+    it('should call routeActions.createdRoute with response data', function(done) {
+      const domainGuid = 'fake-domain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const host = 'fake-host';
+      const path = 'fake-path';
+      const data = {
+        domainGuid,
+        spaceGuid
+      };
+      const stub = sandbox.stub(http, 'post');
+      stub.returns(Promise.resolve({ data }));
+      const actionSpy = sandbox.spy(routeActions, 'createdRoute');
+
+      cfApi.createRoute(domainGuid, spaceGuid, host, path).then(() => {
+        const arg = actionSpy.getCall(0).args[0];
+        expect(actionSpy).toHaveBeenCalledOnce();
+        expect(arg).toEqual(data);
+        done();
+      });
+    });
+  });
+
+  describe('deleteRoute()', function() {
+    it('should DELETE to the versioned /routes/:routeGuid endpoint with data', function() {
+      const routeGuid = 'fake-route-guid';
+      const spy = sandbox.stub(http, 'delete');
+      spy.returns(Promise.resolve());
+
+      cfApi.deleteRoute(routeGuid);
+
+      const args = spy.getCall(0).args;
+      expect(spy).toHaveBeenCalledOnce();
+      expect(args[0]).toMatch(`/routes/${routeGuid}`);
+    });
+
+    it('should call routeActions.deletedRoute with response data', function(done) {
+      const routeGuid = 'fake-route-guid';
+      const stub = sandbox.stub(http, 'delete');
+      const spy = sandbox.spy(routeActions, 'deletedRoute');
+      stub.returns(Promise.resolve({}));
+
+      cfApi.deleteRoute(routeGuid).then(() => {
+        const arg = spy.getCall(0).args[0];
+        expect(spy).toHaveBeenCalledOnce();
+        expect(arg).toEqual(routeGuid);
+        done();
+      });
+    });
+  });
+
   describe('fetchOne()', function() {
     it('should call an http get request with the versioned url', function() {
       var stub = sandbox.stub(http, 'get'),
@@ -960,6 +1034,99 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('service_bindings'));
       actual = spy.getCall(0).args[1];
       expect(actual).toEqual(serviceActions.receivedServiceBindings);
+    });
+  });
+
+  describe('putAppRouteAssociation()', function() {
+    it('should PUT to the versioned /routes/:routeGuid/apps/:appGuid', function() {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+
+      const spy = sandbox.stub(http, 'put');
+      spy.returns(Promise.resolve());
+
+      cfApi.putAppRouteAssociation(appGuid, routeGuid);
+
+      const args = spy.getCall(0).args;
+      expect(spy).toHaveBeenCalledOnce();
+      expect(args[0]).toMatch(`/routes/${routeGuid}/apps/${appGuid}`);
+    });
+
+    it('should call routeActions.associatedApp() with the routeGuid and appGuid', function(done) {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+
+      const stub = sandbox.stub(http, 'put');
+      const spy = sandbox.spy(routeActions, 'associatedApp');
+      stub.returns(Promise.resolve({}));
+
+      cfApi.putAppRouteAssociation(appGuid, routeGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toEqual(routeGuid);
+        expect(args[1]).toEqual(appGuid);
+        done();
+      });
+    });
+  });
+
+  describe('putRouteUpdate()', function() {
+    it('should PUT to the versioned /routes/:routeGuid with payload', function() {
+      const routeGuid = 'fake-route-guid';
+      const domainGuid = 'fake-dommain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const host = 'fake-host';
+      const path = 'fake-path';
+      const route = {
+        host,
+        path
+      };
+      const expected = {
+        domain_guid: domainGuid,
+        space_guid: spaceGuid,
+        host,
+        path
+      };
+
+      const spy = sandbox.stub(http, 'put');
+      spy.returns(Promise.resolve());
+
+      cfApi.putRouteUpdate(routeGuid, domainGuid, spaceGuid, route);
+
+      const args = spy.getCall(0).args;
+      expect(spy).toHaveBeenCalledOnce();
+      expect(args[0]).toMatch(`/routes/${routeGuid}`);
+      expect(args[1]).toMatch(expected);
+    });
+
+    it('should call routeActions.updatedRoute() with the routeGuid and route', function(done) {
+      const routeGuid = 'fake-route-guid';
+      const domainGuid = 'fake-dommain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const host = 'fake-host';
+      const path = 'fake-path';
+      const route = {
+        host,
+        path
+      };
+      const expected = {
+        domain_guid: domainGuid,
+        space_guid: spaceGuid,
+        host,
+        path
+      };
+
+      const stub = sandbox.stub(http, 'put');
+      const spy = sandbox.spy(routeActions, 'updatedRoute');
+      stub.returns(Promise.resolve({}));
+
+      cfApi.putRouteUpdate(routeGuid, domainGuid, spaceGuid, route).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toEqual(routeGuid);
+        expect(args[1]).toEqual(route);
+        done();
+      });
     });
   });
 });

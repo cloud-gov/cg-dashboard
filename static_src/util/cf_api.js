@@ -312,17 +312,63 @@ export default {
 
   fetchRoutesForApp(appGuid) {
     return this.fetchMany(`/apps/${appGuid}/routes`,
-        routeActions.receivedRoutesForApp,
-        appGuid);
+      routeActions.receivedRoutesForApp,
+      appGuid);
+  },
+
+  // http://apidocs.cloudfoundry.org/241/routes/creating_a_route.html
+  createRoute(domainGuid, spaceGuid, host, path) {
+    const payload = {
+      domain_guid: domainGuid,
+      space_guid: spaceGuid,
+      host,
+      path
+    };
+    return http.post(`${APIV}/routes`, payload).then((res) => {
+      routeActions.createdRoute(res.data);
+      return res.data;
+    }).catch((err) => errorActions.errorPost(err));
+  },
+
+  // http://apidocs.cloudfoundry.org/241/routes/delete_a_particular_route.html
+  deleteRoute(routeGuid) {
+    const url = `${APIV}/routes/${routeGuid}?recursive=true`;
+    return http.delete(url).then(() => {
+      routeActions.deletedRoute(routeGuid);
+    }).catch((err) => {
+      errorActions.errorDelete(err);
+    });
+  },
+
+  // http://apidocs.cloudfoundry.org/241/apps/associate_route_with_the_app.html
+  putAppRouteAssociation(appGuid, routeGuid) {
+    const url = `${APIV}/routes/${routeGuid}/apps/${appGuid}`;
+    return http.put(url).then(() => {
+      routeActions.associatedApp(routeGuid, appGuid);
+    }).catch((err) => errorActions.errorPut(err));
+  },
+
+  // http://apidocs.cloudfoundry.org/241/routes/update_a_route.html
+  putRouteUpdate(routeGuid, domainGuid, spaceGuid, route) {
+    const url = `${APIV}/routes/${routeGuid}`;
+    const payload = {
+      domain_guid: domainGuid,
+      space_guid: spaceGuid,
+      host: route.host,
+      path: route.path
+    };
+    return http.put(url, payload).then(() => {
+      routeActions.updatedRoute(routeGuid, route);
+    }).catch((err) => errorActions.errorPut(err));
   },
 
   fetchDomain(domainGuid) {
     return this.fetchOne(`/private_domains/${domainGuid}`,
-                         domainActions.receivedDomain);
+      domainActions.receivedDomain);
   },
 
   fetchServiceBindings(appGuid) {
     return this.fetchOne(`/apps/${appGuid}/service_bindings`,
-                         serviceActions.receivedServiceBindings);
+      serviceActions.receivedServiceBindings);
   }
 };

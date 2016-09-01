@@ -8,7 +8,7 @@ import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import { appActionTypes, domainActionTypes, routeActionTypes } from '../constants.js';
+import { appActionTypes, routeActionTypes } from '../constants.js';
 
 class RouteStore extends BaseStore {
   constructor() {
