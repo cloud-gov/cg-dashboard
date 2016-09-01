@@ -5,7 +5,6 @@
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
-import Reactable from 'reactable';
 
 import Action from './action.jsx';
 import serviceActions from '../actions/service_actions.js';
@@ -13,11 +12,11 @@ import ServicePlanStore from '../stores/service_plan_store.js';
 import createStyler from '../util/create_styler';
 
 function stateSetter(serviceGuid) {
-  const servicePlans = ServicePlanStore.getAllFromService(serviceGuid)
+  const servicePlans = ServicePlanStore.getAllFromService(serviceGuid);
 
   return {
     servicePlans,
-    empty: ServicePlanStore.fetched && !servicePlans.length,
+    empty: ServicePlanStore.fetched && !servicePlans.length
   };
 }
 
@@ -49,7 +48,7 @@ export default class ServicePlanList extends React.Component {
   }
 
   get columns() {
-    var columns = [
+    const columns = [
       { label: 'Service Plan Name', key: 'label' },
       { label: 'Free', key: 'free' },
       { label: 'Description', key: 'description' },
