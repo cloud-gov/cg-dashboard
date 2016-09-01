@@ -23,25 +23,22 @@ const defaultProps = {
 function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const currentAppGuid = AppStore.currentAppGuid;
-  let serviceInstances = ServiceInstanceStore.getAllBySpaceGuid(
-    currentSpaceGuid);
-  serviceInstances = serviceInstances.map((serviceInstance) => {
+  const serviceInstances = ServiceInstanceStore.getAllBySpaceGuid(currentSpaceGuid)
+  .map((serviceInstance) => {
     const servicePlan = ServicePlanStore.get(serviceInstance.service_plan_guid);
-    if (ServicePlanStore.getAll().length) {
-    }
     return Object.assign({}, serviceInstance, { servicePlan });
   });
   const serviceBindings = ServiceBindingStore.getAllByApp(currentAppGuid);
-  const boundServiceInstances = serviceInstances.filter((serviceInstance) => {
-    return !!serviceBindings.find((serviceBinding) => {
-      return serviceInstance.guid === serviceBinding.service_instance_guid;
-    });
-  });
-  const unboundServiceInstances = serviceInstances.filter((serviceInstance) => {
-    return boundServiceInstances.find((boundService) => {
-      return boundService.guid !== serviceInstance.guid;
-    });
-  });
+  const boundServiceInstances = serviceInstances.filter((serviceInstance) =>
+    !!serviceBindings.find((serviceBinding) =>
+      serviceInstance.guid === serviceBinding.service_instance_guid
+    )
+  );
+  const unboundServiceInstances = serviceInstances.filter((serviceInstance) =>
+    boundServiceInstances.find((boundService) =>
+      boundService.guid !== serviceInstance.guid
+    )
+  );
 
   return {
     boundServiceInstances,

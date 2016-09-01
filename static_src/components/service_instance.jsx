@@ -19,7 +19,7 @@ const defaultProps = {
   bound: false
 };
 
-export default class ServiceInstanceListPanel extends React.Component {
+export default class ServiceInstance extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -38,6 +38,7 @@ export default class ServiceInstanceListPanel extends React.Component {
   }
 
   get cost() {
+    if (!this.props.serviceInstance.servicePlan) return '';
     const cost = ServicePlanStore.getCost(this.props.serviceInstance.servicePlan);
     if (cost === 0) return 'Free';
     return `$${cost.toFixed(2)} monthly`;
@@ -58,9 +59,7 @@ export default class ServiceInstanceListPanel extends React.Component {
               <span>{ serviceInstance.servicePlan.name }</span>
             }
             <br />
-            { serviceInstance.servicePlan &&
-              <span>{ this.cost }</span>
-            }
+            <span>{ this.cost }</span>
           </span>
           <span className={ this.styler('panel-column', 'panel-column-less') }>
             <span>{ this.instanceState }</span>
@@ -73,5 +72,5 @@ export default class ServiceInstanceListPanel extends React.Component {
   }
 }
 
-ServiceInstanceListPanel.propTypes = propTypes;
-ServiceInstanceListPanel.defaultProps = defaultProps;
+ServiceInstance.propTypes = propTypes;
+ServiceInstance.defaultProps = defaultProps;

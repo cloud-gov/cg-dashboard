@@ -8,6 +8,7 @@
 
 .panel {
   margin-top: 2rem;
+  min-height: 10rem;
 }
 
 /* TODO don't expect just h1 */
