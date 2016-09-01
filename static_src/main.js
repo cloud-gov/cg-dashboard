@@ -19,6 +19,7 @@ import MainContainer from './components/main_container.jsx';
 import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
 import quotaActions from './actions/quota_actions.js';
+import routeActions from './actions/route_actions.js';
 import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
 import SpaceContainer from './components/space_container.jsx';
@@ -98,6 +99,7 @@ function app(orgGuid, spaceGuid, appGuid) {
   appActions.changeCurrentApp(appGuid);
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
+  routeActions.fetchRoutesForApp(appGuid);
   ReactDOM.render(
     <MainContainer>
       <AppContainer />
