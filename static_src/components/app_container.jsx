@@ -7,6 +7,7 @@ import AppSettingsPanel from './app_settings_panel.jsx';
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
+import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
 
 import createStyler from '../util/create_styler';
@@ -177,13 +178,7 @@ export default class AppContainer extends React.Component {
               </p>
             </aside>
           </section>
-          <section className={this.styler("section-card")}>
-            <h3>Services</h3>
-            <p>To bind or unbind a service instance to an app, follow the <a
-              href="https://docs.cloud.gov/apps/managed-services/#bind-the-service-instance"
-              target="_blank">managed services guide</a>.
-            </p>
-          </section>
+          <ServiceInstancePanel />
           <section className={this.styler("section-card")}>
             <h3>Events</h3>
             <p><a href={ this.eventsLink(this.state.app.name) }>

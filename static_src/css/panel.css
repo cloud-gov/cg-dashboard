@@ -1,7 +1,26 @@
 
 :root {
+  --primary: #157DE6;
+  --background-light: #F3F4F8;
   --panel-border-color: #e4e2e0;
   --panel-padding: 1em;
+}
+
+.panel {
+  margin-top: 2rem;
+  min-height: 10rem;
+}
+
+/* TODO don't expect just h1 */
+.panel h1 {
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.panel h1 + .panel-rows {
+  margin-top: 1rem;
 }
 
 .panel-header {
@@ -11,8 +30,9 @@
   padding: var(--panel-padding);
 }
 
-.panel-header strong {
-  font-size: 1.3rem;
+/* TODO don't expect just h3 */
+.panel-header h3 {
+  font-size: 1.1875rem;
 }
 
 .panel-header .panel-action {
@@ -25,16 +45,42 @@
 }
 
 .panel-rows {
-  border: 3px solid var(--panel-border-color);
+  border: 3px solid var(--background-light);
   border-radius: 5px;
 }
 
 .panel-row {
-  border-top: 1px solid var(--panel-border-color);
+  border-top: 2px solid var(--background-light);
 }
 
+/* TODO don't expect just h5 */
+.panel-row h5 {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.panel-row:last-of-type {
+  border-bottom: 2px solid var(--background-light);
+}
+
+/* TODO can't expect to be a div */
 .panel-row > div {
   display: flex;
   justify-content: space-between;
   padding: var(--panel-padding);
+}
+
+.panel-column {
+  flex: 1 0 0;
+}
+
+.panel-column:last-child {
+  padding-right: 2rem;
+  text-align: right;
+}
+
+.panel-column-less {
+  flex-grow: 0;
+  flex-shrink: 1;
+  min-width: 25%;
 }

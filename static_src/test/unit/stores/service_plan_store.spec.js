@@ -51,6 +51,35 @@ describe('ServicePlanStore', function() {
 
   });
 
+  describe('getCost()', function() {
+    it('should return 0 if any part of data is missing', function() {
+      let serviceInstance = {};
+      let actual = ServicePlanStore.getCost(serviceInstance);
+      expect(actual).toEqual(0);
+
+      serviceInstance = {
+        extra: {}
+      };
+      actual = ServicePlanStore.getCost(serviceInstance);
+      expect(actual).toEqual(0);
+
+      serviceInstance = {
+        extra: { costs: [{}]}
+      };
+      actual = ServicePlanStore.getCost(serviceInstance);
+      expect(actual).toEqual(0);
+    });
+
+    it('should return number if found', function() {
+      const cost = 10.23343;
+      let serviceInstance = {
+        extra: { costs: [{ amount: { usd: cost }}]}
+      };
+      let actual = ServicePlanStore.getCost(serviceInstance);
+      expect(actual).toEqual(cost);
+    });
+  });
+
   describe('on service instances received', function() {
     const servicePlanGuid = 'zxkv,12398dajkh';
     const fakeInstances = [
