@@ -12,16 +12,27 @@ export default {
   fetch(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: spaceActionTypes.SPACE_FETCH,
-      spaceGuid: spaceGuid
+      spaceGuid
     });
+  },
 
-    cfApi.fetchSpace(spaceGuid);
+  fetchAll() {
+    AppDispatcher.handleViewAction({
+      type: spaceActionTypes.SPACES_FETCH
+    });
   },
 
   receivedSpace(space) {
     AppDispatcher.handleServerAction({
       type: spaceActionTypes.SPACE_RECEIVED,
-      space: space
+      space
+    });
+  },
+
+  receivedSpaces(spaces) {
+    AppDispatcher.handleServerAction({
+      type: spaceActionTypes.SPACES_RECEIVED,
+      spaces
     });
   },
 

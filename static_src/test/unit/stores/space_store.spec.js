@@ -88,34 +88,36 @@ describe('SpaceStore', function() {
     });
   });
 
-  describe('on space change current', function() {
-    it('should emit a change event', function() {
-      const spaceGuid = 'zcxvadsjfcvbnm';
-      const space = {
-        guid: spaceGuid
-      };
-      let spy = sandbox.spy(SpaceStore, 'emitChange');
+  describe('on space actions all spaces received', function() {
+    it('should call mergeMany with spaces from action', function () {
+      const spy = sandbox.spy(SpaceStore, 'mergeMany');
+      const spaces = [{ guid: 'fake-guid-one' }]
+      const res = wrapInRes(spaces);
 
-      spaceActions.changeCurrentSpace(spaceGuid);
-      expect(spy).toHaveBeenCalledOnce();
+      spaceActions.receivedSpaces(res);
 
-      SpaceStore.push(space);
-      spy.reset();
-      spaceActions.changeCurrentSpace(spaceGuid);
       expect(spy).toHaveBeenCalledOnce();
+      expect(spy.getCall(0).args[1]).toEqual(spaces); 
     });
 
-    it('should should change the current space to the passed in guid',
-        function() {
-      const spaceGuid = 'zcxvadsjfcvbnm';
+    it('should set fetching to false and fetched to true', function() {
+      const spaces = wrapInRes([{ guid: 'fake-guid-one' }]);
+      SpaceStore.fetching = true;
+      SpaceStore.fetched = false;
 
-      SpaceStore._currentSpaceGuid = 'adskfjxvb';
+      spaceActions.receivedSpaces(spaces);
 
-      spaceActions.changeCurrentSpace(spaceGuid);
+      expect(SpaceStore.fetching).toEqual(false);
+      expect(SpaceStore.fetched).toEqual(true);
+    });
 
-      const actual = SpaceStore.currentSpaceGuid;
+    it('should emit a change event', function() {
+      const spaces = wrapInRes([{ guid: 'fake-guid-one' }]);
+      const spy = sandbox.spy(SpaceStore, 'emitChange');
 
-      expect(actual).toEqual(spaceGuid);
+      spaceActions.receivedSpaces(spaces);
+
+      expect(spy).toHaveBeenCalledOnce();
     });
   });
 

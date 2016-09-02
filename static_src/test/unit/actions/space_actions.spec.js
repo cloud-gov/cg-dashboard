@@ -2,7 +2,7 @@
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import { assertAction, setupViewSpy, setupUISpy, setupServerSpy }
+import { assertAction, setupViewSpy, setupUISpy, setupServerSpy, wrapInRes }
   from '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
 import spaceActions from '../../../actions/space_actions.js';
@@ -40,6 +40,17 @@ describe('spaceActions', () => {
     });
   });
 
+  describe('fetchAll()', () => {
+    it('should dispatch a view event to fetch all spaces', () => {
+      let spy = setupViewSpy(sandbox);
+
+      spaceActions.fetchAll();
+
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(spaceActionTypes.SPACES_FETCH);
+    });
+  });
+
   describe('receivedSpace()', () => {
     it('should dispatch server event of type space received', () => {
       var expected = { guid: 'asdf' },
@@ -51,6 +62,22 @@ describe('spaceActions', () => {
       spaceActions.receivedSpace(expected);
 
       assertAction(spy, spaceActionTypes.SPACE_RECEIVED, expectedParams);
+    });
+  });
+
+  describe('receivedSpaces()', () => {
+    it('should dispatch a server event for all spaces received', () => {
+      const expected = wrapInRes([{ guid: 'fake-guid-one' }]);
+      const expectedParams = false;
+      const spy = setupServerSpy(sandbox);
+
+      spaceActions.receivedSpaces(expected);
+
+      let args = spy.getCall(0).args[0];
+      let { type, spaces } = args;
+
+      expect(type).toEqual(spaceActionTypes.SPACES_RECEIVED);
+      expect(spaces).toEqual(expected);
     });
   });
 

@@ -4,6 +4,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
+import formatRoute from '../util/format_route';
 import RouteStore from '../stores/route_store';
 import ServiceInstanceStore from '../stores/service_instance_store';
 
@@ -96,10 +97,13 @@ export default class ActivityLogItem extends React.Component {
 
   get eventContent() {
     let content = `${this.props.item.type} isn't handled`;
+    let url = 'a url';
     const item = this.props.item;
     const metadata = item.metadata;
     const route = RouteStore.get(metadata.route_guid);
-    const url = (route) ? `${route.host}${route.domain}/${route.path}` : 'a url';
+    if (route) {
+      url = formatRoute(route.domain, route.host, route.path);
+    }
     const link = (route) ? (<a href={ `//${url}` }>{ url }</a>) : url;
 
     // TODO: if route is not found, trigger fetch action to get it

@@ -3,6 +3,7 @@ import 'cloudgov-style/css/base.css';
 import './css/main.css';
 // Icon used in cg-uaa.
 import './img/dashboard-uaa-icon.jpg';
+import 'cloudgov-style/img/favicon.ico';
 
 import { Router } from 'director';
 import React from 'react';
@@ -18,6 +19,7 @@ import MainContainer from './components/main_container.jsx';
 import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
 import quotaActions from './actions/quota_actions.js';
+import routeActions from './actions/route_actions.js';
 import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
 import SpaceContainer from './components/space_container.jsx';
@@ -97,6 +99,7 @@ function app(orgGuid, spaceGuid, appGuid) {
   appActions.changeCurrentApp(appGuid);
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
+  routeActions.fetchRoutesForApp(appGuid);
   ReactDOM.render(
     <MainContainer>
       <AppContainer />
@@ -123,6 +126,7 @@ function checkAuth() {
     uaaApi.fetchUserInfo();
   });
   orgActions.fetchAll();
+  spaceActions.fetchAll();
 }
 
 function notFound() {

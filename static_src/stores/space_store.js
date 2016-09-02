@@ -7,6 +7,7 @@
 import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
+import cfApi from '../util/cf_api.js';
 import { orgActionTypes, spaceActionTypes } from '../constants.js';
 
 class SpaceStore extends BaseStore {
@@ -36,6 +37,15 @@ class SpaceStore extends BaseStore {
       case spaceActionTypes.SPACE_FETCH: {
         this.fetching = true;
         this.fetched = false;
+        cfApi.fetchSpace(action.spaceGuid);
+        this.emitChange();
+        break;
+      }
+
+      case spaceActionTypes.SPACES_FETCH: {
+        this.fetching = true;
+        this.fetched = false;
+        cfApi.fetchSpaces();
         this.emitChange();
         break;
       }
@@ -45,6 +55,15 @@ class SpaceStore extends BaseStore {
         this.fetched = true;
         this.merge('guid', action.space, () => { });
         this.emitChange();
+        break;
+      }
+
+      case spaceActionTypes.SPACES_RECEIVED: {
+        this.mergeMany('guid', this.formatSplitResponse(action.spaces), () => {
+          this.fetching = false;
+          this.fetched = true;
+          this.emitChange();
+        });
         break;
       }
 

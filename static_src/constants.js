@@ -45,8 +45,13 @@ const orgActionTypes = keymirror({
 const spaceActionTypes = keymirror({
   // Action to fetch a single space from the server.
   SPACE_FETCH: null,
+  // Action to fetch all spaces (gets different information from single fetch,
+  // such as quotas)
+  SPACES_FETCH: null,
   // Action when a single space is received from the server.
   SPACE_RECEIVED: null,
+  // Action when all spaces are received from the server.
+  SPACES_RECEIVED: null,
   // When the user changes the current space they are looking at.
   SPACE_CHANGE_CURRENT: null
 });
@@ -145,6 +150,26 @@ const userActionTypes = keymirror({
 });
 
 const routeActionTypes = keymirror({
+  // Action when a route has been associated with an pp
+  ROUTE_APP_ASSOCIATED: null,
+  // Action for creating routes
+  ROUTE_CREATE: null,
+  // Action for receiving the created route
+  ROUTE_CREATED: null,
+  // Action to create a route and associate it with an app
+  ROUTE_CREATE_AND_ASSOCIATE: null,
+  // Action for hiding route creation form
+  ROUTE_CREATE_FORM_HIDE: null,
+  // Action for showing route creation form
+  ROUTE_CREATE_FORM_SHOW: null,
+  // Action for removing a route from an app
+  ROUTE_DELETE: null,
+  // Action when a route has been deleted
+  ROUTE_DELETED: null,
+  // Action for updating a route
+  ROUTE_UPDATE: null,
+  // Action when a route has been updated
+  ROUTE_UPDATED: null,
   ROUTES_FOR_APP_FETCH: null,
   ROUTES_FOR_APP_RECEIVED: null,
   ROUTE_TOGGLE_EDIT: null

@@ -2,7 +2,6 @@
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import classNames from 'classnames';
 import createStyler from '../util/create_styler';
 
 const BUTTON_STYLES = [
@@ -26,7 +25,7 @@ const propTypes = {
   label: React.PropTypes.string,
   type: React.PropTypes.oneOf(BUTTON_TYPES),
   disabled: React.PropTypes.bool,
-  onClickHandler: React.PropTypes.func
+  clickHandler: React.PropTypes.func
 };
 
 const defaultProps = {
@@ -35,7 +34,7 @@ const defaultProps = {
   label: '',
   type: 'button',
   disabled: false,
-  onClickHandler: () => true
+  clickHandler: () => true
 };
 
 export default class Action extends React.Component {
@@ -43,15 +42,10 @@ export default class Action extends React.Component {
     super(props);
     this.props = props;
     this.styler = createStyler(style);
-    this._handleClick = this._handleClick.bind(this);
-  }
-
-  _handleClick(ev) {
-    return this.props.onClickHandler(ev);
   }
 
   render() {
-    const styleClass = `usa-button-${ this.props.style }`;
+    const styleClass = `usa-button-${this.props.style}`;
     let classes = this.styler(...this.props.classes);
     let content = <div></div>;
 
@@ -61,7 +55,7 @@ export default class Action extends React.Component {
         classList.push('usa-button-disabled');
       } else {
         classList.push('usa-button');
-        classList.push(styleClass)
+        classList.push(styleClass);
       }
       classes = this.styler(...classList);
     }
@@ -71,7 +65,7 @@ export default class Action extends React.Component {
         <a href="#"
           className={ classes }
           title={ this.props.label }
-          onClick={ this._handleClick }
+          onClick={ (ev) => this.props.clickHandler(ev) }
           disabled={ this.props.disabled }
         >
           { this.props.children }
@@ -82,7 +76,7 @@ export default class Action extends React.Component {
         <button
           className={ classes }
           aria-label={ this.props.label }
-          onClick={ this._handleClick }
+          onClick={ (ev) => this.props.clickHandler(ev) }
           disabled={this.props.disabled}
           type={this.props.type}
         >

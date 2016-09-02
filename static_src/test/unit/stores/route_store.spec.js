@@ -27,7 +27,190 @@ describe('RouteStore', function() {
     });
   });
 
-  describe('on route for app fetch', function() {
+  describe('routeActionTypes.ROUTE_APP_ASSOCIATED', function () {
+    it('should add app_guid to the route object and set editing to false', function () {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+
+      RouteStore.push({ guid: routeGuid, editing: true });
+
+      AppDispatcher.handleServerAction({
+        type: routeActionTypes.ROUTE_APP_ASSOCIATED,
+        appGuid,
+        routeGuid
+      });
+
+      const actual = RouteStore.get(routeGuid);
+      expect(actual.app_guid).toEqual(appGuid);
+      expect(actual.editing).toEqual(false);
+    });
+
+    it('should set showCreateRouteForm to false and emitChange()', function () {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      RouteStore.showCreateRouteForm = true;
+      AppDispatcher.handleServerAction({
+        type: routeActionTypes.ROUTE_APP_ASSOCIATED,
+        appGuid,
+        routeGuid
+      });
+
+      expect(RouteStore.showCreateRouteForm).toEqual(false);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('routeActionTypes.ROUTE_CREATE', function() {
+    it('should call cfApi.createRoute with params', function (){
+      const domainGuid = 'fake-domain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const host = 'fake-host';
+      const path = 'fake-path';
+      const spy = sandbox.spy(cfApi, 'createRoute');
+
+      AppDispatcher.handleViewAction({
+        type: routeActionTypes.ROUTE_CREATE,
+        domainGuid,
+        spaceGuid,
+        host,
+        path
+      });
+
+      const args = spy.getCall(0).args;
+      expect(spy).toHaveBeenCalledOnce();
+      expect(args).toEqual([domainGuid, spaceGuid, host, path]);
+    });
+  });
+
+  describe('routeActionTypes.ROUTE_CREATE_AND_ASSOCIATE', function() {
+    it('should emitChange()', function () {
+      const appGuid = 'fake-app-guid';
+      const domainGuid = 'fake-domain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const route = {
+        host: 'fake-host',
+        path: 'fake-path'
+      };
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: routeActionTypes.ROUTE_CREATE_AND_ASSOCIATE,
+        appGuid,
+        domainGuid,
+        spaceGuid,
+        route
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should call cfApi.createRoute and then cfApi.putAppRouteAssociation', function() {
+      const appGuid = 'fake-app-guid';
+      const domainGuid = 'fake-domain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const route = {
+        host: 'fake-host',
+        path: 'fake-path'
+      };
+      const createRouteSpy = sandbox.stub(cfApi, 'createRoute');
+      const putAppRouteAssociationSpy = sandbox.stub(cfApi, 'putAppRouteAssociation');
+
+      createRouteSpy.returns(Promise.resolve());
+      putAppRouteAssociationSpy.returns(Promise.resolve());
+
+      AppDispatcher.handleViewAction({
+        type: routeActionTypes.ROUTE_CREATE_AND_ASSOCIATE,
+        appGuid,
+        domainGuid,
+        spaceGuid,
+        route
+      });
+
+      expect(createRouteSpy).toHaveBeenCalledOnce();
+      // TODO: unsure of how to test the putAppRouteAssociation part
+    });
+  });
+
+  describe('routeActionTypes.ROUTE_CREATE_FORM_HIDE', function() {
+    it('should set showCreateRouteForm to false and emitChange()', function () {
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      RouteStore.showCreateRouteForm = true;
+      AppDispatcher.handleUIAction({
+        type: routeActionTypes.ROUTE_CREATE_FORM_HIDE
+      })
+
+      expect(RouteStore.showCreateRouteForm).toEqual(false);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('routeActionTypes.ROUTE_CREATE_FORM_SHOW', function () {
+    it('should set showCreateRouteForm to true and emitChange()', function () {
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      RouteStore.showCreateRouteForm = false;
+      AppDispatcher.handleUIAction({
+        type: routeActionTypes.ROUTE_CREATE_FORM_SHOW
+      })
+
+      expect(RouteStore.showCreateRouteForm).toEqual(true);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('routeActionTypes.ROUTE_CREATED', function () {
+    it('should add route and emitChange()', function () {
+      const routeGuid = 'fake-route-guid';
+      const route = wrapInRes([ { guid: routeGuid } ])[0];
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      AppDispatcher.handleServerAction({
+        type: routeActionTypes.ROUTE_CREATED,
+        route
+      });
+
+      expect(RouteStore.get(routeGuid)).toEqual({ guid: routeGuid });
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('routeActionTypes.ROUTE_DELETE', function () {
+    it('should call cfApi.deleteRoute with a route guid', function () {
+      const routeGuid = 'fake-route-guid';
+      const spy = sandbox.spy(cfApi, 'deleteRoute');
+
+      AppDispatcher.handleViewAction({
+        type: routeActionTypes.ROUTE_DELETE,
+        routeGuid
+      });
+
+      const arg = spy.getCall(0).args[0];
+      expect(spy).toHaveBeenCalledOnce();
+      expect(arg).toEqual(routeGuid);
+    });
+  });
+
+  describe('routeActionTypes.ROUTE_DELETED', function () {
+    it('should remove the route and emitChange()', function () {
+      const routeGuid = 'fake-route-guid';
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      RouteStore._data = Immutable.fromJS([{ guid: routeGuid }]);
+
+      AppDispatcher.handleViewAction({
+        type: routeActionTypes.ROUTE_DELETED,
+        routeGuid
+      });
+
+      expect(RouteStore.getAll().length).toEqual(0);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('routeActionTypes.ROUTES_FOR_APP_FETCH', function() {
     it('should fetch routes for app with app guid from api', function() {
       var spy = sandbox.spy(cfApi, 'fetchRoutesForApp'),
           expectedGuid = 'adfasdzcvzxcvb23r';
@@ -43,7 +226,7 @@ describe('RouteStore', function() {
     });
   });
 
-  describe('on route for app received', function() {
+  describe('routeActionTypes.ROUTES_FOR_APP_RECEIVED', function() {
     it('should emit a change event', function() {
       const appGuid = '2893hazxcmv';
       const spy = sandbox.spy(RouteStore, 'emitChange');
@@ -94,7 +277,7 @@ describe('RouteStore', function() {
     });
   });
 
-  describe('on route toggle edit', function () {
+  describe('routeActionTypes.ROUTE_TOGGLE_EDIT', function () {
     it('should toggle the "editing" value of the route', function () {
       const routeGuid = 'route-guid';
       const route = { guid: routeGuid };
@@ -115,37 +298,60 @@ describe('RouteStore', function() {
     });
   });
 
-  describe('on domain received', function() {
-    it('should add the domain to the existing route based on its guid',
-       function() {
-      const sharedDomainGuid = 'vxc234kjh';
-      const existingRoute = { guid: 'zxcvz', domain_guid: sharedDomainGuid };
-      const domain = { guid: sharedDomainGuid, name: '.gov' };
+  describe('routeActionTypes.ROUTE_UPDATE', function () {
+    it('should call cfApi.putRouteUpdate with params', function () {
+      const routeGuid = 'fake-route-guid';
+      const domainGuid = 'fake-domain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const route = {
+        host: 'fake-host',
+        path: 'fake-path'
+      };
+      const spy = sandbox.spy(cfApi, 'putRouteUpdate');
 
-      RouteStore.push(existingRoute);
-
-      AppDispatcher.handleServerAction({
-        type: domainActionTypes.DOMAIN_RECEIVED,
-        domain: wrapInRes([domain])[0]
+      AppDispatcher.handleViewAction({
+        type: routeActionTypes.ROUTE_UPDATE,
+        routeGuid,
+        domainGuid,
+        spaceGuid,
+        route
       });
 
-      const expected = Object.assign({}, existingRoute, { domain: domain.name });
-      const actual = RouteStore.get(existingRoute.guid);
+      const args = spy.getCall(0).args;
+      expect(spy).toHaveBeenCalledWith();
+      expect(args).toEqual([routeGuid, domainGuid, spaceGuid, route]);
+    });
+  });
 
-      expect(actual).toEqual(expected);
+  describe('routeActionTypes.ROUTE_UPDATED', function () {
+    it('should update route and set editing to false', function () {
+      const routeGuid = 'fake-route-guid';
+      const route = { guid: routeGuid, foo: 'bar' };
+
+      RouteStore.push({ guid: routeGuid, editing: true });
+
+      AppDispatcher.handleServerAction({
+        type: routeActionTypes.ROUTE_UPDATED,
+        routeGuid,
+        route
+      });
+
+      expect(RouteStore.get(routeGuid).foo).toEqual('bar');
+      expect(RouteStore.get(routeGuid).editing).toEqual(false);
     });
 
-    it('should not do anything if matching route not found', function() {
-      const domain = { guid: 'vbxczzxcv', name: '.gov' };
-
-      expect(RouteStore.isEmpty).toBeTruthy();
+    it('should emitChange()', function () {
+      const routeGuid = 'fake-route-guid';
+      const route = { guid: routeGuid };
+      const spy = sandbox.spy(RouteStore, 'emitChange');
 
       AppDispatcher.handleServerAction({
-        type: domainActionTypes.DOMAIN_RECEIVED,
-        domain: wrapInRes([domain])[0]
+        type: routeActionTypes.ROUTE_UPDATED,
+        routeGuid,
+        route
       });
 
-      expect(RouteStore.isEmpty).toBeTruthy();
+      expect(spy).toHaveBeenCalledOnce();
     });
   });
 });

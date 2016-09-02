@@ -18,8 +18,98 @@ describe('routeActions', function() {
     sandbox.restore();
   });
 
+  describe('associatedApp()', function() {
+    it('should dispatch ROUTE_APP_ASSOCIATED view event & the app/route guids',
+    function () {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+      const expected = {
+        appGuid,
+        routeGuid
+      };
+      const spy = setupViewSpy(sandbox);
+
+      routeActions.associatedApp(routeGuid, appGuid);
+
+      assertAction(spy, routeActionTypes.ROUTE_APP_ASSOCIATED, expected);
+    })
+  });
+
+  describe('createRoute()', function () {
+    it('should dispatch ROUTE_CREATE view event with params', function () {
+      const domainGuid = 'fake-domain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const route = {
+        host: 'fake-host',
+        path: 'fake-path'
+      };
+      const expected = {
+        domainGuid,
+        spaceGuid,
+        host: route.host,
+        path: route.path
+      };
+      const spy = setupViewSpy(sandbox);
+
+      routeActions.createRoute(domainGuid, spaceGuid, route);
+      assertAction(spy, routeActionTypes.ROUTE_CREATE, expected);
+    });
+  });
+
+  describe('createdRoute()', function() {
+    it('should dipsatch ROUTE_CREATED server event with route', function () {
+      const route = { guid: 'fake-route-guid' };
+      const spy = setupServerSpy(sandbox);
+
+      routeActions.createdRoute(route);
+      assertAction(spy, routeActionTypes.ROUTE_CREATED, { route });
+    });
+  });
+
+  describe('createRouteAndAssociate()', function() {
+    it('should dispatch ROUTE_CREATE_AND_ASSOCIATE view event with params', function() {
+      const routeGuid = 'fake-route-guid';
+      const appGuid = 'fake-app-guid';
+      const domainGuid = 'fake-domain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const route = {
+
+      };
+      const expected = {
+        appGuid,
+        domainGuid,
+        spaceGuid,
+        route
+      };
+      const spy = setupViewSpy(sandbox);
+
+      routeActions.createRouteAndAssociate(appGuid, domainGuid, spaceGuid, route);
+      assertAction(spy, routeActionTypes.ROUTE_CREATE_AND_ASSOCIATE, expected);
+    });
+  });
+
+  describe('deleteRoute()', function() {
+    it('should dispatch ROUTE_DELETE view event with route guid', function () {
+      const routeGuid = 'fake-route-guid';
+      const spy = setupViewSpy(sandbox);
+
+      routeActions.deleteRoute(routeGuid);
+      assertAction(spy, routeActionTypes.ROUTE_DELETE, { routeGuid });
+    })
+  })
+
+  describe('deletedRoute()', function() {
+    it('should dispatch ROUTE_DELETED view event with route guid', function () {
+      const routeGuid = 'fake-route-guid';
+      const spy = setupViewSpy(sandbox);
+
+      routeActions.deletedRoute(routeGuid);
+      assertAction(spy, routeActionTypes.ROUTE_DELETED, { routeGuid });
+    })
+  });
+
   describe('fetchRoutesForApp()', function() {
-    it('should dispatch a view event of type routes for app fetch', function() {
+    it('should dispatch ROUTES_FOR_APP_FETCH view event with params', function() {
       var expectedAppGuid = 'asdflkjzzxcv',
           expectedParams = {
             appGuid: expectedAppGuid
@@ -31,6 +121,15 @@ describe('routeActions', function() {
 
       assertAction(spy, routeActionTypes.ROUTES_FOR_APP_FETCH,
                    expectedParams)
+    });
+  });
+
+  describe('hideCreateForm()', function() {
+    it('should dispatch ROUTE_CREATE_FORM_HIDE UI event', function() {
+      const spy = setupUISpy(sandbox);
+
+      routeActions.hideCreateForm();
+      assertAction(spy, routeActionTypes.ROUTE_CREATE_FORM_HIDE);
     });
   });
 
@@ -57,6 +156,15 @@ describe('routeActions', function() {
     });
   });
 
+  describe('showCreateForm()', function() {
+    it('should dispatch ROUTE_CREATE_FORM_HIDE UI event', function() {
+      const spy = setupUISpy(sandbox);
+
+      routeActions.showCreateForm();
+      assertAction(spy, routeActionTypes.ROUTE_CREATE_FORM_SHOW);
+    });
+  });
+
   describe('toggleEdit()', function () {
     it('should dispatch a UI action with a route guid', function () {
       var expectedRouteGuid = 'route-guid',
@@ -68,8 +176,44 @@ describe('routeActions', function() {
 
       routeActions.toggleEdit(expectedRouteGuid);
 
-      assertAction(spy, routeActionTypes.ROUTE_TOGGLE_EDIT,
-                   expectedParams)
+      assertAction(spy, routeActionTypes.ROUTE_TOGGLE_EDIT, expectedParams);
     });
   });
+
+  describe('updateRoute()', function (){
+    it('should dispatch ROUTE_UPDATE view event with params', function() {
+      const routeGuid = 'fake-route-guid';
+      const domainGuid = 'fake-domain-guid';
+      const spaceGuid = 'fake-space-guid';
+      const route = {
+        host: 'fake-host',
+        path: 'fake-path'
+      };
+      const expected = {
+        routeGuid,
+        domainGuid,
+        spaceGuid,
+        route
+      };
+      const spy = setupViewSpy(sandbox);
+
+      routeActions.updateRoute(routeGuid, domainGuid, spaceGuid, route)
+      assertAction(spy, routeActionTypes.ROUTE_UPDATE, expected);
+    });
+  });
+
+  describe('updatedRoute()', function (){
+    it('should dispatch ROUTE_UPDATED server event with params', function() {
+      const routeGuid = 'fake-route-guid';
+      const route = {
+        host: 'fake-host',
+        path: 'fake-path'
+      };
+      const spy = setupServerSpy(sandbox);
+
+      routeActions.updatedRoute(routeGuid, route);
+      assertAction(spy, routeActionTypes.ROUTE_UPDATED, { routeGuid, route });
+    });
+  });
+
 });
