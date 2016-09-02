@@ -93,7 +93,7 @@ export default class RouteForm extends React.Component {
     if (!this.props.deleteHandler) return null;
     return (
       <Action clickHandler={ this.props.deleteHandler } label="Delete route"
-        style="outline"
+        type="link" style="gray"
       >
         Delete route
       </Action>
@@ -117,7 +117,7 @@ export default class RouteForm extends React.Component {
         <fieldset>
           <div className={ this.styler('route-fields') }>
             <div className={ this.styler('route-field-host') }>
-              <label htmlFor={`${route.guid}-host`}>Hostname</label>
+              <label htmlFor={`${route.guid}-host`}>Host</label>
               <input type="text" id={`${route.guid}-host`}
                 name="host" value={ this.state.host }
                 onChange={ this._onChange }
@@ -140,7 +140,7 @@ export default class RouteForm extends React.Component {
               </select>
             </div>
             <div className={ this.styler('route-field-path') }>
-              <label htmlFor={`${route.guid}-path`}>Path</label>
+              <label htmlFor={`${route.guid}-path`}>Path (optional)</label>
               <input type="text" id={`${route.guid}-path`}
                 name="path" value={ this.state.path }
                 onChange={ this._onChange }
@@ -151,6 +151,7 @@ export default class RouteForm extends React.Component {
         <div>
           <label htmlFor="route-preview">Route preview</label>
           <input type="text" readOnly id="route-preview"
+            className={ this.styler('route-form-preview') }
             value={ this.fullUrl }
           ></input>
         </div>

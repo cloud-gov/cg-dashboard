@@ -1,6 +1,7 @@
 
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import panelCss from '../css/panel.css';
 
 import createStyler from '../util/create_styler';
 
@@ -41,7 +42,7 @@ export default class Action extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.styler = createStyler(style);
+    this.styler = createStyler(style, panelCss);
   }
 
   render() {
@@ -61,6 +62,12 @@ export default class Action extends React.Component {
     }
 
     if (this.props.type === 'link') {
+      if (this.props.style === 'gray') {
+        if (!classes.length) {
+          classes = [];
+        }
+        classes.push(this.styler('link-gray'));
+      }
       content = (
         <a href="#"
           className={ classes }

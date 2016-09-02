@@ -12,6 +12,10 @@ body {
   font-weight: 500;
 }
 
+.link-gray {
+  color: #5C626C !important;
+}
+
 .panel {
   margin-top: 2rem;
   min-height: 10rem;
@@ -36,7 +40,7 @@ body {
   margin-top: 1rem;
 }
 
-.panel-actions > * {
+.panel-actions > *:not(button) {
   color: var(--gray);
   margin-right: 2rem;
 }
