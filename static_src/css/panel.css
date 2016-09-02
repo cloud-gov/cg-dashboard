@@ -4,11 +4,24 @@
   --background-light: #F3F4F8;
   --panel-border-color: #e4e2e0;
   --panel-padding: 1em;
+  --gray: #8E8E8E;
+}
+
+/* TODO move to base */
+body {
+  font-weight: 500;
 }
 
 .panel {
   margin-top: 2rem;
   min-height: 10rem;
+}
+
+/* TODO move to global rule */
+.panel a {
+  color: var(--primary);
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 /* TODO don't expect just h1 */
@@ -21,6 +34,15 @@
 
 .panel h1 + .panel-rows {
   margin-top: 1rem;
+}
+
+.panel-actions > * {
+  color: var(--gray);
+  margin-right: 2rem;
+}
+
+.panel-actions > *:last-child {
+  margin-right: 0;
 }
 
 .panel-header {
