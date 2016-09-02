@@ -93,7 +93,7 @@ export default class RouteForm extends React.Component {
     if (!this.props.deleteHandler) return null;
     return (
       <Action clickHandler={ this.props.deleteHandler } label="Delete route"
-        type="link" style="gray"
+        type="link" style="cautious"
       >
         Delete route
       </Action>

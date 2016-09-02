@@ -1,5 +1,5 @@
 
-import style from 'cloudgov-style';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import panelCss from '../css/panel.css';

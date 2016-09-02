@@ -7,25 +7,9 @@
   --gray: #8E8E8E;
 }
 
-/* TODO move to base */
-body {
-  font-weight: 500;
-}
 
 .link-gray {
   color: #5C626C !important;
-}
-
-.panel {
-  margin-top: 2rem;
-  min-height: 10rem;
-}
-
-/* TODO move to global rule */
-.panel a {
-  color: var(--primary);
-  font-weight: bold;
-  text-decoration: underline;
 }
 
 /* TODO don't expect just h1 */
@@ -40,8 +24,7 @@ body {
   margin-top: 1rem;
 }
 
-.panel-actions > *:not(button) {
-  color: var(--gray);
+.panel-actions > * {
   margin-right: 2rem;
 }
 
