@@ -14,14 +14,17 @@
   outline: 2px solid var(--primary);
 }
 
+/* TODO is this needed? */
 .route-form-preview {
   color: var(--warning);
 }
 
+/* TODO move to global */
 .route-form label {
   color: var(--primary);
 }
 
+/* TODO move to panel code somehwere */
 .route-form {
   background-color: var(--background-light);
   padding: var(--breathing-room);
@@ -70,6 +73,7 @@
   width: 100%;
 }
 
+/* TODO probalby remove not using panel action? */
 .route-form-actions .panel-action {
   flex-grow: 1;
 }
@@ -101,6 +105,7 @@
   outline-color: transparent;
 }
 
+/* TODO move to global */
 .route-form *[disabled] {
   background-color: #aeb0b5;
   cursor: not-allowed;
