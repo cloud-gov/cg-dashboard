@@ -137,7 +137,7 @@ export default class RouteList extends React.Component {
     return (
       <PanelGroup>
         <PanelHeader>
-          <strong>Routes</strong>
+          <h3>Routes</h3>
           <span>{ this.state.routes.length } of { routeLimit }</span>
           <PanelActions>
             { this.addRouteAction }
