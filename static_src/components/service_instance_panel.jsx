@@ -1,6 +1,7 @@
 
-import style from 'cloudgov-style';
 import React from 'react';
+
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';

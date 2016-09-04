@@ -1,6 +1,7 @@
 
-import style from 'cloudgov-style';
 import React from 'react';
+
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import Panel from './panel.jsx';
 import RouteList from './route_list.jsx';

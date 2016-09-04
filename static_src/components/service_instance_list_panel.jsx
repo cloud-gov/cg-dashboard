@@ -1,6 +1,7 @@
 
-import style from 'cloudgov-style';
 import React from 'react';
+
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import PanelRow from './panel_row.jsx';
 import ServiceInstance from './service_instance.jsx';
