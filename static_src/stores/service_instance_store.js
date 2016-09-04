@@ -12,13 +12,18 @@ import { serviceActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 import ServicePlanStore from './service_plan_store.js';
 
-const OPERATION_STATES = {
-  failed: 'Failed',
-  deleting: 'Deleting',
-  processing: 'In progress',
-  running: 'Running',
-  inactive: 'Stopped'
-};
+const OPERATION_FAILED = 'failed';
+const OPERATION_DELETING = 'deleting';
+const OPERATION_PROCESSING = 'processing';
+const OPERATION_RUNNING = 'running';
+const OPERATION_INACTIVE = 'inactive';
+
+const OPERATION_STATES = {};
+OPERATION_STATES[OPERATION_FAILED] = 'Failed';
+OPERATION_STATES[OPERATION_DELETING] = 'Deleting';
+OPERATION_STATES[OPERATION_PROCESSING] = 'In progress';
+OPERATION_STATES[OPERATION_RUNNING] = 'Running';
+OPERATION_STATES[OPERATION_INACTIVE] = 'Stopped';
 
 class ServiceInstanceStore extends BaseStore {
   constructor() {
@@ -46,21 +51,21 @@ class ServiceInstanceStore extends BaseStore {
 
   getInstanceState(serviceInstance) {
     const lastOp = serviceInstance.last_operation;
-    if (!lastOp) return 'running';
+    if (!lastOp) return OPERATION_RUNNING;
 
     if (lastOp.state === 'failed') {
-      return 'failed';
+      return OPERATION_FAILED;
     }
     if (lastOp.type === 'delete') {
-      return 'deleting';
+      return OPERATION_DELETING;
     }
-    return 'running';
+    return OPERATION_RUNNING;
   }
 
   getInstanceReadableState(serviceInstance) {
     if (!serviceInstance.last_operation) return OPERATION_STATES.running;
     let state = this.getInstanceState(serviceInstance);
-    if (state === 'failed') {
+    if (state === OPERATION_FAILED) {
       state = `serviceInstance.last_operation.type ${OPERATION_STATES[state]}`;
     }
     return OPERATION_STATES[state];
@@ -85,43 +90,21 @@ class ServiceInstanceStore extends BaseStore {
           this.fetched = true;
         }
 
-        this.merge('guid', instance, () => { });
-        this.emitChange();
+        this.merge('guid', instance, () => {
+          this.emitChange();
+        });
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
         const services = this.formatSplitResponse(action.serviceInstances);
-        this.mergeMany('guid', services, () => { });
-        this.fetching = false;
-        this.fetched = true;
-        this.emitChange();
+        this.mergeMany('guid', services, () => {
+          this.fetching = false;
+          this.fetched = true;
+          this.emitChange();
+        });
         break;
       }
-
-      /*
-      case serviceActionTypes.SERVICE_BINDINGS_RECEIVED: {
-        const bindings = this.formatSplitResponse(action.serviceBindings);
-        this.fetching = true;
-        this.fetched = false;
-        this.emitChange();
-        const instanceRequests = [];
-        for (const binding of bindings) {
-          instanceRequests.push(cfApi.fetchServiceInstance(
-            binding.service_instance_guid));
-        }
-        if (instanceRequests.length) {
-          this.waitingOnRequests = true;
-          Promise.all(instanceRequests).then(() => {
-            this.waitingOnRequests = false;
-            this.fetching = false;
-            this.fetched = true;
-            this.emitChange();
-          });
-        }
-        break;
-      }
-      */
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM: {
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
