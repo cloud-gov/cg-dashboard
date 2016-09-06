@@ -5,7 +5,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 const BUTTON_STYLES = [
-  'gray',
+  'cautious',
   'outline',
   'outline-inverse',
   'primary',
@@ -25,7 +25,8 @@ const propTypes = {
   label: React.PropTypes.string,
   type: React.PropTypes.oneOf(BUTTON_TYPES),
   disabled: React.PropTypes.bool,
-  clickHandler: React.PropTypes.func
+  clickHandler: React.PropTypes.func,
+  children: React.PropTypes.any
 };
 
 const defaultProps = {
@@ -34,7 +35,8 @@ const defaultProps = {
   label: '',
   type: 'button',
   disabled: false,
-  clickHandler: () => true
+  clickHandler: () => true,
+  children: []
 };
 
 export default class Action extends React.Component {
@@ -61,6 +63,15 @@ export default class Action extends React.Component {
     }
 
     if (this.props.type === 'link') {
+      const classList = [...this.props.classes];
+
+      classList.push('action-link');
+      if (this.props.style === 'cautious') {
+        classList.push('action-cautious');
+      }
+
+      classes = this.styler(...classList);
+
       content = (
         <a href="#"
           className={ classes }

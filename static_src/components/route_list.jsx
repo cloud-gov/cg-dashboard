@@ -92,7 +92,8 @@ export default class RouteList extends React.Component {
     routeActions.createRouteAndAssociate(appGuid, domainGuid, spaceGuid, route);
   }
 
-  _deleteRoute(routeGuid) {
+  _deleteRoute(routeGuid, event) {
+    event.preventDefault();
     routeActions.deleteRoute(routeGuid);
   }
 
@@ -111,9 +112,9 @@ export default class RouteList extends React.Component {
     if (this.state.showCreateForm) return null;
     return (
       <Action clickHandler={ this._addCreateRouteForm }
-        label="Add route" type="link"
+        label="Add route" type="button" style="outline"
       >
-        Add Route
+        Add route
       </Action>
     );
   }
@@ -137,9 +138,9 @@ export default class RouteList extends React.Component {
     return (
       <PanelGroup>
         <PanelHeader>
-          <strong>Routes</strong>
-          <span>{ this.state.routes.length } of { routeLimit }</span>
+          <h3>Routes</h3>
           <PanelActions>
+            <span>{ this.state.routes.length } of { routeLimit }</span>
             { this.addRouteAction }
           </PanelActions>
         </PanelHeader>
@@ -164,8 +165,8 @@ export default class RouteList extends React.Component {
             rowContent = (
               <div>
                 <span>{ url }</span>
-                <Action clickHandler={ toggleHandler } label="Edit" type="link">
-                  Edit
+                <Action clickHandler={ toggleHandler } label="Edit route" type="link">
+                  Edit route
                 </Action>
               </div>
             );

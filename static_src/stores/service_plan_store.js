@@ -28,15 +28,24 @@ class ServicePlanStore extends BaseStore {
     return fromService.toJS();
   }
 
-  parseJson(entities, key) {
+  parseAllJson(entities, key) {
     const e = entities.slice();
-    return e.map((entity) => {
-      const parsed = {};
-      if (entity[key]) {
-        parsed[key] = JSON.parse(entity[key]);
-      }
-      return Object.assign({}, entity, parsed);
-    });
+    return e.map((entity) => this.parseJson(entity, key));
+  }
+
+  parseJson(entity, key) {
+    const parsed = {};
+    if (entity[key]) {
+      parsed[key] = JSON.parse(entity[key]);
+    }
+    return Object.assign({}, entity, parsed);
+  }
+
+  getCost(servicePlan) {
+    return (servicePlan.extra &&
+      servicePlan.extra.costs &&
+      servicePlan.extra.costs[0].amount &&
+      servicePlan.extra.costs[0].amount.usd || 0);
   }
 
   _registerToActions(action) {
@@ -92,10 +101,19 @@ class ServicePlanStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_PLAN_RECEIVED: {
+        const servicePlan = this.parseJson(
+          this.formatSplitResponse([action.servicePlan])[0], 'extra');
+        this.merge('guid', servicePlan, () => {
+          this.emitChange();
+        });
+        break;
+      }
+
       case serviceActionTypes.SERVICE_PLANS_RECEIVED: {
         if (action.servicePlans) {
           let servicePlans = this.formatSplitResponse(action.servicePlans);
-          servicePlans = this.parseJson(servicePlans, 'extra');
+          servicePlans = this.parseAllJson(servicePlans, 'extra');
 
           if (!this.waitingOnRequests) {
             this.fetching = false;

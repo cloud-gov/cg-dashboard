@@ -1,11 +1,32 @@
 
+/* TODO use main shared colors */
 :root {
-  --main-color: #e4e2e0;
+  --primary: #157DE6;
+  --background-light: #F3F4F8;
   --breathing-room: 1em;
+  --warning: #F16031;
 }
 
+/* TODO make global */
+.route-form input:focus,
+.route-form select:focus {
+  box-shadow: none;
+  outline: 2px solid var(--primary);
+}
+
+/* TODO is this needed? */
+.route-form-preview {
+  color: var(--warning);
+}
+
+/* TODO move to global */
+.route-form label {
+  color: var(--primary);
+}
+
+/* TODO move to panel code somehwere */
 .route-form {
-  background-color: var(--main-color);
+  background-color: var(--background-light);
   padding: var(--breathing-room);
   width: 100%;
 }
@@ -52,6 +73,7 @@
   width: 100%;
 }
 
+/* TODO probalby remove not using panel action? */
 .route-form-actions .panel-action {
   flex-grow: 1;
 }
@@ -79,9 +101,11 @@
 .route-form input[readonly]:focus {
   background-color: transparent;
   border: none;
+  color: var(--warning);
   outline-color: transparent;
 }
 
+/* TODO move to global */
 .route-form *[disabled] {
   background-color: #aeb0b5;
   cursor: not-allowed;

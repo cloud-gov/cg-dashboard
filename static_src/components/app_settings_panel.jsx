@@ -1,6 +1,7 @@
 
-import style from 'cloudgov-style';
 import React from 'react';
+
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import Panel from './panel.jsx';
 import RouteList from './route_list.jsx';
@@ -9,15 +10,18 @@ import AppStore from '../stores/app_store.js';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import SpaceStore from '../stores/space_store.js';
+import UsageAndLimits from './usage_and_limits.jsx';
 
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  title: React.PropTypes.string
+  title: React.PropTypes.string,
+  app: React.PropTypes.object
 };
 
 const defaultProps = {
-  title: 'Default title'
+  title: 'Default title',
+  app: {}
 };
 
 function stateSetter() {
@@ -69,6 +73,7 @@ export default class AppSettingsPanel extends React.Component {
 
     return (
       <Panel title="Application settings">
+        <UsageAndLimits app={ this.props.app }/>
         <RouteList initialAppGuid={ this.state.currentAppGuid } routeLimit={ routeLimit } />
       </Panel>
     );

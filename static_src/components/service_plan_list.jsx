@@ -5,7 +5,6 @@
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
-import Reactable from 'reactable';
 
 import Action from './action.jsx';
 import serviceActions from '../actions/service_actions.js';
@@ -13,11 +12,11 @@ import ServicePlanStore from '../stores/service_plan_store.js';
 import createStyler from '../util/create_styler';
 
 function stateSetter(serviceGuid) {
-  const servicePlans = ServicePlanStore.getAllFromService(serviceGuid)
+  const servicePlans = ServicePlanStore.getAllFromService(serviceGuid);
 
   return {
     servicePlans,
-    empty: ServicePlanStore.fetched && !servicePlans.length,
+    empty: ServicePlanStore.fetched && !servicePlans.length
   };
 }
 
@@ -49,7 +48,7 @@ export default class ServicePlanList extends React.Component {
   }
 
   get columns() {
-    var columns = [
+    const columns = [
       { label: 'Service Plan Name', key: 'label' },
       { label: 'Free', key: 'free' },
       { label: 'Description', key: 'description' },
@@ -95,14 +94,13 @@ export default class ServicePlanList extends React.Component {
                 <td label="Description">{ plan.description }</td>
                 <td label="Cost">
                   <span>
-                    ${ (plan.extra && plan.extra.costs &&
-                        plan.extra.costs[0].amount.usd || 0).toFixed(2) } monthly
+                    ${ ServicePlanStore.getCost(plan).toFixed(2) } monthly
                   </span>
                 </td>
                 <td label="Actions">
                   <Action
                     classes={ ["test-create_service_instance"] }
-                    onClickHandler={ this._handleAdd.bind(this, plan.guid) }
+                    clickHandler={ this._handleAdd.bind(this, plan.guid) }
                     label="create">
                       <span>Create service instance</span>
                   </Action>
