@@ -82,6 +82,21 @@ export default class UsageAndLimits extends React.Component {
     );
   }
 
+  // TODO: remove this presentational span
+  get appState() {
+    return (
+      <div>
+        <h5 className={ this.styler('panel-column', 'panel-column-less') }>
+          App state
+        </h5>
+        <span className={ this.styler('panel-column') }>
+          RUNNING
+        </span>
+        <span className={ this.styler('panel-column') }></span>
+      </div>
+    );
+  }
+
   render() {
     let content = <div></div>;
 
@@ -91,6 +106,9 @@ export default class UsageAndLimits extends React.Component {
           <PanelHeader>
             <h3>Usage and Limits</h3>
           </PanelHeader>
+          <PanelRow>
+            { this.appState }
+          </PanelRow>
           <PanelRow>
             { this.memory }
           </PanelRow>
