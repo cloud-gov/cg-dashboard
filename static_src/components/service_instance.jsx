@@ -2,7 +2,6 @@
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
-import panelCss from '../css/panel.css';
 
 import ServicePlanStore from '../stores/service_plan_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
@@ -23,7 +22,7 @@ export default class ServiceInstance extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.styler = createStyler(style, panelCss);
+    this.styler = createStyler(style);
   }
 
   componentWillReceiveProps(nextProps) {

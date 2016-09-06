@@ -8,7 +8,6 @@ import PanelActions from './panel_actions.jsx';
 import createStyler from '../util/create_styler';
 import formatRoute from '../util/format_route';
 
-import panelCss from '../css/panel.css';
 import routeFormCss from '../css/route_form.css';
 
 const propTypes = {
@@ -37,7 +36,7 @@ export default class RouteForm extends React.Component {
     };
     this._onChange = this._onChange.bind(this);
     this._onSubmit = this._onSubmit.bind(this);
-    this.styler = createStyler(style, panelCss, routeFormCss);
+    this.styler = createStyler(style, routeFormCss);
   }
 
 

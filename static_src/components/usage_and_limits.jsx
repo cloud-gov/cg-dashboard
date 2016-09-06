@@ -1,6 +1,5 @@
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
-import panelCss from '../css/panel.css';
 import React from 'react';
 
 import PanelGroup from './panel_group.jsx';
@@ -13,7 +12,7 @@ export default class UsageAndLimits extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.styler = createStyler(style, panelCss);
+    this.styler = createStyler(style);
 
     this.getStat = this.getStat.bind(this);
   }

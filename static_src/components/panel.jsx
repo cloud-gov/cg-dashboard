@@ -1,8 +1,7 @@
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
-import panelCss from '../css/panel.css';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
 
@@ -18,13 +17,13 @@ export default class Panel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.styler = createStyler(style, panelCss);
+    this.styler = createStyler(style);
   }
 
   render() {
     return (
       <div className={ this.styler('panel') }>
-        <h1>{ this.props.title }</h1>
+        <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>
         <div className={ this.styler('panel-rows') }>
           { this.props.children }
         </div>
