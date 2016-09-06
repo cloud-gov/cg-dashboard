@@ -33,12 +33,12 @@ export default class ConfirmationBox extends React.Component {
       <div className={ this.styler('actions-confirm') }>
         <Action label="Confirm"
             style="secondary"
-            onClickHandler={ this._confirmHandler }>
+            clickHandler={ this._confirmHandler }>
           <span>Confirm delete</span>
         </Action>
         <Action label="Cancel"
             style="outline"
-            onClickHandler={ this._cancelHandler }>
+            clickHandler={ this._cancelHandler }>
           <span>Cancel</span>
         </Action>
       </div>

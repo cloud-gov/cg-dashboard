@@ -134,9 +134,10 @@ export default class ServiceInstanceList extends React.Component {
                         style="secondary"
                         classes={ ['test-delete_instance'] }
                         disabled={instance.confirmDelete}
-                        onClickHandler={ this._handleDeleteConfirmation.bind(
+                        clickHandler={ this._handleDeleteConfirmation.bind(
                             this, instance.guid)}
-                        label="delete">
+                        label="delete"
+                      >
                         <span>Delete Instance</span>
                       </Action>
                     </div>
