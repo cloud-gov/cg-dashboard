@@ -15,8 +15,7 @@
     "test": "npm run lint && karma start --single-run",
     "testing-server": "node ./static_src/test/server/server.js",
     "watch-test": "karma start --browsers Chrome",
-    "watch": "webpack --watch",
-    "shrinkwrap": "npm shrinkwrap --dev"
+    "watch": "webpack --watch"
   },
   "author": "Marco Segreto (marco.segreto@gsa.gov)",
   "contributors": [
@@ -54,7 +53,7 @@
     "babel-preset-react": "^6.3.13",
     "babel-runtime": "^6.3.19",
     "classnames": "^2.1.5",
-    "cloudgov-style": "^1.1.1",
+    "cloudgov-style": "^1.2.0",
     "codecov.io": "^0.1.5",
     "css-loader": "^0.23.0",
     "cssnext-loader": "^1.0.1",
