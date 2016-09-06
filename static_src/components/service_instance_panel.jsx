@@ -94,7 +94,7 @@ export default class ServiceInstancePanel extends React.Component {
 
     if (!this.state.loading) {
       content = [
-        <PanelGroup>
+        <PanelGroup key="1">
           <PanelHeader>
             <h3>Bound service instances</h3>
           </PanelHeader>
@@ -104,7 +104,7 @@ export default class ServiceInstancePanel extends React.Component {
             empty={ boundReady(this.state.boundServiceInstances) }
           />
         </PanelGroup>,
-        <PanelGroup>
+        <PanelGroup key="2">
           <PanelHeader>
             <h3>Unbound service instances</h3>
           </PanelHeader>
