@@ -37,12 +37,9 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get disk() {
+    let helpText = <span></span>;
     if (this.props.app.state.toUpperCase() === 'STOPPED') {
-      return (
-        <div>
-          <h5>Stopped apps do not use disk space.</h5>
-        </div>
-      );
+      helpText = <em> Stopped apps do not use disk space.</em>;
     }
     return (
       <div>
@@ -52,20 +49,19 @@ export default class UsageAndLimits extends React.Component {
         <span className={ this.styler('panel-column') }>
           { this.getStat('disk_quota') } MB
         </span>
-        <span className={ this.styler('panel-column') }>
+        <span className={ this.styler('panel-column') }
+            style={{ textAlign: 'left' }}>
           Using { this.getStat('disk') }  MB
+          { helpText }
         </span>
       </div>
     );
   }
 
   get memory() {
+    let helpText = <span></span>;
     if (this.props.app.state.toUpperCase() === 'STOPPED') {
-      return (
-        <div>
-          <h5>Stopped apps do not use memory</h5>
-        </div>
-      );
+      helpText = <em> Stopped apps do not use memory.</em>;
     }
     return (
       <div>
@@ -75,8 +71,10 @@ export default class UsageAndLimits extends React.Component {
         <span className={ this.styler('panel-column') }>
           { this.getStat('mem_quota') } MB
         </span>
-        <span className={ this.styler('panel-column') }>
-          Using { this.getStat('mem') }  MB
+        <span className={ this.styler('panel-column') }
+            style={{ textAlign: 'left' }}>
+          Using { this.getStat('mem') }  MB.
+          { helpText }
         </span>
       </div>
     );
@@ -117,7 +115,7 @@ export default class UsageAndLimits extends React.Component {
           </PanelRow>
           <PanelRow>
             <div>
-            <p style={{ width: '100%' }}>To start or stop an app, follow the <a
+              <p style={{ width: '100%' }}>To start or stop an app, follow the <a
                 href="https://docs.cloudfoundry.org/devguide/deploy-apps/deploy-app.html"
                 target="_blank">Cloud Foundry deployment guide.</a>
               </p>
