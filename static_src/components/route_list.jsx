@@ -92,7 +92,8 @@ export default class RouteList extends React.Component {
     routeActions.createRouteAndAssociate(appGuid, domainGuid, spaceGuid, route);
   }
 
-  _deleteRoute(routeGuid) {
+  _deleteRoute(routeGuid, event) {
+    event.preventDefault();
     routeActions.deleteRoute(routeGuid);
   }
 
