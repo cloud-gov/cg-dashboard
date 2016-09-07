@@ -977,17 +977,33 @@ describe('cfApi', function() {
     });
   });
 
-  describe('fetchDomain()', function() {
+  describe('fetchPrivateDomain()', function() {
     it('should fetch domain with the domain guid', function() {
       var expected = 'xcvxyyb1',
           spy = sandbox.stub(cfApi, 'fetchOne');
 
-      cfApi.fetchDomain(expected);
+      cfApi.fetchPrivateDomain(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
-      expect(actual).toMatch(new RegExp('domain'));
+      expect(actual).toMatch(new RegExp('private_domains'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(domainActions.receivedDomain);
+    });
+  });
+
+  describe('fetchSharedDomain()', function() {
+    it('should fetch domain with the domain guid', function() {
+      var expected = 'xcvxyyb1',
+          spy = sandbox.stub(cfApi, 'fetchOne');
+
+      cfApi.fetchSharedDomain(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('shared_domains'));
       actual = spy.getCall(0).args[1];
       expect(actual).toEqual(domainActions.receivedDomain);
     });

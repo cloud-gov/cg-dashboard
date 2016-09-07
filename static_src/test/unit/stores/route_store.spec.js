@@ -6,6 +6,7 @@ import '../../global_setup.js';
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
+import routeActions '../../../actions/route_actions.js';
 import RouteStore from '../../../stores/route_store.js';
 import { domainActionTypes, routeActionTypes } from '../../../constants';
 
@@ -274,6 +275,32 @@ describe('RouteStore', function() {
 
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith('guid');
+    });
+
+    it('should fetch shared or private domain for each route', function() {
+      const sharedDomainGuid = 'zxcvzxcvzcxv23';
+      const privateDomainGuid = '23fdvskdcxv25';
+      const spyShared = sandbox.spy(cfApi, 'fetchSharedDomain');
+      const spyPrivate = sandbox.spy(cfApi, 'fetchPrivateDomain');
+      const routeA = {
+        metadata: { guid: 'aldfjzxcbkvzxcb' },
+        entity: {
+          domain_guid: sharedDomainGuid,
+          domain_url: 'shared_domains'
+        }
+      };
+      const routeB = {
+        metadata: { guid: 'aldf23vx32xcb' },
+        entity: {
+          domain_guid: privateDomainGuid,
+          domain_url: 'private_domains'
+        }
+      };
+
+      routeActions.receivedRoutesForApp([routeA, routeB]);
+
+      expect(privateDomainGuid).toHaveBeenCalledOnce();
+      expect(sharedDomainGuid).toHaveBeenCalledOnce();
     });
   });
 

@@ -29,7 +29,7 @@ describe('DomainStore', function() {
 
   describe('on domain fetch', function () {
     it('should call call fetchDomain with the domain guid', function () {
-      const spy = sandbox.spy(cfApi, 'fetchDomain');
+      const spy = sandbox.spy(cfApi, 'fetchPrivateDomain');
       const domainGuid = 'fake-domain-guid';
 
       AppDispatcher.handleViewAction({

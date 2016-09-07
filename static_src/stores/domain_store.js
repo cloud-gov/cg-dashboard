@@ -20,7 +20,7 @@ class DomainStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case domainActionTypes.DOMAIN_FETCH: {
-        cfApi.fetchDomain(action.domainGuid);
+        cfApi.fetchPrivateDomain(action.domainGuid);
         break;
       }
 
