@@ -88,6 +88,10 @@ class ServicePlanStore extends BaseStore {
             this.fetched = true;
             this.emitChange();
           });
+        } else {
+          this.fetching = false;
+          this.fetched = true;
+          this.emitChange();
         }
         break;
       }
