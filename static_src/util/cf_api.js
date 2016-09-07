@@ -362,8 +362,13 @@ export default {
     }).catch((err) => errorActions.errorPut(err));
   },
 
-  fetchDomain(domainGuid) {
+  fetchPrivateDomain(domainGuid) {
     return this.fetchOne(`/private_domains/${domainGuid}`,
+      domainActions.receivedDomain);
+  },
+
+  fetchSharedDomain(domainGuid) {
+    return this.fetchOne(`/shared_domains/${domainGuid}`,
       domainActions.receivedDomain);
   },
 

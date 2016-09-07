@@ -112,7 +112,11 @@ class RouteStore extends BaseStore {
         this.mergeMany('guid', routes, (changed) => {
           if (changed) this.emitChange();
           routes.forEach((route) => {
-            cfApi.fetchDomain(route.domain_guid);
+            if (/shared_domains/.test(route.domain_url)) {
+              cfApi.fetchSharedDomain(route.domain_guid);
+            } else {
+              cfApi.fetchPrivateDomain(route.domain_guid);
+            }
           });
         });
         break;
