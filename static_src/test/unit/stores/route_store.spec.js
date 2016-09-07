@@ -299,8 +299,8 @@ describe('RouteStore', function() {
 
       routeActions.receivedRoutesForApp([routeA, routeB]);
 
-      expect(privateDomainGuid).toHaveBeenCalledOnce();
-      expect(sharedDomainGuid).toHaveBeenCalledOnce();
+      expect(spyShared).toHaveBeenCalledOnce();
+      expect(spyPrivate).toHaveBeenCalledOnce();
     });
   });
 
