@@ -75,6 +75,18 @@ and the `testSpace01` space.
 1. Techinically, we should test removing a user from an org here, but will not because theres no easy way to add them back.
 1. Click on the `Apps` link in the subnav
 1. Click on `testapp01` or any app available and ensure the page appears and looks OK.
+  - Ensure app state, memory and disk usage are correct.
+  - Ensure there are the correct bound and unbound service instances.
+1. Click on the "Add route" button.
+  - Click cancel and ensure the form disappears.
+  - Type a route with a host, domain, path.
+  - Click "Add route" button and ensure the route is created.
+1. Click "Edit route" for the route you created.
+  - Rename the Host of the app and click "Apply" button.
+  - Ensure the app gets updated.
+  - Click edit again.
+  - Click "Delete route".
+  - Ensure the route is deleted.
 1. Click on the `Overview` link in the sidenav and ensure the homepage appears.
 
 ## Tagging
