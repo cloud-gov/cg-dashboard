@@ -61,7 +61,9 @@ export default class RouteForm extends React.Component {
     Object.keys(this.state).forEach((key) => {
       let value = this.state[key];
       // path needs to start with a / per the cf api docs
-      if (key === 'path' && value[0] !== '/' && value !== '') {
+      if (key === 'path' && !value) {
+        value = '';
+      } else if (key === 'path' && value[0] !== '/' && value !== '') {
         value = `/${value}`;
       }
       payload[key] = value;
