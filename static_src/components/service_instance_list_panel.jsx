@@ -32,7 +32,7 @@ export default class ServiceInstanceListPanel extends React.Component {
     let content = <div></div>;
 
     if (this.props.empty) {
-      content = <h4>No services</h4>;
+      content = <div><PanelRow><h4>No services</h4></PanelRow></div>;
     } else {
       content = (
         <div>
