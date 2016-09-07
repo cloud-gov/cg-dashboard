@@ -13,8 +13,6 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <aside className={ this.styler('usa-alert', 'usa-alert-info') }>
-        </aside>
         <div className={ this.styler('usa-grid') }>
           <h2>Dashboard</h2>
           <p>This Dashboard is a good way to get an overview of your organizations, spaces, and applications. For full management and deployment of applications, use the <a href="https://docs.cloud.gov/getting-started/setup/">command line interface</a>.
