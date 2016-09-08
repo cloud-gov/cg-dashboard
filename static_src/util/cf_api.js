@@ -2,6 +2,7 @@
 import http from 'axios';
 
 import activityActions from '../actions/activity_actions.js';
+import analytics from '../util/analytics.js';
 import appActions from '../actions/app_actions.js';
 import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
@@ -15,6 +16,20 @@ import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
 
+function handleError(err, errHandler = errorActions.errorFetch) {
+  // An http error should be passed to error actions.
+  if (err.status && err.status >= 400) {
+    if (err.data) {
+      errHandler(err.data);
+    } else {
+      errHandler(err);
+    }
+  // Other exceptions should be thrown so they surface.
+  } else {
+    throw err;
+  }
+}
+
 export default {
   version: APIV,
 
@@ -26,7 +41,7 @@ export default {
         action(res.data.resources, ...params);
       }
     }).catch((err) => {
-      errorActions.errorFetch(err);
+      handleError(err);
     });
   },
 
@@ -54,7 +69,7 @@ export default {
         .then((all) => all.pop())
         .then((all) => [].concat.call([], res.data.resources, all))
         .then((all) => action(all, ...params))
-        .catch((err) => errorActions.errorFetch(err));
+        .catch((err) => handleError(err));
     });
   },
 
@@ -115,7 +130,7 @@ export default {
     return http.get(`${APIV}/organizations`).then((res) => {
       orgActions.receivedOrgs(res.data.resources);
     }).catch((err) => {
-      errorActions.errorFetch(err);
+      handleError(err);
     });
   },
 
@@ -123,7 +138,7 @@ export default {
     return Promise.all(guids.map((guid) => this.fetchOrgSummary(guid)))
     .then((res) => orgActions.receivedOrgsSummaries(res))
     .catch((err) => {
-      errorActions.errorFetch(err);
+      handleError(err);
     });
   },
 
@@ -141,7 +156,7 @@ export default {
     return http.get(`${APIV}/spaces`).then((res) => {
       spaceActions.receivedSpaces(res.data.resources);
     }).catch((err) => {
-      errorActions.errorFetch(err);
+      handleError(err);
     });
   },
 
@@ -176,7 +191,7 @@ export default {
       .then((res) => {
         serviceActions.createdInstance(res.data);
       }).catch((err) => {
-        serviceActions.errorCreateInstance(err.data);
+        handleError(err, serviceActions.errorCreateInstance);
       });
   },
 
@@ -207,7 +222,7 @@ export default {
     return http.get(`${APIV}/apps/${appGuid}/stats`).then((res) => {
       appActions.receivedAppStats(appGuid, res.data[0]);
     }).catch((err) => {
-      errorActions.errorFetch(err);
+      handleError(err);
     });
   },
 
@@ -215,7 +230,7 @@ export default {
     return http.get(`log/recent?app=${appGuid}`).then((res) => {
       activityActions.receivedAppLogs(appGuid, res.data);
     }).catch((err) => {
-      errorActions.errorFetch(err);
+      handleError(err);
     });
   },
 
@@ -252,7 +267,11 @@ export default {
       .then(() => {
         userActions.deletedUser(userGuid, orgGuid);
       }).catch((err) => {
-        userActions.errorRemoveUser(userGuid, err.data);
+        if (err.data) {
+          userActions.errorRemoveUser(userGuid, err.data);
+        } else {
+          handleError(err);
+        }
       });
   },
 
@@ -327,7 +346,7 @@ export default {
     return http.post(`${APIV}/routes`, payload).then((res) => {
       routeActions.createdRoute(res.data);
       return res.data;
-    }).catch((err) => errorActions.errorPost(err));
+    }).catch((err) => handleError(err, errorActions.errorPost));
   },
 
   // http://apidocs.cloudfoundry.org/241/routes/delete_a_particular_route.html
@@ -336,7 +355,7 @@ export default {
     return http.delete(url).then(() => {
       routeActions.deletedRoute(routeGuid);
     }).catch((err) => {
-      errorActions.errorDelete(err);
+      handleError(err, errorActions.errorDelete);
     });
   },
 
@@ -345,7 +364,9 @@ export default {
     const url = `${APIV}/routes/${routeGuid}/apps/${appGuid}`;
     return http.put(url).then(() => {
       routeActions.associatedApp(routeGuid, appGuid);
-    }).catch((err) => errorActions.errorPut(err));
+    }).catch((err) => {
+      handleError(err, errorActions.errorPut);
+    });
   },
 
   // http://apidocs.cloudfoundry.org/241/routes/update_a_route.html
@@ -359,7 +380,9 @@ export default {
     };
     return http.put(url, payload).then(() => {
       routeActions.updatedRoute(routeGuid, route);
-    }).catch((err) => errorActions.errorPut(err));
+    }).catch((err) => {
+      handleError(err, errorActions.errorPut);
+    });
   },
 
   fetchPrivateDomain(domainGuid) {

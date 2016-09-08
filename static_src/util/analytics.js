@@ -18,3 +18,10 @@ export function trackPageView(url) {
     page: url
   });
 }
+
+export function noticeError(err) {
+  if (!window.NREUM) return;
+  if (!window.PRODUCTION) return;
+
+  window.NREUM.noticeError(err);
+}
