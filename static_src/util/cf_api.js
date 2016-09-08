@@ -24,6 +24,7 @@ function handleError(err, errHandler = errorActions.errorFetch) {
     } else {
       errHandler(err);
     }
+    analytics.noticeError(err);
   // Other exceptions should be thrown so they surface.
   } else {
     throw err;
