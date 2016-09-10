@@ -2,7 +2,7 @@
 import http from 'axios';
 
 import activityActions from '../actions/activity_actions.js';
-import analytics from '../util/analytics.js';
+import { noticeError } from '../util/analytics.js';
 import appActions from '../actions/app_actions.js';
 import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
@@ -28,7 +28,7 @@ function handleError(err, errHandler) {
     } else {
       handler(err);
     }
-    analytics.noticeError(err);
+    noticeError(err);
   // Other exceptions should be thrown so they surface.
   } else {
     throw err;
