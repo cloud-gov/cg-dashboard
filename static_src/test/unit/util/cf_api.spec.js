@@ -31,7 +31,7 @@ function createPromise(res, err) {
 
 describe('cfApi', function() {
   var sandbox,
-      errorFetchRes = { message: 'error' };
+      errorFetchRes = { message: 'error', status: 404, data: {} };
 
   beforeEach(() => {
     OrgStore._data = new Immutable.List();
@@ -43,9 +43,9 @@ describe('cfApi', function() {
   });
 
   function fetchErrorSetup() {
-    var stub = sandbox.stub(http, 'get'),
-        spy = sandbox.spy(errorActions, 'errorFetch'),
-        expected = errorFetchRes;
+    const stub = sandbox.stub(http, 'get');
+    const spy = sandbox.stub(errorActions, 'errorFetch').returns();
+    const expected = errorFetchRes;
 
     let testPromise = createPromise(true, expected);
     stub.returns(testPromise);
@@ -70,8 +70,9 @@ describe('cfApi', function() {
         host,
         path
       };
+      sandbox.stub(routeActions, 'createdRoute').returns();
       const spy = sandbox.stub(http, 'post');
-      spy.returns(createPromise(true, {}));
+      spy.returns(createPromise({ data: {}}));
 
       cfApi.createRoute(domainGuid, spaceGuid, host, path).then(() => {
         const args = spy.getCall(0).args;
@@ -93,7 +94,7 @@ describe('cfApi', function() {
       };
       const stub = sandbox.stub(http, 'post');
       stub.returns(Promise.resolve({ data }));
-      const actionSpy = sandbox.spy(routeActions, 'createdRoute');
+      const actionSpy = sandbox.stub(routeActions, 'createdRoute').returns();
 
       cfApi.createRoute(domainGuid, spaceGuid, host, path).then(() => {
         const arg = actionSpy.getCall(0).args[0];
@@ -134,18 +135,19 @@ describe('cfApi', function() {
   });
 
   describe('fetchOne()', function() {
-    it('should call an http get request with the versioned url', function() {
+    it('should call an http get request with the versioned url', function(done) {
       var stub = sandbox.stub(http, 'get'),
           expectedUrl = '/org/asldfkj';
 
       let testPromise = createPromise({data: {}});
       stub.returns(testPromise);
 
-      cfApi.fetchOne(expectedUrl, function() { });
-
-      expect(stub).toHaveBeenCalledOnce();
-      let actual = stub.getCall(0).args[0];
-      expect(actual).toEqual(cfApi.version + expectedUrl);
+      cfApi.fetchOne(expectedUrl, function() { }).then(() => {
+        expect(stub).toHaveBeenCalledOnce();
+        let actual = stub.getCall(0).args[0];
+        expect(actual).toEqual(cfApi.version + expectedUrl);
+        done();
+      });
     });
 
     it('should call the action with the response data on success',
@@ -165,8 +167,8 @@ describe('cfApi', function() {
       });;
     });
 
-    it('should call the fetch error action on failure', function(done) {
-      var spy = fetchErrorSetup();
+    it('should call the fetch error action on failure', function() {
+      const spy = fetchErrorSetup();
 
       cfApi.fetchOne().then(() => {
         assertFetchError(spy);
@@ -311,16 +313,20 @@ describe('cfApi', function() {
   });
 
   describe('fetchOrg()', () => {
-    it('calls http get request 2 times for all data with guid', () => {
-      var spy = sandbox.spy(http, 'get'),
-          expected = 'xxxaa2';
+    it('calls http get request 2 times for all data with guid', (done) => {
+      const spy = sandbox.stub(http, 'get');
+      const expected = 'xxxaa2';
 
-      cfApi.fetchOrg(expected);
+      let testPromise = createPromise({ data: {}});
+      spy.returns(testPromise);
 
-      let actual = spy.getCall(0).args[0];
+      cfApi.fetchOrg(expected).then(() => {
+        let actual = spy.getCall(0).args[0];
 
-      expect(spy).toHaveBeenCalledTwice();
-      expect(actual).toMatch(new RegExp(expected));
+        expect(spy).toHaveBeenCalledTwice();
+        expect(actual).toMatch(new RegExp(expected));
+        done();
+      });
     });
 
     it('calls received org action with response data on success', (done) => {
@@ -350,7 +356,10 @@ describe('cfApi', function() {
 
   describe('fetchOrgs()', function() {
     it('calls http get request for orgs', function(done) {
-      var spy = sandbox.spy(http, 'get');
+      const spy = sandbox.stub(http, 'get');
+      let testPromise = createPromise({data: {}});
+      spy.returns(testPromise);
+      sandbox.stub(orgActions, 'receivedOrgs').returns();
 
       cfApi.fetchOrgs().then(() => {
         expect(spy).toHaveBeenCalledOnce();
@@ -358,17 +367,16 @@ describe('cfApi', function() {
         expect(actual).toMatch('organizations');
         done();
       });;
-
     });
 
     it('calls orgs received with orgs on success', function(done) {
-      var expectedOrgs = [
+      const expectedOrgs = [
         { metadata: { guid: 'xxxaasdf' }, entity: { name: 'testA' }},
         { metadata: { guid: 'xxxaasdg' }, entity: { name: 'testB' }}
-      ],
-          expected = { data: { resources: expectedOrgs } },
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(orgActions, 'receivedOrgs');
+      ];
+      const expected = { data: { resources: expectedOrgs } };
+      const stub = sandbox.stub(http, 'get');
+      const spy = sandbox.stub(orgActions, 'receivedOrgs').returns();
 
       let testPromise = createPromise(expected);
       stub.returns(testPromise);
@@ -380,58 +388,45 @@ describe('cfApi', function() {
       });;
 
     });
+  });
 
-    it('calls error action with error on failure', function(done) {
-      var spy = fetchErrorSetup();
+  describe('fetchOrgMemoryUsage()', function() {
+    it('calls http get request for orgs memory usage', function(done) {
+      const spy = sandbox.stub(http, 'get');
+      const expectedGuid = 'asdfad';
 
-      cfApi.fetchOrgs().then(() => {
-        assertFetchError(spy);
+      let testPromise = createPromise({data: {}});
+      spy.returns(testPromise);
+      cfApi.fetchOrgMemoryUsage(expectedGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let actual = spy.getCall(0).args[0];
+        expect(actual).toMatch('memory_usage');
+        expect(actual).toMatch(expectedGuid);
         done();
       });
     });
   });
 
-  describe('fetchOrgMemoryUsage()', function() {
-    it('returns a promise', function() {
-      var actual = cfApi.fetchOrgMemoryUsage();
-
-      expect(actual.then).toBeTruthy();
-    });
-
-    it('calls http get request for orgs memory usage', function() {
-      var spy = sandbox.spy(http, 'get'),
-          expectedGuid = 'asdfad';
-
-      cfApi.fetchOrgMemoryUsage(expectedGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch('memory_usage');
-      expect(actual).toMatch(expectedGuid);
-    });
-  });
-
   describe('fetchOrgMemoryLimit()', function() {
-    it('returns a promise', function() {
-      var testOrg = {quota_definition_url: 'http://api/quota_definitions'};
-      var actual = cfApi.fetchOrgMemoryLimit(testOrg);
+    it('calls http get request for orgs memory usage', function(done) {
+      const spy = sandbox.stub(http, 'get');
+      const expectedGuid = 'asdfad';
+      const expectedOrg = {
+        guid: expectedGuid,
+        quota_definition_url: 'http://api.gov/quota_definitions/' +
+          expectedGuid
+      };
 
-      expect(actual.then).toBeTruthy();
-    });
+      let testPromise = createPromise({data: {}});
+      spy.returns(testPromise);
 
-    it('calls http get request for orgs memory usage', function() {
-      var spy = sandbox.spy(http, 'get'),
-          expectedGuid = 'asdfad',
-          expectedOrg = {guid: expectedGuid,
-              quota_definition_url: 'http://api.gov/quota_definitions/' +
-                expectedGuid};
-
-      cfApi.fetchOrgMemoryLimit(expectedOrg);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch('quota_definitions');
-      expect(actual).toMatch(expectedGuid);
+      cfApi.fetchOrgMemoryLimit(expectedOrg).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let actual = spy.getCall(0).args[0];
+        expect(actual).toMatch('quota_definitions');
+        expect(actual).toMatch(expectedGuid);
+        done();
+      });
     });
   });
 
@@ -576,7 +571,7 @@ describe('cfApi', function() {
     it('should call service action for instance created on success',
         function(done) {
       var stub = sandbox.stub(http, 'post'),
-          spy = sandbox.spy(serviceActions, 'createdInstance'),
+          spy = sandbox.stub(serviceActions, 'createdInstance').returns(),
           expected = { data: { guid: 'znvmjahskf' }};
 
       let testPromise = createPromise(expected);
@@ -596,9 +591,9 @@ describe('cfApi', function() {
     it('should call an service error action on failure', function(done) {
       var stub = sandbox.stub(http, 'post'),
           spy = sandbox.stub(serviceActions, 'errorCreateInstance'),
-          expectedErr = { status: 'error' };
+          expectedErr = { status: 500, data: {} };
 
-      let testPromise = createPromise(true, {data: expectedErr});
+      let testPromise = createPromise(true, expectedErr);
       stub.returns(testPromise);
 
       cfApi.createServiceInstance(
@@ -693,6 +688,9 @@ describe('cfApi', function() {
     it('should call the receivedAppAll app action', function (done) {
       const guid = 'shouldCallActionCreatorGuid';
       const actionCreatorSpy = sandbox.spy(appActions, 'receivedAppAll');
+
+      sandbox.stub(cfApi, 'fetchApp').returns(createPromise({data: {}});
+      sandbox.stub(cfApi, 'fetchAppStats').returns(createPromise({data: {}});
 
       cfApi.fetchAppAll(guid).then(() => {
         expect(actionCreatorSpy).toHaveBeenCalled();

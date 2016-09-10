@@ -18,10 +18,6 @@ function stateSetter() {
   const serviceInstances = ServiceInstanceStore.getAllBySpaceGuid(
     currentSpaceGuid);
 
-  if (serviceInstances) {
-    throw new Error('poop');
-  }
-
   return {
     serviceInstances,
     currentSpaceGuid,

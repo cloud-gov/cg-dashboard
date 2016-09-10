@@ -16,13 +16,17 @@ import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
 
-function handleError(err, errHandler = errorActions.errorFetch) {
+function handleError(err, errHandler) {
+  let handler = errHandler;
+  if (!errHandler) {
+    handler = errorActions.errorFetch;
+  }
   // An http error should be passed to error actions.
   if (err.status && err.status >= 400) {
     if (err.data) {
-      errHandler(err.data);
+      handler(err.data);
     } else {
-      errHandler(err);
+      handler(err);
     }
     analytics.noticeError(err);
   // Other exceptions should be thrown so they surface.

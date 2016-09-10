@@ -212,8 +212,6 @@ describe('UserStore', function() {
       UserStore.push(existingUser);
       expect(UserStore.get(sharedGuid)).toEqual(existingUser);
 
-      console.log('yo', wrapInRes([newUser]));
-
       AppDispatcher.handleViewAction({
         type: userActionTypes.ORG_USER_ROLES_RECEIVED,
         orgUserRoles: wrapInRes([newUser])
