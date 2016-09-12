@@ -15,6 +15,7 @@ class RouteStore extends BaseStore {
     super();
     this._data = new Immutable.List();
     this.showCreateRouteForm = false;
+    this.createError = null;
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
@@ -57,6 +58,12 @@ class RouteStore extends BaseStore {
       case routeActionTypes.ROUTE_CREATE: {
         const { domainGuid, spaceGuid, host, path } = action;
         cfApi.createRoute(domainGuid, spaceGuid, host, path);
+        break;
+      }
+
+      case routeActionTypes.ROUTE_CREATE_ERROR: {
+        this.createError = action.error;
+        this.emitChange();
         break;
       }
 

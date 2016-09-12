@@ -15,6 +15,7 @@ describe('RouteStore', function() {
 
   beforeEach(() => {
     RouteStore._data = Immutable.List();
+    RouteStore.createError = null;
     sandbox = sinon.sandbox.create();
   });
 
@@ -25,6 +26,7 @@ describe('RouteStore', function() {
   describe('constructor()', function() {
     it('should start data as empty array', function() {
       expect(RouteStore.getAll()).toBeEmptyArray();
+      expect(RouteStore.createError).toEqual(null);
     });
   });
 
@@ -82,6 +84,30 @@ describe('RouteStore', function() {
       const args = spy.getCall(0).args;
       expect(spy).toHaveBeenCalledOnce();
       expect(args).toEqual([domainGuid, spaceGuid, host, path]);
+    });
+  });
+
+  describe('on route create error', function() {
+    const testCFError = {
+      code: 210003,
+      description: 'The host is taken: testapp01',
+      error_code: 'CF-RouteHostTaken'
+    };
+
+    it('should set the create error to the error object', function() {
+      const expected = testCFError;
+      routeActions.errorCreateRoute(expected);
+
+      const actual = RouteStore.createError;
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('should emit a change event', function() {
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+      routeActions.errorCreateRoute(testCFError);
+
+      expect(spy).toHaveBeenCalledOnce();
     });
   });
 
