@@ -132,7 +132,11 @@ export default class RouteList extends React.Component {
 
   render() {
     if (this.state.routes.length === 0) {
-      return (<h4 className="test-none_message">No routes</h4>);
+      return (
+        <PanelRow>
+          <h4 className="test-none_message">No routes</h4>
+        </PanelRow>
+      );
     }
     const routeLimit = (this.props.routeLimit > -1) ? this.props.routeLimit : 'unlimited';
     return (
