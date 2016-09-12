@@ -347,7 +347,7 @@ export default {
     return http.post(`${APIV}/routes`, payload).then((res) => {
       routeActions.createdRoute(res.data);
       return res.data;
-    }).catch((err) => handleError(err, errorActions.errorPost));
+    }).catch((err) => handleError(err, routeActions.errorCreateRoute));
   },
 
   // http://apidocs.cloudfoundry.org/241/routes/delete_a_particular_route.html
