@@ -15,7 +15,7 @@ describe('RouteStore', function() {
 
   beforeEach(() => {
     RouteStore._data = Immutable.List();
-    RouteStore.createError = null;
+    RouteStore.error = null;
     sandbox = sinon.sandbox.create();
   });
 
@@ -26,7 +26,7 @@ describe('RouteStore', function() {
   describe('constructor()', function() {
     it('should start data as empty array', function() {
       expect(RouteStore.getAll()).toBeEmptyArray();
-      expect(RouteStore.createError).toEqual(null);
+      expect(RouteStore.error).toEqual(null);
     });
   });
 
@@ -48,7 +48,8 @@ describe('RouteStore', function() {
       expect(actual.editing).toEqual(false);
     });
 
-    it('should set showCreateRouteForm to false and emitChange()', function () {
+    it('should set showCreateRouteForm and error to false and emitChange()',
+        function () {
       const appGuid = 'fake-app-guid';
       const routeGuid = 'fake-route-guid';
       const spy = sandbox.spy(RouteStore, 'emitChange');
@@ -61,6 +62,7 @@ describe('RouteStore', function() {
       });
 
       expect(RouteStore.showCreateRouteForm).toEqual(false);
+      expect(RouteStore.error).toEqual(null);
       expect(spy).toHaveBeenCalledOnce();
     });
   });
@@ -98,7 +100,7 @@ describe('RouteStore', function() {
       const expected = testCFError;
       routeActions.errorCreateRoute(expected);
 
-      const actual = RouteStore.createError;
+      const actual = RouteStore.error;
 
       expect(actual).toEqual(expected);
     });
@@ -161,7 +163,8 @@ describe('RouteStore', function() {
   });
 
   describe('routeActionTypes.ROUTE_CREATE_FORM_HIDE', function() {
-    it('should set showCreateRouteForm to false and emitChange()', function () {
+    it('should set showCreateRouteForm, error to false and emitChange()',
+        function () {
       const spy = sandbox.spy(RouteStore, 'emitChange');
 
       RouteStore.showCreateRouteForm = true;
@@ -170,12 +173,14 @@ describe('RouteStore', function() {
       })
 
       expect(RouteStore.showCreateRouteForm).toEqual(false);
+      expect(RouteStore.error).toEqual(null);
       expect(spy).toHaveBeenCalledOnce();
     });
   });
 
   describe('routeActionTypes.ROUTE_CREATE_FORM_SHOW', function () {
-    it('should set showCreateRouteForm to true and emitChange()', function () {
+    it('should set showCreateRouteForm, error to true and emitChange()',
+        function () {
       const spy = sandbox.spy(RouteStore, 'emitChange');
 
       RouteStore.showCreateRouteForm = false;
@@ -184,6 +189,7 @@ describe('RouteStore', function() {
       })
 
       expect(RouteStore.showCreateRouteForm).toEqual(true);
+      expect(RouteStore.error).toEqual(null);
       expect(spy).toHaveBeenCalledOnce();
     });
   });

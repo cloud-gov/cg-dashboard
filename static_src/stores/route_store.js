@@ -15,7 +15,7 @@ class RouteStore extends BaseStore {
     super();
     this._data = new Immutable.List();
     this.showCreateRouteForm = false;
-    this.createError = null;
+    this.error = null;
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
@@ -50,6 +50,7 @@ class RouteStore extends BaseStore {
         });
         this.merge('guid', newRoute, () => {
           this.showCreateRouteForm = false;
+          this.error = null;
           this.emitChange();
         });
         break;
@@ -62,7 +63,7 @@ class RouteStore extends BaseStore {
       }
 
       case routeActionTypes.ROUTE_CREATE_ERROR: {
-        this.createError = action.error;
+        this.error = action.error;
         this.emitChange();
         break;
       }
@@ -80,12 +81,14 @@ class RouteStore extends BaseStore {
 
       case routeActionTypes.ROUTE_CREATE_FORM_HIDE: {
         this.showCreateRouteForm = false;
+        this.error = null;
         this.emitChange();
         break;
       }
 
       case routeActionTypes.ROUTE_CREATE_FORM_SHOW: {
         this.showCreateRouteForm = true;
+        this.error = null;
         this.emitChange();
         break;
       }
