@@ -103,6 +103,18 @@ describe('cfApi', function() {
         done();
       });
     });
+
+    it('should call route actions create error on request failure', function(done) {
+      const spy = sandbox.stub(routeActions, 'errorCreateRoute');
+      const stub = sandbox.stub(http, 'post');
+      stub.returns(createPromise(true, errorFetchRes));
+
+      cfApi.createRoute('a', 'b', 'c', 'd').then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        done();
+      });
+
+    });
   });
 
   describe('deleteRoute()', function() {
@@ -129,6 +141,23 @@ describe('cfApi', function() {
         const arg = spy.getCall(0).args[0];
         expect(spy).toHaveBeenCalledOnce();
         expect(arg).toEqual(routeGuid);
+        done();
+      });
+    });
+
+    it('should call route actions error with guid on request failure',
+        function(done) {
+      const spy = sandbox.stub(routeActions, 'error');
+      const stub = sandbox.stub(http, 'delete');
+      stub.returns(createPromise(true, errorFetchRes));
+      const routeGuid = 'zxcvasdf24';
+
+      cfApi.deleteRoute(routeGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(routeGuid);
+        arg = spy.getCall(0).args[1];
+        expect(arg).toEqual(errorFetchRes.data);
         done();
       });
     });
@@ -167,23 +196,24 @@ describe('cfApi', function() {
       });;
     });
 
-    it('should call the fetch error action on failure', function() {
+    it('should call the fetch error action on failure', function(done) {
       const spy = fetchErrorSetup();
 
       cfApi.fetchOne().then(() => {
-        assertFetchError(spy);
+        expect(spy).toHaveBeenCalledOnce();
         done();
       });
     });
 
     it('should pass any additional arguments to the action', function(done) {
-      var spy = sandbox.spy(),
-          stub = sandbox.stub(http, 'get'),
-          expectedArgA = 'arga',
-          expectedArgB = 'argb';
+      const spy = sandbox.spy();
+      const stub = sandbox.stub(http, 'get');
+      const expectedArgA = 'arga';
+      const expectedArgB = 'argb';
 
       let testPromise = createPromise('asdf');
       stub.returns(testPromise);
+
       cfApi.fetchOne('/thing/asdfz', spy, expectedArgA, expectedArgB).then(() => {
         let actual = spy.getCall(0).args[1];
         expect(actual).toEqual(expectedArgA);
@@ -589,9 +619,9 @@ describe('cfApi', function() {
     });
 
     it('should call an service error action on failure', function(done) {
-      var stub = sandbox.stub(http, 'post'),
-          spy = sandbox.stub(serviceActions, 'errorCreateInstance'),
-          expectedErr = { status: 500, data: {} };
+      const stub = sandbox.stub(http, 'post');
+      const spy = sandbox.stub(serviceActions, 'errorCreateInstance');
+      const expectedErr = { status: 500, data: { code: 234 } };
 
       let testPromise = createPromise(true, expectedErr);
       stub.returns(testPromise);
@@ -602,7 +632,7 @@ describe('cfApi', function() {
           expectedServicePlanGuid).then(() => {
             expect(spy).toHaveBeenCalledOnce();
             let actual = spy.getCall(0).args[0];
-            expect(actual).toEqual(expectedErr);
+            expect(actual).toEqual(expectedErr.data);
             done();
         });
     });
@@ -689,8 +719,8 @@ describe('cfApi', function() {
       const guid = 'shouldCallActionCreatorGuid';
       const actionCreatorSpy = sandbox.spy(appActions, 'receivedAppAll');
 
-      sandbox.stub(cfApi, 'fetchApp').returns(createPromise({data: {}});
-      sandbox.stub(cfApi, 'fetchAppStats').returns(createPromise({data: {}});
+      sandbox.stub(cfApi, 'fetchApp').returns(createPromise({data: {}}));
+      sandbox.stub(cfApi, 'fetchAppStats').returns(createPromise({data: {}}));
 
       cfApi.fetchAppAll(guid).then(() => {
         expect(actionCreatorSpy).toHaveBeenCalled();
@@ -1086,6 +1116,23 @@ describe('cfApi', function() {
         done();
       });
     });
+
+    it('should call route actions error with guid on request failure',
+        function(done) {
+      const spy = sandbox.stub(routeActions, 'error');
+      const stub = sandbox.stub(http, 'put');
+      stub.returns(createPromise(true, errorFetchRes));
+      const routeGuid = 'sdf2dsfzxcv4';
+
+      cfApi.putAppRouteAssociation('adfads', routeGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(routeGuid);
+        arg = spy.getCall(0).args[1];
+        expect(arg).toEqual(errorFetchRes.data);
+        done();
+      });
+    });
   });
 
   describe('putRouteUpdate()', function() {
@@ -1144,6 +1191,27 @@ describe('cfApi', function() {
         expect(spy).toHaveBeenCalledOnce();
         expect(args[0]).toEqual(routeGuid);
         expect(args[1]).toEqual(route);
+        done();
+      });
+    });
+
+    it('should call route actions error with guid on request failure',
+        function(done) {
+      const spy = sandbox.stub(routeActions, 'error');
+      const stub = sandbox.stub(http, 'put');
+      stub.returns(createPromise(true, errorFetchRes));
+      const routeGuid = 'sdf2dsfzxcv4';
+      const route = {
+        host: 'fake-host',
+        path: 'fake-path'
+      };
+
+      cfApi.putRouteUpdate(routeGuid, 'a', 'b', route).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(routeGuid);
+        arg = spy.getCall(0).args[1];
+        expect(arg).toEqual(errorFetchRes.data);
         done();
       });
     });

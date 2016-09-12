@@ -356,7 +356,7 @@ export default {
     return http.delete(url).then(() => {
       routeActions.deletedRoute(routeGuid);
     }).catch((err) => {
-      handleError(err, errorActions.errorDelete);
+      handleError(err, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -366,7 +366,7 @@ export default {
     return http.put(url).then(() => {
       routeActions.associatedApp(routeGuid, appGuid);
     }).catch((err) => {
-      handleError(err, errorActions.errorPut);
+      handleError(err, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -382,7 +382,7 @@ export default {
     return http.put(url, payload).then(() => {
       routeActions.updatedRoute(routeGuid, route);
     }).catch((err) => {
-      handleError(err, errorActions.errorPut);
+      handleError(err, routeActions.error.bind(this, routeGuid));
     });
   },
 
