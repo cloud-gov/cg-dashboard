@@ -174,7 +174,8 @@ const routeActionTypes = keymirror({
   ROUTE_UPDATED: null,
   ROUTES_FOR_APP_FETCH: null,
   ROUTES_FOR_APP_RECEIVED: null,
-  ROUTE_TOGGLE_EDIT: null
+  ROUTE_TOGGLE_EDIT: null,
+  ROUTE_ERROR: null
 });
 
 const domainActionTypes = keymirror({

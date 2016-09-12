@@ -230,4 +230,19 @@ describe('routeActions', function() {
     });
   });
 
+  describe('error()', function() {
+    it('should dispatch route error with route guid and error', function() {
+      const routeGuid = 'adfzcvb2cvb435n';
+      const err = { status: 500, data: { }};
+      const params = {
+        routeGuid: routeGuid,
+        error: err
+      };
+      const spy = setupServerSpy(sandbox);
+
+      routeActions.error(routeGuid, err);
+
+      assertAction(spy, routeActionTypes.ROUTE_ERROR, params);
+    });
+  });
 });

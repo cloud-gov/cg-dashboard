@@ -115,5 +115,13 @@ export default {
       routeGuid,
       route
     });
+  },
+
+  error(routeGuid, err) {
+    AppDispatcher.handleServerAction({
+      type: routeActionTypes.ROUTE_ERROR,
+      routeGuid,
+      error: err
+    });
   }
 };
