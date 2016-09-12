@@ -102,7 +102,13 @@
   background-color: transparent;
   border: none;
   color: var(--warning);
+  font-family: monospace;
+  font-weight: 200;
   outline-color: transparent;
+}
+
+.route-form .error_message {
+  padding-left: .75rem;
 }
 
 /* TODO move to global */

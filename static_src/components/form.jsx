@@ -2,6 +2,8 @@
 import React from 'react';
 
 import classNames from 'classnames';
+import createStyler from '../util/create_styler';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 var currid = 0;
 
@@ -176,10 +178,15 @@ export class FormError extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
+    this.styler = createStyler(style);
   }
 
   render() {
-    return <p>{ this.props.message }</p>;
+    return (
+      <span className={ this.styler('error_message')}>
+        { this.props.message }
+      </span>
+    );
   }
 }
 FormError.propTypes = { message: React.PropTypes.string };

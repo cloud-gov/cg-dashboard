@@ -37,7 +37,8 @@ function stateSetter() {
     appGuid,
     routes: appRoutes,
     spaceGuid: SpaceStore.currentSpaceGuid,
-    showCreateForm: RouteStore.showCreateRouteForm
+    showCreateForm: RouteStore.showCreateRouteForm,
+    error: RouteStore.error
   };
 }
 
@@ -124,6 +125,7 @@ export default class RouteList extends React.Component {
 
     return (
       <RouteForm domains={ DomainStore.getAll() }
+        error={ this.state.error }
         cancelHandler={ () => this._removeCreateRouteForm() }
         submitHandler={ this._createRouteAndAssociate }
       />
