@@ -31,7 +31,8 @@ describe('RouteStore', function() {
   });
 
   describe('routeActionTypes.ROUTE_APP_ASSOCIATED', function () {
-    it('should add app_guid to the route object and set editing to false', function () {
+    it('should add app_guid to the route object and set editing, erro to false',
+        function () {
       const appGuid = 'fake-app-guid';
       const routeGuid = 'fake-route-guid';
 
@@ -46,6 +47,7 @@ describe('RouteStore', function() {
       const actual = RouteStore.get(routeGuid);
       expect(actual.app_guid).toEqual(appGuid);
       expect(actual.editing).toEqual(false);
+      expect(actual.error).toBeFalsy();
     });
 
     it('should set showCreateRouteForm and error to false and emitChange()',
@@ -383,7 +385,7 @@ describe('RouteStore', function() {
   });
 
   describe('routeActionTypes.ROUTE_UPDATED', function () {
-    it('should update route and set editing to false', function () {
+    it('should update route and set editing, error to false', function () {
       const routeGuid = 'fake-route-guid';
       const route = { guid: routeGuid, foo: 'bar' };
 
@@ -397,6 +399,7 @@ describe('RouteStore', function() {
 
       expect(RouteStore.get(routeGuid).foo).toEqual('bar');
       expect(RouteStore.get(routeGuid).editing).toEqual(false);
+      expect(RouteStore.get(routeGuid).err).toBeFalsy();
     });
 
     it('should emitChange()', function () {
@@ -409,6 +412,46 @@ describe('RouteStore', function() {
         routeGuid,
         route
       });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on route error', function() {
+    const testCFError = {
+      code: 210003,
+      description: 'The host is taken: testapp01',
+      error_code: 'CF-RouteHostTaken'
+    };
+
+    it('should toggle the "error" value of the route', function () {
+      const routeGuid = 'route-guid-zcvzxcv';
+      const route = { guid: routeGuid };
+      const err = testCFError;
+
+      RouteStore.push(route);
+
+      routeActions.error(routeGuid, err);
+
+      const actual = RouteStore.get(routeGuid);
+      const expected = Object.assign({}, route, {
+        error: err
+      });
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('should emit change if errored route found', function() {
+      const routeGuid = 'route-guid-zcvzxcv';
+      const route = { guid: routeGuid };
+      const err = testCFError;
+      RouteStore.push(route);
+
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      routeActions.error('fake-guid', err);
+      routeActions.error(routeGuid, err);
+      routeActions.error(routeGuid, err);
 
       expect(spy).toHaveBeenCalledOnce();
     });

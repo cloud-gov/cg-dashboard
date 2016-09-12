@@ -46,7 +46,8 @@ class RouteStore extends BaseStore {
         const route = this.get(action.routeGuid);
         const newRoute = Object.assign({}, route, {
           app_guid: action.appGuid,
-          editing: false
+          editing: false,
+          error: null
         });
         this.merge('guid', newRoute, () => {
           this.showCreateRouteForm = false;
@@ -151,10 +152,23 @@ class RouteStore extends BaseStore {
 
       case routeActionTypes.ROUTE_UPDATED: {
         const route = Object.assign({}, action.route, {
-          editing: false
+          editing: false,
+          error: null
         });
         this.merge('guid', route, () => {
           this.emitChange();
+        });
+        break;
+      }
+
+      case routeActionTypes.ROUTE_ERROR: {
+        const route = this.get(action.routeGuid);
+        if (!route) break;
+        const newRoute = Object.assign({}, route, {
+          error: action.error
+        });
+        this.merge('guid', newRoute, (changed) => {
+          if (changed) this.emitChange();
         });
         break;
       }
