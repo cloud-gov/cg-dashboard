@@ -33,7 +33,7 @@ describe('format_route util', () => {
 
   it('should show a blank string if domain undefined', () => {
     const route = {
-      domain: undefined
+      domain: undefined,
       host: 'gopher',
       path: 'about.html'
     };
