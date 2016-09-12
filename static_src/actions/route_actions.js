@@ -27,6 +27,13 @@ export default {
     });
   },
 
+  errorCreateRoute(err) {
+    AppDispatcher.handleServerAction({
+      type: routeActionTypes.ROUTE_CREATE_ERROR,
+      error: err
+    });
+  },
+
   createdRoute(route) {
     AppDispatcher.handleServerAction({
       type: routeActionTypes.ROUTE_CREATED,

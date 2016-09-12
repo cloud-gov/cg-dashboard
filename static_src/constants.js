@@ -154,6 +154,8 @@ const routeActionTypes = keymirror({
   ROUTE_APP_ASSOCIATED: null,
   // Action for creating routes
   ROUTE_CREATE: null,
+  // Action when creating a route fails
+  ROUTE_CREATE_ERROR: null,
   // Action for receiving the created route
   ROUTE_CREATED: null,
   // Action to create a route and associate it with an app
