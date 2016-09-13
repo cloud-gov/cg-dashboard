@@ -160,8 +160,10 @@ export default class RouteForm extends React.Component {
           ></input>
           <div style={{ paddingLeft: '.75rem' }}>
             {(() => {
+              // Props error is non-specific when error happens at route creation.
               if (this.props.error) {
                 return <FormError message={this.props.error.description} />;
+              // Route error is a error when updating/deleting a specific route.
               } else if (route.error) {
                 return <FormError message={route.error.description} />;
               }
