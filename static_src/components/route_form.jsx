@@ -164,8 +164,6 @@ export default class RouteForm extends React.Component {
                 return <FormError message={this.props.error.description} />;
               } else if (route.error) {
                 return <FormError message={route.error.description} />;
-              } else {
-                return <div></div>;
               }
             })()}
           </div>

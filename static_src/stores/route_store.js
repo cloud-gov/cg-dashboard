@@ -77,7 +77,7 @@ class RouteStore extends BaseStore {
           const routeGuid = res.metadata.guid;
           cfApi.putAppRouteAssociation(appGuid, routeGuid);
         }).catch(() => {
-          // Do nothing
+          // Do nothing, error handled in cf_api.js
         });
         break;
       }
