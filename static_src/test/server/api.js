@@ -195,8 +195,21 @@ module.exports = function api(smocks) {
   });
 
   smocks.route({
-    id: 'service-service-plans',
-    label: 'Service service plans',
+    id: 'service-plan',
+    label: 'Service plan',
+    path: `${BASE_URL}/service_plans/{guid}`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      var plan = servicePlans('a').find(function(servicePlan) {
+        return servicePlan.metadata.guid === guid;
+      });
+      reply(plan);
+    }
+  });
+
+  smocks.route({
+    id: 'service-plans',
+    label: 'Service plans',
     path: `${BASE_URL}/services/{guid}/service_plans`,
     handler: function (req, reply) {
       var guid = req.params.guid;
@@ -207,6 +220,22 @@ module.exports = function api(smocks) {
         prev_url: null,
         next_url: null,
         resources: plans
+      });
+    }
+  });
+
+  smocks.route({
+    id: 'spaces',
+    label: 'Spaces',
+    path: `${BASE_URL}/spaces`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      reply({
+        total_results: spaces.length,
+        total_pages: 1,
+        prev_url: null,
+        next_url: null,
+        resources: spaces
       });
     }
   });

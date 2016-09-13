@@ -277,6 +277,7 @@ var services = serviceGuids.map(function(guid, i) {
 module.exports.services = services;
 
 var serviceInstances = serviceInstanceGuids.map(function(guid, i) {
+  var servicePlanGuid = servicePlanGuids[i];
   return {
     metadata: {
       guid: guid,
@@ -287,8 +288,8 @@ var serviceInstances = serviceInstanceGuids.map(function(guid, i) {
     entity: {
       name: `service-instance-${guid}`,
       credentials: {},
-      service_plan_guid: 'fake-service-plan-guid',
-      space_guid: spaceGuids[i],
+      service_plan_guid: servicePlanGuid,
+      space_guid: spaceGuids[0],
       gateway_data: null,
       dashboard_url: null,
       type: 'managed_service_instance',
@@ -315,7 +316,7 @@ var servicePlans = function(serviceGuid) {
   return servicePlanGuids.map(function(guid, i) {
     return {
       metadata: {
-        guid: `${serviceGuid}-${guid}`,
+        guid: `${guid}`,
         url: `${URL_BASE}/service_plans/${guid}`,
         created_at: '2015-07-14T04:02:30Z',
         updated_at: null
@@ -340,12 +341,16 @@ module.exports.servicePlans = servicePlans;
 
 var spaces = spaceGuids.map(function(guid){
   return {
-    guid: guid,
-    name: `space-${guid}`,
-    service_count: 0,
-    app_count: 2,
-    mem_dev_total: 2560,
-    mem_prod_total: 0
+    entity: {
+      guid: guid,
+    },
+    metadata: {
+      name: `space-${guid}`,
+      service_count: 0,
+      app_count: 2,
+      mem_dev_total: 2560,
+      mem_prod_total: 0
+    }
   };
 });
 
@@ -417,9 +422,6 @@ spaceUsers.pop();
 module.exports.spaceUsers = spaceUsers;
 
 var serviceInstanceBindings = appGuids.map(function(appGuid, i) {
-  if (i % 2 === 0) {
-    return;
-  }
   var serviceInstanceGuid = serviceInstanceGuids[i];
   return {
     metadata: {
@@ -443,5 +445,6 @@ var serviceInstanceBindings = appGuids.map(function(appGuid, i) {
     }
   };
 });
+serviceInstanceBindings.pop();
 
 module.exports.serviceInstanceBindings = serviceInstanceBindings;
