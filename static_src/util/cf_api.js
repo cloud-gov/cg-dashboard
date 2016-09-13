@@ -347,7 +347,7 @@ export default {
     return http.post(`${APIV}/routes`, payload).then((res) => {
       routeActions.createdRoute(res.data);
       return res.data;
-    }).catch((err) => handleError(err, errorActions.errorPost));
+    }).catch((err) => handleError(err, routeActions.errorCreateRoute));
   },
 
   // http://apidocs.cloudfoundry.org/241/routes/delete_a_particular_route.html
@@ -356,7 +356,7 @@ export default {
     return http.delete(url).then(() => {
       routeActions.deletedRoute(routeGuid);
     }).catch((err) => {
-      handleError(err, errorActions.errorDelete);
+      handleError(err, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -366,7 +366,7 @@ export default {
     return http.put(url).then(() => {
       routeActions.associatedApp(routeGuid, appGuid);
     }).catch((err) => {
-      handleError(err, errorActions.errorPut);
+      handleError(err, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -382,7 +382,7 @@ export default {
     return http.put(url, payload).then(() => {
       routeActions.updatedRoute(routeGuid, route);
     }).catch((err) => {
-      handleError(err, errorActions.errorPut);
+      handleError(err, routeActions.error.bind(this, routeGuid));
     });
   },
 

@@ -15,6 +15,7 @@ class RouteStore extends BaseStore {
     super();
     this._data = new Immutable.List();
     this.showCreateRouteForm = false;
+    this.error = null;
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
@@ -45,10 +46,12 @@ class RouteStore extends BaseStore {
         const route = this.get(action.routeGuid);
         const newRoute = Object.assign({}, route, {
           app_guid: action.appGuid,
-          editing: false
+          editing: false,
+          error: null
         });
         this.merge('guid', newRoute, () => {
           this.showCreateRouteForm = false;
+          this.error = null;
           this.emitChange();
         });
         break;
@@ -57,6 +60,12 @@ class RouteStore extends BaseStore {
       case routeActionTypes.ROUTE_CREATE: {
         const { domainGuid, spaceGuid, host, path } = action;
         cfApi.createRoute(domainGuid, spaceGuid, host, path);
+        break;
+      }
+
+      case routeActionTypes.ROUTE_CREATE_ERROR: {
+        this.error = action.error;
+        this.emitChange();
         break;
       }
 
@@ -73,12 +82,14 @@ class RouteStore extends BaseStore {
 
       case routeActionTypes.ROUTE_CREATE_FORM_HIDE: {
         this.showCreateRouteForm = false;
+        this.error = null;
         this.emitChange();
         break;
       }
 
       case routeActionTypes.ROUTE_CREATE_FORM_SHOW: {
         this.showCreateRouteForm = true;
+        this.error = null;
         this.emitChange();
         break;
       }
@@ -141,10 +152,23 @@ class RouteStore extends BaseStore {
 
       case routeActionTypes.ROUTE_UPDATED: {
         const route = Object.assign({}, action.route, {
-          editing: false
+          editing: false,
+          error: null
         });
         this.merge('guid', route, () => {
           this.emitChange();
+        });
+        break;
+      }
+
+      case routeActionTypes.ROUTE_ERROR: {
+        const route = this.get(action.routeGuid);
+        if (!route) break;
+        const newRoute = Object.assign({}, route, {
+          error: action.error
+        });
+        this.merge('guid', newRoute, (changed) => {
+          if (changed) this.emitChange();
         });
         break;
       }

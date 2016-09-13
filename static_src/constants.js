@@ -154,6 +154,8 @@ const routeActionTypes = keymirror({
   ROUTE_APP_ASSOCIATED: null,
   // Action for creating routes
   ROUTE_CREATE: null,
+  // Action when creating a new route fails, the route doesn't exist yet
+  ROUTE_CREATE_ERROR: null,
   // Action for receiving the created route
   ROUTE_CREATED: null,
   // Action to create a route and associate it with an app
@@ -172,7 +174,9 @@ const routeActionTypes = keymirror({
   ROUTE_UPDATED: null,
   ROUTES_FOR_APP_FETCH: null,
   ROUTES_FOR_APP_RECEIVED: null,
-  ROUTE_TOGGLE_EDIT: null
+  ROUTE_TOGGLE_EDIT: null,
+  // Action when any action on an existing route fails
+  ROUTE_ERROR: null
 });
 
 const domainActionTypes = keymirror({

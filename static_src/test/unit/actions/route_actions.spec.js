@@ -56,6 +56,20 @@ describe('routeActions', function() {
     });
   });
 
+  describe('errorCreateRoute()', function() {
+    it('should dispatch a ROUTE_CREATE_ERROR with error object', function() {
+      const err = { status: 500, data: { }};
+      const params = {
+        error: err
+      };
+      const spy = setupServerSpy(sandbox);
+
+      routeActions.errorCreateRoute(err);
+
+      assertAction(spy, routeActionTypes.ROUTE_CREATE_ERROR, params);
+    });
+  });
+
   describe('createdRoute()', function() {
     it('should dipsatch ROUTE_CREATED server event with route', function () {
       const route = { guid: 'fake-route-guid' };
@@ -216,4 +230,19 @@ describe('routeActions', function() {
     });
   });
 
+  describe('error()', function() {
+    it('should dispatch route error with route guid and error', function() {
+      const routeGuid = 'adfzcvb2cvb435n';
+      const err = { status: 500, data: { }};
+      const params = {
+        routeGuid: routeGuid,
+        error: err
+      };
+      const spy = setupServerSpy(sandbox);
+
+      routeActions.error(routeGuid, err);
+
+      assertAction(spy, routeActionTypes.ROUTE_ERROR, params);
+    });
+  });
 });
