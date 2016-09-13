@@ -31,7 +31,7 @@ describe('RouteStore', function() {
   });
 
   describe('routeActionTypes.ROUTE_APP_ASSOCIATED', function () {
-    it('should add app_guid to the route object and set editing, erro to false',
+    it('should add app_guid to the route object and set editing, error to false',
         function () {
       const appGuid = 'fake-app-guid';
       const routeGuid = 'fake-route-guid';

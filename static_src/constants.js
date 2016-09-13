@@ -154,7 +154,7 @@ const routeActionTypes = keymirror({
   ROUTE_APP_ASSOCIATED: null,
   // Action for creating routes
   ROUTE_CREATE: null,
-  // Action when creating a route fails
+  // Action when creating a new route fails, the route doesn't exist yet
   ROUTE_CREATE_ERROR: null,
   // Action for receiving the created route
   ROUTE_CREATED: null,
@@ -175,6 +175,7 @@ const routeActionTypes = keymirror({
   ROUTES_FOR_APP_FETCH: null,
   ROUTES_FOR_APP_RECEIVED: null,
   ROUTE_TOGGLE_EDIT: null,
+  // Action when any action on an existing route fails
   ROUTE_ERROR: null
 });
 
