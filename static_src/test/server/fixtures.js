@@ -8,6 +8,16 @@ var appGuids = [
 
 module.exports.appGuids = appGuids;
 
+var domainGuids = [
+  'domain-guid-one',
+  'domain-guid-two',
+  'domain-guid-three',
+  'domain-guid-four',
+  'domain-guid-five'
+];
+
+module.exports.domainGuids = domainGuids;
+
 var organizationGuids = [
   'org-guid-one',
   'org-guid-two',
@@ -37,6 +47,14 @@ var serviceInstanceGuids = [
   'service-instance-guid-one',
   'service-instance-guid-two',
   'service-instance-guid-three'
+];
+
+module.exports.serviceInstanceGuids = serviceInstanceGuids;
+
+var serviceInstanceBindingGuids = [
+  'service-instance-binding-guid-one',
+  'service-instance-binding-guid-two',
+  'service-instance-binding-guid-three'
 ];
 
 module.exports.serviceInstanceGuids = serviceInstanceGuids;
@@ -165,9 +183,30 @@ var organizations = organizationGuids.map(function(guid) {
 
 module.exports.organizations  = organizations;
 
+var domains = domainGuids.map(function(guid, i) {
+  var domainType = (i % 2 === 0) ? 'private_domains' : 'shared_domains';
+  return {
+    metadata: {
+      guid: guid,
+      url: `${URL_BASE}/${domainType}/${guid}`,
+      created_at: '2015-10-13T18:30:37Z',
+      updated_at: null
+    },
+    entity: {
+      name: `domain-${guid}.gov`,
+      owning_organization_guid: organizationGuids[i] || 'abc',
+      owning_organization_url: 'asdf',
+      shared_organizations_url: 'asdf'
+    }
+  }
+});
+
+module.exports.domains = domains;
+
 var routes = routeGuids.map(function(guid, i){
-  var domainGuid = 'yo';
+  var domainGuid = domainGuids[i];
   var spaceGuid = spaceGuids[i];
+  var domainType = (i % 2 === 0) ? 'private_domains' : 'shared_domains';
   return {
     total_results: 1,
     total_pages: 1,
@@ -184,11 +223,11 @@ var routes = routeGuids.map(function(guid, i){
         entity: {
           host: 'console',
           path: '',
-          domain_guid: '',
+          domain_guid: domainGuid,
           space_guid: spaceGuids[i],
           service_instance_guid: null,
           port: 0,
-          domain_url: `${URL_BASE}/domains/${domainGuid}`,
+          domain_url: `${URL_BASE}/${domainType}/${domainGuid}`,
           space_url: `${URL_BASE}/spaces/${spaceGuid}`,
           apps_url: `${URL_BASE}/routes/${guid}/apps`,
           route_mappings_url: `${URL_BASE}/routes/${guid}/route_mappings`
@@ -376,3 +415,33 @@ var spaceUsers = users.map(function(user, i) {
 spaceUsers.pop();
 
 module.exports.spaceUsers = spaceUsers;
+
+var serviceInstanceBindings = appGuids.map(function(appGuid, i) {
+  if (i % 2 === 0) {
+    return;
+  }
+  var serviceInstanceGuid = serviceInstanceGuids[i];
+  return {
+    metadata: {
+      guid: serviceInstanceBindingGuids[i],
+      url: `${URL_BASE}/service_bindings/${serviceInstanceBindingGuids[i]}`,
+      created_at: '2015-02-19T08:46:28Z',
+      updated_at: null
+    },
+    entity: {
+      app_guid: appGuid,
+      service_instance_guid: serviceInstanceGuid,
+      credentials: {
+        "creds-key-72": "creds-val-72"
+      },
+      gateway_data: null,
+      gateway_name: "",
+      syslog_drain_url: null,
+      volume_mounts: [],
+      app_url: `/v2/apps/${appGuid}`,
+      service_instance_url: `/v2/service_instances/${serviceInstanceGuid}`
+    }
+  };
+});
+
+module.exports.serviceInstanceBindings = serviceInstanceBindings;

@@ -2,10 +2,12 @@ var data = require('./fixtures');
 
 var apps = data.apps;
 var appStats = data.appStats;
+var domains = data.domains
 var organizations = data.organizations;
 var routes = data.routes;
 var services = data.services;
 var serviceInstances = data.serviceInstances;
+var serviceInstanceBindings = data.serviceInstanceBindings;
 var servicePlans = data.servicePlans;
 var spaces = data.spaces;
 var currentUser = data.currentUser;
@@ -51,6 +53,32 @@ module.exports = function api(smocks) {
         }).code(400);
       }
       reply(appStats);
+    }
+  });
+
+  smocks.route({
+    id: 'shared-domain',
+    label: 'Shared domain',
+    path: `${BASE_URL}/shared_domains/{guid}`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      var domain = domains.find(function(domain) {
+        return domain.metadata.guid === guid;
+      });
+      reply(domain);
+    }
+  });
+
+  smocks.route({
+    id: 'private-domain',
+    label: 'Private domain',
+    path: `${BASE_URL}/private_domains/{guid}`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      var domain = domains.find(function(domain) {
+        return domain.metadata.guid === guid;
+      });
+      reply(domain);
     }
   });
 
@@ -146,6 +174,22 @@ module.exports = function api(smocks) {
         prev_url: null,
         next_url: null,
         resources: orgUserRoles
+      });
+    }
+  });
+
+  smocks.route({
+    id: 'service-instance-bindings',
+    label: 'Serivce instance bindings',
+    path: `${BASE_URL}/apps/{appGuid}/service_bindings`,
+    handler: function(req, reply) {
+      var guid = req.params.guid;
+      reply({
+        total_results: serviceInstanceBindings.length,
+        total_pages: 1,
+        prev_url: null,
+        next_url: null,
+        resources: serviceInstanceBindings
       });
     }
   });
