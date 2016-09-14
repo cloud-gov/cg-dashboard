@@ -76,6 +76,8 @@ class RouteStore extends BaseStore {
         cfApi.createRoute(domainGuid, spaceGuid, host, path).then((res) => {
           const routeGuid = res.metadata.guid;
           cfApi.putAppRouteAssociation(appGuid, routeGuid);
+        }).catch(() => {
+          // Do nothing, error handled in cf_api.js
         });
         break;
       }

@@ -3,6 +3,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
+import { FormError } from './form.jsx';
 import PanelActions from './panel_actions.jsx';
 
 import createStyler from '../util/create_styler';
@@ -13,6 +14,7 @@ import routeFormCss from '../css/route_form.css';
 const propTypes = {
   domains: React.PropTypes.array.isRequired,
   route: React.PropTypes.object,
+  error: React.PropTypes.object,
   submitHandler: React.PropTypes.func,
   cancelHandler: React.PropTypes.func,
   deleteHandler: React.PropTypes.func
@@ -20,6 +22,7 @@ const propTypes = {
 
 const defaultProps = {
   route: {},
+  error: null,
   submitHandler: () => {},
   cancelHandler: () => {}
 };
@@ -155,6 +158,17 @@ export default class RouteForm extends React.Component {
             className={ this.styler('route-form-preview') }
             value={ this.fullUrl }
           ></input>
+          <div style={{ paddingLeft: '.75rem' }}>
+            {(() => {
+              // Props error is non-specific when error happens at route creation.
+              if (this.props.error) {
+                return <FormError message={this.props.error.description} />;
+              // Route error is a error when updating/deleting a specific route.
+              } else if (route.error) {
+                return <FormError message={route.error.description} />;
+              }
+            })()}
+          </div>
         </div>
         <div className={ this.styler('route-form-actions') }>
           <PanelActions>
