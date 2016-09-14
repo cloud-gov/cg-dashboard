@@ -88,6 +88,10 @@ var userGuids = [
 
 module.exports.userGuids = userGuids;
 
+function alternateDomainType(i) {
+  return (i % 2 === 0) ? 'private_domains' : 'shared_domains';
+}
+
 var apps = appGuids.map(function(guid, i) {
   var state = ((i % 2) !== 0) ? 'STOPPED' : 'STARTED';
   return {
@@ -184,7 +188,7 @@ var organizations = organizationGuids.map(function(guid) {
 module.exports.organizations  = organizations;
 
 var domains = domainGuids.map(function(guid, i) {
-  var domainType = (i % 2 === 0) ? 'private_domains' : 'shared_domains';
+  var domainType = alternateDomainType(i);
   return {
     metadata: {
       guid: guid,
@@ -206,7 +210,7 @@ module.exports.domains = domains;
 var routes = routeGuids.map(function(guid, i){
   var domainGuid = domainGuids[i];
   var spaceGuid = spaceGuids[i];
-  var domainType = (i % 2 === 0) ? 'private_domains' : 'shared_domains';
+  var domainType = alternateDomainType(i);
   return {
     total_results: 1,
     total_pages: 1,
