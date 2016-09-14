@@ -3,6 +3,8 @@ const path = require('path');
 const webpack = require('webpack');
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const WebpackKarmaWarningsPlugin = require(
+  './static_src/test/webpack-karma-warnings-plugin.js');
 
 const PRODUCTION = (process.env.NODE_ENV === 'prod');
 const CG_STYLE_PATH = process.env.CG_STYLE_PATH;
@@ -11,6 +13,8 @@ const srcDir = './static_src';
 const compiledDir = './static/assets';
 
 const config = {
+  bail: true,
+
   entry: [
     'babel-polyfill',
     `${srcDir}/main.js`
@@ -74,7 +78,8 @@ const config = {
   },
 
   plugins: [
-    new ExtractTextPlugin('style.css', { allChunks: true })
+    new ExtractTextPlugin('style.css', { allChunks: true }),
+    new WebpackKarmaWarningsPlugin()
   ],
 
   publicPath: './static'
