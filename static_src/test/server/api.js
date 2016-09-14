@@ -125,11 +125,14 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/organizations/{guid}/summary`,
     handler: function (req, reply) {
       var guid = req.params.guid;
+      var unwrappedSpaces = spaces.map(function(space) {
+        return Object.assign({}, space.entity, space.metadata);
+      });
       reply({
         guid: guid,
         name: 'org-name',
         status: 'active',
-        spaces: spaces
+        spaces: unwrappedSpaces
       });
     }
   });
