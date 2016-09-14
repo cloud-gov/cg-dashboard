@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/18F/cg-dashboard.svg?style=svg)](https://circleci.com/gh/18F/cg-dashboard)
 
-[Production](https://dashboard.cloud.gov)
+Environments: [Production](https://dashboard.cloud.gov)
 [Master](https://dashboard-master.apps.cloud.gov)
 [Staging](https://dashboard-staging.apps.cloud.gov)
 
@@ -18,40 +18,29 @@ Learn more about [cloud.gov](https://cloud.gov).
 ### Backend Server [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-dashboard/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-dashboard?branch=master)
 - `Go` (version 1.6.2)
 
-### Front end application [![JS Code Coverage Status](https://coveralls.io/repos/18F/cg-dashboard/badge.svg?branch=master&service=github)](https://coveralls.io/repos/18F/cg-dashboard/badge.svg?branch=master&service=github)
+### Front end application
 - `Node` (version 6.x.x)
 - `React` (version ^0.14.0)
+- `Babel` (version ^6.x.x)
+- `Karma` (version ^0.13.x)
+- `Webpack` (version ^1.x.x)
 
 ## Setup
-### Cloning the repository
+### Go backend
+The Go backend isn't strictly required for all development. Consider [running locally with node](running_locally_without_needing_go) if you will not be doing primary feature work where you need access to the actual Cloud Foundry API.
+
+#### Cloning the repository
 If you are unfamiliar with [`Go` project directory structure](https://golang.org/doc/code.html#Workspaces), you want the code in this repository to be in something like `<your-code-directory>/cg-dashboard-ws/src/github.com/18f/cg-dashboard`. You can use that exact pattern by cloning the repository with:
 
 ```
 git clone git@github.com:18F/cg-dashboard.git cg-dashboard-ws/src/github.com/18F/cg-dashboard
 ```
 
-### Create a Client with UAAC
-- Make sure [UAAC](https://github.com/cloudfoundry/cf-uaac) is installed.
-- Target your UAA server. `uaac target <uaa.your-domain.com>`
-- Login with your current UAA account. `uaac token client get <your admin account> -s <your uaa admin password>`
-- Create client account:
-```
-uaac client add <your-client-id> \
- --authorities uaa.none \
- --authorized_grant_types authorization_code,client_credentials,refresh_token \
- --scope cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read \
- --autoapprove true \
--s <your-client-secret>
-```
-- Unable to create an account still? Troubleshoot [here](https://docs.cloudfoundry.org/adminguide/uaa-user-management.html#creating-admin-users)
-
-### Set the environment variables
+#### Set the environment variables
 If you are testing locally, export these variables. There is a sample file of environment variables called `env.sample`. Feel free to copy it and use the proper data. If you've never used environment variables before, you can run the following:
 `mkdir ~/.env && cp ./env.sample ~/.env/cg-dashboard`
 
-Then edit the file `~/.env/cg-dashboard` and provide the proper values. When you want to set all the environment variables, just run `source ~/.env/cg-dashboard`. You'll have to do this every time you open a new shell.
-
-If you are deploying to cloud foundry, modify the `manifest.yml`
+Then edit the file `~/.env/cg-dashboard` and provide the proper values. When you want to set all the environment variables, just run `source ~/.env/cg-dashboard`. You'll have to do this every time you open a new shell. If you work at 18F, ask a team member to send you the secret credentials.
 
 - `GOPATH`: The absolute path to your project root. If you followed the cloning instructions above, this path should end with `cg-dashboard-ws`
 - `CONSOLE_CLIENT_ID`: Registered client id with UAA.
@@ -62,10 +51,9 @@ If you are deploying to cloud foundry, modify the `manifest.yml`
 - `CONSOLE_API_URL`: The URL of the API service. i.e. `http://api.domain.com`
 - `CONSOLE_LOG_URL`: The URL of the loggregator service. i.e. `http://loggregator.domain.com`
 - `PPROF_ENABLED`: <optional> If set to `true` or `1`, will turn on `/debug/pprof` endpoints as seen [here](https://golang.org/pkg/net/http/pprof/)
-- `CG_STYLE_PATH`: <optional> The absolute path to your `cg-style` repo. If set, will use a local copy of `cloudgov-style` to build the front end application.
 
-## Front end
-Front end build commands should be run in the same directory as the `package.json` file. If you've used the cloning command from this README it should be something like `/path/to/cg-dashboard-ws/src/github.com/18F/cg-dashboard`
+### Front end
+Front end build commands should be run in the same directory as the `package.json` file. If you've used the cloning command from this README it should be something like `/path/to/cg-dashboard-ws/src/github.com/18F/cg-dashboard`. Node version 6 and above should always be used.
 
 Install front end dependencies (may require [special steps for node-gyp](https://github.com/nodejs/node-gyp#installation)):
 ```
@@ -85,12 +73,12 @@ To run the tests:
 ```
 npm run test
 ```
-or to continually watch for changes and run test suite (does not build front end app):
+or to continually watch for changes and run test suite:
 ```
 npm run watch-test
 ```
 
-To lint the code:
+To lint the code (also run as part of tests):
 ```
 npm run lint
 ```
@@ -111,6 +99,7 @@ npm install -g eslint-plugin-react
 - `go run server.go`
 - Navigate browser to [`http://localhost:9999`](http://localhost:9999)
 
+<a name="running_locally_without_needing_go"></a>
 ### Run locally without needing Go
 This is an easy way to test out front end changes without needing to set up environment variables or `Go`. We will use a small server with fake data (used for automated testing) to get going quickly. If you want to see live data, you'll need to follow the instructions above.
 
@@ -134,23 +123,15 @@ To kill that process, run `kill %N` where "N" is the number from the line.
 ### Running Javascript unit tests
 Test can then be run with the command:
 ```
-npm run tests
-```
-To get a viewable coverage report change the `coverageReport` object in `karma.conf.js` from `json` to `html`
-```
-coverageReporter: {
-    type: 'html',
-    dir: 'coverage',
-    subdir: '.'
-}
+npm run test
 ```
 
-### Acceptance Tests
+## Acceptance Tests
+*Note: Acceptance tests are currently not being developed*
 This project currently uses a combination of [Agouti](http://agouti.org/) + [Ginkgo](http://onsi.github.io/ginkgo/) + [Gomega](http://onsi.github.io/gomega/) to provide BDD acceptance testing.
 All the acceptance tests are in the 'acceptance' folder.
 
-
-#### Setup
+### Setup
 - Make sure you have PhantomJS installed: `brew install phantomjs`
 - Install aogut: `go get github.com/sclevine/agouti`
 - Install ginkgo `go get github.com/onsi/ginkgo/ginkgo`
@@ -178,7 +159,7 @@ For debug mode where the developer can vnc into the container and the browser ex
 
 ## Deploying
 
-The cloud.gov dashboard is continuously deployed by CircleCI.
+The cloud.gov dashboard is continuously deployed by CircleCI. To deploy manually:
 
 ### Bootstrap Deployment Spaces
 In each space that you plan on deploying, you need to create a `user-provided-service`.
@@ -192,8 +173,25 @@ cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_
 cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret","CONSOLE_NEW_RELIC_LICENSE":"your-new-relic-license"}'
 ```
 
+### Create a Client with UAAC
+- Make sure [UAAC](https://github.com/cloudfoundry/cf-uaac) is installed.
+- Target your UAA server. `uaac target <uaa.your-domain.com>`
+- Login with your current UAA account. `uaac token client get <your admin account> -s <your uaa admin password>`
+- Create client account:
+```
+uaac client add <your-client-id> \
+ --authorities uaa.none \
+ --authorized_grant_types authorization_code,client_credentials,refresh_token \
+ --scope cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read \
+ --autoapprove true \
+-s <your-client-secret>
+```
+- Unable to create an account still? Troubleshoot [here](https://docs.cloudfoundry.org/adminguide/uaa-user-management.html#creating-admin-users)
+
+
 ### CI
 This project uses CircleCI
 - The following environment variables need to be set in plain text in the global env section:
   - `CONSOLE_API_URL`, `CONSOLE_UAA_URL`, `CONSOLE_LOG_URL`, `CONSOLE_LOGIN_URL`, `CONSOLE_HOSTNAME="http://localhost:9999"`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, and `CONSOLE_TEST_APP_NAME`
 - In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the CircleCI CLI UI to set the variables
+

@@ -17,21 +17,51 @@ Tracking work and progress is currently being done through [Zenhub](https://www.
 
 #### Criteria for moving through colums
 The main criteria for moving a card through the columsn can be found on the main cloud.gov product repo: [cloud.gov Delivery Process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md). Some aspects that differ or extend for that process as related to cloud.gov front end:
-- For a story to be past "in progress" and in "awaiting acceptance" it should:
+##### Awaiting acceptance
   - have all new files and newly touched files linted (new files can skip linting if under tight deadline)
-  - have all previous unit tests and acceptance tests running without error.
-  - covered in units tests.
+  - have all previous unit tests running without error.
+  - non jsx code covered in units tests.
   - is deployed on a staging site or live site so other team members can see/use it.
-  - ensure to not use the github "fixes" or "closes" feature as it will close an issue too early.
-- For a story to be past "awaiting acceptance" to "done" it should:
-  - stakeholders see and approve the work as meeting acceptance criteria
-  - if the work has a visual aspect, post a screenshot attached for later documentation/announcement/demo purposes
+
+##### Done
+  - stakeholders see and approve the work as meeting acceptance criteria.
+  - if the work has a visual aspect, post a screenshot attached for later documentation/announcement/demo purposes.
+
+##### Definition of done for a feature
+A feature is a higher level epic that will encompass multiple smaller units of work. And example would be "Route panel" or "Service panel on app page".
+- stakeholders see and approve the work as meeting acceptance criteria.
+- is deployed to production, dashboard.cloud.gov site.
+- all appropriate global styling is in cg-style rather then cg-dashboard.
+- all potential errors are handled correctly.
+- if uses new data from cloud foundry api (new methods added to `cf_api.js`) ensure they are mocked in testing server.
+- open an issue or PR in [cg-docs](https://github.com/18F/cg-docs) to document the new feature.
+
 - A product owner or team member will check a story waiting acceptance and put it into "done" if it meets the criteria.
 
 For more information, see the high-level [cloud.gov respository](https://github.com/18F/cg-product) and [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md).
 
 
 ## Code standards
+### Technology
+- Languages
+  - ES6 Javascript ([primer](http://webapplog.com/es6/))
+  - CSS
+- JS unit testing: 
+  - [Karma with Chrome](https://karma-runner.github.io/1.0/index.html)
+  - [Sinon](http://sinonjs.org/)
+  - [Jasmine](http://jasmine.github.io/)
+- View layer
+  - [React (0.14.x)](https://facebook.github.io/react/docs/getting-started.html)
+- Data/model layer
+  - [Flux](https://facebook.github.io/flux/docs/overview.html)
+  - [Immutable.js](https://facebook.github.io/immutable-js/docs/#/)
+- Build
+  - [Webpack](http://webpack.github.io/docs/)
+  - [UglifyJS](https://github.com/mishoo/UglifyJS)
+  - [Babel](https://babeljs.io/docs/setup/)
+- Front end router
+  - [Director](https://github.com/flatiron/director#api-documentation)
+
 ### Workflow
 - Open branches off main repo due to secure CircleCI env vars.
 - Add the "ready for review" label when the code is ready to be reviewed by another team member.
@@ -115,9 +145,12 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 - Any library added that's total file size is above 25kb should be evaluated for performance affect.
 
 ## Onboarding checklist
+Ensure you complete the [onboarding complete tasks](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md) for the whole cloud.gov team, especially the [required items](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md#required-items-for-all-team-members).
+
 - [ ] Join the `#cloud-gov-liberator` channel on Slack
-- [ ] Ping @standup-bot for instructions on front end channel standup (or view them in channel history)
-- [ ] Review the main [front end board](https://github.com/18F/cg-dashboard#boards?repos=39210774)
+- [ ] ~Ping @standup-bot for instructions on front end channel standup~ (currently disabled)
+- [ ] Install [Zenhub](https://www.zenhub.com/) to use the kanban boards.
+- [ ] Review the main [front end board](https://github.com/18F/cg-dashboard/pulls#boards?repos=55727091,39210774,49169967,40567233&labels=Liberator&showPRs=false) (ensure to filter by the "Liberator" label)
 - [ ] Review the cloud.gov [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md) to understand how the agile boards and workflow works.
 - [ ] Bookmark link to [design folder](https://drive.google.com/drive/u/1/folders/0BwLqM4Nicmq-bUt0NjRjclFMUEU)
 - [ ] Review the primary cloud.gov sites: [the dashboard](https://dashboard.cloud.gov/#/), [main landing page](https://cloud.gov/), and [documentation](https://docs.cloud.gov/).
