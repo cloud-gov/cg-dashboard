@@ -8,6 +8,16 @@ var appGuids = [
 
 module.exports.appGuids = appGuids;
 
+var domainGuids = [
+  'domain-guid-one',
+  'domain-guid-two',
+  'domain-guid-three',
+  'domain-guid-four',
+  'domain-guid-five'
+];
+
+module.exports.domainGuids = domainGuids;
+
 var organizationGuids = [
   'org-guid-one',
   'org-guid-two',
@@ -41,6 +51,14 @@ var serviceInstanceGuids = [
 
 module.exports.serviceInstanceGuids = serviceInstanceGuids;
 
+var serviceInstanceBindingGuids = [
+  'service-instance-binding-guid-one',
+  'service-instance-binding-guid-two',
+  'service-instance-binding-guid-three'
+];
+
+module.exports.serviceInstanceGuids = serviceInstanceGuids;
+
 var servicePlanGuids = [
   'service-plan-guid-one',
   'service-plan-guid-two',
@@ -69,6 +87,10 @@ var userGuids = [
 ];
 
 module.exports.userGuids = userGuids;
+
+function alternateDomainType(i) {
+  return (i % 2 === 0) ? 'private_domains' : 'shared_domains';
+}
 
 var apps = appGuids.map(function(guid, i) {
   var state = ((i % 2) !== 0) ? 'STOPPED' : 'STARTED';
@@ -165,9 +187,30 @@ var organizations = organizationGuids.map(function(guid) {
 
 module.exports.organizations  = organizations;
 
+var domains = domainGuids.map(function(guid, i) {
+  var domainType = alternateDomainType(i);
+  return {
+    metadata: {
+      guid: guid,
+      url: `${URL_BASE}/${domainType}/${guid}`,
+      created_at: '2015-10-13T18:30:37Z',
+      updated_at: null
+    },
+    entity: {
+      name: `domain-${guid}.gov`,
+      owning_organization_guid: organizationGuids[i] || 'abc',
+      owning_organization_url: 'asdf',
+      shared_organizations_url: 'asdf'
+    }
+  }
+});
+
+module.exports.domains = domains;
+
 var routes = routeGuids.map(function(guid, i){
-  var domainGuid = 'yo';
+  var domainGuid = domainGuids[i];
   var spaceGuid = spaceGuids[i];
+  var domainType = alternateDomainType(i);
   return {
     total_results: 1,
     total_pages: 1,
@@ -184,11 +227,11 @@ var routes = routeGuids.map(function(guid, i){
         entity: {
           host: 'console',
           path: '',
-          domain_guid: '',
+          domain_guid: domainGuid,
           space_guid: spaceGuids[i],
           service_instance_guid: null,
           port: 0,
-          domain_url: `${URL_BASE}/domains/${domainGuid}`,
+          domain_url: `${URL_BASE}/${domainType}/${domainGuid}`,
           space_url: `${URL_BASE}/spaces/${spaceGuid}`,
           apps_url: `${URL_BASE}/routes/${guid}/apps`,
           route_mappings_url: `${URL_BASE}/routes/${guid}/route_mappings`
@@ -238,6 +281,7 @@ var services = serviceGuids.map(function(guid, i) {
 module.exports.services = services;
 
 var serviceInstances = serviceInstanceGuids.map(function(guid, i) {
+  var servicePlanGuid = servicePlanGuids[i];
   return {
     metadata: {
       guid: guid,
@@ -248,8 +292,8 @@ var serviceInstances = serviceInstanceGuids.map(function(guid, i) {
     entity: {
       name: `service-instance-${guid}`,
       credentials: {},
-      service_plan_guid: 'fake-service-plan-guid',
-      space_guid: spaceGuids[i],
+      service_plan_guid: servicePlanGuid,
+      space_guid: spaceGuids[0],
       gateway_data: null,
       dashboard_url: null,
       type: 'managed_service_instance',
@@ -276,7 +320,7 @@ var servicePlans = function(serviceGuid) {
   return servicePlanGuids.map(function(guid, i) {
     return {
       metadata: {
-        guid: `${serviceGuid}-${guid}`,
+        guid: `${guid}`,
         url: `${URL_BASE}/service_plans/${guid}`,
         created_at: '2015-07-14T04:02:30Z',
         updated_at: null
@@ -301,12 +345,16 @@ module.exports.servicePlans = servicePlans;
 
 var spaces = spaceGuids.map(function(guid){
   return {
-    guid: guid,
-    name: `space-${guid}`,
-    service_count: 0,
-    app_count: 2,
-    mem_dev_total: 2560,
-    mem_prod_total: 0
+    entity: {
+      guid: guid,
+    },
+    metadata: {
+      name: `space-${guid}`,
+      service_count: 0,
+      app_count: 2,
+      mem_dev_total: 2560,
+      mem_prod_total: 0
+    }
   };
 });
 
@@ -376,3 +424,31 @@ var spaceUsers = users.map(function(user, i) {
 spaceUsers.pop();
 
 module.exports.spaceUsers = spaceUsers;
+
+var serviceInstanceBindings = appGuids.map(function(appGuid, i) {
+  var serviceInstanceGuid = serviceInstanceGuids[i];
+  return {
+    metadata: {
+      guid: serviceInstanceBindingGuids[i],
+      url: `${URL_BASE}/service_bindings/${serviceInstanceBindingGuids[i]}`,
+      created_at: '2015-02-19T08:46:28Z',
+      updated_at: null
+    },
+    entity: {
+      app_guid: appGuid,
+      service_instance_guid: serviceInstanceGuid,
+      credentials: {
+        "creds-key-72": "creds-val-72"
+      },
+      gateway_data: null,
+      gateway_name: "",
+      syslog_drain_url: null,
+      volume_mounts: [],
+      app_url: `/v2/apps/${appGuid}`,
+      service_instance_url: `/v2/service_instances/${serviceInstanceGuid}`
+    }
+  };
+});
+serviceInstanceBindings.pop();
+
+module.exports.serviceInstanceBindings = serviceInstanceBindings;

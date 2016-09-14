@@ -2,10 +2,12 @@ var data = require('./fixtures');
 
 var apps = data.apps;
 var appStats = data.appStats;
+var domains = data.domains
 var organizations = data.organizations;
 var routes = data.routes;
 var services = data.services;
 var serviceInstances = data.serviceInstances;
+var serviceInstanceBindings = data.serviceInstanceBindings;
 var servicePlans = data.servicePlans;
 var spaces = data.spaces;
 var currentUser = data.currentUser;
@@ -55,6 +57,32 @@ module.exports = function api(smocks) {
   });
 
   smocks.route({
+    id: 'shared-domain',
+    label: 'Shared domain',
+    path: `${BASE_URL}/shared_domains/{guid}`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      var domain = domains.find(function(domain) {
+        return domain.metadata.guid === guid;
+      });
+      reply(domain);
+    }
+  });
+
+  smocks.route({
+    id: 'private-domain',
+    label: 'Private domain',
+    path: `${BASE_URL}/private_domains/{guid}`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      var domain = domains.find(function(domain) {
+        return domain.metadata.guid === guid;
+      });
+      reply(domain);
+    }
+  });
+
+  smocks.route({
     id: 'app-summary',
     label: 'App summary',
     path: `${BASE_URL}/apps/{guid}/summary`,
@@ -97,11 +125,14 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/organizations/{guid}/summary`,
     handler: function (req, reply) {
       var guid = req.params.guid;
+      var unwrappedSpaces = spaces.map(function(space) {
+        return Object.assign({}, space.entity, space.metadata);
+      });
       reply({
         guid: guid,
         name: 'org-name',
         status: 'active',
-        spaces: spaces
+        spaces: unwrappedSpaces
       });
     }
   });
@@ -151,8 +182,37 @@ module.exports = function api(smocks) {
   });
 
   smocks.route({
-    id: 'service-service-plans',
-    label: 'Service service plans',
+    id: 'service-instance-bindings',
+    label: 'Serivce instance bindings',
+    path: `${BASE_URL}/apps/{appGuid}/service_bindings`,
+    handler: function(req, reply) {
+      var guid = req.params.guid;
+      reply({
+        total_results: serviceInstanceBindings.length,
+        total_pages: 1,
+        prev_url: null,
+        next_url: null,
+        resources: serviceInstanceBindings
+      });
+    }
+  });
+
+  smocks.route({
+    id: 'service-plan',
+    label: 'Service plan',
+    path: `${BASE_URL}/service_plans/{guid}`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      var plan = servicePlans('a').find(function(servicePlan) {
+        return servicePlan.metadata.guid === guid;
+      });
+      reply(plan);
+    }
+  });
+
+  smocks.route({
+    id: 'service-plans',
+    label: 'Service plans',
     path: `${BASE_URL}/services/{guid}/service_plans`,
     handler: function (req, reply) {
       var guid = req.params.guid;
@@ -163,6 +223,22 @@ module.exports = function api(smocks) {
         prev_url: null,
         next_url: null,
         resources: plans
+      });
+    }
+  });
+
+  smocks.route({
+    id: 'spaces',
+    label: 'Spaces',
+    path: `${BASE_URL}/spaces`,
+    handler: function (req, reply) {
+      var guid = req.params.guid;
+      reply({
+        total_results: spaces.length,
+        total_pages: 1,
+        prev_url: null,
+        next_url: null,
+        resources: spaces
       });
     }
   });
