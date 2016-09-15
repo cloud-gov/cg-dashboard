@@ -18,23 +18,23 @@ Tracking work and progress is currently being done through [Zenhub](https://www.
 #### Criteria for moving through colums
 The main criteria for moving a card through the columsn can be found on the main cloud.gov product repo: [cloud.gov Delivery Process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md). Some aspects that differ or extend for that process as related to cloud.gov front end:
 ##### Awaiting acceptance
-  - have all new files and newly touched files linted (new files can skip linting if under tight deadline)
-  - have all previous unit tests running without error.
-  - non jsx code covered in units tests.
-  - is deployed on a staging site or live site so other team members can see/use it.
+  - Have all new files and newly touched files linted (new files can skip linting if under tight deadline)
+  - Have all previous unit tests running without error.
+  - Non jsx code covered in units tests.
+  - Is deployed on a staging site or live site so other team members can see/use it.
 
 ##### Done
-  - stakeholders see and approve the work as meeting acceptance criteria.
-  - if the work has a visual aspect, post a screenshot attached for later documentation/announcement/demo purposes.
+  - Stakeholders see and approve the work as meeting acceptance criteria.
+  - If the work has a visual aspect, post a screenshot attached for later documentation/announcement/demo purposes.
 
 ##### Definition of done for a feature
 A feature is a higher level epic that will encompass multiple smaller units of work. And example would be "Route panel" or "Service panel on app page".
-- stakeholders see and approve the work as meeting acceptance criteria.
-- is deployed to production, dashboard.cloud.gov site.
-- all appropriate global styling is in cg-style rather then cg-dashboard.
-- all potential errors are handled correctly.
-- if uses new data from cloud foundry api (new methods added to `cf_api.js`) ensure they are mocked in testing server.
-- open an issue or PR in [cg-docs](https://github.com/18F/cg-docs) to document the new feature.
+- Stakeholders see and approve the work as meeting acceptance criteria.
+- Is deployed to production, dashboard.cloud.gov site.
+- All appropriate global styling is in cg-style rather then cg-dashboard.
+- All potential errors are handled correctly.
+- If uses new data from cloud foundry api (new methods added to `cf_api.js`) ensure they are mocked in testing server.
+- Open an issue or PR in [cg-docs](https://github.com/18F/cg-docs) to document the new feature.
 
 - A product owner or team member will check a story waiting acceptance and put it into "done" if it meets the criteria.
 
@@ -85,8 +85,8 @@ For more information, see the high-level [cloud.gov respository](https://github.
 
 ### Commit message
 In general, commit messages can be written in whatever way the author decides, but here are some guidelines:
-- Focus on the "why" rather then the "what"
-- Have the first line be the "what"
+- Focus on the "why" rather then the "what".
+- Have the first line be the "what".
 - Discuss the "why" in more detail on subsequent lines.
 
 ### Coding style
