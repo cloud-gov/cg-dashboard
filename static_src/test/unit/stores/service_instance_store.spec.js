@@ -458,6 +458,43 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
+  describe('on service bound', function() {
+    const testGuid = 'zcxvnvb324';
+    const testInstance = {
+      guid: testGuid
+    };
+
+    it('should set change check on instance to true', function() {
+      ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
+
+      const binding = {
+        metadata: { guid: 'zxc' },
+        entity: { service_instance_guid: testGuid }
+      };
+
+      serviceActions.boundService(binding);
+
+      const actual = ServiceInstanceStore.get(testGuid);
+
+      expect(actual).toBeDefined();
+      expect(actual.changing).toBeFalsy();
+    });
+
+    it('should emit a change', function() {
+      ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
+      const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+
+      const binding = {
+        metadata: { guid: 'zxc' },
+        entity: { service_instance_guid: testGuid }
+      };
+
+      serviceActions.boundService(binding);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('on service instance change check', function() {
     const testGuid = 'zcxvnvb324';
     const testInstance = {
