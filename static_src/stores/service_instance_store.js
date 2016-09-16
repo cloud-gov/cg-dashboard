@@ -187,6 +187,26 @@ class ServiceInstanceStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_INSTANCE_CHANGE_CHECK: {
+        const instance = this.get(action.serviceInstanceGuid);
+        if (!instance) break; // TODO throw error?
+        const updatedInstance = Object.assign({}, instance, {
+          changing: true
+        });
+        this.merge('guid', updatedInstance, () => this.emitChange());
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_INSTANCE_CHANGE_CANCEL: {
+        const instance = this.get(action.serviceInstanceGuid);
+        if (!instance) break; // TODO throw error?
+        const updatedInstance = Object.assign({}, instance, {
+          changing: false
+        });
+        this.merge('guid', updatedInstance, () => this.emitChange());
+        break;
+      }
+
       default:
         break;
 
