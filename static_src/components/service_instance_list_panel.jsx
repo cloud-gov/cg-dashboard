@@ -9,6 +9,7 @@ import ServiceInstance from './service_instance.jsx';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
+  currentAppGuid: React.PropTypes.string.isRequired,
   serviceInstances: React.PropTypes.array,
   bound: React.PropTypes.bool,
   empty: React.PropTypes.bool
@@ -38,7 +39,9 @@ export default class ServiceInstanceListPanel extends React.Component {
         <div>
         { this.props.serviceInstances.map((serviceInstance) =>
           <PanelRow key={serviceInstance.guid}>
-            <ServiceInstance serviceInstance={serviceInstance}
+            <ServiceInstance
+              currentAppGuid={this.props.currentAppGuid}
+              serviceInstance={serviceInstance}
               bound={this.props.bound}
             />
           </PanelRow>

@@ -42,21 +42,28 @@ function stateSetter() {
     return Object.assign({}, serviceInstance, { servicePlan });
   });
   const serviceBindings = ServiceBindingStore.getAllByApp(currentAppGuid);
-  const boundServiceInstances = serviceInstances.filter((serviceInstance) =>
-    !!serviceBindings.find((serviceBinding) =>
+  const boundServiceInstances = serviceInstances.map((serviceInstance) => {
+    const binding = serviceBindings.find((serviceBinding) =>
       serviceInstance.guid === serviceBinding.service_instance_guid
-    )
-  );
-  const unboundServiceInstances = serviceInstances.filter((serviceInstance) =>
-    boundServiceInstances.find((boundService) =>
-      boundService.guid !== serviceInstance.guid
-    )
-  );
+    );
+    if (!binding) return null;
+    return Object.assign({}, serviceInstance, { serviceBinding: binding });
+  }).filter((instance) => !!instance);
+
+  const unboundServiceInstances = serviceInstances.filter((serviceInstance) => {
+    const binding = serviceBindings.find((serviceBinding) =>
+      serviceInstance.guid === serviceBinding.service_instance_guid
+    );
+    if (binding) return null;
+    return serviceInstance;
+  }).filter((instance) => !!instance);
+
   const loading = ServiceInstanceStore.fetching ||
     ServicePlanStore.fetching ||
     ServiceBindingStore.fetching;
 
   return {
+    currentAppGuid,
     boundServiceInstances,
     unboundServiceInstances,
     loading
@@ -99,6 +106,7 @@ export default class ServiceInstancePanel extends React.Component {
             <h3>Bound service instances</h3>
           </PanelHeader>
           <ServiceInstanceListPanel
+            currentAppGuid={ this.state.currentAppGuid }
             serviceInstances={ this.state.boundServiceInstances }
             bound
             empty={ boundReady(this.state.boundServiceInstances) }
@@ -109,6 +117,7 @@ export default class ServiceInstancePanel extends React.Component {
             <h3>Unbound service instances</h3>
           </PanelHeader>
           <ServiceInstanceListPanel
+            currentAppGuid={ this.state.currentAppGuid }
             serviceInstances={ this.state.unboundServiceInstances }
             empty={ unboundReady(this.state.unboundServiceInstances) }
           />

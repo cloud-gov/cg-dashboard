@@ -403,8 +403,8 @@ export default {
 
   createServiceBinding(appGuid, serviceInstanceGuid) {
     const payload = {
-      appGuid,
-      serviceInstanceGuid
+      app_guid: appGuid,
+      service_instance_guid: serviceInstanceGuid
     };
     return http.post(`${APIV}/service_bindings`, payload).then((res) => {
       serviceActions.boundService(res.data);

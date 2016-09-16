@@ -1233,7 +1233,8 @@ describe('cfApi', function() {
         expect(spy).toHaveBeenCalledOnce();
         const args = spy.getCall(0).args;
         expect(args[0]).toMatch('service_bindings');
-        const expected = { appGuid, serviceInstanceGuid };
+        const expected = { app_guid: appGuid,
+          service_instance_guid: serviceInstanceGuid };
         expect(args[1]).toEqual(expected);
         done();
       });

@@ -187,8 +187,14 @@ class ServiceInstanceStore extends BaseStore {
         break;
       }
 
-      case serviceActionTypes.SERVICE_BOUND: {
-        const binding = this.formatSplitResponse([action.serviceBinding]).pop();
+      case serviceActionTypes.SERVICE_BOUND:
+      case serviceActionTypes.SERVICE_UNBOUND: {
+        let binding;
+        if (action.type === serviceActionTypes.SERVICE_BOUND) {
+          binding = this.formatSplitResponse([action.serviceBinding]).pop();
+        } else {
+          binding = action.serviceBinding;
+        }
         const instance = this.get(binding.service_instance_guid);
         if (!instance) break;
         const updatedInstance = Object.assign({}, instance, {
