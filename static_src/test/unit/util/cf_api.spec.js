@@ -1216,4 +1216,111 @@ describe('cfApi', function() {
       });
     });
   });
+
+  describe('createServiceBinding()', function() {
+    it('should request create binding with app, instance guid', function(done) {
+      const appGuid = 'xvc34598mn';
+      const serviceInstanceGuid = 'zcvx239784ahfjk';
+      const spy = sandbox.stub(http, 'post');
+      spy.returns(createPromise({data: {}}));
+
+      cfApi.createServiceBinding(appGuid, serviceInstanceGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        const args = spy.getCall(0).args;
+        expect(args[0]).toMatch('service_bindings');
+        const expected = { appGuid, serviceInstanceGuid };
+        expect(args[1]).toEqual(expected);
+        done();
+      });
+    });
+
+    it('should call create error if request fails with err', function(done) {
+      const appGuid = 'xvc34598mn';
+      const serviceInstanceGuid = 'zcvx239784ahfjk';
+      const expectedErr = { status: 500, data: { code: 23500 }};
+      const stub = sandbox.stub(http, 'post');
+      const spy = sandbox.spy(errorActions, 'errorPost');
+      stub.returns(createPromise(true, expectedErr));
+
+      cfApi.createServiceBinding(appGuid, serviceInstanceGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        const arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(expectedErr.data);
+        done();
+      });
+    });
+
+    it('should call bound service with response if successful', function(done) {
+      const appGuid = 'xvc34598mn';
+      const serviceInstanceGuid = 'zcvx239784ahfjk';
+      const expected = { data: { metadata: { guid: 'adfdsafa'}}};
+      const stub = sandbox.stub(http, 'post');
+      const spy = sandbox.spy(serviceActions, 'boundService');
+      stub.returns(createPromise(expected));
+
+      cfApi.createServiceBinding(appGuid, serviceInstanceGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        const arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(expected.data);
+        done();
+      });
+    });
+  });
+
+  describe('deleteServiceBinding()', function() {
+    it('should call delete with binding guid', function(done) {
+      const bindingGuid = 'vmxcv89x7c987';
+      const binding = {
+        guid: bindingGuid
+      };
+      const spy = sandbox.stub(http, 'delete');
+      spy.returns(createPromise({data: {}}));
+
+      cfApi.deleteServiceBinding(binding).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        const arg = spy.getCall(0).args[0];
+        expect(arg).toMatch('service_bindings');
+        done();
+      });
+    });
+
+    it('should call delete error if request fails', function(done) {
+      const bindingGuid = 'v3948589x7c987';
+      const binding = {
+        guid: bindingGuid
+      };
+      const expectedErr = { status: 503, data: { code: 23500 }};
+      const stub = sandbox.stub(http, 'delete');
+      const spy = sandbox.spy(errorActions, 'errorDelete');
+      stub.returns(createPromise(true, expectedErr));
+
+      cfApi.deleteServiceBinding(binding).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        const arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(expectedErr.data);
+        done();
+      });
+
+    });
+
+    it('should call unbound service with binding if successful', function() {
+      const bindingGuid = 'v3948589x7c987';
+      const binding = {
+        guid: bindingGuid
+      };
+      const expected = { data: {}};
+      const stub = sandbox.stub(http, 'delete');
+      const spy = sandbox.spy(serviceActions, 'unboundService');
+      stub.returns(createPromise(expected));
+
+      cfApi.deleteServiceBinding(binding).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        const arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(binding);
+        done();
+      });
+
+    });
+
+  });
 });

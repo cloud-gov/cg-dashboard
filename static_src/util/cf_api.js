@@ -399,5 +399,26 @@ export default {
   fetchServiceBindings(appGuid) {
     return this.fetchMany(`/apps/${appGuid}/service_bindings`,
                          serviceActions.receivedServiceBindings);
+  },
+
+  createServiceBinding(appGuid, serviceInstanceGuid) {
+    const payload = {
+      appGuid,
+      serviceInstanceGuid
+    };
+    return http.post(`${APIV}/service_bindings`, payload).then((res) => {
+      serviceActions.boundService(res.data);
+    }).catch((err) => {
+      handleError(err, errorActions.errorPost);
+    });
+  },
+
+  deleteServiceBinding(serviceBinding) {
+    return http.delete(`${APIV}/service_bindings/${serviceBinding.guid}`).then(
+    () => {
+      serviceActions.unboundService(serviceBinding);
+    }).catch((err) => {
+      handleError(err, errorActions.errorDelete);
+    });
   }
 };
