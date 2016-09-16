@@ -92,6 +92,10 @@ const serviceActionTypes = keymirror({
   SERVICE_INSTANCE_CREATE: null,
   // Action when a service instance was created on the server.
   SERVICE_INSTANCE_CREATED: null,
+  // Action when a user wants to modify the service instance.
+  SERVICE_INSTANCE_CHANGE_CHECK: null,
+  // Action when a user cancels modifying the instance.
+  SERVICE_INSTANCE_CHANGE_CANCEL: null,
   // Action to fetch service bindins for an app.
   SERVICE_BINDINGS_FETCH: null,
   // Action when received service bindings from server.

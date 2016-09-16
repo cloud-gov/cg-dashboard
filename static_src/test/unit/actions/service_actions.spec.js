@@ -340,6 +340,38 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('changeServiceInstanceCheck()', function() {
+    it('should dispatch a instance change check ui action with guid', function() {
+      const serviceInstanceGuid = 'aldkjsf39287';
+      const expectedParams = {
+        serviceInstanceGuid
+      };
+
+      const spy = setupUISpy(sandbox);
+
+      serviceActions.changeServiceInstanceCheck(serviceInstanceGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CHANGE_CHECK,
+                   expectedParams);
+    });
+  });
+
+  describe('changeServiceInstanceCancel()', function() {
+    it('should dispatch a instance change cancel ui action with guid', function() {
+      const serviceInstanceGuid = 'aldkjsfxcvg4';
+      const expectedParams = {
+        serviceInstanceGuid
+      };
+
+      const spy = setupUISpy(sandbox);
+
+      serviceActions.changeServiceInstanceCancel(serviceInstanceGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CHANGE_CANCEL,
+                   expectedParams);
+    });
+  });
+
   describe('fetchServiceBindings()', function() {
     it('should dispatch service bindings fetch view event with app guid',
         function() {

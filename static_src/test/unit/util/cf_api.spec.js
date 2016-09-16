@@ -1303,7 +1303,7 @@ describe('cfApi', function() {
 
     });
 
-    it('should call unbound service with binding if successful', function() {
+    it('should call unbound service with binding if successful', function(done) {
       const bindingGuid = 'v3948589x7c987';
       const binding = {
         guid: bindingGuid
@@ -1319,8 +1319,6 @@ describe('cfApi', function() {
         expect(arg).toEqual(binding);
         done();
       });
-
     });
-
   });
 });

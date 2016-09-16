@@ -129,6 +129,20 @@ export default {
     });
   },
 
+  changeServiceInstanceCheck(serviceInstanceGuid) {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CHANGE_CHECK,
+      serviceInstanceGuid
+    });
+  },
+
+  changeServiceInstanceCancel(serviceInstanceGuid) {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CHANGE_CANCEL,
+      serviceInstanceGuid
+    });
+  },
+
   fetchServiceBindings(appGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_BINDINGS_FETCH,
