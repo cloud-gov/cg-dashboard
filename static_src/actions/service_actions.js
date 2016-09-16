@@ -142,4 +142,33 @@ export default {
       serviceBindings
     });
   },
+
+  bindService(appGuid, serviceInstanceGuid) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_BIND,
+      appGuid,
+      serviceInstanceGuid
+    });
+  },
+
+  unbindService(serviceBinding) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_UNBIND,
+      serviceBinding
+    });
+  },
+
+  boundService(serviceBinding) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_BOUND,
+      serviceBinding
+    });
+  },
+
+  unboundService(serviceBinding) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_UNBOUND,
+      serviceBinding
+    });
+  }
 };
