@@ -1218,11 +1218,16 @@ describe('cfApi', function() {
   });
 
   describe('createServiceBinding()', function() {
+    const testBinding = {
+      metadata: { guid: 'avlsdkj' },
+      entity: { app_guid: 'zxcv', service_instance_guid: 'zxdfasd32' }
+    };
+
     it('should request create binding with app, instance guid', function(done) {
       const appGuid = 'xvc34598mn';
       const serviceInstanceGuid = 'zcvx239784ahfjk';
       const spy = sandbox.stub(http, 'post');
-      spy.returns(createPromise({data: {}}));
+      spy.returns(createPromise({data: testBinding}));
 
       cfApi.createServiceBinding(appGuid, serviceInstanceGuid).then(() => {
         expect(spy).toHaveBeenCalledOnce();
@@ -1253,7 +1258,7 @@ describe('cfApi', function() {
     it('should call bound service with response if successful', function(done) {
       const appGuid = 'xvc34598mn';
       const serviceInstanceGuid = 'zcvx239784ahfjk';
-      const expected = { data: { metadata: { guid: 'adfdsafa'}}};
+      const expected = { data: { metadata: { guid: 'adfdsafa'}, entity: {}}};
       const stub = sandbox.stub(http, 'post');
       const spy = sandbox.spy(serviceActions, 'boundService');
       stub.returns(createPromise(expected));
