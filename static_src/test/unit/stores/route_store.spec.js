@@ -102,7 +102,28 @@ describe('RouteStore', function() {
   });
 
   describe('on route app unnassociated', function() {
+    const routeGuid = 'zxcvsdlfjka1231';
+    const appGuid = 'zcxv98xcv234';
 
+    it('should remove the app guid route if found', function() {
+      RouteStore._data = Immutable.fromJS([{ guid: routeGuid, appGuid: appGuid }]);
+
+      routeActions.unassociatedApp(routeGuid, appGuid);
+
+      const route = RouteStore.get(routeGuid);
+
+      expect(route.app_guid).toBeFalsy();
+    });
+
+    it('should emit a change', function() {
+      RouteStore._data = Immutable.fromJS([{ guid: routeGuid, appGuid: appGuid }]);
+
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      routeActions.unassociatedApp(routeGuid, appGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
   });
 
   describe('routeActionTypes.ROUTE_CREATE', function() {

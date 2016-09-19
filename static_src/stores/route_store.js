@@ -67,6 +67,15 @@ class RouteStore extends BaseStore {
         break;
       }
 
+      case routeActionTypes.ROUTE_APP_UNASSOCIATED: {
+        const route = this.get(action.routeGuid);
+        if (route) {
+          const newRoute = Object.assign({}, route, { app_guid: null });
+          this.merge('guid', newRoute, () => this.emitChange());
+        }
+        break;
+      }
+
       case routeActionTypes.ROUTE_CREATE: {
         const { domainGuid, spaceGuid, host, path } = action;
         cfApi.createRoute(domainGuid, spaceGuid, host, path);
