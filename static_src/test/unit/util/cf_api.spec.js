@@ -1066,7 +1066,7 @@ describe('cfApi', function() {
   });
 
   describe('fetchServiceBindings()', function() {
-    it('should fetch bindings with app guid', function() {
+    it('should fetch bindings with app guid if supplied', function() {
       const expected = 'xcvxyyb1zxcv';
       const spy = sandbox.stub(cfApi, 'fetchMany');
 
@@ -1076,6 +1076,18 @@ describe('cfApi', function() {
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('apps'));
+      expect(actual).toMatch(new RegExp('service_bindings'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(serviceActions.receivedServiceBindings);
+    });
+
+    it('should fetch all service bindings if no app guid defined', function() {
+      const spy = sandbox.stub(cfApi, 'fetchMany');
+
+      cfApi.fetchServiceBindings();
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp('service_bindings'));
       actual = spy.getCall(0).args[1];
       expect(actual).toEqual(serviceActions.receivedServiceBindings);
