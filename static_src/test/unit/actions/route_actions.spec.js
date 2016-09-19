@@ -44,11 +44,45 @@ describe('routeActions', function() {
         appGuid,
         routeGuid
       };
-      const spy = setupViewSpy(sandbox);
+      const spy = setupServerSpy(sandbox);
 
       routeActions.associatedApp(routeGuid, appGuid);
 
       assertAction(spy, routeActionTypes.ROUTE_APP_ASSOCIATED, expected);
+    })
+  });
+
+  describe('unassociateApp()', function() {
+    it('should dispatch ROUTE_APP_UNASSOCIATE view event & the app/route guids',
+    function () {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+      const expected = {
+        appGuid,
+        routeGuid
+      };
+      const spy = setupViewSpy(sandbox);
+
+      routeActions.unassociateApp(routeGuid, appGuid);
+
+      assertAction(spy, routeActionTypes.ROUTE_APP_UNASSOCIATE, expected);
+    })
+  });
+
+  describe('unassociatedApp()', function() {
+    it('should dispatch ROUTE_APP_ASSOCIATED view event & the app/route guids',
+    function () {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+      const expected = {
+        appGuid,
+        routeGuid
+      };
+      const spy = setupServerSpy(sandbox);
+
+      routeActions.unassociatedApp(routeGuid, appGuid);
+
+      assertAction(spy, routeActionTypes.ROUTE_APP_UNASSOCIATED, expected);
     })
   });
 

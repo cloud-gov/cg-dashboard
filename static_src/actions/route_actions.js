@@ -17,8 +17,24 @@ export default {
   },
 
   associatedApp(routeGuid, appGuid) {
-    AppDispatcher.handleViewAction({
+    AppDispatcher.handleServerAction({
       type: routeActionTypes.ROUTE_APP_ASSOCIATED,
+      appGuid,
+      routeGuid
+    });
+  },
+
+  unassociateApp(routeGuid, appGuid) {
+    AppDispatcher.handleViewAction({
+      type: routeActionTypes.ROUTE_APP_UNASSOCIATE,
+      appGuid,
+      routeGuid
+    });
+  },
+
+  unassociatedApp(routeGuid, appGuid) {
+    AppDispatcher.handleServerAction({
+      type: routeActionTypes.ROUTE_APP_UNASSOCIATED,
       appGuid,
       routeGuid
     });

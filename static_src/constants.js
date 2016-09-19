@@ -166,6 +166,10 @@ const routeActionTypes = keymirror({
   ROUTE_APP_ASSOCIATE: null,
   // Action when a route has been associated with an app
   ROUTE_APP_ASSOCIATED: null,
+  // Action when a route is being unassociated from an app.
+  ROUTE_APP_UNASSOCIATE: null,
+  // Action when a route was unassociated from an app on the server.
+  ROUTE_APP_UNASSOCIATED: null,
   // Action for creating routes
   ROUTE_CREATE: null,
   // Action when creating a new route fails, the route doesn't exist yet
