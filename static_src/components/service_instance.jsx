@@ -109,7 +109,7 @@ export default class ServiceInstance extends React.Component {
         </div>
       );
       return (
-        <form style={{ marginTop: '1rem', width: '100%' }}>
+        <form>
           <ConfirmationBox
             style="block"
             message={ message }
@@ -142,7 +142,8 @@ export default class ServiceInstance extends React.Component {
             <br />
             <span>{ this.cost }</span>
           </span>
-          <span className={ this.styler('panel-column', 'panel-column-less') }>
+          <span className={ this.styler('panel-column', 'panel-column-less',
+            'panel-column-last') }>
             <span>{ this.instanceState }</span>
             <br />
             { this.actions }

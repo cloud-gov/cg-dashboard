@@ -117,7 +117,7 @@ export default class RouteForm extends React.Component {
     const domains = this.props.domains;
 
     return (
-      <form className={ this.styler('route-form') }>
+      <form className={ this.styler('route-form','panel-form-replace') }>
         <fieldset>
           <div className={ this.styler('route-fields') }>
             <div className={ this.styler('route-field-host') }>
