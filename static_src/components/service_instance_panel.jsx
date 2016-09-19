@@ -43,6 +43,7 @@ function stateSetter() {
     return Object.assign({}, serviceInstance, { servicePlan });
   });
   const serviceBindings = ServiceBindingStore.getAllByApp(currentAppGuid);
+  const allServiceBindings = ServiceBindingStore.getAll();
   const boundServiceInstances = serviceInstances.map((serviceInstance) => {
     const binding = serviceBindings.find((serviceBinding) =>
       serviceInstance.guid === serviceBinding.service_instance_guid
@@ -52,7 +53,7 @@ function stateSetter() {
   }).filter((instance) => !!instance);
 
   const unboundServiceInstances = serviceInstances.filter((serviceInstance) => {
-    const binding = serviceBindings.find((serviceBinding) =>
+    const binding = allServiceBindings.find((serviceBinding) =>
       serviceInstance.guid === serviceBinding.service_instance_guid
     );
     if (binding) return null;
