@@ -84,6 +84,27 @@ describe('RouteStore', function() {
     });
   });
 
+  describe('on route app unnassociate', function() {
+    it('should call the cf api unassociate route app with app, route guid',
+      function() {
+      const spy = sandbox.stub(cfApi, 'deleteAppRouteAssociation');
+      spy.returns(Promise.resolve({data: {}}));
+      const appGuid = 'adfa3456vcsdf';
+      const routeGuid = 'zxcv8zvcx234';
+
+      routeActions.unassociateApp(routeGuid, appGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(appGuid);
+      expect(args[1]).toEqual(routeGuid);
+    });
+  });
+
+  describe('on route app unnassociated', function() {
+
+  });
+
   describe('routeActionTypes.ROUTE_CREATE', function() {
     it('should call cfApi.createRoute with params', function (){
       const domainGuid = 'fake-domain-guid';

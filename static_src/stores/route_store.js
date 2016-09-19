@@ -62,6 +62,11 @@ class RouteStore extends BaseStore {
         break;
       }
 
+      case routeActionTypes.ROUTE_APP_UNASSOCIATE: {
+        cfApi.deleteAppRouteAssociation(action.appGuid, action.routeGuid);
+        break;
+      }
+
       case routeActionTypes.ROUTE_CREATE: {
         const { domainGuid, spaceGuid, host, path } = action;
         cfApi.createRoute(domainGuid, spaceGuid, host, path);
