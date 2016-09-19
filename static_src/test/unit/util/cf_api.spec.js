@@ -1147,6 +1147,61 @@ describe('cfApi', function() {
     });
   });
 
+  describe('deleteAppRouteAssociation()', function(done) {
+    it('should DELETE to the versioned apps, routes url',
+        function(done) {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+
+      const spy = sandbox.stub(http, 'delete');
+      const testPromise = createPromise({status: true});
+      spy.returns(testPromise);
+
+      cfApi.deleteAppRouteAssociation(appGuid, routeGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch(`/apps/${appGuid}/routes/${routeGuid}`);
+        done();
+      });
+    });
+
+    it('should call routeActions.unassociatedApp() with the routeGuid and appGuid',
+        function(done) {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+
+      const stub = sandbox.stub(http, 'delete');
+      const spy = sandbox.spy(routeActions, 'unassociatedApp');
+      const testPromise = createPromise({status: true});
+      stub.returns(testPromise);
+
+      cfApi.deleteAppRouteAssociation(appGuid, routeGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toEqual(routeGuid);
+        expect(args[1]).toEqual(appGuid);
+        done();
+      });
+    });
+
+    it('should call route actions error with guid on request failure',
+        function(done) {
+      const spy = sandbox.stub(routeActions, 'error');
+      const stub = sandbox.stub(http, 'delete');
+      stub.returns(createPromise(true, errorFetchRes));
+      const routeGuid = 'sdf2dsfzxcv4';
+
+      cfApi.deleteAppRouteAssociation('adfads', routeGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(routeGuid);
+        arg = spy.getCall(0).args[1];
+        expect(arg).toEqual(errorFetchRes.data);
+        done();
+      });
+    });
+  });
+
   describe('putRouteUpdate()', function() {
     it('should call routeActions.updatedRoute() with the routeGuid and route', function(done) {
       const routeGuid = 'fake-route-guid';

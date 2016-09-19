@@ -370,6 +370,15 @@ export default {
     });
   },
 
+  deleteAppRouteAssociation(appGuid, routeGuid) {
+    const url = `${APIV}/apps/${appGuid}/routes/${routeGuid}`;
+    return http.delete(url).then(() => {
+      routeActions.unassociatedApp(routeGuid, appGuid);
+    }).catch((err) => {
+      handleError(err, routeActions.error.bind(this, routeGuid));
+    });
+  },
+
   // http://apidocs.cloudfoundry.org/241/routes/update_a_route.html
   putRouteUpdate(routeGuid, domainGuid, spaceGuid, route) {
     const url = `${APIV}/routes/${routeGuid}`;
