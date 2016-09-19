@@ -196,7 +196,7 @@ class ServiceInstanceStore extends BaseStore {
           binding = action.serviceBinding;
         }
         const instance = this.get(binding.service_instance_guid);
-        if (!instance) break;
+        if (!instance) break; // TODO throw error
         const updatedInstance = Object.assign({}, instance, {
           changing: false
         });
