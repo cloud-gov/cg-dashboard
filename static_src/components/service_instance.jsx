@@ -104,7 +104,8 @@ export default class ServiceInstance extends React.Component {
     if (this.props.serviceInstance.changing) {
       const message = (
         <div>
-          <h3>Are you sure you want to do this?</h3>
+          <h3>Are you sure you want to
+            unbind { this.props.serviceInstance.name }?</h3>
           <p>Unbinding a service may break your application.</p>
         </div>
       );

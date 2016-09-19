@@ -35,6 +35,7 @@ function unboundReady(instances) {
 
 function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
+  const currentSpaceName = SpaceStore.currentSpaceName;
   const currentAppGuid = AppStore.currentAppGuid;
   const serviceInstances = ServiceInstanceStore.getAllBySpaceGuid(currentSpaceGuid)
   .map((serviceInstance) => {
@@ -64,6 +65,7 @@ function stateSetter() {
 
   return {
     currentAppGuid,
+    currentSpaceName,
     boundServiceInstances,
     unboundServiceInstances,
     loading
@@ -114,7 +116,7 @@ export default class ServiceInstancePanel extends React.Component {
         </PanelGroup>,
         <PanelGroup key="2">
           <PanelHeader>
-            <h3>Unbound service instances</h3>
+            <h3>Service instances available in { this.state.currentSpaceName }</h3>
           </PanelHeader>
           <ServiceInstanceListPanel
             currentAppGuid={ this.state.currentAppGuid }
