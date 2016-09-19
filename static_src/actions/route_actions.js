@@ -8,6 +8,14 @@ import AppDispatcher from '../dispatcher.js';
 import { routeActionTypes } from '../constants';
 
 export default {
+  associateApp(routeGuid, appGuid) {
+    AppDispatcher.handleViewAction({
+      type: routeActionTypes.ROUTE_APP_ASSOCIATE,
+      appGuid,
+      routeGuid
+    });
+  },
+
   associatedApp(routeGuid, appGuid) {
     AppDispatcher.handleViewAction({
       type: routeActionTypes.ROUTE_APP_ASSOCIATED,

@@ -18,6 +18,23 @@ describe('routeActions', function() {
     sandbox.restore();
   });
 
+  describe('associateApp()', function() {
+    it('should dispatch ROUTE_APP_ASSOCIATED view event & the app/route guids',
+    function () {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+      const expected = {
+        appGuid,
+        routeGuid
+      };
+      const spy = setupViewSpy(sandbox);
+
+      routeActions.associateApp(routeGuid, appGuid);
+
+      assertAction(spy, routeActionTypes.ROUTE_APP_ASSOCIATE, expected);
+    })
+  });
+
   describe('associatedApp()', function() {
     it('should dispatch ROUTE_APP_ASSOCIATED view event & the app/route guids',
     function () {

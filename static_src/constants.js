@@ -162,7 +162,9 @@ const userActionTypes = keymirror({
 });
 
 const routeActionTypes = keymirror({
-  // Action when a route has been associated with an pp
+  // Action when a route needs to be assocated with an app.
+  ROUTE_APP_ASSOCIATE: null,
+  // Action when a route has been associated with an app
   ROUTE_APP_ASSOCIATED: null,
   // Action for creating routes
   ROUTE_CREATE: null,
