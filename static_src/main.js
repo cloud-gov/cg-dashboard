@@ -101,7 +101,7 @@ function app(orgGuid, spaceGuid, appGuid) {
   appActions.fetchStats(appGuid);
   routeActions.fetchRoutesForApp(appGuid);
   serviceActions.fetchAllInstances(spaceGuid);
-  serviceActions.fetchServiceBindings(appGuid);
+  serviceActions.fetchServiceBindings();
   ReactDOM.render(
     <MainContainer>
       <AppContainer />

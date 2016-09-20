@@ -129,6 +129,20 @@ export default {
     });
   },
 
+  changeServiceInstanceCheck(serviceInstanceGuid) {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CHANGE_CHECK,
+      serviceInstanceGuid
+    });
+  },
+
+  changeServiceInstanceCancel(serviceInstanceGuid) {
+    AppDispatcher.handleUIAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_CHANGE_CANCEL,
+      serviceInstanceGuid
+    });
+  },
+
   fetchServiceBindings(appGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_BINDINGS_FETCH,
@@ -142,4 +156,33 @@ export default {
       serviceBindings
     });
   },
+
+  bindService(appGuid, serviceInstanceGuid) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_BIND,
+      appGuid,
+      serviceInstanceGuid
+    });
+  },
+
+  unbindService(serviceBinding) {
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_UNBIND,
+      serviceBinding
+    });
+  },
+
+  boundService(serviceBinding) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_BOUND,
+      serviceBinding
+    });
+  },
+
+  unboundService(serviceBinding) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_UNBOUND,
+      serviceBinding
+    });
+  }
 };

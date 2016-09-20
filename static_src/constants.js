@@ -92,10 +92,22 @@ const serviceActionTypes = keymirror({
   SERVICE_INSTANCE_CREATE: null,
   // Action when a service instance was created on the server.
   SERVICE_INSTANCE_CREATED: null,
+  // Action when a user wants to modify the service instance.
+  SERVICE_INSTANCE_CHANGE_CHECK: null,
+  // Action when a user cancels modifying the instance.
+  SERVICE_INSTANCE_CHANGE_CANCEL: null,
   // Action to fetch service bindins for an app.
   SERVICE_BINDINGS_FETCH: null,
   // Action when received service bindings from server.
-  SERVICE_BINDINGS_RECEIVED: null
+  SERVICE_BINDINGS_RECEIVED: null,
+  // Action to bind a service instance to an app.
+  SERVICE_BIND: null,
+  // Action to unbind a service instance from an app.
+  SERVICE_UNBIND: null,
+  // Action when a service instance was bound to an app.
+  SERVICE_BOUND: null,
+  // Aciton when a service instance was unbound from an app.
+  SERVICE_UNBOUND: null
 });
 
 const appActionTypes = keymirror({

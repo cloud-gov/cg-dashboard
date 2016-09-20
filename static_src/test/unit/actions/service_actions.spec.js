@@ -340,6 +340,38 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('changeServiceInstanceCheck()', function() {
+    it('should dispatch a instance change check ui action with guid', function() {
+      const serviceInstanceGuid = 'aldkjsf39287';
+      const expectedParams = {
+        serviceInstanceGuid
+      };
+
+      const spy = setupUISpy(sandbox);
+
+      serviceActions.changeServiceInstanceCheck(serviceInstanceGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CHANGE_CHECK,
+                   expectedParams);
+    });
+  });
+
+  describe('changeServiceInstanceCancel()', function() {
+    it('should dispatch a instance change cancel ui action with guid', function() {
+      const serviceInstanceGuid = 'aldkjsfxcvg4';
+      const expectedParams = {
+        serviceInstanceGuid
+      };
+
+      const spy = setupUISpy(sandbox);
+
+      serviceActions.changeServiceInstanceCancel(serviceInstanceGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CHANGE_CANCEL,
+                   expectedParams);
+    });
+  });
+
   describe('fetchServiceBindings()', function() {
     it('should dispatch service bindings fetch view event with app guid',
         function() {
@@ -369,6 +401,85 @@ describe('serviceActions', function() {
 
       assertAction(spy, serviceActionTypes.SERVICE_BINDINGS_RECEIVED,
                    expectedParams);
+    });
+  });
+
+  describe('bindService()', function() {
+    it('should dispatch a service bind view event with app guid and instance guid',
+        function() {
+      const appGuid = 'asldfjzzcxv';
+      const serviceInstanceGuid = 'zxclkjvzdfadfadsfasdfad';
+      const expectedParams = {
+        appGuid,
+        serviceInstanceGuid
+      };
+
+      const spy = setupViewSpy(sandbox);
+
+      serviceActions.bindService(appGuid, serviceInstanceGuid);
+
+      assertAction(spy, serviceActionTypes.SERVICE_BIND, expectedParams);
+    });
+  });
+
+  describe('unbindService()', function() {
+    it('should dispatch a service unbind view event with binding', function() {
+      const binding = {
+        service_instance_guid: 'asladsfdfjzzcxv',
+        app_guid: '12346vzdfadfadsfasdfad'
+      };
+      const expectedParams = {
+        serviceBinding: binding
+      };
+
+      const spy = setupViewSpy(sandbox);
+
+      serviceActions.unbindService(binding);
+
+      assertAction(spy, serviceActionTypes.SERVICE_UNBIND, expectedParams);
+    });
+
+  });
+
+  describe('boundService()', function() {
+    it('should dispatch a service bound server event with binding',
+        function() {
+      const appGuid = '198fjzzcxv';
+      const instanceGuid = '47kjvzdfadfadsfasdfad';
+      const binding = {
+        service_instance_guid: instanceGuid,
+        app_guid: appGuid
+      };
+      const expectedParams = {
+        serviceBinding: binding
+      };
+
+      const spy = setupServerSpy(sandbox);
+
+      serviceActions.boundService(binding);
+
+      assertAction(spy, serviceActionTypes.SERVICE_BOUND, expectedParams);
+    });
+  });
+
+  describe('unboundService()', function() {
+    it('should dispatch a service unbound server event with binding',
+        function() {
+      const appGuid = '198fjzzcxv';
+      const instanceGuid = '47kjvzdfadfadsfasdfad';
+      const binding = {
+        service_instance_guid: instanceGuid,
+        app_guid: appGuid
+      };
+      const expectedParams = {
+        serviceBinding: binding
+      };
+
+      const spy = setupServerSpy(sandbox);
+
+      serviceActions.unboundService(binding);
+
+      assertAction(spy, serviceActionTypes.SERVICE_UNBOUND, expectedParams);
     });
   });
 });

@@ -103,6 +103,102 @@ describe('ServiceBindingStore', function() {
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith('guid');
     });
+  });
 
+  describe('on service bind', function() {
+    it('should call api create binding with app, instance guid', function() {
+      const spy = sandbox.stub(cfApi, 'createServiceBinding');
+      spy.returns(Promise.resolve({data: {}}));
+      const appGuid = 'adfa3456vc';
+      const serviceInstanceGuid = 'zvcx234';
+
+      serviceActions.bindService(appGuid, serviceInstanceGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(appGuid);
+      expect(args[1]).toEqual(serviceInstanceGuid);
+    });
+  });
+
+  describe('on service unbind', function() {
+    it('should call api delete binding with binding', function() {
+      const spy = sandbox.stub(cfApi, 'deleteServiceBinding');
+      spy.returns(Promise.resolve({data: {}}))
+      const binding = {
+        guid: 'zxvadf'
+      }
+
+      serviceActions.unbindService(binding);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(binding);
+    });
+  });
+
+  describe('on service bound', function() {
+    const bindingGuid = 'xcvm,n32980cvxn';
+    const testBinding = {
+      metadata: {
+        guid: bindingGuid
+      },
+      entity: {
+        app_guid: 'zcxv32',
+        service_instance_guid: 'xxcv2133'
+      }
+    };
+
+    it('should add the new binding to the store, unwrapping', function() {
+      const bindingGuid = 'xcvm,n32980cvxn';
+      const expected = testBinding;
+
+      serviceActions.boundService(expected);
+
+      const actual = ServiceBindingStore.get(bindingGuid);
+
+      expect(actual).toBeTruthy();
+      expect(actual).toEqual(unwrapOfRes([expected]).pop());
+    });
+
+    it('should emit a change', function() {
+      const spy = sandbox.spy(ServiceBindingStore, 'emitChange');
+
+      serviceActions.boundService(testBinding);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on service unbound', function() {
+    const testBinding = {
+      guid: '2dfg25sd',
+      app_guid: 'zcvx234xcb',
+      service_instance_guid: 'zxcv234bvc'
+    };
+
+    it('should remove the service binding', function() {
+      ServiceBindingStore._data = Immutable.fromJS([testBinding]);
+
+      serviceActions.unboundService(testBinding);
+
+      expect(ServiceBindingStore.get(testBinding.guid)).toBeFalsy();
+    });
+
+    it('should do nothing if service binding not found', function() {
+      const spy = sandbox.spy(ServiceBindingStore, 'emitChange');
+      serviceActions.unboundService(testBinding);
+
+      expect(spy).not.toHaveBeenCalledOnce();
+    });
+
+    it('should emit a change', function() {
+      ServiceBindingStore._data = Immutable.fromJS([testBinding]);
+      const spy = sandbox.spy(ServiceBindingStore, 'emitChange');
+
+      serviceActions.unboundService(testBinding);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
   });
 });

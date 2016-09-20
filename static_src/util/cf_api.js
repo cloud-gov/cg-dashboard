@@ -397,7 +397,32 @@ export default {
   },
 
   fetchServiceBindings(appGuid) {
+    if (!appGuid) {
+      return this.fetchMany('/service_bindings',
+        serviceActions.receivedServiceBindings);
+    }
     return this.fetchMany(`/apps/${appGuid}/service_bindings`,
                          serviceActions.receivedServiceBindings);
+  },
+
+  createServiceBinding(appGuid, serviceInstanceGuid) {
+    const payload = {
+      app_guid: appGuid,
+      service_instance_guid: serviceInstanceGuid
+    };
+    return http.post(`${APIV}/service_bindings`, payload).then((res) => {
+      serviceActions.boundService(res.data);
+    }).catch((err) => {
+      handleError(err, errorActions.errorPost);
+    });
+  },
+
+  deleteServiceBinding(serviceBinding) {
+    return http.delete(`${APIV}/service_bindings/${serviceBinding.guid}`).then(
+    () => {
+      serviceActions.unboundService(serviceBinding);
+    }).catch((err) => {
+      handleError(err, errorActions.errorDelete);
+    });
   }
 };

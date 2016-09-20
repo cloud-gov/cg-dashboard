@@ -187,6 +187,43 @@ class ServiceInstanceStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_BOUND:
+      case serviceActionTypes.SERVICE_UNBOUND: {
+        let binding;
+        if (action.type === serviceActionTypes.SERVICE_BOUND) {
+          binding = this.formatSplitResponse([action.serviceBinding]).pop();
+        } else {
+          binding = action.serviceBinding;
+        }
+        const instance = this.get(binding.service_instance_guid);
+        if (!instance) break; // TODO throw error
+        const updatedInstance = Object.assign({}, instance, {
+          changing: false
+        });
+        this.merge('guid', updatedInstance, () => this.emitChange());
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_INSTANCE_CHANGE_CHECK: {
+        const instance = this.get(action.serviceInstanceGuid);
+        if (!instance) break; // TODO throw error?
+        const updatedInstance = Object.assign({}, instance, {
+          changing: true
+        });
+        this.merge('guid', updatedInstance, () => this.emitChange());
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_INSTANCE_CHANGE_CANCEL: {
+        const instance = this.get(action.serviceInstanceGuid);
+        if (!instance) break; // TODO throw error?
+        const updatedInstance = Object.assign({}, instance, {
+          changing: false
+        });
+        this.merge('guid', updatedInstance, () => this.emitChange());
+        break;
+      }
+
       default:
         break;
 

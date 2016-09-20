@@ -35,6 +35,7 @@ function unboundReady(instances) {
 
 function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
+  const currentSpaceName = SpaceStore.currentSpaceName;
   const currentAppGuid = AppStore.currentAppGuid;
   const serviceInstances = ServiceInstanceStore.getAllBySpaceGuid(currentSpaceGuid)
   .map((serviceInstance) => {
@@ -42,21 +43,30 @@ function stateSetter() {
     return Object.assign({}, serviceInstance, { servicePlan });
   });
   const serviceBindings = ServiceBindingStore.getAllByApp(currentAppGuid);
-  const boundServiceInstances = serviceInstances.filter((serviceInstance) =>
-    !!serviceBindings.find((serviceBinding) =>
+  const allServiceBindings = ServiceBindingStore.getAll();
+  const boundServiceInstances = serviceInstances.map((serviceInstance) => {
+    const binding = serviceBindings.find((serviceBinding) =>
       serviceInstance.guid === serviceBinding.service_instance_guid
-    )
-  );
-  const unboundServiceInstances = serviceInstances.filter((serviceInstance) =>
-    boundServiceInstances.find((boundService) =>
-      boundService.guid !== serviceInstance.guid
-    )
-  );
+    );
+    if (!binding) return null;
+    return Object.assign({}, serviceInstance, { serviceBinding: binding });
+  }).filter((instance) => !!instance);
+
+  const unboundServiceInstances = serviceInstances.filter((serviceInstance) => {
+    const binding = allServiceBindings.find((serviceBinding) =>
+      serviceInstance.guid === serviceBinding.service_instance_guid
+    );
+    if (binding) return null;
+    return serviceInstance;
+  }).filter((instance) => !!instance);
+
   const loading = ServiceInstanceStore.fetching ||
     ServicePlanStore.fetching ||
     ServiceBindingStore.fetching;
 
   return {
+    currentAppGuid,
+    currentSpaceName,
     boundServiceInstances,
     unboundServiceInstances,
     loading
@@ -99,6 +109,7 @@ export default class ServiceInstancePanel extends React.Component {
             <h3>Bound service instances</h3>
           </PanelHeader>
           <ServiceInstanceListPanel
+            currentAppGuid={ this.state.currentAppGuid }
             serviceInstances={ this.state.boundServiceInstances }
             bound
             empty={ boundReady(this.state.boundServiceInstances) }
@@ -106,9 +117,10 @@ export default class ServiceInstancePanel extends React.Component {
         </PanelGroup>,
         <PanelGroup key="2">
           <PanelHeader>
-            <h3>Unbound service instances</h3>
+            <h3>Service instances available in { this.state.currentSpaceName }</h3>
           </PanelHeader>
           <ServiceInstanceListPanel
+            currentAppGuid={ this.state.currentAppGuid }
             serviceInstances={ this.state.unboundServiceInstances }
             empty={ unboundReady(this.state.unboundServiceInstances) }
           />

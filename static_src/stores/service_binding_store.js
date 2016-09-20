@@ -41,6 +41,30 @@ class ServiceBindingStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_BIND: {
+        cfApi.createServiceBinding(action.appGuid, action.serviceInstanceGuid);
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_UNBIND: {
+        cfApi.deleteServiceBinding(action.serviceBinding);
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_BOUND: {
+        const binding = this.formatSplitResponse([action.serviceBinding]).pop();
+        this.merge('guid', binding, () => this.emitChange());
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_UNBOUND: {
+        const binding = this.get(action.serviceBinding.guid);
+        if (binding) {
+          this.delete(binding.guid, () => this.emitChange());
+        }
+        break;
+      }
+
       default:
         break;
     }
