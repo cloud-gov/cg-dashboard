@@ -336,8 +336,10 @@ export default {
       appGuid);
   },
 
-  fetchRoutesForSpace() {
-
+  fetchRoutesForSpace(spaceGuid) {
+    return this.fetchMany(`/spaces/${spaceGuid}/routes`,
+      routeActions.receivedRoutesForSpace,
+      spaceGuid);
   },
 
   // http://apidocs.cloudfoundry.org/241/routes/creating_a_route.html

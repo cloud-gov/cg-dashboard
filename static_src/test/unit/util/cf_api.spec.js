@@ -1005,6 +1005,24 @@ describe('cfApi', function() {
     });
   });
 
+  describe('fetchRoutesForSpace()', function() {
+    it('calls fetch routes with space guid and received routes for space',
+        function() {
+      const expected = '0cxcv23hhvzxcv2983';
+      const spy = sandbox.stub(cfApi, 'fetchMany');
+
+      cfApi.fetchRoutesForSpace(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('spaces'));
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('routes'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(routeActions.receivedRoutesForSpace);
+    });
+  });
+
   describe('fetchPrivateDomain()', function() {
     it('should fetch domain with the domain guid', function() {
       var expected = 'xcvxyyb1',
