@@ -5,26 +5,31 @@ import React from 'react';
 import AppStore from '../stores/app_store.js';
 import Action from './action.jsx';
 import DomainStore from '../stores/domain_store.js';
+import OrgStore from '../stores/org_store.js';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelHeader from './panel_header.jsx';
 import PanelRow from './panel_row.jsx';
 import routeActions from '../actions/route_actions.js';
+import Route from './route.jsx';
 import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
 import SpaceStore from '../stores/space_store.js';
 
 import createStyler from '../util/create_styler';
-import formatRoute from '../util/format_route';
 
 function stateSetter() {
+  const appGuid = AppStore.currentAppGuid;
+  const orgGuid = OrgStore.currentOrgGuid;
+  const spaceGuid = SpaceStore.currentSpaceGuid;
+
   const routes = RouteStore.getAll().map((route) => {
     const domain = DomainStore.get(route.domain_guid);
     if (!domain) return route;
     return Object.assign({}, route, { domain_name: domain.name });
   });
-  const appGuid = AppStore.currentAppGuid;
-  const appRoutes = routes.filter((route) => route.app_guid === appGuid)
+
+  const boundRoutes = routes.filter((route) => route.app_guid === appGuid)
     .map((route) => {
       if (route.path && (route.path[0] === '/')) {
         route.path = route.path.replace('/', '');
@@ -33,10 +38,22 @@ function stateSetter() {
       return route;
     });
 
+  const unboundRoutes = routes.filter((route) => {
+    const association = boundRoutes.find((boundRoute) =>
+      route.guid === boundRoute.guid
+    );
+    if (association) return null;
+    return association;
+  }).filter((route) => !!route);
+
   return {
     appGuid,
-    routes: appRoutes,
-    spaceGuid: SpaceStore.currentSpaceGuid,
+    orgGuid,
+    spaceGuid,
+    orgName: OrgStore.currentOrgName,
+    spaceName: SpaceStore.currentSpaceName,
+    boundRoutes,
+    unboundRoutes,
     showCreateForm: RouteStore.showCreateRouteForm,
     error: RouteStore.error
   };
@@ -73,11 +90,6 @@ export default class RouteList extends React.Component {
     this.setState(stateSetter());
   }
 
-  _toggleEditRoute(routeGuid, event) {
-    event.preventDefault();
-    routeActions.toggleEdit(routeGuid);
-  }
-
   _addCreateRouteForm(event) {
     if (event) event.preventDefault();
     routeActions.showCreateForm();
@@ -93,29 +105,13 @@ export default class RouteList extends React.Component {
     routeActions.createRouteAndAssociate(appGuid, domainGuid, spaceGuid, route);
   }
 
-  _deleteRoute(routeGuid, event) {
-    event.preventDefault();
-    routeActions.deleteRoute(routeGuid);
-  }
-
-  _updateRoute(routeGuid, route) {
-    const domainGuid = route.domain_guid;
-    const spaceGuid = this.state.spaceGuid;
-    let path = route.path;
-    if (route.path && (route.path[0] !== '/')) {
-      path = `/${route.path}`;
-    }
-    const updatedRoute = Object.assign({}, route, { path });
-    routeActions.updateRoute(routeGuid, domainGuid, spaceGuid, updatedRoute);
-  }
-
   get addRouteAction() {
     if (this.state.showCreateForm) return null;
     return (
       <Action clickHandler={ this._addCreateRouteForm }
-        label="Add route" type="button" style="outline"
+        label="Create a new route for this app" type="button" style="outline"
       >
-        Add route
+        Create a new route for this app
       </Action>
     );
   }
@@ -132,58 +128,60 @@ export default class RouteList extends React.Component {
     );
   }
 
-  render() {
-    if (this.state.routes.length === 0) {
-      return (
-        <PanelRow>
-          <h4 className="test-none_message">No routes</h4>
+  get spaceLink() {
+    return (
+      <a href={ `/#/org/${this.state.orgGuid}/spaces/${this.state.spaceGuid}` }>
+        { this.state.spaceName }
+      </a>
+    );
+  }
+
+  get orgSpaceLink() {
+    return (
+      <a href={ `/#/org/${this.state.orgGuid}/spaces/${this.state.spaceGuid}` }>
+        {this.state.orgName}/{ this.state.spaceName }
+      </a>
+    );
+  }
+
+  renderRoutes(routes) {
+    let content = <PanelRow><h4>No routes</h4></PanelRow>;
+
+    if (routes && routes.length) {
+      content = routes.map((route) =>
+        <PanelRow key={ route.guid }>
+          <Route route={ route } appGuid={ this.state.appGuid} />
         </PanelRow>
       );
     }
-    const routeLimit = (this.props.routeLimit > -1) ? this.props.routeLimit : 'unlimited';
+    return content;
+  }
+
+  render() {
     return (
       <PanelGroup>
         <PanelHeader>
           <h3>Routes</h3>
+          <span>Manage routes at { this.spaceLink }</span>
+        </PanelHeader>
+        <PanelGroup>
+          <PanelHeader>
+            <h3>Bound routes</h3>
+          </PanelHeader>
+          { this.renderRoutes(this.state.boundRoutes) }
+        </PanelGroup>
+        <PanelGroup>
+          <PanelHeader>
+            <h3>Routes available in {this.orgSpaceLink}</h3>
+          </PanelHeader>
+          { this.renderRoutes(this.state.unboundRoutes) }
+        </PanelGroup>
+        { this.createRouteForm }
+        <PanelRow>
           <PanelActions>
-            <span>{ this.state.routes.length } of { routeLimit }</span>
             { this.addRouteAction }
           </PanelActions>
-        </PanelHeader>
-        { this.createRouteForm }
-        { this.state.routes.map((route) => {
-          const submitHandler = this._updateRoute.bind(this, route.guid);
-          const toggleHandler = this._toggleEditRoute.bind(this, route.guid);
-          const deleteHandler = this._deleteRoute.bind(this, route.guid);
-          const { domain_name, host, path } = route;
-          const url = formatRoute(domain_name, host, path);
-          let rowContent;
-
-          if (route.editing) {
-            rowContent = (
-              <RouteForm route={ route } domains={ DomainStore.getAll() }
-                cancelHandler={ toggleHandler }
-                submitHandler={ submitHandler }
-                deleteHandler={ deleteHandler }
-              />
-            );
-          } else {
-            rowContent = (
-              <div>
-                <span>{ url }</span>
-                <Action clickHandler={ toggleHandler } label="Edit route" type="link">
-                  Edit route
-                </Action>
-              </div>
-            );
-          }
-
-          return (
-            <PanelRow key={ route.guid }>
-             { rowContent }
-            </PanelRow>
-          );
-        })}
+        </PanelRow>
       </PanelGroup>
     );
   }
