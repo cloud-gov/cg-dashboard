@@ -93,8 +93,8 @@ export default class RouteForm extends React.Component {
   }
 
   get submitActionText() {
-    if (this.props.route) return 'Apply';
-    return 'Add route';
+    if (this.props.route.guid) return 'OK';
+    return 'Create';
   }
 
   render() {
@@ -158,12 +158,12 @@ export default class RouteForm extends React.Component {
         <div className={ this.styler('route-form-actions') }>
           <PanelActions>
             <Action clickHandler={ this.props.cancelHandler } label="Cancel"
-              style="outline"
+              style="cautious" type="outline"
             >
               Cancel
             </Action>
             <Action clickHandler={ this._onSubmit }
-              label={ this.submitActionText } style="primary"
+              label={ this.submitActionText } style="finish"
               disabled={ !this.hasChanged }
             >
               { this.submitActionText }

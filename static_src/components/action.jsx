@@ -6,15 +6,17 @@ import createStyler from '../util/create_styler';
 
 const BUTTON_STYLES = [
   'cautious',
-  'outline',
-  'outline-inverse',
+  'warning',
   'primary',
   'primary-alt',
-  'secondary'
+  'secondary',
+  'finish'
 ];
 
 const BUTTON_TYPES = [
   'button',
+  'outline',
+  'outline-inverse',
   'link',
   'submit'
 ];
@@ -50,25 +52,24 @@ export default class Action extends React.Component {
     const styleClass = `usa-button-${this.props.style}`;
     let classes = this.styler(...this.props.classes);
     let content = <div></div>;
+    const classList = [...this.props.classes];
+
+    classList.push('action');
+    classList.push(`action-${this.props.style}`);
 
     if (this.props.type !== 'link') {
-      const classList = [...this.props.classes];
       if (this.props.disabled) {
         classList.push('usa-button-disabled');
       } else {
         classList.push('usa-button');
         classList.push(styleClass);
+        if (this.props.type === 'outline') classList.push('usa-button-outline');
       }
       classes = this.styler(...classList);
     }
 
     if (this.props.type === 'link') {
-      const classList = [...this.props.classes];
-
       classList.push('action-link');
-      if (this.props.style === 'cautious') {
-        classList.push('action-cautious');
-      }
 
       classes = this.styler(...classList);
 

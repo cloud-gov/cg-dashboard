@@ -98,7 +98,8 @@ export default class RoutesPanel extends React.Component {
     routeActions.showCreateForm();
   }
 
-  _removeCreateRouteForm() {
+  _removeCreateRouteForm(ev) {
+    if (ev) ev.preventDefault();
     routeActions.hideCreateForm();
   }
 
@@ -112,7 +113,7 @@ export default class RoutesPanel extends React.Component {
     if (this.state.showCreateForm) return null;
     return (
       <Action clickHandler={ this._addCreateRouteForm }
-        label="Create a new route for this app" type="button" style="outline"
+        label="Create a new route for this app" type="outline"
       >
         Create a new route for this app
       </Action>
@@ -135,14 +136,6 @@ export default class RoutesPanel extends React.Component {
     return (
       <a href={ `/#/org/${this.state.orgGuid}/spaces/${this.state.spaceGuid}` }>
         { this.state.spaceName }
-      </a>
-    );
-  }
-
-  get orgSpaceLink() {
-    return (
-      <a href={ `/#/org/${this.state.orgGuid}/spaces/${this.state.spaceGuid}` }>
-        {this.state.orgName}/{ this.state.spaceName }
       </a>
     );
   }
@@ -178,16 +171,16 @@ export default class RoutesPanel extends React.Component {
         </PanelGroup>
         <PanelGroup>
           <PanelHeader>
-            <h3>Routes available in {this.orgSpaceLink}</h3>
+            <h3>Routes available in {this.spaceLink}</h3>
           </PanelHeader>
           { this.renderRoutes(this.state.unboundRoutes) }
         </PanelGroup>
         { this.createRouteForm }
-        <PanelRow>
-          <PanelActions>
-            { this.addRouteAction }
-          </PanelActions>
-        </PanelRow>
+        <PanelGroup>
+        <PanelActions>
+          { this.addRouteAction }
+        </PanelActions>
+        </PanelGroup>
       </Panel>
     );
   }

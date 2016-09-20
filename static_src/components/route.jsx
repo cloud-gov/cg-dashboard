@@ -75,7 +75,7 @@ export default class Route extends React.Component {
 
   get deleteAction() {
     return (
-      <Action key="delete" label="Delete route" type="link" style="cautious"
+      <Action key="delete" label="Delete route" type="link" style="warning"
         clickHandler={this._deleteHandler}
       >
         Delete
@@ -85,7 +85,7 @@ export default class Route extends React.Component {
 
   get editAction() {
     return (
-      <Action key="edit" label="Edit route" type="button" style="outline"
+      <Action key="edit" label="Edit route" type="link" style="primary"
         clickHandler={this._editHandler}
       >
         Edit
@@ -95,7 +95,8 @@ export default class Route extends React.Component {
 
   bindAction(unbind) {
     return (
-      <Action key="unbind" label={ (!!unbind) ? 'Unbind' : 'Bind' } style="outline"
+      <Action key="unbind" label={ (!!unbind) ? 'Unbind' : 'Bind' }
+        style={ (!!unbind) ? 'cautious' : 'primary' } type="outline"
         clickHandler={ (!!unbind) ? this._unbindHandler : this._bindHandler }
       >
         { (!!unbind) ? 'Unbind' : 'Bind' }

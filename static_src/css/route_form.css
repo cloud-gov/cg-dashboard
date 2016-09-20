@@ -69,7 +69,7 @@
 .route-form-actions {
   align-items: flex-end;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 100%;
 }
 
@@ -101,9 +101,10 @@
 .route-form input[readonly]:focus {
   background-color: transparent;
   border: none;
-  color: var(--warning);
   font-family: monospace;
-  font-weight: 200;
+  font-size: 1.3rem;
+  font-weight: 100;
+  margin-bottom: 1rem;
   outline-color: transparent;
 }
 
