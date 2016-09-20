@@ -42,6 +42,12 @@ class RouteStore extends BaseStore {
         break;
       }
 
+      case routeActionTypes.ROUTES_RECEIVED: {
+        const routes = this.formatSplitResponse(action.routes);
+        this.mergeMany('guid', routes, (changed) => this.emitChange());
+        break;
+      }
+
       case routeActionTypes.ROUTE_APP_ASSOCIATE: {
         cfApi.putAppRouteAssociation(action.appGuid, action.routeGuid);
         break;
@@ -135,6 +141,10 @@ class RouteStore extends BaseStore {
 
       case routeActionTypes.ROUTES_FOR_APP_FETCH:
         cfApi.fetchRoutesForApp(action.appGuid);
+        break;
+
+      case routeActionTypes.ROUTES_FOR_SPACE_FETCH:
+        cfApi.fetchRoutesForSpace(action.spaceGuid);
         break;
 
       case routeActionTypes.ROUTES_FOR_APP_RECEIVED: {

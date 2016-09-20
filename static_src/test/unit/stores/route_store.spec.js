@@ -318,7 +318,38 @@ describe('RouteStore', function() {
     });
   });
 
-  describe('routeActionTypes.ROUTES_FOR_APP_RECEIVED', function() {
+  describe('on route for space fetch', function() {
+    it('should fetch routes for space with space guid from api', function() {
+      const spy = sandbox.spy(cfApi, 'fetchRoutesForSpace');
+      const expectedGuid = 'adfasdzcvzxcvb23r';
+
+      routeActions.fetchRoutesForSpace(expectedGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+    });
+  });
+
+  describe('on routes received', function() {
+    it('should emit a change event if new routes', function() {
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      routeActions.receivedRoutes([{ metadata: { guid: 'zxcv' }, entity: {}}]);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should merge in the routes with mergeMany', function() {
+      const spy = sandbox.spy(RouteStore, 'mergeMany');
+
+      routeActions.receivedRoutes([{ metadata: { guid: 'zxcv' }, entity: {}}]);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on routes received for app', function() {
     it('should emit a change event', function() {
       const appGuid = '2893hazxcmv';
       const spy = sandbox.spy(RouteStore, 'emitChange');
