@@ -30,7 +30,7 @@ export default class Route extends React.Component {
     this._unbindHandler = this._unbindHandler.bind(this);
     this._bindHandler = this._bindHandler.bind(this);
     this._editHandler = this._editHandler.bind(this);
-    this._updateRoute = this._updateRoute.bind(this);
+    this._updateHandler = this._updateHandler.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -61,8 +61,7 @@ export default class Route extends React.Component {
     routeActions.unassociateApp(route.guid, route.app_guid);
   }
 
-  _updateRoute(route) {
-    // TODO fix
+  _updateHandler(route) {
     const routeGuid = this.props.route.guid;
     const domainGuid = route.domain_guid;
     const spaceGuid = route.space_guid;
@@ -71,7 +70,7 @@ export default class Route extends React.Component {
       path = `/${route.path}`;
     }
     const updatedRoute = Object.assign({}, route, { path });
-    routeActions.updateRoute(routeGuid, domainGuid, spaceGuid, updatedRoute);
+    routeActions.updateHandler(routeGuid, domainGuid, spaceGuid, updatedRoute);
   }
 
   get deleteAction() {
@@ -128,7 +127,7 @@ export default class Route extends React.Component {
         content = (
           <RouteForm route={ route } domains={ DomainStore.getAll() }
             cancelHandler={ this._editHandler }
-            submitHandler={ this._updateRoute }
+            submitHandler={ this._updateHandler }
           />
         );
       } else {
