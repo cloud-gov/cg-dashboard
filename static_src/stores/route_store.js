@@ -19,6 +19,23 @@ class RouteStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
+  getAllForSpace(spaceGuid) {
+    return this.getAll().filter((route) => route.space_guid === spaceGuid);
+  }
+
+  mergeRoutes(routes) {
+    this.mergeMany('guid', routes, (changed) => {
+      if (changed) this.emitChange();
+      routes.forEach((route) => {
+        if (/shared_domains/.test(route.domain_url)) {
+          cfApi.fetchSharedDomain(route.domain_guid);
+        } else {
+          cfApi.fetchPrivateDomain(route.domain_guid);
+        }
+      });
+    });
+  }
+
   _registerToActions(action) {
     switch (action.type) {
       case appActionTypes.APP_RECEIVED: {
@@ -44,7 +61,7 @@ class RouteStore extends BaseStore {
 
       case routeActionTypes.ROUTES_RECEIVED: {
         const routes = this.formatSplitResponse(action.routes);
-        this.mergeMany('guid', routes, (changed) => this.emitChange());
+        this.mergeRoutes(routes);
         break;
       }
 
@@ -151,16 +168,7 @@ class RouteStore extends BaseStore {
         const routes = this.formatSplitResponse(action.routes).map((route) =>
           Object.assign({}, route, { app_guid: action.appGuid })
         );
-        this.mergeMany('guid', routes, (changed) => {
-          if (changed) this.emitChange();
-          routes.forEach((route) => {
-            if (/shared_domains/.test(route.domain_url)) {
-              cfApi.fetchSharedDomain(route.domain_guid);
-            } else {
-              cfApi.fetchPrivateDomain(route.domain_guid);
-            }
-          });
-        });
+        this.mergeRoutes(routes);
         break;
       }
 

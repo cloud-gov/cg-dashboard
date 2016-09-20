@@ -23,28 +23,20 @@ function stateSetter() {
   const orgGuid = OrgStore.currentOrgGuid;
   const spaceGuid = SpaceStore.currentSpaceGuid;
 
-  const routes = RouteStore.getAll().map((route) => {
+  const routes = RouteStore.getAllForSpace(spaceGuid).map((route) => {
+    let newRoute = Object.assign({}, route);
     const domain = DomainStore.get(route.domain_guid);
-    if (!domain) return route;
-    return Object.assign({}, route, { domain_name: domain.name });
+    if (domain) {
+      newRoute = Object.assign({}, newRoute, { domain_name: domain.name});
+    }
+    if (route.path && (route.path[0] === '/')) {
+      newRoute.path = route.path.replace('/', '');
+    }
+    return newRoute;
   });
 
-  const boundRoutes = routes.filter((route) => route.app_guid === appGuid)
-    .map((route) => {
-      if (route.path && (route.path[0] === '/')) {
-        route.path = route.path.replace('/', '');
-      }
-
-      return route;
-    });
-
-  const unboundRoutes = routes.filter((route) => {
-    const association = boundRoutes.find((boundRoute) =>
-      route.guid === boundRoute.guid
-    );
-    if (association) return null;
-    return association;
-  }).filter((route) => !!route);
+  const boundRoutes = routes.filter((route) => route.app_guid === appGuid);
+  const unboundRoutes = routes.filter((route) => !route.app_guid);
 
   return {
     appGuid,
@@ -149,7 +141,7 @@ export default class RouteList extends React.Component {
 
     if (routes && routes.length) {
       content = routes.map((route) =>
-        <PanelRow key={ route.guid }>
+        <PanelRow key={ route.guid + route.app_guid }>
           <Route route={ route } appGuid={ this.state.appGuid} />
         </PanelRow>
       );

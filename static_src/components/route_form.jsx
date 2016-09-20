@@ -16,8 +16,7 @@ const propTypes = {
   route: React.PropTypes.object,
   error: React.PropTypes.object,
   submitHandler: React.PropTypes.func,
-  cancelHandler: React.PropTypes.func,
-  deleteHandler: React.PropTypes.func
+  cancelHandler: React.PropTypes.func
 };
 
 const defaultProps = {
@@ -93,22 +92,8 @@ export default class RouteForm extends React.Component {
     return changed;
   }
 
-  get deleteAction() {
-    if (!this.props.deleteHandler) return null;
-    return (
-      <Action clickHandler={ this.props.deleteHandler } label="Delete route"
-        type="link" style="cautious"
-      >
-        Delete route
-      </Action>
-    );
-  }
-
-  // If there is a delete handler, this form is for editing a route
-  // Otherwise, it is for a new route
-  // The submit action label should be adjusted accordingly
   get submitActionText() {
-    if (this.props.deleteHandler) return 'Apply';
+    if (this.props.route) return 'Apply';
     return 'Add route';
   }
 
@@ -171,9 +156,6 @@ export default class RouteForm extends React.Component {
           </div>
         </div>
         <div className={ this.styler('route-form-actions') }>
-          <PanelActions>
-            { this.deleteAction }
-          </PanelActions>
           <PanelActions>
             <Action clickHandler={ this.props.cancelHandler } label="Cancel"
               style="outline"

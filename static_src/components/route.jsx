@@ -2,7 +2,9 @@
 import React from 'react';
 
 import Action from './action.jsx';
+import DomainStore from '../stores/domain_store.js';
 import PanelActions from './panel_actions.jsx';
+import RouteForm from './route_form.jsx';
 import createStyler from '../util/create_styler';
 import formatRoute from '../util/format_route';
 import routeActions from '../actions/route_actions.js';
@@ -28,6 +30,7 @@ export default class Route extends React.Component {
     this._unbindHandler = this._unbindHandler.bind(this);
     this._bindHandler = this._bindHandler.bind(this);
     this._editHandler = this._editHandler.bind(this);
+    this._updateRoute = this._updateRoute.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -35,6 +38,7 @@ export default class Route extends React.Component {
   }
 
   _deleteHandler(ev) {
+    // TODO confirmation
     ev.preventDefault();
     routeActions.deleteRoute(this.props.route.guid);
   }
@@ -51,15 +55,17 @@ export default class Route extends React.Component {
   }
 
   _unbindHandler(ev) {
+    // TODO confirmation
     ev.preventDefault();
     const route = this.props.route;
     routeActions.unassociateApp(route.guid, route.app_guid);
   }
 
-  _updateRoute(routeGuid, route) {
+  _updateRoute(route) {
     // TODO fix
+    const routeGuid = this.props.route.guid;
     const domainGuid = route.domain_guid;
-    const spaceGuid = this.state.spaceGuid;
+    const spaceGuid = route.space_guid;
     let path = route.path;
     if (route.path && (route.path[0] !== '/')) {
       path = `/${route.path}`;
@@ -70,7 +76,7 @@ export default class Route extends React.Component {
 
   get deleteAction() {
     return (
-      <Action label="Delete route" type="link" style="cautious"
+      <Action key="delete" label="Delete route" type="link" style="cautious"
         clickHandler={this._deleteHandler}
       >
         Delete
@@ -80,7 +86,7 @@ export default class Route extends React.Component {
 
   get editAction() {
     return (
-      <Action label="Edit route" type="button" style="outline"
+      <Action key="edit" label="Edit route" type="button" style="outline"
         clickHandler={this._editHandler}
       >
         Edit
@@ -90,7 +96,7 @@ export default class Route extends React.Component {
 
   bindAction(unbind) {
     return (
-      <Action label={ (!!unbind) ? 'Unbind' : 'Bind' } style="outline"
+      <Action key="unbind" label={ (!!unbind) ? 'Unbind' : 'Bind' } style="outline"
         clickHandler={ (!!unbind) ? this._unbindHandler : this._bindHandler }
       >
         { (!!unbind) ? 'Unbind' : 'Bind' }
@@ -103,10 +109,8 @@ export default class Route extends React.Component {
     const route = this.props.route;
     if (!route) return actions;
 
-    if (!route.app_guid) {
-      actions.push(this.deleteAction);
-    }
-    actions.push(this.editAction);
+    if (!route.app_guid) actions.push(this.deleteAction);
+    if (route.app_guid) actions.push(this.editAction);
     actions.push(this.bindAction(!!route.app_guid));
 
     return actions;
@@ -116,17 +120,28 @@ export default class Route extends React.Component {
     let content = <div></div>;
 
     if (this.props.route) {
+      const route = this.props.route;
       const { domain_name, host, path } = this.props.route;
       const url = formatRoute(domain_name, host, path);
-      content = (
-        <div>
-          <span className={this.styler('panel-column', 'panel-column-less')}>
-            { url }</span>
-          <PanelActions>
-            { this.actions }
-          </PanelActions>
-        </div>
-      );
+
+      if (route.editing) {
+        content = (
+          <RouteForm route={ route } domains={ DomainStore.getAll() }
+            cancelHandler={ this._editHandler }
+            submitHandler={ this._updateRoute }
+          />
+        );
+      } else {
+        content = (
+          <div>
+            <span className={this.styler('panel-column', 'panel-column-less')}>
+              { url }</span>
+            <PanelActions>
+              { this.actions }
+            </PanelActions>
+          </div>
+        );
+      }
     }
 
     return content;

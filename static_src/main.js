@@ -99,6 +99,7 @@ function app(orgGuid, spaceGuid, appGuid) {
   appActions.changeCurrentApp(appGuid);
   appActions.fetch(appGuid);
   appActions.fetchStats(appGuid);
+  routeActions.fetchRoutesForSpace(spaceGuid);
   routeActions.fetchRoutesForApp(appGuid);
   serviceActions.fetchAllInstances(spaceGuid);
   serviceActions.fetchServiceBindings();
