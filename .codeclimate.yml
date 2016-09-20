@@ -1,0 +1,26 @@
+---
+engines:
+
+  duplication:
+    enabled: false
+  govet:
+    enabled: true
+  golint:
+    enabled: true
+  nodesecurity:
+    enabled: true
+  eslint:
+    enabled: true
+  fixme:
+    enabled: false
+
+ratings:
+  paths:
+  - "**.go"
+  - "**.js"
+
+exclude_paths:
+  - static_src/test/*
+  - helpers/*
+  - acceptance/*
+  - "**/*_test.go"
