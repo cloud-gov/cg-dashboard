@@ -6,6 +6,7 @@ import AppStore from '../stores/app_store.js';
 import Action from './action.jsx';
 import DomainStore from '../stores/domain_store.js';
 import OrgStore from '../stores/org_store.js';
+import Panel from './panel.jsx';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelHeader from './panel_header.jsx';
@@ -14,6 +15,7 @@ import routeActions from '../actions/route_actions.js';
 import Route from './route.jsx';
 import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
+import QuotaStore from '../stores/quota_store.js';
 import SpaceStore from '../stores/space_store.js';
 
 import createStyler from '../util/create_styler';
@@ -22,6 +24,11 @@ function stateSetter() {
   const appGuid = AppStore.currentAppGuid;
   const orgGuid = OrgStore.currentOrgGuid;
   const spaceGuid = SpaceStore.currentSpaceGuid;
+
+  const currentOrg = OrgStore.get(OrgStore.currentOrgGuid);
+  const currentSpace = SpaceStore.get(SpaceStore.currentSpaceGuid);
+  const orgQuotaGuid = (currentOrg) ? currentOrg.quota_definition_guid : null;
+  const spaceQuotaGuid = (currentSpace) ? currentSpace.space_quota_definition_guid : null;
 
   const routes = RouteStore.getAllForSpace(spaceGuid).map((route) => {
     let newRoute = Object.assign({}, route);
@@ -44,6 +51,8 @@ function stateSetter() {
     spaceGuid,
     orgName: OrgStore.currentOrgName,
     spaceName: SpaceStore.currentSpaceName,
+    orgQuota: QuotaStore.get(orgQuotaGuid),
+    spaceQuota: QuotaStore.get(spaceQuotaGuid),
     boundRoutes,
     unboundRoutes,
     showCreateForm: RouteStore.showCreateRouteForm,
@@ -51,7 +60,7 @@ function stateSetter() {
   };
 }
 
-export default class RouteList extends React.Component {
+export default class RoutesPanel extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -66,6 +75,7 @@ export default class RouteList extends React.Component {
 
   componentDidMount() {
     DomainStore.addChangeListener(this._onChange);
+    QuotaStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
   }
 
@@ -75,6 +85,7 @@ export default class RouteList extends React.Component {
 
   componentWillUnmount() {
     DomainStore.removeChangeListener(this._onChange);
+    QuotaStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
   }
 
@@ -150,12 +161,15 @@ export default class RouteList extends React.Component {
   }
 
   render() {
+    let routeLimit;
+    if (this.state.spaceQuota) {
+      routeLimit = this.state.spaceQuota.total_routes;
+    } else if (this.state.orgQuota) {
+      routeLimit = this.state.orgQuota.total_routes;
+    }
+
     return (
-      <PanelGroup>
-        <PanelHeader>
-          <h3>Routes</h3>
-          <span>Manage routes at { this.spaceLink }</span>
-        </PanelHeader>
+      <Panel title="Routes">
         <PanelGroup>
           <PanelHeader>
             <h3>Bound routes</h3>
@@ -174,15 +188,11 @@ export default class RouteList extends React.Component {
             { this.addRouteAction }
           </PanelActions>
         </PanelRow>
-      </PanelGroup>
+      </Panel>
     );
   }
 }
 
-RouteList.propTypes = {
-  routeLimit: React.PropTypes.number
-};
+RoutesPanel.propTypes = {};
 
-RouteList.defaultProps = {
-  routeLimit: -1
-};
+RoutesPanel.defaultProps = {};
