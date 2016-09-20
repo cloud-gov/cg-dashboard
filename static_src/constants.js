@@ -193,7 +193,7 @@ const routeActionTypes = keymirror({
   ROUTES_FOR_APP_FETCH: null,
   ROUTES_FOR_APP_RECEIVED: null,
   ROUTES_FOR_SPACE_FETCH: null,
-  ROUTES_FOR_SPACE_RECEIVED: null,
+  ROUTES_RECEIVED: null,
   ROUTE_TOGGLE_EDIT: null,
   // Action when any action on an existing route fails
   ROUTE_ERROR: null

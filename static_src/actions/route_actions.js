@@ -109,11 +109,10 @@ export default {
     });
   },
 
-  receivedRoutesForSpace(routes, spaceGuid) {
+  receivedRoutes(routes) {
     AppDispatcher.handleServerAction({
-      type: routeActionTypes.ROUTES_FOR_SPACE_RECEIVED,
-      routes,
-      spaceGuid
+      type: routeActionTypes.ROUTES_RECEIVED,
+      routes
     });
   },
 

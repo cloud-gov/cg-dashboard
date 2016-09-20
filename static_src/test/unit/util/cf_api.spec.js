@@ -1006,7 +1006,7 @@ describe('cfApi', function() {
   });
 
   describe('fetchRoutesForSpace()', function() {
-    it('calls fetch routes with space guid and received routes for space',
+    it('calls fetch routes with space guid and received routes',
         function() {
       const expected = '0cxcv23hhvzxcv2983';
       const spy = sandbox.stub(cfApi, 'fetchMany');
@@ -1019,7 +1019,7 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('routes'));
       actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(routeActions.receivedRoutesForSpace);
+      expect(actual).toEqual(routeActions.receivedRoutes);
     });
   });
 

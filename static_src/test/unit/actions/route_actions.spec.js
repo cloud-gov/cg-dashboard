@@ -237,7 +237,7 @@ describe('routeActions', function() {
     });
   });
 
-  describe('receivedRoutesForSpace()', function() {
+  describe('receivedRoutes()', function() {
     it('should dispatch a server event of type routes for space resv with data',
         function() {
       const spaceGuid = 'adflkjzxcbvzxqwr12';
@@ -247,15 +247,14 @@ describe('routeActions', function() {
         ]
       }
       const expectedParams = {
-        routes: expected,
-        spaceGuid
+        routes: expected
       };
 
-      let spy = setupServerSpy(sandbox)
+      let spy = setupServerSpy(sandbox);
 
-      routeActions.receivedRoutesForSpace(expected, spaceGuid);
+      routeActions.receivedRoutes(expected);
 
-      assertAction(spy, routeActionTypes.ROUTES_FOR_SPACE_RECEIVED,
+      assertAction(spy, routeActionTypes.ROUTES_RECEIVED,
                    expectedParams)
     });
   });

@@ -338,7 +338,7 @@ export default {
 
   fetchRoutesForSpace(spaceGuid) {
     return this.fetchMany(`/spaces/${spaceGuid}/routes`,
-      routeActions.receivedRoutesForSpace,
+      routeActions.receivedRoutes,
       spaceGuid);
   },
 
