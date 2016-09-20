@@ -336,6 +336,10 @@ export default {
       appGuid);
   },
 
+  fetchRoutesForSpace() {
+
+  },
+
   // http://apidocs.cloudfoundry.org/241/routes/creating_a_route.html
   createRoute(domainGuid, spaceGuid, host, path) {
     const payload = {

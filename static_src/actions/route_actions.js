@@ -96,9 +96,24 @@ export default {
     });
   },
 
+  fetchRoutesForSpace(spaceGuid) {
+    AppDispatcher.handleViewAction({
+      type: routeActionTypes.ROUTES_FOR_SPACE_FETCH,
+      spaceGuid
+    });
+  },
+
   hideCreateForm() {
     AppDispatcher.handleUIAction({
       type: routeActionTypes.ROUTE_CREATE_FORM_HIDE
+    });
+  },
+
+  receivedRoutesForSpace(routes, spaceGuid) {
+    AppDispatcher.handleServerAction({
+      type: routeActionTypes.ROUTES_FOR_SPACE_RECEIVED,
+      routes,
+      spaceGuid
     });
   },
 

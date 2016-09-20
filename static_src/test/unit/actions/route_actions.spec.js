@@ -189,6 +189,22 @@ describe('routeActions', function() {
     });
   });
 
+  describe('fetchRoutesForSpace()', function() {
+    it('should dispatch ROUTES_FOR_SPACE_FETCH view event with params', function() {
+      const expectedSpaceGuid = 'asdflkjzzxcv';
+      const expectedParams = {
+        spaceGuid: expectedSpaceGuid
+      };
+
+      const spy = setupViewSpy(sandbox)
+
+      routeActions.fetchRoutesForSpace(expectedSpaceGuid);
+
+      assertAction(spy, routeActionTypes.ROUTES_FOR_SPACE_FETCH,
+                   expectedParams)
+    });
+  });
+
   describe('hideCreateForm()', function() {
     it('should dispatch ROUTE_CREATE_FORM_HIDE UI event', function() {
       const spy = setupUISpy(sandbox);
@@ -217,6 +233,29 @@ describe('routeActions', function() {
       routeActions.receivedRoutesForApp(expected, appGuid);
 
       assertAction(spy, routeActionTypes.ROUTES_FOR_APP_RECEIVED,
+                   expectedParams)
+    });
+  });
+
+  describe('receivedRoutesForSpace()', function() {
+    it('should dispatch a server event of type routes for space resv with data',
+        function() {
+      const spaceGuid = 'adflkjzxcbvzxqwr12';
+      const expected = {
+        resources: [
+          { guid: 'asdfa', host: 'somethingxz' }
+        ]
+      }
+      const expectedParams = {
+        routes: expected,
+        spaceGuid
+      };
+
+      let spy = setupServerSpy(sandbox)
+
+      routeActions.receivedRoutesForSpace(expected, spaceGuid);
+
+      assertAction(spy, routeActionTypes.ROUTES_FOR_SPACE_RECEIVED,
                    expectedParams)
     });
   });
