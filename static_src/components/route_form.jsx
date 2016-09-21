@@ -14,6 +14,7 @@ import routeFormCss from '../css/route_form.css';
 const propTypes = {
   domains: React.PropTypes.array.isRequired,
   route: React.PropTypes.object,
+  routeLimit: React.PropTypes.number,
   error: React.PropTypes.object,
   submitHandler: React.PropTypes.func,
   cancelHandler: React.PropTypes.func
@@ -21,9 +22,10 @@ const propTypes = {
 
 const defaultProps = {
   route: {},
+  routeLimit: -1,
   error: null,
   submitHandler: () => {},
-  cancelHandler: () => {}
+  cancelHandler: (ev) => {ev.preventDefault()}
 };
 
 export default class RouteForm extends React.Component {
@@ -100,9 +102,21 @@ export default class RouteForm extends React.Component {
   render() {
     const route = this.props.route;
     const domains = this.props.domains;
+    const routeLimit = this.props.routeLimit;
+    let limit;
+
+    if (routeLimit > -1) {
+      // TODO move form notification into own component.
+      limit = (
+        <span className={ this.styler('form-notification', 'form-notification-info') }>
+          <strong>{routeLimit}</strong> routes remain in your space quota
+        </span>
+      );
+    }
 
     return (
       <form className={ this.styler('route-form','panel-form-replace') }>
+        { limit }
         <fieldset>
           <div className={ this.styler('route-fields') }>
             <div className={ this.styler('route-field-host') }>

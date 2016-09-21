@@ -123,8 +123,17 @@ export default class RoutesPanel extends React.Component {
   get createRouteForm() {
     if (!this.state.showCreateForm) return null;
 
+    let routeTotal = -1;
+    if (this.state.spaceQuota) {
+      routeTotal = this.state.spaceQuota.total_routes;
+    } else if (this.state.orgQuota) {
+      routeTotal = this.state.orgQuota.total_routes;
+    }
+    const routeLimit = routeTotal - (this.state.boundRoutes.length +
+                                     this.state.unboundRoutes.length);
     return (
       <RouteForm domains={ DomainStore.getAll() }
+        routeLimit={ routeLimit }
         error={ this.state.error }
         cancelHandler={ () => this._removeCreateRouteForm() }
         submitHandler={ this._createRouteAndAssociate }
@@ -154,12 +163,6 @@ export default class RoutesPanel extends React.Component {
   }
 
   render() {
-    let routeLimit;
-    if (this.state.spaceQuota) {
-      routeLimit = this.state.spaceQuota.total_routes;
-    } else if (this.state.orgQuota) {
-      routeLimit = this.state.orgQuota.total_routes;
-    }
 
     return (
       <Panel title="Routes">
