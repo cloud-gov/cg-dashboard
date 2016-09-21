@@ -1,8 +1,3 @@
 static_src/test/**/*.js
-static_src/actions/login_actions.js
-static_src/actions/org_actions.js
-static_src/actions/service_actions.js
-static_src/actions/space_actions.js
-static_src/actions/error_actions.js
 static_src/tests.bundle.js
 test/**/*.js

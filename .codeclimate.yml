@@ -10,8 +10,10 @@ engines:
   nodesecurity:
     enabled: true
   eslint:
-    enabled: true
+    enabled: false
   fixme:
+    enabled: false
+  csslint:
     enabled: false
 
 ratings:
