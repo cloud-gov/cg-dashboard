@@ -283,6 +283,21 @@ describe('routeActions', function() {
     });
   });
 
+  describe('toggleRemove()', function () {
+    it('should dispatch a UI action with a route guid', function () {
+      const expectedRouteGuid = 'route-guid';
+      const expectedParams = {
+        routeGuid: expectedRouteGuid
+      };
+
+      let spy = setupUISpy(sandbox)
+
+      routeActions.toggleRemove(expectedRouteGuid);
+
+      assertAction(spy, routeActionTypes.ROUTE_TOGGLE_REMOVE, expectedParams);
+    });
+  });
+
   describe('updateRoute()', function (){
     it('should dispatch ROUTE_UPDATE view event with params', function() {
       const routeGuid = 'fake-route-guid';

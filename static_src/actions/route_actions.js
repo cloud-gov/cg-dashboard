@@ -137,6 +137,13 @@ export default {
     });
   },
 
+  toggleRemove(routeGuid) {
+    AppDispatcher.handleUIAction({
+      type: routeActionTypes.ROUTE_TOGGLE_REMOVE,
+      routeGuid
+    });
+  },
+
   updateRoute(routeGuid, domainGuid, spaceGuid, route) {
     AppDispatcher.handleViewAction({
       type: routeActionTypes.ROUTE_UPDATE,

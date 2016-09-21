@@ -447,6 +447,27 @@ describe('RouteStore', function() {
     });
   });
 
+  describe('on route toggle remove', function() {
+    it('should toggle the "editing" value of the route', function () {
+      const routeGuid = 'route-guid';
+      const route = { guid: routeGuid };
+
+      RouteStore.push(route);
+
+      AppDispatcher.handleUIAction({
+        type: routeActionTypes.ROUTE_TOGGLE_REMOVE,
+        routeGuid
+      });
+
+      const actual = RouteStore.get(routeGuid);
+      const expected = Object.assign({}, route, {
+        removing: true
+      });
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
   describe('routeActionTypes.ROUTE_UPDATE', function () {
     it('should call cfApi.putRouteUpdate with params', function () {
       const routeGuid = 'fake-route-guid';

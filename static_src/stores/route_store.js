@@ -183,6 +183,17 @@ class RouteStore extends BaseStore {
         break;
       }
 
+      case routeActionTypes.ROUTE_TOGGLE_REMOVE: {
+        const route = this.get(action.routeGuid);
+        const newRoute = Object.assign({}, route, {
+          removing: !route.removing
+        });
+        this.merge('guid', newRoute, (changed) => {
+          if (changed) this.emitChange();
+        });
+        break;
+      }
+
       case routeActionTypes.ROUTE_UPDATE: {
         const { routeGuid, domainGuid, spaceGuid, route } = action;
         cfApi.putRouteUpdate(routeGuid, domainGuid, spaceGuid, route);

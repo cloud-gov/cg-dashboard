@@ -11,7 +11,8 @@ import createStyler from '../util/create_styler';
 import Action from './action.jsx';
 
 const CONFIRM_STYLES = [
-  'inline',
+  'nexto',
+  'over',
   'block'
 ];
 
@@ -34,29 +35,25 @@ export default class ConfirmationBox extends React.Component {
   }
 
   render() {
-    let styles;
-    if (this.props.style === 'block') {
-      styles = {
-        background: 'none',
-        border: 'none',
-        float: 'none',
-        padding: 0
-      };
-    }
+    const styleClass = `confirm-${this.props.style}`;
+
     return (
-      <div style={styles} className={ this.styler('actions-confirm') }>
-        { this.props.message }
-        <Action label="Confirm"
-            style="secondary"
-            clickHandler={ this._confirmHandler }>
-          <span>{ this.props.confirmationText }</span>
-        </Action>
-        <Action label="Cancel"
-            style="primary"
-            type="outline"
-            clickHandler={ this._cancelHandler }>
-          <span>Cancel</span>
-        </Action>
+      <div className={ this.styler('confirm', styleClass) }>
+        <span className={ this.styler('confirm-message') }>
+        { this.props.message }</span>
+        <div>
+          <Action label="Cancel"
+              style="cautious"
+              type="outline"
+              clickHandler={ this._cancelHandler }>
+            <span>Cancel</span>
+          </Action>
+          <Action label="Confirm"
+              style="warning"
+              clickHandler={ this._confirmHandler }>
+            <span>{ this.props.confirmationText }</span>
+          </Action>
+        </div>
       </div>
     );
   }

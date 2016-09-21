@@ -2,6 +2,7 @@
 import React from 'react';
 
 import Action from './action.jsx';
+import ConfirmationBox from './confirmation_box.jsx';
 import DomainStore from '../stores/domain_store.js';
 import PanelActions from './panel_actions.jsx';
 import RouteForm from './route_form.jsx';
@@ -31,14 +32,19 @@ export default class Route extends React.Component {
     this._bindHandler = this._bindHandler.bind(this);
     this._editHandler = this._editHandler.bind(this);
     this._updateHandler = this._updateHandler.bind(this);
+    this._toggleRemove = this._toggleRemove.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     this.props = nextProps;
   }
 
+  _toggleRemove(ev) {
+    ev.preventDefault();
+    routeActions.toggleRemove(this.props.route.guid);
+  }
+
   _deleteHandler(ev) {
-    // TODO confirmation
     ev.preventDefault();
     routeActions.deleteRoute(this.props.route.guid);
   }
@@ -55,7 +61,6 @@ export default class Route extends React.Component {
   }
 
   _unbindHandler(ev) {
-    // TODO confirmation
     ev.preventDefault();
     const route = this.props.route;
     routeActions.unassociateApp(route.guid, route.app_guid);
@@ -76,7 +81,7 @@ export default class Route extends React.Component {
   get deleteAction() {
     return (
       <Action key="delete" label="Delete route" type="link" style="warning"
-        clickHandler={this._deleteHandler}
+        clickHandler={this._toggleRemove}
       >
         Delete
       </Action>
@@ -97,7 +102,7 @@ export default class Route extends React.Component {
     return (
       <Action key="unbind" label={ (!!unbind) ? 'Unbind' : 'Bind' }
         style={ (!!unbind) ? 'cautious' : 'primary' } type="outline"
-        clickHandler={ (!!unbind) ? this._unbindHandler : this._bindHandler }
+        clickHandler={ (!!unbind) ? this._toggleRemove : this._bindHandler }
       >
         { (!!unbind) ? 'Unbind' : 'Bind' }
       </Action>
@@ -116,6 +121,11 @@ export default class Route extends React.Component {
     return actions;
   }
 
+  get confirmationMsg() {
+    return (this.props.route.app_guid) ? 'Unbind this route from this app?' :
+      'Delete this route from this space?';
+  }
+
   render() {
     let content = <div></div>;
 
@@ -130,6 +140,22 @@ export default class Route extends React.Component {
             cancelHandler={ this._editHandler }
             submitHandler={ this._updateHandler }
           />
+        );
+      }
+      else if (route.removing) {
+        const currentAction = route.app_guid ? 'unbind' : 'delete';
+        const confirmHandler = route.app_guid ? this._unbindHandler :
+          this._deleteHandler;
+        content = (
+          <div>
+            <ConfirmationBox
+              style="over"
+              message={ this.confirmationMsg }
+              confirmationText={ `Yes, ${currentAction}` }
+              confirmHandler={ confirmHandler }
+              cancelHandler={ this._toggleRemove }
+            />
+          </div>
         );
       } else {
         content = (
