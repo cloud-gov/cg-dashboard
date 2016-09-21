@@ -1,6 +1,7 @@
 # 18F Cloud Foundry Dashboard
 
 [![CircleCI](https://circleci.com/gh/18F/cg-dashboard.svg?style=svg)](https://circleci.com/gh/18F/cg-dashboard)
+[![Code Climate](https://codeclimate.com/github/18F/cg-dashboard/badges/gpa.svg)](https://codeclimate.com/github/18F/cg-dashboard)
 
 Environments: [Production](https://dashboard.cloud.gov)
 [Master](https://dashboard-master.apps.cloud.gov)
