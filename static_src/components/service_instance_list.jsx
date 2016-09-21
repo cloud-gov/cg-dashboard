@@ -83,6 +83,7 @@ export default class ServiceInstanceList extends React.Component {
   renderConfirmationBox(instanceGuid) {
     return (
       <ConfirmationBox
+        style="nexto"
         confirmHandler={ this._handleDelete.bind(this, instanceGuid) }
         cancelHandler={ this._handleDeleteCancel.bind(this, instanceGuid) }
       />
