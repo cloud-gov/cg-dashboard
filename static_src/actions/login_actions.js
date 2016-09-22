@@ -1,18 +1,17 @@
 
 /*
  * Actions for login information such as login status. Actions for getting and
- * modifying login information should go here. 
+ * modifying login information should go here.
  */
 
 import AppDispatcher from '../dispatcher.js';
-import cfApi from '../util/cf_api.js';
 import { loginActionTypes } from '../constants';
 
 export default {
   receivedStatus(status) {
     AppDispatcher.handleServerAction({
       type: loginActionTypes.RECEIVED_STATUS,
-      status: status
+      status
     });
   }
 };

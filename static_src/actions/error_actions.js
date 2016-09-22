@@ -3,9 +3,7 @@
  * Actions for global errors across the whole application.
  */
 
-import errorActionTypes from '../constants.js';
-import Dispatcher from '../dispatcher.js';
-
+/* eslint-disable no-alert, no-console */
 export default {
   errorDelete(err) {
     console.error('delete failure', err);
@@ -27,3 +25,4 @@ export default {
     // throw err;
   }
 };
+/* eslint-enable no-alert, no-console */

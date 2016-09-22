@@ -11,14 +11,14 @@ export default {
   fetchAllServices(orgGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICES_FETCH,
-      orgGuid: orgGuid
+      orgGuid
     });
   },
 
   receivedServices(services) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICES_RECEIVED,
-      services: services
+      services
     });
   },
 
@@ -32,28 +32,28 @@ export default {
   fetchAllPlans(serviceGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_PLANS_FETCH,
-      serviceGuid: serviceGuid
+      serviceGuid
     });
   },
 
   receivedPlans(servicePlans) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_PLANS_RECEIVED,
-      servicePlans: servicePlans
+      servicePlans
     });
   },
 
   fetchAllInstances(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
-      spaceGuid: spaceGuid
+      spaceGuid
     });
   },
 
   createInstanceForm(serviceGuid, planGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM,
-      serviceGuid: serviceGuid,
+      serviceGuid,
       servicePlanGuid: planGuid
     });
   },
@@ -67,16 +67,16 @@ export default {
   createInstance(name, spaceGuid, servicePlanGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE,
-      name: name,
-      spaceGuid: spaceGuid,
-      servicePlanGuid: servicePlanGuid
+      name,
+      spaceGuid,
+      servicePlanGuid
     });
   },
 
   createdInstance(serviceInstance) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCE_CREATED,
-      serviceInstance: serviceInstance
+      serviceInstance
     });
   },
 
@@ -90,14 +90,14 @@ export default {
   receivedInstance(serviceInstance) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCE_RECEIVED,
-      serviceInstance: serviceInstance
+      serviceInstance
     });
   },
 
   receivedInstances(serviceInstances) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
-      serviceInstances: serviceInstances
+      serviceInstances
     });
   },
 
@@ -125,7 +125,7 @@ export default {
   deletedInstance(serviceInstanceGuid) {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
-      serviceInstanceGuid: serviceInstanceGuid
+      serviceInstanceGuid
     });
   },
 

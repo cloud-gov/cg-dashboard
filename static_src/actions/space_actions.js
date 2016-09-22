@@ -5,7 +5,6 @@
  */
 
 import AppDispatcher from '../dispatcher.js';
-import cfApi from '../util/cf_api.js';
 import { spaceActionTypes } from '../constants.js';
 
 export default {
@@ -39,7 +38,7 @@ export default {
   changeCurrentSpace(spaceGuid) {
     AppDispatcher.handleUIAction({
       type: spaceActionTypes.SPACE_CHANGE_CURRENT,
-      spaceGuid: spaceGuid
+      spaceGuid
     });
   }
 };

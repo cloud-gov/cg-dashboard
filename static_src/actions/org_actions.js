@@ -5,7 +5,6 @@
  */
 
 import AppDispatcher from '../dispatcher.js';
-import cfApi from '../util/cf_api.js';
 import { orgActionTypes } from '../constants';
 
 export default {
@@ -13,14 +12,14 @@ export default {
   changeCurrentOrg(orgGuid) {
     AppDispatcher.handleViewAction({
       type: orgActionTypes.ORG_CHANGE_CURRENT,
-      orgGuid: orgGuid
+      orgGuid
     });
   },
 
   fetch(orgGuid) {
     AppDispatcher.handleViewAction({
       type: orgActionTypes.ORG_FETCH,
-      orgGuid: orgGuid
+      orgGuid
     });
   },
 
@@ -37,28 +36,28 @@ export default {
   receivedOrg(org) {
     AppDispatcher.handleServerAction({
       type: orgActionTypes.ORG_RECEIVED,
-      org: org
+      org
     });
   },
 
   receivedOrgs(orgs) {
     AppDispatcher.handleServerAction({
       type: orgActionTypes.ORGS_RECEIVED,
-      orgs: orgs
+      orgs
     });
   },
 
   receivedOrgsSummaries(orgs) {
     AppDispatcher.handleServerAction({
       type: orgActionTypes.ORGS_SUMMARIES_RECEIVED,
-      orgs: orgs
+      orgs
     });
   },
 
   toggleSpaceMenu(orgGuid) {
     AppDispatcher.handleUIAction({
       type: orgActionTypes.ORG_TOGGLE_SPACE_MENU,
-      orgGuid: orgGuid
+      orgGuid
     });
   }
 

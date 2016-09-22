@@ -869,9 +869,9 @@ describe('cfApi', function() {
     });
   });
 
-  describe('deleteOrgUserPermissions()', function(done) {
+  describe('deleteOrgUserPermissions()', function() {
     it('should call an http delete request on org user with permissions',
-        function() {
+        function(done) {
       var spy = sandbox.spy(http, 'delete'),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp',
@@ -1148,35 +1148,6 @@ describe('cfApi', function() {
   });
 
   describe('putRouteUpdate()', function() {
-    it('should PUT to the versioned /routes/:routeGuid with payload', function(done) {
-      const routeGuid = 'fake-route-guid';
-      const domainGuid = 'fake-dommain-guid';
-      const spaceGuid = 'fake-space-guid';
-      const host = 'fake-host';
-      const path = 'fake-path';
-      const route = {
-        host,
-        path
-      };
-      const expected = {
-        domain_guid: domainGuid,
-        space_guid: spaceGuid,
-        host,
-        path
-      };
-
-      const spy = sandbox.stub(http, 'put');
-      spy.returns(Promise.resolve());
-
-      cfApi.putRouteUpdate(routeGuid, domainGuid, spaceGuid, route).then(() => {
-        const args = spy.getCall(0).args;
-        expect(spy).toHaveBeenCalledOnce();
-        expect(args[0]).toMatch(`/routes/${routeGuid}`);
-        expect(args[1]).toMatch(expected);
-        done();
-      });
-    });
-
     it('should call routeActions.updatedRoute() with the routeGuid and route', function(done) {
       const routeGuid = 'fake-route-guid';
       const domainGuid = 'fake-dommain-guid';
