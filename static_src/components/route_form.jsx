@@ -24,7 +24,7 @@ const defaultProps = {
   route: {},
   routeLimit: -1,
   error: null,
-  submitHandler: () => {},
+  submitHandler: (ev) => {ev.preventDefault()},
   cancelHandler: (ev) => {ev.preventDefault()}
 };
 
@@ -115,7 +115,8 @@ export default class RouteForm extends React.Component {
     }
 
     return (
-      <form className={ this.styler('route-form','panel-form-replace') }>
+      <form className={ this.styler('route-form','panel-form-replace') }
+        onSubmit={ this._onSubmit }>
         { limit }
         <fieldset>
           <div className={ this.styler('route-fields') }>
