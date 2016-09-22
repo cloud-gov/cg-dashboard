@@ -103,7 +103,8 @@ export default class RoutesPanel extends React.Component {
     routeActions.hideCreateForm();
   }
 
-  _createRouteAndAssociate(route) {
+  _createRouteAndAssociate(route, ev) {
+    if (ev) ev.preventDefault();
     const { appGuid, spaceGuid } = this.state;
     const domainGuid = route.domain_guid;
     routeActions.createRouteAndAssociate(appGuid, domainGuid, spaceGuid, route);

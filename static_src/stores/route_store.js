@@ -36,6 +36,10 @@ class RouteStore extends BaseStore {
     });
   }
 
+  isRouteBoundToApp(route) {
+    return !!route.app_guid;
+  }
+
   _registerToActions(action) {
     switch (action.type) {
       case routeActionTypes.ROUTES_RECEIVED: {

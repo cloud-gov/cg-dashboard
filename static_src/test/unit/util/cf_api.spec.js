@@ -1165,7 +1165,7 @@ describe('cfApi', function() {
     });
   });
 
-  describe('deleteAppRouteAssociation()', function(done) {
+  describe('deleteAppRouteAssociation()', function() {
     it('should DELETE to the versioned apps, routes url',
         function(done) {
       const appGuid = 'fake-app-guid';

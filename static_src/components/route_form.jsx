@@ -47,6 +47,7 @@ export default class RouteForm extends React.Component {
   // TODO: If there are multiple route forms on the page, does it matter if
   // they all have elements with the same names? IDs are unique
   _onChange(event) {
+    event.preventDefault();
     const newValue = {};
     newValue[event.target.name] = event.target.value;
 

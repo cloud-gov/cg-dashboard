@@ -6,6 +6,7 @@ import ConfirmationBox from './confirmation_box.jsx';
 import DomainStore from '../stores/domain_store.js';
 import PanelActions from './panel_actions.jsx';
 import RouteForm from './route_form.jsx';
+import RouteStore from '../stores/route_store.js';
 import createStyler from '../util/create_styler';
 import formatRoute from '../util/format_route';
 import routeActions from '../actions/route_actions.js';
@@ -114,15 +115,19 @@ export default class Route extends React.Component {
     const route = this.props.route;
     if (!route) return actions;
 
-    if (!route.app_guid) actions.push(this.deleteAction);
-    if (route.app_guid) actions.push(this.editAction);
-    actions.push(this.bindAction(!!route.app_guid));
+    if (!RouteStore.isRouteBoundToApp(route)) {
+      actions.push(this.deleteAction);
+    } else {
+      actions.push(this.editAction);
+    }
+    actions.push(this.bindAction(RouteStore.isRouteBoundToApp(route)));
 
     return actions;
   }
 
   get confirmationMsg() {
-    return (this.props.route.app_guid) ? 'Unbind this route from this app?' :
+    return (RouteStore.isRouteBoundToApp(this.props.route)) ?
+      'Unbind this route from this app?' :
       'Delete this route from this space?';
   }
 
@@ -143,9 +148,10 @@ export default class Route extends React.Component {
         );
       }
       else if (route.removing) {
-        const currentAction = route.app_guid ? 'unbind' : 'delete';
-        const confirmHandler = route.app_guid ? this._unbindHandler :
-          this._deleteHandler;
+        const currentAction = RouteStore.isRouteBoundToApp(route) ? 'unbind' :
+          'delete';
+        const confirmHandler = RouteStore.isRouteBoundToApp(route) ?
+          this._unbindHandler : this._deleteHandler;
         content = (
           <div>
             <ConfirmationBox
