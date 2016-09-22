@@ -9,7 +9,6 @@
   "main": "null",
   "scripts": {
     "build": "npm run clean && node_modules/webpack/bin/webpack.js",
-    "codecov": "cat ./coverage/coverage-final.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "clean": "rm -rf ./static/assets/*",
     "lint": "eslint -c .eslintrc ./static_src",
     "test": "npm run lint && karma start --single-run",
