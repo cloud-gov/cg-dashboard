@@ -88,6 +88,61 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
+  describe('getServiceBindingForApp()', function() {
+    it('should return null if no service bindings', function() {
+      const instance = { serviceBindings: []};
+
+      const actual = ServiceInstanceStore.getServiceBindingForApp('', instance);
+
+      expect(actual).toBeFalsy();
+    });
+
+    it('should return binding object if matches app guid passed in', function() {
+      const appGuid = 'zcvn238vnma';
+      const binding = { guid: 'zcxv', app_guid: appGuid };
+      const instance = { serviceBindings: [binding] };
+
+      const actual = ServiceInstanceStore.getServiceBindingForApp(appGuid,
+        instance);
+
+      expect(actual).toEqual(binding);
+    });
+  });
+
+  describe('isInstanceBound()', function() {
+    it('should return false if no service bindings on instance passed in',
+      function() {
+      const instance = { serviceBindings: []};
+
+      const actual = ServiceInstanceStore.isInstanceBound(instance);
+
+      expect(actual).toBeFalsy();
+    });
+
+    it('should return false if none of bindings passed in found on instance',
+      function() {
+      const instance = { serviceBindings: [{ guid: 'adsf'}]};
+      const binding = { guid: '230984' };
+      const bindings = [binding];
+
+      const actual = ServiceInstanceStore.isInstanceBound(instance, bindings);
+
+      expect(actual).toBeFalsy();
+    });
+
+    it('should return true if bindings passed in found on instance', function() {
+      const bindingGuid = 'zxklvcj234czxb';
+      const instance = { serviceBindings: [{ guid: bindingGuid}]};
+      const binding = { guid: bindingGuid };
+      const bindings = [binding];
+
+      const actual = ServiceInstanceStore.isInstanceBound(instance, bindings);
+
+      expect(actual).toBeTruthy();
+
+    });
+  });
+
   describe('on service instances fetch', function() {
     it('should set fetching to true, fetched to false', function() {
       ServiceInstanceStore.fetching = false;

@@ -5,7 +5,6 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
-import PanelActions from './panel_actions.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
@@ -41,7 +40,11 @@ export default class ServiceInstance extends React.Component {
 
   unbindConfirmedHandler(ev) {
     ev.preventDefault();
-    serviceActions.unbindService(this.props.serviceInstance.serviceBinding);
+    // TODO single-binding
+    const appBinding = ServiceInstanceStore.getServiceBindingForApp(
+      this.props.currentAppGuid,
+      this.props.serviceInstance);
+    serviceActions.unbindService(appBinding);
   }
 
   unbindCancelHandler(ev) {

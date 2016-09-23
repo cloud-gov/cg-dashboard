@@ -37,28 +37,30 @@ function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const currentSpaceName = SpaceStore.currentSpaceName;
   const currentAppGuid = AppStore.currentAppGuid;
+
+  const appServiceBindings = ServiceBindingStore.getAllByApp(currentAppGuid);
+  const allServiceBindings = ServiceBindingStore.getAll();
+
   const serviceInstances = ServiceInstanceStore.getAllBySpaceGuid(currentSpaceGuid)
   .map((serviceInstance) => {
+    const serviceBindings = [];
     const servicePlan = ServicePlanStore.get(serviceInstance.service_plan_guid);
-    return Object.assign({}, serviceInstance, { servicePlan });
-  });
-  const serviceBindings = ServiceBindingStore.getAllByApp(currentAppGuid);
-  const allServiceBindings = ServiceBindingStore.getAll();
-  const boundServiceInstances = serviceInstances.map((serviceInstance) => {
-    const binding = serviceBindings.find((serviceBinding) =>
-      serviceInstance.guid === serviceBinding.service_instance_guid
+    const serviceBinding = allServiceBindings.find((binding) =>
+      serviceInstance.guid === binding.service_instance_guid
     );
-    if (!binding) return null;
-    return Object.assign({}, serviceInstance, { serviceBinding: binding });
-  }).filter((instance) => !!instance);
+    if (serviceBinding) serviceBindings.push(serviceBinding);
 
-  const unboundServiceInstances = serviceInstances.filter((serviceInstance) => {
-    const binding = allServiceBindings.find((serviceBinding) =>
-      serviceInstance.guid === serviceBinding.service_instance_guid
-    );
-    if (binding) return null;
-    return serviceInstance;
-  }).filter((instance) => !!instance);
+    return Object.assign({}, serviceInstance,
+      { servicePlan, serviceBindings });
+  });
+
+  const boundServiceInstances = serviceInstances.filter((serviceInstance) =>
+    ServiceInstanceStore.isInstanceBound(serviceInstance, appServiceBindings)
+  );
+
+  const unboundServiceInstances = serviceInstances.filter((serviceInstance) =>
+    !ServiceInstanceStore.isInstanceBound(serviceInstance, appServiceBindings)
+  );
 
   const loading = ServiceInstanceStore.fetching ||
     ServicePlanStore.fetching ||
