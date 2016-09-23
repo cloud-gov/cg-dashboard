@@ -336,6 +336,12 @@ export default {
       appGuid);
   },
 
+  fetchRoutesForSpace(spaceGuid) {
+    return this.fetchMany(`/spaces/${spaceGuid}/routes`,
+      routeActions.receivedRoutes,
+      spaceGuid);
+  },
+
   // http://apidocs.cloudfoundry.org/241/routes/creating_a_route.html
   createRoute(domainGuid, spaceGuid, host, path) {
     const payload = {
@@ -365,6 +371,15 @@ export default {
     const url = `${APIV}/routes/${routeGuid}/apps/${appGuid}`;
     return http.put(url).then(() => {
       routeActions.associatedApp(routeGuid, appGuid);
+    }).catch((err) => {
+      handleError(err, routeActions.error.bind(this, routeGuid));
+    });
+  },
+
+  deleteAppRouteAssociation(appGuid, routeGuid) {
+    const url = `${APIV}/apps/${appGuid}/routes/${routeGuid}`;
+    return http.delete(url).then(() => {
+      routeActions.unassociatedApp(routeGuid, appGuid);
     }).catch((err) => {
       handleError(err, routeActions.error.bind(this, routeGuid));
     });

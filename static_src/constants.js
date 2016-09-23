@@ -162,8 +162,14 @@ const userActionTypes = keymirror({
 });
 
 const routeActionTypes = keymirror({
-  // Action when a route has been associated with an pp
+  // Action when a route needs to be assocated with an app.
+  ROUTE_APP_ASSOCIATE: null,
+  // Action when a route has been associated with an app
   ROUTE_APP_ASSOCIATED: null,
+  // Action when a route is being unassociated from an app.
+  ROUTE_APP_UNASSOCIATE: null,
+  // Action when a route was unassociated from an app on the server.
+  ROUTE_APP_UNASSOCIATED: null,
   // Action for creating routes
   ROUTE_CREATE: null,
   // Action when creating a new route fails, the route doesn't exist yet
@@ -186,7 +192,11 @@ const routeActionTypes = keymirror({
   ROUTE_UPDATED: null,
   ROUTES_FOR_APP_FETCH: null,
   ROUTES_FOR_APP_RECEIVED: null,
+  ROUTES_FOR_SPACE_FETCH: null,
+  ROUTES_RECEIVED: null,
   ROUTE_TOGGLE_EDIT: null,
+  // Action when route is being deleted or unbound for the app.
+  ROUTE_TOGGLE_REMOVE: null,
   // Action when any action on an existing route fails
   ROUTE_ERROR: null
 });

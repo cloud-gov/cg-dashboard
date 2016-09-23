@@ -31,6 +31,21 @@ describe('RouteStore', function() {
   });
 
   describe('routeActionTypes.ROUTE_APP_ASSOCIATED', function () {
+    it('should call put ap route assocaation with app, route guid', function() {
+      const appGuid = 'zxvnalsf25gh9';
+      const routeGuid = 'xvxvcmnsdjfkh3jdf';
+      const spy = sandbox.spy(cfApi, 'putAppRouteAssociation');
+
+      routeActions.associateApp(routeGuid, appGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      const args = spy.getCall(0).args;
+      expect(args[0]).toEqual(appGuid);
+      expect(args[1]).toEqual(routeGuid);
+    });
+  });
+
+  describe('routeActionTypes.ROUTE_APP_ASSOCIATED', function () {
     it('should add app_guid to the route object and set editing, error to false',
         function () {
       const appGuid = 'fake-app-guid';
@@ -65,6 +80,48 @@ describe('RouteStore', function() {
 
       expect(RouteStore.showCreateRouteForm).toEqual(false);
       expect(RouteStore.error).toEqual(null);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on route app unnassociate', function() {
+    it('should call the cf api unassociate route app with app, route guid',
+      function() {
+      const spy = sandbox.stub(cfApi, 'deleteAppRouteAssociation');
+      spy.returns(Promise.resolve({data: {}}));
+      const appGuid = 'adfa3456vcsdf';
+      const routeGuid = 'zxcv8zvcx234';
+
+      routeActions.unassociateApp(routeGuid, appGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toEqual(appGuid);
+      expect(args[1]).toEqual(routeGuid);
+    });
+  });
+
+  describe('on route app unnassociated', function() {
+    const routeGuid = 'zxcvsdlfjka1231';
+    const appGuid = 'zcxv98xcv234';
+
+    it('should remove the app guid route if found', function() {
+      RouteStore._data = Immutable.fromJS([{ guid: routeGuid, appGuid: appGuid }]);
+
+      routeActions.unassociatedApp(routeGuid, appGuid);
+
+      const route = RouteStore.get(routeGuid);
+
+      expect(route.app_guid).toBeFalsy();
+    });
+
+    it('should emit a change', function() {
+      RouteStore._data = Immutable.fromJS([{ guid: routeGuid, appGuid: appGuid }]);
+
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      routeActions.unassociatedApp(routeGuid, appGuid);
+
       expect(spy).toHaveBeenCalledOnce();
     });
   });
@@ -261,7 +318,38 @@ describe('RouteStore', function() {
     });
   });
 
-  describe('routeActionTypes.ROUTES_FOR_APP_RECEIVED', function() {
+  describe('on route for space fetch', function() {
+    it('should fetch routes for space with space guid from api', function() {
+      const spy = sandbox.spy(cfApi, 'fetchRoutesForSpace');
+      const expectedGuid = 'adfasdzcvzxcvb23r';
+
+      routeActions.fetchRoutesForSpace(expectedGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+    });
+  });
+
+  describe('on routes received', function() {
+    it('should emit a change event if new routes', function() {
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+
+      routeActions.receivedRoutes([{ metadata: { guid: 'zxcv' }, entity: {}}]);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should merge in the routes with mergeMany', function() {
+      const spy = sandbox.spy(RouteStore, 'mergeMany');
+
+      routeActions.receivedRoutes([{ metadata: { guid: 'zxcv' }, entity: {}}]);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on routes received for app', function() {
     it('should emit a change event', function() {
       const appGuid = '2893hazxcmv';
       const spy = sandbox.spy(RouteStore, 'emitChange');
@@ -353,6 +441,27 @@ describe('RouteStore', function() {
       const actual = RouteStore.get(routeGuid);
       const expected = Object.assign({}, route, {
         editing: true
+      });
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('on route toggle remove', function() {
+    it('should toggle the "editing" value of the route', function () {
+      const routeGuid = 'route-guid';
+      const route = { guid: routeGuid };
+
+      RouteStore.push(route);
+
+      AppDispatcher.handleUIAction({
+        type: routeActionTypes.ROUTE_TOGGLE_REMOVE,
+        routeGuid
+      });
+
+      const actual = RouteStore.get(routeGuid);
+      const expected = Object.assign({}, route, {
+        removing: true
       });
 
       expect(actual).toEqual(expected);

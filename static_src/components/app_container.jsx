@@ -7,6 +7,7 @@ import AppSettingsPanel from './app_settings_panel.jsx';
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
+import RoutesPanel from './routes_panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
 
@@ -76,6 +77,7 @@ export default class AppContainer extends React.Component {
           <ActivityLog initialAppGuid={ this.state.app.guid } title="Recent activity" />
           <h2>{ this.fullTitle }</h2>
           <AppSettingsPanel app={ this.state.app }/>
+          <RoutesPanel />
           <ServiceInstancePanel />
         </div>
       );

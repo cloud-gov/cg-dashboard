@@ -1005,6 +1005,24 @@ describe('cfApi', function() {
     });
   });
 
+  describe('fetchRoutesForSpace()', function() {
+    it('calls fetch routes with space guid and received routes',
+        function() {
+      const expected = '0cxcv23hhvzxcv2983';
+      const spy = sandbox.stub(cfApi, 'fetchMany');
+
+      cfApi.fetchRoutesForSpace(expected);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let actual = spy.getCall(0).args[0];
+      expect(actual).toMatch(new RegExp('spaces'));
+      expect(actual).toMatch(new RegExp(expected));
+      expect(actual).toMatch(new RegExp('routes'));
+      actual = spy.getCall(0).args[1];
+      expect(actual).toEqual(routeActions.receivedRoutes);
+    });
+  });
+
   describe('fetchPrivateDomain()', function() {
     it('should fetch domain with the domain guid', function() {
       var expected = 'xcvxyyb1',
@@ -1137,6 +1155,61 @@ describe('cfApi', function() {
       const routeGuid = 'sdf2dsfzxcv4';
 
       cfApi.putAppRouteAssociation('adfads', routeGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(routeGuid);
+        arg = spy.getCall(0).args[1];
+        expect(arg).toEqual(errorFetchRes.data);
+        done();
+      });
+    });
+  });
+
+  describe('deleteAppRouteAssociation()', function() {
+    it('should DELETE to the versioned apps, routes url',
+        function(done) {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+
+      const spy = sandbox.stub(http, 'delete');
+      const testPromise = createPromise({status: true});
+      spy.returns(testPromise);
+
+      cfApi.deleteAppRouteAssociation(appGuid, routeGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch(`/apps/${appGuid}/routes/${routeGuid}`);
+        done();
+      });
+    });
+
+    it('should call routeActions.unassociatedApp() with the routeGuid and appGuid',
+        function(done) {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+
+      const stub = sandbox.stub(http, 'delete');
+      const spy = sandbox.spy(routeActions, 'unassociatedApp');
+      const testPromise = createPromise({status: true});
+      stub.returns(testPromise);
+
+      cfApi.deleteAppRouteAssociation(appGuid, routeGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toEqual(routeGuid);
+        expect(args[1]).toEqual(appGuid);
+        done();
+      });
+    });
+
+    it('should call route actions error with guid on request failure',
+        function(done) {
+      const spy = sandbox.stub(routeActions, 'error');
+      const stub = sandbox.stub(http, 'delete');
+      stub.returns(createPromise(true, errorFetchRes));
+      const routeGuid = 'sdf2dsfzxcv4';
+
+      cfApi.deleteAppRouteAssociation('adfads', routeGuid).then(() => {
         expect(spy).toHaveBeenCalledOnce();
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);

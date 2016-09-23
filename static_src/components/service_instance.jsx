@@ -102,9 +102,10 @@ export default class ServiceInstance extends React.Component {
 
   get confirmation() {
     if (this.props.serviceInstance.changing) {
+      const style = { color: '#595959' };
       const message = (
         <div>
-          <h3>Are you sure you want to
+          <h3 style={ style }>Are you sure you want to
             unbind { this.props.serviceInstance.name }?</h3>
           <p>Unbinding a service may break your application.</p>
         </div>

@@ -14,17 +14,18 @@ import routeFormCss from '../css/route_form.css';
 const propTypes = {
   domains: React.PropTypes.array.isRequired,
   route: React.PropTypes.object,
+  routeLimit: React.PropTypes.number,
   error: React.PropTypes.object,
   submitHandler: React.PropTypes.func,
-  cancelHandler: React.PropTypes.func,
-  deleteHandler: React.PropTypes.func
+  cancelHandler: React.PropTypes.func
 };
 
 const defaultProps = {
   route: {},
+  routeLimit: -1,
   error: null,
-  submitHandler: () => {},
-  cancelHandler: () => {}
+  submitHandler: (ev) => {ev.preventDefault()},
+  cancelHandler: (ev) => {ev.preventDefault()}
 };
 
 export default class RouteForm extends React.Component {
@@ -46,6 +47,7 @@ export default class RouteForm extends React.Component {
   // TODO: If there are multiple route forms on the page, does it matter if
   // they all have elements with the same names? IDs are unique
   _onChange(event) {
+    event.preventDefault();
     const newValue = {};
     newValue[event.target.name] = event.target.value;
 
@@ -93,31 +95,30 @@ export default class RouteForm extends React.Component {
     return changed;
   }
 
-  get deleteAction() {
-    if (!this.props.deleteHandler) return null;
-    return (
-      <Action clickHandler={ this.props.deleteHandler } label="Delete route"
-        type="link" style="cautious"
-      >
-        Delete route
-      </Action>
-    );
-  }
-
-  // If there is a delete handler, this form is for editing a route
-  // Otherwise, it is for a new route
-  // The submit action label should be adjusted accordingly
   get submitActionText() {
-    if (this.props.deleteHandler) return 'Apply';
-    return 'Add route';
+    if (this.props.route.guid) return 'OK';
+    return 'Create';
   }
 
   render() {
     const route = this.props.route;
     const domains = this.props.domains;
+    const routeLimit = this.props.routeLimit;
+    let limit;
+
+    if (routeLimit > -1) {
+      // TODO move form notification into own component.
+      limit = (
+        <span className={ this.styler('form-notification', 'form-notification-info') }>
+          <strong>{routeLimit}</strong> routes remain in your space quota
+        </span>
+      );
+    }
 
     return (
-      <form className={ this.styler('route-form','panel-form-replace') }>
+      <form className={ this.styler('route-form','panel-form-replace') }
+        onSubmit={ this._onSubmit }>
+        { limit }
         <fieldset>
           <div className={ this.styler('route-fields') }>
             <div className={ this.styler('route-field-host') }>
@@ -172,16 +173,13 @@ export default class RouteForm extends React.Component {
         </div>
         <div className={ this.styler('route-form-actions') }>
           <PanelActions>
-            { this.deleteAction }
-          </PanelActions>
-          <PanelActions>
             <Action clickHandler={ this.props.cancelHandler } label="Cancel"
-              style="outline"
+              style="cautious" type="outline"
             >
               Cancel
             </Action>
             <Action clickHandler={ this._onSubmit }
-              label={ this.submitActionText } style="primary"
+              label={ this.submitActionText } style="finish"
               disabled={ !this.hasChanged }
             >
               { this.submitActionText }

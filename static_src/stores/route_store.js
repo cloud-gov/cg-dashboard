@@ -8,7 +8,7 @@ import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import { appActionTypes, routeActionTypes } from '../constants.js';
+import { routeActionTypes } from '../constants.js';
 
 class RouteStore extends BaseStore {
   constructor() {
@@ -19,26 +19,37 @@ class RouteStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
+  getAllForSpace(spaceGuid) {
+    return this.getAll().filter((route) => route.space_guid === spaceGuid);
+  }
+
+  mergeRoutes(routes) {
+    this.mergeMany('guid', routes, (changed) => {
+      if (changed) this.emitChange();
+      routes.forEach((route) => {
+        if (/shared_domains/.test(route.domain_url)) {
+          cfApi.fetchSharedDomain(route.domain_guid);
+        } else {
+          cfApi.fetchPrivateDomain(route.domain_guid);
+        }
+      });
+    });
+  }
+
+  isRouteBoundToApp(route) {
+    return !!route.app_guid;
+  }
+
   _registerToActions(action) {
     switch (action.type) {
-      case appActionTypes.APP_RECEIVED: {
-        if (!action.app.routes) break;
-        const routes = action.app.routes.map((route) => {
-          const r = {
-            app_guid: action.app.guid,
-            guid: route.guid,
-            host: route.host,
-            path: route.path,
-            domain_guid: route.domain.guid
-          };
+      case routeActionTypes.ROUTES_RECEIVED: {
+        const routes = this.formatSplitResponse(action.routes);
+        this.mergeRoutes(routes);
+        break;
+      }
 
-          return r;
-        });
-
-        this.mergeMany('domain_guid', routes, (changed) => {
-          if (changed) this.emitChange();
-        });
-
+      case routeActionTypes.ROUTE_APP_ASSOCIATE: {
+        cfApi.putAppRouteAssociation(action.appGuid, action.routeGuid);
         break;
       }
 
@@ -54,6 +65,21 @@ class RouteStore extends BaseStore {
           this.error = null;
           this.emitChange();
         });
+        break;
+      }
+
+      case routeActionTypes.ROUTE_APP_UNASSOCIATE: {
+        cfApi.deleteAppRouteAssociation(action.appGuid, action.routeGuid);
+        break;
+      }
+
+      case routeActionTypes.ROUTE_APP_UNASSOCIATED: {
+        const route = this.get(action.routeGuid);
+        if (route) {
+          const newRoute = Object.assign({}, route, { app_guid: null,
+            removing: false });
+          this.merge('guid', newRoute, () => this.emitChange());
+        }
         break;
       }
 
@@ -118,20 +144,15 @@ class RouteStore extends BaseStore {
         cfApi.fetchRoutesForApp(action.appGuid);
         break;
 
+      case routeActionTypes.ROUTES_FOR_SPACE_FETCH:
+        cfApi.fetchRoutesForSpace(action.spaceGuid);
+        break;
+
       case routeActionTypes.ROUTES_FOR_APP_RECEIVED: {
         const routes = this.formatSplitResponse(action.routes).map((route) =>
           Object.assign({}, route, { app_guid: action.appGuid })
         );
-        this.mergeMany('guid', routes, (changed) => {
-          if (changed) this.emitChange();
-          routes.forEach((route) => {
-            if (/shared_domains/.test(route.domain_url)) {
-              cfApi.fetchSharedDomain(route.domain_guid);
-            } else {
-              cfApi.fetchPrivateDomain(route.domain_guid);
-            }
-          });
-        });
+        this.mergeRoutes(routes);
         break;
       }
 
@@ -139,6 +160,17 @@ class RouteStore extends BaseStore {
         const route = this.get(action.routeGuid);
         const newRoute = Object.assign({}, route, {
           editing: !route.editing
+        });
+        this.merge('guid', newRoute, (changed) => {
+          if (changed) this.emitChange();
+        });
+        break;
+      }
+
+      case routeActionTypes.ROUTE_TOGGLE_REMOVE: {
+        const route = this.get(action.routeGuid);
+        const newRoute = Object.assign({}, route, {
+          removing: !route.removing
         });
         this.merge('guid', newRoute, (changed) => {
           if (changed) this.emitChange();

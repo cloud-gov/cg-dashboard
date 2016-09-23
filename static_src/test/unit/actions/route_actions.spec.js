@@ -18,7 +18,7 @@ describe('routeActions', function() {
     sandbox.restore();
   });
 
-  describe('associatedApp()', function() {
+  describe('associateApp()', function() {
     it('should dispatch ROUTE_APP_ASSOCIATED view event & the app/route guids',
     function () {
       const appGuid = 'fake-app-guid';
@@ -29,9 +29,60 @@ describe('routeActions', function() {
       };
       const spy = setupViewSpy(sandbox);
 
+      routeActions.associateApp(routeGuid, appGuid);
+
+      assertAction(spy, routeActionTypes.ROUTE_APP_ASSOCIATE, expected);
+    })
+  });
+
+  describe('associatedApp()', function() {
+    it('should dispatch ROUTE_APP_ASSOCIATED view event & the app/route guids',
+    function () {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+      const expected = {
+        appGuid,
+        routeGuid
+      };
+      const spy = setupServerSpy(sandbox);
+
       routeActions.associatedApp(routeGuid, appGuid);
 
       assertAction(spy, routeActionTypes.ROUTE_APP_ASSOCIATED, expected);
+    })
+  });
+
+  describe('unassociateApp()', function() {
+    it('should dispatch ROUTE_APP_UNASSOCIATE view event & the app/route guids',
+    function () {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+      const expected = {
+        appGuid,
+        routeGuid
+      };
+      const spy = setupViewSpy(sandbox);
+
+      routeActions.unassociateApp(routeGuid, appGuid);
+
+      assertAction(spy, routeActionTypes.ROUTE_APP_UNASSOCIATE, expected);
+    })
+  });
+
+  describe('unassociatedApp()', function() {
+    it('should dispatch ROUTE_APP_ASSOCIATED view event & the app/route guids',
+    function () {
+      const appGuid = 'fake-app-guid';
+      const routeGuid = 'fake-route-guid';
+      const expected = {
+        appGuid,
+        routeGuid
+      };
+      const spy = setupServerSpy(sandbox);
+
+      routeActions.unassociatedApp(routeGuid, appGuid);
+
+      assertAction(spy, routeActionTypes.ROUTE_APP_UNASSOCIATED, expected);
     })
   });
 
@@ -138,6 +189,22 @@ describe('routeActions', function() {
     });
   });
 
+  describe('fetchRoutesForSpace()', function() {
+    it('should dispatch ROUTES_FOR_SPACE_FETCH view event with params', function() {
+      const expectedSpaceGuid = 'asdflkjzzxcv';
+      const expectedParams = {
+        spaceGuid: expectedSpaceGuid
+      };
+
+      const spy = setupViewSpy(sandbox)
+
+      routeActions.fetchRoutesForSpace(expectedSpaceGuid);
+
+      assertAction(spy, routeActionTypes.ROUTES_FOR_SPACE_FETCH,
+                   expectedParams)
+    });
+  });
+
   describe('hideCreateForm()', function() {
     it('should dispatch ROUTE_CREATE_FORM_HIDE UI event', function() {
       const spy = setupUISpy(sandbox);
@@ -170,6 +237,28 @@ describe('routeActions', function() {
     });
   });
 
+  describe('receivedRoutes()', function() {
+    it('should dispatch a server event of type routes for space resv with data',
+        function() {
+      const spaceGuid = 'adflkjzxcbvzxqwr12';
+      const expected = {
+        resources: [
+          { guid: 'asdfa', host: 'somethingxz' }
+        ]
+      }
+      const expectedParams = {
+        routes: expected
+      };
+
+      let spy = setupServerSpy(sandbox);
+
+      routeActions.receivedRoutes(expected);
+
+      assertAction(spy, routeActionTypes.ROUTES_RECEIVED,
+                   expectedParams)
+    });
+  });
+
   describe('showCreateForm()', function() {
     it('should dispatch ROUTE_CREATE_FORM_HIDE UI event', function() {
       const spy = setupUISpy(sandbox);
@@ -191,6 +280,21 @@ describe('routeActions', function() {
       routeActions.toggleEdit(expectedRouteGuid);
 
       assertAction(spy, routeActionTypes.ROUTE_TOGGLE_EDIT, expectedParams);
+    });
+  });
+
+  describe('toggleRemove()', function () {
+    it('should dispatch a UI action with a route guid', function () {
+      const expectedRouteGuid = 'route-guid';
+      const expectedParams = {
+        routeGuid: expectedRouteGuid
+      };
+
+      let spy = setupUISpy(sandbox)
+
+      routeActions.toggleRemove(expectedRouteGuid);
+
+      assertAction(spy, routeActionTypes.ROUTE_TOGGLE_REMOVE, expectedParams);
     });
   });
 

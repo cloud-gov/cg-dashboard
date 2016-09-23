@@ -8,9 +8,33 @@ import AppDispatcher from '../dispatcher.js';
 import { routeActionTypes } from '../constants';
 
 export default {
-  associatedApp(routeGuid, appGuid) {
+  associateApp(routeGuid, appGuid) {
     AppDispatcher.handleViewAction({
+      type: routeActionTypes.ROUTE_APP_ASSOCIATE,
+      appGuid,
+      routeGuid
+    });
+  },
+
+  associatedApp(routeGuid, appGuid) {
+    AppDispatcher.handleServerAction({
       type: routeActionTypes.ROUTE_APP_ASSOCIATED,
+      appGuid,
+      routeGuid
+    });
+  },
+
+  unassociateApp(routeGuid, appGuid) {
+    AppDispatcher.handleViewAction({
+      type: routeActionTypes.ROUTE_APP_UNASSOCIATE,
+      appGuid,
+      routeGuid
+    });
+  },
+
+  unassociatedApp(routeGuid, appGuid) {
+    AppDispatcher.handleServerAction({
+      type: routeActionTypes.ROUTE_APP_UNASSOCIATED,
       appGuid,
       routeGuid
     });
@@ -72,9 +96,23 @@ export default {
     });
   },
 
+  fetchRoutesForSpace(spaceGuid) {
+    AppDispatcher.handleViewAction({
+      type: routeActionTypes.ROUTES_FOR_SPACE_FETCH,
+      spaceGuid
+    });
+  },
+
   hideCreateForm() {
     AppDispatcher.handleUIAction({
       type: routeActionTypes.ROUTE_CREATE_FORM_HIDE
+    });
+  },
+
+  receivedRoutes(routes) {
+    AppDispatcher.handleServerAction({
+      type: routeActionTypes.ROUTES_RECEIVED,
+      routes
     });
   },
 
@@ -95,6 +133,13 @@ export default {
   toggleEdit(routeGuid) {
     AppDispatcher.handleUIAction({
       type: routeActionTypes.ROUTE_TOGGLE_EDIT,
+      routeGuid
+    });
+  },
+
+  toggleRemove(routeGuid) {
+    AppDispatcher.handleUIAction({
+      type: routeActionTypes.ROUTE_TOGGLE_REMOVE,
       routeGuid
     });
   },
