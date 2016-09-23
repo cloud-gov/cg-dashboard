@@ -40,7 +40,6 @@ export default class ServiceInstance extends React.Component {
 
   unbindConfirmedHandler(ev) {
     ev.preventDefault();
-    // TODO single-binding
     const appBinding = ServiceInstanceStore.getServiceBindingForApp(
       this.props.currentAppGuid,
       this.props.serviceInstance);
