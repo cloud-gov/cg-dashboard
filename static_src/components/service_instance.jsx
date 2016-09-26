@@ -10,6 +10,8 @@ import ServicePlanStore from '../stores/service_plan_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
 
+import { OPERATION_FAILED } from '../stores/service_instance_store.js';
+
 import createStyler from '../util/create_styler';
 
 const propTypes = {
@@ -64,10 +66,23 @@ export default class ServiceInstance extends React.Component {
   }
 
   get instanceState() {
-    if (!this.props.bound) return ServiceInstanceStore.OPERATION_STATES.inactive;
-    if (!this.props.serviceInstance) return '';
-    return ServiceInstanceStore.getInstanceReadableState(
+    let content;
+    if (!this.props.serviceInstance) return content;
+
+    const instanceState = ServiceInstanceStore.getInstanceState(
       this.props.serviceInstance);
+
+    if (instanceState === OPERATION_FAILED) {
+      content = (
+        <span style={{ marginLeft: '0.5rem', display: 'inline' }}
+          className={ this.styler('error_message') }>
+          { ServiceInstanceStore.getInstanceReadableState(
+            this.props.serviceInstance) }
+        </span>
+      );
+    }
+
+    return content;
   }
 
   get cost() {
@@ -135,13 +150,16 @@ export default class ServiceInstance extends React.Component {
 
     if (serviceInstance) {
       const confirmation = this.confirmation;
+      const statusClass = (ServiceInstanceStore.getInstanceState(
+        this.props.serviceInstance) === OPERATION_FAILED) ? 'panel-column-error' : null;
 
       content = (
         <div style={{ flexWrap: 'wrap' }}>
-          <span className={ this.styler('panel-column') }>
+          <span className={ this.styler('panel-column', statusClass) }>
             { serviceInstance.servicePlan &&
               <strong>{ serviceInstance.servicePlan.name }</strong>
             }
+            { this.instanceState }
             <br />
             <span>
               { serviceInstance.name }

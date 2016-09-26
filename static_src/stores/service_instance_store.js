@@ -12,10 +12,10 @@ import { serviceActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 import ServicePlanStore from './service_plan_store.js';
 
-const OPERATION_FAILED = 'failed';
-const OPERATION_DELETING = 'deleting';
+export const OPERATION_FAILED = 'failed';
+export const OPERATION_DELETING = 'deleting';
 const OPERATION_PROCESSING = 'processing';
-const OPERATION_RUNNING = 'running';
+export const OPERATION_RUNNING = 'running';
 const OPERATION_INACTIVE = 'inactive';
 
 const OPERATION_STATES = {};
