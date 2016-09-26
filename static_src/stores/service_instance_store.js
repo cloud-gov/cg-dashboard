@@ -71,6 +71,25 @@ class ServiceInstanceStore extends BaseStore {
     return OPERATION_STATES[state];
   }
 
+  getServiceBindingForApp(appGuid, serviceInstance) {
+    if (!serviceInstance.serviceBindings.length) return null;
+    return serviceInstance.serviceBindings.find((serviceBinding) =>
+      serviceBinding.app_guid === appGuid
+    );
+  }
+
+  isInstanceBound(serviceInstance, serviceBindings) {
+    if (!serviceInstance.serviceBindings.length) return false;
+    let isBound = false;
+    serviceInstance.serviceBindings.forEach((instanceBinding) => {
+      isBound = serviceBindings.find((serviceBinding) =>
+        instanceBinding.guid === serviceBinding.guid
+      );
+    });
+
+    return isBound;
+  }
+
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_INSTANCES_FETCH: {
