@@ -148,7 +148,7 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 Ensure you complete the [onboarding complete tasks](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md) for the whole cloud.gov team, especially the [required items](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md#required-items-for-all-team-members).
 
 - [ ] Join the `#cloud-gov-liberator` channel on Slack
-- [ ] ~Ping @standup-bot for instructions on front end channel standup~ (currently disabled)
+- [ ] Ping @standup-bot for instructions on front end channel standup
 - [ ] Install [Zenhub](https://www.zenhub.com/) to use the kanban boards.
 - [ ] Review the main [front end board](https://github.com/18F/cg-dashboard/pulls#boards?repos=55727091,39210774,49169967,40567233&labels=Liberator&showPRs=false) (ensure to filter by the "Liberator" label)
 - [ ] Review the cloud.gov [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md) to understand how the agile boards and workflow works.
@@ -162,13 +162,13 @@ Ensure you complete the [onboarding complete tasks](https://github.com/18F/cg-pr
 - [ ] Review [dashboard contributing guide](https://github.com/18F/cg-dashboard/CONTRIBUTING.md) and [cloudgov-style standards](https://github.com/18F/cg-style/blob/master/documentation/frontend_standards.md)
 
 #### For review
-- Review the [design resource request document](https://docs.google.com/document/d/1s96VP6PB7fbc8g_GwgAZ1hCPmew-J35ZOJx772c1AZ4/edit) if you haven’t already to get a sense of your role on the project
-- Review the [design principals](https://docs.google.com/spreadsheets/d/14Y3RKaLUt6RPX5w13iz7oaSCpojEQ-Wqjnd8Ie_VkCc/edit#gid=259774738) to get a sense of how the cloud.gov team feels about the product
-- Review the [competitive analysis](https://docs.google.com/spreadsheets/u/1/d/194tGz75NFwFyH8jT7zY_n-O0I7N4yAGYtIG4hw9qPcQ/edit?usp=drive_web) to get a sense of our "competitors" and their dashboard.
-- Review the [cloudgov-style styleguide](https://pages.18f.gov/cg-style/) to get a sense of the global cloud.gov visual style.
-- Review the [US Web Design Standards](https://standards.usa.gov/) as cloudgov-style was built from it.
-- Review the dashboard, current [prod](https://dashboard.cloud.gov/#/), [master](https://dashboard-master.apps.cloud.gov/#/) and [staging](https://dashboard-staging.apps.cloud.gov/#/)
-- Review the cloud foundry [community UI](http://ui.apps.cloud.gov/), a UI that members of the cloud foundry community created and is being used as a basis for our own dashboard design.
+- [ ] Review the [design resource request document](https://docs.google.com/document/d/1s96VP6PB7fbc8g_GwgAZ1hCPmew-J35ZOJx772c1AZ4/edit) if you haven’t already to get a sense of your role on the project
+- [ ] Review the [design principals](https://docs.google.com/spreadsheets/d/14Y3RKaLUt6RPX5w13iz7oaSCpojEQ-Wqjnd8Ie_VkCc/edit#gid=259774738) to get a sense of how the cloud.gov team feels about the product
+- [ ] Review the [competitive analysis](https://docs.google.com/spreadsheets/u/1/d/194tGz75NFwFyH8jT7zY_n-O0I7N4yAGYtIG4hw9qPcQ/edit?usp=drive_web) to get a sense of our "competitors" and their dashboard.
+- [ ] Review the [cloudgov-style styleguide](https://pages.18f.gov/cg-style/) to get a sense of the global cloud.gov visual style.
+- [ ] Review the [US Web Design Standards](https://standards.usa.gov/) as cloudgov-style was built from it.
+- [ ] Review the dashboard, current [prod](https://dashboard.cloud.gov/#/), [master](https://dashboard-master.apps.cloud.gov/#/) and [staging](https://dashboard-staging.apps.cloud.gov/#/)
+- [ ] Review the cloud foundry [community UI](http://ui.apps.cloud.gov/), a UI that members of the cloud foundry community created and is being used as a basis for our own dashboard design.
 
 ## Public domain
 
