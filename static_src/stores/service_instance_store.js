@@ -156,7 +156,7 @@ class ServiceInstanceStore extends BaseStore {
         break;
       }
 
-      case serviceActionTypes.SERVICE_INSTANCE_ERROR: {
+      case serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR: {
         this._createError = action.error;
         this.emitChange();
         break;

@@ -87,7 +87,7 @@ const serviceActionTypes = keymirror({
   SERVICE_INSTANCE_CREATE_FORM_CANCEL: null,
   // Action when an error happens attempting to create a service instance on
   // server.
-  SERVICE_INSTANCE_ERROR: null,
+  SERVICE_INSTANCE_CREATE_ERROR: null,
   // Action to create a service instance.
   SERVICE_INSTANCE_CREATE: null,
   // Action when a service instance was created on the server.
@@ -107,7 +107,9 @@ const serviceActionTypes = keymirror({
   // Action when a service instance was bound to an app.
   SERVICE_BOUND: null,
   // Aciton when a service instance was unbound from an app.
-  SERVICE_UNBOUND: null
+  SERVICE_UNBOUND: null,
+  // Action when any error happens with a specific instance.
+  SERVICE_INSTANCE_ERROR: null
 });
 
 const appActionTypes = keymirror({
