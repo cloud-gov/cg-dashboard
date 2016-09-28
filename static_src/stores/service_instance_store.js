@@ -217,7 +217,8 @@ class ServiceInstanceStore extends BaseStore {
         const instance = this.get(binding.service_instance_guid);
         if (!instance) break; // TODO throw error
         const updatedInstance = Object.assign({}, instance, {
-          changing: false
+          changing: false,
+          error: false
         });
         this.merge('guid', updatedInstance, () => this.emitChange());
         break;
@@ -240,6 +241,16 @@ class ServiceInstanceStore extends BaseStore {
           changing: false
         });
         this.merge('guid', updatedInstance, () => this.emitChange());
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_INSTANCE_ERROR: {
+        const instance = this.get(action.serviceInstanceGuid);
+        if (!instance) break;
+        const newInstance = Object.assign({}, instance, {error: action.error});
+        this.merge('guid', newInstance, (changed) => {
+          if (changed) this.emitChange();
+        });
         break;
       }
 

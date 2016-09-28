@@ -519,7 +519,7 @@ describe('ServiceInstanceStore', function() {
       guid: testGuid
     };
 
-    it('should set change check on instance to true', function() {
+    it('should set change check, error on instance to false', function() {
       ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
 
       const binding = {
@@ -533,6 +533,7 @@ describe('ServiceInstanceStore', function() {
 
       expect(actual).toBeDefined();
       expect(actual.changing).toBeFalsy();
+      expect(actual.error).toBeFalsy();
     });
 
     it('should emit a change', function() {
@@ -599,6 +600,47 @@ describe('ServiceInstanceStore', function() {
       const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
 
       serviceActions.changeServiceInstanceCancel(testGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on instance error', function() {
+    const testCFError = {
+      code: 40023,
+      description: 'Cannot bind',
+      error_code: 'CF-BindingCannot'
+    };
+
+    it('should toggle the error value of the instance', function() {
+      const instanceGuid = 'zvxcsdf34sint';
+      const instance = { guid: instanceGuid };
+      const err = testCFError;
+
+      ServiceInstanceStore.push(instance);
+
+      serviceActions.instanceError(instanceGuid, err);
+
+      const actual = ServiceInstanceStore.get(instanceGuid);
+      const expected = Object.assign({}, instance, {
+        error: err
+      });
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('should emit change if errored instance found', function() {
+      const instanceGuid = 'zvxcsdf34sint';
+      const instance = { guid: instanceGuid };
+      const err = testCFError;
+
+      ServiceInstanceStore.push(instance);
+
+      const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+
+      serviceActions.instanceError('fake-guid', err);
+      serviceActions.instanceError(instanceGuid, err);
+      serviceActions.instanceError(instanceGuid, err);
 
       expect(spy).toHaveBeenCalledOnce();
     });
