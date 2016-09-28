@@ -428,7 +428,8 @@ export default {
     return http.post(`${APIV}/service_bindings`, payload).then((res) => {
       serviceActions.boundService(res.data);
     }).catch((err) => {
-      handleError(err, errorActions.errorPost);
+      handleError(err, serviceActions.instanceError.bind(
+        this, serviceInstanceGuid));
     });
   },
 
@@ -437,7 +438,8 @@ export default {
     () => {
       serviceActions.unboundService(serviceBinding);
     }).catch((err) => {
-      handleError(err, errorActions.errorDelete);
+      handleError(err, serviceActions.instanceError.bind(
+        this, serviceBinding.service_instance_guid));
     });
   }
 };
