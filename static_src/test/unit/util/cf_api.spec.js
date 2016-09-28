@@ -1296,19 +1296,23 @@ describe('cfApi', function() {
       });
     });
 
-    it('should call create error if request fails with err', function(done) {
+    it('should call instance error if request fails with err', function(done) {
       const appGuid = 'xvc34598mn';
       const serviceInstanceGuid = 'zcvx239784ahfjk';
       const expectedErr = { status: 500, data: { code: 23500 }};
       const stub = sandbox.stub(http, 'post');
-      const spy = sandbox.spy(errorActions, 'errorPost');
+      const spy = sandbox.stub(serviceActions, 'instanceError').returns();
       stub.returns(createPromise(true, expectedErr));
 
       cfApi.createServiceBinding(appGuid, serviceInstanceGuid).then(() => {
         expect(spy).toHaveBeenCalledOnce();
-        const arg = spy.getCall(0).args[0];
-        expect(arg).toEqual(expectedErr.data);
+        const arg1 = spy.getCall(0).args[0];
+        expect(arg1).toEqual(serviceInstanceGuid);
+        const arg2 = spy.getCall(0).args[1];
+        expect(arg2).toEqual(expectedErr.data);
         done();
+      }).catch((err) => {
+        done.fail();
       });
     });
 
@@ -1348,21 +1352,26 @@ describe('cfApi', function() {
 
     it('should call delete error if request fails', function(done) {
       const bindingGuid = 'v3948589x7c987';
+      const serviceInstanceGuid = 'zxvkjask3';
       const binding = {
-        guid: bindingGuid
+        guid: bindingGuid,
+        service_instance_guid: serviceInstanceGuid
       };
       const expectedErr = { status: 503, data: { code: 23500 }};
       const stub = sandbox.stub(http, 'delete');
-      const spy = sandbox.spy(errorActions, 'errorDelete');
+      const spy = sandbox.stub(serviceActions, 'instanceError').returns();
       stub.returns(createPromise(true, expectedErr));
 
       cfApi.deleteServiceBinding(binding).then(() => {
         expect(spy).toHaveBeenCalledOnce();
-        const arg = spy.getCall(0).args[0];
-        expect(arg).toEqual(expectedErr.data);
+        const arg1 = spy.getCall(0).args[0];
+        expect(arg1).toEqual(serviceInstanceGuid);
+        const arg2 = spy.getCall(0).args[1];
+        expect(arg2).toEqual(expectedErr.data);
         done();
+      }).catch((err) => {
+        done.fail();
       });
-
     });
 
     it('should call unbound service with binding if successful', function(done) {
