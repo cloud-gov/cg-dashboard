@@ -247,7 +247,7 @@ class ServiceInstanceStore extends BaseStore {
       case serviceActionTypes.SERVICE_INSTANCE_ERROR: {
         const instance = this.get(action.serviceInstanceGuid);
         if (!instance) break;
-        const newInstance = Object.assign({}, instance, {error: action.error});
+        const newInstance = Object.assign({}, instance, { error: action.error });
         this.merge('guid', newInstance, (changed) => {
           if (changed) this.emitChange();
         });
