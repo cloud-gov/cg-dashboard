@@ -21,8 +21,8 @@ const OPERATION_INACTIVE = 'inactive';
 const OPERATION_STATES = {};
 OPERATION_STATES[OPERATION_FAILED] = 'Failed';
 OPERATION_STATES[OPERATION_DELETING] = 'Deleting';
-OPERATION_STATES[OPERATION_PROCESSING] = 'In progress';
-OPERATION_STATES[OPERATION_RUNNING] = 'Running';
+OPERATION_STATES[OPERATION_PROCESSING] = 'Reconfiguring';
+OPERATION_STATES[OPERATION_RUNNING] = 'Available';
 OPERATION_STATES[OPERATION_INACTIVE] = 'Stopped';
 
 class ServiceInstanceStore extends BaseStore {
@@ -58,6 +58,9 @@ class ServiceInstanceStore extends BaseStore {
     }
     if (lastOp.type === 'delete') {
       return OPERATION_DELETING;
+    }
+    if (lastOp.type === 'update') {
+      if (lastOp.state === 'in progress') return OPERATION_PROCESSING;
     }
     return OPERATION_RUNNING;
   }
