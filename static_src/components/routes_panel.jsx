@@ -181,9 +181,9 @@ export default class RoutesPanel extends React.Component {
         </PanelGroup>
         { this.createRouteForm }
         <PanelGroup>
-        <PanelActions>
-          { this.addRouteAction }
-        </PanelActions>
+          <PanelActions>
+            { this.addRouteAction }
+          </PanelActions>
         </PanelGroup>
       </Panel>
     );

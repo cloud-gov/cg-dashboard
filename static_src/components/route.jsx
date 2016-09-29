@@ -173,9 +173,11 @@ export default class Route extends React.Component {
             <span className={this.styler('panel-column', 'panel-column-less')}>
               { displayUrl }
             </span>
-            <PanelActions>
-              { this.actions }
-            </PanelActions>
+            <span className={this.styler('panel-column', 'panel-column-less')}>
+              <PanelActions>
+                { this.actions }
+              </PanelActions>
+            </span>
           </div>
         );
       }

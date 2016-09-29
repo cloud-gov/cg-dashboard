@@ -3,9 +3,12 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
+import Action from './action.jsx';
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
+import OrgStore from '../stores/org_store.js';
 import Panel from './panel.jsx';
+import PanelActions from './panel_actions.jsx';
 import PanelHeader from './panel_header.jsx';
 import PanelGroup from './panel_group.jsx';
 import ServiceBindingStore from '../stores/service_binding_store.js';
@@ -34,6 +37,7 @@ function unboundReady(instances) {
 }
 
 function stateSetter() {
+  const currentOrgGuid = OrgStore.currentOrgGuid;
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const currentSpaceName = SpaceStore.currentSpaceName;
   const currentAppGuid = AppStore.currentAppGuid;
@@ -68,6 +72,8 @@ function stateSetter() {
 
   return {
     currentAppGuid,
+    currentSpaceGuid,
+    currentOrgGuid,
     currentSpaceName,
     boundServiceInstances,
     unboundServiceInstances,
@@ -82,6 +88,7 @@ export default class ServiceInstancePanel extends React.Component {
     this.styler = createStyler(style);
 
     this._onChange = this._onChange.bind(this);
+    this.handlePurchaseLink = this.handlePurchaseLink.bind(this);
   }
 
   componentDidMount() {
@@ -98,6 +105,19 @@ export default class ServiceInstancePanel extends React.Component {
 
   _onChange() {
     this.setState(stateSetter());
+  }
+
+  handlePurchaseLink(ev) {
+    ev.preventDefault();
+    window.location.href = `/#/org/${this.state.currentOrgGuid}/marketplace`;
+  }
+
+  get spaceLink() {
+    return (
+      <a href={ `/#/org/${this.state.currentOrgGuid}/spaces/${this.state.currentSpaceGuid}` }>
+        { this.state.currentSpaceName }
+      </a>
+    );
   }
 
   render() {
@@ -119,13 +139,22 @@ export default class ServiceInstancePanel extends React.Component {
         </PanelGroup>,
         <PanelGroup key="2">
           <PanelHeader>
-            <h3>Service instances available in { this.state.currentSpaceName }</h3>
+            <h3>Service instances available in { this.spaceLink }</h3>
           </PanelHeader>
           <ServiceInstanceListPanel
             currentAppGuid={ this.state.currentAppGuid }
             serviceInstances={ this.state.unboundServiceInstances }
             empty={ unboundReady(this.state.unboundServiceInstances) }
           />
+        </PanelGroup>,
+        <PanelGroup>
+          <PanelActions>
+          <Action clickHandler={ this.handlePurchaseLink }
+            label="Purchase new services"
+            type="outline">
+              Purchase a new service for this app
+            </Action>
+          </PanelActions>
         </PanelGroup>
       ];
     }

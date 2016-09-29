@@ -5,9 +5,12 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
+import PanelActions from './panel_actions.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
+
+import { OPERATION_FAILED } from '../stores/service_instance_store.js';
 
 import createStyler from '../util/create_styler';
 
@@ -63,10 +66,23 @@ export default class ServiceInstance extends React.Component {
   }
 
   get instanceState() {
-    if (!this.props.bound) return ServiceInstanceStore.OPERATION_STATES.inactive;
-    if (!this.props.serviceInstance) return '';
-    return ServiceInstanceStore.getInstanceReadableState(
+    let content;
+    if (!this.props.serviceInstance) return content;
+
+    const instanceState = ServiceInstanceStore.getInstanceState(
       this.props.serviceInstance);
+
+    if (instanceState === OPERATION_FAILED) {
+      content = (
+        <span style={{ marginLeft: '0.5rem', display: 'inline' }}
+          className={ this.styler('error_message') }>
+          { ServiceInstanceStore.getInstanceReadableState(
+            this.props.serviceInstance) }
+        </span>
+      );
+    }
+
+    return content;
   }
 
   get cost() {
@@ -84,6 +100,7 @@ export default class ServiceInstance extends React.Component {
         <Action
           clickHandler={ this.unbindHandler }
           label="Unbind"
+          style="warning"
           type="link">
           Unbind
         </Action>
@@ -93,13 +110,13 @@ export default class ServiceInstance extends React.Component {
         <Action
           clickHandler={ this.bindHandler }
           label="Bind"
-          type="link">
+          type="outline">
           Bind
         </Action>
       );
     }
 
-    return content;
+    return <PanelActions>{ content }</PanelActions>;
   }
 
   get confirmation() {
@@ -133,23 +150,26 @@ export default class ServiceInstance extends React.Component {
 
     if (serviceInstance) {
       const confirmation = this.confirmation;
+      const statusClass = (ServiceInstanceStore.getInstanceState(
+        this.props.serviceInstance) === OPERATION_FAILED) ? 'panel-column-error' : null;
 
       content = (
         <div style={{ flexWrap: 'wrap' }}>
-          <h5 className={ this.styler('panel-column') }>
-            { serviceInstance.name }
-          </h5>
-          <span className={ this.styler('panel-column') }>
+          <span className={ this.styler('panel-column', statusClass) }>
             { serviceInstance.servicePlan &&
-              <span>{ serviceInstance.servicePlan.name }</span>
+              <strong>{ serviceInstance.servicePlan.name }</strong>
             }
+            { this.instanceState }
             <br />
+            <span>
+              { serviceInstance.name }
+            </span>
+          </span>
+          <span className={ this.styler('panel-column') }>
             <span>{ this.cost }</span>
           </span>
           <span className={ this.styler('panel-column', 'panel-column-less',
             'panel-column-last') }>
-            <span>{ this.instanceState }</span>
-            <br />
             { this.actions }
           </span>
           { confirmation }
