@@ -159,7 +159,8 @@ class RouteStore extends BaseStore {
       case routeActionTypes.ROUTE_TOGGLE_EDIT: {
         const route = this.get(action.routeGuid);
         const newRoute = Object.assign({}, route, {
-          editing: !route.editing
+          editing: !route.editing,
+          error: null
         });
         this.merge('guid', newRoute, (changed) => {
           if (changed) this.emitChange();

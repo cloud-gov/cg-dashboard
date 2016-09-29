@@ -5,6 +5,7 @@ import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import DomainStore from '../stores/domain_store.js';
 import PanelActions from './panel_actions.jsx';
+import PanelRowError from './panel_row_error.jsx';
 import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
 import createStyler from '../util/create_styler';
@@ -76,7 +77,7 @@ export default class Route extends React.Component {
       path = `/${route.path}`;
     }
     const updatedRoute = Object.assign({}, route, { path });
-    routeActions.updateHandler(routeGuid, domainGuid, spaceGuid, updatedRoute);
+    routeActions.updateRoute(routeGuid, domainGuid, spaceGuid, updatedRoute);
   }
 
   get deleteAction() {
@@ -131,6 +132,15 @@ export default class Route extends React.Component {
       'Delete this route from this space?';
   }
 
+  get displayError() {
+    const route = this.props.route;
+    if (route.error) {
+      return (
+        <PanelRowError message={route.error.description} />
+      );
+    }
+  }
+
   render() {
     let content = <div></div>;
 
@@ -170,9 +180,10 @@ export default class Route extends React.Component {
         }
         content = (
           <div>
-            <span className={this.styler('panel-column', 'panel-column-less')}>
+            <span className={this.styler('panel-column')}>
               { displayUrl }
             </span>
+            { this.displayError }
             <span className={this.styler('panel-column', 'panel-column-less')}>
               <PanelActions>
                 { this.actions }
