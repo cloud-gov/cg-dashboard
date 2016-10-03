@@ -188,13 +188,20 @@ class RouteStore extends BaseStore {
       case routeActionTypes.ROUTE_UPDATE: {
         const { routeGuid, domainGuid, spaceGuid, route } = action;
         cfApi.putRouteUpdate(routeGuid, domainGuid, spaceGuid, route);
+        const currentRoute = this.get(routeGuid);
+        if (currentRoute) {
+          const newRoute = Object.assign({}, currentRoute,
+            { loading: 'Editing' });
+          this.merge('guid', newRoute, () => this.emitChange());
+        }
         break;
       }
 
       case routeActionTypes.ROUTE_UPDATED: {
         const route = Object.assign({}, action.route, {
           editing: false,
-          error: null
+          error: null,
+          loading: false
         });
         this.merge('guid', route, () => {
           this.emitChange();
