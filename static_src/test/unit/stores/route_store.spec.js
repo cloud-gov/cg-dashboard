@@ -440,7 +440,8 @@ describe('RouteStore', function() {
 
       const actual = RouteStore.get(routeGuid);
       const expected = Object.assign({}, route, {
-        editing: true
+        editing: true,
+        error: null
       });
 
       expect(actual).toEqual(expected);
