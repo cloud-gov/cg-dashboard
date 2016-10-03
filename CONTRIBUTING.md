@@ -5,22 +5,23 @@ We're so glad you're thinking about contributing to an 18F open source project! 
 Before contributing, we encourage you to read our CONTRIBUTING policy (you are here), our LICENSE, and our README, all of which should be in this repository. If you have any questions, or want to read more about our underlying policies, you can consult the 18F Open Source Policy GitHub repository at https://github.com/18f/open-source-policy, or just shoot us an email/official government letterhead note to [18f@gsa.gov](mailto:18f@gsa.gov).
 
 ## High-level roadmap
-The cloud.gov dashboard is a unit-tested react single page application. It's previous version, available at [console.cloud.gov](https://console.cloud.gov) was an angular app, and is available at the `deprecated` branch.
+The cloud.gov dashboard is a unit-tested React single-page application. Its previous version, available at [console.cloud.gov](https://console.cloud.gov), was an Angular app; it's available at the `deprecated` branch.
 
-The work on cloud.gov front end fits into a higher level roadmap for all of cloud.gov. For now, this is in [another tool](https://18f.aha.io/products/CGP/bookmarks/project_timelines/new) only accessible by 18F personnel. Soon we will publish the information.
+The work on the cloud.gov front-end fits into a higher-level roadmap for all of cloud.gov. For now, this is in [another tool](https://18f.aha.io/products/CGP/bookmarks/project_timelines/new) only accessible by 18F personnel.
 
 ## Workflow
-Tracking work and progress is currently being done through [Zenhub](https://www.zenhub.io/), which adds a browser extension to add additional agile features to github. The main feature Zenhub adds is a "Boards" page which is an agile board detailing the state of work for the dashboard.
+We track work and progress through [ZenHub](https://www.zenhub.io/), which adds a browser extension to add additional agile features to GitHub. ZenHub adds a "Boards" page, which is an agile board detailing the state of work for the dashboard.
 
 ### Board workflow
 - Stories or ideas for features can start in backlog or icebox.
 
-#### Criteria for moving through colums
-The main criteria for moving a card through the columsn can be found on the main cloud.gov product repo: [cloud.gov Delivery Process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md). Some aspects that differ or extend for that process as related to cloud.gov front end:
+#### Criteria for moving through columns
+The criteria for moving a card through the columns is in the main cloud.gov product repo: [cloud.gov Delivery Process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md). Some aspects that differ or extend for that process as related to the cloud.gov front end:
+
 ##### Awaiting acceptance
   - Have all new files and newly touched files linted (new files can skip linting if under tight deadline)
   - Have all previous unit tests running without error.
-  - Non jsx code covered in units tests.
+  - Non-JSX code covered in units tests.
   - Is deployed on a staging site or live site so other team members can see/use it.
 
 ##### Done
@@ -28,7 +29,7 @@ The main criteria for moving a card through the columsn can be found on the main
   - If the work has a visual aspect, post a screenshot attached for later documentation/announcement/demo purposes.
 
 ##### Definition of done for a feature
-A feature is a higher level epic that will encompass multiple smaller units of work. And example would be "Route panel" or "Service panel on app page".
+A feature is a higher-level epic that will encompass multiple smaller units of work. An example would be "Route panel" or "Service panel on app page".
 - Stakeholders see and approve the work as meeting acceptance criteria.
 - Is deployed to production, dashboard.cloud.gov site.
 - All appropriate global styling is in cg-style rather then cg-dashboard.
@@ -74,12 +75,12 @@ For more information, see the high-level [cloud.gov respository](https://github.
 - It's fine to merge code that isn't "feature complete." The staging branch is not currently in use, so is fine to have some work on it that still needs work.
 - We're currently not focusing on acceptance tests right now due to the tests not being easily repeatable and having a clean data state. If a change breaks an acceptance test, spend 10 minutes trying to fix it before disabling the test. Do not write new acceptance tests.
 
-#### Other git standards
+#### Other Git standards
 - Squashing commits is allowed but discouraged, except in rare instances.
-- The team prefers rebasing over merging, though we use Github to close out pull requests. This means that PRs will be merged, but if you're refreshing a local branch make sure to use rebase. For example, if you want to update your `staging` branch to reflect the most recent changes on Github use `git pull --rebase origin staging`.
+- The team prefers rebasing over merging, though we use GitHub to close out pull requests. This means that PRs will be merged, but if you're refreshing a local branch make sure to use rebase. For example, if you want to update your `staging` branch to reflect the most recent changes on GitHub use `git pull --rebase origin staging`.
 
 ### Branches
-- Open branches off main repo due to travis CI env var problem. For now, remember to branch off of the `master` branch.
+- Open branches off main repo due to Travis CI env var problem. For now, remember to branch off of the `master` branch.
 - Name your branch with your initials first.
 - Include a short description of the feature that's being developed after your initial.
 
@@ -145,30 +146,7 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 - Any library added that's total file size is above 25kb should be evaluated for performance affect.
 
 ## Onboarding checklist
-Ensure you complete the [onboarding complete tasks](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md) for the whole cloud.gov team, especially the [required items](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md#required-items-for-all-team-members).
-
-- [ ] Join the `#cloud-gov-liberator` channel on Slack
-- [ ] ~Ping @standup-bot for instructions on front end channel standup~ (currently disabled)
-- [ ] Install [Zenhub](https://www.zenhub.com/) to use the kanban boards.
-- [ ] Review the main [front end board](https://github.com/18F/cg-dashboard/pulls#boards?repos=55727091,39210774,49169967,40567233&labels=Liberator&showPRs=false) (ensure to filter by the "Liberator" label)
-- [ ] Review the cloud.gov [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md) to understand how the agile boards and workflow works.
-- [ ] Bookmark link to [design folder](https://drive.google.com/drive/u/1/folders/0BwLqM4Nicmq-bUt0NjRjclFMUEU)
-- [ ] Review the primary cloud.gov sites: [the dashboard](https://dashboard.cloud.gov/#/), [main landing page](https://cloud.gov/), and [documentation](https://docs.cloud.gov/).
-
-#### If developing
-- [ ] Set up [the landing page site](https://github.com/18F/cg-landing) and/or [the dashboard](https://github.com/18F/cg-dashboard) and/or [the docs site](https://github.com/18F/cg-docs) and/or [style](https://github.com/18F/cg-style) locally
-- [ ] Setup cloudgov-style to be [linked to the other sites locally](https://github.com/18F/cg-style#development-and-contributing-setup).
-- [ ] Have cloud.gov person send the cg-dashboard testing env vars through fugacious
-- [ ] Review [dashboard contributing guide](https://github.com/18F/cg-dashboard/CONTRIBUTING.md) and [cloudgov-style standards](https://github.com/18F/cg-style/blob/master/documentation/frontend_standards.md)
-
-#### For review
-- Review the [design resource request document](https://docs.google.com/document/d/1s96VP6PB7fbc8g_GwgAZ1hCPmew-J35ZOJx772c1AZ4/edit) if you haven’t already to get a sense of your role on the project
-- Review the [design principals](https://docs.google.com/spreadsheets/d/14Y3RKaLUt6RPX5w13iz7oaSCpojEQ-Wqjnd8Ie_VkCc/edit#gid=259774738) to get a sense of how the cloud.gov team feels about the product
-- Review the [competitive analysis](https://docs.google.com/spreadsheets/u/1/d/194tGz75NFwFyH8jT7zY_n-O0I7N4yAGYtIG4hw9qPcQ/edit?usp=drive_web) to get a sense of our "competitors" and their dashboard.
-- Review the [cloudgov-style styleguide](https://pages.18f.gov/cg-style/) to get a sense of the global cloud.gov visual style.
-- Review the [US Web Design Standards](https://standards.usa.gov/) as cloudgov-style was built from it.
-- Review the dashboard, current [prod](https://dashboard.cloud.gov/#/), [master](https://dashboard-master.apps.cloud.gov/#/) and [staging](https://dashboard-staging.apps.cloud.gov/#/)
-- Review the cloud foundry [community UI](http://ui.apps.cloud.gov/), a UI that members of the cloud foundry community created and is being used as a basis for our own dashboard design.
+Complete the [onboarding tasks](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md) for the whole cloud.gov team and for the Liberator theme.
 
 ## Public domain
 
