@@ -30,7 +30,7 @@ describe('RouteStore', function() {
     });
   });
 
-  describe('routeActionTypes.ROUTE_APP_ASSOCIATED', function () {
+  describe('routeActionTypes.ROUTE_APP_ASSOCIATE', function () {
     it('should call put ap route assocaation with app, route guid', function() {
       const appGuid = 'zxvnalsf25gh9';
       const routeGuid = 'xvxvcmnsdjfkh3jdf';
@@ -133,6 +133,29 @@ describe('RouteStore', function() {
       expect(args[0]).toEqual(appGuid);
       expect(args[1]).toEqual(routeGuid);
     });
+
+    it('should set loading on route to Unbinding', function() {
+      const routeGuid = 'xvx2342nsdsdf234df';
+      const route = { guid: routeGuid };
+
+      RouteStore.push(route);
+      routeActions.unassociateApp(routeGuid, 'alsdkjf');
+
+      const actual = RouteStore.get(routeGuid);
+      expect(actual.loading).toEqual('Unbinding');
+    });
+
+    it('should emit a change event', function() {
+      const routeGuid = 'xvxvcmnsdjfkh3jdf';
+      const route = { guid: routeGuid };
+
+      RouteStore.push(route);
+
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+      routeActions.unassociateApp(routeGuid, 'alsdkjf');
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
   });
 
   describe('on route app unnassociated', function() {
@@ -157,6 +180,17 @@ describe('RouteStore', function() {
       routeActions.unassociatedApp(routeGuid, appGuid);
 
       expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should clear loading', function() {
+      const routeGuid = 'xvxvcmnsdjfkh3jdf';
+      const route = { guid: routeGuid, loading: 'Unbinding' };
+
+      RouteStore.push(route);
+      routeActions.unassociatedApp(routeGuid, 'alsdkjf');
+
+      const actual = RouteStore.get(routeGuid);
+      expect(actual.loading).toBeFalsy();
     });
   });
 
