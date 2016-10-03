@@ -76,6 +76,11 @@ class RouteStore extends BaseStore {
 
       case routeActionTypes.ROUTE_APP_UNASSOCIATE: {
         cfApi.deleteAppRouteAssociation(action.appGuid, action.routeGuid);
+        const route = this.get(action.routeGuid);
+        if (route) {
+          const newRoute = Object.assign({}, route, { loading: 'Unbinding' });
+          this.merge('guid', newRoute, () => this.emitChange());
+        }
         break;
       }
 
@@ -83,7 +88,7 @@ class RouteStore extends BaseStore {
         const route = this.get(action.routeGuid);
         if (route) {
           const newRoute = Object.assign({}, route, { app_guid: null,
-            removing: false });
+            loading: false, removing: false });
           this.merge('guid', newRoute, () => this.emitChange());
         }
         break;
