@@ -13,7 +13,7 @@ import (
 // If the user decides to refresh or if the client is polling, multiple requests might build up. This timecaps them.
 // This constant is also used in the acceptance testing "delayForRendering" for any pages that may take a long time to render.
 // (Some of those pages use APIs that take a long time)
-var TimeoutConstant = time.Second * 5
+var TimeoutConstant = time.Second * 20
 
 // GetValidToken is a helper function that returns a token struct only if it finds a non expired token for the session.
 func GetValidToken(req *http.Request, settings *Settings) *oauth2.Token {

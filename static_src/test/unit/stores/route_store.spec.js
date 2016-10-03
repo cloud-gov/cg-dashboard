@@ -45,7 +45,7 @@ describe('RouteStore', function() {
     });
 
     it('should set loading on route to Binding', function() {
-      const routeGuid = 'xvxvcmnsdjfkh3jdf';
+      const routeGuid = 'xvx2342nsdjfkh3jdf';
       const route = { guid: routeGuid };
 
       RouteStore.push(route);
@@ -526,6 +526,29 @@ describe('RouteStore', function() {
       expect(spy).toHaveBeenCalledWith();
       expect(args).toEqual([routeGuid, domainGuid, spaceGuid, route]);
     });
+
+    it('should set loading on route to Editing', function() {
+      const routeGuid = 'xvxvcmnsdjfkh3jdf';
+      const route = { guid: routeGuid };
+
+      RouteStore.push(route);
+      routeActions.updateRoute(routeGuid, 'sdfaz', 'dsfbvc', route);
+
+      const actual = RouteStore.get(routeGuid);
+      expect(actual.loading).toEqual('Editing');
+    });
+
+    it('should emit a change event', function() {
+      const routeGuid = 'xvxvcmnsdjfkh3jdf';
+      const route = { guid: routeGuid };
+
+      RouteStore.push(route);
+
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+      routeActions.updateRoute(routeGuid, 'sdfaz', 'dsfbvc', route);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
   });
 
   describe('routeActionTypes.ROUTE_UPDATED', function () {
@@ -544,6 +567,17 @@ describe('RouteStore', function() {
       expect(RouteStore.get(routeGuid).foo).toEqual('bar');
       expect(RouteStore.get(routeGuid).editing).toEqual(false);
       expect(RouteStore.get(routeGuid).err).toBeFalsy();
+    });
+
+    it('should clear loading property', function() {
+      const routeGuid = 'xvxvcmnsdjfkh3jdf';
+      const route = { guid: routeGuid, loading: 'Editing' };
+
+      RouteStore.push(route);
+      routeActions.updatedRoute(routeGuid, route);
+
+      const actual = RouteStore.get(routeGuid);
+      expect(actual.loading).toBeFalsy();
     });
 
     it('should emitChange()', function () {
