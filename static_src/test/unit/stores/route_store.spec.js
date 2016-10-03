@@ -43,6 +43,29 @@ describe('RouteStore', function() {
       expect(args[0]).toEqual(appGuid);
       expect(args[1]).toEqual(routeGuid);
     });
+
+    it('should set loading on route to Binding', function() {
+      const routeGuid = 'xvxvcmnsdjfkh3jdf';
+      const route = { guid: routeGuid };
+
+      RouteStore.push(route);
+      routeActions.associateApp(routeGuid, 'alsdkjf');
+
+      const actual = RouteStore.get(routeGuid);
+      expect(actual.loading).toEqual('Binding');
+    });
+
+    it('should emit a change event', function() {
+      const routeGuid = 'xvxvcmnsdjfkh3jdf';
+      const route = { guid: routeGuid };
+
+      RouteStore.push(route);
+
+      const spy = sandbox.spy(RouteStore, 'emitChange');
+      routeActions.associateApp(routeGuid, 'alsdkjf');
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
   });
 
   describe('routeActionTypes.ROUTE_APP_ASSOCIATED', function () {
@@ -81,6 +104,17 @@ describe('RouteStore', function() {
       expect(RouteStore.showCreateRouteForm).toEqual(false);
       expect(RouteStore.error).toEqual(null);
       expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should set loading to false', function() {
+      const routeGuid = 'xvxvcmnsdjfkh3jdf';
+      const route = { guid: routeGuid, loading: 'Binding' };
+
+      RouteStore.push(route);
+      routeActions.associatedApp(routeGuid, 'alsdkjf');
+
+      const actual = RouteStore.get(routeGuid);
+      expect(actual.loading).toBeFalsy();
     });
   });
 

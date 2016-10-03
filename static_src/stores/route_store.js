@@ -50,6 +50,11 @@ class RouteStore extends BaseStore {
 
       case routeActionTypes.ROUTE_APP_ASSOCIATE: {
         cfApi.putAppRouteAssociation(action.appGuid, action.routeGuid);
+        const route = this.get(action.routeGuid);
+        if (route) {
+          const newRoute = Object.assign({}, route, { loading: 'Binding' });
+          this.merge('guid', newRoute, () => this.emitChange());
+        }
         break;
       }
 
@@ -58,6 +63,7 @@ class RouteStore extends BaseStore {
         const newRoute = Object.assign({}, route, {
           app_guid: action.appGuid,
           editing: false,
+          loading: false,
           error: null
         });
         this.merge('guid', newRoute, () => {

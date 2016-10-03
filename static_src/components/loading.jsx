@@ -7,16 +7,23 @@ import createStyler from '../util/create_styler';
 
 const LOADING_TIME = 300;
 
+const STYLES = [
+  'inline',
+  'cover'
+];
+
 const propTypes = {
   text: React.PropTypes.string,
   active: React.PropTypes.bool,
-  loadingDelayMS: React.PropTypes.number
+  loadingDelayMS: React.PropTypes.number,
+  style: React.PropTypes.oneOf(STYLES)
 };
 
 const defaultProps = {
   text: 'Loading',
   active: true,
-  loadingDelayMS: LOADING_TIME
+  loadingDelayMS: LOADING_TIME,
+  style: 'cover'
 };
 
 class Loading extends React.Component {
