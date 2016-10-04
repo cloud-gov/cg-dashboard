@@ -4,6 +4,7 @@ import React from 'react';
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import DomainStore from '../stores/domain_store.js';
+import Loading from './loading.jsx';
 import PanelActions from './panel_actions.jsx';
 import PanelRowError from './panel_row_error.jsx';
 import RouteForm from './route_form.jsx';
@@ -116,6 +117,16 @@ export default class Route extends React.Component {
     const route = this.props.route;
     if (!route) return actions;
 
+    if (route.loading) {
+      return (
+        <Loading
+          text={ route.loading }
+          loadingDelayMS={ 100 }
+          style="inline"
+        />
+      );
+    }
+
     if (!RouteStore.isRouteBoundToApp(route)) {
       actions.push(this.deleteAction);
     } else {
@@ -139,6 +150,7 @@ export default class Route extends React.Component {
         <PanelRowError message={route.error.description} />
       );
     }
+    return null;
   }
 
   render() {
@@ -156,8 +168,7 @@ export default class Route extends React.Component {
             submitHandler={ this._updateHandler }
           />
         );
-      }
-      else if (route.removing) {
+      } else if (route.removing) {
         const currentAction = RouteStore.isRouteBoundToApp(route) ? 'unbind' :
           'delete';
         const confirmHandler = RouteStore.isRouteBoundToApp(route) ?
@@ -176,7 +187,7 @@ export default class Route extends React.Component {
       } else {
         let displayUrl = <span>{ url }</span>;
         if (!RouteStore.isRouteBoundToApp(route)) {
-          displayUrl = <a href={ url } title="See app route">{ url }</a>
+          displayUrl = <a href={ url } title="See app route">{ url }</a>;
         }
         content = (
           <div>
