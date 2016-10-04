@@ -97,7 +97,15 @@ export default class ServiceInstance extends React.Component {
   get actions() {
     let content;
 
-    if (this.props.bound) {
+    if (this.props.serviceInstance.loading) {
+      content = (
+        <Loading
+          text={ this.props.serviceInstance.loading }
+          loadingDelayMS={ 100 }
+          style="inline"
+        />
+      );
+    } else if (this.props.bound) {
       content = (
         <Action
           clickHandler={ this.unbindHandler }
@@ -107,14 +115,6 @@ export default class ServiceInstance extends React.Component {
         >
           Unbind
         </Action>
-      );
-    } else if (this.props.serviceInstance.loading) {
-      content = (
-        <Loading
-          text={ this.props.serviceInstance.loading }
-          loadingDelayMS={ 100 }
-          style="inline"
-        />
       );
     } else {
       content = (
