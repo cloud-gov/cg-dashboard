@@ -549,6 +549,24 @@ describe('ServiceInstanceStore', function() {
 
       expect(spy).toHaveBeenCalledOnce();
     });
+
+    it('should unset loading', function() {
+      const testInstance = {
+        guid: testGuid,
+        loading: 'Binding'
+      };
+      ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
+
+      const binding = {
+        metadata: { guid: 'zxc' },
+        entity: { service_instance_guid: testGuid }
+      };
+
+      serviceActions.boundService(binding);
+
+      const actual = ServiceInstanceStore.get(testGuid);
+      expect(actual.loading).toBeFalsy();
+    });
   });
 
   describe('on service instance change check', function() {
@@ -643,6 +661,64 @@ describe('ServiceInstanceStore', function() {
       serviceActions.instanceError(instanceGuid, err);
 
       expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on service bind', function() {
+    it('should emit a change event', function() {
+      const serviceInstanceGuid = 'zxvcadsf23bv';
+      const instance = { guid: serviceInstanceGuid };
+
+      ServiceInstanceStore.push(instance);
+
+      const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+      serviceActions.bindService('zvcx', serviceInstanceGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should set loading to Binding', function() {
+      const serviceInstanceGuid = 'zxvcadsf23bv';
+      const instance = { guid: serviceInstanceGuid };
+
+      ServiceInstanceStore.push(instance);
+
+      serviceActions.bindService('zvcx', serviceInstanceGuid);
+
+      const actual = ServiceInstanceStore.get(serviceInstanceGuid);
+
+      expect(actual.loading).toEqual('Binding');
+    });
+  });
+
+  describe('on service unbind', function() {
+    it('should emit a change event', function() {
+      const serviceInstanceGuid = 'zxvcadsf23bv';
+      const instance = { guid: serviceInstanceGuid };
+      const binding = { guid: 'zxcvzxc',
+        service_instance_guid: serviceInstanceGuid };
+
+      ServiceInstanceStore.push(instance);
+
+      const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+      serviceActions.unbindService(binding);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should set loading to Binding', function() {
+      const serviceInstanceGuid = 'zxvcadsf23bv';
+      const instance = { guid: serviceInstanceGuid };
+      const binding = { guid: 'zxcvzxc',
+        service_instance_guid: serviceInstanceGuid };
+
+      ServiceInstanceStore.push(instance);
+
+      serviceActions.unbindService(binding);
+
+      const actual = ServiceInstanceStore.get(serviceInstanceGuid);
+
+      expect(actual.loading).toEqual('Unbinding');
     });
   });
 });

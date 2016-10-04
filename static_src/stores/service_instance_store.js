@@ -206,6 +206,25 @@ class ServiceInstanceStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_BIND: {
+        const instance = this.get(action.serviceInstanceGuid);
+        if (instance) {
+          const newInstance = Object.assign({}, instance, { loading: 'Binding' });
+          this.merge('guid', newInstance, () => this.emitChange());
+        }
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_UNBIND: {
+        const instance = this.get(action.serviceBinding.service_instance_guid);
+        if (instance) {
+          const newInstance = Object.assign({}, instance,
+            { loading: 'Unbinding' });
+          this.merge('guid', newInstance, () => this.emitChange());
+        }
+        break;
+      }
+
       case serviceActionTypes.SERVICE_BOUND:
       case serviceActionTypes.SERVICE_UNBOUND: {
         let binding;
@@ -218,7 +237,8 @@ class ServiceInstanceStore extends BaseStore {
         if (!instance) break; // TODO throw error
         const updatedInstance = Object.assign({}, instance, {
           changing: false,
-          error: false
+          error: false,
+          loading: false
         });
         this.merge('guid', updatedInstance, () => this.emitChange());
         break;
