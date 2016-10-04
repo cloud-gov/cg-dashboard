@@ -82,7 +82,7 @@ export default {
 
   errorCreateInstance(err) {
     AppDispatcher.handleServerAction({
-      type: serviceActionTypes.SERVICE_INSTANCE_ERROR,
+      type: serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR,
       error: err
     });
   },
@@ -183,6 +183,14 @@ export default {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_UNBOUND,
       serviceBinding
+    });
+  },
+
+  instanceError(serviceInstanceGuid, error) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_ERROR,
+      serviceInstanceGuid,
+      error
     });
   }
 };

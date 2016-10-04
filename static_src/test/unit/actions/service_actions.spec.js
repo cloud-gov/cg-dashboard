@@ -205,7 +205,7 @@ describe('serviceActions', function() {
 
       serviceActions.errorCreateInstance(expectedErr);
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_ERROR,
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR,
                    expectedParams);
     });
   });
@@ -480,6 +480,22 @@ describe('serviceActions', function() {
       serviceActions.unboundService(binding);
 
       assertAction(spy, serviceActionTypes.SERVICE_UNBOUND, expectedParams);
+    });
+  });
+
+  describe('instanceError()', function() {
+    it('should dispatch a server event of service instance error', function() {
+      const instanceGuid = 'adfzcvb2cvb435n';
+      const err = { status: 500, data: { }};
+      const params = {
+        serviceInstanceGuid: instanceGuid,
+        error: err
+      };
+      const spy = setupServerSpy(sandbox);
+
+      serviceActions.instanceError(instanceGuid, err)
+
+      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_ERROR, params);
     });
   });
 });
