@@ -52,7 +52,7 @@ class Loading extends React.Component {
   showLoader() {
     if (this._timer) {
       window.clearTimeout(this._timer);
-      this.setState({ waitTimer: false })
+      this.setState({ waitTimer: false });
     }
   }
 
@@ -60,14 +60,39 @@ class Loading extends React.Component {
     let content = <div></div>;
 
     if (this.props.active && !this.state.waitTimer) {
+      const classes = this.props.style === 'cover' ?
+        this.styler('loading', 'loading-relative') :
+        this.styler('loading-inline');
       content = (
-        <div className={ this.styler('loading', 'loading-relative') }
+        <div className={ classes }
           role="alertdialog"
           ariaLive="assertive"
           ariaBusy={ this.props.active }
         >
-          <img className={ this.styler('loading-indicator') }
-            src={ `/assets/${loadingImg}` } alt={ this.props.text } />
+        {(() => {
+          switch (this.props.style) {
+            case 'cover': {
+              return (
+              <img className={ this.styler('loading-indicator') }
+                src={ `/assets/${loadingImg}` } alt={ this.props.text }
+              />
+              );
+            }
+            case 'inline': {
+              return (
+              <div>
+                <span className={ this.styler('loading-inline-dot') }>•</span>
+                <span className={ this.styler('loading-inline-dot') }>•</span>
+                <span className={ this.styler('loading-inline-dot') }>•</span>
+                <span className={ this.styler('loading-inline-text') }>
+                  { this.props.text }
+                </span>
+              </div>
+              );
+            }
+            default: return null;
+          }
+        })()}
         </div>
       );
     }

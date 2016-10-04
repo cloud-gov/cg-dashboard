@@ -5,6 +5,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
+import Loading from './loading.jsx';
 import PanelActions from './panel_actions.jsx';
 import PanelRowError from './panel_row_error.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
@@ -102,16 +103,26 @@ export default class ServiceInstance extends React.Component {
           clickHandler={ this.unbindHandler }
           label="Unbind"
           style="warning"
-          type="link">
+          type="link"
+        >
           Unbind
         </Action>
+      );
+    } else if (this.props.serviceInstance.loading) {
+      content = (
+        <Loading
+          text={ this.props.serviceInstance.loading }
+          loadingDelayMS={ 100 }
+          style="inline"
+        />
       );
     } else {
       content = (
         <Action
           clickHandler={ this.bindHandler }
           label="Bind"
-          type="outline">
+          type="outline"
+        >
           Bind
         </Action>
       );
