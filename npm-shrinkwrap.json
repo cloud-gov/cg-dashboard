@@ -161,9 +161,9 @@
       "resolved": "https://registry.npmjs.org/arr-flatten/-/arr-flatten-1.0.1.tgz"
     },
     "array-find-index": {
-      "version": "1.0.1",
+      "version": "1.0.2",
       "from": "array-find-index@>=1.0.1 <2.0.0",
-      "resolved": "https://registry.npmjs.org/array-find-index/-/array-find-index-1.0.1.tgz"
+      "resolved": "https://registry.npmjs.org/array-find-index/-/array-find-index-1.0.2.tgz"
     },
     "array-index": {
       "version": "1.0.0",
@@ -737,14 +737,7 @@
     "bcrypt-pbkdf": {
       "version": "1.0.0",
       "from": "bcrypt-pbkdf@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.0.tgz",
-      "dependencies": {
-        "tweetnacl": {
-          "version": "0.14.3",
-          "from": "tweetnacl@>=0.14.3 <0.15.0",
-          "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.14.3.tgz"
-        }
-      }
+      "resolved": "https://registry.npmjs.org/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.0.tgz"
     },
     "benchmark": {
       "version": "1.0.0",
@@ -1004,9 +997,9 @@
       "resolved": "https://registry.npmjs.org/clone/-/clone-1.0.2.tgz"
     },
     "cloudgov-style": {
-      "version": "1.3.0",
-      "from": "cloudgov-style@>=1.3.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/cloudgov-style/-/cloudgov-style-1.3.0.tgz"
+      "version": "1.4.1",
+      "from": "cloudgov-style@1.4.1",
+      "resolved": "https://registry.npmjs.org/cloudgov-style/-/cloudgov-style-1.4.1.tgz"
     },
     "co": {
       "version": "4.6.0",
@@ -2524,9 +2517,9 @@
       "resolved": "https://registry.npmjs.org/gauge/-/gauge-2.6.0.tgz"
     },
     "gaze": {
-      "version": "1.1.1",
+      "version": "1.1.2",
       "from": "gaze@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/gaze/-/gaze-1.1.1.tgz"
+      "resolved": "https://registry.npmjs.org/gaze/-/gaze-1.1.2.tgz"
     },
     "generate-function": {
       "version": "2.0.0",
@@ -3098,9 +3091,9 @@
       }
     },
     "jquery": {
-      "version": "2.2.4",
-      "from": "jquery@>=2.2.0 <3.0.0",
-      "resolved": "https://registry.npmjs.org/jquery/-/jquery-2.2.4.tgz"
+      "version": "3.1.1",
+      "from": "jquery@>=3.0.0 <4.0.0",
+      "resolved": "https://registry.npmjs.org/jquery/-/jquery-3.1.1.tgz"
     },
     "js-base64": {
       "version": "2.1.9",
@@ -3414,6 +3407,11 @@
       "from": "lodash.clonedeep@>=4.3.2 <5.0.0",
       "resolved": "https://registry.npmjs.org/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz"
     },
+    "lodash.debounce": {
+      "version": "4.0.8",
+      "from": "lodash.debounce@>=4.0.8 <5.0.0",
+      "resolved": "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
+    },
     "lodash.deburr": {
       "version": "3.2.0",
       "from": "lodash.deburr@>=3.0.0 <4.0.0",
@@ -3684,9 +3682,9 @@
       }
     },
     "node-sass": {
-      "version": "3.10.0",
+      "version": "3.10.1",
       "from": "node-sass@>=3.4.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/node-sass/-/node-sass-3.10.0.tgz",
+      "resolved": "https://registry.npmjs.org/node-sass/-/node-sass-3.10.1.tgz",
       "dependencies": {
         "cross-spawn": {
           "version": "3.0.1",
@@ -3977,9 +3975,9 @@
       "resolved": "https://registry.npmjs.org/pluralize/-/pluralize-1.2.1.tgz"
     },
     "politespace": {
-      "version": "0.1.4",
-      "from": "politespace@0.1.4",
-      "resolved": "https://registry.npmjs.org/politespace/-/politespace-0.1.4.tgz"
+      "version": "0.1.20",
+      "from": "politespace@>=0.1.20 <0.2.0",
+      "resolved": "https://registry.npmjs.org/politespace/-/politespace-0.1.20.tgz"
     },
     "postcss": {
       "version": "5.2.0",
@@ -4779,9 +4777,9 @@
       "resolved": "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
     },
     "sshpk": {
-      "version": "1.10.0",
+      "version": "1.10.1",
       "from": "sshpk@>=1.7.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/sshpk/-/sshpk-1.10.0.tgz",
+      "resolved": "https://registry.npmjs.org/sshpk/-/sshpk-1.10.1.tgz",
       "dependencies": {
         "assert-plus": {
           "version": "1.0.0",
@@ -5048,9 +5046,9 @@
       "resolved": "https://registry.npmjs.org/tunnel-agent/-/tunnel-agent-0.4.3.tgz"
     },
     "tweetnacl": {
-      "version": "0.13.3",
-      "from": "tweetnacl@>=0.13.0 <0.14.0",
-      "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.13.3.tgz"
+      "version": "0.14.3",
+      "from": "tweetnacl@>=0.14.0 <0.15.0",
+      "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.14.3.tgz"
     },
     "type-check": {
       "version": "0.3.2",
@@ -5166,7 +5164,19 @@
     "uswds": {
       "version": "0.12.1",
       "from": "uswds@>=0.12.1 <0.13.0",
-      "resolved": "https://registry.npmjs.org/uswds/-/uswds-0.12.1.tgz"
+      "resolved": "https://registry.npmjs.org/uswds/-/uswds-0.12.1.tgz",
+      "dependencies": {
+        "jquery": {
+          "version": "2.2.4",
+          "from": "jquery@>=2.2.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/jquery/-/jquery-2.2.4.tgz"
+        },
+        "politespace": {
+          "version": "0.1.4",
+          "from": "politespace@0.1.4",
+          "resolved": "https://registry.npmjs.org/politespace/-/politespace-0.1.4.tgz"
+        }
+      }
     },
     "utf8": {
       "version": "2.1.0",
