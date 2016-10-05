@@ -147,7 +147,7 @@ export default class ServiceInstancePanel extends React.Component {
             empty={ unboundReady(this.state.unboundServiceInstances) }
           />
         </PanelGroup>,
-        <PanelGroup>
+        <PanelGroup key="3">
           <PanelActions>
           <Action clickHandler={ this.handlePurchaseLink }
             label="Purchase new services"
