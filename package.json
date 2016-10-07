@@ -95,5 +95,8 @@
     "url-loader": "^0.5.7",
     "watch": "^0.16.0",
     "webpack": "^1.13.2"
+  },
+  "devDependencies": {
+    "inert": "^4.0.2"
   }
 }
