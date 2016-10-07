@@ -15,6 +15,7 @@
     "lint": "eslint -c .eslintrc ./static_src",
     "test": "npm run lint && karma start --single-run",
     "testing-server": "node ./static_src/test/server/server.js",
+    "watch-server": "npm run testing-server & npm run watch",
     "watch-test": "karma start --browsers Chrome",
     "watch": "webpack --watch"
   },
