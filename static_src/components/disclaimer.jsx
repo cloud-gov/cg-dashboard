@@ -17,7 +17,7 @@ export default class Disclaimer extends React.Component {
     const flagAlt = 'US flag signifying that this is a United States Federal Government website';
     return (
       <div className={ this.styler('usa-disclaimer') }>
-        <div className={ this.styler('usa-grid') }>
+        <div className={ this.styler('cg-grid') }>
           <span className={ this.styler('usa-disclaimer-official') }>
             An official website of the United States Government
             <img alt={ flagAlt } src={ flag }>
