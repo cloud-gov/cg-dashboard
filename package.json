@@ -15,6 +15,7 @@
     "lint": "eslint -c .eslintrc ./static_src",
     "test": "npm run lint && karma start --single-run",
     "testing-server": "node ./static_src/test/server/server.js",
+    "watch-server": "npm run testing-server & npm run watch",
     "watch-test": "karma start --browsers Chrome",
     "watch": "webpack --watch"
   },
@@ -69,6 +70,7 @@
     "flux": "^2.0.3",
     "immutable": "^3.8.1",
     "imports-loader": "^0.6.4",
+    "inert": "^4.0.2",
     "jasmine-core": "^2.3.4",
     "jasmine-sinon": "^0.4.0",
     "json-loader": "^0.5.4",
