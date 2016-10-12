@@ -34,6 +34,14 @@ function handleError(err, errHandler = errorActions.errorFetch) {
 export default {
   version: APIV,
 
+  formatSplitResponse(resource) {
+    return Object.assign({}, resource.entity, resource.metadata);
+  },
+
+  formatSplitResponses(resources) {
+    return resources.map((r) => this.formatSplitResponse(r));
+  },
+
   fetch(url, action, multiple, ...params) {
     return http.get(APIV + url).then((res) => {
       if (!multiple) {

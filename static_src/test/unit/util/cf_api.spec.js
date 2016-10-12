@@ -58,6 +58,48 @@ describe('cfApi', function() {
     expect(spy).toHaveBeenCalledWith(errorFetchRes);
   }
 
+  describe('formatSplitResponse()', function() {
+    it('should combine sepaarate entity and metadata to one object', function() {
+      const resource = {
+        metadata: { guid: 'xzcvzc' },
+        entity: { name: 'blah' }
+      };
+
+      const actual = cfApi.formatSplitResponse(resource);
+
+      expect(actual.guid).toBeTruthy();
+      expect(actual.name).toBeTruthy();
+      expect(actual.metadata).toBeFalsy();
+      expect(actual.entity).toBeFalsy();
+    });
+  });
+
+  describe('formatSplitResponse()', function() {
+    var testRezs;
+
+    beforeEach(function() {
+      testRezs = [
+        { entity: { name: 'e1' }, metadata: { guid: 'mmmmmn' }},
+        { entity: { name: 'e2' }, metadata: { guid: 'mmmmmo' }}
+      ];
+    });
+
+    it('should merge entity with metadata for each resource', function() {
+      var actual = cfApi.formatSplitResponses(testRezs);
+
+      expect(actual[0]).toEqual({ name: 'e1', guid: 'mmmmmn'});
+    });
+
+    it('should not modify the original data', function() {
+      var clone = testRezs.slice(0);
+
+      cfApi.formatSplitResponses(testRezs);
+
+      expect(clone).toEqual(testRezs);
+    });
+  });
+
+
   describe('createRoute()', function() {
     it('should POST to the versioned /routes endpoint with data', function(done) {
       const domainGuid = 'fake-domain-guid';
