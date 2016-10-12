@@ -13,13 +13,13 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <div className={ this.styler('cg-grid') }>
+        <div className={ this.styler('grid') }>
           <h2>Dashboard</h2>
           <p>This Dashboard is a good way to get an overview of your organizations, spaces, and applications. For full management and deployment of applications, use the <a href="https://docs.cloud.gov/getting-started/setup/">command line interface</a>.
           </p>
 
           <h3 style={ {marginBottom: '0.5rem' }}>Cheatsheet</h3>
-          <section className={ this.styler('cg-width-6') }>
+          <section className={ this.styler('grid-width-6') }>
             <h4>A few things you can do here</h4>
             <ul>
               <li>See information about your orgs, spaces, and apps.</li>
@@ -29,7 +29,7 @@ export default class Home extends React.Component {
               <li>Create and bind routes for your apps.</li>
             </ul>
           </section>
-          <section className={ this.styler('cg-width-6') }>
+          <section className={ this.styler('grid-width-6', 'grid-omega') }>
             <h4>Basic cloud.gov structure</h4>
             <ul>
             <li><strong>Organization:</strong> Each org is a <a href="https://docs.cloud.gov/intro/terminology/pricing-terminology/">system</a> (<a href="https://docs.cloud.gov/getting-started/concepts/">shared perimeter</a>) that contains <a href="https://docs.cloud.gov/intro/pricing/system-stuffing/">related spaces holding related applications</a>.
@@ -42,8 +42,7 @@ export default class Home extends React.Component {
             <h4>Environments</h4>
             <p>If your org <a href="https://docs.cloud.gov/apps/govcloud/">is in GovCloud</a>, use <a href="https://dashboard.fr.cloud.gov/"><code>https://dashboard.fr.cloud.gov/</code></a> to see it.</p>
           </section>
-          <section className={ this.styler('cg-width-6') }
-            style={{marginTop: '-4rem'}}>
+          <section className={ this.styler('grid-width-6') }>
             <h4>Looking at an empty sandbox?</h4>
             <p><a href="https://docs.cloud.gov/getting-started/your-first-deploy/">Try making a “hello world” app</a>.</p>
             <h4>About this Dashboard</h4>
