@@ -25,9 +25,7 @@ class DomainStore extends BaseStore {
       }
 
       case domainActionTypes.DOMAIN_RECEIVED: {
-        const formattedDomain = this.formatSplitResponse([action.domain])[0];
-
-        this.merge('guid', formattedDomain, (changed) => {
+        this.merge('guid', action.domain, (changed) => {
           if (changed) this.emitChange();
         });
         break;

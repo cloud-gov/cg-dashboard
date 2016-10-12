@@ -104,8 +104,7 @@ class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_RECEIVED: {
-        const instance = this.formatSplitResponse(
-          [action.serviceInstance])[0];
+        const instance = action.serviceInstance;
 
         if (!this.waitingOnRequests) {
           this.fetching = false;
@@ -119,7 +118,7 @@ class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
-        const services = this.formatSplitResponse(action.serviceInstances);
+        const services = action.serviceInstances;
         this.mergeMany('guid', services, () => {
           this.fetching = false;
           this.fetched = true;
@@ -153,7 +152,7 @@ class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATED: {
-        cfApi.fetchServiceInstance(action.serviceInstance.metadata.guid);
+        cfApi.fetchServiceInstance(action.serviceInstance.guid);
         this._createInstanceForm = null;
         this.emitChange();
         break;
@@ -232,7 +231,7 @@ class ServiceInstanceStore extends BaseStore {
       case serviceActionTypes.SERVICE_UNBOUND: {
         let binding;
         if (action.type === serviceActionTypes.SERVICE_BOUND) {
-          binding = this.formatSplitResponse([action.serviceBinding]).pop();
+          binding = action.serviceBinding;
         } else {
           binding = action.serviceBinding;
         }

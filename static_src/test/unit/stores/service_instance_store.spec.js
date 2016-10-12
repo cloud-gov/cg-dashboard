@@ -5,7 +5,6 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import ServiceInstanceStore from '../../../stores/service_instance_store.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
@@ -176,14 +175,10 @@ describe('ServiceInstanceStore', function() {
     it('should merge in the service instance', function() {
       const spy = sandbox.spy(ServiceInstanceStore, 'merge');
       const instance = {
-        metadata: {
-          guid: 'zxmcvn23vlkxmcvn'
-        },
-        entity: {
-          name: 'testa'
-        }
+        guid: 'zxmcvn23vlkxmcvn',
+        name: 'testa'
       };
-      const expected = unwrapOfRes([instance])[0];
+      const expected = instance;
 
       serviceActions.receivedInstance(instance);
 
@@ -196,14 +191,10 @@ describe('ServiceInstanceStore', function() {
 
     it('should set fetched to true, fetched to false', function() {
       const instance = {
-        metadata: {
-          guid: 'zxmcvn23vlkxmcvn'
-        },
-        entity: {
-          name: 'testa'
-        }
+        guid: 'zxmcvn23vlkxmcvn',
+        name: 'testa'
       };
-      const expected = unwrapOfRes([instance])[0];
+      const expected = instance;
 
       serviceActions.receivedInstance(instance);
 
@@ -214,14 +205,10 @@ describe('ServiceInstanceStore', function() {
     it('should emit a change event', function() {
       const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
       const instance = {
-        metadata: {
-          guid: 'zxmcvn23vlkxmcvn'
-        },
-        entity: {
-          name: 'testa'
-        }
+        guid: 'zxmcvn23vlkxmcvn',
+        name: 'testa'
       };
-      const expected = unwrapOfRes([instance])[0];
+      const expected = instance;
 
       serviceActions.receivedInstance(instance);
 
@@ -242,14 +229,14 @@ describe('ServiceInstanceStore', function() {
       expect(ServiceInstanceStore.fetched).toEqual(true);
     });
 
-    it('should set data to unwrapped, passed in instances', function() {
+    it('should set data  passed in instances', function() {
       var expected = [
         {
           guid: 'adfa',
           type: 'postgres'
         }
       ];
-      let testRes = wrapInRes(expected);
+      let testRes = expected;
       AppDispatcher.handleServerAction({
         type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
         serviceInstances: testRes
@@ -344,12 +331,12 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
-  describe('on sevice instance created', function() {
+  describe('on service instance created', function() {
     it('should fetch the created instance with guid', function() {
       const spy = sandbox.spy(cfApi, 'fetchServiceInstance');
       const expectedGuid = 'akdfjzxcv32dfmnv23';
 
-      serviceActions.createdInstance({ metadata: {guid: expectedGuid }});
+      serviceActions.createdInstance({guid: expectedGuid });
 
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];
@@ -359,7 +346,7 @@ describe('ServiceInstanceStore', function() {
     it('emits a change event', function() {
       var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
 
-      serviceActions.createdInstance({ metadata: {guid: 'adsfavzxc' }});
+      serviceActions.createdInstance({guid: 'adsfavzxc' });
 
       expect(spy).toHaveBeenCalledOnce();
     });
@@ -368,7 +355,7 @@ describe('ServiceInstanceStore', function() {
       ServiceInstanceStore._createInstanceForm = { service: {} };
       expect(ServiceInstanceStore.createInstanceForm).toBeTruthy();
       serviceActions.createdInstance(
-        { metadata: { guid: 'asdf9a8fasss', name: 'nameA' }});
+        { guid: 'asdf9a8fasss', name: 'nameA' });
 
       expect(ServiceInstanceStore.createInstanceForm).toBeFalsy();
     });
@@ -523,8 +510,8 @@ describe('ServiceInstanceStore', function() {
       ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
 
       const binding = {
-        metadata: { guid: 'zxc' },
-        entity: { service_instance_guid: testGuid }
+        guid: 'zxc' ,
+        service_instance_guid: testGuid
       };
 
       serviceActions.boundService(binding);
@@ -541,8 +528,8 @@ describe('ServiceInstanceStore', function() {
       const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
 
       const binding = {
-        metadata: { guid: 'zxc' },
-        entity: { service_instance_guid: testGuid }
+        guid: 'zxc' ,
+        service_instance_guid: testGuid
       };
 
       serviceActions.boundService(binding);
@@ -558,8 +545,8 @@ describe('ServiceInstanceStore', function() {
       ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
 
       const binding = {
-        metadata: { guid: 'zxc' },
-        entity: { service_instance_guid: testGuid }
+        guid: 'zxc',
+        service_instance_guid: testGuid
       };
 
       serviceActions.boundService(binding);

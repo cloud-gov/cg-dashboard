@@ -49,7 +49,7 @@ describe('DomainStore', function() {
 
       AppDispatcher.handleServerAction({
         type: domainActionTypes.DOMAIN_RECEIVED,
-        domain: wrapInRes([domain])[0]
+        domain
       });
 
       const actual = DomainStore.get(domain.guid);

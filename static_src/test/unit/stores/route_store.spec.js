@@ -5,7 +5,6 @@ import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import routeActions from '../../../actions/route_actions.js';
 import RouteStore from '../../../stores/route_store.js';
 import { domainActionTypes, routeActionTypes } from '../../../constants';
@@ -324,7 +323,7 @@ describe('RouteStore', function() {
   describe('routeActionTypes.ROUTE_CREATED', function () {
     it('should add route and emitChange()', function () {
       const routeGuid = 'fake-route-guid';
-      const route = wrapInRes([ { guid: routeGuid } ])[0];
+      const route = { guid: routeGuid };
       const spy = sandbox.spy(RouteStore, 'emitChange');
 
       AppDispatcher.handleServerAction({
@@ -425,7 +424,7 @@ describe('RouteStore', function() {
       AppDispatcher.handleViewAction({
         type: routeActionTypes.ROUTES_FOR_APP_RECEIVED,
         appGuid: appGuid,
-        routes: wrapInRes([ { guid: 'adsfa' } ])
+        routes: [ { guid: 'adsfa' } ]
       });
 
       expect(spy).toHaveBeenCalledOnce();
@@ -439,7 +438,7 @@ describe('RouteStore', function() {
       AppDispatcher.handleServerAction({
         type: routeActionTypes.ROUTES_FOR_APP_RECEIVED,
         appGuid: sharedGuid,
-        routes: wrapInRes([ routeA ])
+        routes: [ routeA ]
       });
 
       let actual = RouteStore.get(routeA.guid);
@@ -460,7 +459,7 @@ describe('RouteStore', function() {
       AppDispatcher.handleServerAction({
         type: routeActionTypes.ROUTES_FOR_APP_RECEIVED,
         appGuid: sharedGuid,
-        routes: wrapInRes([newRoute])
+        routes: [newRoute]
       });
 
       expect(spy).toHaveBeenCalledOnce();
@@ -473,18 +472,14 @@ describe('RouteStore', function() {
       const spyShared = sandbox.spy(cfApi, 'fetchSharedDomain');
       const spyPrivate = sandbox.spy(cfApi, 'fetchPrivateDomain');
       const routeA = {
-        metadata: { guid: 'aldfjzxcbkvzxcb' },
-        entity: {
-          domain_guid: sharedDomainGuid,
-          domain_url: 'shared_domains'
-        }
+        guid: 'aldfjzxcbkvzxcb',
+        domain_guid: sharedDomainGuid,
+        domain_url: 'shared_domains'
       };
       const routeB = {
-        metadata: { guid: 'aldf23vx32xcb' },
-        entity: {
-          domain_guid: privateDomainGuid,
-          domain_url: 'private_domains'
-        }
+        guid: 'aldf23vx32xcb',
+        domain_guid: privateDomainGuid,
+        domain_url: 'private_domains'
       };
 
       routeActions.receivedRoutesForApp([routeA, routeB]);

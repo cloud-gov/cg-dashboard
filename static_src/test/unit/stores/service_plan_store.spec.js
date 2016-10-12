@@ -5,7 +5,6 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import ServicePlanStore from '../../../stores/service_plan_store.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
@@ -146,7 +145,7 @@ describe('ServicePlanStore', function() {
 
   describe('on services received', function() {
     it('should set fetching to true, fetched to false', function() {
-      const services = wrapInRes([{ guid: '3981f', name: 'adlfskzxcv' }]);
+      const services = [{ guid: '3981f', name: 'adlfskzxcv' }];
       ServicePlanStore.fetching = false;
       serviceActions.receivedServices(services);
 
@@ -185,7 +184,7 @@ describe('ServicePlanStore', function() {
       ];
       let existing = { guid: 'alkdjsfzxcv' };
 
-      let testRes = wrapInRes(expected);
+      let testRes = expected;
       ServicePlanStore.push(existing);
 
       serviceActions.receivedPlans(testRes);
@@ -206,7 +205,7 @@ describe('ServicePlanStore', function() {
         extra: JSON.stringify(expected)
       };
 
-      let testRes = wrapInRes([plan]);
+      let testRes = [plan];
 
       serviceActions.receivedPlans(testRes);
 
@@ -231,7 +230,7 @@ describe('ServicePlanStore', function() {
     it('should set fetching to false, fetched to true', function() {
       ServicePlanStore.fetching = true;
       ServicePlanStore.waitingOnRequests = false;
-      serviceActions.receivedPlans(wrapInRes([{ guid: 'adfklj' }]));
+      serviceActions.receivedPlans([{ guid: 'adfklj' }]);
 
       expect(ServicePlanStore.fetching).toEqual(false);
       expect(ServicePlanStore.fetched).toEqual(true);

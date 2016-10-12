@@ -33,7 +33,7 @@ class ServiceBindingStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_BINDINGS_RECEIVED: {
-        const bindings = this.formatSplitResponse(action.serviceBindings);
+        const bindings = action.serviceBindings;
         this.mergeMany('guid', bindings, () => { });
         this.fetching = false;
         this.fetched = true;
@@ -52,7 +52,7 @@ class ServiceBindingStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_BOUND: {
-        const binding = this.formatSplitResponse([action.serviceBinding]).pop();
+        const binding = action.serviceBinding;
         this.merge('guid', binding, () => this.emitChange());
         break;
       }

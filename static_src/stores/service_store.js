@@ -30,7 +30,7 @@ class ServiceStore extends BaseStore {
 
       case serviceActionTypes.SERVICES_RECEIVED: {
         AppDispatcher.waitFor([ServicePlanStore.dispatchToken]);
-        const services = this.formatSplitResponse(action.services);
+        const services = action.services;
         this.mergeMany('guid', services, () => { });
         this.fetching = false;
         this.fetched = true;

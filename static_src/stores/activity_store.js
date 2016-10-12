@@ -87,7 +87,7 @@ class ActivityStore extends BaseStore {
       case activityActionTypes.EVENTS_RECEIVED:
         this._eventsFetching = false;
         this._eventsFetched = true;
-        activity = this.formatSplitResponse(action.events).map((event) => {
+        activity = action.events.map((event) => {
           const item = Object.assign({}, event, {
             activity_type: 'event'
           });

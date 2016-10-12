@@ -5,7 +5,6 @@ import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import ActivityStore from '../../../stores/activity_store.js';
 import { activityActionTypes } from '../../../constants';
 
@@ -83,7 +82,7 @@ describe('ActivityStore', function() {
 
       AppDispatcher.handleServerAction({
         type: activityActionTypes.EVENTS_RECEIVED,
-        events: wrapInRes(activity)
+        events: activity
       });
 
 
@@ -101,7 +100,7 @@ describe('ActivityStore', function() {
 
       AppDispatcher.handleServerAction({
         type: activityActionTypes.EVENTS_RECEIVED,
-        events: wrapInRes(activity)
+        events: activity
       });
 
       expect(ActivityStore._eventsFetched).toEqual(true);
