@@ -66,8 +66,9 @@ export default {
     return http.get(APIV + url).then((res) => {
       const urls = [];
 
-      if (!res.data.next_url) return action(
-        this.formatSplitResponses(res.data.resources));
+      if (!res.data.next_url) {
+        return action(this.formatSplitResponses(res.data.resources));
+      }
 
       for (let i = 2; i <= res.data.total_pages; i++) {
         urls.push(`${APIV}${url}?page=${i}`);
