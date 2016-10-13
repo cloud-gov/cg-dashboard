@@ -45,9 +45,9 @@ export default {
   fetch(url, action, multiple, ...params) {
     return http.get(APIV + url).then((res) => {
       if (!multiple) {
-        action(res.data, ...params);
+        action(this.formatSplitResponse(res.data), ...params);
       } else {
-        action(res.data.resources, ...params);
+        action(this.formatSplitResponses(res.data.resources), ...params);
       }
     }).catch((err) => {
       handleError(err);
@@ -66,7 +66,8 @@ export default {
     return http.get(APIV + url).then((res) => {
       const urls = [];
 
-      if (!res.data.next_url) return action(res.data.resources);
+      if (!res.data.next_url) return action(
+        this.formatSplitResponses(res.data.resources));
 
       for (let i = 2; i <= res.data.total_pages; i++) {
         urls.push(`${APIV}${url}?page=${i}`);
@@ -77,7 +78,7 @@ export default {
       return Promise.all(reqs)
         .then((all) => all.pop())
         .then((all) => [].concat.call([], res.data.resources, all))
-        .then((all) => action(all, ...params))
+        .then((all) => action(this.formatSplitResponses(all), ...params))
         .catch((err) => handleError(err));
     });
   },
@@ -119,7 +120,7 @@ export default {
       let quota = {};
       quota = Object.assign(quota, ...res);
       fullOrg.quota = quota;
-      orgActions.receivedOrg(fullOrg);
+      orgActions.receivedOrg(this.formatSplitResponse(fullOrg));
     }, (err) => {
       errorActions.errorFetch(err);
     });
@@ -137,7 +138,7 @@ export default {
 
   fetchOrgs() {
     return http.get(`${APIV}/organizations`).then((res) => {
-      orgActions.receivedOrgs(res.data.resources);
+      orgActions.receivedOrgs(this.formatSplitResponses(res.data.resources));
     }).catch((err) => {
       handleError(err);
     });
@@ -145,7 +146,7 @@ export default {
 
   fetchOrgsSummaries(guids) {
     return Promise.all(guids.map((guid) => this.fetchOrgSummary(guid)))
-    .then((res) => orgActions.receivedOrgsSummaries(res))
+    .then((res) => orgActions.receivedOrgsSummaries(this.formatSplitResponses(res)))
     .catch((err) => {
       handleError(err);
     });
@@ -163,7 +164,7 @@ export default {
 
   fetchSpaces() {
     return http.get(`${APIV}/spaces`).then((res) => {
-      spaceActions.receivedSpaces(res.data.resources);
+      spaceActions.receivedSpaces(this.formatSplitResponses(res.data.resources));
     }).catch((err) => {
       handleError(err);
     });
@@ -198,7 +199,7 @@ export default {
 
     return http.post(`${APIV}/service_instances?accepts_incomplete=true`, payload)
       .then((res) => {
-        serviceActions.createdInstance(res.data);
+        serviceActions.createdInstance(this.formatSplitResponse(res.data));
       }).catch((err) => {
         handleError(err, serviceActions.errorCreateInstance);
       });
@@ -359,7 +360,7 @@ export default {
       path
     };
     return http.post(`${APIV}/routes`, payload).then((res) => {
-      routeActions.createdRoute(res.data);
+      routeActions.createdRoute(this.formatSplitResponse(res.data));
       return res.data;
     }).catch((err) => handleError(err, routeActions.errorCreateRoute));
   },
@@ -434,7 +435,7 @@ export default {
       service_instance_guid: serviceInstanceGuid
     };
     return http.post(`${APIV}/service_bindings`, payload).then((res) => {
-      serviceActions.boundService(res.data);
+      serviceActions.boundService(this.formatSplitResponse(res.data));
     }).catch((err) => {
       handleError(err, serviceActions.instanceError.bind(
         this, serviceInstanceGuid));
