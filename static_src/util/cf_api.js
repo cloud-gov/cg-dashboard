@@ -45,9 +45,17 @@ export default {
   fetch(url, action, multiple, ...params) {
     return http.get(APIV + url).then((res) => {
       if (!multiple) {
-        action(this.formatSplitResponse(res.data), ...params);
+        let data = res.data;
+        if (!/summary/.test(url)) {
+          data = this.formatSplitResponse(data);
+        }
+        action(data, ...params);
       } else {
-        action(this.formatSplitResponses(res.data.resources), ...params);
+        let data = res.data.resources;
+        if (!/summary/.test(url)) {
+          data = this.formatSplitResponses(data);
+        }
+        action(data, ...params);
       }
     }).catch((err) => {
       handleError(err);
@@ -121,7 +129,7 @@ export default {
       let quota = {};
       quota = Object.assign(quota, ...res);
       fullOrg.quota = quota;
-      orgActions.receivedOrg(this.formatSplitResponse(fullOrg));
+      orgActions.receivedOrg(fullOrg);
     }, (err) => {
       errorActions.errorFetch(err);
     });
