@@ -38,6 +38,8 @@ export default class Home extends React.Component {
               <li><strong>Marketplace:</strong> Use your org’s <a href="https://docs.cloud.gov/apps/managed-services/">marketplace</a> to create <a href="https://docs.cloud.gov/intro/pricing/rates/">service instances</a> for spaces in that org.
               </li>
             </ul>
+            <h4>Environments</h4>
+            <p>If your org <a href="https://docs.cloud.gov/apps/govcloud/">is in GovCloud</a>, use <a href="https://dashboard.fr.cloud.gov/"><code>https://dashboard.fr.cloud.gov/</code></a> to see it.</p>
           </section>
           <section className={ this.styler('usa-width-one-half') }
             style={{marginTop: '-4rem'}}>
