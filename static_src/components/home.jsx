@@ -23,8 +23,10 @@ export default class Home extends React.Component {
             <h4>A few things you can do here</h4>
             <ul>
               <li>See information about your orgs, spaces, and apps.</li>
+              <li>See recent activity (log events) for your apps.</li>
               <li>Manage permissions for users of your orgs and spaces.</li>
-              <li>Create service instances for your spaces.</li>
+              <li>Create and bind service instances for your spaces.</li>
+              <li>Create and bind routes for your apps.</li>
             </ul>
           </section>
           <section className={ this.styler('usa-width-one-half') }
