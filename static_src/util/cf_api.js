@@ -147,7 +147,7 @@ export default {
 
   fetchOrgsSummaries(guids) {
     return Promise.all(guids.map((guid) => this.fetchOrgSummary(guid)))
-    .then((res) => orgActions.receivedOrgsSummaries(this.formatSplitResponses(res)))
+    .then((res) => orgActions.receivedOrgsSummaries(res))
     .catch((err) => {
       handleError(err);
     });
