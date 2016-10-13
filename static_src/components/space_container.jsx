@@ -1,5 +1,6 @@
 
 import React from 'react';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import AppList from '../components/app_list.jsx';
 import OrgStore from '../stores/org_store.js';
@@ -8,6 +9,8 @@ import SpaceStore from '../stores/space_store.js';
 import Users from './users.jsx';
 import Tabnav from './tabnav.jsx';
 import TabnavItem from './tabnav_item.jsx';
+import createStyler from '../util/create_styler';
+
 
 const PAGES = {
   'apps': AppList,
@@ -36,6 +39,7 @@ export default class SpaceContainer extends React.Component {
     this.state = stateSetter();
     this._onChange = this._onChange.bind(this);
     this.spaceUrl = this.spaceUrl.bind(this);
+    this.styler = createStyler(style);
   }
 
   componentDidMount() {
@@ -83,6 +87,14 @@ export default class SpaceContainer extends React.Component {
     return this.state.currentOrg || '0';
   }
 
+  get defaultClasses() {
+    return [
+      this.styler('nav'),
+      this.styler('nav-tabs'),
+      this.styler('nav-justified')
+    ];
+  }
+
   render() {
     let Content = this.currentContent;
     let tabNav = <div></div>;
@@ -100,9 +112,9 @@ export default class SpaceContainer extends React.Component {
           <h2>
             <strong>{this.state.space.name}</strong> space in your <strong>{ this.currentOrgName }</strong> organization
           </h2>
-          <p><em>
+          <p className={ this.styler('page-dek') }>
             Each <a href="https://docs.cloud.gov/getting-started/concepts/">space</a> provides an environment for related applications (<a href="https://docs.cloud.gov/intro/overview/using-cloudgov-paas/">example use</a>).
-          </em></p>
+          </p>
         </div>
         { tabNav }
         <div>
