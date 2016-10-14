@@ -87,14 +87,6 @@ export default class SpaceContainer extends React.Component {
     return this.state.currentOrg || '0';
   }
 
-  get defaultClasses() {
-    return [
-      this.styler('nav'),
-      this.styler('nav-tabs'),
-      this.styler('nav-justified')
-    ];
-  }
-
   render() {
     let Content = this.currentContent;
     let tabNav = <div></div>;
