@@ -5,7 +5,6 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import ServiceBindingStore from '../../../stores/service_binding_store.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
@@ -140,16 +139,12 @@ describe('ServiceBindingStore', function() {
   describe('on service bound', function() {
     const bindingGuid = 'xcvm,n32980cvxn';
     const testBinding = {
-      metadata: {
-        guid: bindingGuid
-      },
-      entity: {
-        app_guid: 'zcxv32',
-        service_instance_guid: 'xxcv2133'
-      }
+      guid: bindingGuid,
+      app_guid: 'zcxv32',
+      service_instance_guid: 'xxcv2133'
     };
 
-    it('should add the new binding to the store, unwrapping', function() {
+    it('should add the new binding to the store', function() {
       const bindingGuid = 'xcvm,n32980cvxn';
       const expected = testBinding;
 
@@ -158,7 +153,7 @@ describe('ServiceBindingStore', function() {
       const actual = ServiceBindingStore.get(bindingGuid);
 
       expect(actual).toBeTruthy();
-      expect(actual).toEqual(unwrapOfRes([expected]).pop());
+      expect(actual).toEqual(expected);
     });
 
     it('should emit a change', function() {

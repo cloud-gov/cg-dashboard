@@ -51,7 +51,7 @@ class ServicePlanStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICES_RECEIVED: {
-        const services = this.formatSplitResponse(action.services);
+        const services = action.services;
         this.fetching = true;
         this.fetched = false;
         this.emitChange();
@@ -72,7 +72,7 @@ class ServicePlanStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
-        const instances = this.formatSplitResponse(action.serviceInstances);
+        const instances = action.serviceInstances;
         this.fetched = false;
         this.fetching = true;
         this.emitChange();
@@ -107,7 +107,7 @@ class ServicePlanStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_PLAN_RECEIVED: {
         const servicePlan = this.parseJson(
-          this.formatSplitResponse([action.servicePlan])[0], 'extra');
+          action.servicePlan, 'extra');
         this.merge('guid', servicePlan, () => {
           this.emitChange();
         });
@@ -116,7 +116,7 @@ class ServicePlanStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_PLANS_RECEIVED: {
         if (action.servicePlans) {
-          let servicePlans = this.formatSplitResponse(action.servicePlans);
+          let servicePlans = action.servicePlans;
           servicePlans = this.parseAllJson(servicePlans, 'extra');
 
           if (!this.waitingOnRequests) {

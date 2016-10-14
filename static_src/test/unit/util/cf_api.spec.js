@@ -58,6 +58,48 @@ describe('cfApi', function() {
     expect(spy).toHaveBeenCalledWith(errorFetchRes);
   }
 
+  describe('formatSplitResponse()', function() {
+    it('should combine sepaarate entity and metadata to one object', function() {
+      const resource = {
+        metadata: { guid: 'xzcvzc' },
+        entity: { name: 'blah' }
+      };
+
+      const actual = cfApi.formatSplitResponse(resource);
+
+      expect(actual.guid).toBeTruthy();
+      expect(actual.name).toBeTruthy();
+      expect(actual.metadata).toBeFalsy();
+      expect(actual.entity).toBeFalsy();
+    });
+  });
+
+  describe('formatSplitResponse()', function() {
+    var testRezs;
+
+    beforeEach(function() {
+      testRezs = [
+        { entity: { name: 'e1' }, metadata: { guid: 'mmmmmn' }},
+        { entity: { name: 'e2' }, metadata: { guid: 'mmmmmo' }}
+      ];
+    });
+
+    it('should merge entity with metadata for each resource', function() {
+      var actual = cfApi.formatSplitResponses(testRezs);
+
+      expect(actual[0]).toEqual({ name: 'e1', guid: 'mmmmmn'});
+    });
+
+    it('should not modify the original data', function() {
+      var clone = testRezs.slice(0);
+
+      cfApi.formatSplitResponses(testRezs);
+
+      expect(clone).toEqual(testRezs);
+    });
+  });
+
+
   describe('createRoute()', function() {
     it('should POST to the versioned /routes endpoint with data', function(done) {
       const domainGuid = 'fake-domain-guid';
@@ -89,8 +131,11 @@ describe('cfApi', function() {
       const host = 'fake-host';
       const path = 'fake-path';
       const data = {
-        domainGuid,
-        spaceGuid
+        metadata: { guid: 'zx' },
+        entity: {
+          domainGuid,
+          spaceGuid
+        }
       };
       const stub = sandbox.stub(http, 'post');
       stub.returns(Promise.resolve({ data }));
@@ -99,7 +144,7 @@ describe('cfApi', function() {
       cfApi.createRoute(domainGuid, spaceGuid, host, path).then(() => {
         const arg = actionSpy.getCall(0).args[0];
         expect(actionSpy).toHaveBeenCalledOnce();
-        expect(arg).toEqual(data);
+        expect(arg).toEqual(cfApi.formatSplitResponse(data));
         done();
       });
     });
@@ -165,8 +210,8 @@ describe('cfApi', function() {
 
   describe('fetchOne()', function() {
     it('should call an http get request with the versioned url', function(done) {
-      var stub = sandbox.stub(http, 'get'),
-          expectedUrl = '/org/asldfkj';
+      const stub = sandbox.stub(http, 'get');
+      const expectedUrl = '/org/asldfkj';
 
       let testPromise = createPromise({data: {}});
       stub.returns(testPromise);
@@ -181,9 +226,9 @@ describe('cfApi', function() {
 
     it('should call the action with the response data on success',
         function(done) {
-      var expected = { data: { guid: 'q39g08hgdih' }},
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy();
+      const expected = { data: { metadata: { guid: 'q39g08hgdih' }}};
+      const stub = sandbox.stub(http, 'get');
+      const spy = sandbox.spy();
 
       let testPromise = createPromise(expected);
       stub.returns(testPromise);
@@ -191,7 +236,7 @@ describe('cfApi', function() {
       cfApi.fetchOne('/thing/adjfk', spy).then(() => {
         expect(spy).toHaveBeenCalledOnce();
         let actual = spy.getCall(0).args[0];
-        expect(actual).toEqual(expected.data);
+        expect(actual).toEqual(expected.data.metadata);
         done();
       });;
     });
@@ -211,7 +256,7 @@ describe('cfApi', function() {
       const expectedArgA = 'arga';
       const expectedArgB = 'argb';
 
-      let testPromise = createPromise('asdf');
+      let testPromise = createPromise({ data: { metadata: { guid: 'adf' }}});
       stub.returns(testPromise);
 
       cfApi.fetchOne('/thing/asdfz', spy, expectedArgA, expectedArgB).then(() => {
@@ -225,14 +270,16 @@ describe('cfApi', function() {
   });
 
   describe('fetchAllPages()', function() {
-    it('should call the action if there is only one page', function () {
+    it('should call the action if there is only one page', function (done) {
       var stub = sandbox.stub(http, 'get');
       var expectedUrl = '/org/asldfkj';
       var data = {
         data: {
           next_url: false,
           total_pages: 1,
-          resources: ['hey']
+          resources: [
+            { metadata: { guid: 'zxcv' }}
+          ]
         }
       };
 
@@ -240,7 +287,7 @@ describe('cfApi', function() {
 
       cfApi.fetchAllPages(expectedUrl, function(responses) {
         expect(stub).toHaveBeenCalledOnce();
-        expect(responses).toEqual(['hey']);
+        expect(responses).toEqual([{ guid: 'zxcv' }]);
         done();
       });
     });
@@ -252,7 +299,9 @@ describe('cfApi', function() {
         data: {
           next_url: true,
           total_pages: 20,
-          resources: ['hey']
+          resources: [
+            { metadata: { guid: 'zxcv' }}
+          ]
         }
       };
 
@@ -272,13 +321,18 @@ describe('cfApi', function() {
         data: {
           next_url: true,
           total_pages: 2,
-          resources: ['hey']
+          resources: [
+            { metadata: { guid: 'higw' }}
+          ]
         }
       };
       var dataTwo = Object.assign({}, dataOne, {
         data: {
           next_url: false,
-          resources: ['yo', 'hello']
+          resources: [
+            { metadata: { guid: 'xvms' }},
+            { metadata: { guid: 'zxc' }}
+          ]
         }
       });
 
@@ -286,7 +340,8 @@ describe('cfApi', function() {
       stub.onSecondCall().returns(createPromise(dataTwo));
 
       cfApi.fetchAllPages(expectedUrl, function(responses) {
-        var combined = dataOne.data.resources.concat(dataTwo.data.resources);
+        var combined = dataOne.data.resources.concat(dataTwo.data.resources).map(
+          (r) => Object.assign({}, r.metadata, r.entity));
         expect(stub).toHaveBeenCalledTwice();
         expect(responses).toEqual(combined);
         done();
@@ -387,7 +442,7 @@ describe('cfApi', function() {
   describe('fetchOrgs()', function() {
     it('calls http get request for orgs', function(done) {
       const spy = sandbox.stub(http, 'get');
-      let testPromise = createPromise({data: {}});
+      let testPromise = createPromise({data: { resources: [{metadata: {guid: 'sdf'}}]}});
       spy.returns(testPromise);
       sandbox.stub(orgActions, 'receivedOrgs').returns();
 
@@ -396,7 +451,7 @@ describe('cfApi', function() {
         let actual = spy.getCall(0).args[0];
         expect(actual).toMatch('organizations');
         done();
-      });;
+      });
     });
 
     it('calls orgs received with orgs on success', function(done) {
@@ -413,10 +468,10 @@ describe('cfApi', function() {
 
       let actual = cfApi.fetchOrgs().then(() => {
         expect(spy).toHaveBeenCalledOnce();
-        expect(spy).toHaveBeenCalledWith(expectedOrgs);
+        expect(spy).toHaveBeenCalledWith(expectedOrgs.map((org) =>
+          Object.assign({}, org.entity, org.metadata)));
         done();
-      });;
-
+      });
     });
   });
 
@@ -499,7 +554,7 @@ describe('cfApi', function() {
 
       cfApi.fetchSpaces().then(() => {
         const args = actionSpy.getCall(0).args[0];
-        expect(args).toEqual(expected);
+        expect(args).toEqual(unwrapOfRes(expected));
         expect(actionSpy).toHaveBeenCalledOnce();
         done();
       });
@@ -602,7 +657,7 @@ describe('cfApi', function() {
         function(done) {
       var stub = sandbox.stub(http, 'post'),
           spy = sandbox.stub(serviceActions, 'createdInstance').returns(),
-          expected = { data: { guid: 'znvmjahskf' }};
+          expected = { data: { metadata: { guid: 'znvmjahskf' }}};
 
       let testPromise = createPromise(expected);
       stub.returns(testPromise);
@@ -613,7 +668,7 @@ describe('cfApi', function() {
           expectedServicePlanGuid).then(() => {
             expect(spy).toHaveBeenCalledOnce();
             let actual = spy.getCall(0).args[0];
-            expect(actual).toEqual(expected.data);
+            expect(actual).toEqual(expected.data.metadata);
             done();
           });
     });
@@ -1327,7 +1382,7 @@ describe('cfApi', function() {
       cfApi.createServiceBinding(appGuid, serviceInstanceGuid).then(() => {
         expect(spy).toHaveBeenCalledOnce();
         const arg = spy.getCall(0).args[0];
-        expect(arg).toEqual(expected.data);
+        expect(arg).toEqual(cfApi.formatSplitResponse(expected.data));
         done();
       });
     });

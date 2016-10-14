@@ -253,31 +253,6 @@ describe('BaseStore', () => {
     });
   });
 
-  describe('formatSplitResponse()', function() {
-    var testRezs;
-
-    beforeEach(function() {
-      testRezs = [
-        { entity: { name: 'e1' }, metadata: { guid: 'mmmmmn' }},
-        { entity: { name: 'e2' }, metadata: { guid: 'mmmmmo' }}
-      ];
-    });
-
-    it('should merge entity with metadata for each resource', function() {
-      var actual = store.formatSplitResponse(testRezs);
-
-      expect(actual[0]).toEqual({ name: 'e1', guid: 'mmmmmn'});
-    });
-
-    it('should not modify the original data', function() {
-      var clone = testRezs.slice(0);
-
-      store.formatSplitResponse(testRezs);
-
-      expect(clone).toEqual(testRezs);
-    });
-  });
-
   describe('merge()', function() {
     var existingEntityA = {
       guid: 'zznbmbz',

@@ -50,7 +50,7 @@ class OrgStore extends BaseStore {
       }
 
       case orgActionTypes.ORGS_RECEIVED: {
-        const updates = this.formatSplitResponse(action.orgs).map((d) => {
+        const updates = action.orgs.map((d) => {
           if (d.spaces) {
             return d;
           }

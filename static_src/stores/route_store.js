@@ -43,7 +43,7 @@ class RouteStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case routeActionTypes.ROUTES_RECEIVED: {
-        const routes = this.formatSplitResponse(action.routes);
+        const routes = action.routes;
         this.mergeRoutes(routes);
         break;
       }
@@ -134,7 +134,7 @@ class RouteStore extends BaseStore {
       }
 
       case routeActionTypes.ROUTE_CREATED: {
-        const route = this.formatSplitResponse([action.route]).pop();
+        const route = action.route;
         this.merge('guid', route, () => this.emitChange());
         break;
       }
@@ -160,7 +160,7 @@ class RouteStore extends BaseStore {
         break;
 
       case routeActionTypes.ROUTES_FOR_APP_RECEIVED: {
-        const routes = this.formatSplitResponse(action.routes).map((route) =>
+        const routes = action.routes.map((route) =>
           Object.assign({}, route, { app_guid: action.appGuid })
         );
         this.mergeRoutes(routes);

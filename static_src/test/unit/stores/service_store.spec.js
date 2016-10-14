@@ -5,7 +5,6 @@ import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import ServiceStore from '../../../stores/service_store.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
@@ -54,7 +53,7 @@ describe('ServiceStore', function() {
 
   describe('on services received', function() {
     it('should set fetching to false, fetched to true', function() {
-      let testRes = wrapInRes([{ guid: '3981f', name: 'adlfskzxcv' }]);
+      let testRes = [{ guid: '3981f', name: 'adlfskzxcv' }];
       ServiceStore.fetching = true;
       ServiceStore.fetched = false;
 
@@ -71,7 +70,7 @@ describe('ServiceStore', function() {
         { guid: sharedGuid, name: 'adlfskzxcv' }
       ];
 
-      let testRes = wrapInRes(expected);
+      let testRes = expected;
       ServiceStore._data = Immutable.fromJS([{ guid: sharedGuid }]);
 
 
@@ -85,7 +84,7 @@ describe('ServiceStore', function() {
     it('should emit a change event', function() {
       var spy = sandbox.spy(ServiceStore, 'emitChange');
 
-      serviceActions.receivedServices(wrapInRes([{ guid: 'adfklj' }]));
+      serviceActions.receivedServices([{ guid: 'adfklj' }]);
 
       expect(spy).toHaveBeenCalledOnce();
     });

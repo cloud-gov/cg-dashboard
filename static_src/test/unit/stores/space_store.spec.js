@@ -4,7 +4,6 @@ import '../../global_setup.js';
 import Immutable from 'immutable';
 
 import AppDispatcher from '../../../dispatcher.js';
-import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import orgActions from '../../../actions/org_actions.js';
 import spaceActions from '../../../actions/space_actions.js';
 import SpaceStore from '../../../stores/space_store.js';
@@ -92,16 +91,16 @@ describe('SpaceStore', function() {
     it('should call mergeMany with spaces from action', function () {
       const spy = sandbox.spy(SpaceStore, 'mergeMany');
       const spaces = [{ guid: 'fake-guid-one' }]
-      const res = wrapInRes(spaces);
+      const res = spaces;
 
       spaceActions.receivedSpaces(res);
 
       expect(spy).toHaveBeenCalledOnce();
-      expect(spy.getCall(0).args[1]).toEqual(spaces); 
+      expect(spy.getCall(0).args[1]).toEqual(spaces);
     });
 
     it('should set fetching to false and fetched to true', function() {
-      const spaces = wrapInRes([{ guid: 'fake-guid-one' }]);
+      const spaces = [{ guid: 'fake-guid-one' }];
       SpaceStore.fetching = true;
       SpaceStore.fetched = false;
 
@@ -112,7 +111,7 @@ describe('SpaceStore', function() {
     });
 
     it('should emit a change event', function() {
-      const spaces = wrapInRes([{ guid: 'fake-guid-one' }]);
+      const spaces = [{ guid: 'fake-guid-one' }];
       const spy = sandbox.spy(SpaceStore, 'emitChange');
 
       spaceActions.receivedSpaces(spaces);

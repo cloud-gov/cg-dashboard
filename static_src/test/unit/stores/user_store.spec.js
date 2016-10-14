@@ -5,7 +5,6 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import UserStore from '../../../stores/user_store.js';
 import userActions from '../../../actions/user_actions.js';
 import { userActionTypes } from '../../../constants';
@@ -117,7 +116,7 @@ describe('UserStore', function() {
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.SPACE_USERS_RECEIVED,
-        users: wrapInRes([{ guid: 'adsfa' }])
+        users: [{ guid: 'adsfa' }]
       });
 
       expect(UserStore.fetching).toEqual(false);
@@ -150,7 +149,7 @@ describe('UserStore', function() {
 
       AppDispatcher.handleServerAction({
         type: userActionTypes.SPACE_USERS_RECEIVED,
-        users: wrapInRes([newUser])
+        users: [newUser]
       });
 
       let actual = UserStore.get(sharedGuid);
@@ -167,7 +166,7 @@ describe('UserStore', function() {
 
       AppDispatcher.handleServerAction({
         type: userActionTypes.SPACE_USERS_RECEIVED,
-        users: wrapInRes([user]),
+        users: [user],
         orgGuid: expectedGuid
       });
 
@@ -183,7 +182,7 @@ describe('UserStore', function() {
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-        orgUserRoles: wrapInRes([{ guid: 'adsfa' }])
+        orgUserRoles: [{ guid: 'adsfa' }]
       });
 
       expect(spy).toHaveBeenCalledOnce();
@@ -196,7 +195,7 @@ describe('UserStore', function() {
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-        orgUserRoles: wrapInRes([{ guid: 'adsfa' }])
+        orgUserRoles: [{ guid: 'adsfa' }]
       });
 
       expect(UserStore.fetching).toEqual(false);
@@ -214,7 +213,7 @@ describe('UserStore', function() {
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-        orgUserRoles: wrapInRes([newUser])
+        orgUserRoles: [newUser]
       });
       let actual = UserStore.get(sharedGuid);
       let expected = Object.assign({}, existingUser, newUser);

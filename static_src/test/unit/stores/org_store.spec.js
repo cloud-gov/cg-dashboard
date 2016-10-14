@@ -5,7 +5,6 @@ import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import OrgStore from '../../../stores/org_store.js';
 import { orgActionTypes } from '../../../constants';
 
@@ -74,7 +73,7 @@ describe('OrgStore', () => {
 
   describe('on orgs received', () => {
     it('should set data to passed in orgs', () => {
-      var expected = wrapInRes([{guid: '1as'}, {guid: '2as'}]);
+      var expected = [{guid: '1as'}, {guid: '2as'}];
       expect(OrgStore.getAll()).toBeArray();
 
       AppDispatcher.handleViewAction({
@@ -83,11 +82,11 @@ describe('OrgStore', () => {
       });
 
       expect(OrgStore.getAll().length).toEqual(2);
-      expect(OrgStore.getAll()).toEqual(unwrapOfRes(expected));
+      expect(OrgStore.getAll()).toEqual(expected);
     });
 
     it('should set fetching to false', () => {
-      var expected = wrapInRes([{guid: '1as'}, {guid: '2as'}]);
+      var expected = [{guid: '1as'}, {guid: '2as'}];
 
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORGS_RECEIVED,
@@ -98,8 +97,8 @@ describe('OrgStore', () => {
     });
 
     it('should merge data with existing orgs', () => {
-      var updates = wrapInRes([{guid: 'aaa1', name: 'sue'},
-            {guid: 'aaa2', name: 'see'}]),
+      var updates = [{guid: 'aaa1', name: 'sue'},
+            {guid: 'aaa2', name: 'see'}],
           current = [{guid: 'aaa1', memory: 1024}];
 
       OrgStore._data = Immutable.fromJS(current);

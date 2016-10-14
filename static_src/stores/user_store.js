@@ -64,7 +64,7 @@ class UserStore extends BaseStore {
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
         this.fetching = false;
         this.fetched = true;
-        const updates = this.formatSplitResponse(action.orgUserRoles);
+        const updates = action.orgUserRoles;
         if (updates.length) {
           this.mergeMany('guid', updates, () => { });
         }
@@ -152,7 +152,7 @@ class UserStore extends BaseStore {
 
       case userActionTypes.SPACE_USERS_RECEIVED:
       case userActionTypes.ORG_USERS_RECEIVED: {
-        let updates = this.formatSplitResponse(action.users);
+        let updates = action.users;
         updates = updates.map((update) => {
           const updateCopy = Object.assign({}, update);
           if (action.orgGuid) {

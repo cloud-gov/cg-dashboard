@@ -5,7 +5,6 @@ import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import { wrapInRes, unwrapOfRes } from '../helpers.js';
 import QuotaStore from '../../../stores/quota_store.js';
 import { quotaActionTypes } from '../../../constants';
 

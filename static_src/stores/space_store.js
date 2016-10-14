@@ -1,4 +1,3 @@
-
 /*
  * Store for space data. Will store and update space data on changes from UI and
  * server.
@@ -59,7 +58,7 @@ class SpaceStore extends BaseStore {
       }
 
       case spaceActionTypes.SPACES_RECEIVED: {
-        this.mergeMany('guid', this.formatSplitResponse(action.spaces), () => {
+        this.mergeMany('guid', action.spaces, () => {
           this.fetching = false;
           this.fetched = true;
           this.emitChange();

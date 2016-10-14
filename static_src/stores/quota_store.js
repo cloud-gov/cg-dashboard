@@ -26,7 +26,7 @@ class QuotaStore extends BaseStore {
 
       case quotaActionTypes.ORGS_QUOTAS_RECEIVED: {
         const quotas = action.quotas.map((quota) => {
-          const guid = quota.metadata.guid;
+          const guid = quota.guid;
           return Object.assign({}, quota.entity, { guid });
         });
         this.mergeMany('guid', quotas, (changed) => {
@@ -42,7 +42,7 @@ class QuotaStore extends BaseStore {
 
       case quotaActionTypes.SPACES_QUOTAS_RECEIVED: {
         const quotas = action.quotas.map((quota) => {
-          const guid = quota.metadata.guid;
+          const guid = quota.guid;
           return Object.assign({}, quota.entity, { guid });
         });
         this.mergeMany('guid', quotas, (changed) => {
