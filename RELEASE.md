@@ -87,7 +87,7 @@ and the `testSpace01` space.
   - Click edit again.
   - Click "Delete route".
   - Ensure the route is deleted.
-1. Click on the `Overview` link in the sidenav and ensure the homepage appears.
+1. Click on the `Guide` link in the sidenav and ensure the homepage appears.
 
 ## Tagging
 
