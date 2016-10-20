@@ -82,8 +82,8 @@ export class Nav extends React.Component {
 
   render() {
     const mainList = this.styler('usa-sidenav-list', 'sidenav-list', 'sidenav-level-one');
-    const secondList = this.styler('usa-sidenav-list', 'sidenav-list', 'sidenav-level-two');
-    const thirdList = this.styler('sidenav-list', 'usa-sidenav-sub_list', 'sidenav-level-three');
+    const secondList = this.styler('usa-sidenav-sub_list', 'sidenav-list', 'sidenav-level-two');
+    const thirdList = this.styler('sidenav-list', 'sidenav-level-three');
     const downArrow = this.styler('menu-arrow', 'sidenav-arrow', 'sidenav-arrow-down');
     const rightArrow = this.styler('menu-arrow', 'sidenav-arrow', 'sidenav-arrow-right');
     const header = this.styler('sidenav-header');
@@ -109,11 +109,8 @@ export class Nav extends React.Component {
           if (org.space_menu_open) {
             subList = (
               <ul className={ secondList }>
-                <li className={ header }>
-                  <a href={ this.orgHref(org) }>
-                    <span className={ this.styler('sidenav-header-text') }>
-                      Spaces</span>
-                  </a>
+                <li>
+                  <a href={ this.orgHref(org) }>{ org.name }</a>
                   <ul className={ thirdList }>
                     { sortedSpaces.map((space) => {
                       let activeSpaceClasses = (this.isCurrentSpace(space.guid)) ?
@@ -129,7 +126,7 @@ export class Nav extends React.Component {
                   </ul>
                 </li>
                 <li className={ this.styler('marketplace') }>
-                  <a href={ this.marketplaceHref(org) }>Marketplace</a>
+                  <a href={ this.marketplaceHref(org) }>{ org.name } marketplace</a>
                 </li>
               </ul>
             );
