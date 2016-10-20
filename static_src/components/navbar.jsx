@@ -112,7 +112,7 @@ export class Nav extends React.Component {
             subList = (
               <ul className={ secondList }>
                 <li>
-                  <a href={ this.orgHref(org) }>{ org.name }</a>
+                  <a href={ this.orgHref(org) }>{ org.name } overview</a>
                   <ul className={ thirdList }>
                     { sortedSpaces.map((space) => {
                       let activeSpaceClasses = (this.isCurrentSpace(space.guid)) ?
