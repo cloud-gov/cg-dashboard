@@ -112,7 +112,10 @@ export class Nav extends React.Component {
             subList = (
               <ul className={ secondList }>
                 <li>
+                  // previously "spaces" — but it's actually our rudimentary org page
+                  // note: this element should get the active class `sidenav-active-dashboard` any time its page is visible
                   <a href={ this.orgHref(org) }>{ org.name }</a>
+                  //
                   <ul className={ thirdList }>
                     { sortedSpaces.map((space) => {
                       let activeSpaceClasses = (this.isCurrentSpace(space.guid)) ?
@@ -128,7 +131,9 @@ export class Nav extends React.Component {
                   </ul>
                 </li>
                 <li className={ this.styler('marketplace') }>
+                  // note: this element should get the active class `sidenav-active-dashboard` any time its page is visible
                   <a href={ this.marketplaceHref(org) }>{ org.name } marketplace</a>
+                  //
                 </li>
               </ul>
             );
