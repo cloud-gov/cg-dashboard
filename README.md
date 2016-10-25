@@ -28,7 +28,7 @@ Learn more about [cloud.gov](https://cloud.gov).
 
 ## Setup
 ### Go backend
-The Go backend isn't strictly required for all development. Consider [running locally with node](running_locally_without_needing_go) if you will not be doing primary feature work where you need access to the actual Cloud Foundry API.
+The Go backend isn't strictly required for all development. Consider [running locally with node](#run-locally-without-needing-go) if you will not be doing primary feature work where you need access to the actual Cloud Foundry API.
 
 #### Cloning the repository
 If you are unfamiliar with [`Go` project directory structure](https://golang.org/doc/code.html#Workspaces), you want the code in this repository to be in something like `<your-code-directory>/cg-dashboard-ws/src/github.com/18f/cg-dashboard`. You can use that exact pattern by cloning the repository with:
