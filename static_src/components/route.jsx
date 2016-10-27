@@ -186,7 +186,7 @@ export default class Route extends React.Component {
         );
       } else {
         let displayUrl = <span>{ url }</span>;
-        if (!RouteStore.isRouteBoundToApp(route)) {
+        if (RouteStore.isRouteBoundToApp(route)) {
           displayUrl = <a href={ url } title="See app route">{ url }</a>;
         }
         content = (
