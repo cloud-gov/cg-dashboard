@@ -114,7 +114,7 @@ export class Nav extends React.Component {
                   <ul className={ thirdList }>
                     { sortedSpaces.map((space) => {
                       let activeSpaceClasses = (this.isCurrentSpace(space.guid)) ?
-                          this.styler('sidenav-active-dashboard') : '';
+                          this.styler('sidenav-active') : '';
                       return (
                         <li key={ space.guid } className={activeSpaceClasses}>
                           <a href={ this.spaceHref(org, space.guid) }>
