@@ -87,14 +87,12 @@ export class Nav extends React.Component {
     const downArrow = this.styler('menu-arrow', 'sidenav-arrow', 'sidenav-arrow-down');
     const rightArrow = this.styler('menu-arrow', 'sidenav-arrow', 'sidenav-arrow-right');
     const header = this.styler('sidenav-header');
-    const faHome = this.styler('fa', 'fa-home');
     const sortedOrgs = this.state.orgs.sort((a, b) => a.name < b.name ? -1 : 1);
 
     return (
       <div className={ this.styler('test-nav-primary') }>
         <ul className={ mainList }>
           <li key="overview" className={ this.styler('sidenav-entity') }>
-            <i className={ faHome }></i>
             <a href="/#" onClick={this._handleOverviewClick}>Overview</a>
           </li>
           <li key="organizations" className={ this.styler('sidenav-header') }>
