@@ -3,6 +3,8 @@
  */
 
 import React from 'react';
+import style from 'cloudgov-style/css/cloudgov-style.css';
+import createStyler from '../util/create_styler';
 
 import CreateServiceInstance from './create_service_instance.jsx';
 import Loading from './loading.jsx';
@@ -37,6 +39,7 @@ export default class Marketplace extends React.Component {
     this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
+    this.styler = createStyler(style);
   }
 
   componentDidMount() {
@@ -83,7 +86,7 @@ export default class Marketplace extends React.Component {
         <div>
           <div>
             { marketplace }
-            <p><em>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</em></p>
+            <p className={ this.styler('page-dek') }>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</p>
           </div>
           { list }
           { form }
