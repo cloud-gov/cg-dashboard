@@ -12,7 +12,7 @@
     "build-style": "cd node_modules/cloudgov-style && npm install && npm run build",
     "check-style": "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"github.com\" ]] && npm run build-style || exit 0'",
     "clean": "rm -rf ./static/assets/*",
-    "lint": "eslint -c .eslintrc ./static_src",
+    "lint": "eslint --ext .js --ext .jsx -c .eslintrc ./static_src",
     "test": "npm run lint && karma start --single-run",
     "testing-server": "node ./static_src/test/server/server.js",
     "watch-server": "npm run testing-server & npm run watch",
