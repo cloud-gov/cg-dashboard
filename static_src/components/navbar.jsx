@@ -93,7 +93,7 @@ export class Nav extends React.Component {
       <div className={ this.styler('test-nav-primary') }>
         <ul className={ mainList }>
           <li key="overview" className={ this.styler('sidenav-entity') }>
-            <a href="/#" onClick={this._handleOverviewClick}>Overview</a>
+            <a href="/#" onClick={this._handleOverviewClick}>Guide</a>
           </li>
           <li key="organizations" className={ this.styler('sidenav-header') }>
             <span className={ this.styler('sidenav-header-text') }>
