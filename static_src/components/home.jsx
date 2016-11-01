@@ -14,10 +14,9 @@ export default class Home extends React.Component {
     return (
       <div>
         <div className={ this.styler('grid') }>
-          <h2>Dashboard</h2>
-          <p>This Dashboard is a good way to get an overview of your organizations, spaces, and applications. For full management and deployment of applications, use the <a href="https://docs.cloud.gov/getting-started/setup/">command line interface</a>.
+          <h1>Overview</h1>
+          <p className={ this.styler('page-dek') }>The dashboard provides an overview of your organizations, spaces, and applications. For full management and deployment of applications, use the <a href="https://docs.cloud.gov/getting-started/setup/">command line interface</a>.
           </p>
-
           <h3 style={ {marginBottom: '0.5rem' }}>Cheatsheet</h3>
           <div className={ this.styler('grid') }>
             <section className={ this.styler('grid-width-6') }>
