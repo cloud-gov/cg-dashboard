@@ -14,7 +14,7 @@ export default class Login extends React.Component {
         Login</a>
       <div className="text-right">
         <h3>Version: <span>Alpha</span></h3>
-        <a href="https://github.com/18F/cf-deck" className="test-contribute_link">
+        <a href="https://github.com/18F/cg-dashboard" className="test-contribute_link">
           <span aria-hidden="true">
             Contribute</span>
         </a>
