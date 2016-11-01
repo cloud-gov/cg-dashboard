@@ -146,7 +146,7 @@ Adding performance tracking and metrics is currently a TODO. Here are some items
 - Any library added that's total file size is above 25kb should be evaluated for performance affect.
 
 ## Onboarding checklist
-Complete the [onboarding tasks](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md) for the whole cloud.gov team and for the Liberator theme.
+Complete the [onboarding tasks](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md) for the whole cloud.gov team and for the Navigator theme.
 
 ## Public domain
 
