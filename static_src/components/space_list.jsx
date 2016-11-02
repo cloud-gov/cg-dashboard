@@ -9,11 +9,12 @@ import createStyler from '../util/create_styler';
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
   const currentOrg = OrgStore.get(currentOrgGuid);
+  const spaces = (currentOrg) ? currentOrg.spaces : [];
 
   return {
     currentOrg,
     currentOrgGuid,
-    rows: (currentOrg) ? currentOrg.spaces : []
+    rows: spaces.sort((a, b) => a.name.localeCompare(b.name))
   };
 }
 

@@ -19,7 +19,7 @@ function stateSetter() {
   const apps = (space && space.apps) ? space.apps : [];
 
   return {
-    apps: apps,
+    apps: apps.sort((a, b) => a.name.localeCompare(b.name)),
     currentOrgGuid,
     currentSpaceGuid,
     loading: SpaceStore.fetching,
