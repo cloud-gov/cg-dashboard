@@ -5,7 +5,7 @@ We're so glad you're thinking about contributing to an 18F open source project! 
 Before contributing, we encourage you to read our CONTRIBUTING policy (you are here), our LICENSE, and our README, all of which should be in this repository. If you have any questions, or want to read more about our underlying policies, you can consult the 18F Open Source Policy GitHub repository at https://github.com/18f/open-source-policy, or just shoot us an email/official government letterhead note to [18f@gsa.gov](mailto:18f@gsa.gov).
 
 ## High-level roadmap
-The cloud.gov dashboard is a unit-tested React single-page application. Its previous version, available at [console.cloud.gov](https://console.cloud.gov), was an Angular app; it's available at the `deprecated` branch.
+The cloud.gov dashboard is a unit-tested React single-page application. Its previous version was an Angular app and is available at the `deprecated` branch.
 
 The work on the cloud.gov front-end fits into a higher-level roadmap for all of cloud.gov. For now, this is in [another tool](https://18f.aha.io/products/CGP/bookmarks/project_timelines/new) only accessible by 18F personnel.
 
@@ -32,11 +32,11 @@ The criteria for moving a card through the columns is in the main cloud.gov prod
 A feature is a higher-level epic that will encompass multiple smaller units of work. An example would be "Route panel" or "Service panel on app page".
 - Stakeholders see and approve the work as meeting acceptance criteria.
 - Is deployed to production, dashboard.cloud.gov site.
-- All appropriate global styling is in cg-style rather then cg-dashboard.
+- All appropriate shared global styling is in cg-style rather then cg-dashboard
+  or other repos.
 - All potential errors are handled correctly.
 - If uses new data from cloud foundry api (new methods added to `cf_api.js`) ensure they are mocked in testing server.
 - Open an issue or PR in [cg-docs](https://github.com/18F/cg-docs) to document the new feature.
-
 - A product owner or team member will check a story waiting acceptance and put it into "done" if it meets the criteria.
 
 For more information, see the high-level [cloud.gov respository](https://github.com/18F/cg-product) and [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md).
@@ -69,10 +69,14 @@ For more information, see the high-level [cloud.gov respository](https://github.
   - Work-in-progress PRs are allowed. Be sure to tag the review with "ready for review" when it's ready though.
 - As another team member, review the code and ensure it conforms to the coding standards and exit criteria
   - PR's do not need to be assigned due to small team size
-- When it is reviewed and ready to be merged, add the "ready for merge" label, and take off "ready for review" label.
-- Any team member (code author or otherwise) can merge the code once it has the "ready for merge" label.
-  - Updates on PRs in the repo will be posted in the #cloud-gov-frontend Slack channel
-- It's fine to merge code that isn't "feature complete." The staging branch is not currently in use, so is fine to have some work on it that still needs work.
+- When it is reviewed and ready to be merged, use Github's [Code
+  Review](https://help.github.com/articles/approving-a-pull-request-with-required-reviews/)
+  feature to approve the pull request.
+- Any team member (code author or otherwise) can merge the code once it has an
+  approved review.
+  - Updates on PRs in the repo will be posted in the #cloud-gov-nav-news Slack channel
+- It's fine to merge code that isn't "feature complete." The staging branch is
+  not currently in use, so it is fine to use it for "in progress work".
 - We're currently not focusing on acceptance tests right now due to the tests not being easily repeatable and having a clean data state. If a change breaks an acceptance test, spend 10 minutes trying to fix it before disabling the test. Do not write new acceptance tests.
 
 #### Other Git standards
@@ -80,7 +84,7 @@ For more information, see the high-level [cloud.gov respository](https://github.
 - The team prefers rebasing over merging, though we use GitHub to close out pull requests. This means that PRs will be merged, but if you're refreshing a local branch make sure to use rebase. For example, if you want to update your `staging` branch to reflect the most recent changes on GitHub use `git pull --rebase origin staging`.
 
 ### Branches
-- Open branches off main repo due to Travis CI env var problem. For now, remember to branch off of the `master` branch.
+- Open branches off main repo due to Circle CI env var problem. For now, remember to branch off of the `master` branch.
 - Name your branch with your initials first.
 - Include a short description of the feature that's being developed after your initial.
 
@@ -132,9 +136,11 @@ The code base includes linting configurations and tools, but is currently not fu
 - Pages and views should work on different device screen-sizes, and should work as specified in design mockups.
   - If making a feature work on mobile is time-consuming, and there isnt' an official design for the mobile view of the feature yet, the mobile view can be held off until a design becomes available.
 - Support for browsers not running javascript should be attempted if it's easy, but not a major focus
-  - Eventually the react code base will allow server-sided, isomorphic rendering for both performance and support reasons. This means code should attempt to ensure things work without it when it's not detrimental to project timeline to do so.
+  - Eventually the react code base will allow server-side, isomorphic rendering
+    for both performance and support reasons. This means code should attempt to
+    ensure things work without it when it's not detrimental to project timeline
+    to do so.
 - CSS in component files should opt to use CSS Modules first, and will use normal CSS class architecture after.
-- Any shared styles across cloud.gov should be put in the `cg-style` project, not `cg-dashboard` or others.
 
 ## Performance
 Adding performance tracking and metrics is currently a TODO. Here are some items in consideration:
