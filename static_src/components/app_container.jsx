@@ -8,6 +8,7 @@ import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import RoutesPanel from './routes_panel.jsx';
+import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
 
@@ -76,7 +77,9 @@ export default class AppContainer extends React.Component {
         <div>
           <ActivityLog initialAppGuid={ this.state.app.guid } title="Recent activity" />
           <h2>{ this.fullTitle }</h2>
-          <UsageLimits app={ this.state.app }/>
+          <Panel title="Usage and allocation">
+            <UsageLimits app={ this.state.app }/>
+          </Panel>
           <RoutesPanel />
           <ServiceInstancePanel />
         </div>

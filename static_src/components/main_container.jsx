@@ -62,7 +62,7 @@ export default class App extends React.Component {
             { sidebar }
           </nav>
           <main className={ this.styler('sidenav-main', 'usa-content') }>
-            <div className={ this.styler('content') }>
+            <div className={ this.styler('content', 'grid') }>
               { content }
             </div>
           </main>

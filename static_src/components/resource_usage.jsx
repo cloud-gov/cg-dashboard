@@ -24,47 +24,45 @@ export default class ResourceUsage extends React.Component {
     this.state = {};
     this.styler = createStyler(style);
   }
-  //
+
   // TODO move to util
-  formatMb(bytes) {
-    if (!bytes) return '0';
-    return Math.round(bytes / 1000000);
+  formatBytes(bytes, decimals=0) {
+     if (bytes == 0) return '0';
+     const k = 1000;
+     const dm = decimals + 1 || 3;
+     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+     const i = Math.floor(Math.log(bytes) / Math.log(k));
+     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 
   available() {
-    return this.formatMb(this.props.amountTotal - this.props.amountUsed);
-  }
-
-  unit(bytes) {
-    if (bytes < 100000) return 'MB';
-    else return 'GB';
+    return this.formatBytes(this.props.amountTotal - this.props.amountUsed);
   }
 
   statState(used, total) {
-    if (this.formatMb(total) - this.formatMb(used) > 500) return 'warning';
+    console.log('compare', used, total);
+    if (total - used < 500000) return 'warning';
     else return 'success';
   }
 
   render() {
     const props = this.props;
+    let title = <h5>{ props.title } allocated</h5>
+    let stat = <Stat primaryStat={ this.formatBytes(props.amountTotal) }/>;
+    if (props.amountUsed) {
+      title = <h5>{ props.title } used</h5>
+      stat = (
+        <Stat
+          primaryStat={ this.formatBytes(props.amountUsed) }
+          secondaryInfo={ <span>{this.available()} available</span> }
+          statState={ this.statState(props.amountUsed, props.amountTotal) }
+        />
+      );
+    }
     return (
       <div>
-        <div style={{ textAlign: 'left' }} className={ this.styler('panel-column')}>
-          <h5>{ props.title } used</h5>
-          <Stat
-            primaryStat={ this.formatMb(props.amountUsed) + ' ' +
-              this.unit(props.amountUsed) }
-            secondaryInfo={ <span>{this.available()} {this.unit()} available</span> }
-            statState={ this.statState(props.amountUsed, props.amountTotal) }
-          />
-        </div>
-        <div style={{ textAlign: 'left' }} className={ this.styler('panel-column')}>
-          <h5>{ props.title } allocated</h5>
-          <Stat
-            primaryStat={ this.formatMb(props.amountTotal) + ' ' +
-              this.unit(props.amountTotal) }
-          />
-        </div>
+        { title }
+        { stat }
       </div>
     );
   }

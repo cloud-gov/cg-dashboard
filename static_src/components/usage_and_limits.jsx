@@ -32,35 +32,77 @@ export default class UsageAndLimits extends React.Component {
     }
   }
 
-  // TODO move to util
-  formatMb(bytes) {
-    if (!bytes) return '0';
-    return Math.round(bytes / 1000000);
-  }
-
   get disk() {
-    let helpText = <span></span>;
-    if (this.props.app.state.toUpperCase() === 'STOPPED') {
-      helpText = <em> Stopped apps do not use disk space.</em>;
-    }
     return (
-      <ResourceUsage title="Instance disk"
-        amountUsed={ this.getStat('disk') }
-        amountTotal={ this.getStat('disk_quota') }
-      />
+    <div style={{ marginTop: '1rem' }}>
+      <div className={ this.styler('panel-column') }>
+        <ResourceUsage title="Instance disk"
+          amountUsed={ this.getStat('disk') }
+          amountTotal={ this.getStat('disk_quota') }
+          />
+      </div>
+      <div className={ this.styler('panel-column') } style={{ textAlign: 'left'}}>
+        <ResourceUsage title="Instance disk"
+          amountTotal={ this.getStat('disk_quota') }
+        />
+      </div>
+    </div>
     );
   }
 
   get memory() {
-    let helpText = <span></span>;
-    if (this.props.app.state.toUpperCase() === 'STOPPED') {
-      helpText = <em> Stopped apps do not use memory.</em>;
-    }
     return (
-      <ResourceUsage title="Instance memory"
-        amountUsed={ this.getStat('mem') }
+    <div>
+      <div className={ this.styler('panel-column') }>
+        <ResourceUsage title="Instance memory"
+          amountUsed={ this.getStat('mem') }
+          amountTotal={ this.getStat('mem_quota') }
+        />
+      </div>
+      <div className={ this.styler('panel-column') } style={{ textAlign: 'left'}}>
+        <ResourceUsage title="Instance memory"
+          amountTotal={ this.getStat('mem_quota') }
+        />
+      </div>
+    </div>
+    );
+  }
+
+  get totalDisk() {
+    // TODO get space quota
+    return (
+    <div style={{ marginTop: '1rem' }}>
+      <ResourceUsage title="Total disk"
+        amountUsed={ this.getStat('disk') * this.props.app.running_instances }
+        amountTotal={ this.getStat('disk_quota') }
+      />
+    </div>
+    );
+  }
+
+  get totalMemory() {
+    return (
+    <div>
+      <ResourceUsage title="Total memory"
+        amountUsed={ this.getStat('mem') * this.props.app.running_instances }
         amountTotal={ this.getStat('mem_quota') }
       />
+    </div>
+    );
+  }
+
+  get scale() {
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <h5>App scale</h5>
+        <span className={ this.styler('stat-primary')}>
+          { this.props.app.running_instances }X
+        </span>
+        <br />
+        <h5 style={{ fontSize: '0.75rem', maxWidth: '5rem', display: 'inline-block', marginTop: '3rem' }}>
+          Scale applies to memory and disk
+        </h5>
+      </div>
     );
   }
 
@@ -69,16 +111,31 @@ export default class UsageAndLimits extends React.Component {
 
     if (this.props.app) {
       content = (
+      <div>
         <PanelGroup>
-          <PanelHeader>
-            <h3>Usage and Limits</h3>
-          </PanelHeader>
-          <PanelBlock>
-            { this.memory }
-          </PanelBlock>
-          <PanelBlock>
-            { this.disk }
-          </PanelBlock>
+          <PanelGroup columns={ 6 }>
+            <PanelRow>
+              { this.memory }
+            </PanelRow>
+            <PanelRow>
+              { this.disk }
+            </PanelRow>
+          </PanelGroup>
+          <PanelGroup columns={ 3 }>
+            <PanelBlock>
+              { this.scale }
+            </PanelBlock>
+          </PanelGroup>
+          <PanelGroup columns={ 3 }>
+            <PanelRow>
+              { this.totalMemory }
+            </PanelRow>
+            <PanelRow>
+              { this.totalDisk }
+            </PanelRow>
+          </PanelGroup>
+        </PanelGroup>
+        <PanelGroup columns={ 12 }>
           <PanelRow>
             <div>
               <p style={{ width: '100%' }}>To start or stop an app, follow the <a
@@ -88,6 +145,7 @@ export default class UsageAndLimits extends React.Component {
             </div>
           </PanelRow>
         </PanelGroup>
+      </div>
       );
     }
 
