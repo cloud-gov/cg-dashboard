@@ -75,13 +75,15 @@ export default class AppContainer extends React.Component {
     } else if (!this.state.loading && appReady(this.state.app)) {
       content = (
         <div>
-          <ActivityLog initialAppGuid={ this.state.app.guid } title="Recent activity" />
           <h2>{ this.fullTitle }</h2>
           <Panel title="Usage and allocation">
             <UsageLimits app={ this.state.app }/>
           </Panel>
           <RoutesPanel />
           <ServiceInstancePanel />
+          <Panel title="Recent activity">
+            <ActivityLog initialAppGuid={ this.state.app.guid } />
+          </Panel>
         </div>
       );
     }
