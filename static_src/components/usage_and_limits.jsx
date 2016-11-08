@@ -108,7 +108,6 @@ export default class UsageAndLimits extends React.Component {
 
   render() {
     let content = <div></div>;
-    console.log('props', this.props);
 
     if (this.props.app) {
       content = (
