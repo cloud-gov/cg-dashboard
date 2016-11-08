@@ -66,8 +66,8 @@ function stateSetter() {
     !ServiceInstanceStore.isInstanceBound(serviceInstance, appServiceBindings)
   );
 
-  const loading = ServiceInstanceStore.fetching ||
-    ServicePlanStore.fetching ||
+  const loading = ServiceInstanceStore.loading ||
+    ServicePlanStore.loading ||
     ServiceBindingStore.fetching;
 
   return {
