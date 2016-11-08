@@ -14,8 +14,6 @@ describe('ServiceStore', function() {
 
   beforeEach(() => {
     ServiceStore._data = [];
-    ServiceStore._fetched = false;
-    ServiceStore._fetching = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -30,13 +28,10 @@ describe('ServiceStore', function() {
   });
 
   describe('on services fetch', function() {
-    it('should set fetching to true, fetched to false', function() {
-      ServiceStore.fetching = false;
-
+    it('should set loading to true', function() {
       serviceActions.fetchAllServices('zxncvz8xcvhn32');
 
-      expect(ServiceStore.fetching).toEqual(true);
-      expect(ServiceStore.fetched).toEqual(false);
+      expect(ServiceStore.loading).toEqual(true);
     });
 
     it('should call the cf api for all services belonging to the org', function() {
@@ -52,17 +47,6 @@ describe('ServiceStore', function() {
   });
 
   describe('on services received', function() {
-    it('should set fetching to false, fetched to true', function() {
-      let testRes = [{ guid: '3981f', name: 'adlfskzxcv' }];
-      ServiceStore.fetching = true;
-      ServiceStore.fetched = false;
-
-      serviceActions.receivedServices(testRes);
-
-      expect(ServiceStore.fetching).toEqual(false);
-      expect(ServiceStore.fetched).toEqual(true);
-    });
-
     it('should merge in services to current data', function() {
       const sharedGuid = 'adxvcbxv';
       const expected = [

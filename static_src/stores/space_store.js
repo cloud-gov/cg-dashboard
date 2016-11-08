@@ -34,24 +34,18 @@ class SpaceStore extends BaseStore {
       }
 
       case spaceActionTypes.SPACE_FETCH: {
-        this.fetching = true;
-        this.fetched = false;
-        cfApi.fetchSpace(action.spaceGuid);
+        this.load([cfApi.fetchSpace(action.spaceGuid)]);
         this.emitChange();
         break;
       }
 
       case spaceActionTypes.SPACES_FETCH: {
-        this.fetching = true;
-        this.fetched = false;
-        cfApi.fetchSpaces();
+        this.load([cfApi.fetchSpaces()]);
         this.emitChange();
         break;
       }
 
       case spaceActionTypes.SPACE_RECEIVED: {
-        this.fetching = false;
-        this.fetched = true;
         this.merge('guid', action.space, () => { });
         this.emitChange();
         break;
@@ -59,8 +53,6 @@ class SpaceStore extends BaseStore {
 
       case spaceActionTypes.SPACES_RECEIVED: {
         this.mergeMany('guid', action.spaces, () => {
-          this.fetching = false;
-          this.fetched = true;
           this.emitChange();
         });
         break;

@@ -38,32 +38,24 @@ class UserStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case userActionTypes.ORG_USERS_FETCH: {
-        this.fetching = true;
-        this.fetched = false;
+        this.load([cfApi.fetchOrgUsers(action.orgGuid)]);
         this.emitChange();
-        cfApi.fetchOrgUsers(action.orgGuid);
         break;
       }
 
       case userActionTypes.ORG_USER_ROLES_FETCH: {
-        this.fetching = true;
-        this.fetched = false;
+        this.load([cfApi.fetchOrgUserRoles(action.orgGuid)]);
         this.emitChange();
-        cfApi.fetchOrgUserRoles(action.orgGuid);
         break;
       }
 
       case userActionTypes.SPACE_USERS_FETCH: {
-        this.fetching = true;
-        this.fetched = false;
+        this.load([cfApi.fetchSpaceUsers(action.spaceGuid)]);
         this.emitChange();
-        cfApi.fetchSpaceUsers(action.spaceGuid);
         break;
       }
 
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
-        this.fetching = false;
-        this.fetched = true;
         const updates = action.orgUserRoles;
         if (updates.length) {
           this.mergeMany('guid', updates, () => { });
@@ -165,16 +157,12 @@ class UserStore extends BaseStore {
         });
         if (updates.length) {
           this.mergeMany('guid', updates, (changed) => {
-            this.fetching = false;
-            this.fetched = true;
             if (changed) {
               this._error = null;
             }
             this.emitChange();
           });
         } else {
-          this.fetching = false;
-          this.fetched = true;
           this.emitChange();
         }
         break;

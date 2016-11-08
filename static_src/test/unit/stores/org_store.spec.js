@@ -13,8 +13,6 @@ describe('OrgStore', () => {
 
   beforeEach(() => {
     OrgStore._currentOrgGuid = null;
-    OrgStore._fetching = false;
-    OrgStore._fetched = false;
     OrgStore._data = Immutable.List();
     sandbox = sinon.sandbox.create();
   });
@@ -85,17 +83,6 @@ describe('OrgStore', () => {
       expect(OrgStore.getAll()).toEqual(expected);
     });
 
-    it('should set fetching to false', () => {
-      var expected = [{guid: '1as'}, {guid: '2as'}];
-
-      AppDispatcher.handleViewAction({
-        type: orgActionTypes.ORGS_RECEIVED,
-        orgs: expected
-      });
-
-      expect(OrgStore.fetching).toEqual(false);
-    });
-
     it('should merge data with existing orgs', () => {
       var updates = [{guid: 'aaa1', name: 'sue'},
             {guid: 'aaa2', name: 'see'}],
@@ -116,16 +103,13 @@ describe('OrgStore', () => {
   });
 
   describe('on org fetch', function() {
-    it('should set fetching to true, fetched to false', function() {
-      expect(OrgStore.fetching).toEqual(false);
-
+    it('should set loading to true', function() {
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORG_FETCH,
         orgGuid: 'orgGuid'
       });
 
-      expect(OrgStore.fetching).toEqual(true);
-      expect(OrgStore.fetched).toEqual(false);
+      expect(OrgStore.loading).toEqual(true);
     });
 
     it('should call the api org fetch function', function() {

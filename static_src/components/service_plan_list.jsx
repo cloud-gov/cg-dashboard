@@ -16,7 +16,7 @@ function stateSetter(serviceGuid) {
 
   return {
     servicePlans,
-    empty: ServicePlanStore.fetched && !servicePlans.length
+    empty: !ServicePlanStore.loading && !servicePlans.length
   };
 }
 

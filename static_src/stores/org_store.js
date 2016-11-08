@@ -23,26 +23,20 @@ class OrgStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case orgActionTypes.ORG_FETCH: {
-        cfApi.fetchOrg(action.orgGuid);
-        this.fetching = true;
-        this.fetched = false;
+        this.load([cfApi.fetchOrg(action.orgGuid)]);
         this.emitChange();
         break;
       }
 
       case orgActionTypes.ORGS_FETCH: {
         AppDispatcher.waitFor([LoginStore.dispatchToken]);
-        cfApi.fetchOrgs();
-        this.fetching = true;
-        this.fetched = false;
+        this.load([cfApi.fetchOrgs()]);
         this.emitChange();
         break;
       }
 
       case orgActionTypes.ORG_RECEIVED: {
         if (action.org) {
-          this.fetching = false;
-          this.fetched = true;
           this.merge('guid', action.org, () => { });
           this.emitChange();
         }
@@ -74,8 +68,6 @@ class OrgStore extends BaseStore {
             this.mergeMany('guid', orgUpdates, () => {});
           }
         });
-        this.fetched = true;
-        this.fetching = false;
         this.emitChange();
         break;
       }

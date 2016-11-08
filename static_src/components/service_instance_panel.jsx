@@ -27,12 +27,12 @@ const defaultProps = {
 
 
 function boundReady(instances) {
-  return ServiceInstanceStore.fetched && ServicePlanStore.fetched &&
-      ServiceBindingStore.fetched && !instances.length;
+  return !ServiceInstanceStore.loading && !ServicePlanStore.loading &&
+      !ServiceBindingStore.loading && !instances.length;
 }
 
 function unboundReady(instances) {
-  return ServiceInstanceStore.fetched && ServicePlanStore.fetched &&
+  return !ServiceInstanceStore.loading && !ServicePlanStore.loading &&
     !instances.length;
 }
 
@@ -68,7 +68,7 @@ function stateSetter() {
 
   const loading = ServiceInstanceStore.loading ||
     ServicePlanStore.loading ||
-    ServiceBindingStore.fetching;
+    ServiceBindingStore.loading;
 
   return {
     currentAppGuid,

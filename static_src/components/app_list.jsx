@@ -22,8 +22,8 @@ function stateSetter() {
     apps: apps,
     currentOrgGuid,
     currentSpaceGuid,
-    loading: SpaceStore.fetching,
-    empty: SpaceStore.fetched && !apps.length
+    loading: SpaceStore.loading,
+    empty: !SpaceStore.loading && !apps.length
   };
 }
 

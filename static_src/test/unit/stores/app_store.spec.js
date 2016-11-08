@@ -16,8 +16,6 @@ describe('AppStore', function() {
   beforeEach(() => {
     AppStore._data = Immutable.List();
     AppStore._currentAppGuid = null;
-    AppStore._fetching = false;
-    AppStore._fetched = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -76,7 +74,7 @@ describe('AppStore', function() {
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];
       expect(arg).toEqual(expectedGuid);
-      expect(AppStore.fetching).toEqual(true);
+      expect(AppStore.loading).toEqual(true);
     });
   });
 
@@ -127,20 +125,6 @@ describe('AppStore', function() {
           instances: [{ guid: 'dfs' }] });
     });
 
-    it('should set fetched to true, fetching to false', function() {
-      var app = { guid: 'asdf' };
-
-      AppStore.push(app);
-
-      AppDispatcher.handleViewAction({
-        type: appActionTypes.APP_RECEIVED,
-        app: {}
-      });
-
-      expect(AppStore.fetching).toBeFalsy();
-      expect(AppStore.fetched).toBeTruthy();
-    });
-
     it('should add app to data if it doesn\'t already exist', function() {
       var expectedGuid = 'adcasdc',
           expected = { guid: expectedGuid, name: 'asdf' };
@@ -156,19 +140,14 @@ describe('AppStore', function() {
   });
 
   describe('on app all received', function() {
-    it('should change fetching to false fetched to true & emit change',
-        function() {
+    it('should emit change', function() {
       var spy = sandbox.spy(AppStore, 'emitChange');
-      AppStore._fetching = true;
-      AppStore._fetched = false;
 
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_ALL_RECEIVED,
         appGuid: 'asdf'
       });
 
-      expect(AppStore.fetching).toEqual(false);
-      expect(AppStore.fetched).toEqual(true);
       expect(spy).toHaveBeenCalledOnce();
     });
   });
