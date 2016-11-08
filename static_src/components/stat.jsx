@@ -32,7 +32,7 @@ export default class Stat extends React.Component {
   }
 
   render() {
-    const stateClass = `stat-${ this.props.statState }`;
+    const stateClass = `stat-${this.props.statState}`;
 
     return (
       <div className={ this.styler('stat', stateClass) }>

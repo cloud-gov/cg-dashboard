@@ -26,13 +26,13 @@ export default class ResourceUsage extends React.Component {
   }
 
   // TODO move to util
-  formatBytes(bytes, decimals=0) {
-     if (bytes == 0) return '0';
-     const k = 1000;
-     const dm = decimals + 1 || 3;
-     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-     const i = Math.floor(Math.log(bytes) / Math.log(k));
-     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  formatBytes(bytes, decimals = 0) {
+    if (bytes === 0) return '0';
+    const k = 1000;
+    const dm = decimals + 1 || 3;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
   }
 
   available() {
@@ -41,15 +41,15 @@ export default class ResourceUsage extends React.Component {
 
   statState(used, total) {
     if (total - used < 500000) return 'warning';
-    else return 'success';
+    return 'success';
   }
 
   render() {
     const props = this.props;
-    let title = <h5>{ props.title } allocated</h5>
-    let stat = <Stat primaryStat={ this.formatBytes(props.amountTotal) }/>;
+    let title = <h5>{ props.title } allocated</h5>;
+    let stat = <Stat primaryStat={ this.formatBytes(props.amountTotal) } />;
     if (props.amountUsed) {
-      title = <h5>{ props.title } used</h5>
+      title = <h5>{ props.title } used</h5>;
       stat = (
         <Stat
           primaryStat={ this.formatBytes(props.amountUsed) }
