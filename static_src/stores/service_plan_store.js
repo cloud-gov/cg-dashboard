@@ -9,7 +9,6 @@ import Immutable from 'immutable';
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import LoadingStatus from '../util/loading_status.js';
 import { serviceActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 
@@ -18,13 +17,6 @@ class ServicePlanStore extends BaseStore {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = new Immutable.List();
-    this.loadingStatus = new LoadingStatus();
-    this.loadingStatus.on('loading', () => this.emitChange());
-    this.loadingStatus.on('loaded', () => this.emitChange());
-  }
-
-  get loading() {
-    return !this.loadingStatus.isLoaded;
   }
 
   getAllFromService(serviceGuid) {
@@ -59,15 +51,14 @@ class ServicePlanStore extends BaseStore {
     switch (action.type) {
       case serviceActionTypes.SERVICES_RECEIVED: {
         const services = action.services;
-        this.loadingStatus.load(services.map(service => cfApi.fetchAllServicePlans(service.guid)));
+        this.load(services.map(service => cfApi.fetchAllServicePlans(service.guid)));
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
         const instances = action.serviceInstances;
-        this.loadingStatus.load(instances.map(instance =>
-          cfApi.fetchServicePlan(instance.service_plan_guid)));
+        this.load(instances.map(instance => cfApi.fetchServicePlan(instance.service_plan_guid)));
         this.emitChange();
         break;
       }

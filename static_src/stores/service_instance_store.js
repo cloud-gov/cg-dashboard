@@ -8,7 +8,6 @@ import Immutable from 'immutable';
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import LoadingStatus from '../util/loading_status.js';
 import { serviceActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 import ServicePlanStore from './service_plan_store.js';
@@ -34,9 +33,6 @@ class ServiceInstanceStore extends BaseStore {
     this._data = new Immutable.List();
     this._createInstanceForm = null;
     this._createError = null;
-    this.loadingStatus = new LoadingStatus();
-    this.loadingStatus.on('loading', () => this.emitChange());
-    this.loadingStatus.on('loaded', () => this.emitChange());
   }
 
   get createInstanceForm() {
@@ -45,10 +41,6 @@ class ServiceInstanceStore extends BaseStore {
 
   get createError() {
     return this._createError;
-  }
-
-  get loading() {
-    return !this.loadingStatus.isLoaded;
   }
 
   getAllBySpaceGuid(spaceGuid) {
@@ -103,7 +95,7 @@ class ServiceInstanceStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_INSTANCES_FETCH: {
-        this.loadingStatus.load([cfApi.fetchServiceInstances(action.spaceGuid)]);
+        this.load([cfApi.fetchServiceInstances(action.spaceGuid)]);
         this.emitChange();
         break;
       }
