@@ -81,11 +81,12 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get totalMemory() {
+    console.log('this', this.props.quota.memory_limit);
     return (
     <div>
       <ResourceUsage title="Total memory"
         amountUsed={ this.getStat('mem') * this.props.app.running_instances }
-        amountTotal={ this.getStat('mem_quota') }
+        amountTotal={ this.props.quota.memory_limit * 100000 }
       />
     </div>
     );
@@ -108,6 +109,7 @@ export default class UsageAndLimits extends React.Component {
 
   render() {
     let content = <div></div>;
+    console.log('props', this.props);
 
     if (this.props.app) {
       content = (
@@ -154,9 +156,11 @@ export default class UsageAndLimits extends React.Component {
 }
 
 UsageAndLimits.propTypes = {
-  app: React.PropTypes.object
+  app: React.PropTypes.object,
+  quota: React.PropTypes.object
 };
 
 UsageAndLimits.defaultProps = {
-  app: {}
+  app: {},
+  quota: {}
 };

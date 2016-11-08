@@ -7,6 +7,7 @@ import UsageLimits from './usage_and_limits.jsx';
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
+import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
@@ -21,6 +22,14 @@ function appReady(app) {
 function stateSetter() {
   const currentAppGuid = AppStore.currentAppGuid;
   const app = AppStore.get(currentAppGuid);
+  const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
+  const org = OrgStore.get(OrgStore.currentOrgGuid);
+
+  const quotaGuid = (space && space.space_quota_definition_guid) ?
+    space.space_quota_definition_guid :
+    (org) ? org.quota_definition_guid : null;
+
+  const quota = QuotaStore.get(quotaGuid);
 
   return {
     app: app || {},
@@ -28,7 +37,8 @@ function stateSetter() {
     currentOrgName: OrgStore.currentOrgName,
     currentSpaceName: SpaceStore.currentSpaceName,
     empty: !AppStore.loading && !appReady(app),
-    loading: AppStore.loading
+    loading: AppStore.loading,
+    quota
   };
 }
 
@@ -77,7 +87,7 @@ export default class AppContainer extends React.Component {
         <div>
           <h2>{ this.fullTitle }</h2>
           <Panel title="Usage and allocation">
-            <UsageLimits app={ this.state.app }/>
+            <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
           <RoutesPanel />
           <ServiceInstancePanel />

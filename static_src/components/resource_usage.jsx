@@ -40,7 +40,6 @@ export default class ResourceUsage extends React.Component {
   }
 
   statState(used, total) {
-    console.log('compare', used, total);
     if (total - used < 500000) return 'warning';
     else return 'success';
   }
