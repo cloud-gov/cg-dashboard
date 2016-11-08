@@ -81,7 +81,6 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get totalMemory() {
-    console.log('this', this.props.quota.memory_limit);
     return (
     <div>
       <ResourceUsage title="Total memory"
