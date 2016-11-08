@@ -91,13 +91,65 @@ describe('LoadingStatus', function () {
       });
     });
 
-    it('only counds a promise once', function (done) {
+    it('only counts a promise once', function (done) {
       first.resolve();
       first.resolve();
 
       setImmediate(function() {
         expect(loadingStatus.isLoaded).toBe(false);
         done();
+      });
+    });
+  });
+
+  describe('events', function () {
+    let request, promise, loading, loaded;
+
+    beforeEach(function (done) {
+      loadingStatus = new LoadingStatus();
+      promise = new Promise(function (resolve, reject) {
+        request = {resolve, reject};
+      });
+
+      loading = sinon.spy();
+      loaded = sinon.spy();
+
+      loadingStatus.on('loading', loading);
+      loadingStatus.on('loaded', loaded);
+
+      loadingStatus.load([promise]);
+      setImmediate(done);
+    });
+
+    describe('load function', function () {
+      it('emits `loading`', function () {
+        expect(loading).toHaveBeenCalledOnce();
+      });
+
+      it('has not emitted `loaded`', function () {
+        expect(loaded).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the request resolves', function () {
+      beforeEach(function (done) {
+        promise.then(done);
+        request.resolve();
+      });
+
+      it('emits `loaded`', function () {
+        expect(loaded).toHaveBeenCalledOnce();
+      });
+    });
+
+    describe('when the request is rejected', function () {
+      beforeEach(function (done) {
+        promise.catch(() => done());
+        request.reject();
+      });
+
+      it('emits `loaded`', function () {
+        expect(loaded).toHaveBeenCalledOnce();
       });
     });
   });

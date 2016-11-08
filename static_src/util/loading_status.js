@@ -1,7 +1,10 @@
 // Use a semaphore to track requests in flight
 // https://en.wikipedia.org/wiki/Semaphore_(programming)
-class LoadingStatus {
+import { EventEmitter } from 'events';
+
+class LoadingStatus extends EventEmitter {
   constructor() {
+    super();
     this._requests = 0; // Our semaphore
     this._initialized = false; // Initialize on first load
   }
@@ -16,7 +19,16 @@ class LoadingStatus {
     this._requests++;
 
     // On complete, decrement the semaphore
-    const onComplete = () => this._requests--;
+    const onComplete = (result) => {
+      this._requests--;
+
+      if (this.isLoaded) {
+        this.emit('loaded');
+      }
+
+      return result;
+    };
+
     promise.then(onComplete, onComplete);
   }
 
@@ -26,6 +38,7 @@ class LoadingStatus {
     });
 
     this._initialized = true;
+    this.emit('loading');
   }
 }
 

@@ -8,6 +8,7 @@ import Immutable from 'immutable';
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
+import LoadingStatus from '../util/loading_status.js';
 import { serviceActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 import ServicePlanStore from './service_plan_store.js';
@@ -33,7 +34,9 @@ class ServiceInstanceStore extends BaseStore {
     this._data = new Immutable.List();
     this._createInstanceForm = null;
     this._createError = null;
-    this.waitingOnRequests = false;
+    this.loadingStatus = new LoadingStatus();
+    this.loadingStatus.on('loading', () => this.emitChange());
+    this.loadingStatus.on('loaded', () => this.emitChange());
   }
 
   get createInstanceForm() {
@@ -42,6 +45,10 @@ class ServiceInstanceStore extends BaseStore {
 
   get createError() {
     return this._createError;
+  }
+
+  get loading() {
+    return !this.loadingStatus.isLoaded;
   }
 
   getAllBySpaceGuid(spaceGuid) {
@@ -96,21 +103,13 @@ class ServiceInstanceStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_INSTANCES_FETCH: {
-        this.fetching = true;
-        this.fetched = false;
-        cfApi.fetchServiceInstances(action.spaceGuid);
+        this.loadingStatus.load([cfApi.fetchServiceInstances(action.spaceGuid)]);
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_RECEIVED: {
         const instance = action.serviceInstance;
-
-        if (!this.waitingOnRequests) {
-          this.fetching = false;
-          this.fetched = true;
-        }
-
         this.merge('guid', instance, () => {
           this.emitChange();
         });
@@ -120,8 +119,6 @@ class ServiceInstanceStore extends BaseStore {
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
         const services = action.serviceInstances;
         this.mergeMany('guid', services, () => {
-          this.fetching = false;
-          this.fetched = true;
           this.emitChange();
         });
         break;

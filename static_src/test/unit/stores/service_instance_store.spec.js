@@ -17,8 +17,6 @@ describe('ServiceInstanceStore', function() {
   beforeEach(() => {
     ServiceInstanceStore._data = Immutable.List();
     ServiceInstanceStore._createError = null;
-    ServiceInstanceStore._fetching = false;
-    ServiceInstanceStore._fetched = false;
     ServiceInstanceStore.waitingOnRequests = false;
     sandbox = sinon.sandbox.create();
   });
@@ -143,17 +141,13 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on service instances fetch', function() {
-    it('should set fetching to true, fetched to false', function() {
-      ServiceInstanceStore.fetching = false;
-      ServiceInstanceStore.fetched = true;
-
+    it('should be loading', function() {
       AppDispatcher.handleViewAction({
         type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
         spaceGuid: 'fakeguid'
       });
 
-      expect(ServiceInstanceStore.fetching).toEqual(true);
-      expect(ServiceInstanceStore.fetched).toEqual(false);
+      expect(ServiceInstanceStore.loading).toEqual(true);
     });
 
     it('should fetch service instances from api with space guid', function() {
@@ -189,19 +183,6 @@ describe('ServiceInstanceStore', function() {
       expect(arg2).toEqual(expected);
     });
 
-    it('should set fetched to true, fetched to false', function() {
-      const instance = {
-        guid: 'zxmcvn23vlkxmcvn',
-        name: 'testa'
-      };
-      const expected = instance;
-
-      serviceActions.receivedInstance(instance);
-
-      expect(ServiceInstanceStore.fetching).toEqual(false);
-      expect(ServiceInstanceStore.fetched).toEqual(true);
-    });
-
     it('should emit a change event', function() {
       const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
       const instance = {
@@ -217,18 +198,6 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on service instances received', function() {
-    it('should set fetching to false, fetched to true', function() {
-      ServiceInstanceStore.fetching = true;
-
-      AppDispatcher.handleViewAction({
-        type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
-        serviceInstances: []
-      });
-
-      expect(ServiceInstanceStore.fetching).toEqual(false);
-      expect(ServiceInstanceStore.fetched).toEqual(true);
-    });
-
     it('should set data  passed in instances', function() {
       var expected = [
         {
