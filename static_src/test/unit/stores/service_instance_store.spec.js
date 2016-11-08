@@ -17,7 +17,6 @@ describe('ServiceInstanceStore', function() {
   beforeEach(() => {
     ServiceInstanceStore._data = Immutable.List();
     ServiceInstanceStore._createError = null;
-    ServiceInstanceStore.waitingOnRequests = false;
     sandbox = sinon.sandbox.create();
   });
 

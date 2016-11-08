@@ -9,6 +9,7 @@ import Immutable from 'immutable';
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
+import LoadingStatus from '../util/loading_status.js';
 import { serviceActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 
@@ -17,7 +18,13 @@ class ServicePlanStore extends BaseStore {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
     this._data = new Immutable.List();
-    this.waitingOnRequests = false;
+    this.loadingStatus = new LoadingStatus();
+    this.loadingStatus.on('loading', () => this.emitChange());
+    this.loadingStatus.on('loaded', () => this.emitChange());
+  }
+
+  get loading() {
+    return !this.loadingStatus.isLoaded;
   }
 
   getAllFromService(serviceGuid) {
@@ -52,53 +59,20 @@ class ServicePlanStore extends BaseStore {
     switch (action.type) {
       case serviceActionTypes.SERVICES_RECEIVED: {
         const services = action.services;
-        this.fetching = true;
-        this.fetched = false;
+        this.loadingStatus.load(services.map(service => cfApi.fetchAllServicePlans(service.guid)));
         this.emitChange();
-        const planRequests = [];
-        for (const service of services) {
-          planRequests.push(cfApi.fetchAllServicePlans(service.guid));
-        }
-        if (planRequests.length) {
-          this.waitingOnRequests = true;
-          Promise.all(planRequests).then(() => {
-            this.waitingOnRequests = false;
-            this.fetching = false;
-            this.fetched = true;
-            this.emitChange();
-          });
-        }
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
         const instances = action.serviceInstances;
-        this.fetched = false;
-        this.fetching = true;
+        this.loadingStatus.load(instances.map(instance =>
+          cfApi.fetchServicePlan(instance.service_plan_guid)));
         this.emitChange();
-        const planRequests = [];
-        for (const instance of instances) {
-          planRequests.push(cfApi.fetchServicePlan(instance.service_plan_guid));
-        }
-        if (planRequests.length) {
-          this.waitingOnRequests = true;
-          Promise.all(planRequests).then(() => {
-            this.waitingOnRequests = false;
-            this.fetching = false;
-            this.fetched = true;
-            this.emitChange();
-          });
-        } else {
-          this.fetching = false;
-          this.fetched = true;
-          this.emitChange();
-        }
         break;
       }
 
       case serviceActionTypes.SERVICE_PLANS_FETCH: {
-        this.fetching = true;
-        this.fetched = false;
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
         cfApi.fetchAllServicePlans(action.serviceGuid);
         this.emitChange();
@@ -118,12 +92,6 @@ class ServicePlanStore extends BaseStore {
         if (action.servicePlans) {
           let servicePlans = action.servicePlans;
           servicePlans = this.parseAllJson(servicePlans, 'extra');
-
-          if (!this.waitingOnRequests) {
-            this.fetching = false;
-            this.fetched = true;
-          }
-
           this.mergeMany('guid', servicePlans, () => { });
           this.emitChange();
         }

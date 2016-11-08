@@ -103,53 +103,77 @@ describe('LoadingStatus', function () {
   });
 
   describe('events', function () {
-    let request, promise, loading, loaded;
+    describe('with no requests', function () {
+      let loading, loaded;
 
-    beforeEach(function (done) {
-      loadingStatus = new LoadingStatus();
-      promise = new Promise(function (resolve, reject) {
-        request = {resolve, reject};
+      beforeEach(function (done) {
+        loadingStatus = new LoadingStatus();
+
+        loading = sinon.spy();
+        loaded = sinon.spy();
+
+        loadingStatus.on('loading', loading);
+        loadingStatus.on('loaded', loaded);
+
+        loadingStatus.load([]);
+        setImmediate(done);
       });
 
-      loading = sinon.spy();
-      loaded = sinon.spy();
-
-      loadingStatus.on('loading', loading);
-      loadingStatus.on('loaded', loaded);
-
-      loadingStatus.load([promise]);
-      setImmediate(done);
-    });
-
-    describe('load function', function () {
-      it('emits `loading`', function () {
-        expect(loading).toHaveBeenCalledOnce();
-      });
-
-      it('has not emitted `loaded`', function () {
+      it('does not emit any events', function () {
+        expect(loading).not.toHaveBeenCalled();
         expect(loaded).not.toHaveBeenCalled();
       });
     });
 
-    describe('when the request resolves', function () {
+    describe('with a request', function () {
+      let request, promise, loading, loaded;
+
       beforeEach(function (done) {
-        promise.then(done);
-        request.resolve();
+        loadingStatus = new LoadingStatus();
+        promise = new Promise(function (resolve, reject) {
+          request = {resolve, reject};
+        });
+
+        loading = sinon.spy();
+        loaded = sinon.spy();
+
+        loadingStatus.on('loading', loading);
+        loadingStatus.on('loaded', loaded);
+
+        loadingStatus.load([promise]);
+        setImmediate(done);
       });
 
-      it('emits `loaded`', function () {
-        expect(loaded).toHaveBeenCalledOnce();
-      });
-    });
+      describe('load function', function () {
+        it('emits `loading`', function () {
+          expect(loading).toHaveBeenCalledOnce();
+        });
 
-    describe('when the request is rejected', function () {
-      beforeEach(function (done) {
-        promise.catch(() => done());
-        request.reject();
+        it('has not emitted `loaded`', function () {
+          expect(loaded).not.toHaveBeenCalled();
+        });
       });
 
-      it('emits `loaded`', function () {
-        expect(loaded).toHaveBeenCalledOnce();
+      describe('when the request resolves', function () {
+        beforeEach(function (done) {
+          promise.then(done);
+          request.resolve();
+        });
+
+        it('emits `loaded`', function () {
+          expect(loaded).toHaveBeenCalledOnce();
+        });
+      });
+
+      describe('when the request is rejected', function () {
+        beforeEach(function (done) {
+          promise.catch(() => done());
+          request.reject();
+        });
+
+        it('emits `loaded`', function () {
+          expect(loaded).toHaveBeenCalledOnce();
+        });
       });
     });
   });

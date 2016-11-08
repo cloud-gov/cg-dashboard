@@ -38,7 +38,9 @@ class LoadingStatus extends EventEmitter {
     });
 
     this._initialized = true;
-    this.emit('loading');
+    if (promises.length) {
+      this.emit('loading');
+    }
   }
 }
 
