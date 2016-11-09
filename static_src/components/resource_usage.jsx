@@ -29,7 +29,7 @@ export default class ResourceUsage extends React.Component {
   formatBytes(bytes, decimals = 0) {
     if (bytes === 0) return '0';
     const k = 1000;
-    const dm = decimals + 1 || 3;
+    const dm = decimals;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
@@ -59,7 +59,7 @@ export default class ResourceUsage extends React.Component {
       );
     }
     return (
-      <div>
+      <div style={{ width: '100%' }}>
         { title }
         { stat }
       </div>

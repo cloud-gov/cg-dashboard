@@ -1,6 +1,8 @@
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
+
+import style from 'cloudgov-style/css/cloudgov-style.css';
+import overrideStyle from '../css/overrides.css';
 
 import createStyler from '../util/create_styler';
 import spaceActions from '../actions/space_actions.js';
@@ -24,7 +26,7 @@ export class Nav extends React.Component {
     super(props);
     this.props = props;
     this.state = stateSetter();
-    this.styler = createStyler(style);
+    this.styler = createStyler(style, overrideStyle);
     this._onChange = this._onChange.bind(this);
     this._handleOverviewClick = this._handleOverviewClick.bind(this);
   }
