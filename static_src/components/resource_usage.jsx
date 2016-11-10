@@ -27,7 +27,6 @@ export default class ResourceUsage extends React.Component {
     this.styler = createStyler(style);
   }
 
-  // TODO move to util
   formatBytes(bytes, decimals = 0) {
     if (bytes === 0) return '0';
     const k = 1000;
