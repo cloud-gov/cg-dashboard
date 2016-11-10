@@ -93,13 +93,13 @@ export default class UsageAndLimits extends React.Component {
 
   get scale() {
     return (
-      <div style={{ textAlign: 'center' }}>
+      <div className={ this.styler('stat-single_box') }>
         <h5>App scale</h5>
         <span className={ this.styler('stat-primary')}>
           { this.props.app.running_instances }X
         </span>
         <br />
-        <h5 style={{ fontSize: '0.75rem', maxWidth: '5rem', display: 'inline-block', marginTop: '3rem' }}>
+        <h5 className={ this.styler('stat-info') }>
           Scale applies to memory and disk
         </h5>
       </div>
