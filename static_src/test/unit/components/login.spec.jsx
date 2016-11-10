@@ -30,7 +30,7 @@ describe('Login', function() {
           login, 'test-contribute_link');
 
       expect(link.getDOMNode().getAttribute('href')).toEqual(
-          'https://github.com/18F/cf-deck');
+          'https://github.com/18F/cg-dashboard');
     });
   });
 });
