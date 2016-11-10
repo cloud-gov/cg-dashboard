@@ -34,7 +34,7 @@ export default class UsageAndLimits extends React.Component {
 
   get disk() {
     return (
-    <div style={{ marginTop: '1rem' }}>
+    <div className={ this.styler('panel-row-space') }>
       <div className={ this.styler('panel-column') }>
         <ResourceUsage title="Instance disk"
           amountUsed={ this.getStat('disk') }
@@ -71,7 +71,7 @@ export default class UsageAndLimits extends React.Component {
   get totalDisk() {
     // TODO get space quota
     return (
-    <div style={{ marginTop: '1rem' }}>
+    <div className={ this.styler('panel-row-space') }>
       <ResourceUsage title="Total disk"
         amountUsed={ this.getStat('disk') * this.props.app.running_instances }
         amountTotal={ this.getStat('disk_quota') }
