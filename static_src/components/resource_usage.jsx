@@ -10,12 +10,14 @@ import Stat from './stat.jsx';
 const propTypes = {
   title: React.PropTypes.string.isRequired,
   amountUsed: React.PropTypes.number,
-  amountTotal: React.PropTypes.number
+  amountTotal: React.PropTypes.number,
+  byteWarningThreshold: React.PropTypes.number
 };
 
 const defaultProps = {
   amountUsed: 0,
-  amountTotal: 0
+  amountTotal: 0,
+  byteWarningThreshold: 500000
 };
 
 export default class ResourceUsage extends React.Component {
@@ -40,7 +42,7 @@ export default class ResourceUsage extends React.Component {
   }
 
   statState(used, total) {
-    if (total - used < 500000) return 'warning';
+    if (total - used < this.props.byteWarningThreshold) return 'warning';
     return 'success';
   }
 

@@ -85,7 +85,7 @@ export default class UsageAndLimits extends React.Component {
     <div>
       <ResourceUsage title="Total memory"
         amountUsed={ this.getStat('mem') * this.props.app.running_instances }
-        amountTotal={ this.props.quota.memory_limit * 100000 }
+        amountTotal={ this.props.quota.memory_limit * 1000 * 1000 }
       />
     </div>
     );
