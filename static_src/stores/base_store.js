@@ -7,6 +7,7 @@ import { EventEmitter } from 'events';
 import Immutable from 'immutable';
 
 import AppDispatcher from '../dispatcher.js';
+import LoadingStatus from '../util/loading_status.js';
 
 function defaultChangedCallback(changed) {
   if (changed) this.emitChange();
@@ -16,8 +17,9 @@ export default class BaseStore extends EventEmitter {
 
   constructor() {
     super();
-    this._fetching = false;
-    this._fetched = false;
+    this._loadingStatus = new LoadingStatus();
+    this._loadingStatus.on('loading', () => this.emitChange());
+    this._loadingStatus.on('loaded', () => this.emitChange());
     this._data = new Immutable.List();
   }
 
@@ -29,24 +31,8 @@ export default class BaseStore extends EventEmitter {
     return this._dispatchToken;
   }
 
-  get fetching() {
-    return this._fetching;
-  }
-
-  set fetching(value) {
-    if (!!value === this._fetching) return;
-
-    this._fetching = !!value;
-  }
-
-  get fetched() {
-    return this._fetched;
-  }
-
-  set fetched(value) {
-    if (!!value === this._fetched) return;
-
-    this._fetched = !!value;
+  get loading() {
+    return !this._loadingStatus.isLoaded;
   }
 
   isEmpty() {
@@ -107,6 +93,10 @@ export default class BaseStore extends EventEmitter {
 
   removeChangeListener(cb) {
     this.removeListener('CHANGE', cb);
+  }
+
+  load(promises) {
+    this._loadingStatus.load(promises);
   }
 
   /* merge with no side effects

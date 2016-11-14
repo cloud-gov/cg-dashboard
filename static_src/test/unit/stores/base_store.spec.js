@@ -199,60 +199,6 @@ describe('BaseStore', () => {
     });
   });
 
-  describe('fetching', function() {
-    it('should initially be false', function() {
-      expect(store.fetching).toEqual(false);
-    });
-
-    it('should be able to be set to true', function () {
-      store.fetching = true;
-      expect(store.fetching).toEqual(true);
-    });
-
-    it('should cast all values to booleans', function () {
-      store.fetching = 'true';
-      expect(store.fetching).toEqual(true);
-
-      store.fetching = undefined;
-      expect(store.fetching).toEqual(false);
-    });
-
-    it('should not emit change', function () {
-      var spy = sandbox.spy();
-
-      store.on('CHANGE', spy);
-      store.fetching = false;
-      expect(spy).not.toHaveBeenCalledOnce();
-    });
-  });
-
-  describe('fetched', function() {
-    it('should initially be false', function() {
-      expect(store.fetched).toEqual(false);
-    });
-
-    it('should be able to be set to true', function () {
-      store.fetched = true;
-      expect(store.fetched).toEqual(true);
-    });
-
-    it('should cast all values to booleans', function () {
-      store.fetched = 'true';
-      expect(store.fetched).toEqual(true);
-
-      store.fetched = undefined;
-      expect(store.fetched).toEqual(false);
-    });
-
-    it('should not emit change if the value is the same', function () {
-      var spy = sandbox.spy();
-
-      store.on('CHANGE', spy);
-      store.fetched = false;
-      expect(spy).not.toHaveBeenCalledOnce();
-    });
-  });
-
   describe('merge()', function() {
     var existingEntityA = {
       guid: 'zznbmbz',
@@ -384,6 +330,56 @@ describe('BaseStore', () => {
         expect(second.green).toEqual(true);
         expect(third.green).toEqual(true);
         expect(changed).toEqual(true);
+      });
+    });
+  });
+
+  describe('load()', function () {
+    describe('when called', function () {
+      let spy;
+
+      beforeEach(function (done) {
+        spy = sinon.spy();
+        store.on('CHANGE', spy);
+
+        // unresolved promise
+        const promise = new Promise(function () { });
+
+        store.load([promise]);
+        setImmediate(done);
+      });
+
+      it('sets loading true', function () {
+        expect(store.loading).toBe(true);
+      });
+
+      it('emits change', function () {
+        expect(spy).toHaveBeenCalledOnce();
+      });
+    });
+
+    describe('when request is resolved', function () {
+      let request, spy;
+
+      beforeEach(function (done) {
+        spy = sinon.spy();
+        store.on('CHANGE', spy);
+
+        const promise = new Promise(function (resolve, reject) {
+          request = { resolve, reject };
+        });
+
+        store.load([promise]);
+        request.resolve();
+        setImmediate(done);
+      });
+
+      it('sets loading false', function () {
+        expect(store.loading).toBe(false);
+      });
+
+      it('emits change', function () {
+        expect(spy).toHaveBeenCalledTwice();
       });
     });
   });

@@ -25,9 +25,7 @@ class ServiceBindingStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_BINDINGS_FETCH: {
-        cfApi.fetchServiceBindings(action.appGuid);
-        this.fetching = true;
-        this.fetched = false;
+        this.load([cfApi.fetchServiceBindings(action.appGuid)]);
         this.emitChange();
         break;
       }
@@ -35,8 +33,6 @@ class ServiceBindingStore extends BaseStore {
       case serviceActionTypes.SERVICE_BINDINGS_RECEIVED: {
         const bindings = action.serviceBindings;
         this.mergeMany('guid', bindings, () => { });
-        this.fetching = false;
-        this.fetched = true;
         this.emitChange();
         break;
       }

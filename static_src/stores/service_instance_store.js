@@ -33,7 +33,6 @@ class ServiceInstanceStore extends BaseStore {
     this._data = new Immutable.List();
     this._createInstanceForm = null;
     this._createError = null;
-    this.waitingOnRequests = false;
   }
 
   get createInstanceForm() {
@@ -96,21 +95,13 @@ class ServiceInstanceStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_INSTANCES_FETCH: {
-        this.fetching = true;
-        this.fetched = false;
-        cfApi.fetchServiceInstances(action.spaceGuid);
+        this.load([cfApi.fetchServiceInstances(action.spaceGuid)]);
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_RECEIVED: {
         const instance = action.serviceInstance;
-
-        if (!this.waitingOnRequests) {
-          this.fetching = false;
-          this.fetched = true;
-        }
-
         this.merge('guid', instance, () => {
           this.emitChange();
         });
@@ -120,8 +111,6 @@ class ServiceInstanceStore extends BaseStore {
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
         const services = action.serviceInstances;
         this.mergeMany('guid', services, () => {
-          this.fetching = false;
-          this.fetched = true;
           this.emitChange();
         });
         break;

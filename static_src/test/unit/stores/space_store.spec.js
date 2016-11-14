@@ -73,20 +73,6 @@ describe('SpaceStore', function() {
     });
   });
 
-  describe('on space actions space received', function() {
-    it('should change fetching to false fetched to true', function () {
-      let space = { guid: 'testSpaceGuid' };
-
-      SpaceStore.fetching = true;
-      SpaceStore._data = Immutable.fromJS([space]);
-
-      spaceActions.receivedSpace(space);
-
-      expect(SpaceStore.fetching).toEqual(false);
-      expect(SpaceStore.fetched).toEqual(true);
-    });
-  });
-
   describe('on space actions all spaces received', function() {
     it('should call mergeMany with spaces from action', function () {
       const spy = sandbox.spy(SpaceStore, 'mergeMany');
@@ -97,17 +83,6 @@ describe('SpaceStore', function() {
 
       expect(spy).toHaveBeenCalledOnce();
       expect(spy.getCall(0).args[1]).toEqual(spaces);
-    });
-
-    it('should set fetching to false and fetched to true', function() {
-      const spaces = [{ guid: 'fake-guid-one' }];
-      SpaceStore.fetching = true;
-      SpaceStore.fetched = false;
-
-      spaceActions.receivedSpaces(spaces);
-
-      expect(SpaceStore.fetching).toEqual(false);
-      expect(SpaceStore.fetched).toEqual(true);
     });
 
     it('should emit a change event', function() {

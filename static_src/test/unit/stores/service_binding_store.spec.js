@@ -14,8 +14,6 @@ describe('ServiceBindingStore', function() {
 
   beforeEach(() => {
     ServiceBindingStore._data = Immutable.List();
-    ServiceBindingStore._fetching = false;
-    ServiceBindingStore._fetched = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -42,19 +40,18 @@ describe('ServiceBindingStore', function() {
       expect(arg).toEqual(expectedAppGuid);
     });
 
-    it('should set fetching to true, fetched to false', function() {
-      ServiceBindingStore.fetching = false;
+    it('should set loading to true', function() {
       serviceActions.fetchServiceBindings('zxncvz8xcvhn32');
 
-      expect(ServiceBindingStore.fetching).toEqual(true);
-      expect(ServiceBindingStore.fetched).toEqual(false);
+      expect(ServiceBindingStore.loading).toEqual(true);
     });
 
     it('should emit a change', function() {
       const spy = sandbox.spy(ServiceBindingStore, 'emitChange');
       serviceActions.fetchServiceBindings('zxncvz8xcvhn32');
 
-      expect(spy).toHaveBeenCalledOnce();
+      // change is emitted twice, once on the action, once for loading status
+      expect(spy).toHaveBeenCalled();
     });
   });
 
@@ -79,14 +76,6 @@ describe('ServiceBindingStore', function() {
     const fakeBindings = [
       { metadata: { guid: 'adsfa' }, entity: { service_instance_guid: 'zcv'} }
     ];
-
-    it('should set fetching to false, fetched to true', function() {
-      ServiceBindingStore.fetching = true;
-      serviceActions.receivedServiceBindings(fakeBindings);
-
-      expect(ServiceBindingStore.fetching).toEqual(false);
-      expect(ServiceBindingStore.fetched).toEqual(true);
-    });
 
     it('should emit a change', function() {
       const spy = sandbox.spy(ServiceBindingStore, 'emitChange');

@@ -14,8 +14,6 @@ describe('ServicePlanStore', function() {
 
   beforeEach(() => {
     ServicePlanStore._data = Immutable.List();
-    ServicePlanStore._fetching = false;
-    ServicePlanStore._fetched = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -92,25 +90,18 @@ describe('ServicePlanStore', function() {
         }
       }
     ];
-    it('should set fetched to false, fetching to true', function() {
+
+    it('should set loading to true if there are instances', function() {
       serviceActions.receivedInstances(fakeInstances);
-
-      expect(ServicePlanStore.fetching).toEqual(true);
-      expect(ServicePlanStore.fetched).toEqual(false);
-    });
-
-    it('should set waiting on requests to true if there are instances',
-        function() {
-      serviceActions.receivedInstances(fakeInstances);
-
-      expect(ServicePlanStore.waitingOnRequests).toEqual(true);
+      expect(ServicePlanStore.loading).toEqual(true);
     });
 
     it('should emit a change', function() {
       const spy = sandbox.spy(ServicePlanStore, 'emitChange');
       serviceActions.receivedInstances(fakeInstances);
 
-      expect(spy).toHaveBeenCalledOnce();
+      // change will be called once on the event, again from the loading status
+      expect(spy).toHaveBeenCalled();
     });
 
     it('should fetch service plans with each instance plan guid', function() {
@@ -144,13 +135,10 @@ describe('ServicePlanStore', function() {
   });
 
   describe('on services received', function() {
-    it('should set fetching to true, fetched to false', function() {
+    it('should set loading to true', function() {
       const services = [{ guid: '3981f', name: 'adlfskzxcv' }];
-      ServicePlanStore.fetching = false;
       serviceActions.receivedServices(services);
-
-      expect(ServicePlanStore.fetching).toEqual(true);
-      expect(ServicePlanStore.fetched).toEqual(false);
+      expect(ServicePlanStore.loading).toEqual(true);
     });
   });
 
@@ -167,12 +155,9 @@ describe('ServicePlanStore', function() {
       expect(arg).toEqual(expectedServiceGuid);
     });
 
-    it('should set fetching to true, fetched to false', function() {
-      ServicePlanStore.fetching = false;
+    it('should set loading to true', function() {
       serviceActions.fetchAllPlans('zxncvz8xcvhn32');
-
-      expect(ServicePlanStore.fetching).toEqual(true);
-      expect(ServicePlanStore.fetched).toEqual(false);
+      expect(ServicePlanStore.loading).toEqual(true);
     });
   });
 
@@ -225,15 +210,6 @@ describe('ServicePlanStore', function() {
 
       expect(spy).not.toHaveBeenCalled();
       expect(ServicePlanStore.getAll().length).toEqual(1);
-    });
-
-    it('should set fetching to false, fetched to true', function() {
-      ServicePlanStore.fetching = true;
-      ServicePlanStore.waitingOnRequests = false;
-      serviceActions.receivedPlans([{ guid: 'adfklj' }]);
-
-      expect(ServicePlanStore.fetching).toEqual(false);
-      expect(ServicePlanStore.fetched).toEqual(true);
     });
   });
 });

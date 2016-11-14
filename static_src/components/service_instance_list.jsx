@@ -21,8 +21,8 @@ function stateSetter() {
   return {
     serviceInstances,
     currentSpaceGuid,
-    loading: ServiceInstanceStore.fetching,
-    empty: ServiceInstanceStore.fetched && !serviceInstances.length
+    loading: ServiceInstanceStore.loading,
+    empty: !ServiceInstanceStore.loading && !serviceInstances.length
   };
 }
 

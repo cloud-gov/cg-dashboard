@@ -22,8 +22,8 @@ function stateSetter() {
     apps: apps.sort((a, b) => a.name.localeCompare(b.name)),
     currentOrgGuid,
     currentSpaceGuid,
-    loading: SpaceStore.fetching,
-    empty: SpaceStore.fetched && !apps.length
+    loading: SpaceStore.loading,
+    empty: !SpaceStore.loading && !apps.length
   };
 }
 

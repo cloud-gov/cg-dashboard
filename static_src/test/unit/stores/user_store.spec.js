@@ -15,8 +15,6 @@ describe('UserStore', function() {
   beforeEach(() => {
     UserStore._data = Immutable.List();
     UserStore._currentUserGuid = null;
-    UserStore._fetching = false;
-    UserStore._fetched = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -51,17 +49,15 @@ describe('UserStore', function() {
       expect(arg).toEqual(expectedGuid);
     });
 
-    it('should set fetching to true and fetched to false', function() {
+    it('should set loading', function() {
       const expectedGuid = 'axckzvjxcov';
-      UserStore._fetched = true;
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.SPACE_USERS_FETCH,
         spaceGuid: expectedGuid
       });
 
-      expect(UserStore.fetching).toEqual(true);
-      expect(UserStore.fetched).toEqual(false);
+      expect(UserStore.loading).toEqual(true);
     });
   });
 
@@ -82,16 +78,13 @@ describe('UserStore', function() {
   });
 
   describe('on org user roles fetch', function() {
-    it('should set fetching to true and fetched to false', function() {
-      UserStore._fetched = true;
-
+    it('should set loading to true', function() {
       AppDispatcher.handleViewAction({
         type: userActionTypes.ORG_USER_ROLES_FETCH,
         orgGuid: 'axckzvjxcov'
       });
 
-      expect(UserStore.fetching).toEqual(true);
-      expect(UserStore.fetched).toEqual(false);
+      expect(UserStore.loading).toEqual(true);
     });
 
     it('should fetch org user roles through api', function() {
@@ -110,33 +103,6 @@ describe('UserStore', function() {
   });
 
   describe('on space or org users received', function() {
-    it('should set fetching to false, fetched to true on SPACE_USERS_RECEIVED',
-        function() {
-      UserStore.fetching = true;
-
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.SPACE_USERS_RECEIVED,
-        users: [{ guid: 'adsfa' }]
-      });
-
-      expect(UserStore.fetching).toEqual(false);
-      expect(UserStore.fetched).toEqual(true);
-    });
-
-    it('should set fetching to false, fetched to true on ORG_USERS_RECEIVED',
-        function() {
-      UserStore.fetching = true;
-      UserStore.fetched = false;
-
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.ORG_USERS_RECEIVED,
-        users: []
-      });
-
-      expect(UserStore.fetching).toEqual(false);
-      expect(UserStore.fetched).toEqual(true);
-    });
-
     it('should merge and update new users with existing users in data',
         function() {
       var sharedGuid = 'wpqoifesadkzcvn';
@@ -186,20 +152,6 @@ describe('UserStore', function() {
       });
 
       expect(spy).toHaveBeenCalledOnce();
-    });
-
-    it('should set fetching to false, fetched to true on ORG_USERS_RECEIVED',
-        function() {
-      UserStore.fetching = true;
-      UserStore.fetched = false;
-
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-        orgUserRoles: [{ guid: 'adsfa' }]
-      });
-
-      expect(UserStore.fetching).toEqual(false);
-      expect(UserStore.fetched).toEqual(true);
     });
 
     it('should merge and update new users with existing users in data',

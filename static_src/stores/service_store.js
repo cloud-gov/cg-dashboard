@@ -22,9 +22,7 @@ class ServiceStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICES_FETCH: {
-        this.fetching = true;
-        this.fetched = false;
-        cfApi.fetchAllServices(action.orgGuid);
+        this.load([cfApi.fetchAllServices(action.orgGuid)]);
         break;
       }
 
@@ -32,8 +30,6 @@ class ServiceStore extends BaseStore {
         AppDispatcher.waitFor([ServicePlanStore.dispatchToken]);
         const services = action.services;
         this.mergeMany('guid', services, () => { });
-        this.fetching = false;
-        this.fetched = true;
         this.emitChange();
         break;
       }

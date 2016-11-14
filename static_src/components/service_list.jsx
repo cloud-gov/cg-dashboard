@@ -14,7 +14,7 @@ function stateSetter(props) {
   const services = props.initialServices;
 
   return {
-    empty: ServiceStore.fetched && !services.length,
+    empty: !ServiceStore.loading && !services.length,
     services
   }
 }

@@ -16,7 +16,7 @@ import ServiceInstanceStore from '../stores/service_instance_store.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 
 function stateSetter() {
-  const loading = ServiceStore.fetching || ServicePlanStore.fetching;
+  const loading = ServiceStore.loading || ServicePlanStore.loading;
   const services = ServiceStore.getAll().map((service) => {
     const plan = ServicePlanStore.getAllFromService(service.guid);
     return { ...service, servicePlans: plan };

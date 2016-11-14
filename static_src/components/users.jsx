@@ -38,8 +38,8 @@ function stateSetter() {
     currentOrgGuid,
     currentSpaceGuid,
     currentTab,
-    loading: UserStore.fetching,
-    empty: UserStore.fetched && !users.length,
+    loading: UserStore.loading,
+    empty: !UserStore.loading && !users.length,
     users
   };
 }
