@@ -36,8 +36,8 @@ function stateSetter() {
     currentAppGuid,
     currentOrgName: OrgStore.currentOrgName,
     currentSpaceName: SpaceStore.currentSpaceName,
-    empty: !AppStore.loading && !appReady(app),
-    loading: AppStore.loading,
+    empty: !AppStore.loading && !appReady(app) && !QuotaStore.loading,
+    loading: AppStore.loading || QuotaStore.loading,
     quota
   };
 }
