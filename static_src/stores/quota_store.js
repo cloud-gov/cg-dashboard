@@ -34,7 +34,7 @@ class QuotaStore extends BaseStore {
       }
 
       case quotaActionTypes.SPACES_QUOTAS_FETCH: {
-        this.load([cfApi.fetchOrgsQuotas()]);
+        this.load([cfApi.fetchSpacesQuotas()]);
         this.emitChange();
         break;
       }
