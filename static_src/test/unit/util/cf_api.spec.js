@@ -811,6 +811,37 @@ describe('cfApi', function() {
     });
   });
 
+  describe('postAppRestart()', function () {
+    it('should http post to restage route with app guid', function(done) {
+      const appGuid = 'xvc34598mn';
+      const spy = sandbox.stub(http, 'post');
+      spy.returns(createPromise({response: 'success'}));
+
+      cfApi.postAppRestart(appGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        const args = spy.getCall(0).args;
+        expect(args[0]).toMatch('apps');
+        expect(args[0]).toMatch(appGuid);
+        done();
+      });
+    });
+
+    it('should call app restarted with app guid on success', function(done) {
+      const appGuid = '2398dhgf028ulfd';
+      const stub = sandbox.stub(http, 'post');
+      const spy = sandbox.stub(appActions, 'restarted');
+      spy.returns();
+      stub.returns(createPromise({response: 'success'}));
+
+      cfApi.postAppRestart(appGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        const arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(appGuid);
+        done();
+      });
+    });
+  });
+
   describe('fetchSpaceUsers()', function() {
     it('should call fetch with spaces user roles url with space guid and the' +
        ' received space users action', function() {
