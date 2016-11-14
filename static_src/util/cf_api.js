@@ -254,7 +254,7 @@ export default {
   },
 
   postAppRestart(appGuid) {
-    return http.post(`${APIV}/apps/${appGuid}/restage`).then((res) => {
+    return http.post(`${APIV}/apps/${appGuid}/restage`).then(() => {
       appActions.restarted(appGuid);
     });
   },
