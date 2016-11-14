@@ -56,5 +56,19 @@ export default {
       type: appActionTypes.APP_CHANGE_CURRENT,
       appGuid
     });
+  },
+
+  restart(appGuid) {
+    AppDispatcher.handleViewAction({
+      type: appActionTypes.APP_RESTART,
+      appGuid
+    });
+  },
+
+  restarted(appGuid) {
+    AppDispatcher.handleServerAction({
+      type: appActionTypes.APP_RESTARTED,
+      appGuid
+    });
   }
 };
