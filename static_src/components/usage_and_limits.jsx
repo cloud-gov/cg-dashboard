@@ -4,7 +4,9 @@ import React from 'react';
 
 import PanelGroup from './panel_group.jsx';
 import PanelHeader from './panel_header.jsx';
+import PanelBlock from './panel_block.jsx';
 import PanelRow from './panel_row.jsx';
+import ResourceUsage from './resource_usage.jsx';
 
 import createStyler from '../util/create_styler';
 
@@ -20,77 +22,86 @@ export default class UsageAndLimits extends React.Component {
   getStat(statName) {
     if (statName.indexOf('quota') > -1) {
       return (this.props.app.stats &&
-              this.formatMb(this.props.app.stats[statName]) ||
+              this.props.app.stats[statName] ||
               0);
     } else {
       return (this.props.app.stats &&
-              this.formatMb(this.props.app.stats.usage[statName]) ||
+              this.props.app.stats.usage[statName] ||
               0);
 
     }
   }
 
-  // TODO move to util
-  formatMb(bytes) {
-    if (!bytes) return '0';
-    return Math.round(bytes / 1000000);
-  }
-
   get disk() {
-    let helpText = <span></span>;
-    if (this.props.app.state.toUpperCase() === 'STOPPED') {
-      helpText = <em> Stopped apps do not use disk space.</em>;
-    }
     return (
-      <div>
-        <h5 className={ this.styler('panel-column', 'panel-column-less') }>
-          Disk
-        </h5>
-        <span className={ this.styler('panel-column') }>
-          { this.getStat('disk_quota') } MB
-        </span>
-        <span className={ this.styler('panel-column') }
-            style={{ textAlign: 'left' }}>
-          Using { this.getStat('disk') }  MB
-          { helpText }
-        </span>
+    <div className={ this.styler('panel-row-space') }>
+      <div className={ this.styler('panel-column') }>
+        <ResourceUsage title="Instance disk"
+          amountUsed={ this.getStat('disk') }
+          amountTotal={ this.getStat('disk_quota') }
+          />
       </div>
+      <div className={ this.styler('panel-column') } style={{ textAlign: 'left'}}>
+        <ResourceUsage title="Instance disk"
+          amountTotal={ this.getStat('disk_quota') }
+        />
+      </div>
+    </div>
     );
   }
 
   get memory() {
-    let helpText = <span></span>;
-    if (this.props.app.state.toUpperCase() === 'STOPPED') {
-      helpText = <em> Stopped apps do not use memory.</em>;
-    }
     return (
-      <div>
-        <h5 className={ this.styler('panel-column', 'panel-column-less') }>
-          Memory
-        </h5>
-        <span className={ this.styler('panel-column') }>
-          { this.getStat('mem_quota') } MB
-        </span>
-        <span className={ this.styler('panel-column') }
-            style={{ textAlign: 'left' }}>
-          Using { this.getStat('mem') }  MB.
-          { helpText }
-        </span>
+    <div>
+      <div className={ this.styler('panel-column') }>
+        <ResourceUsage title="Instance memory"
+          amountUsed={ this.getStat('mem') }
+          amountTotal={ this.getStat('mem_quota') }
+        />
       </div>
+      <div className={ this.styler('panel-column') } style={{ textAlign: 'left'}}>
+        <ResourceUsage title="Instance memory"
+          amountTotal={ this.getStat('mem_quota') }
+        />
+      </div>
+    </div>
     );
   }
 
-  // TODO: remove this presentational span
-  get appState() {
+  get totalDisk() {
+    // TODO get space quota
     return (
-      <div>
-        <h5 className={ this.styler('panel-column', 'panel-column-less') }>
-          App state
-        </h5>
-        <span className={ this.styler('panel-column') }>
-          RUNNING
+    <div className={ this.styler('panel-row-space') }>
+      <ResourceUsage title="Total disk"
+        amountUsed={ this.getStat('disk') * this.props.app.running_instances }
+        amountTotal={ this.getStat('disk_quota') }
+      />
+    </div>
+    );
+  }
+
+  get totalMemory() {
+    return (
+    <div>
+      <ResourceUsage title="Total memory"
+        amountUsed={ this.getStat('mem') * this.props.app.running_instances }
+        amountTotal={ this.props.quota.memory_limit * 1000 * 1000 }
+      />
+    </div>
+    );
+  }
+
+  get scale() {
+    return (
+      <div className={ this.styler('stat-single_box') }>
+        <h5>App scale</h5>
+        <span className={ this.styler('stat-primary')}>
+          { this.props.app.running_instances }X
         </span>
-        <span className={ this.styler('panel-column') }></span>
+        <br />
+        <h5 className={ this.styler('stat-info') }>
+          Scale applies to memory and disk
+        </h5>
       </div>
     );
   }
@@ -100,19 +111,31 @@ export default class UsageAndLimits extends React.Component {
 
     if (this.props.app) {
       content = (
+      <div>
         <PanelGroup>
-          <PanelHeader>
-            <h3>Usage and Limits</h3>
-          </PanelHeader>
-          <PanelRow>
-            { this.appState }
-          </PanelRow>
-          <PanelRow>
-            { this.memory }
-          </PanelRow>
-          <PanelRow>
-            { this.disk }
-          </PanelRow>
+          <PanelGroup columns={ 6 }>
+            <PanelRow>
+              { this.memory }
+            </PanelRow>
+            <PanelRow>
+              { this.disk }
+            </PanelRow>
+          </PanelGroup>
+          <PanelGroup columns={ 3 }>
+            <PanelBlock>
+              { this.scale }
+            </PanelBlock>
+          </PanelGroup>
+          <PanelGroup columns={ 3 }>
+            <PanelRow>
+              { this.totalMemory }
+            </PanelRow>
+            <PanelRow>
+              { this.totalDisk }
+            </PanelRow>
+          </PanelGroup>
+        </PanelGroup>
+        <PanelGroup columns={ 12 }>
           <PanelRow>
             <div>
               <p style={{ width: '100%' }}>To start or stop an app, follow the <a
@@ -122,6 +145,7 @@ export default class UsageAndLimits extends React.Component {
             </div>
           </PanelRow>
         </PanelGroup>
+      </div>
       );
     }
 
@@ -130,9 +154,11 @@ export default class UsageAndLimits extends React.Component {
 }
 
 UsageAndLimits.propTypes = {
-  app: React.PropTypes.object
+  app: React.PropTypes.object,
+  quota: React.PropTypes.object
 };
 
 UsageAndLimits.defaultProps = {
-  app: {}
+  app: {},
+  quota: {}
 };

@@ -1,7 +1,22 @@
 
+
 /*
- * Override max width of main content section
- */
+ *  * Override max width of main content section
+ *   */
 .main_content {
-  max-width: 1400px;
+  max-width: initial;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  width: 1224px;
+}
+
+.sidenav {
+  width: 240px;
+}
+
+.content {
+  margin-left: 2rem;
+  max-width: 888px;
+  padding: 1.5rem;
+  width: 888px;
 }

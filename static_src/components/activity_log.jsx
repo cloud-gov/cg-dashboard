@@ -25,13 +25,10 @@ function stateSetter(props) {
 }
 
 const propTypes = {
-  initialAppGuid: React.PropTypes.string.isRequired,
-  title: React.PropTypes.string
+  initialAppGuid: React.PropTypes.string.isRequired
 };
 
-const defaultProps = {
-  title: 'Activity Log'
-};
+const defaultProps = {};
 
 export default class ActivityLog extends React.Component {
   constructor(props) {
@@ -73,7 +70,6 @@ export default class ActivityLog extends React.Component {
 
     return (
       <div className={ this.styler('activity_log-container') }>
-        <h1>{ this.props.title }</h1>
         { content }
       </div>
     );

@@ -20,15 +20,13 @@ class QuotaStore extends BaseStore {
     switch (action.type) {
 
       case quotaActionTypes.ORGS_QUOTAS_FETCH: {
-        cfApi.fetchOrgsQuotas();
+        this.load([cfApi.fetchOrgsQuotas()]);
+        this.emitChange();
         break;
       }
 
       case quotaActionTypes.ORGS_QUOTAS_RECEIVED: {
-        const quotas = action.quotas.map((quota) => {
-          const guid = quota.guid;
-          return Object.assign({}, quota.entity, { guid });
-        });
+        const quotas = action.quotas;
         this.mergeMany('guid', quotas, (changed) => {
           if (changed) this.emitChange();
         });
@@ -36,15 +34,13 @@ class QuotaStore extends BaseStore {
       }
 
       case quotaActionTypes.SPACES_QUOTAS_FETCH: {
-        cfApi.fetchSpacesQuotas();
+        this.load([cfApi.fetchSpacesQuotas()]);
+        this.emitChange();
         break;
       }
 
       case quotaActionTypes.SPACES_QUOTAS_RECEIVED: {
-        const quotas = action.quotas.map((quota) => {
-          const guid = quota.guid;
-          return Object.assign({}, quota.entity, { guid });
-        });
+        const quotas = action.quotas;
         this.mergeMany('guid', quotas, (changed) => {
           if (changed) this.emitChange();
         });

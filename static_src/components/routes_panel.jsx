@@ -167,6 +167,7 @@ export default class RoutesPanel extends React.Component {
 
     return (
       <Panel title="Routes">
+        { this.createRouteForm }
         <PanelGroup>
           <PanelHeader>
             <h3>Bound routes</h3>
@@ -179,7 +180,6 @@ export default class RoutesPanel extends React.Component {
           </PanelHeader>
           { this.renderRoutes(this.state.unboundRoutes) }
         </PanelGroup>
-        { this.createRouteForm }
         <PanelGroup>
           <PanelActions>
             { this.addRouteAction }

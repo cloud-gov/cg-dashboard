@@ -6,15 +6,13 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  columns: React.PropTypes.number,
   children: React.PropTypes.any
 };
 const defaultProps = {
-  columns: 0,
   children: null
 };
 
-export default class PanelGroup extends React.Component {
+export default class PanelBlock extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -22,17 +20,13 @@ export default class PanelGroup extends React.Component {
   }
 
   render() {
-    let gridClass = '';
-    if (this.props.columns !== 0) {
-      gridClass = `grid-width-${this.props.columns}`;
-    }
     return (
-      <div className={ this.styler('panel-group', gridClass) }>
+      <div className={ this.styler('panel-block') }>
         { this.props.children }
       </div>
     );
   }
 }
 
-PanelGroup.propTypes = propTypes;
-PanelGroup.defaultProps = defaultProps;
+PanelBlock.propTypes = propTypes;
+PanelBlock.defaultProps = defaultProps;
