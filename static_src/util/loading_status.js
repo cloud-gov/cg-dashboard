@@ -44,7 +44,7 @@ class LoadingStatus extends EventEmitter {
   }
 
   poll(condition, promise) {
-    const endTime = Number(new Date()) + (10000);
+    const endTime = Number(new Date()) + (50000);
     const interval = 400;
 
     const check = function(resolve, reject) {
