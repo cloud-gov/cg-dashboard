@@ -12,6 +12,7 @@ import { appActionTypes } from '../constants.js';
 
 const STATES = {
   running: 'RUNNING',
+  started: 'STARTED',
   stopped: 'STOPPED',
   restarting: 'RESTARTING'
 };
@@ -22,6 +23,14 @@ class AppStore extends BaseStore {
     this._data = new Immutable.List();
     this._currentAppGuid = null;
     this.subscribe(() => this._registerToActions.bind(this));
+  }
+
+  isRestarting(app) {
+    return app.state === STATES.restarting;
+  }
+
+  isRunning(app) {
+    return app.state === STATES.running || app.state === STATES.started;
   }
 
   _registerToActions(action) {

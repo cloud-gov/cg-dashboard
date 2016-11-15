@@ -83,6 +83,33 @@ export default class AppContainer extends React.Component {
     return content;
   }
 
+  get statusUI() {
+    return (
+      <span className={ this.styler('usa-label') }>{ this.state.app.state }</span>
+    );
+  }
+
+  get restart() {
+    let loading;
+    if (AppStore.isRestarting(this.state.app)) {
+      loading = <Loading text="Restarting app" style="inline" />;
+    }
+
+    return (
+      <div>
+        <Action
+          style="primary"
+          clickHandler={ this._onRestart }
+          label="restart app"
+          disabled={ !AppStore.isRunning(this.state.app) }
+          type="outline">
+          <span>Restart app</span>
+        </Action>
+        { loading }
+      </div>
+    );
+  }
+
   render() {
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
@@ -90,20 +117,10 @@ export default class AppContainer extends React.Component {
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
     } else if (!this.state.loading && appReady(this.state.app)) {
-      console.log(this.state.app);
       content = (
         <div>
-          <h2>{ this.fullTitle }</h2>
-          <div>
-            <Action
-              style="primary"
-              clickHandler={ this._onRestart }
-              label="restart app"
-              type="outline">
-              <span>Restart app</span>
-            </Action>
-            <span>{ this.state.app.state }</span>
-          </div>
+          <h2>{ this.fullTitle } { this.statusUI }</h2>
+          { this.restart }
           <Panel title="Usage and allocation">
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
