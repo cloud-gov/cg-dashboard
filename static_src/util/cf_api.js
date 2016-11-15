@@ -49,6 +49,7 @@ export default {
           data = this.formatSplitResponse(data);
         }
         action(data, ...params);
+        return data;
       } else {
         let data = res.data.resources;
         if (!/summary/.test(url)) {

@@ -99,6 +99,10 @@ export default class BaseStore extends EventEmitter {
     this._loadingStatus.load(promises);
   }
 
+  poll(condition, promise) {
+    return this._loadingStatus.poll(condition, promise);
+  }
+
   /* merge with no side effects
    *
    * If the dataToMerge exists in the store (as found by

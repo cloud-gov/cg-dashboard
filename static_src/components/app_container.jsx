@@ -2,6 +2,7 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
+import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
 import UsageLimits from './usage_and_limits.jsx';
 import AppStore from '../stores/app_store.js';
@@ -12,6 +13,7 @@ import RoutesPanel from './routes_panel.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
+import appActions from '../actions/app_actions.js';
 
 import createStyler from '../util/create_styler';
 
@@ -49,6 +51,7 @@ export default class AppContainer extends React.Component {
     this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
+    this._onRestart = this._onRestart.bind(this);
     this.styler = createStyler(style);
   }
 
@@ -68,6 +71,10 @@ export default class AppContainer extends React.Component {
     this.setState(stateSetter());
   }
 
+  _onRestart() {
+    appActions.restart(this.state.app.guid);
+  }
+
   get fullTitle() {
     let content = <span><strong>{ this.state.app.name }</strong> application</span>
     if (this.state.currentSpaceName && this.state.currentOrgName) {
@@ -83,9 +90,20 @@ export default class AppContainer extends React.Component {
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
     } else if (!this.state.loading && appReady(this.state.app)) {
+      console.log(this.state.app);
       content = (
         <div>
           <h2>{ this.fullTitle }</h2>
+          <div>
+            <Action
+              style="primary"
+              clickHandler={ this._onRestart }
+              label="restart app"
+              type="outline">
+              <span>Restart app</span>
+            </Action>
+            <span>{ this.state.app.state }</span>
+          </div>
           <Panel title="Usage and allocation">
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
