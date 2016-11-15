@@ -262,12 +262,19 @@ describe('AppStore', function() {
   });
 
   describe('on app restarted', function() {
-    it('should emit a change', function() {
-      const spy = sandbox.spy(AppStore, 'emitChange');
+    it('should poll until running instances is greater then 0', function() {
+      const spy = sandbox.spy(AppStore, 'poll');
+      const expectedRes = {
+        data: { running_instances: 1 }
+      };
 
       appActions.restarted('zxlcvkjklv');
 
       expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toBeFunction();
+      expect(args[0](expectedRes)).toBeTruthy();
+      expect(args[1]).toBeFunction();
     });
   });
 });
