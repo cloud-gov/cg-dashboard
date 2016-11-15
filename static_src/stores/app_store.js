@@ -14,7 +14,7 @@ const STATES = {
   running: 'RUNNING',
   stopped: 'STOPPED',
   restarting: 'RESTARTING'
-}
+};
 
 class AppStore extends BaseStore {
   constructor() {
