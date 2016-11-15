@@ -49,11 +49,9 @@ class LoadingStatus extends EventEmitter {
 
     const check = function(resolve, reject) {
       promise().then((res) => {
-        console.log('in promise', res);
         if (condition(res)) {
           resolve(res);
         } else if (Number(new Date()) < endTime) {
-          promise.reject();
           return setTimeout(check, interval, resolve, reject);
         } else {
           reject(new Error('Timed out'));
