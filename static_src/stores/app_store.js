@@ -81,8 +81,11 @@ class AppStore extends BaseStore {
       case appActionTypes.APP_RESTARTED: {
         this.poll(
           (app) => app.running_instances > 0,
-          cfApi.fetchApp.bind(cfApi, action.appGuid)
-        ).then(() => this.emitChange());
+          cfApi.fetchAppStatus.bind(cfApi, action.appGuid)
+        ).then((app) => {
+          this.merge('guid', app, () => {});
+          this.emitChange()
+        });
         break;
       }
 

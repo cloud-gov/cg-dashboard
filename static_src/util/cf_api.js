@@ -237,6 +237,12 @@ export default {
                           appActions.receivedApp);
   },
 
+  fetchAppStatus(appGuid) {
+    return http.get(`${APIV}/apps/${appGuid}/summary`).then((res) => {
+      return res;
+    });
+  },
+
   fetchAppStats(appGuid) {
     return http.get(`${APIV}/apps/${appGuid}/stats`).then((res) => {
       appActions.receivedAppStats(appGuid, res.data[0]);
