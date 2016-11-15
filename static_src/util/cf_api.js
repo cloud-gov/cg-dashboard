@@ -43,20 +43,21 @@ export default {
 
   fetch(url, action, multiple, ...params) {
     return http.get(APIV + url).then((res) => {
+      let data;
       if (!multiple) {
-        let data = res.data;
+        data = res.data;
         if (!/summary/.test(url)) {
           data = this.formatSplitResponse(data);
         }
         action(data, ...params);
-        return data;
       } else {
-        let data = res.data.resources;
+        data = res.data.resources;
         if (!/summary/.test(url)) {
           data = this.formatSplitResponses(data);
         }
         action(data, ...params);
       }
+      return data;
     }).catch((err) => {
       handleError(err);
     });
@@ -238,9 +239,7 @@ export default {
   },
 
   fetchAppStatus(appGuid) {
-    return http.get(`${APIV}/apps/${appGuid}/summary`).then((res) => {
-      return res;
-    });
+    return http.get(`${APIV}/apps/${appGuid}/summary`).then((res) => res);
   },
 
   fetchAppStats(appGuid) {

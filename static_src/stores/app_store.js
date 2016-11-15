@@ -84,7 +84,7 @@ class AppStore extends BaseStore {
           cfApi.fetchAppStatus.bind(cfApi, action.appGuid)
         ).then((app) => {
           this.merge('guid', app, () => {});
-          this.emitChange()
+          this.emitChange();
         });
         break;
       }
