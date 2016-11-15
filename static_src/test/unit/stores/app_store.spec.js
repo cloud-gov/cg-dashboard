@@ -225,4 +225,49 @@ describe('AppStore', function() {
       expect(spy).toHaveBeenCalledOnce();
     });
   });
+
+  describe('on app restart', function() {
+    it('should call cf api to restart the app with guid', function() {
+      const spy = sandbox.spy(cfApi, 'postAppRestart');
+      const expectedGuid = 'asdfasd2vdamcdksa';
+
+      appActions.restart(expectedGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+    });
+
+    it('should set app "state" to "restarting"', function() {
+      const appGuid = 'zkvkljsf';
+      const app = { guid: appGuid, state: 'RUNNING' };
+      AppStore.push(app);
+
+      appActions.restart(appGuid);
+
+      const actual = AppStore.get(appGuid);
+      expect(actual.state).toEqual('RESTARTING');
+    });
+
+    it('should emit a change', function() {
+      const appGuid = 'zkvkljsf';
+      const app = { guid: appGuid, state: 'RUNNING' };
+      AppStore.push(app);
+      const spy = sandbox.spy(AppStore, 'emitChange');
+
+      appActions.restart(appGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on app restarted', function() {
+    it('should emit a change', function() {
+      const spy = sandbox.spy(AppStore, 'emitChange');
+
+      appActions.restarted('zxlcvkjklv');
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
 });
