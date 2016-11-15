@@ -42,26 +42,6 @@ class LoadingStatus extends EventEmitter {
       this.emit('loading');
     }
   }
-
-  // TODO move to own place
-  poll(condition, promise) {
-    const endTime = Number(new Date()) + (50000);
-    const interval = 400;
-
-    const check = function (resolve, reject) {
-      promise().then((res) => {
-        if (condition(res)) {
-          resolve(res);
-        } else if (Number(new Date()) < endTime) {
-          setTimeout(check, interval, resolve, reject);
-        } else {
-          reject(new Error('Timed out'));
-        }
-      });
-    };
-
-    return new Promise(check);
-  }
 }
 
 
