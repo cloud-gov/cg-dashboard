@@ -70,5 +70,13 @@ export default {
       type: appActionTypes.APP_RESTARTED,
       appGuid
     });
+  },
+
+  error(appGuid, err) {
+    AppDispatcher.handleServerAction({
+      type: appActionTypes.APP_ERROR,
+      appGuid,
+      error: err
+    });
   }
 };

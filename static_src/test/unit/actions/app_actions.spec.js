@@ -152,4 +152,20 @@ describe('appActions', function() {
       assertAction(spy, appActionTypes.APP_RESTARTED, expectedParams);
     });
   });
+
+  describe('error()', function() {
+    it('should dispatch server event of type app error', function() {
+      const appGuid = '230894dzcxv234';
+      const error = { status_code: 123 };
+      const expectedParams = {
+        appGuid,
+        error
+      };
+      let spy = setupServerSpy(sandbox)
+
+      appActions.error(appGuid, error);
+
+      assertAction(spy, appActionTypes.APP_ERROR, expectedParams);
+    });
+  });
 });
