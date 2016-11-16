@@ -261,7 +261,7 @@ export default {
   postAppRestart(appGuid) {
     return http.post(`${APIV}/apps/${appGuid}/restage`).then(() => {
       appActions.restarted(appGuid);
-    });
+    }).catch((err) => handleError(err, appActions.error.bind(this, appGuid)));
   },
 
   /**

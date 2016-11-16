@@ -840,6 +840,21 @@ describe('cfApi', function() {
         done();
       });
     });
+
+    it('should call app error with app guid on failure', function(done) {
+      const appGuid = '2398dhgf028ulfd';
+      const spy = sandbox.stub(appActions, 'error');
+      const stub = sandbox.stub(http, 'post');
+      spy.returns();
+      stub.returns(createPromise(true, errorFetchRes));
+
+      cfApi.postAppRestart(appGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        const arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(appGuid);
+        done();
+      });
+    });
   });
 
   describe('fetchSpaceUsers()', function() {
