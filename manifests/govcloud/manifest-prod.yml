@@ -1,5 +1,6 @@
 ---
 inherit: manifest-region-base.yml
+domain: fr.cloud.gov
 applications:
 - name: cg-dashboard
   host: dashboard
