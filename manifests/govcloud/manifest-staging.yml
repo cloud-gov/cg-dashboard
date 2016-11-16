@@ -4,4 +4,4 @@ applications:
 - name: cg-dashboard-staging
   host: dashboard-staging
   env:
-    CONSOLE_HOSTNAME: https://dashboard-staging.fr.apps.cloud.gov
+    CONSOLE_HOSTNAME: https://dashboard-staging.app.cloud.gov
