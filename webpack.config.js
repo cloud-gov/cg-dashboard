@@ -77,8 +77,7 @@ const config = {
   },
 
   plugins: [
-    new ExtractTextPlugin('style.css', { allChunks: true }),
-    new WebpackKarmaWarningsPlugin()
+    new ExtractTextPlugin('style.css', { allChunks: true })
   ],
 
   publicPath: './static'
@@ -87,6 +86,7 @@ const config = {
 if (PRODUCTION) {
   config.plugins.push(new webpack.optimize.DedupePlugin());
   config.plugins.push(new webpack.optimize.UglifyJsPlugin());
+  config.plugins.push(new WebpackKarmaWarningsPlugin());
 }
 
 module.exports = config;
