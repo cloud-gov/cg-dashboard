@@ -91,8 +91,18 @@ export default class AppContainer extends React.Component {
 
   get restart() {
     let loading;
+    let error;
+
     if (AppStore.isRestarting(this.state.app)) {
       loading = <Loading text="Restarting app" style="inline" />;
+    }
+    if (this.state.app.error) {
+      error = (
+        <span className={ this.styler('error_message') }
+            style={{ display: 'inline' }}>
+          Error: { this.state.app.error.message }
+        </span>
+      );
     }
 
     return (
@@ -105,6 +115,7 @@ export default class AppContainer extends React.Component {
           type="outline">
           <span>Restart app</span>
         </Action>
+        { error }
         { loading }
       </div>
     );
