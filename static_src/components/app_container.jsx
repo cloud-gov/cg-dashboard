@@ -6,6 +6,7 @@ import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
 import UsageLimits from './usage_and_limits.jsx';
 import AppStore from '../stores/app_store.js';
+import ErrorMessage from './error_message.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
@@ -98,10 +99,7 @@ export default class AppContainer extends React.Component {
     }
     if (this.state.app.error) {
       error = (
-        <span className={ this.styler('error_message') }
-            style={{ display: 'inline' }}>
-          Error: { this.state.app.error.message }
-        </span>
+        <ErrorMessage err={ this.state.app.error } />
       );
     }
 

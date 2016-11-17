@@ -105,6 +105,7 @@ class AppStore extends BaseStore {
           const erroredApp = Object.assign({}, app, { error: action.error});
           this.merge('guid', erroredApp, () => {});
           this.emitChange();
+          setTimeout(() => { cfApi.fetchAppAll(action.appGuid) }, 3000);
         }
         break;
       }
