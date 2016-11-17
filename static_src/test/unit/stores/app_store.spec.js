@@ -277,4 +277,30 @@ describe('AppStore', function() {
       expect(args[1]).toBeFunction();
     });
   });
+
+  describe('on app error', function() {
+    it('should add an error property on the app with the error', function() {
+      const appGuid = 'zxcnv'
+      const err = { status_code: 230894 };
+      const app = { guid: appGuid };
+
+      AppStore.push(app);
+
+      appActions.error(appGuid, err);
+      const actual = AppStore.get(appGuid);
+
+      expect(actual.error).toEqual(err);
+    });
+
+    it('should emit a change event', function() {
+      const appGuid = 'zx23423kljsf';
+      const app = { guid: appGuid };
+      AppStore.push(app);
+      const spy = sandbox.spy(AppStore, 'emitChange');
+
+      appActions.error(appGuid, { });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
 });
