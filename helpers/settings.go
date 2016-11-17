@@ -32,6 +32,8 @@ type Settings struct {
 	PProfEnabled bool
 	// Build Info
 	BuildInfo string
+	//Set the secure flag on session cookies?
+	SecureCookies bool
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -67,6 +69,7 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	if s.BuildInfo = envVars.BuildInfo; len(s.BuildInfo) == 0 {
 		s.BuildInfo = "developer-build"
 	}
+	s.SecureCookies = ((envVars.SecureCookies == "true") || (envVars.SecureCookies == "1"))
 
 	// Setup OAuth2 Client Service.
 	s.OAuthConfig = &oauth2.Config{
@@ -83,8 +86,12 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	// Initialize Sessions.
 	// Temp FIXME that fixes the problem of using a cookie store which would cause the secure encoding
 	// of the oauth 2.0 token struct in production to exceed the max size of 4096 bytes.
-	filesystemStore := sessions.NewFilesystemStore("", []byte("some key"))
+	filesystemStore := sessions.NewFilesystemStore("", []byte(envVars.SessionKey))
 	filesystemStore.MaxLength(4096 * 4)
+	filesystemStore.Options = &sessions.Options{
+		HttpOnly: true,
+		Secure:   s.SecureCookies,
+	}
 	s.Sessions = filesystemStore
 	// Want to save a struct into the session. Have to register it.
 	gob.Register(oauth2.Token{})

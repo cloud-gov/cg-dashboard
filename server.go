@@ -31,6 +31,12 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.PProfEnabled = os.Getenv(helpers.PProfEnabledEnvVar)
 	envVars.BuildInfo = os.Getenv(helpers.BuildInfoEnvVar)
 	envVars.NewRelicLicense = os.Getenv(helpers.NewRelicLicenseEnvVar)
+	envVars.SecureCookies = os.Getenv(helpers.SecureCookiesEnvVar)
+	envVars.SessionKey = os.Getenv(helpers.SessionKeyEnvVar)
+	// set a default session key if one isn't provided
+	if envVars.SessionKey == "" {
+		envVars.SessionKey = "some key"
+	}
 	return envVars
 }
 
@@ -47,6 +53,8 @@ func replaceEnvVar(envVars *helpers.EnvVars, envVar string, value interface{}) {
 			envVars.ClientSecret = stringValue
 		case helpers.NewRelicLicenseEnvVar:
 			envVars.NewRelicLicense = stringValue
+		case helpers.SessionKeyEnvVar:
+			envVars.SessionKey = stringValue
 		}
 	}
 }
@@ -74,6 +82,11 @@ func loadUPSVars(envVars *helpers.EnvVars) {
 			fmt.Println("Replacing " + helpers.NewRelicLicenseEnvVar)
 			replaceEnvVar(envVars, helpers.NewRelicLicenseEnvVar, newRelic)
 		}
+		if sessionKey, found := cfUPS.Credentials[helpers.SessionKeyEnvVar]; found {
+			fmt.Println("Replacing " + helpers.SessionKeyEnvVar)
+			replaceEnvVar(envVars, helpers.SessionKeyEnvVar, sessionKey)
+		}
+
 	} else {
 		fmt.Println("CF Env error: " + err.Error())
 	}

@@ -29,6 +29,10 @@ var (
 	BuildInfoEnvVar = "BUILD_INFO"
 	// NewRelicLicenseEnvVar is the New Relic License key so it can collect data.
 	NewRelicLicenseEnvVar = "CONSOLE_NEW_RELIC_LICENSE"
+	// SecureCookiesEnvVar is set to true or 1, then set the Secure flag be set on session coookies
+	SecureCookiesEnvVar = "SECURE_COOKIES"
+	// SessionKeyEnvVar is the secret key used to protect session data
+	SessionKeyEnvVar = "SESSION_KEY"
 )
 
 // EnvVars holds all the environment variable values that a non-test server should have.
@@ -43,4 +47,6 @@ type EnvVars struct {
 	PProfEnabled    string
 	BuildInfo       string
 	NewRelicLicense string
+	SecureCookies   string
+	SessionKey      string
 }
