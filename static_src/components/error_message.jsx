@@ -10,12 +10,12 @@ const DISPLAY_TYPES = [
 ];
 
 const propTypes = {
-  err: React.PropTypes.object,
+  error: React.PropTypes.object,
   displayType: React.PropTypes.oneOf(DISPLAY_TYPES)
 };
 
 const defaultProps = {
-  err: null,
+  error: null,
   displayType: 'inline'
 };
 
@@ -27,12 +27,12 @@ export default class ErrorMessage extends React.Component {
   }
 
   get hasErrorMessage() {
-    const err = this.props.err;
+    const err = this.props.error;
     return err && err.message && err.message !== '';
   }
 
   get statusCode() {
-    return this.props.err.status_code || 500;
+    return this.props.error.status_code || 500;
   }
 
   get shortDefaultMessage() {
@@ -50,9 +50,8 @@ export default class ErrorMessage extends React.Component {
   }
 
   render() {
-    const props = this.props;
     const typeClass = `error-${this.props.displayType}`;
-    let content = <span>{ this.shortDefaultMessage }</span>
+    let content = <span>{ this.shortDefaultMessage }</span>;
 
     if (this.hasErrorMessage) {
       content = <span>{ this.knownMessage }</span>;
@@ -62,7 +61,7 @@ export default class ErrorMessage extends React.Component {
     <div className={ this.styler('error_message', typeClass) }>
       { content }
     </div>
-    )
+    );
   }
 }
 
