@@ -6,6 +6,7 @@ machine:
     CF_ORGANIZATION: "cf"
     CF_API_GC: "https://api.fr.cloud.gov"
     CF_ORGANIZATION_GC: "cloud-gov"
+    NODE_ENV: "prod"
   post:
     - cd cg-dashboard && nvm install && nvm use && nvm alias default $(nvm current)
     - mkdir -p download
