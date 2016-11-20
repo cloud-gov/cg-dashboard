@@ -1,5 +1,5 @@
 ---
-buildpack: https://github.com/cloudfoundry/go-buildpack.git#v1.7.8
+buildpack: go_buildpack
 memory: 256M
 services:
   - deck-ups
