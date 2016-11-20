@@ -19,6 +19,8 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 		next(resp, req)
 	})
 
+	router.Get("/", (*Context).Index)
+
 	// Backend Route Initialization
 	// Initialize the Gocraft Router with the basic context and routes
 	router.Get("/ping", (*Context).Ping)
@@ -55,7 +57,7 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.
-	router.Middleware(web.StaticMiddleware("static", web.StaticOption{IndexFile: "index.html"}))
+	router.Middleware(web.StaticMiddleware("static"))
 
 	return router
 }

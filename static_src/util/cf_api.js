@@ -1,4 +1,3 @@
-
 import http from 'axios';
 
 import activityActions from '../actions/activity_actions.js';
