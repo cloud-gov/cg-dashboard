@@ -6,3 +6,4 @@ env:
   CONSOLE_UAA_URL: https://uaa.fr.cloud.gov/
   CONSOLE_API_URL: https://api.fr.cloud.gov/
   CONSOLE_LOG_URL: https://loggregator.fr.cloud.gov/
+  SECURE_COOKIES: true
