@@ -22,6 +22,8 @@ type Settings struct {
 	Sessions sessions.Store
 	// context.Context var from golang.org/x/net/context to make token Client work
 	TokenContext context.Context
+	// Generate secure random state
+	StateGenerator func() (string, error)
 	// UAA API
 	UaaURL string
 	// Log API
@@ -78,6 +80,10 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 			AuthURL:  envVars.LoginURL + "/oauth/authorize",
 			TokenURL: envVars.UAAURL + "/oauth/token",
 		},
+	}
+
+	s.StateGenerator = func() (string, error) {
+		return GenerateRandomString(32)
 	}
 
 	// Initialize Sessions.

@@ -48,6 +48,9 @@ func TestOAuth(t *testing.T) {
 			TokenURL: "http://tokenURL.com/oauth/token",
 		},
 	}
+	mockSettings.StateGenerator = func() (string, error) {
+		return "state", nil
+	}
 
 	for _, test := range oauthTests {
 		// Initialize a new session store.
