@@ -28,18 +28,31 @@ func (c *Context) LoginHandshake(rw web.ResponseWriter, req *web.Request) {
 
 	} else {
 		// Redirect to the Cloud Foundry Login place.
-		http.Redirect(rw, req.Request, c.Settings.OAuthConfig.AuthCodeURL("state", oauth2.AccessTypeOnline), http.StatusFound)
+		err := c.redirect(rw, req)
+		if err != nil {
+			fmt.Println("Error on oauth redirect: ", err.Error())
+		}
 	}
 }
 
 // OAuthCallback is the function that is called when the UAA provider uses the "redirect_uri" field to call back to this backend.
-// This funciton will extract the code, get the access token and refresh token and save it into 1) the session and redirect to the
+// This function will extract the code, get the access token and refresh token and save it into 1) the session and redirect to the
 // frontend dashboard.
 func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 	code := req.URL.Query().Get("code")
+	state := req.URL.Query().Get("state")
 
 	if len(code) < 1 {
 		// TODO: error.
+	}
+
+	// Ignore error, Get will return a session, existing or new.
+	session, _ := c.Settings.Sessions.Get(req.Request, "session")
+
+	fmt.Println(state, session.Values["state"])
+	if state == "" || state != session.Values["state"] {
+		rw.WriteHeader(http.StatusUnauthorized)
+		return
 	}
 
 	// Exchange the code for a token.
@@ -50,9 +63,8 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 		// TODO: Handle. Return 500.
 	}
 
-	// Ignore error, Get will return a session, existing or new.
-	session, _ := c.Settings.Sessions.Get(req.Request, "session")
 	session.Values["token"] = *token
+	delete(session.Values, "state")
 
 	// Save session.
 	err = session.Save(req.Request, rw)
@@ -96,7 +108,27 @@ func (c *Context) LoginRequired(rw web.ResponseWriter, r *web.Request, next web.
 	if public || tokenPresent {
 		next(rw, r)
 	} else {
-		http.Redirect(rw, r.Request, c.Settings.OAuthConfig.AuthCodeURL("state", oauth2.AccessTypeOnline), http.StatusFound)
-		return
+		err := c.redirect(rw, r)
+		if err != nil {
+			fmt.Println("Error on oauth redirect: ", err.Error())
+		}
 	}
+}
+
+func (c *Context) redirect(rw web.ResponseWriter, req *web.Request) error {
+	session, _ := c.Settings.Sessions.Get(req.Request, "session")
+	state, err := c.Settings.StateGenerator()
+	if err != nil {
+		return err
+	}
+
+	session.Values["state"] = state
+	err = session.Save(req.Request, rw)
+	if err != nil {
+		return err
+	}
+
+	http.Redirect(rw, req.Request, c.Settings.OAuthConfig.AuthCodeURL(state, oauth2.AccessTypeOnline), http.StatusFound)
+
+	return nil
 }
