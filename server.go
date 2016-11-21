@@ -36,7 +36,6 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.SecureCookies = os.Getenv(helpers.SecureCookiesEnvVar)
 	envVars.SessionKey = os.Getenv(helpers.SessionKeyEnvVar)
 	envVars.BasePath = os.Getenv(helpers.BasePathEnvVar)
-
 	return envVars
 }
 

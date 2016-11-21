@@ -154,6 +154,7 @@ var MockCompleteEnvVars = helpers.EnvVars{
 	APIURL:       "apiurl",
 	LogURL:       "logurl",
 	PProfEnabled: "true",
+	SessionKey:   "lalala",
 	BasePath:     os.Getenv(helpers.BasePathEnvVar),
 }
 
