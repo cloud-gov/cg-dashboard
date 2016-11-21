@@ -90,7 +90,7 @@ export default class Action extends React.Component {
           aria-label={ this.props.label }
           onClick={ (ev) => this.props.clickHandler(ev) }
           disabled={this.props.disabled}
-          type="button"
+          type={ this.props.type }
         >
           { this.props.children }
         </button>
