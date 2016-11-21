@@ -35,6 +35,7 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.NewRelicLicense = os.Getenv(helpers.NewRelicLicenseEnvVar)
 	envVars.SecureCookies = os.Getenv(helpers.SecureCookiesEnvVar)
 	envVars.SessionKey = os.Getenv(helpers.SessionKeyEnvVar)
+	envVars.BasePath = os.Getenv(helpers.BasePathEnvVar)
 	// set a default session key if one isn't provided
 	if envVars.SessionKey == "" {
 		envVars.SessionKey = "some key"

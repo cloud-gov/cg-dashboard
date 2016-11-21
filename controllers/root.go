@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/gocraft/web"
@@ -15,15 +13,13 @@ import (
 
 // Context represents the context for all requests that do not need authentication.
 type Context struct {
-	Settings *helpers.Settings
+	Settings  *helpers.Settings
+	templates *template.Template
 }
-
-var basePath = os.Getenv("BASE_PATH")
-var templates = template.Must(template.ParseFiles(filepath.Join(basePath, "static/index.html")))
 
 // Index serves index.html
 func (c *Context) Index(w web.ResponseWriter, r *web.Request) {
-	templates.ExecuteTemplate(w, "index.html", map[string]interface{}{
+	c.templates.ExecuteTemplate(w, "index.html", map[string]interface{}{
 		"csrfToken": csrf.Token(r.Request),
 	})
 }

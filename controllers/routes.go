@@ -1,13 +1,16 @@
 package controllers
 
 import (
+	"html/template"
+	"path/filepath"
+
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/gocraft/web"
 )
 
 // InitRouter sets up the router (and subrouters).
 // It also includes the closure middleware where we load the global Settings reference into each request.
-func InitRouter(settings *helpers.Settings) *web.Router {
+func InitRouter(settings *helpers.Settings, templates *template.Template) *web.Router {
 	if settings == nil {
 		return nil
 	}
@@ -16,6 +19,7 @@ func InitRouter(settings *helpers.Settings) *web.Router {
 	// A closure that effectively loads the Settings into every request.
 	router.Middleware(func(c *Context, resp web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
 		c.Settings = settings
+		c.templates = templates
 		next(resp, req)
 	})
 
@@ -70,8 +74,11 @@ func InitApp(envVars helpers.EnvVars) (*web.Router, *helpers.Settings, error) {
 		return nil, nil, err
 	}
 
+	// Cache templates
+	templates := template.Must(template.ParseFiles(filepath.Join(envVars.BasePath, "static", "index.html")))
+
 	// Initialize the router
-	router := InitRouter(&settings)
+	router := InitRouter(&settings, templates)
 
 	return router, &settings, nil
 }

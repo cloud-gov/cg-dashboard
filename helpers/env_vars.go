@@ -33,6 +33,8 @@ var (
 	SecureCookiesEnvVar = "SECURE_COOKIES"
 	// SessionKeyEnvVar is the secret key used to protect session data
 	SessionKeyEnvVar = "SESSION_KEY"
+	// BasePathEnvVar is the path to the application root
+	BasePathEnvVar = "BASE_PATH"
 )
 
 // EnvVars holds all the environment variable values that a non-test server should have.
@@ -49,4 +51,5 @@ type EnvVars struct {
 	NewRelicLicense string
 	SecureCookies   string
 	SessionKey      string
+	BasePath        string
 }
