@@ -263,7 +263,7 @@ describe('AppStore', function() {
 
   describe('on app restarted', function() {
     it('should poll until running instances is greater then 0', function() {
-      const spy = sandbox.spy(AppStore, 'poll');
+      const spy = sandbox.stub(AppStore, 'poll').returns(Promise.resolve());
       const expectedRes = {
         data: { running_instances: 1 }
       };
