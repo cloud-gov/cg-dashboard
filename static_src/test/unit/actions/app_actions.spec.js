@@ -124,4 +124,32 @@ describe('appActions', function() {
       assertAction(spy, appActionTypes.APP_CHANGE_CURRENT, {}, expectedParams);
     });
   });
+
+  describe('restart()', function() {
+    it('should dispatch a view event of type app restart with guid', function() {
+      const appGuid = 'zvmn3hkl';
+      const expectedParams = {
+        appGuid
+      };
+      let spy = setupViewSpy(sandbox)
+
+      appActions.restart(appGuid);
+
+      assertAction(spy, appActionTypes.APP_RESTART, expectedParams);
+    });
+  });
+
+  describe('restarted()', function() {
+    it('should dispatch a server event of type app restarted', function() {
+      const appGuid = '230894dgvk2r';
+      const expectedParams = {
+        appGuid
+      };
+      let spy = setupServerSpy(sandbox)
+
+      appActions.restarted(appGuid);
+
+      assertAction(spy, appActionTypes.APP_RESTARTED, expectedParams);
+    });
+  });
 });

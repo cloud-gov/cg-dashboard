@@ -10,6 +10,12 @@ import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import { appActionTypes } from '../constants.js';
 
+const STATES = {
+  running: 'RUNNING',
+  stopped: 'STOPPED',
+  restarting: 'RESTARTING'
+};
+
 class AppStore extends BaseStore {
   constructor() {
     super();
@@ -55,6 +61,24 @@ class AppStore extends BaseStore {
 
       case appActionTypes.APP_CHANGE_CURRENT: {
         this._currentAppGuid = action.appGuid;
+        this.emitChange();
+        break;
+      }
+
+      case appActionTypes.APP_RESTART: {
+        cfApi.postAppRestart(action.appGuid);
+        const app = this.get(action.appGuid);
+        if (app) {
+          const restartingApp = Object.assign({}, app,
+            { state: STATES.restarting });
+          this.merge('guid', restartingApp, (changed) => {
+            if (changed) this.emitChange();
+          });
+        }
+        break;
+      }
+
+      case appActionTypes.APP_RESTARTED: {
         this.emitChange();
         break;
       }

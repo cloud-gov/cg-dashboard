@@ -252,6 +252,12 @@ export default {
     });
   },
 
+  postAppRestart(appGuid) {
+    return http.post(`${APIV}/apps/${appGuid}/restage`).then(() => {
+      appActions.restarted(appGuid);
+    });
+  },
+
   /**
    * Fetch all users that belong to a certain space.
    *
