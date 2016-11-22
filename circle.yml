@@ -39,8 +39,8 @@ test:
   override:
     - cd $WS && ./codecheck.sh -u
     - cd $WS && npm test:
-      environment:
-        NODE_ENV: "test"
+        environment:
+          NODE_ENV: "test"
 
 deployment:
   deploy:
@@ -55,8 +55,8 @@ deployment:
     owner: 18F
     commands:
       - cd $WS && npm run build:
-        environment:
-          NODE_ENV: "test"
+          environment:
+            NODE_ENV: "test"
       - cd $WS && pip install --user ruamel.yaml
       - cd $WS && export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
       - cd $WS && chmod a+x deploy/circle_deploy.sh && deploy/circle_deploy.sh
