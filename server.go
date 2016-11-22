@@ -1,16 +1,18 @@
 package main
 
 import (
-	"github.com/18F/cg-dashboard/controllers"
-	"github.com/18F/cg-dashboard/controllers/pprof"
-	"github.com/18F/cg-dashboard/helpers"
-	"github.com/cloudfoundry-community/go-cfenv"
-	"github.com/gorilla/context"
-	"github.com/yvasiyarov/gorelic"
-
 	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/cloudfoundry-community/go-cfenv"
+	"github.com/gorilla/context"
+	"github.com/gorilla/csrf"
+	"github.com/yvasiyarov/gorelic"
+
+	"github.com/18F/cg-dashboard/controllers"
+	"github.com/18F/cg-dashboard/controllers/pprof"
+	"github.com/18F/cg-dashboard/helpers"
 )
 
 const (
@@ -33,6 +35,7 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.NewRelicLicense = os.Getenv(helpers.NewRelicLicenseEnvVar)
 	envVars.SecureCookies = os.Getenv(helpers.SecureCookiesEnvVar)
 	envVars.SessionKey = os.Getenv(helpers.SessionKeyEnvVar)
+	envVars.BasePath = os.Getenv(helpers.BasePathEnvVar)
 	// set a default session key if one isn't provided
 	if envVars.SessionKey == "" {
 		envVars.SessionKey = "some key"
@@ -139,5 +142,8 @@ func startApp(port string) {
 	fmt.Println("starting app now...")
 
 	// TODO add better timeout message. By default it will just say "Timeout"
-	http.ListenAndServe(":"+port, http.TimeoutHandler(context.ClearHandler(app), helpers.TimeoutConstant, ""))
+	protect := csrf.Protect([]byte(envVars.SessionKey), csrf.Secure(settings.SecureCookies))
+	http.ListenAndServe(":"+port, protect(
+		http.TimeoutHandler(context.ClearHandler(app), helpers.TimeoutConstant, ""),
+	))
 }

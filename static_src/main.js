@@ -1,9 +1,9 @@
-
 import 'cloudgov-style/css/base.css';
 import './css/main.css';
 // Icon used in cg-uaa.
 import './img/dashboard-uaa-icon.jpg';
 import 'cloudgov-style/img/favicon.ico';
+import axios from 'axios';
 
 import { Router } from 'director';
 import React from 'react';
@@ -29,6 +29,11 @@ import uaaApi from './util/uaa_api.js';
 import userActions from './actions/user_actions.js';
 
 const mainEl = document.querySelector('.js-app');
+
+const meta = document.querySelector('meta[name="gorilla.csrf.Token"]');
+if (meta) {
+  axios.defaults.headers.common['X-CSRF-Token'] = meta.content;
+}
 
 function login() {
   ReactDOM.render(<MainContainer><Login /></MainContainer>, mainEl);

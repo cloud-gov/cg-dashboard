@@ -1,10 +1,12 @@
 package controllers_test
 
 import (
+	"html/template"
+	"testing"
+
 	"github.com/18F/cg-dashboard/controllers"
 	"github.com/18F/cg-dashboard/helpers"
 	. "github.com/18F/cg-dashboard/helpers/testhelpers"
-	"testing"
 )
 
 type initAppTest struct {
@@ -66,7 +68,7 @@ var initRouterTests = []initRouterTest{
 
 func TestInitRouter(t *testing.T) {
 	for _, test := range initRouterTests {
-		router := controllers.InitRouter((test.settings))
+		router := controllers.InitRouter(test.settings, &template.Template{})
 		if (router == nil) != test.returnValueNil {
 			t.Errorf("Test %s did not return correct router value. Expected %t, Actual %t\n", test.testName, test.returnValueNil, (router == nil))
 		}

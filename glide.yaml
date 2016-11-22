@@ -22,3 +22,5 @@ import:
   - clientcredentials
 - package: github.com/yvasiyarov/gorelic
 - package: github.com/cloudfoundry-community/go-cfenv
+- package: github.com/gorilla/csrf
+  version: ~1.4.0

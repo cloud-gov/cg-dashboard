@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export BASE_PATH=$(cd $(dirname $0); pwd -P)
+
 # The value of the exit status for the script.
 scriptreturn=0
 

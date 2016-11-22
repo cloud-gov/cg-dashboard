@@ -2,16 +2,26 @@ package controllers
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/gocraft/web"
+	"github.com/gorilla/csrf"
 	"golang.org/x/oauth2"
 )
 
 // Context represents the context for all requests that do not need authentication.
 type Context struct {
-	Settings *helpers.Settings
+	Settings  *helpers.Settings
+	templates *template.Template
+}
+
+// Index serves index.html
+func (c *Context) Index(w web.ResponseWriter, r *web.Request) {
+	c.templates.ExecuteTemplate(w, "index.html", map[string]interface{}{
+		"csrfToken": csrf.Token(r.Request),
+	})
 }
 
 // Ping is just a test endpoint to show that indeed the service is alive.

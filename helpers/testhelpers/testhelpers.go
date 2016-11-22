@@ -10,8 +10,10 @@ import (
 
 	"bytes"
 	"fmt"
+	"html/template"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -97,7 +99,7 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars hel
 	settings.Sessions = store
 
 	// Create the router.
-	router := controllers.InitRouter(&settings)
+	router := controllers.InitRouter(&settings, &template.Template{})
 
 	return router, &store
 }
@@ -152,6 +154,7 @@ var MockCompleteEnvVars = helpers.EnvVars{
 	APIURL:       "apiurl",
 	LogURL:       "logurl",
 	PProfEnabled: "true",
+	BasePath:     os.Getenv(helpers.BasePathEnvVar),
 }
 
 // CreateExternalServer creates a test server that should reply with the given parameters assuming that the incoming request matches what we want.
