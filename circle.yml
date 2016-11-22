@@ -32,13 +32,15 @@ dependencies:
     - cd $WS && go build
     - cd $WS && npm run build
 test:
+  environment:
+    NODE_ENV: "test"
   pre:
     - go get github.com/axw/gocov/gocov
     - go get github.com/mattn/goveralls
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   override:
     - cd $WS && ./codecheck.sh -u
-    - NODE_ENV="test" cd $WS && npm test
+    - cd $WS && npm test
 
 deployment:
   deploy:
