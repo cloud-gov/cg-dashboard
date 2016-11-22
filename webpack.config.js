@@ -6,6 +6,7 @@ const WebpackKarmaWarningsPlugin = require(
   './static_src/test/webpack-karma-warnings-plugin.js');
 
 const PRODUCTION = (process.env.NODE_ENV === 'prod');
+const TEST = (process.env.NODE_ENV === 'test');
 const CG_STYLE_PATH = process.env.CG_STYLE_PATH;
 
 const srcDir = './static_src';
@@ -82,6 +83,10 @@ const config = {
 
   publicPath: './static'
 };
+
+if (TEST) {
+  config.plugins.push(new WebpackKarmaWarningsPlugin());
+}
 
 if (PRODUCTION) {
   config.plugins.push(new webpack.optimize.DedupePlugin());

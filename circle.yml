@@ -6,7 +6,6 @@ machine:
     CF_ORGANIZATION: "cf"
     CF_API_GC: "https://api.fr.cloud.gov"
     CF_ORGANIZATION_GC: "cloud-gov"
-    NODE_ENV: "prod"
   post:
     - cd cg-dashboard && nvm install && nvm use && nvm alias default $(nvm current)
     - mkdir -p download
@@ -39,7 +38,7 @@ test:
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   override:
     - cd $WS && ./codecheck.sh -u
-    - cd $WS && npm test
+    - NODE_ENV="test" cd $WS && npm test
 
 deployment:
   deploy:
@@ -52,7 +51,10 @@ deployment:
   production:
     tag: /[0-9]+(\.[0-9]+)*/
     owner: 18F
+    environment:
+      NODE_ENV: "prod"
     commands:
+      - cd $WS && npm run build
       - cd $WS && pip install --user ruamel.yaml
       - cd $WS && export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
       - cd $WS && chmod a+x deploy/circle_deploy.sh && deploy/circle_deploy.sh
