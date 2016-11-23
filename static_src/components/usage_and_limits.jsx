@@ -135,16 +135,6 @@ export default class UsageAndLimits extends React.Component {
             </PanelRow>
           </PanelGroup>
         </PanelGroup>
-        <PanelGroup columns={ 12 }>
-          <PanelRow>
-            <div>
-              <p style={{ width: '100%' }}>To start or stop an app, follow the <a
-                href="https://docs.cloudfoundry.org/devguide/deploy-apps/deploy-app.html"
-                target="_blank">Cloud Foundry deployment guide.</a>
-              </p>
-            </div>
-          </PanelRow>
-        </PanelGroup>
       </div>
       );
     }
