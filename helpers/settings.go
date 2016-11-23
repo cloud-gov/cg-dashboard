@@ -62,6 +62,10 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	if len(envVars.LogURL) == 0 {
 		return errors.New("Unable to find '" + LogURLEnvVar + "' in environment. Exiting.\n")
 	}
+	if len(envVars.SessionKey) == 0 {
+		return errors.New("Unable to find '" + SessionKeyEnvVar + "' in environment. Exiting.\n")
+	}
+
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
 	s.TokenContext = context.TODO()
