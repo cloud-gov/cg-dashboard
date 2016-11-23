@@ -6,6 +6,7 @@ import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
 import UsageLimits from './usage_and_limits.jsx';
 import AppStore from '../stores/app_store.js';
+import ErrorMessage from './error_message.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
@@ -91,8 +92,15 @@ export default class AppContainer extends React.Component {
 
   get restart() {
     let loading;
+    let error;
+
     if (AppStore.isRestarting(this.state.app)) {
       loading = <Loading text="Restarting app" style="inline" />;
+    }
+    if (this.state.app.error) {
+      error = (
+        <ErrorMessage err={ this.state.app.error } />
+      );
     }
 
     return (
@@ -105,6 +113,7 @@ export default class AppContainer extends React.Component {
           type="outline">
           <span>Restart app</span>
         </Action>
+        { error }
         { loading }
       </div>
     );
