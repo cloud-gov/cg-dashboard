@@ -278,6 +278,29 @@ describe('AppStore', function() {
     });
   });
 
+  describe('on app update', function () {
+    let putApp;
+    beforeEach(function () {
+      putApp = sandbox.stub(cfApi, 'putApp');
+      AppStore.push({ guid: '1234', scale: 2, memory: 128 });
+      appActions.updateApp('1234', { scale: 3 });
+    });
+
+    it('calls api with guid', function () {
+      expect(putApp).toHaveBeenCalledOnce();
+
+      const [guid, app] = putApp.args[0];
+      expect(guid).toBe('1234');
+    });
+
+    it('calls api with updated app', function () {
+      const [guid, app] = putApp.args[0];
+
+      expect(app.memory).toBe(128);
+      expect(app.scale).toBe(3);
+    });
+  });
+
   describe('on app error', function() {
     it('should add an error property on the app with the error', function() {
       const appGuid = 'zxcnv'

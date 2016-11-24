@@ -33,6 +33,19 @@ class AppStore extends BaseStore {
         this.emitChange();
         break;
 
+      case appActionTypes.APP_UPDATE: {
+        const existingApp = this.get(action.appGuid);
+        const updatedApp = Object.assign({}, existingApp, action.appPartial, { updating: true });
+        cfApi.putApp(action.appGuid, updatedApp);
+        break;
+      }
+
+      case appActionTypes.APP_UPDATED: {
+        this.merge('guid', action.app);
+        this.emitChange();
+        break;
+      }
+
       case appActionTypes.APP_STATS_FETCH:
         cfApi.fetchAppStats(action.appGuid);
         break;

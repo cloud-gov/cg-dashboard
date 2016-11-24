@@ -22,10 +22,10 @@ export default {
     });
   },
 
-  updateApp(appGuid, app) {
+  updateApp(appGuid, appPartial) {
     AppDispatcher.handleViewAction({
       type: appActionTypes.APP_UPDATE,
-      app,
+      appPartial,
       appGuid
     });
   },
