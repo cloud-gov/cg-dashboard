@@ -260,6 +260,14 @@ export default {
     });
   },
 
+  putApp(appGuid, app) {
+    return http.put(`${APIV}/apps/${appGuid}`, app)
+      .then((res) => {
+        appActions.updatedApp(res.data.entity);
+      })
+      .catch((err) => handleError(err, appActions.error.bind(null, appGuid)));
+  },
+
   postAppRestart(appGuid) {
     return http.post(`${APIV}/apps/${appGuid}/restage`).then(() => {
       appActions.restarted(appGuid);

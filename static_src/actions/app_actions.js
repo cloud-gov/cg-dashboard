@@ -22,6 +22,21 @@ export default {
     });
   },
 
+  updateApp(appGuid, app) {
+    AppDispatcher.handleViewAction({
+      type: appActionTypes.APP_UPDATE,
+      app,
+      appGuid
+    });
+  },
+
+  updatedApp(app) {
+    AppDispatcher.handleViewAction({
+      type: appActionTypes.APP_UPDATED,
+      app
+    });
+  },
+
   fetchStats(appGuid) {
     AppDispatcher.handleViewAction({
       type: appActionTypes.APP_STATS_FETCH,
