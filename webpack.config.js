@@ -8,6 +8,7 @@ const WebpackKarmaWarningsPlugin = require(
 const PRODUCTION = (process.env.NODE_ENV === 'prod');
 const TEST = (process.env.NODE_ENV === 'test');
 const CG_STYLE_PATH = process.env.CG_STYLE_PATH;
+const CF_SKIN = process.env.CF_SKIN || 'cg';
 
 const srcDir = './static_src';
 const compiledDir = './static/assets';
@@ -67,7 +68,8 @@ const config = {
 
   resolve: {
     alias: {
-      'cloudgov-style': 'cloudgov-style'
+      'cloudgov-style': 'cloudgov-style',
+      'skin' : path.resolve(__dirname, `static_src/skins/${CF_SKIN}`)
     },
 
     modulesDirectories: ['node_modules']

@@ -3,8 +3,10 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import LoginStore from '../stores/login_store.js';
+import HeaderLink from './header_link.jsx';
 
 import createStyler from '../util/create_styler';
+import { config } from 'skin';
 
 export default class Header extends React.Component {
 
@@ -20,7 +22,7 @@ export default class Header extends React.Component {
 
   render() {
     const loggedIn = LoginStore.isLoggedIn();
-    let loginLink = (!loggedIn) ? <a href="/handshake">Login</a> : <a href="/v2/logout">Logout</a>;
+    let loginLink = (!loggedIn) ? <HeaderLink url="/handshake" text="Login" /> : <HeaderLink url="/v2/logout" text="Logout" />;
     return (
     <header className={ this.styler('header') }>
       <div className={ this.styler('header-wrap') }>
@@ -36,26 +38,8 @@ export default class Header extends React.Component {
         </div>
         <nav className={ this.styler('header-side') }>
           <ul className={ this.styler('nav') }>
-            <li className={ this.styler('nav-link') }>
-              <a href="https://cloud.gov/#about">About</a>
-            </li>
-            <li className={ this.styler('nav-link') }>
-              <a href="https://docs.cloud.gov">Documentation</a>
-            </li>
-            <li className={ this.styler('nav-link') }>
-              <a href="https://cloud.gov/updates/">Updates</a>
-            </li>
-            <li className={ this.styler('nav-link') }>
-              <a href="https://cloudgov.statuspage.io/">
-                Status
-              </a>
-            </li>
-            <li className={ this.styler('nav-link') }>
-              <a href="https://cloud.gov/#contact">Contact</a>
-            </li>
-            <li className={ this.styler('nav-link') }>
-              { loginLink }
-            </li>
+            { config.getIn(['header', 'links']).map((link, index) => <HeaderLink url={link.get('url')} text={link.get('text')} key={index} />) }
+            { loginLink }
           </ul>
         </nav>
       </div>
