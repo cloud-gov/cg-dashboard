@@ -13,11 +13,11 @@ import activityActions from './actions/activity_actions.js';
 import AppContainer from './components/app_container.jsx';
 import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
-import Home from './components/home.jsx';
 import Login from './components/login.jsx';
 import MainContainer from './components/main_container.jsx';
 import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
+import Overview from './components/overview_container.jsx';
 import quotaActions from './actions/quota_actions.js';
 import routeActions from './actions/route_actions.js';
 import spaceActions from './actions/space_actions.js';
@@ -41,7 +41,7 @@ function login() {
 
 function dashboard() {
   ReactDOM.render(<MainContainer>
-    <Home />
+    <Overview />
   </MainContainer>, mainEl);
 }
 
