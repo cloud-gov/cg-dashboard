@@ -6,6 +6,7 @@ const WebpackKarmaWarningsPlugin = require(
   './static_src/test/webpack-karma-warnings-plugin.js');
 
 const PRODUCTION = (process.env.NODE_ENV === 'prod');
+const TEST = (process.env.NODE_ENV === 'test');
 const CG_STYLE_PATH = process.env.CG_STYLE_PATH;
 
 const srcDir = './static_src';
@@ -77,16 +78,20 @@ const config = {
   },
 
   plugins: [
-    new ExtractTextPlugin('style.css', { allChunks: true }),
-    new WebpackKarmaWarningsPlugin()
+    new ExtractTextPlugin('style.css', { allChunks: true })
   ],
 
   publicPath: './static'
 };
 
+if (TEST) {
+  config.plugins.push(new WebpackKarmaWarningsPlugin());
+}
+
 if (PRODUCTION) {
   config.plugins.push(new webpack.optimize.DedupePlugin());
   config.plugins.push(new webpack.optimize.UglifyJsPlugin());
+  config.plugins.push(new WebpackKarmaWarningsPlugin());
 }
 
 module.exports = config;
