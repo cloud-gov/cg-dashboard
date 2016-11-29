@@ -37,7 +37,7 @@ export default class Stat extends React.Component {
     return (
       <div className={ this.styler('stat', stateClass) }>
         <span className={ this.styler('stat-primary')}>
-          { this.props.primaryStat }
+          { this.formatBytes(this.props.primaryStat) }
         </span>
         <span className={ this.styler('stat-info')}>
           { this.props.secondaryInfo }
