@@ -29,13 +29,13 @@ export default class OrgQuickLook extends React.Component {
 
     return (
     <div>
-      <div className={ this.styler('panel_column') }>
-        <h4>{ props.org.name }</h4>
+      <div className={ this.styler('panel-column') }>
+        <h3>{ props.org.name }</h3>
       </div>
-      <div className={ this.styler('panel_column') }>
+      <div className={ this.styler('panel-column-less') }>
         <span>{ props.org.spaces.length } spaces</span>
       </div>
-      <div className={ this.styler('panel_column') }>
+      <div className={ this.styler('panel-column-less') }>
         <span>{ this.totalAppCount(props.org.spaces) } apps</span>
       </div>
     </div>
