@@ -40,7 +40,14 @@ export default class ResourceUsage extends React.Component {
   render() {
     const props = this.props;
     let title = <h5>{ props.title } allocated</h5>;
-    let stat = <Stat primaryStat={ props.amountTotal } />;
+    let stat = (
+      <Stat
+        editable={ props.editable }
+        name={ props.name }
+	primaryStat={ props.amountTotal }
+      />
+    );
+
     if (props.amountUsed) {
       title = <h5>{ props.title } used</h5>;
       stat = (

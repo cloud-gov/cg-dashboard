@@ -2,6 +2,7 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
+import Action from './action.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelHeader from './panel_header.jsx';
 import PanelBlock from './panel_block.jsx';
@@ -10,13 +11,24 @@ import ResourceUsage from './resource_usage.jsx';
 
 import createStyler from '../util/create_styler';
 
+function stateSetter(props) {
+  return {
+    editable: !!props.editable
+  };
+}
+
 export default class UsageAndLimits extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
     this.styler = createStyler(style);
-
+    this.state = stateSetter(props);
     this.getStat = this.getStat.bind(this);
+    this._onToggleEdit = this._onToggleEdit.bind(this);
+  }
+
+  _onToggleEdit() {
+    this.setState(stateSetter({ editable: !this.state.editable }));
   }
 
   getStat(statName) {
@@ -43,6 +55,8 @@ export default class UsageAndLimits extends React.Component {
       </div>
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left'}}>
         <ResourceUsage title="Instance disk"
+          editable={ this.state.editable }
+          name="disk"
           amountTotal={ this.getStat('disk_quota') }
         />
       </div>
@@ -61,6 +75,8 @@ export default class UsageAndLimits extends React.Component {
       </div>
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left'}}>
         <ResourceUsage title="Instance memory"
+          editable={ this.state.editable }
+          name="memory"
           amountTotal={ this.getStat('mem_quota') }
         />
       </div>
@@ -135,6 +151,9 @@ export default class UsageAndLimits extends React.Component {
             </PanelRow>
           </PanelGroup>
         </PanelGroup>
+        <Action style="primary" type="outline" label="Modify allocation and scale" clickHandler={ this._onToggleEdit }>
+          <span>Modify allocation and scale</span>
+        </Action>
       </div>
       );
     }
