@@ -4,6 +4,7 @@ import React from 'react';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
+import OrgQuickLook from './org_quick_look.jsx';
 import OrgStore from '../stores/org_store.js';
 import Panel from './panel.jsx';
 import PanelGroup from './panel_group.jsx';
@@ -20,10 +21,30 @@ function stateSetter() {
   }
 }
 
-export default class Home extends React.Component {
+export default class OverviewContainer extends React.Component {
   constructor(props) {
     super(props);
+    this.state = stateSetter();
     this.styler = createStyler(style);
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
+    OrgStore.addChangeListener(this._onChange);
+    SpaceStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    OrgStore.removeChangeListener(this._onChange);
+    SpaceStore.removeChangeListener(this._onChange);
+  }
+
+  _onChange() {
+    this.setState(stateSetter());
+  }
+
+  orgSpaces(orgGuid) {
+    return this.state.spaces.filter((space) => space.organization_guid === orgGuid);
   }
 
   render() {
@@ -34,8 +55,11 @@ export default class Home extends React.Component {
       <h1>Overview</h1>
       <Panel title="Your organizations">
         { state.orgs.map((org) =>
-          <PanelRow>
-
+          <PanelRow key={ org.guid }>
+            <OrgQuickLook
+              org={ org }
+              spaces={ this.orgSpaces(org.guid) }
+            />
           </PanelRow>
         )}
       </Panel>

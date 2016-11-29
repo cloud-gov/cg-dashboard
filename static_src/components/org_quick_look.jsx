@@ -1,8 +1,8 @@
 
+import React from 'react';
+
 import style from 'cloudgov-style/css/cloudgov-style.css';
-
 import createStyler from '../util/create_styler';
-
 
 const props = {
   org: React.PropTypes.object.isRequired,
@@ -20,6 +20,10 @@ export default class OrgQuickLook extends React.Component {
     this.styler = createStyler(style);
   }
 
+  totalAppCount(spaces) {
+    return spaces.reduce((sum, space) => sum + space.app_count, 0);
+  }
+
   render() {
     const props = this.props;
 
@@ -32,7 +36,7 @@ export default class OrgQuickLook extends React.Component {
         <span>{ props.org.spaces.length } spaces</span>
       </div>
       <div className={ this.styler('panel_column') }>
-        <span>{ props.spaces.app_count } apps</span>
+        <span>{ this.totalAppCount(props.org.spaces) } apps</span>
       </div>
     </div>
     );
