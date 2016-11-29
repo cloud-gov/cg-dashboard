@@ -6,6 +6,14 @@ import LoginStore from '../stores/login_store.js';
 
 import createStyler from '../util/create_styler';
 
+const propTypes = {
+  titleBar: React.PropTypes.element
+};
+
+const defaultProps = {
+  titleBar: <div></div>
+};
+
 export default class Header extends React.Component {
 
   constructor(props) {
@@ -58,8 +66,12 @@ export default class Header extends React.Component {
             </li>
           </ul>
         </nav>
+        { this.props.titleBar }
       </div>
     </header>
     );
   }
 }
+
+Header.propTypes = propTypes;
+Header.defaultProps = defaultProps;
