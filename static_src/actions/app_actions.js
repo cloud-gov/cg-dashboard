@@ -31,7 +31,7 @@ export default {
   },
 
   updatedApp(app) {
-    AppDispatcher.handleViewAction({
+    AppDispatcher.handleServerAction({
       type: appActionTypes.APP_UPDATED,
       app
     });

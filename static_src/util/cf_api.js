@@ -263,7 +263,8 @@ export default {
   putApp(appGuid, app) {
     return http.put(`${APIV}/apps/${appGuid}`, app)
       .then((res) => {
-        appActions.updatedApp(res.data.entity);
+        const updatedApp = Object.assign({}, res.data.entity, { guid: appGuid });
+        appActions.updatedApp(updatedApp);
       })
       .catch((err) => handleError(err, appActions.error.bind(null, appGuid)));
   },

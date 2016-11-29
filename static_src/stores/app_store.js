@@ -26,6 +26,10 @@ class AppStore extends BaseStore {
     return app.state === appStates.running || app.state === appStates.started;
   }
 
+  isUpdating(app) {
+    return !!app.updating;
+  }
+
   _registerToActions(action) {
     switch (action.type) {
       case appActionTypes.APP_FETCH:
@@ -36,12 +40,14 @@ class AppStore extends BaseStore {
       case appActionTypes.APP_UPDATE: {
         const existingApp = this.get(action.appGuid);
         const updatedApp = Object.assign({}, existingApp, action.appPartial, { updating: true });
-        cfApi.putApp(action.appGuid, updatedApp);
+        this.merge('guid', updatedApp);
+        cfApi.putApp(action.appGuid, action.appPartial);
         break;
       }
 
       case appActionTypes.APP_UPDATED: {
-        this.merge('guid', action.app);
+        const app = Object.assign({}, action.app, { updating: false });
+        this.merge('guid', app);
         this.emitChange();
         break;
       }

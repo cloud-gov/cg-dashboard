@@ -100,6 +100,11 @@ export default class AppContainer extends React.Component {
     if (AppStore.isRestarting(this.state.app)) {
       loading = <Loading text="Restarting app" style="inline" />;
     }
+
+    if (AppStore.isUpdating(this.state.app)) {
+      loading = <Loading text="Updating app" style="inline" />;
+    }
+
     if (this.state.app.error) {
       error = (
         <ErrorMessage err={ this.state.app.error } />

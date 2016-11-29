@@ -17,6 +17,7 @@ const STATES = [
 const propTypes = {
   name: React.PropTypes.string,
   editable: React.PropTypes.bool,
+  onChange: React.PropTypes.func,
   primaryStat: React.PropTypes.number.isRequired,
   statState: React.PropTypes.oneOf(STATES),
   secondaryInfo: React.PropTypes.element
@@ -24,6 +25,7 @@ const propTypes = {
 
 const defaultProps = {
   editable: false,
+  onChange: (e) => e.preventDefault(),
   statState: 'none',
   secondaryInfo: <span></span>
 };
@@ -43,6 +45,7 @@ export default class Stat extends React.Component {
   }
 
   _onChange(e) {
+    this.props.onChange(e.target.value);
     this.setState(stateSetter({ primaryStat: e.target.value }));
   }
 
@@ -56,13 +59,16 @@ export default class Stat extends React.Component {
 
     if (this.props.editable) {
       primaryStat = (
-        <input
-          type="text"
-          id={ this.props.name }
-          name={ this.props.name }
-          value={ this.state.primaryStat }
-          onChange={ this._onChange }
-        />
+        <div>
+          <input
+            type="text"
+            id={ this.props.name }
+            name={ this.props.name }
+            value={ this.state.primaryStat }
+            onChange={ this._onChange }
+          />
+          <span>MB</span>
+        </div>
       );
     }
 

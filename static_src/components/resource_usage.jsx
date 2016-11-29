@@ -9,6 +9,7 @@ import formatBytes from '../util/format_bytes';
 import Stat from './stat.jsx';
 
 const propTypes = {
+  onChange: React.PropTypes.func,
   title: React.PropTypes.string.isRequired,
   amountUsed: React.PropTypes.number,
   amountTotal: React.PropTypes.number,
@@ -18,7 +19,8 @@ const propTypes = {
 const defaultProps = {
   amountUsed: 0,
   amountTotal: 0,
-  byteWarningThreshold: 500000
+  byteWarningThreshold: 500000,
+  onChange: (e) => e.preventDefault()
 };
 
 export default class ResourceUsage extends React.Component {
@@ -43,8 +45,9 @@ export default class ResourceUsage extends React.Component {
     let stat = (
       <Stat
         editable={ props.editable }
+        onChange={ props.onChange }
         name={ props.name }
-	primaryStat={ props.amountTotal }
+        primaryStat={ props.amountTotal }
       />
     );
 
