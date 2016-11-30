@@ -11,16 +11,18 @@ const ICON_TYPES = [
   'app'
 ];
 
+const NO_STATE = 'NONE';
+
 const propTypes = {
   count: React.PropTypes.number,
   name: React.PropTypes.string.isRequired,
-  status: React.PropTypes.oneOf(appStates.values()),
+  status: React.PropTypes.oneOf(Object.values(appStates).concat(NO_STATE)),
   iconType: React.PropTypes.oneOf(ICON_TYPES)
 };
 
 const defaultProps = {
   count: 0,
-  status: appStates.default,
+  status: NO_STATE,
   iconType: 'space'
 };
 
@@ -33,9 +35,10 @@ export default class CountStatus extends React.Component {
 
   render() {
     const props = this.props;
+    const statusClass = `count_status-${props.status.toLowerCase()}`;
 
     return (
-      <span className={ this.styler('count_status', 'count_status-error') }>
+      <span className={ this.styler('count_status', statusClass) }>
         <strong>{ props.count }</strong> { props.name }
       </span>
     );
