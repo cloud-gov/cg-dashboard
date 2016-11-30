@@ -45,7 +45,7 @@ function overview() {
   cfApi.fetchSpaces().then((spaces) => {
     let i = 0;
     const max = Math.min(MAX_OVERVIEW_SPACES, spaces.length);
-    for ( ; i < max; i++) {
+    for (; i < max; i++) {
       spaceActions.fetch(spaces[i].guid);
     }
   });

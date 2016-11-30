@@ -41,9 +41,8 @@ export default class AppCountStatus extends React.Component {
     return apps.reduce((previousState, app) => {
       if (rankWorseState(previousState) < rankWorseState(app.state)) {
         return app.state;
-      } else {
-        return previousState;
       }
+      return previousState;
     }, 'NONE');
   }
 

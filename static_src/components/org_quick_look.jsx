@@ -31,9 +31,8 @@ export default class OrgQuickLook extends React.Component {
     return this.props.spaces.reduce((all, space) => {
       if (space.apps && space.apps.length) {
         return all.concat(space.apps);
-      } else {
-        return all;
       }
+      return all;
     }, []);
   }
 
@@ -50,7 +49,8 @@ export default class OrgQuickLook extends React.Component {
       <div className={ this.styler('panel-column') }>
         <SpaceCountStatus spaces={ props.org.spaces } />
         <AppCountStatus appCount={ this.totalAppCount(props.org.spaces) }
-          apps={ this.allApps() }/>
+          apps={ this.allApps() }
+        />
       </div>
     </div>
     );
