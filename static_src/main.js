@@ -40,6 +40,12 @@ function login() {
 }
 
 function dashboard() {
+  cfApi.fetchSpaces().then((spaces) => {
+    let i = 0, max = 10;
+    for ( ; i < max; i++) {
+      spaceActions.fetch(spaces[i].guid);
+    }
+  });
   ReactDOM.render(<MainContainer>
     <Overview />
   </MainContainer>, mainEl);
