@@ -66,8 +66,8 @@ export default class Header extends React.Component {
             </li>
           </ul>
         </nav>
-        { this.props.titleBar }
       </div>
+        { this.props.titleBar }
     </header>
     );
   }

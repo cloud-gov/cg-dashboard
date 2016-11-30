@@ -77,7 +77,7 @@ export default class AppContainer extends React.Component {
   }
 
   get fullTitle() {
-    let content = <span><strong>{ this.state.app.name }</strong> application</span>
+    let content = <span>{ this.state.app.name }</span>
     if (this.state.currentSpaceName && this.state.currentOrgName) {
       content = <span><strong>{ this.state.app.name }</strong> application in your <strong>{ this.state.currentSpaceName }</strong> space, which is in your <strong>{ this.state.currentOrgName }</strong> organization</span>;
     }
@@ -128,8 +128,8 @@ export default class AppContainer extends React.Component {
     } else if (!this.state.loading && appReady(this.state.app)) {
       content = (
         <div>
-          <h2>{ this.fullTitle } { this.statusUI }</h2>
-          { this.restart }
+
+
           <Panel title="Usage and allocation">
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>

@@ -45,7 +45,7 @@ export default class AppContainer extends React.Component {
   }
 
   get fullTitle() {
-    let content = <span><strong>{ this.state.app.name }</strong> application</span>
+    let content = <span>{ this.state.app.name }</span>
     if (this.state.currentSpaceName && this.state.currentOrgName) {
       content = <span><strong>{ this.state.app.name }</strong> application in your <strong>{ this.state.currentSpaceName }</strong> space, which is in your <strong>{ this.state.currentOrgName }</strong> organization</span>;
     }
@@ -72,7 +72,7 @@ export default class AppContainer extends React.Component {
     }
 
     return (
-      <div>
+      <span>
         <Action
           style="primary"
           clickHandler={ this._onRestart }
@@ -83,7 +83,7 @@ export default class AppContainer extends React.Component {
         </Action>
         { error }
         { loading }
-      </div>
+      </span>
     );
   }
 
@@ -91,8 +91,12 @@ export default class AppContainer extends React.Component {
     let content;
 
     return (
-      <div>
-        <h1>Hello</h1>
+      <div className={ this.styler('header-view')}>
+        <div className={ this.styler('usa-grid')}>
+          <div className={ this.styler('title_bar')}>
+          <h1>{ this.fullTitle }</h1> { this.statusUI } { this.restart }
+          </div>
+      </div>
       </div>
     );
   }
