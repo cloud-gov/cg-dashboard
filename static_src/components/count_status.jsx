@@ -4,13 +4,7 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
-
-// TODO move these into shared, maybe constants?
-const STATUSES = [
-  'running',
-  'stopped',
-  'crashed'
-];
+import { appStates } from '../constants.js';
 
 const ICON_TYPES = [
   'space',
@@ -20,13 +14,13 @@ const ICON_TYPES = [
 const propTypes = {
   count: React.PropTypes.number,
   name: React.PropTypes.string.isRequired,
-  status: React.PropTypes.oneOf(STATUSES),
+  status: React.PropTypes.oneOf(appStates.values()),
   iconType: React.PropTypes.oneOf(ICON_TYPES)
 };
 
 const defaultProps = {
   count: 0,
-  status: 'running',
+  status: appStates.default,
   iconType: 'space'
 };
 
@@ -41,7 +35,7 @@ export default class CountStatus extends React.Component {
     const props = this.props;
 
     return (
-      <span className={ this.styler('count_status') }>
+      <span className={ this.styler('count_status', 'count_status-error') }>
         <strong>{ props.count }</strong> { props.name }
       </span>
     );

@@ -37,7 +37,7 @@ export default class OrgQuickLook extends React.Component {
           <a href={ `/#/org/${props.org.guid}` }>{ props.org.name }</a>
         </h2>
       </div>
-      <div className={ this.styler('panel-column', 'panel-column-less') }>
+      <div className={ this.styler('panel-column') }>
         <SpaceCountStatus spaces={ props.org.spaces } />
         <AppCountStatus appCount={ this.totalAppCount(props.org.spaces) } />
       </div>
