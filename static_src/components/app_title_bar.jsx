@@ -4,6 +4,9 @@ import React from 'react';
 
 import Action from './action.jsx';
 import AppStore from '../stores/app_store.js';
+import ErrorMessage from './error_message.jsx';
+import Loading from './loading.jsx';
+import appActions from '../actions/app_actions.js';
 
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -17,7 +20,7 @@ function stateSetter() {
   };
 }
 
-export default class AppContainer extends React.Component {
+export default class AppTitleBar extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -45,11 +48,7 @@ export default class AppContainer extends React.Component {
   }
 
   get fullTitle() {
-    let content = <span>{ this.state.app.name }</span>
-    if (this.state.currentSpaceName && this.state.currentOrgName) {
-      content = <span><strong>{ this.state.app.name }</strong> application in your <strong>{ this.state.currentSpaceName }</strong> space, which is in your <strong>{ this.state.currentOrgName }</strong> organization</span>;
-    }
-    return content;
+    return <span>{ this.state.app.name }</span>;
   }
 
   get statusUI() {
@@ -78,7 +77,8 @@ export default class AppContainer extends React.Component {
           clickHandler={ this._onRestart }
           label="restart app"
           disabled={ !AppStore.isRunning(this.state.app) }
-          type="outline">
+          type="outline"
+        >
           <span>Restart app</span>
         </Action>
         { error }
@@ -88,18 +88,16 @@ export default class AppContainer extends React.Component {
   }
 
   render() {
-    let content;
-
     return (
       <div className={ this.styler('header-view')}>
         <div className={ this.styler('usa-grid')}>
           <div className={ this.styler('title_bar')}>
           <h1>{ this.fullTitle }</h1> { this.statusUI } { this.restart }
           </div>
-      </div>
+        </div>
       </div>
     );
   }
 }
 
-AppContainer.propTypes = { };
+AppTitleBar.propTypes = { };
