@@ -41,7 +41,7 @@ export default class CountStatus extends React.Component {
     const props = this.props;
 
     return (
-      <span>
+      <span className={ this.styler('count_status') }>
         <strong>{ props.count }</strong> { props.name }
       </span>
     );
