@@ -15,7 +15,6 @@ function stateSetter() {
   const orgs = OrgStore.getAll() || [];
   const spaces = SpaceStore.getAll() || [];
 
-  console.log('fuck', orgs);
   return {
     empty: !OrgStore.loading && !SpaceStore.loading && !orgs.length,
     loading: OrgStore.loading || SpaceStore.loading,
