@@ -55,7 +55,7 @@ export default class OverviewContainer extends React.Component {
       <h1>Overview</h1>
       <Panel title="Your organizations">
         { state.orgs.map((org) =>
-          <PanelRow key={ org.guid }>
+          <PanelRow key={ org.guid } styleClass="boxed">
             <OrgQuickLook
               org={ org }
               spaces={ this.orgSpaces(org.guid) }

@@ -5,6 +5,19 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
 
+const STYLES = [
+  'bordered',
+  'boxed'
+];
+
+const propTypes = {
+  styleClass: React.PropTypes.oneOf(STYLES)
+};
+
+const defaultProps = {
+  styleClass: ''
+};
+
 export default class PanelRow extends React.Component {
   constructor(props) {
     super(props);
@@ -13,10 +26,16 @@ export default class PanelRow extends React.Component {
   }
 
   render() {
+    const props = this.props;
+    const styleClass = props.styleClass && `panel-row-${this.props.styleClass}`;
+
     return (
-      <div className={ this.styler('panel-row') }>
+      <div className={ this.styler('panel-row', styleClass) }>
         { this.props.children }
       </div>
     );
   }
 }
+
+PanelRow.propTypes = propTypes;
+PanelRow.defaultProps = defaultProps;
