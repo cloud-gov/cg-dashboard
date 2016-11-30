@@ -35,13 +35,16 @@ if (meta) {
   axios.defaults.headers.common['X-CSRF-Token'] = meta.content;
 }
 
+const MAX_OVERVIEW_SPACES = 20;
+
 function login() {
   ReactDOM.render(<MainContainer><Login /></MainContainer>, mainEl);
 }
 
-function dashboard() {
+function overview() {
   cfApi.fetchSpaces().then((spaces) => {
-    let i = 0, max = 10;
+    let i = 0;
+    const max = Math.min(MAX_OVERVIEW_SPACES, spaces.length);
     for ( ; i < max; i++) {
       spaceActions.fetch(spaces[i].guid);
     }
@@ -148,8 +151,8 @@ function notFound() {
 }
 
 const routes = {
-  '/': dashboard,
-  '/dashboard': dashboard,
+  '/': overview,
+  '/dashboard': overview,
   '/login': login,
   '/org': {
     '/:orgGuid': {
