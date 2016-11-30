@@ -7,7 +7,6 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import OrgQuickLook from './org_quick_look.jsx';
 import OrgStore from '../stores/org_store.js';
 import Panel from './panel.jsx';
-import PanelGroup from './panel_group.jsx';
 import PanelRow from './panel_row.jsx';
 import SpaceStore from '../stores/space_store.js';
 
@@ -18,7 +17,7 @@ function stateSetter() {
   return {
     orgs,
     spaces
-  }
+  };
 }
 
 export default class OverviewContainer extends React.Component {

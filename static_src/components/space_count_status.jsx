@@ -24,7 +24,7 @@ export default class SpaceCountStatus extends React.Component {
   render() {
     const props = this.props;
 
-    return <CountStatus count={ props.spaces.length} name="spaces" />
+    return <CountStatus count={ props.spaces.length} name="spaces" />;
   }
 }
 

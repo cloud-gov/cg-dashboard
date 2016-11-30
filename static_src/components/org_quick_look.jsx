@@ -7,7 +7,7 @@ import createStyler from '../util/create_styler';
 import AppCountStatus from './app_count_status.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
 
-const props = {
+const propTypes = {
   org: React.PropTypes.object.isRequired,
   spaces: React.PropTypes.array
 };
@@ -46,5 +46,5 @@ export default class OrgQuickLook extends React.Component {
   }
 }
 
-OrgQuickLook.props = props;
+OrgQuickLook.propTypes = propTypes;
 OrgQuickLook.defaultProps = defaultProps;

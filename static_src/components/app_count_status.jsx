@@ -26,7 +26,7 @@ export default class AppCountStatus extends React.Component {
   render() {
     const props = this.props;
 
-    return <CountStatus count={ props.appCount } name="apps" />
+    return <CountStatus count={ props.appCount } name="apps" />;
   }
 }
 
