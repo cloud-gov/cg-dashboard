@@ -6,6 +6,7 @@ import React from 'react';
 import createStyler from '../util/create_styler';
 import formatRoute from '../util/format_route';
 import RouteStore from '../stores/route_store';
+import DomainStore from '../stores/domain_store';
 import ServiceInstanceStore from '../stores/service_instance_store';
 
 export default class ActivityLogItem extends React.Component {
@@ -102,7 +103,8 @@ export default class ActivityLogItem extends React.Component {
     const metadata = item.metadata;
     const route = RouteStore.get(metadata.route_guid);
     if (route) {
-      url = formatRoute(route.domain, route.host, route.path);
+      const domain = DomainStore.get(route.domain_guid);
+      url = formatRoute(domain.name, route.host, route.path);
     }
     const link = (route) ? (<a href={ `//${url}` }>{ url }</a>) : url;
 
