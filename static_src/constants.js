@@ -1,6 +1,15 @@
 
 import keymirror from 'keymirror';
 
+const appStates = {
+  running: 'RUNNING',
+  started: 'STARTED',
+  stopped: 'STOPPED',
+  crashed: 'CRASHED',
+  restarting: 'RESTARTING',
+  none: 'NONE',
+  default: 'STOPPED'
+};
 
 // All global error action types
 const errorActionTypes = keymirror({
@@ -224,6 +233,7 @@ const activityActionTypes = keymirror({
 export {
   activityActionTypes,
   appActionTypes,
+  appStates,
   domainActionTypes,
   errorActionTypes,
   loginActionTypes,

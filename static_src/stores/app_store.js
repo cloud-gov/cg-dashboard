@@ -8,14 +8,7 @@ import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import { appActionTypes } from '../constants.js';
-
-const STATES = {
-  running: 'RUNNING',
-  started: 'STARTED',
-  stopped: 'STOPPED',
-  restarting: 'RESTARTING'
-};
+import { appStates, appActionTypes } from '../constants.js';
 
 class AppStore extends BaseStore {
   constructor() {
@@ -26,11 +19,11 @@ class AppStore extends BaseStore {
   }
 
   isRestarting(app) {
-    return app.state === STATES.restarting;
+    return app.state === appStates.restarting;
   }
 
   isRunning(app) {
-    return app.state === STATES.running || app.state === STATES.started;
+    return app.state === appStates.running || app.state === appStates.started;
   }
 
   _registerToActions(action) {
@@ -79,7 +72,7 @@ class AppStore extends BaseStore {
         const app = this.get(action.appGuid);
         if (app) {
           const restartingApp = Object.assign({}, app,
-            { state: STATES.restarting });
+            { state: appStates.restarting });
           this.merge('guid', restartingApp, (changed) => {
             if (changed) this.emitChange();
           });
