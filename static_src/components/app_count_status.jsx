@@ -43,12 +43,12 @@ export default class AppCountStatus extends React.Component {
         return app.state;
       }
       return previousState;
-    }, 'NONE');
+    }, appStates.none);
   }
 
   render() {
     const props = this.props;
-    let status = 'NONE';
+    let status = appStates.none;
 
     if (props.apps.length) {
       status = this.worstStatus(props.apps);

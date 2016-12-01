@@ -7,6 +7,7 @@ const appStates = {
   stopped: 'STOPPED',
   crashed: 'CRASHED',
   restarting: 'RESTARTING',
+  none: 'NONE',
   default: 'STOPPED'
 };
 

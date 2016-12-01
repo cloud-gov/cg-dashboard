@@ -11,18 +11,16 @@ const ICON_TYPES = [
   'app'
 ];
 
-const NO_STATE = 'NONE';
-
 const propTypes = {
   count: React.PropTypes.number,
   name: React.PropTypes.string.isRequired,
-  status: React.PropTypes.oneOf(Object.values(appStates).concat(NO_STATE)),
+  status: React.PropTypes.oneOf(Object.values(appStates)),
   iconType: React.PropTypes.oneOf(ICON_TYPES)
 };
 
 const defaultProps = {
   count: 0,
-  status: NO_STATE,
+  status: appStates.none,
   iconType: 'space'
 };
 
