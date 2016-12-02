@@ -6,6 +6,7 @@ import '../../global_setup.js';
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import OrgStore from '../../../stores/org_store.js';
+import orgActions from '../../../actions/org_actions.js';
 import { orgActionTypes } from '../../../constants';
 
 describe('OrgStore', () => {
@@ -201,6 +202,32 @@ describe('OrgStore', () => {
       const actual = OrgStore.currentOrgName;
 
       expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('on toggle quicklook', function() {
+    it('should set quicklook_open to true for the org', function() {
+      const guid = 'osdvnx23bvc2';
+      const org = { guid, name: 'org' };
+
+      OrgStore.push(org);
+
+      orgActions.toggleQuicklook(guid);
+
+      const actual = OrgStore.get(guid);
+      expect(actual.quicklook_open).toBeTruthy();
+    });
+
+    it('should emit a change', function() {
+      const guid = 'osdvnx23435';
+      const org = { guid, name: 'org' };
+
+      OrgStore.push(org);
+      const spy = sandbox.spy(OrgStore, 'emitChange');
+
+      orgActions.toggleQuicklook(guid);
+
+      expect(spy).toHaveBeenCalledOnce();
     });
   });
 });
