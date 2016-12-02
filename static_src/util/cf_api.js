@@ -174,7 +174,9 @@ export default {
 
   fetchSpaces() {
     return http.get(`${APIV}/spaces`).then((res) => {
-      spaceActions.receivedSpaces(this.formatSplitResponses(res.data.resources));
+      const spaces = this.formatSplitResponses(res.data.resources);
+      spaceActions.receivedSpaces(spaces);
+      return spaces;
     }).catch((err) => {
       handleError(err);
     });
