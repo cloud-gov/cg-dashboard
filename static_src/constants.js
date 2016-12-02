@@ -48,7 +48,9 @@ const orgActionTypes = keymirror({
   // Action when all organization summaries are received from the server.
   ORGS_SUMMARIES_RECEIVED: null,
   // Action when user toggles a space submenu in the sidenav
-  ORG_TOGGLE_SPACE_MENU: null
+  ORG_TOGGLE_SPACE_MENU: null,
+  // Action when a user opens up an org quick look
+  ORG_TOGGLE_QUICKLOOK: null
 });
 
 const spaceActionTypes = keymirror({

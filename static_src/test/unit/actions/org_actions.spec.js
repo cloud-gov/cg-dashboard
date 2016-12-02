@@ -74,16 +74,28 @@ describe('orgActions', () => {
 
       assertAction(spy, orgActionTypes.ORG_CHANGE_CURRENT, expectedParams);
     });
-  });
 
-  describe('changeCurrentOrg()', function() {
     it('should send a space menu toggle UI action', function() {
       let expected = 'asdlfka';
       let spy = setupUISpy(sandbox)
 
       orgActions.toggleSpaceMenu(expected);
-      
+
       assertAction(spy, orgActionTypes.ORG_TOGGLE_SPACE_MENU);
+    });
+  });
+
+  describe('toggleQuicklook()', function() {
+    it('should dispatch a UI event of type toggle quicklook', function() {
+      const orgGuid = 'asdlfka';
+      const expectedParams = {
+        orgGuid
+      };
+      const spy = setupUISpy(sandbox);
+
+      orgActions.toggleQuicklook(orgGuid);
+
+      assertAction(spy, orgActionTypes.ORG_TOGGLE_QUICKLOOK);
     });
   });
 });
