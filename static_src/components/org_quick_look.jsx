@@ -6,6 +6,7 @@ import createStyler from '../util/create_styler';
 
 import AppCountStatus from './app_count_status.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
+import orgActions from '../actions/org_actions.js';
 
 const propTypes = {
   org: React.PropTypes.object.isRequired,
@@ -21,6 +22,12 @@ export default class OrgQuickLook extends React.Component {
     super(props);
     this.state = {};
     this.styler = createStyler(style);
+
+    this.toggleOrg = this.toggleOrg.bind(this);
+  }
+
+  toggleOrg() {
+    orgActions.toggleQuicklook(this.props.org.guid);
   }
 
   totalAppCount(spaces) {
@@ -43,7 +50,7 @@ export default class OrgQuickLook extends React.Component {
     <div>
       <div className={ this.styler('panel-column') }>
         <h2>
-          <a href={ `/#/org/${props.org.guid}` }>{ props.org.name }</a>
+          <a onClick={ this.toggleOrg } href="#">{ props.org.name }</a>
         </h2>
       </div>
       <div className={ this.styler('panel-column') }>
