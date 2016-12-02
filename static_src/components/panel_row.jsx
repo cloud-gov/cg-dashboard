@@ -7,7 +7,8 @@ import createStyler from '../util/create_styler';
 
 const STYLES = [
   'bordered',
-  'boxed'
+  'boxed',
+  ''
 ];
 
 const propTypes = {

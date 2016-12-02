@@ -10,6 +10,7 @@ import OrgStore from '../stores/org_store.js';
 import Panel from './panel.jsx';
 import PanelRow from './panel_row.jsx';
 import SpaceStore from '../stores/space_store.js';
+import SpaceQuicklook from './space_quicklook.jsx';
 
 function stateSetter() {
   const orgs = OrgStore.getAll() || [];
@@ -67,6 +68,9 @@ export default class OverviewContainer extends React.Component {
                 org={ org }
                 spaces={ this.orgSpaces(org.guid) }
               />
+              { org.quicklook_open && this.orgSpaces(org.guid).map((space) => {
+                return <SpaceQuicklook space={ space } key={ space.guid } />
+              })}
             </PanelRow>
           )}
         </Panel>

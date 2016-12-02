@@ -17,6 +17,7 @@ const defaultProps = {
   spaces: []
 };
 
+// TODO rename org_quicklook and org_quick_look to remain consistent with store.
 export default class OrgQuickLook extends React.Component {
   constructor(props) {
     super(props);
@@ -26,7 +27,8 @@ export default class OrgQuickLook extends React.Component {
     this.toggleOrg = this.toggleOrg.bind(this);
   }
 
-  toggleOrg() {
+  toggleOrg(ev) {
+    ev.preventDefault();
     orgActions.toggleQuicklook(this.props.org.guid);
   }
 
@@ -45,9 +47,10 @@ export default class OrgQuickLook extends React.Component {
 
   render() {
     const props = this.props;
+    const panelStyle = props.org.quicklook_open ? { marginBottom: '3rem' } : null;
 
     return (
-    <div>
+    <div style={ panelStyle }>
       <div className={ this.styler('panel-column') }>
         <h2>
           <a onClick={ this.toggleOrg } href="#">{ props.org.name }</a>
