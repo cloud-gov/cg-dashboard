@@ -69,7 +69,9 @@ export default class OverviewContainer extends React.Component {
                 spaces={ this.orgSpaces(org.guid) }
               />
               { org.quicklook_open && this.orgSpaces(org.guid).map((space) => {
-                return <SpaceQuicklook space={ space } key={ space.guid } />
+                return <SpaceQuicklook space={ space } orgGuid={ org.guid }
+                  key={ space.guid }
+                  />
               })}
             </PanelRow>
           )}
