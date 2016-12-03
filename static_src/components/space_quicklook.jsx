@@ -7,6 +7,7 @@ import createStyler from '../util/create_styler';
 import AppCountStatus from './app_count_status.jsx';
 import PanelRow from './panel_row.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
+import { appStates } from '../constants.js';
 import orgActions from '../actions/org_actions.js';
 
 const propTypes = {
@@ -34,6 +35,24 @@ export default class SpaceQuicklook extends React.Component {
     return `/#/org/${props.orgGuid}/spaces/${props.space.guid}/apps/${appGuid}`;
   }
 
+  appState(appState) {
+    const statusClass = `status-${appState.toLowerCase()}`;
+    return (
+      <span className={ this.styler('status', statusClass) }>
+        { appState.toLowerCase() }
+      </span>
+    );
+  }
+
+  appName(app) {
+    const statusClass = (app.state === appStates.crashed) && 'status-crashed';
+    return (
+      <a className={ this.styler(statusClass) } href={ this.appHref(app.guid) }>
+        { app.name }
+      </a>
+    );
+  }
+
   render() {
     const space = this.props.space;
 
@@ -45,11 +64,11 @@ export default class SpaceQuicklook extends React.Component {
           <PanelRow key={ app.guid }>
             <span className={ this.styler('panel-column') }>
               <h3>
-                { space.name } / <a href={ this.appHref(app.guid) }>{ app.name }</a>
+                { space.name } / { this.appName(app) }
               </h3>
             </span>
             <span className={ this.styler('panel-column', 'panel-column-less') }>
-              <span>{ app.state }</span>
+              { this.appState(app.state) }
             </span>
           </PanelRow>
           );
