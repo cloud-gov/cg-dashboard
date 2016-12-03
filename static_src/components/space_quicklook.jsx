@@ -4,11 +4,8 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
-import AppCountStatus from './app_count_status.jsx';
 import PanelRow from './panel_row.jsx';
-import SpaceCountStatus from './space_count_status.jsx';
 import { appStates } from '../constants.js';
-import orgActions from '../actions/org_actions.js';
 
 const propTypes = {
   space: React.PropTypes.object.isRequired,
@@ -59,8 +56,7 @@ export default class SpaceQuicklook extends React.Component {
     return (
       <PanelRow>
         <h3><a href={ this.spaceHref() }>{ space.name }</a></h3>
-        { space.apps && space.apps.map((app) => {
-          return (
+        { space.apps && space.apps.map((app) =>
           <PanelRow key={ app.guid }>
             <span className={ this.styler('panel-column') }>
               <h3>
@@ -71,8 +67,7 @@ export default class SpaceQuicklook extends React.Component {
               { this.appState(app.state) }
             </span>
           </PanelRow>
-          );
-        })}
+        )}
       </PanelRow>
     );
   }
