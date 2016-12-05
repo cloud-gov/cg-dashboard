@@ -4,9 +4,11 @@ import '../../global_setup.js';
 import Immutable from 'immutable';
 
 import AppDispatcher from '../../../dispatcher.js';
+import SpaceStore from '../../../stores/space_store.js';
+
+import cfApi from '../../../util/cf_api.js';
 import orgActions from '../../../actions/org_actions.js';
 import spaceActions from '../../../actions/space_actions.js';
-import SpaceStore from '../../../stores/space_store.js';
 
 describe('SpaceStore', function() {
   var sandbox;
@@ -68,6 +70,33 @@ describe('SpaceStore', function() {
 
       orgActions.receivedOrg({ guid: testGuid, spaces: [{}]});
       orgActions.receivedOrg({ guid: testGuid });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on fetch all for orgs', function() {
+    it('should call space fetch for each space that belongs to the org', () => {
+      const orgGuid = '240jejbvrl';
+      SpaceStore.push({ guid: 'abc1', organization_guid: orgGuid });
+      SpaceStore.push({ guid: 'abc2', organization_guid: orgGuid });
+      SpaceStore.push({ guid: 'abc3', organization_guid: '23fdg' });
+
+      const spy = sandbox.stub(cfApi, 'fetchSpace').returns(Promise.resolve());
+
+      spaceActions.fetchAllForOrg(orgGuid);
+
+      expect(spy).toHaveBeenCalledTwice();
+    });
+
+    it('should emit change if there are spaces to be fetched', () => {
+      const orgGuid = '240jejxcb';
+      SpaceStore.push({ guid: 'abc0', organization_guid: orgGuid });
+
+      const spy = sandbox.spy(SpaceStore, 'emitChange');
+
+      spaceActions.fetchAllForOrg('sdf');
+      spaceActions.fetchAllForOrg(orgGuid);
 
       expect(spy).toHaveBeenCalledOnce();
     });
