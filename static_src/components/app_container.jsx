@@ -128,8 +128,6 @@ export default class AppContainer extends React.Component {
     } else if (!this.state.loading && appReady(this.state.app)) {
       content = (
         <div>
-
-
           <Panel title="Usage and allocation">
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>

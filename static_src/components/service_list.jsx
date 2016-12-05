@@ -54,8 +54,7 @@ export default class ServiceList extends React.Component {
       let content = <h4 className="test-none_message">No services</h4>;
     } else if (this.state.services.length) {
       content = (
-      <div>
-      
+      <div>  
         <table>
           <thead>
             <tr>
