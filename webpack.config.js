@@ -26,7 +26,7 @@ const config = {
     sourceMapFilename: 'bundle.js.map'
   },
 
-  devtool: (PRODUCTION) ? '' : 'eval-source-map',
+  devtool: PRODUCTION ? 'cheap-source-map' : 'eval-source-map',
 
   module: {
     loaders: [
@@ -92,6 +92,11 @@ if (PRODUCTION) {
   config.plugins.push(new webpack.optimize.DedupePlugin());
   config.plugins.push(new webpack.optimize.UglifyJsPlugin());
   config.plugins.push(new WebpackKarmaWarningsPlugin());
+  config.plugins.push(new webpack.DefinePlugin({
+    'process.env': {
+      'NODE_ENV': JSON.stringify('production')
+    }
+  }));
 }
 
 module.exports = config;
