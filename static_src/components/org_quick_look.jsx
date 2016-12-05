@@ -30,7 +30,9 @@ export default class OrgQuickLook extends React.Component {
 
   toggleOrg(ev) {
     ev.preventDefault();
-    spaceActions.fetchAllForOrg(this.props.org.guid);
+    if (!this.props.org.quicklook_open) {
+      spaceActions.fetchAllForOrg(this.props.org.guid);
+    }
     orgActions.toggleQuicklook(this.props.org.guid);
   }
 
