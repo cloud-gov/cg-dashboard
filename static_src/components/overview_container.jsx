@@ -47,7 +47,13 @@ export default class OverviewContainer extends React.Component {
   }
 
   orgSpaces(orgGuid) {
-    return this.state.spaces.filter((space) => space.organization_guid === orgGuid);
+    return this.state.spaces.filter((space) => space.organization_guid ===
+      orgGuid);
+  }
+
+  anyOrgsOpen() {
+    return this.state.orgs.reduce((prev, org) => prev || !!org.quicklook_open,
+      false);
   }
 
   render() {
@@ -57,7 +63,7 @@ export default class OverviewContainer extends React.Component {
 
     if (state.empty) {
       content = <h4 className="test-none_message">No organizations</h4>;
-    } else if (!this.state.loading && this.state.orgs.length > 0) {
+    } else if (!state.loading && this.state.orgs.length > 0 || this.anyOrgsOpen()) {
       content = (
       <div className={ this.styler('grid') }>
         <h1>Overview</h1>
@@ -70,7 +76,7 @@ export default class OverviewContainer extends React.Component {
               />
               { org.quicklook_open && this.orgSpaces(org.guid).map((space) =>
                 <SpaceQuicklook space={ space } orgGuid={ org.guid }
-                  key={ space.guid }
+                  key={ space.guid } loading={ state.loading }
                 />
               )}
             </PanelRow>

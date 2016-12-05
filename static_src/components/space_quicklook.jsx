@@ -4,15 +4,18 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
+import Loading from './loading.jsx';
 import PanelRow from './panel_row.jsx';
 import { appStates } from '../constants.js';
 
 const propTypes = {
   space: React.PropTypes.object.isRequired,
-  orgGuid: React.PropTypes.string.isRequired
+  orgGuid: React.PropTypes.string.isRequired,
+  loading: React.PropTypes.bool
 };
 
 const defaultProps = {
+  loading: false
 };
 
 export default class SpaceQuicklook extends React.Component {
@@ -52,24 +55,30 @@ export default class SpaceQuicklook extends React.Component {
 
   render() {
     const space = this.props.space;
+    let loading = <Loading text="Loading spaces" loadingDelayMS={ 1 } />;
+    let content = <div>{ loading }</div>;
 
-    return (
-      <PanelRow>
-        <h3><a href={ this.spaceHref() }>{ space.name }</a></h3>
-        { space.apps && space.apps.map((app) =>
-          <PanelRow key={ app.guid }>
-            <span className={ this.styler('panel-column') }>
-              <h3>
-                { space.name } / { this.appName(app) }
-              </h3>
-            </span>
-            <span className={ this.styler('panel-column', 'panel-column-less') }>
-              { this.appState(app.state) }
-            </span>
-          </PanelRow>
-        )}
-      </PanelRow>
-    );
+    if (!this.props.loading) {
+      content = (
+        <PanelRow>
+          <h3><a href={ this.spaceHref() }>{ space.name }</a></h3>
+          { space.apps && space.apps.map((app) =>
+            <PanelRow key={ app.guid }>
+              <span className={ this.styler('panel-column') }>
+                <h3>
+                  { space.name } / { this.appName(app) }
+                </h3>
+              </span>
+              <span className={ this.styler('panel-column', 'panel-column-less') }>
+                { this.appState(app.state) }
+              </span>
+            </PanelRow>
+          )}
+        </PanelRow>
+      );
+    }
+
+    return content;
   }
 }
 
