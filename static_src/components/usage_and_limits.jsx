@@ -87,7 +87,7 @@ export default class UsageAndLimits extends React.Component {
           editable={ this.state.isEditing }
           onChange={ onChange }
           name="disk"
-          amountTotal={ this.getStat('disk_quota') }
+          amountTotal={ this.props.app.disk_quota * 1024 * 1024 }
         />
       </div>
     </div>
@@ -110,7 +110,7 @@ export default class UsageAndLimits extends React.Component {
           editable={ this.state.isEditing }
           name="memory"
           onChange={ onChange }
-          amountTotal={ this.getStat('mem_quota') }
+          amountTotal={ this.props.app.memory * 1024 * 1024 }
         />
       </div>
     </div>
@@ -145,7 +145,7 @@ export default class UsageAndLimits extends React.Component {
       <div className={ this.styler('stat-single_box') }>
         <h5>App scale</h5>
         <span className={ this.styler('stat-primary')}>
-          { this.props.app.running_instances }X
+          { this.props.app.instances }X
         </span>
         <br />
         <h5 className={ this.styler('stat-info') }>
