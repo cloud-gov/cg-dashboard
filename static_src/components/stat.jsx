@@ -27,14 +27,21 @@ const defaultProps = {
   editable: false,
   onChange: (e) => e.preventDefault(),
   statState: 'none',
-  secondaryInfo: <span></span>
+  secondaryInfo: <span></span>,
+  unit: 'MB'
 };
 
 function stateSetter(props) {
   return {
-    primaryStat: props.primaryStat
+    primaryStat: props.primaryStat,
+    unit: props.unit
   };
 }
+
+const convert = {
+  MB: 1024 * 1024,
+  GB: 1024 * 1024 * 1024
+};
 
 export default class Stat extends React.Component {
   constructor(props) {
@@ -45,8 +52,25 @@ export default class Stat extends React.Component {
   }
 
   _onChange(e) {
-    this.props.onChange(e.target.value);
-    this.setState(stateSetter({ primaryStat: e.target.value }));
+    let unit = this.state.unit;
+
+    if (e.target.name === `${this.props.name}-size`) {
+      unit = e.target.value;
+      this.setState({ primaryStat: this.state.primaryStat, unit });
+      return;
+    }
+
+    const value = this.toBytes(e.target.value);
+    this.props.onChange(value);
+    this.setState(stateSetter({ primaryStat: value, unit }));
+  }
+
+  toBytes(value) {
+    return value * convert[this.state.unit];
+  }
+
+  fromBytes(value) {
+    return Math.floor(value / convert[this.state.unit]);
   }
 
   render() {
@@ -62,12 +86,12 @@ export default class Stat extends React.Component {
         <div>
           <input
             type="text"
-            id={ this.props.name }
-            name={ this.props.name }
-            value={ this.state.primaryStat }
+            id={ `${this.props.name}-value` }
+            name={ `${this.props.name}-value` }
+            value={ this.fromBytes(this.state.primaryStat) }
             onChange={ this._onChange }
           />
-          <span>MB</span>
+          <label htmlFor={ `${this.props.name}-value` }>MB</label>
         </div>
       );
     }

@@ -30,7 +30,7 @@ function megabytes(value) {
 
 function stateSetter(props) {
   return {
-    isEditing: !!props.isEditing
+    editing: !!props.editing
   };
 }
 
@@ -56,7 +56,7 @@ export default class UsageAndLimits extends React.Component {
   }
 
   _onToggleEdit() {
-    this.setState(stateSetter({ isEditing: !this.state.isEditing }));
+    this.setState({ editing: !this.state.editing });
   }
 
   _onChange(property, value) {
@@ -84,7 +84,7 @@ export default class UsageAndLimits extends React.Component {
       </div>
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
         <ResourceUsage title="Instance disk"
-          editable={ this.state.isEditing }
+          editable={ this.state.editing }
           onChange={ onChange }
           name="disk"
           amountTotal={ this.props.app.disk_quota * 1024 * 1024 }
@@ -107,7 +107,7 @@ export default class UsageAndLimits extends React.Component {
       </div>
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
         <ResourceUsage title="Instance memory"
-          editable={ this.state.isEditing }
+          editable={ this.state.editing }
           name="memory"
           onChange={ onChange }
           amountTotal={ this.props.app.memory * 1024 * 1024 }
@@ -157,7 +157,7 @@ export default class UsageAndLimits extends React.Component {
 
   _onSubmit() {
     appActions.updateApp(this.props.app.guid, this.state.partialApp);
-    this.setState({ isEditing: false });
+    this.setState({ editing: false });
   }
 
   render() {
@@ -173,7 +173,7 @@ export default class UsageAndLimits extends React.Component {
         </Action>
     );
 
-    if (this.state.isEditing) {
+    if (this.state.editing) {
       controls = (
         <div>
           <Action style="primary" type="outline" label="OK" clickHandler={ this._onSubmit }>
@@ -223,12 +223,12 @@ export default class UsageAndLimits extends React.Component {
 
 UsageAndLimits.propTypes = {
   app: React.PropTypes.object,
-  isEditing: React.PropTypes.bool,
+  editing: React.PropTypes.bool,
   quota: React.PropTypes.object
 };
 
 UsageAndLimits.defaultProps = {
   app: {},
-  isEditing: false,
+  editing: false,
   quota: {}
 };
