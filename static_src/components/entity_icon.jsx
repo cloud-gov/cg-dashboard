@@ -6,7 +6,7 @@ import { appStates } from '../constants.js';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-const ENTITIES = [ 'app', 'space', 'org'];
+const ENTITIES = ['app', 'space', 'org'];
 
 const STATE_MAP = {};
 STATE_MAP[appStates.running] = 'ok';
@@ -33,8 +33,7 @@ export default class EntityIcon extends React.Component {
   render() {
     const stateClass = STATE_MAP[this.props.state];
 
-    return <Icon name={ this.props.entity } styleType={ stateClass }
-      iconType="fill" />;
+    return <Icon name={ this.props.entity } styleType={ stateClass } iconType="fill" />;
   }
 }
 

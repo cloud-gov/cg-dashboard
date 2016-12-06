@@ -54,8 +54,11 @@ export default class AppCountStatus extends React.Component {
       status = this.worstStatus(props.apps);
     }
 
-    return <CountStatus count={ props.appCount } name="apps"
-      status={ status } iconType="app" />;
+    return (
+      <CountStatus count={ props.appCount } name="apps"
+        status={ status } iconType="app"
+      />
+    );
   }
 }
 
