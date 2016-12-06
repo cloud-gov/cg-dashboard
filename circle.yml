@@ -1,6 +1,4 @@
 machine:
-  node:
-    version: 6.7.0
   environment:
     GODIST: "go1.6.linux-amd64.tar.gz"
     WS: "/home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard"
@@ -9,6 +7,7 @@ machine:
     CF_API_GC: "https://api.fr.cloud.gov"
     CF_ORGANIZATION_GC: "cloud-gov"
   post:
+    - cd cg-dashboard && nvm install && nvm use && nvm alias default $(cat .nvmrc)
     - mkdir -p download
     - test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
     - sudo rm -rf /usr/local/go
