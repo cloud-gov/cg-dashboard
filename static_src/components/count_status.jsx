@@ -5,6 +5,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
 import { appStates } from '../constants.js';
+import EntityIcon from './entity_icon.jsx';
 
 const ICON_TYPES = [
   'space',
@@ -37,7 +38,12 @@ export default class CountStatus extends React.Component {
 
     return (
       <span className={ this.styler('count_status', statusClass) }>
-        <strong>{ props.count }</strong> { props.name }
+        <span style={{ float: 'left' }}>
+          <EntityIcon entity={ props.iconType } state={ props.status } />
+        </span>
+        <span style={{ float: 'right' }}>
+          <strong>{ props.count }</strong> { props.name }
+        </span>
       </span>
     );
   }
