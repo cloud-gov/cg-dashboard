@@ -16,7 +16,7 @@ describe('format_bytes util', function () {
   });
 
   it('formats MB', function () {
-    expect(formatBytes(50112222)).toBe('50 MB');
+    expect(formatBytes(52428810)).toBe('50 MB');
   });
 
   describe('with decimals', function () {
@@ -29,7 +29,7 @@ describe('format_bytes util', function () {
     });
 
     it('formats KB', function () {
-      expect(formatBytes(1010, 1)).toBe('1.0 KB');
+      expect(formatBytes(1024, 1)).toBe('1.0 KB');
     });
 
     it('formats MB', function () {

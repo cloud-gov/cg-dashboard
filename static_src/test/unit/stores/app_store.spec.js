@@ -282,8 +282,8 @@ describe('AppStore', function() {
     let putApp;
     beforeEach(function () {
       putApp = sandbox.stub(cfApi, 'putApp');
-      AppStore.push({ guid: '1234', scale: 2, memory: 128 });
-      appActions.updateApp('1234', { scale: 3 });
+      AppStore.push({ guid: '1234', instances: 2, memory: 128 });
+      appActions.updateApp('1234', { instances: 3 });
     });
 
     it('calls api with guid', function () {
@@ -293,11 +293,11 @@ describe('AppStore', function() {
       expect(guid).toBe('1234');
     });
 
-    it('calls api with updated app', function () {
+    it('calls api with partial app', function () {
       const [guid, app] = putApp.args[0];
 
-      expect(app.memory).toBe(128);
-      expect(app.scale).toBe(3);
+      expect(app.memory).toBeFalsy();
+      expect(app.instances).toBe(3);
     });
   });
 
