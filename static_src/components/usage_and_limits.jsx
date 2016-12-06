@@ -42,8 +42,9 @@ export default class UsageAndLimits extends React.Component {
     this.state = stateSetter(props);
     // Properties are mapped directly to API https://apidocs.cloudfoundry.org/246/apps/updating_an_app.html
     this.state.partialApp = {
-      memory: megabytes(getStat('mem_quota', props)),
-      disk_quota: megabytes(getStat('disk_quota', props))
+      disk_quota: this.props.app.disk_quota,
+      instances: this.props.app.instances,
+      memory: this.props.app.memory
     };
 
     this.getStat = this.getStat.bind(this);
@@ -60,12 +61,22 @@ export default class UsageAndLimits extends React.Component {
   }
 
   _onChange(property, value) {
+    let parsedValue = value;
     // TODO use form validation to parse values
-    const size = megabytes(value);
+    switch (property) {
+      case 'disk_quota':
+      case 'memory':
+        parsedValue = megabytes(value);
+        break;
+      default:
+        parsedValue = parseInt(value, 10);
+        break;
+    }
+
     const partialApp = Object.assign(
       {},
       this.state.partialApp,
-      { [property]: size }
+      { [property]: parsedValue }
     );
     this.setState({ partialApp });
   }
@@ -87,7 +98,7 @@ export default class UsageAndLimits extends React.Component {
           editable={ this.state.editing }
           onChange={ onChange }
           name="disk"
-          amountTotal={ this.props.app.disk_quota * 1024 * 1024 }
+          amountTotal={ this.state.partialApp.disk_quota * 1024 * 1024 }
         />
       </div>
     </div>
@@ -110,7 +121,7 @@ export default class UsageAndLimits extends React.Component {
           editable={ this.state.editing }
           name="memory"
           onChange={ onChange }
-          amountTotal={ this.props.app.memory * 1024 * 1024 }
+          amountTotal={ this.state.partialApp.memory * 1024 * 1024 }
         />
       </div>
     </div>
@@ -141,12 +152,29 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get scale() {
+    const onChange = (e) => this._onChange('instances', e.target.value);
+    let instances = (
+      <span className={ this.styler('stat-primary')}>
+	{ this.state.partialApp.instances }X
+      </span>
+    );
+
+    if (this.state.editing) {
+      instances = (
+        <input
+          id="scale"
+          name="scale"
+          type="text"
+          onChange={ onChange }
+          value={ this.state.partialApp.instances }
+        />
+      );
+    }
+
     return (
       <div className={ this.styler('stat-single_box') }>
         <h5>App scale</h5>
-        <span className={ this.styler('stat-primary')}>
-          { this.props.app.instances }X
-        </span>
+	{ instances }
         <br />
         <h5 className={ this.styler('stat-info') }>
           Scale applies to memory and disk
