@@ -56,7 +56,7 @@ export default class OrgQuickLook extends React.Component {
     return (
     <div style={ panelStyle }>
       <div className={ this.styler('panel-column') }>
-        <h2>
+        <h2 className={ this.styler('sans-s6') }>
           <a onClick={ this.toggleOrg } href="#">{ props.org.name }</a>
         </h2>
       </div>

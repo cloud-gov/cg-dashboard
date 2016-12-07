@@ -65,7 +65,7 @@ export default class SpaceQuicklook extends React.Component {
           { space.apps && space.apps.map((app) =>
             <PanelRow key={ app.guid }>
               <span className={ this.styler('panel-column') }>
-                <h3>
+                <h3 className={ this.styler('sans-s5') }>
                   { space.name } / { this.appName(app) }
                 </h3>
               </span>
