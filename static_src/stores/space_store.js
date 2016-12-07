@@ -45,6 +45,17 @@ class SpaceStore extends BaseStore {
         break;
       }
 
+      case spaceActionTypes.SPACES_FOR_ORG_FETCH: {
+        const orgSpaces = this.getAll().filter((space) =>
+          space.organization_guid === action.orgGuid);
+        if (orgSpaces.length) {
+          const spaceRequests = orgSpaces.map((orgSpace) =>
+            cfApi.fetchSpace(orgSpace.guid));
+          this.load(spaceRequests);
+        }
+        break;
+      }
+
       case spaceActionTypes.SPACE_RECEIVED: {
         this.merge('guid', action.space, () => { });
         this.emitChange();

@@ -5,7 +5,10 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 import AppCountStatus from './app_count_status.jsx';
+import EntityIcon from './entity_icon.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
+import orgActions from '../actions/org_actions.js';
+import spaceActions from '../actions/space_actions.js';
 
 const propTypes = {
   org: React.PropTypes.object.isRequired,
@@ -16,11 +19,22 @@ const defaultProps = {
   spaces: []
 };
 
+// TODO rename org_quicklook and org_quick_look to remain consistent with store.
 export default class OrgQuickLook extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
     this.styler = createStyler(style);
+
+    this.toggleOrg = this.toggleOrg.bind(this);
+  }
+
+  toggleOrg(ev) {
+    ev.preventDefault();
+    if (!this.props.org.quicklook_open) {
+      spaceActions.fetchAllForOrg(this.props.org.guid);
+    }
+    orgActions.toggleQuicklook(this.props.org.guid);
   }
 
   totalAppCount(spaces) {
@@ -38,12 +52,14 @@ export default class OrgQuickLook extends React.Component {
 
   render() {
     const props = this.props;
+    const panelStyle = props.org.quicklook_open ? { marginBottom: '3rem' } : null;
 
     return (
-    <div>
+    <div style={ panelStyle }>
       <div className={ this.styler('panel-column') }>
-        <h2>
-          <a href={ `/#/org/${props.org.guid}` }>{ props.org.name }</a>
+        <h2 className={ this.styler('sans-s6') }>
+          <EntityIcon entity="org" />
+          <a onClick={ this.toggleOrg } href="#">{ props.org.name }</a>
         </h2>
       </div>
       <div className={ this.styler('panel-column') }>

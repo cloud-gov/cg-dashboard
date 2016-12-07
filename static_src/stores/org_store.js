@@ -81,6 +81,16 @@ class OrgStore extends BaseStore {
         break;
       }
 
+      case orgActionTypes.ORG_TOGGLE_QUICKLOOK: {
+        const org = this.get(action.orgGuid);
+        if (org) {
+          const toggledOrg = Object.assign({}, org,
+            { quicklook_open: !org.quicklook_open });
+          this.merge('guid', toggledOrg, () => this.emitChange());
+        }
+        break;
+      }
+
       default:
         break;
     }

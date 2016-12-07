@@ -35,7 +35,7 @@ if (meta) {
   axios.defaults.headers.common['X-CSRF-Token'] = meta.content;
 }
 
-const MAX_OVERVIEW_SPACES = 20;
+const MAX_OVERVIEW_SPACES = 10;
 
 function login() {
   ReactDOM.render(<MainContainer><Login /></MainContainer>, mainEl);

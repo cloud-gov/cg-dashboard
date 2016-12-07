@@ -48,7 +48,9 @@ const orgActionTypes = keymirror({
   // Action when all organization summaries are received from the server.
   ORGS_SUMMARIES_RECEIVED: null,
   // Action when user toggles a space submenu in the sidenav
-  ORG_TOGGLE_SPACE_MENU: null
+  ORG_TOGGLE_SPACE_MENU: null,
+  // Action when a user opens up an org quick look
+  ORG_TOGGLE_QUICKLOOK: null
 });
 
 const spaceActionTypes = keymirror({
@@ -57,6 +59,8 @@ const spaceActionTypes = keymirror({
   // Action to fetch all spaces (gets different information from single fetch,
   // such as quotas)
   SPACES_FETCH: null,
+  // Action to fetch all spaces for an org
+  SPACES_FOR_ORG_FETCH: null,
   // Action when a single space is received from the server.
   SPACE_RECEIVED: null,
   // Action when all spaces are received from the server.

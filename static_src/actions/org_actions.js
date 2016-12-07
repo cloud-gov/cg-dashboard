@@ -59,6 +59,12 @@ export default {
       type: orgActionTypes.ORG_TOGGLE_SPACE_MENU,
       orgGuid
     });
-  }
+  },
 
+  toggleQuicklook(orgGuid) {
+    AppDispatcher.handleUIAction({
+      type: orgActionTypes.ORG_TOGGLE_QUICKLOOK,
+      orgGuid
+    });
+  }
 };

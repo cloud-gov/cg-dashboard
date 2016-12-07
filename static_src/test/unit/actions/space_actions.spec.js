@@ -51,6 +51,18 @@ describe('spaceActions', () => {
     });
   });
 
+  describe('fetchAllForOrg()', () => {
+    it('should dispatch a view event to fetch all spaces for org', () => {
+      let spy = setupViewSpy(sandbox);
+
+      spaceActions.fetchAllForOrg('sdf');
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg.type).toEqual(spaceActionTypes.SPACES_FOR_ORG_FETCH);
+    });
+  });
+
   describe('receivedSpace()', () => {
     it('should dispatch server event of type space received', () => {
       var expected = { guid: 'asdf' },

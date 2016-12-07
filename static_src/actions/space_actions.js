@@ -21,6 +21,13 @@ export default {
     });
   },
 
+  fetchAllForOrg(orgGuid) {
+    AppDispatcher.handleViewAction({
+      type: spaceActionTypes.SPACES_FOR_ORG_FETCH,
+      orgGuid
+    });
+  },
+
   receivedSpace(space) {
     AppDispatcher.handleServerAction({
       type: spaceActionTypes.SPACE_RECEIVED,
