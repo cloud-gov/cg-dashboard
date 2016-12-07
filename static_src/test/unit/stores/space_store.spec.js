@@ -82,14 +82,15 @@ describe('SpaceStore', function() {
       SpaceStore.push({ guid: 'abc2', organization_guid: orgGuid });
       SpaceStore.push({ guid: 'abc3', organization_guid: '23fdg' });
 
-      const spy = sandbox.stub(cfApi, 'fetchSpace').returns(Promise.resolve());
+      const stub = sandbox.stub(cfApi, 'fetchSpace').returns(Promise.resolve());
 
       spaceActions.fetchAllForOrg(orgGuid);
 
-      expect(spy).toHaveBeenCalledTwice();
+      expect(stub).toHaveBeenCalledTwice();
     });
 
-    it('should emit change if there are spaces to be fetched', () => {
+    it('should emit a change from load call if there are spaces to be fetched',
+      () => {
       const orgGuid = '240jejxcb';
       SpaceStore.push({ guid: 'abc0', organization_guid: orgGuid });
 
