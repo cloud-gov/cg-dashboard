@@ -11,35 +11,32 @@
  * Example
  *
  * ```
- * import Immutable from 'immutable';
+ * import merge from 'deepmerge';
  * import { config as baseConfig } from '../cg';
  *
- * let newConfig = baseConfig.mergeDeep({
+ * const newConfig = merge({
  *   header: {
  *     disclaimer: 'My awesome disclaimer',
  *   },
  *   github: {
  *     url: 'https://github.com/best-username/cg-dashboard'
  *   }
- * });
+ * }, baseConfig);
  *
  * // override the entire list of links
- * newConfig = newConfig.setIn(['header', 'links'], Immutable.fromJS(
- *   [
- *     {
- *       text: 'Help',
- *       url: 'http://google.com'
- *     }
- *   ]
- * ));
+ * newConfig.header.links = [
+ *   {
+ *     text: 'Help',
+ *     url: 'http://google.com'
+ *   }
+ * ]
+ * ;
  *
  * export const config = newConfig;
  * ```
  */
 
-import Immutable from 'immutable';
-
-export const config = Immutable.fromJS({
+export const config = {
   header: {
     disclaimer: 'An official website of the United States Government',
     show_flag: true,
@@ -72,4 +69,4 @@ export const config = Immutable.fromJS({
   github: {
     url: 'https://github.com/18F/cg-dashboard'
   }
-});
+};

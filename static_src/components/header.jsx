@@ -38,7 +38,7 @@ export default class Header extends React.Component {
         </div>
         <nav className={ this.styler('header-side') }>
           <ul className={ this.styler('nav') }>
-            { config.getIn(['header', 'links']).map((link, index) => <HeaderLink url={link.get('url')} text={link.get('text')} key={index} />) }
+            { config.header.links.map((link, index) => <HeaderLink url={link.url} text={link.text} key={index} />) }
             { loginLink }
           </ul>
         </nav>
