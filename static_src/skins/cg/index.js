@@ -14,14 +14,14 @@
  * import merge from 'deepmerge';
  * import { config as baseConfig } from '../cg';
  *
- * const newConfig = merge({
+ * const newConfig = merge(baseConfig, {
  *   header: {
  *     disclaimer: 'My awesome disclaimer',
  *   },
  *   github: {
  *     url: 'https://github.com/best-username/cg-dashboard'
  *   }
- * }, baseConfig);
+ * });
  *
  * // override the entire list of links
  * newConfig.header.links = [
