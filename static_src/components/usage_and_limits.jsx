@@ -162,6 +162,7 @@ export default class UsageAndLimits extends React.Component {
     if (this.state.editing) {
       instances = (
         <input
+          className={ this.styler('stat-input', 'stat-input-text') }
           id="scale"
           name="scale"
           type="text"
@@ -204,10 +205,10 @@ export default class UsageAndLimits extends React.Component {
     if (this.state.editing) {
       controls = (
         <div>
-          <Action style="primary" type="outline" label="OK" clickHandler={ this._onSubmit }>
+          <Action style="finish" type="button" label="OK" clickHandler={ this._onSubmit }>
             <span>OK</span>
           </Action>
-          <Action style="primary" type="outline" label="Cancel" clickHandler={ this._onToggleEdit }>
+          <Action type="outline" label="Cancel" clickHandler={ this._onToggleEdit }>
             <span>Cancel</span>
           </Action>
         </div>
@@ -240,7 +241,13 @@ export default class UsageAndLimits extends React.Component {
             </PanelRow>
           </PanelGroup>
         </PanelGroup>
-        { controls }
+        <PanelGroup>
+          <PanelRow>
+            <div className={ this.styler('panel-controls') }>
+              { controls }
+            </div>
+          </PanelRow>
+        </PanelGroup>
       </div>
       );
     }

@@ -85,13 +85,14 @@ export default class Stat extends React.Component {
       primaryStat = (
         <div>
           <input
+            className={ this.styler('stat-input', 'stat-input-text') }
             type="text"
             id={ `${this.props.name}-value` }
             name={ `${this.props.name}-value` }
             value={ this.fromBytes(this.state.primaryStat) }
             onChange={ this._onChange }
           />
-          <label htmlFor={ `${this.props.name}-value` }>MB</label>
+          <label className={ this.styler('stat-input', 'stat-input-label') } htmlFor={ `${this.props.name}-value` }>MB</label>
         </div>
       );
     }
