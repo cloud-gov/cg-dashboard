@@ -56,7 +56,7 @@ export default class App extends React.Component {
     return (
       <div>
         <Disclaimer />
-        <Header />
+        <Header titleBar={ this.props.titleBar } />
         <div className={ this.styler('sidenav-parent', 'main_content', 'content-dashboard') }>
           <nav className={ this.styler('sidenav') }>
             { sidebar }
@@ -72,9 +72,11 @@ export default class App extends React.Component {
   }
 }
 App.propTypes = {
-  children: React.PropTypes.any
+  children: React.PropTypes.any,
+  titleBar: React.PropTypes.element
 };
 
 App.defaultProps = {
-  children: []
+  children: [],
+  titleBar: <div></div>
 };

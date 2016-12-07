@@ -11,6 +11,7 @@ import ReactDOM from 'react-dom';
 
 import activityActions from './actions/activity_actions.js';
 import AppContainer from './components/app_container.jsx';
+import AppTitleBar from './components/app_title_bar.jsx';
 import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
 import Login from './components/login.jsx';
@@ -118,7 +119,7 @@ function app(orgGuid, spaceGuid, appGuid) {
   serviceActions.fetchAllInstances(spaceGuid);
   serviceActions.fetchServiceBindings();
   ReactDOM.render(
-    <MainContainer>
+    <MainContainer titleBar={ <AppTitleBar /> }>
       <AppContainer />
     </MainContainer>, mainEl);
 }
