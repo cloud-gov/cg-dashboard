@@ -5,6 +5,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 import AppCountStatus from './app_count_status.jsx';
+import EntityIcon from './entity_icon.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
 import orgActions from '../actions/org_actions.js';
 import spaceActions from '../actions/space_actions.js';
@@ -57,6 +58,7 @@ export default class OrgQuickLook extends React.Component {
     <div style={ panelStyle }>
       <div className={ this.styler('panel-column') }>
         <h2 className={ this.styler('sans-s6') }>
+          <EntityIcon entity="org" />
           <a onClick={ this.toggleOrg } href="#">{ props.org.name }</a>
         </h2>
       </div>

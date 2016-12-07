@@ -4,6 +4,7 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
+import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import PanelRow from './panel_row.jsx';
 import { appStates } from '../constants.js';
@@ -61,12 +62,16 @@ export default class SpaceQuicklook extends React.Component {
     if (!this.props.loading) {
       content = (
         <PanelRow>
-          <h3><a href={ this.spaceHref() }>{ space.name }</a></h3>
+          <h3>
+            <EntityIcon entity="space" />
+            <a href={ this.spaceHref() }>{ space.name }</a>
+          </h3>
           { space.apps && space.apps.map((app) =>
             <PanelRow key={ app.guid }>
               <span className={ this.styler('panel-column') }>
                 <h3 className={ this.styler('sans-s5') }>
-                  { space.name } / { this.appName(app) }
+                  <EntityIcon entity="app" state={ app.state } />
+                  <span>{ space.name } / { this.appName(app) }</span>
                 </h3>
               </span>
               <span className={ this.styler('panel-column', 'panel-column-less') }>
