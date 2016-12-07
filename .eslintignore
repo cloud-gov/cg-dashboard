@@ -7,7 +7,6 @@ test/**/*.js
 # and remove them from this list.
 /static_src/components/activity_log_item.jsx
 /static_src/components/activity_log.jsx
-/static_src/components/app_container.jsx
 /static_src/components/app_list.jsx
 /static_src/components/app_settings_panel.jsx
 /static_src/components/box.jsx
@@ -42,7 +41,6 @@ test/**/*.js
 /static_src/components/space_list.jsx
 /static_src/components/tabnav_item.jsx
 /static_src/components/tabnav.jsx
-/static_src/components/usage_and_limits.jsx
 /static_src/components/user_list.jsx
 /static_src/components/user_role_control.jsx
 /static_src/components/user_role_list_control.jsx

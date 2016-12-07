@@ -4,7 +4,6 @@ import React from 'react';
 
 import Action from './action.jsx';
 import PanelGroup from './panel_group.jsx';
-import PanelHeader from './panel_header.jsx';
 import PanelBlock from './panel_block.jsx';
 import PanelRow from './panel_row.jsx';
 import ResourceUsage from './resource_usage.jsx';

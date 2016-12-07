@@ -31,9 +31,8 @@ function stateSetter() {
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
 
-  const quotaGuid = (space && space.space_quota_definition_guid) ?
-    space.space_quota_definition_guid :
-    (org) ? org.quota_definition_guid : null;
+  const quotaGuid = (space && space.space_quota_definition_guid) ||
+    (org && org.quota_definition_guid) || null;
 
   const quota = QuotaStore.get(quotaGuid);
 
@@ -80,9 +79,15 @@ export default class AppContainer extends React.Component {
   }
 
   get fullTitle() {
-    let content = <span><strong>{ this.state.app.name }</strong> application</span>
+    let content = <span><strong>{ this.state.app.name }</strong> application</span>;
     if (this.state.currentSpaceName && this.state.currentOrgName) {
-      content = <span><strong>{ this.state.app.name }</strong> application in your <strong>{ this.state.currentSpaceName }</strong> space, which is in your <strong>{ this.state.currentOrgName }</strong> organization</span>;
+      content = (
+        <span>
+          <strong>{ this.state.app.name }</strong> application in your
+          <strong>{ this.state.currentSpaceName }</strong> space, which is in your
+          <strong>{ this.state.currentOrgName }</strong> organization
+        </span>
+      );
     }
     return content;
   }
@@ -118,7 +123,8 @@ export default class AppContainer extends React.Component {
           clickHandler={ this._onRestart }
           label="restart app"
           disabled={ !AppStore.isRunning(this.state.app) }
-          type="outline">
+          type="outline"
+        >
           <span>Restart app</span>
         </Action>
         { error }
