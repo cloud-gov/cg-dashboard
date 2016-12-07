@@ -8,11 +8,12 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const ENTITIES = ['app', 'space', 'org'];
 
-const STATE_MAP = {};
-STATE_MAP[appStates.running] = 'ok';
-STATE_MAP[appStates.started] = 'ok';
-STATE_MAP[appStates.stopped] = 'inactive';
-STATE_MAP[appStates.crashed] = 'error';
+const STATE_MAP = {
+  [appStates.running]: 'ok',
+  [appStates.started]: 'ok',
+  [appStates.stopped]: 'inactive',
+  [appStates.crashed]: 'error'
+};
 
 const propTypes = {
   entity: React.PropTypes.oneOf(ENTITIES).isRequired,

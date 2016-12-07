@@ -38,10 +38,10 @@ export default class CountStatus extends React.Component {
 
     return (
       <span className={ this.styler('count_status', statusClass) }>
-        <span style={{ float: 'left' }}>
+        <span className={ this.styler('count_status-icon') }>
           <EntityIcon entity={ props.iconType } state={ props.status } />
         </span>
-        <span style={{ float: 'right' }}>
+        <span className={ this.styler('count_status-text') }>
           <strong>{ props.count }</strong> { props.name }
         </span>
       </span>
