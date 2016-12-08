@@ -13,7 +13,8 @@ const STYLE_TYPES = [
   'alt',
   'ok',
   'inactive',
-  'error'
+  'error',
+  'default'
 ];
 
 const propTypes = {
@@ -23,9 +24,14 @@ const propTypes = {
 };
 
 const defaultProps = {
-  styleType: 'alt',
+  styleType: 'default',
   iconType: 'stroke'
 };
+
+const BORDERED_ICONS = [
+  'app',
+  'space'
+];
 
 export default class Icon extends React.Component {
   constructor(props) {
@@ -36,13 +42,16 @@ export default class Icon extends React.Component {
 
   getImagePath(iconName) {
     const img = require('cloudgov-style/img/cloudgov-sprite.svg');
-    return `assets/${img}#i-${iconName}`;
+    const fill = this.props.iconType === 'fill' ? 'fill-' : '';
+    return `assets/${img}#i-${fill}${iconName}`;
   }
 
   render() {
     const mainClass = this.props.iconType === 'fill' ? 'icon-fill' : 'icon';
-    const styleClass = `${mainClass}-${this.props.styleType}`;
-    const iconClasses = this.styler(mainClass, styleClass);
+    const styleClass = `icon-${this.props.styleType}`;
+    const borderedClass = (BORDERED_ICONS.includes(this.props.name)) &&
+      'icon-bordered';
+    const iconClasses = this.styler(mainClass, styleClass, borderedClass);
 
     return (
       <svg className={ iconClasses }>
