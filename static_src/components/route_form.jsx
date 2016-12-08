@@ -159,7 +159,7 @@ export default class RouteForm extends React.Component {
             className={ this.styler('route-form-preview') }
             value={ this.fullUrl }
           ></input>
-          <div style={{ paddingLeft: '.75rem' }}>
+          <div>
             {(() => {
               // Props error is non-specific when error happens at route creation.
               if (this.props.error) {
