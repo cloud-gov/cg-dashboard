@@ -25,7 +25,7 @@ function stateSetter(props) {
 }
 
 const propTypes = {
-  initialAppGuid: React.PropTypes.string.isRequire,
+  initialAppGuid: React.PropTypes.string.isRequired,
   maxItems: React.PropTypes.number
 };
 
