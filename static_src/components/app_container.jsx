@@ -137,6 +137,7 @@ export default class AppContainer extends React.Component {
           <ServiceInstancePanel />
           <Panel title="Recent activity">
             <ActivityLog initialAppGuid={ this.state.app.guid } />
+            <p>View advanced logs at <a href="https://logs.cloud.gov">logs.cloud.gov</a></p>
           </Panel>
         </div>
       );
