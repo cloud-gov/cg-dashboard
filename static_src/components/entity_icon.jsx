@@ -34,7 +34,14 @@ export default class EntityIcon extends React.Component {
   render() {
     const stateClass = STATE_MAP[this.props.state];
 
-    return <Icon name={ this.props.entity } styleType={ stateClass } iconType="fill" />;
+    return (
+      <Icon
+        name={ this.props.entity }
+        styleType={ stateClass }
+        iconType="fill"
+        bordered={ ['app', 'space'].includes(this.props.entity) }
+      />
+    );
   }
 }
 

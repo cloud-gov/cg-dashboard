@@ -20,18 +20,15 @@ const STYLE_TYPES = [
 const propTypes = {
   name: React.PropTypes.string.isRequired,
   styleType: React.PropTypes.oneOf(STYLE_TYPES),
-  iconType: React.PropTypes.oneOf(ICON_TYPES)
+  iconType: React.PropTypes.oneOf(ICON_TYPES),
+  bordered: React.PropTypes.bool
 };
 
 const defaultProps = {
   styleType: 'default',
-  iconType: 'stroke'
+  iconType: 'stroke',
+  bordered: false
 };
-
-const BORDERED_ICONS = [
-  'app',
-  'space'
-];
 
 export default class Icon extends React.Component {
   constructor(props) {
@@ -49,7 +46,7 @@ export default class Icon extends React.Component {
   render() {
     const mainClass = this.props.iconType === 'fill' ? 'icon-fill' : 'icon';
     const styleClass = `icon-${this.props.styleType}`;
-    const borderedClass = (BORDERED_ICONS.includes(this.props.name)) &&
+    const borderedClass = (this.props.bordered) &&
       'icon-bordered';
     const iconClasses = this.styler(mainClass, styleClass, borderedClass);
 
