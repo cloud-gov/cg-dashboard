@@ -1,8 +1,10 @@
 
 import React from 'react';
 
+import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
 import OrgStore from '../stores/org_store.js';
+import ServiceCountStatus from './service_count_status.jsx';
 import ServiceInstanceList from '../components/service_instance_list.jsx';
 import SpaceStore from '../stores/space_store.js';
 import Users from './users.jsx';
@@ -74,6 +76,7 @@ export default class SpaceContainer extends React.Component {
     console.log(this.state);
 
     if (this.state.space && this.state.space.guid) {
+      const space = this.state.space;
       main = (
       <div className={ this.styler('grid') }>
         <div className={ this.styler('grid-width-8') }>
@@ -83,6 +86,10 @@ export default class SpaceContainer extends React.Component {
           </p>
         </div>
         <div className={ this.styler('grid-width-4') }>
+          <AppCountStatus apps={ space.apps } appCount={ space.apps.length } />
+          <ServiceCountStatus services={ space.services }
+            serviceCount={ space.services.length }
+          />
         </div>
       </div>
       );

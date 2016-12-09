@@ -6,7 +6,7 @@ import { appStates } from '../constants.js';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-const ENTITIES = ['app', 'space', 'org'];
+const ENTITIES = ['app', 'service', 'space', 'org'];
 
 const STATE_MAP = {
   [appStates.running]: 'ok',

@@ -9,7 +9,8 @@ import EntityIcon from './entity_icon.jsx';
 
 const ICON_TYPES = [
   'space',
-  'app'
+  'app',
+  'service'
 ];
 
 const propTypes = {
