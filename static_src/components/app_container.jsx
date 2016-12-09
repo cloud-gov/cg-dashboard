@@ -140,17 +140,15 @@ export default class AppContainer extends React.Component {
           <PanelGroup>
             <PanelGroup columns={ 6 }>
               <div className={ this.styler('panel-routes')}>
-              <RoutesPanel />
+                <RoutesPanel />
               </div>
-              </PanelGroup>
-              <PanelGroup columns={ 6 }>
+            </PanelGroup>
+            <PanelGroup columns={ 6 }>
               <div className={ this.styler('panel-services')}>
-              <ServiceInstancePanel />
+                <ServiceInstancePanel />
               </div>
             </PanelGroup>
           </PanelGroup>
-
-
 
           <Panel title="Recent activity">
             <ActivityLog initialAppGuid={ this.state.app.guid } />
