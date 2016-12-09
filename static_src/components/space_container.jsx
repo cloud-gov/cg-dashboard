@@ -14,18 +14,6 @@ import { config } from 'skin';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-
-const PAGES = {
-  'apps': AppList,
-  'services': ServiceInstanceList,
-  'users': Users
-}
-
-const USER_PAGES = {
-  'space': 'space_users',
-  'org': 'org_users'
-}
-
 function stateSetter() {
   return {
     space: SpaceStore.currentSpace(),
@@ -73,33 +61,38 @@ export default class SpaceContainer extends React.Component {
     let Content = this.currentContent;
     let tabNav = <div></div>;
     let main = <div></div>;
-    console.log(this.state);
 
     if (this.state.space && this.state.space.guid) {
       const space = this.state.space;
       main = (
-      <div className={ this.styler('grid') }>
-        <div className={ this.styler('grid-width-8') }>
-          <h2>Space overview</h2>
-          <p className={ this.styler('page-dek') }>
-            Each <a href="https://docs.cloud.gov/getting-started/concepts/">space</a> provides an environment for related applications (<a href="https://docs.cloud.gov/intro/overview/using-cloudgov-paas/">example use</a>).
-          </p>
+      <div>
+        <div className={ this.styler('grid') }>
+          <div className={ this.styler('grid-width-8') }>
+            <h2>Space overview</h2>
+            <p className={ this.styler('page-dek') }>
+              Each <a href="https://docs.cloud.gov/getting-started/concepts/">space</a> provides an environment for related applications (<a href="https://docs.cloud.gov/intro/overview/using-cloudgov-paas/">example use</a>).
+            </p>
+          </div>
+          <div className={ this.styler('grid-width-4') }>
+            <AppCountStatus apps={ space.apps } appCount={ space.apps.length } />
+            <ServiceCountStatus services={ space.services }
+              serviceCount={ space.services.length }
+            />
+          </div>
         </div>
-        <div className={ this.styler('grid-width-4') }>
-          <AppCountStatus apps={ space.apps } appCount={ space.apps.length } />
-          <ServiceCountStatus services={ space.services }
-            serviceCount={ space.services.length }
-          />
+        <div>
+          <h2>Space users</h2>
+          <Users />
+        </div>
+        <div>
+          <h2>Service instances</h2>
+          <ServiceInstanceList />
         </div>
       </div>
       );
     }
 
-    return (
-      <div>
-        { main }
-      </div>
-    );
+    return main;
   }
 };
 
