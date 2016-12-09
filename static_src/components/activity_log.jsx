@@ -25,10 +25,13 @@ function stateSetter(props) {
 }
 
 const propTypes = {
-  initialAppGuid: React.PropTypes.string.isRequired
+  initialAppGuid: React.PropTypes.string.isRequire,
+  maxItems: React.PropTypes.number
 };
 
-const defaultProps = {};
+const defaultProps = {
+  maxItems: 10
+};
 
 export default class ActivityLog extends React.Component {
   constructor(props) {
@@ -59,7 +62,7 @@ export default class ActivityLog extends React.Component {
     } else {
       content = (
         <ul className={ this.styler('activity_log') }>
-          { this.state.activity.map((item) => {
+          { this.state.activity.slice(0, this.props.maxItems).map((item) => {
             return (
               <ActivityLogItem key={ item.guid } item={ item } />
             );
