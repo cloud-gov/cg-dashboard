@@ -62,6 +62,7 @@ export default class SpaceContainer extends React.Component {
     let Content = this.currentContent;
     let tabNav = <div></div>;
     let main = <div></div>;
+    console.log('config', config);
 
     if (this.state.space && this.state.space.guid) {
       const space = this.state.space;
@@ -71,7 +72,9 @@ export default class SpaceContainer extends React.Component {
           <div className={ this.styler('grid-width-8') }>
             <h2>Space overview</h2>
             <p className={ this.styler('page-dek') }>
-              Each <a href="https://docs.cloud.gov/getting-started/concepts/">space</a> provides an environment for related applications (<a href="https://docs.cloud.gov/intro/overview/using-cloudgov-paas/">example use</a>).
+              Each <a href={ config.docs.concepts_spaces }>space</a> provides an
+              environment for related applications (<a href={ config.docs.use }>
+              example use</a>).
             </p>
           </div>
           <div className={ this.styler('grid-width-4') }>
