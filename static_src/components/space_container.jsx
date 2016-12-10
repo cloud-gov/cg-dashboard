@@ -4,6 +4,7 @@ import React from 'react';
 import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
 import OrgStore from '../stores/org_store.js';
+import Panel from './panel.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
 import ServiceInstanceList from '../components/service_instance_list.jsx';
 import SpaceStore from '../stores/space_store.js';
@@ -81,12 +82,19 @@ export default class SpaceContainer extends React.Component {
           </div>
         </div>
         <div>
-          <h2>Space users</h2>
-          <Users />
+          <Panel title="">
+            <AppList />
+          </Panel>
         </div>
         <div>
-          <h2>Service instances</h2>
-          <ServiceInstanceList />
+          <Panel title="Space users">
+            <Users />
+          </Panel>
+        </div>
+        <div>
+          <Panel title="Service instances">
+            <ServiceInstanceList />
+          </Panel>
         </div>
       </div>
       );
