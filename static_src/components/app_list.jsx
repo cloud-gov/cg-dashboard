@@ -104,12 +104,8 @@ export default class AppList extends React.Component {
                     <span>{ crashed }</span>
                   </h4>
                 </td>
-                <td label="Allocation">{ app.memory } MB <br />
-                  <span className={ this.styler('sans-s3') }>memory used</span>
-                </td>
-                <td label="Limit">{ app.disk_quota } MB <br />
-                  <span className={ this.styler('sans-s3') }>memory allocated</span>
-                </td>
+                <td label="Allocation">{ app.memory } MB <br /></td>
+                <td label="Limit">{ app.disk_quota } MB <br /></td>
               </tr>
             ])
           })}
