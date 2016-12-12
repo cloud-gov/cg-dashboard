@@ -30,26 +30,30 @@ export class Form extends React.Component {
   attachToForm(element) {
     const fields = this.state.fields;
     fields[element.props.name] = element;
-    this.setState({ fields: fields });
+    this.setState({ fields });
   }
 
   detatchFromForm(element) {
-    var fields =  this.state.fields;
+    const fields = this.state.fields;
     delete fields[element.props.name];
-    this.setState({ fields: fields });
+    this.setState({ fields });
   }
 
   validate() {
-    var name,
-        errs = [];
+    let name;
+    const errs = [];
     for (name in this.state.fields) {
-      let field = this.state.fields[name];
-      let err = field.validate();
+      if (!this.state.fields.isPropertyEnumerable(name)) {
+        continue;
+      }
+
+      const field = this.state.fields[name];
+      const err = field.validate();
       if (err) {
         errs.push(err);
       }
     }
-    this.setState({errs: errs, isValid: !!errs.length});
+    this.setState({ errs, isValid: !!errs.length });
     this.props.onValidate(errs);
     if (!errs.length) {
       this.props.onValid(this.state.fieldValues);
@@ -57,70 +61,89 @@ export class Form extends React.Component {
   }
 
   _handleSubmit(ev) {
-    var values = this.state.fieldValues;
+    const values = this.state.fieldValues;
     ev.preventDefault();
+    let name;
     for (name in this.state.fields) {
-      let field = this.state.fields[name];
+      if (!this.state.fields.isPropertyEnumerable(name)) {
+        continue;
+      }
+
+      const field = this.state.fields[name];
       values[name] = field.state.value;
     }
-    this.setState({fieldValues: values});
+    this.setState({ fieldValues: values });
     this.validate();
   }
 
   render() {
-    var errorMsg;
-
-    var classes = classNames(...this.props.classes);
+    let errorMsg;
+    const classes = classNames(...this.props.classes);
 
     if (this.state.errs.length) {
-      errorMsg = <FormError message='There were errors submitting the form.' />
+      errorMsg = <FormError message="There were errors submitting the form." />;
     }
 
     return (
       <form action={ this.props.action } method={ this.props.method }
-          onSubmit={ this._handleSubmit } className={ classes }>
+        onSubmit={ this._handleSubmit } className={ classes }
+      >
         { errorMsg }
         <fieldset>
           { React.Children.map(this.props.children, (child) => {
-            if (child && child.props && child.props.name) {
-              if (child.props.name === 'submit') {
-                return React.cloneElement(child, {
-                  onClickHandler: this._handleSubmit
-                })
-              } else {
-                return React.cloneElement(child, {
-                  attachToForm: this.attachToForm,
-                  detachFromForm: this.detachFromForm
-                })
-              }
-            } else {
+            if (!child || !child.props || !child.props.name) {
               return child;
             }
+
+            let element;
+            if (child.props.name === 'submit') {
+              element = React.cloneElement(child, {
+                onClickHandler: this._handleSubmit
+              });
+            } else {
+              element = React.cloneElement(child, {
+                attachToForm: this.attachToForm,
+                detachFromForm: this.detachFromForm
+              });
+            }
+
+            return element;
           })}
         </fieldset>
       </form>
     );
   }
-};
+}
+
 Form.propTypes = {
   action: React.PropTypes.string,
+  children: React.PropTypes.node,
   classes: React.PropTypes.array,
   method: React.PropTypes.string,
   onValidate: React.PropTypes.func,
   onValid: React.PropTypes.func
 };
+
 Form.defaultProps = {
   action: '/',
   classes: [],
   method: 'post',
-  onValidate: function() { },
-  onValid: function() { }
+  onValidate: () => {},
+  onValid: () => {}
 };
 
 export class FormElement extends React.Component {
+  static validatorString(value, name) {
+    if (!value.length) {
+      return { message: `The ${name || ''} field was not filled out` };
+    }
+
+    return null;
+  }
+
   constructor(props) {
     super(props);
-    this.state = {err: null};
+    this.state = { err: null };
     if (!this.props.key) {
       this.state.id = nextId();
     }
@@ -130,52 +153,52 @@ export class FormElement extends React.Component {
   }
 
   componentWillMount() {
-    this.props.attachToForm && this.props.attachToForm(this);
+    if (this.props.attachToForm) {
+      this.props.attachToForm(this);
+    }
   }
 
   componentWillUnmount() {
-    this.props.detatchFromForm && this.props.detatchFromForm(this);
+    if (this.props.detatchFromForm) {
+      this.props.detatchFromForm(this);
+    }
   }
 
   onChange(e) {
     this.setState({ value: e.target.value });
   }
 
-  static validatorString(value, name) {
-    if (!value.length) {
-      return {
-        message: `The ${name || '' } field was not filled out`
-      }
-    }
-  }
-
   validate() {
-    var err = this.props.validator(this.state.value, this.props.label);
+    const err = this.props.validator(this.state.value, this.props.label);
     if (err) {
       err.value = this.state.value;
       // TODO rename to onError.
       this.props.onValidate(err);
     }
-    this.setState({ err: err });
+    this.setState({ err });
     return err;
   }
 
   get key() {
-    return this.props.key || 'form_element_' + this.state.id;
+    return this.props.key || `form_element_${this.state.id}`;
   }
 }
+
 FormElement.propTypes = {
+  attachToForm: React.propTypes.func,
   classes: React.PropTypes.array,
-  label: React.PropTypes.string,
-  validator: React.PropTypes.func,
+  detatchFromForm: React.propTypes.func,
   key: React.PropTypes.string,
-  onValidate: React.PropTypes.func
+  label: React.PropTypes.string,
+  onValidate: React.PropTypes.func,
+  validator: React.PropTypes.func
 };
+
 FormElement.defaultProps = {
   classes: [],
   label: '',
-  validator: function() {},
-  onValidate: function() {}
+  onValidate: () => {},
+  validator: () => {}
 };
 
 export class FormError extends React.Component {
@@ -205,19 +228,20 @@ export class FormText extends FormElement {
   }
 
   render() {
-    debugger;
-    var error;
-    var classes = classNames(...this.props.classes);
+    let error;
+    const classes = classNames(...this.props.classes);
 
     if (this.state.err) {
-      error = <FormError message={ this.state.err.message } />
+      error = <FormError message={ this.state.err.message } />;
     }
+
     return (
       <div>
         { error }
         <label htmlFor={ this.key }>{ this.props.label }</label>
         <input type="text" id={ this.key } value={ this.state.value }
-          onChange={ this.onChange } className={ classes } />
+          onChange={ this.onChange } className={ classes }
+        />
       </div>
     );
   }
@@ -292,7 +316,7 @@ export class FormSelect extends FormElement {
     this.state = this.state || {};
     this.state.value = '';
     this.state.err = null;
-    this._handleChange = this._handleChange.bind(this)
+    this._handleChange = this._handleChange.bind(this);
   }
 
   _handleChange(ev) {
@@ -300,34 +324,34 @@ export class FormSelect extends FormElement {
   }
 
   render() {
-    var error;
-    var classes = classNames(...this.props.classes);
+    let error;
+    const classes = classNames(...this.props.classes);
 
     if (this.state.err) {
-      error = <FormError message={ this.state.err.message } />
+      error = <FormError message={ this.state.err.message } />;
     }
     return (
       <div>
         { error }
         <label htmlFor={ this.key }>{ this.props.label }</label>
         <select
-            className={ classes }
-            name={ this.key }
-            id={ this.key }
-            onChange={ this._handleChange }
-            value={ this.state.value }>
-          <option value='' key={ this.key + '-null'}>
+          className={ classes }
+          name={ this.key }
+          id={ this.key }
+          onChange={ this._handleChange }
+          value={ this.state.value }
+        >
+          <option value="" key={ `${this.key}-null` }>
             --
           </option>
-          { this.props.options.map((option, i) => {
-            return (
+          { this.props.options.map((option, i) => (
               <option
-                  value={ option.value }
-                  key={ this.key + '-' + i }>
+                value={ option.value }
+                key={ `${this.key}-${i}` }
+              >
                 { option.label }
               </option>
-            );
-          })}
+          ))}
         </select>
       </div>
     );
