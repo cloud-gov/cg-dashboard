@@ -3,8 +3,10 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
+import { FormError } from './form.jsx';
 import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
+import { validateNumber } from '../util/validators';
 
 const STATES = [
   'error',
@@ -17,6 +19,8 @@ const STATES = [
 const propTypes = {
   name: React.PropTypes.string,
   editable: React.PropTypes.bool,
+  err: React.PropTypes.object,
+  max: React.PropTypes.number,
   onChange: React.PropTypes.func,
   primaryStat: React.PropTypes.number.isRequired,
   statState: React.PropTypes.oneOf(STATES),
@@ -33,6 +37,7 @@ const defaultProps = {
 
 function stateSetter(props) {
   return {
+    err: props.err || null,
     primaryStat: props.primaryStat,
     unit: props.unit
   };
@@ -46,9 +51,12 @@ const convert = {
 export default class Stat extends React.Component {
   constructor(props) {
     super(props);
-    this.state = stateSetter(props);
     this.styler = createStyler(style);
     this._onChange = this._onChange.bind(this);
+    this.validator = validateNumber({ min: 1, max: this.props.max });
+
+    const err = props.err || this.validator(props.primaryStat);
+    this.state = stateSetter(Object.assign({}, props, { err }));
   }
 
   _onChange(e) {
@@ -60,9 +68,10 @@ export default class Stat extends React.Component {
       return;
     }
 
+    const err = this.validator(e.target.value);
     const value = this.toBytes(e.target.value);
     this.props.onChange(value);
-    this.setState(stateSetter({ primaryStat: value, unit }));
+    this.setState(stateSetter({ primaryStat: value, err, unit }));
   }
 
   toBytes(value) {
@@ -82,17 +91,20 @@ export default class Stat extends React.Component {
     );
 
     if (this.props.editable) {
+      const err = this.state.err && <FormError message={ this.state.err.message } />;
       primaryStat = (
         <div>
           <input
             className={ this.styler('stat-input', 'stat-input-text') }
             type="text"
             id={ `${this.props.name}-value` }
+            label="MB"
             name={ `${this.props.name}-value` }
             value={ this.fromBytes(this.state.primaryStat) }
             onChange={ this._onChange }
           />
           <label className={ this.styler('stat-input', 'stat-input-label') } htmlFor={ `${this.props.name}-value` }>MB</label>
+          { err }
         </div>
       );
     }
@@ -110,3 +122,85 @@ export default class Stat extends React.Component {
 
 Stat.propTypes = propTypes;
 Stat.defaultProps = defaultProps;
+
+class FormNumber extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this.validateNumber = this.validateNumber.bind(this);
+  }
+
+  validateNumber(text) {
+    const value = parseInt(text, 10);
+    if (typeof value !== 'number') {
+      return { message: 'Invalid number' };
+    }
+
+    if (Number.isNaN(value)) {
+      return { message: 'Invalid number' };
+    }
+
+    const min = this.props.min;
+    if (typeof min === 'number' && value < min) {
+      return { message: `Total must be greater than ${min}` };
+    }
+
+    const max = this.props.max;
+    if (typeof max === 'number' && value > max) {
+      return { message: `Total exceeds ${max}` };
+    }
+
+    return null;
+  }
+
+  render() {
+    return <FormElement { ...this.props } validate={ this.validateNumber } error={ this.props.error } />;
+  }
+}
+
+FormNumber.propTypes = {
+  error: React.PropTypes.func,
+  max: React.PropTypes.number,
+  min: React.PropTypes.number,
+  type: React.PropTypes.string
+};
+
+FormNumber.defaultProps = {
+  error: () => {}
+};
+
+
+class FormElement extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: this.props.value
+    };
+
+    this.onChange.bind(this);
+  }
+
+  onChange(e) {
+    const err = this.props.validate(e.target.value);
+    if (err) {
+      this.props.error(err);
+    }
+
+    this.setState({ value: e.target.value, err });
+  }
+
+  render() {
+    return <input { ...this.props } value={ this.state.value } onChange={ this.onChange } />;
+  }
+}
+
+FormElement.propTypes = {
+  error: React.PropTypes.func,
+  value: React.PropTypes.string,
+  validate: React.PropTypes.func
+};
+
+FormElement.defaultProps = {
+  error: () => {},
+  validate: () => {}
+};

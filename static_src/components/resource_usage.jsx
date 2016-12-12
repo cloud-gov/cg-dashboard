@@ -9,6 +9,7 @@ import formatBytes from '../util/format_bytes';
 import Stat from './stat.jsx';
 
 const propTypes = {
+  max: React.PropTypes.number,
   onChange: React.PropTypes.func,
   title: React.PropTypes.string.isRequired,
   amountUsed: React.PropTypes.number,
@@ -45,6 +46,7 @@ export default class ResourceUsage extends React.Component {
     let stat = (
       <Stat
         editable={ props.editable }
+        max={ props.max }
         onChange={ props.onChange }
         name={ props.name }
         primaryStat={ props.amountTotal }

@@ -120,13 +120,13 @@ Form.defaultProps = {
 export class FormElement extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
     this.state = {err: null};
     if (!this.props.key) {
       this.state.id = nextId();
     }
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentWillMount() {
@@ -135,6 +135,10 @@ export class FormElement extends React.Component {
 
   componentWillUnmount() {
     this.props.detatchFromForm && this.props.detatchFromForm(this);
+  }
+
+  onChange(e) {
+    this.setState({ value: e.target.value });
   }
 
   static validatorString(value, name) {
@@ -177,7 +181,6 @@ FormElement.defaultProps = {
 export class FormError extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
     this.styler = createStyler(style);
   }
 
@@ -196,18 +199,13 @@ FormError.defaultProps = { message: '' };
 export class FormText extends FormElement {
   constructor(props) {
     super(props);
-    this.props = props;
     this.state = this.state || {};
     this.state.value = '';
     this.state.err = null;
-    this._handleChange = this._handleChange.bind(this);
-  }
-
-  _handleChange(ev) {
-    this.setState({value: ev.target.value});
   }
 
   render() {
+    debugger;
     var error;
     var classes = classNames(...this.props.classes);
 
@@ -219,12 +217,56 @@ export class FormText extends FormElement {
         { error }
         <label htmlFor={ this.key }>{ this.props.label }</label>
         <input type="text" id={ this.key } value={ this.state.value }
-          onChange={ this._handleChange } className={ classes } />
+          onChange={ this.onChange } className={ classes } />
       </div>
     );
   }
 }
 
+export class FormNumber extends FormText {
+  constructor(props) {
+    super(props);
+  }
+
+  validate() {
+    const err = this.validateNumber(this.state.value);
+    if (err) {
+      this.setState({ err });
+    } else {
+      super.validate();
+    }
+  }
+
+  validateNumber(text) {
+    const value = parseInt(text, 10);
+    if (typeof value !== 'number') {
+      return { message: 'Invalid number' };
+    }
+
+    if (Number.isNaN(value)) {
+      return { message: 'Invalid number' };
+    }
+
+    const min = this.props.min;
+    if (typeof min === 'number' && value < min) {
+      return { message: `Total must be greater than ${min}` };
+    }
+
+    const max = this.props.max;
+    if (typeof max === 'number' && value > max) {
+      return { message: `Total exceeds ${max}` };
+    }
+
+    return null;
+  }
+}
+
+FormNumber.propTypes = {
+  min: React.PropTypes.number,
+  max: React.PropTypes.number
+};
+
+FormElement.defaultProps = {};
 
 export class FormSelect extends FormElement {
   constructor(props) {

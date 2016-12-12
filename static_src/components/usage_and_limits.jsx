@@ -3,6 +3,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
+import { Form, FormText } from './form.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelBlock from './panel_block.jsx';
 import PanelRow from './panel_row.jsx';
@@ -29,7 +30,13 @@ function megabytes(value) {
 
 function stateSetter(props) {
   return {
-    editing: !!props.editing
+    editing: !!props.editing,
+    partialApp: {
+      // Properties are mapped directly to API https://apidocs.cloudfoundry.org/246/apps/updating_an_app.html
+      disk_quota: props.app.disk_quota,
+      instances: props.app.instances,
+      memory: props.app.memory
+    }
   };
 }
 
@@ -39,12 +46,6 @@ export default class UsageAndLimits extends React.Component {
     this.props = props;
     this.styler = createStyler(style);
     this.state = stateSetter(props);
-    // Properties are mapped directly to API https://apidocs.cloudfoundry.org/246/apps/updating_an_app.html
-    this.state.partialApp = {
-      disk_quota: this.props.app.disk_quota,
-      instances: this.props.app.instances,
-      memory: this.props.app.memory
-    };
 
     this.getStat = this.getStat.bind(this);
     this._onSubmit = this._onSubmit.bind(this);
@@ -56,7 +57,7 @@ export default class UsageAndLimits extends React.Component {
   }
 
   _onToggleEdit() {
-    this.setState({ editing: !this.state.editing });
+    this.setState(stateSetter(Object.assign({}, this.props, { editing: !this.state.editing })));
   }
 
   _onChange(property, value) {
@@ -95,6 +96,7 @@ export default class UsageAndLimits extends React.Component {
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
         <ResourceUsage title="Instance disk"
           editable={ this.state.editing }
+          max={ 2 * 1024 }
           onChange={ onChange }
           name="disk"
           amountTotal={ this.state.partialApp.disk_quota * 1024 * 1024 }
@@ -118,6 +120,7 @@ export default class UsageAndLimits extends React.Component {
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
         <ResourceUsage title="Instance memory"
           editable={ this.state.editing }
+          max={ this.props.quota.memory_limit / this.state.partialApp.instances * 1024 }
           name="memory"
           onChange={ onChange }
           amountTotal={ this.state.partialApp.memory * 1024 * 1024 }
@@ -151,7 +154,36 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get scale() {
-    const onChange = (e) => this._onChange('instances', e.target.value);
+    const validate = (text, cb) => {
+      debugger;
+      const value = parseInt(text, 10);
+
+      if (typeof value !== 'number') {
+        return cb('Invalid number');
+      }
+
+      if (Number.isNaN(value)) {
+        return cb('Invalid number');
+      }
+
+      if (value <= 0) {
+        return cb('Total must be greater than zero');
+      }
+
+      if (value > this.props.quota.app_instance_limit) {
+        return cb('Total exceeds availability');
+      }
+
+      return cb();
+    };
+
+    const onChange = (e) => {
+      validate(e.target.value, (err) => {
+        this.setState({ err });
+      });
+      this._onChange('instances', e.target.value);
+    };
+
     let instances = (
       <span className={ this.styler('stat-primary')}>
 	{ this.state.partialApp.instances }X
@@ -161,7 +193,7 @@ export default class UsageAndLimits extends React.Component {
     if (this.state.editing) {
       instances = (
         <input
-          className={ this.styler('stat-input', 'stat-input-text') }
+          className={ this.styler('stat-input', 'stat-input-text', 'stat-input-text-scale') }
           id="scale"
           name="scale"
           type="text"

@@ -15,7 +15,6 @@ test/**/*.js
 /static_src/components/create_service_instance.jsx
 /static_src/components/disclaimer.jsx
 /static_src/components/dropdown.jsx
-/static_src/components/form.jsx
 /static_src/components/header.jsx
 /static_src/components/home.jsx
 /static_src/components/icon.jsx
