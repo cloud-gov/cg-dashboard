@@ -76,11 +76,6 @@ export default class SpaceContainer extends React.Component {
         <div className={ this.styler('grid') }>
           <div className={ this.styler('grid-width-8') }>
             <h2>Space overview</h2>
-            <p className={ this.styler('page-dek') }>
-              Each <a href={ config.docs.concepts_spaces }>space</a> provides an
-              environment for related applications (<a href={ config.docs.use }>
-              example use</a>).
-            </p>
           </div>
           <div className={ this.styler('grid-width-4') }>
             <AppCountStatus apps={ space.apps } appCount={ space.apps && space.apps.length } />
@@ -92,6 +87,8 @@ export default class SpaceContainer extends React.Component {
         <Panel title="">
           <AppList />
           <PanelActions>
+            <span>Learn how to <a href={ config.docs.deploying_apps }>deploy a
+            new app</a>.</span>
             <Action
             label="Add a new service instance"
             classes={ ['panel-actions-right'] }
