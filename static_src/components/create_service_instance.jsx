@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 
 import Box from './box.jsx';
 import Action from './action.jsx';
-import { Form, FormText, FormSelect, FormElement, FormError } from './form.jsx';
+import { Form, FormText, FormSelect, FormElement, FormError } from './form';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';

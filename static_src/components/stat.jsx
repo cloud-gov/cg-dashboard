@@ -3,7 +3,7 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import { FormNumber, FormError } from './form.jsx';
+import { FormNumber, FormError } from './form';
 import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
 import { validateNumber } from '../util/validators';

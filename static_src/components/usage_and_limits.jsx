@@ -3,7 +3,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
-import { FormNumber } from './form.jsx';
+import { FormNumber } from './form';
 import PanelGroup from './panel_group.jsx';
 import PanelBlock from './panel_block.jsx';
 import PanelRow from './panel_row.jsx';

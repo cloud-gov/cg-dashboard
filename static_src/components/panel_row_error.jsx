@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import {FormError} from './form.jsx';
+import {FormError} from './form';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
