@@ -2,6 +2,7 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
+import Action from './action.jsx';
 import ActivityLogItem from './activity_log_item.jsx';
 import ActivityStore from '../stores/activity_store';
 import createStyler from '../util/create_styler';
@@ -37,9 +38,11 @@ export default class ActivityLog extends React.Component {
   constructor(props) {
     super(props);
     this.state = stateSetter(props);
+    this.state.maxItems = props.maxItems;
     this.styler = createStyler(style);
 
     this._onChange = this._onChange.bind(this);
+    this.handleMore = this.handleMore.bind(this);
   }
 
   componentDidMount() {
@@ -54,6 +57,13 @@ export default class ActivityLog extends React.Component {
     this.setState(stateSetter(this.props));
   }
 
+  handleMore(ev) {
+    ev.preventDefault();
+    const currentState = stateSetter(this.props);
+    currentState.maxItems = this.state.maxItems + this.props.maxItems;
+    this.setState(currentState);
+  }
+
   render() {
     let content = <div></div>;
 
@@ -61,13 +71,19 @@ export default class ActivityLog extends React.Component {
       content = <h5 className="test-none_message">No recent activity</h5>;
     } else {
       content = (
-        <ul className={ this.styler('activity_log') }>
-          { this.state.activity.slice(0, this.props.maxItems).map((item) => {
-            return (
-              <ActivityLogItem key={ item.guid } item={ item } />
-            );
-          })}
-        </ul>
+        <div>
+          <p>View advanced logs at <a href="https://logs.cloud.gov">logs.cloud.gov</a></p>
+          <ul className={ this.styler('activity_log') }>
+            { this.state.activity.slice(0, this.state.maxItems).map((item) => {
+              return (
+                <ActivityLogItem key={ item.guid } item={ item } />
+              );
+            })}
+          </ul>
+          <Action label="View more" clickHandler={ this.handleMore }>
+            Show more activity
+          </Action>
+        </div>
       );
     }
 
