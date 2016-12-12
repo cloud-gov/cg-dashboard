@@ -104,7 +104,7 @@ export default class Route extends React.Component {
   bindAction(unbind) {
     return (
       <Action key="unbind" label={ (!!unbind) ? 'Unbind' : 'Bind' }
-        style={ (!!unbind) ? 'cautious' : 'primary' } type="outline"
+        style={ (!!unbind) ? 'warning' : 'outline' } type={ (!!unbind) ? 'link' : 'button' }
         clickHandler={ (!!unbind) ? this._toggleRemove : this._bindHandler }
       >
         { (!!unbind) ? 'Unbind' : 'Bind' }
@@ -138,9 +138,12 @@ export default class Route extends React.Component {
   }
 
   get confirmationMsg() {
+    const { domain_name, host, path } = this.props.route;
+    const url = formatRoute(domain_name, host, path);
+    const displayUrl = <a href={ url } title="See app route">{ url }</a>;
     return (RouteStore.isRouteBoundToApp(this.props.route)) ?
-      'Unbind this route from this app?' :
-      'Delete this route from this space?';
+        <span>Unbind {displayUrl} route from this app?</span> :
+        <span>Delete {displayUrl} route from this space?</span>;
   }
 
   get displayError() {
@@ -187,7 +190,8 @@ export default class Route extends React.Component {
       } else {
         let displayUrl = <span>{ url }</span>;
         if (RouteStore.isRouteBoundToApp(route)) {
-          displayUrl = <a href={ url } title="See app route">{ url }</a>;
+          displayUrl =
+          <a href={ url } title="See app route" className={this.styler('route-link')}>{ url }</a>;
         }
         content = (
           <div>

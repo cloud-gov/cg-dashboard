@@ -12,6 +12,9 @@ import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
 import Panel from './panel.jsx';
+import PanelBlock from './panel_block.jsx';
+import PanelGroup from './panel_group.jsx';
+import PanelRow from './panel_row.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
 import appActions from '../actions/app_actions.js';
@@ -133,8 +136,20 @@ export default class AppContainer extends React.Component {
           <Panel title="Usage and allocation">
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
-          <RoutesPanel />
-          <ServiceInstancePanel />
+
+          <PanelGroup>
+            <PanelGroup columns={ 6 }>
+              <div className={ this.styler('panel-routes')}>
+                <RoutesPanel />
+              </div>
+            </PanelGroup>
+            <PanelGroup columns={ 6 }>
+              <div className={ this.styler('panel-services')}>
+                <ServiceInstancePanel />
+              </div>
+            </PanelGroup>
+          </PanelGroup>
+
           <Panel title="Recent activity">
             <ActivityLog initialAppGuid={ this.state.app.guid } />
             <p>View advanced logs at <a href="https://logs.cloud.gov">logs.cloud.gov</a></p>
