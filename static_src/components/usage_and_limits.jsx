@@ -3,7 +3,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
-import { Form, FormText } from './form.jsx';
+import { FormNumber } from './form.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelBlock from './panel_block.jsx';
 import PanelRow from './panel_row.jsx';
@@ -154,33 +154,7 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get scale() {
-    const validate = (text, cb) => {
-      debugger;
-      const value = parseInt(text, 10);
-
-      if (typeof value !== 'number') {
-        return cb('Invalid number');
-      }
-
-      if (Number.isNaN(value)) {
-        return cb('Invalid number');
-      }
-
-      if (value <= 0) {
-        return cb('Total must be greater than zero');
-      }
-
-      if (value > this.props.quota.app_instance_limit) {
-        return cb('Total exceeds availability');
-      }
-
-      return cb();
-    };
-
     const onChange = (e) => {
-      validate(e.target.value, (err) => {
-        this.setState({ err });
-      });
       this._onChange('instances', e.target.value);
     };
 
@@ -192,12 +166,11 @@ export default class UsageAndLimits extends React.Component {
 
     if (this.state.editing) {
       instances = (
-        <input
+        <FormNumber
           className={ this.styler('stat-input', 'stat-input-text', 'stat-input-text-scale') }
           id="scale"
           name="scale"
-          type="text"
-          onChange={ onChange }
+          onValidate={ onChange }
           value={ this.state.partialApp.instances }
         />
       );

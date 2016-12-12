@@ -3,7 +3,7 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import { FormError } from './form.jsx';
+import { FormNumber, FormError } from './form.jsx';
 import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
 import { validateNumber } from '../util/validators';
@@ -123,51 +123,6 @@ export default class Stat extends React.Component {
 Stat.propTypes = propTypes;
 Stat.defaultProps = defaultProps;
 
-class FormNumber extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.validateNumber = this.validateNumber.bind(this);
-  }
-
-  validateNumber(text) {
-    const value = parseInt(text, 10);
-    if (typeof value !== 'number') {
-      return { message: 'Invalid number' };
-    }
-
-    if (Number.isNaN(value)) {
-      return { message: 'Invalid number' };
-    }
-
-    const min = this.props.min;
-    if (typeof min === 'number' && value < min) {
-      return { message: `Total must be greater than ${min}` };
-    }
-
-    const max = this.props.max;
-    if (typeof max === 'number' && value > max) {
-      return { message: `Total exceeds ${max}` };
-    }
-
-    return null;
-  }
-
-  render() {
-    return <FormElement { ...this.props } validate={ this.validateNumber } error={ this.props.error } />;
-  }
-}
-
-FormNumber.propTypes = {
-  error: React.PropTypes.func,
-  max: React.PropTypes.number,
-  min: React.PropTypes.number,
-  type: React.PropTypes.string
-};
-
-FormNumber.defaultProps = {
-  error: () => {}
-};
 
 
 class FormElement extends React.Component {

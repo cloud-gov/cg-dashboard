@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-var currid = 0;
+let currid = 0;
 
 function nextId() {
   currid += 1;
@@ -28,7 +28,7 @@ export class Form extends React.Component {
   }
 
   attachToForm(element) {
-    var fields =  this.state.fields;
+    const fields = this.state.fields;
     fields[element.props.name] = element;
     this.setState({ fields: fields });
   }
@@ -223,18 +223,33 @@ export class FormText extends FormElement {
   }
 }
 
-export class FormNumber extends FormText {
+FormText.propTypes = FormElement.propTypes;
+FormText.defaultProps = FormElement.defaultProps;
+
+export class FormInlineText extends FormInlineText {
+  render() {
+    let classes = classNames(...this.props.classes);
+    let error = null;
+    if (this.state.err) {
+      error = <FormError message={ this.state.err.message } />;
+    }
+
+    return (
+      <span>
+        <input type="text" id={ this.key } value={ this.state.value }
+          onChange={ this.onChange } className={ classes }
+        />
+        { error }
+      </span>
+    );
+  }
+}
+
+
+export class FormNumber extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  validate() {
-    const err = this.validateNumber(this.state.value);
-    if (err) {
-      this.setState({ err });
-    } else {
-      super.validate();
-    }
+    this.validateNumber = this.validateNumber.bind(this);
   }
 
   validateNumber(text) {
@@ -259,14 +274,16 @@ export class FormNumber extends FormText {
 
     return null;
   }
+
+  render() {
+    return <FormInlineText { ...this.props } validator={ this.validateNumber } />;
+  }
 }
 
 FormNumber.propTypes = {
   min: React.PropTypes.number,
   max: React.PropTypes.number
 };
-
-FormElement.defaultProps = {};
 
 export class FormSelect extends FormElement {
   constructor(props) {
