@@ -60,7 +60,6 @@ export default class SpaceContainer extends React.Component {
     let Content = this.currentContent;
     let tabNav = <div></div>;
     let main = <div></div>;
-    console.log('config', config);
 
     if (this.state.space && this.state.space.guid) {
       const space = this.state.space;
@@ -76,9 +75,9 @@ export default class SpaceContainer extends React.Component {
             </p>
           </div>
           <div className={ this.styler('grid-width-4') }>
-            <AppCountStatus apps={ space.apps } appCount={ space.apps.length } />
+            <AppCountStatus apps={ space.apps } appCount={ space.apps && space.apps.length } />
             <ServiceCountStatus services={ space.services }
-              serviceCount={ space.services.length }
+              serviceCount={ space.services && space.services.length }
             />
           </div>
         </div>
