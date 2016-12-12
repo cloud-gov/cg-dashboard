@@ -85,7 +85,7 @@ export default class ActivityLogItem extends React.Component {
       default:
         content = 'bad things happened';
     }
-    return (<p>The app crashed because { content }.</p>);
+    return (<span>The app crashed because { content }.</span>);
   }
 
   get content() {
@@ -115,41 +115,43 @@ export default class ActivityLogItem extends React.Component {
       content = this.crashContent;
     } else if (item.type === 'audit.app.create') {
       content = (
-        <p>{ item.actor_name } created the app with { metadata.request.memory } MBs of memory.</p>
+        <span>{ item.actor_name } created the app with { metadata.request.memory } MBs of memory.</span>
       );
     } else if (item.type === 'audit.app.map-route') {
       content = (
-        <p>{ item.actor_name } mapped { link } to the app.</p>
+        <span>{ item.actor_name } mapped { link } to the app.</span>
       );
     } else if (item.type === 'audit.app.restage') {
       content = (
-        <p>{ item.actor_name} restaged the app.</p>
+        <span>{ item.actor_name} restaged the app.</span>
       );
     } else if (item.type === 'audit.app.unmap-route') {
       content = (
-        <p>{ item.actor_name } unmapped { url } from the app.</p>
+        <span>{ item.actor_name } unmapped { url } from the app.</span>
       );
     } else if (item.type === 'audit.app.update') {
       const appState = (metadata.request.state) ? metadata.request.state.toLowerCase() : 'updated';
       content = (
-        <p>{ item.actor_name } { appState } the app.</p>
+        <span>{ item.actor_name } { appState } the app.</span>
       );
     } else if (item.type === 'audit.service_binding.create') {
       const service = ServiceInstanceStore.get(metadata.request.service_instance_guid);
       const serviceText = (service) ? service.guid : 'a service';
       content = (
-        <p>{ item.actor_name} bound { serviceText } to the app.</p>
+        <span>{ item.actor_name} bound { serviceText } to the app.</span>
       );
     }
 
-    return content;
+    return <p className={ this.styler('activity_log-item_text') }>{ content }</p>;
   }
 
   get logContent() {
     const item = this.props.item;
 
     return (
-      <p>{ item.status_code } { item.requested_url }</p>
+      <p className={ this.styler('activity_log-item_text') }>
+        { item.status_code } { item.requested_url }
+      </p>
     );
   }
 
@@ -178,9 +180,7 @@ export default class ActivityLogItem extends React.Component {
   render() {
     return (
       <li className={ this.styler('activity_log-item', this.cssClass) }>
-        <div className={ this.styler('activity_log-item_text') }
-          onClick={ this.toggleRawJson }
-        >
+        <div onClick={ this.toggleRawJson }>
           { this.content }
         </div>
         <div className={ this.styler('activity_log-item_timestamp') }>
