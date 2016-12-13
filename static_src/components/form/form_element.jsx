@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 let currid = 0;
 function nextId() {
@@ -42,6 +43,10 @@ export default class FormElement extends React.Component {
     });
   }
 
+  get classes() {
+    return this.props.classes.length ? classNames(...this.props.classes) : this.props.className;
+  }
+
   checkValidationFromProps(props) {
     if (props.value === undefined) {
       return {};
@@ -73,6 +78,7 @@ export default class FormElement extends React.Component {
 FormElement.propTypes = {
   attachToForm: React.PropTypes.func,
   classes: React.PropTypes.array,
+  className: React.PropTypes.string,
   detatchFromForm: React.PropTypes.func,
   key: React.PropTypes.string,
   label: React.PropTypes.string,

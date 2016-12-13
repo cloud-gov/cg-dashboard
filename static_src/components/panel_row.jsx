@@ -8,7 +8,7 @@ import createStyler from '../util/create_styler';
 const STYLES = [
   'bordered',
   'boxed',
-  ''
+  'none'
 ];
 
 const propTypes = {
@@ -16,7 +16,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  styleClass: ''
+  styleClass: 'none'
 };
 
 export default class PanelRow extends React.Component {

@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 
 import FormElement from './form_element.jsx';
 import FormError from './form_error.jsx';
@@ -21,7 +20,6 @@ export default class FormSelect extends FormElement {
 
   render() {
     let error;
-    const classes = classNames(...this.props.classes);
 
     if (this.state.err) {
       error = <FormError message={ this.state.err.message } />;
@@ -31,7 +29,7 @@ export default class FormSelect extends FormElement {
         { error }
         <label htmlFor={ this.key }>{ this.props.label }</label>
         <select
-          className={ classes }
+          className={ this.classes }
           name={ this.key }
           id={ this.key }
           onChange={ this._handleChange }
