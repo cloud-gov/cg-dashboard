@@ -62,7 +62,6 @@ export default class UsageAndLimits extends React.Component {
 
   _onChange(property, value) {
     let parsedValue = value;
-    // TODO use form validation to parse values
     switch (property) {
       case 'disk_quota':
       case 'memory':
@@ -96,7 +95,8 @@ export default class UsageAndLimits extends React.Component {
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
         <ResourceUsage title="Instance disk"
           editable={ this.state.editing }
-          max={ 2 * 1024 }
+          max={ 2 * 1024 * 1024 }
+          min={ 1 }
           onChange={ onChange }
           name="disk"
           amountTotal={ this.state.partialApp.disk_quota * 1024 * 1024 }
@@ -120,7 +120,8 @@ export default class UsageAndLimits extends React.Component {
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
         <ResourceUsage title="Instance memory"
           editable={ this.state.editing }
-          max={ this.props.quota.memory_limit / this.state.partialApp.instances * 1024 }
+          min={ 1 }
+          max={ Math.floor(this.props.quota.memory_limit / this.state.partialApp.instances) }
           name="memory"
           onChange={ onChange }
           amountTotal={ this.state.partialApp.memory * 1024 * 1024 }
@@ -154,8 +155,8 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get scale() {
-    const onChange = (e) => {
-      this._onChange('instances', e.target.value);
+    const onValidate = (err, value) => {
+      this._onChange('instances', value);
     };
 
     let instances = (
@@ -169,8 +170,11 @@ export default class UsageAndLimits extends React.Component {
         <FormNumber
           className={ this.styler('stat-input', 'stat-input-text', 'stat-input-text-scale') }
           id="scale"
+          inline
+          min={ 1 }
+          max={ 64 }
           name="scale"
-          onValidate={ onChange }
+          onValidate={ onValidate }
           value={ this.state.partialApp.instances }
         />
       );

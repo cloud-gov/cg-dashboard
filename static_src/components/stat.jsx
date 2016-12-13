@@ -3,10 +3,10 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import { FormNumber, FormError } from './form';
+import { FormNumber } from './form';
 import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
-import { validateNumber } from '../util/validators';
+
 
 const STATES = [
   'error',
@@ -19,7 +19,7 @@ const STATES = [
 const propTypes = {
   name: React.PropTypes.string,
   editable: React.PropTypes.bool,
-  err: React.PropTypes.object,
+  min: React.PropTypes.number,
   max: React.PropTypes.number,
   onChange: React.PropTypes.func,
   primaryStat: React.PropTypes.number.isRequired,
@@ -29,7 +29,7 @@ const propTypes = {
 
 const defaultProps = {
   editable: false,
-  onChange: (e) => e.preventDefault(),
+  onChange: () => {},
   statState: 'none',
   secondaryInfo: <span></span>,
   unit: 'MB'
@@ -37,7 +37,6 @@ const defaultProps = {
 
 function stateSetter(props) {
   return {
-    err: props.err || null,
     primaryStat: props.primaryStat,
     unit: props.unit
   };
@@ -52,26 +51,16 @@ export default class Stat extends React.Component {
   constructor(props) {
     super(props);
     this.styler = createStyler(style);
-    this._onChange = this._onChange.bind(this);
-    this.validator = validateNumber({ min: 1, max: this.props.max });
-
-    const err = props.err || this.validator(props.primaryStat);
-    this.state = stateSetter(Object.assign({}, props, { err }));
+    this.onValidate = this.onValidate.bind(this);
+    this.state = stateSetter(props);
   }
 
-  _onChange(e) {
-    let unit = this.state.unit;
+  onValidate(err, value) {
+    const unit = this.state.unit;
+    const size = this.toBytes(value);
 
-    if (e.target.name === `${this.props.name}-size`) {
-      unit = e.target.value;
-      this.setState({ primaryStat: this.state.primaryStat, unit });
-      return;
-    }
-
-    const err = this.validator(e.target.value);
-    const value = this.toBytes(e.target.value);
-    this.props.onChange(value);
-    this.setState(stateSetter({ primaryStat: value, err, unit }));
+    this.props.onChange(size);
+    this.setState(stateSetter({ primaryStat: size, unit }));
   }
 
   toBytes(value) {
@@ -91,20 +80,24 @@ export default class Stat extends React.Component {
     );
 
     if (this.props.editable) {
-      const err = this.state.err && <FormError message={ this.state.err.message } />;
       primaryStat = (
         <div>
-          <input
+          <FormNumber
             className={ this.styler('stat-input', 'stat-input-text') }
             type="text"
             id={ `${this.props.name}-value` }
+            inline
             label="MB"
             name={ `${this.props.name}-value` }
             value={ this.fromBytes(this.state.primaryStat) }
-            onChange={ this._onChange }
+            min={ this.props.min }
+            max={ this.props.max }
+            onValidate={ this.onValidate }
           />
-          <label className={ this.styler('stat-input', 'stat-input-label') } htmlFor={ `${this.props.name}-value` }>MB</label>
-          { err }
+          <label
+            className={ this.styler('stat-input', 'stat-input-label') }
+            htmlFor={ `${this.props.name}-value` }
+          >MB</label>
         </div>
       );
     }
@@ -122,40 +115,3 @@ export default class Stat extends React.Component {
 
 Stat.propTypes = propTypes;
 Stat.defaultProps = defaultProps;
-
-
-
-class FormElement extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: this.props.value
-    };
-
-    this.onChange.bind(this);
-  }
-
-  onChange(e) {
-    const err = this.props.validate(e.target.value);
-    if (err) {
-      this.props.error(err);
-    }
-
-    this.setState({ value: e.target.value, err });
-  }
-
-  render() {
-    return <input { ...this.props } value={ this.state.value } onChange={ this.onChange } />;
-  }
-}
-
-FormElement.propTypes = {
-  error: React.PropTypes.func,
-  value: React.PropTypes.string,
-  validate: React.PropTypes.func
-};
-
-FormElement.defaultProps = {
-  error: () => {},
-  validate: () => {}
-};

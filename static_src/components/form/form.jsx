@@ -35,7 +35,7 @@ export default class Form extends React.Component {
     let name;
     const errs = [];
     for (name in this.state.fields) {
-      if (!this.state.fields.isPropertyEnumerable(name)) {
+      if (!this.state.fields.propertyIsEnumerable(name)) {
         continue;
       }
 
@@ -57,7 +57,7 @@ export default class Form extends React.Component {
     ev.preventDefault();
     let name;
     for (name in this.state.fields) {
-      if (!this.state.fields.isPropertyEnumerable(name)) {
+      if (!this.state.fields.propertyIsEnumerable(name)) {
         continue;
       }
 

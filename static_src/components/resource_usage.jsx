@@ -10,6 +10,7 @@ import Stat from './stat.jsx';
 
 const propTypes = {
   max: React.PropTypes.number,
+  min: React.PropTypes.number,
   onChange: React.PropTypes.func,
   title: React.PropTypes.string.isRequired,
   amountUsed: React.PropTypes.number,
@@ -21,7 +22,7 @@ const defaultProps = {
   amountUsed: 0,
   amountTotal: 0,
   byteWarningThreshold: 500000,
-  onChange: (e) => e.preventDefault()
+  onChange: () => {}
 };
 
 export default class ResourceUsage extends React.Component {
@@ -47,6 +48,7 @@ export default class ResourceUsage extends React.Component {
       <Stat
         editable={ props.editable }
         max={ props.max }
+        min={ props.min }
         onChange={ props.onChange }
         name={ props.name }
         primaryStat={ props.amountTotal }
