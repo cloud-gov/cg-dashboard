@@ -26,15 +26,25 @@ export default class OrgQuickLook extends React.Component {
     this.state = {};
     this.styler = createStyler(style);
 
-    this.toggleOrg = this.toggleOrg.bind(this);
+    this.onRowClick = this.onRowClick.bind(this);
+    this.onOrgClick = this.onOrgClick.bind(this);
   }
 
-  toggleOrg(ev) {
+  onRowClick(ev) {
     ev.preventDefault();
     if (!this.props.org.quicklook_open) {
       spaceActions.fetchAllForOrg(this.props.org.guid);
     }
     orgActions.toggleQuicklook(this.props.org.guid);
+  }
+
+  onOrgClick(ev) {
+    ev.preventDefault();
+    window.location.href = this.orgHref();
+  }
+
+  orgHref() {
+    return `/#/org/${this.props.org.guid}`;
   }
 
   totalAppCount(spaces) {
@@ -55,11 +65,13 @@ export default class OrgQuickLook extends React.Component {
     const panelStyle = props.org.quicklook_open ? { marginBottom: '3rem' } : null;
 
     return (
-    <div style={ panelStyle }>
+    <div style={ panelStyle } onClick={ this.onRowClick }
+      className={ this.styler('panel-row-is_clickable') }
+    >
       <div className={ this.styler('panel-column') }>
-        <h2 className={ this.styler('sans-s6') }>
+        <h2 className={ this.styler('sans-s6') } onClick={ this.onOrgClick }>
           <EntityIcon entity="org" />
-          <a onClick={ this.toggleOrg } href="#">{ props.org.name }</a>
+          <a href={ this.orgHref() }>{ props.org.name }</a>
         </h2>
       </div>
       <div className={ this.styler('panel-column') }>
