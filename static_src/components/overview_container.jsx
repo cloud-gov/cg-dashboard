@@ -21,7 +21,7 @@ function stateSetter() {
   return {
     empty: !OrgStore.loading && !SpaceStore.loading && !orgs.length,
     loading: OrgStore.loading || SpaceStore.loading,
-    orgs,
+    orgs: orgs.sort((a, b) => a.name.localeCompare(b.name)),
     spaces
   };
 }
