@@ -56,6 +56,8 @@ export default class Stat extends React.Component {
   }
 
   onValidate(err, value) {
+    // TODO the max/min limits don't match this unit, the validators work on
+    // raw input rather than the converted value.
     const unit = this.state.unit;
     const size = this.toBytes(value);
 

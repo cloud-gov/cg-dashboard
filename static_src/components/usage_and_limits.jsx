@@ -95,7 +95,7 @@ export default class UsageAndLimits extends React.Component {
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
         <ResourceUsage title="Instance disk"
           editable={ this.state.editing }
-          max={ 2 * 1024 * 1024 }
+          max={ 2 * 1024 }
           min={ 1 }
           onChange={ onChange }
           name="disk"
