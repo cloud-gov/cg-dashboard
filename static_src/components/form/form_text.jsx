@@ -4,12 +4,11 @@ import classNames from 'classnames';
 import FormElement from './form_element.jsx';
 import FormError from './form_error.jsx';
 
+
 export default class FormText extends FormElement {
   constructor(props) {
     super(props);
     this.state = this.state || {};
-    this.state.value = '';
-    this.state.err = null;
   }
 
   get classes() {

@@ -33,13 +33,12 @@ export default class FormNumber extends React.Component {
   }
 
   render() {
-    return <FormText { ...this.props } validator={ this.validateNumber } />;
+    const props = Object.assign({}, this.props, { validator: this.validateNumber });
+    return <FormText { ...props } />;
   }
 }
 
-FormNumber.propTypes = Object.assign({}, FormText.propTypes, {
+FormNumber.propTypes = {
   min: React.PropTypes.number,
   max: React.PropTypes.number
-});
-
-FormNumber.defaultProps = FormText.defaultProps;
+};

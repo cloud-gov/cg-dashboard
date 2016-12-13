@@ -46,7 +46,7 @@ export default class Form extends React.Component {
       }
     }
     this.setState({ errs, isValid: !!errs.length });
-    this.props.onValidate(errs);
+    this.props.onValidate(errs, this.state.fieldValues);
     if (!errs.length) {
       this.props.onValid(this.state.fieldValues);
     }

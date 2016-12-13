@@ -21,6 +21,8 @@ export default class FormElement extends React.Component {
     if (!this.props.key) {
       this.state.id = nextId();
     }
+
+    Object.assign(this.state, this.checkValidationFromProps(props));
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -32,6 +34,10 @@ export default class FormElement extends React.Component {
     }
   }
 
+  componentWillReceiveProps(props) {
+    this.setState(this.checkValidationFromProps(props));
+  }
+
   componentWillUnmount() {
     if (this.props.detatchFromForm) {
       this.props.detatchFromForm(this);
@@ -39,16 +45,30 @@ export default class FormElement extends React.Component {
   }
 
   onChange(e) {
-    this.setState({ value: e.target.value });
+    this.setState({ value: e.target.value }, () => {
+      this.validate();
+    });
+  }
+
+  checkValidationFromProps(props) {
+    if (props.value === undefined) {
+      return {};
+    }
+
+    // Only if an initial value is set, validate it
+    const value = props.value;
+    const err = props.validator && props.validator(value);
+    return { value, err };
   }
 
   validate() {
-    const err = this.props.validator(this.state.value, this.props.label);
+    const value = this.state.value;
+    const err = this.props.validator(value, this.props.label);
     if (err) {
-      err.value = this.state.value;
-      // TODO rename to onError.
-      this.props.onValidate(err);
+      err.value = value;
     }
+
+    this.props.onValidate(err, value);
     this.setState({ err });
     return err;
   }
@@ -65,7 +85,8 @@ FormElement.propTypes = {
   key: React.PropTypes.string,
   label: React.PropTypes.string,
   onValidate: React.PropTypes.func,
-  validator: React.PropTypes.func
+  validator: React.PropTypes.func,
+  value: React.PropTypes.any
 };
 
 FormElement.defaultProps = {
