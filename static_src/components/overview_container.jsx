@@ -4,10 +4,12 @@ import React from 'react';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
+import { config } from 'skin';
 import Loading from './loading.jsx';
 import OrgQuickLook from './org_quick_look.jsx';
 import OrgStore from '../stores/org_store.js';
 import Panel from './panel.jsx';
+import PanelGroup from './panel_group.jsx';
 import PanelRow from './panel_row.jsx';
 import SpaceStore from '../stores/space_store.js';
 import SpaceQuicklook from './space_quicklook.jsx';
@@ -81,6 +83,27 @@ export default class OverviewContainer extends React.Component {
               )}
             </PanelRow>
           )}
+        </Panel>
+        <Panel title="Cheatsheet">
+          { config.home.tiles.map((Tile, i) => {
+            let cheatContent;
+            if (i % 2 === 0) {
+              cheatContent = (
+                <div key={ `tile-${i}` }>
+                  <PanelGroup columns={ 6 }>
+                    <Tile />
+                  </PanelGroup>
+                </div>
+              );
+            } else {
+              cheatContent = (
+                <PanelGroup columns={ 6 } key={ `tile-${i}` }>
+                  <Tile />
+                </PanelGroup>
+              );
+            }
+            return cheatContent;
+          })}
         </Panel>
       </div>
       );
