@@ -14,6 +14,7 @@ import SpaceStore from '../stores/space_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
 import createStyler from '../util/create_styler';
+import { validateString } from '../util/validators';
 
 function stateSetter() {
   return {
@@ -31,6 +32,8 @@ export default class CreateServiceInstance extends React.Component {
       spaces: SpaceStore.getAll(),
       createError: ServiceInstanceStore.createError
     };
+
+    this.validateString = validateString().bind(this);
     this._onChange = this._onChange.bind(this);
     this._onValidateForm = this._onValidateForm.bind(this);
     this._onValidForm = this._onValidForm.bind(this);
@@ -112,7 +115,7 @@ export default class CreateServiceInstance extends React.Component {
             classes={ ['test-create_service_instance_name'] }
             label="Choose a name for the service instance"
             name="name"
-            validator={ FormElement.validatorString }
+            validator={ this.validateString }
           />
           <FormSelect
             classes={ ['test-create_service_instance_space'] }
@@ -123,7 +126,7 @@ export default class CreateServiceInstance extends React.Component {
             }).map((space) => {
               return { value: space.guid, label: space.name };
             })}
-            validator={ FormElement.validatorString }
+            validator={ this.validateString }
           />
           <Action label="submit" type="submit">Create service instance</Action>
           <p><em>

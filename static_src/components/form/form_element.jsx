@@ -7,14 +7,6 @@ function nextId() {
 }
 
 export default class FormElement extends React.Component {
-  static validatorString(value, name) {
-    if (!value.length) {
-      return { message: `The ${name || ''} field was not filled out` };
-    }
-
-    return null;
-  }
-
   constructor(props) {
     super(props);
     this.state = { err: null };
