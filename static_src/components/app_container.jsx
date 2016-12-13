@@ -12,9 +12,7 @@ import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
 import Panel from './panel.jsx';
-import PanelBlock from './panel_block.jsx';
 import PanelGroup from './panel_group.jsx';
-import PanelRow from './panel_row.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
 import appActions from '../actions/app_actions.js';
@@ -112,7 +110,7 @@ export default class AppContainer extends React.Component {
 
     if (this.state.app.error) {
       error = (
-        <ErrorMessage err={ this.state.app.error } />
+        <ErrorMessage error={ this.state.app.error } />
       );
     }
 
