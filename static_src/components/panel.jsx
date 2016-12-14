@@ -10,7 +10,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  title: 'Default title'
+  title: 'default'
 };
 
 export default class Panel extends React.Component {
@@ -21,9 +21,11 @@ export default class Panel extends React.Component {
   }
 
   render() {
+    const title = this.props.title !== 'default' &&
+      <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>;
     return (
       <div className={ this.styler('panel') }>
-        <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>
+       { title }
         <div className={ this.styler('panel-rows') }>
           { this.props.children }
         </div>
