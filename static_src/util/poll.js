@@ -1,13 +1,13 @@
 
-const DEFAULT_TIMEOUT = 50000;
-const DEFAULT_INTERVAL = 750;
+const DEFAULT_TIMEOUT = 5 * 60 * 1000; // (ms) 5 minutes
+const DEFAULT_INTERVAL = 5 * 1000; // (ms) 5 seconds
 
 export default function poll(condition, promise,
     interval = DEFAULT_INTERVAL,
     timeout = DEFAULT_TIMEOUT) {
   const endTime = Date.now() + timeout;
 
-  const check = function (resolve, reject) {
+  const check = function _check(resolve, reject) {
     promise().then((res) => {
       if (condition(res)) {
         resolve(res);

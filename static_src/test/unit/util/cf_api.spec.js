@@ -857,6 +857,27 @@ describe('cfApi', function() {
     });
   });
 
+  describe('putApp()', function() {
+    it('calls apps endpoint with guid', function (done) {
+      const put = sandbox.stub(http, 'put', (url, app) => {
+        return createPromise({data: {entity: app}});
+      });
+      const updatedSpy = sandbox.spy(appActions, 'updatedApp');
+      const expectedApp = {guid: '123'};
+
+      cfApi.putApp(expectedApp.guid, expectedApp)
+        .then(function () {
+          console.log(put.args);
+          let [url, app] = put.args[0];
+          expect(url).toMatch(new RegExp('/v2/apps/123$'));
+          expect(app).toEqual(expectedApp);
+          expect(updatedSpy).toHaveBeenCalledOnce();
+          done();
+        })
+        .catch(done.fail);
+    });
+  })
+
   describe('fetchSpaceUsers()', function() {
     it('should call fetch with spaces user roles url with space guid and the' +
        ' received space users action', function() {

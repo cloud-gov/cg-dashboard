@@ -5,9 +5,13 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
+import formatBytes from '../util/format_bytes';
 import Stat from './stat.jsx';
 
 const propTypes = {
+  max: React.PropTypes.number,
+  min: React.PropTypes.number,
+  onChange: React.PropTypes.func,
   title: React.PropTypes.string.isRequired,
   amountUsed: React.PropTypes.number,
   amountTotal: React.PropTypes.number,
@@ -17,7 +21,8 @@ const propTypes = {
 const defaultProps = {
   amountUsed: 0,
   amountTotal: 0,
-  byteWarningThreshold: 500000
+  byteWarningThreshold: 500000,
+  onChange: () => {}
 };
 
 export default class ResourceUsage extends React.Component {
@@ -27,17 +32,8 @@ export default class ResourceUsage extends React.Component {
     this.styler = createStyler(style);
   }
 
-  formatBytes(bytes, decimals = 0) {
-    if (bytes === 0) return '0';
-    const k = 1000;
-    const dm = decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
-  }
-
   available() {
-    return this.formatBytes(this.props.amountTotal - this.props.amountUsed);
+    return formatBytes(this.props.amountTotal - this.props.amountUsed);
   }
 
   statState(used, total) {
@@ -48,12 +44,22 @@ export default class ResourceUsage extends React.Component {
   render() {
     const props = this.props;
     let title = <h5>{ props.title } allocated</h5>;
-    let stat = <Stat primaryStat={ this.formatBytes(props.amountTotal) } />;
+    let stat = (
+      <Stat
+        editable={ props.editable }
+        max={ props.max }
+        min={ props.min }
+        onChange={ props.onChange }
+        name={ props.name }
+        primaryStat={ props.amountTotal }
+      />
+    );
+
     if (props.amountUsed) {
       title = <h5>{ props.title } used</h5>;
       stat = (
         <Stat
-          primaryStat={ this.formatBytes(props.amountUsed) }
+          primaryStat={ props.amountUsed }
           secondaryInfo={ <span>{this.available()} available</span> }
           statState={ this.statState(props.amountUsed, props.amountTotal) }
         />

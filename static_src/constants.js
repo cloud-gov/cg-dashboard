@@ -132,6 +132,10 @@ const appActionTypes = keymirror({
   APP_STATS_FETCH: null,
   // Action when an app was received from the server.
   APP_RECEIVED: null,
+  // Action update an app's parameters
+  APP_UPDATE: null,
+  // Action app update has completed.
+  APP_UPDATED: null,
   // Action when a app stats are received from the server.
   APP_STATS_RECEIVED: null,
   // Action when fetching all information about an app from the server.

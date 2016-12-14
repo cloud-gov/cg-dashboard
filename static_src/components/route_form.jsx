@@ -3,7 +3,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
-import { FormError } from './form.jsx';
+import { FormError } from './form';
 import PanelActions from './panel_actions.jsx';
 
 import createStyler from '../util/create_styler';

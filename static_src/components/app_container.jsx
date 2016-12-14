@@ -12,9 +12,7 @@ import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
 import Panel from './panel.jsx';
-import PanelBlock from './panel_block.jsx';
 import PanelGroup from './panel_group.jsx';
-import PanelRow from './panel_row.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
 import appActions from '../actions/app_actions.js';
@@ -31,9 +29,8 @@ function stateSetter() {
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
 
-  const quotaGuid = (space && space.space_quota_definition_guid) ?
-    space.space_quota_definition_guid :
-    (org) ? org.quota_definition_guid : null;
+  const quotaGuid = (space && space.space_quota_definition_guid) ||
+    (org && org.quota_definition_guid) || null;
 
   const quota = QuotaStore.get(quotaGuid);
 
@@ -80,9 +77,13 @@ export default class AppContainer extends React.Component {
   }
 
   get fullTitle() {
-    let content = <span><strong>{ this.state.app.name }</strong> application</span>
+    let content = <span><strong>{ this.state.app.name }</strong> application</span>;
     if (this.state.currentSpaceName && this.state.currentOrgName) {
-      content = <span><strong>{ this.state.app.name }</strong> application in your <strong>{ this.state.currentSpaceName }</strong> space, which is in your <strong>{ this.state.currentOrgName }</strong> organization</span>;
+      content = (
+        <span><strong>{ this.state.app.name }</strong> application in your <strong>
+        { this.state.currentSpaceName }</strong> space, which is in your <strong>
+        { this.state.currentOrgName }</strong> organization</span>
+      );
     }
     return content;
   }
@@ -100,9 +101,14 @@ export default class AppContainer extends React.Component {
     if (AppStore.isRestarting(this.state.app)) {
       loading = <Loading text="Restarting app" style="inline" />;
     }
+
+    if (AppStore.isUpdating(this.state.app)) {
+      loading = <Loading text="Updating app" style="inline" />;
+    }
+
     if (this.state.app.error) {
       error = (
-        <ErrorMessage err={ this.state.app.error } />
+        <ErrorMessage error={ this.state.app.error } />
       );
     }
 
@@ -113,7 +119,8 @@ export default class AppContainer extends React.Component {
           clickHandler={ this._onRestart }
           label="restart app"
           disabled={ !AppStore.isRunning(this.state.app) }
-          type="outline">
+          type="outline"
+        >
           <span>Restart app</span>
         </Action>
         { error }

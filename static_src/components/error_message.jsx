@@ -26,13 +26,18 @@ export default class ErrorMessage extends React.Component {
     this.styler = createStyler(style);
   }
 
-  get hasErrorMessage() {
+  get errorMessage() {
     const err = this.props.error;
-    return err && err.message && err.message !== '';
+    return err && err.message || err.description;
+  }
+
+  get hasErrorMessage() {
+    const message = this.errorMessage;
+    return message && message.length;
   }
 
   get statusCode() {
-    return this.props.error.status_code || 500;
+    return this.props.error && this.props.error.status_code || 500;
   }
 
   get shortDefaultMessage() {
@@ -45,7 +50,7 @@ export default class ErrorMessage extends React.Component {
   }
 
   get knownMessage() {
-    return (<span>The system returned an error, { this.props.error.message }. Please
+    return (<span>The system returned an error, { this.errorMessage }. Please
       try again.</span>);
   }
 
