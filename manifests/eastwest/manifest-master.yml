@@ -1,7 +1,0 @@
----
-inherit: manifest-region-base.yml
-applications:
-- name: cg-dashboard-master
-  host: dashboard-master
-  env:
-    CONSOLE_HOSTNAME: https://dashboard-master.apps.cloud.gov

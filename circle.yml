@@ -42,7 +42,7 @@ test:
 
 deployment:
   deploy:
-    branch: [master, staging, deprecated]
+    branch: [master, demo, deprecated]
     owner: 18F
     commands:
       - cd $WS && pip install --user ruamel.yaml
