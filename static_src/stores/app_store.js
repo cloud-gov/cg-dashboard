@@ -10,6 +10,7 @@ import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import { appStates, appActionTypes } from '../constants.js';
 
+
 class AppStore extends BaseStore {
   constructor() {
     super();
@@ -39,16 +40,36 @@ class AppStore extends BaseStore {
 
       case appActionTypes.APP_UPDATE: {
         const existingApp = this.get(action.appGuid);
-        const updatedApp = Object.assign({}, existingApp, action.appPartial, { updating: true });
+        const updatedApp = Object.assign({}, existingApp, { updating: true });
         this.merge('guid', updatedApp);
         cfApi.putApp(action.appGuid, action.appPartial);
         break;
       }
 
       case appActionTypes.APP_UPDATED: {
-        const app = Object.assign({}, action.app, { updating: false });
-        this.merge('guid', app);
-        this.emitChange();
+        // Once the platform receives the update, it will restart the app
+        // instances behind the scenes. Update the UI here to give the user a
+        // clue that wheels are churning.
+        const restartingApp = Object.assign({}, action.app, {
+          updating: false,
+          state: appStates.restarting
+        });
+
+        // Setup a poll so that we know when the app is back up.
+        this.poll(
+          (res) => res.data.running_instances > 0,
+          cfApi.fetchAppStatus.bind(cfApi, restartingApp.guid)
+        ).then((res) => {
+          this.merge('guid', res.data);
+        }).catch((error) => {
+          const erroredApp = Object.assign({}, action.app, {
+            error,
+            state: appStates.none
+          });
+
+          this.merge('guid', erroredApp);
+        });
+        this.merge('guid', restartingApp);
         break;
       }
 
@@ -103,10 +124,8 @@ class AppStore extends BaseStore {
         this.poll(
           (app) => app.data.running_instances > 0,
           cfApi.fetchAppStatus.bind(cfApi, action.appGuid)
-        ).then((app) => {
-          this.merge('guid', app, () => {});
-          cfApi.fetchAppAll(action.appGuid);
-          this.emitChange();
+        ).then((res) => {
+          this.merge('guid', res.data);
         });
         break;
       }
@@ -114,9 +133,12 @@ class AppStore extends BaseStore {
       case appActionTypes.APP_ERROR: {
         const app = this.get(action.appGuid);
         if (app) {
-          const erroredApp = Object.assign({}, app, { error: action.error });
-          this.merge('guid', erroredApp, () => {});
-          this.emitChange();
+          const erroredApp = Object.assign({}, app, {
+            error: action.error,
+            updating: false,
+            restarting: false
+          });
+          this.merge('guid', erroredApp);
           setTimeout(() => { cfApi.fetchAppAll(action.appGuid); }, 3000);
         }
         break;
