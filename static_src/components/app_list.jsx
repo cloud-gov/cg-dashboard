@@ -79,10 +79,10 @@ export default class AppList extends React.Component {
                 Apps in <EntityIcon entity="space" />{ this.state.currentSpaceName }
               </th>
               <th>
-                Usage
+                Memory allocated
               </th>
               <th>
-                Allocation
+                Memory limit
               </th>
             </tr>
           </thead>
@@ -98,8 +98,8 @@ export default class AppList extends React.Component {
                     </span>
                   </h4>
                 </td>
-                <td label="Usage">{ app.memory } MB</td>
-                <td label="Allocation">{ app.disk_quota } MB</td>
+                <td label="Allocation">{ app.memory } MB</td>
+                <td label="Limit">{ app.disk_quota } MB</td>
               </tr>
             ])
           })}

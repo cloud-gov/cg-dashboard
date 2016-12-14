@@ -9,8 +9,6 @@ import ServiceCountStatus from './service_count_status.jsx';
 import ServiceInstanceList from '../components/service_instance_list.jsx';
 import SpaceStore from '../stores/space_store.js';
 import Users from './users.jsx';
-import Tabnav from './tabnav.jsx';
-import TabnavItem from './tabnav_item.jsx';
 import { config } from 'skin';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';

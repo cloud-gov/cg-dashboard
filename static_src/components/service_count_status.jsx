@@ -50,7 +50,7 @@ export default class ServiceCountStatus extends React.Component {
     let status = appStates.stopped;
 
     if (props.services.length) {
-      this.worstStatus(props.services);
+      status = this.worstStatus(props.services);
     }
 
     return (
