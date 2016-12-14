@@ -55,6 +55,10 @@ export default class Stat extends React.Component {
     this.state = stateSetter(props);
   }
 
+  componentWillReceiveProps(props) {
+    this.setState(stateSetter(props));
+  }
+
   onValidate(err, value) {
     // TODO the max/min limits don't match this unit, the validators work on
     // raw input rather than the converted value.

@@ -10,6 +10,10 @@ export default class FormNumber extends React.Component {
     this.validateNumber = validateNumber({ max: props.max, min: props.min }).bind(this);
   }
 
+  componentWillReceiveProps(props) {
+    this.validateNumber = validateNumber({ max: props.max, min: props.min }).bind(this);
+  }
+
   render() {
     const props = Object.assign({}, this.props, { validator: this.validateNumber });
     return <FormText { ...props } />;

@@ -83,6 +83,7 @@ export default class UsageAndLimits extends React.Component {
 
   get disk() {
     const onChange = this._onChange.bind(this, 'disk_quota');
+    const disk = this.state.editing ? this.state.partialApp.disk_quota : this.props.app.disk_quota;
 
     return (
     <div className={ this.styler('panel-row-space') }>
@@ -99,7 +100,7 @@ export default class UsageAndLimits extends React.Component {
           min={ 1 }
           onChange={ onChange }
           name="disk"
-          amountTotal={ this.state.partialApp.disk_quota * 1024 * 1024 }
+          amountTotal={ disk * 1024 * 1024 }
         />
       </div>
     </div>
@@ -108,6 +109,7 @@ export default class UsageAndLimits extends React.Component {
 
   get memory() {
     const onChange = this._onChange.bind(this, 'memory');
+    const memory = this.state.editing ? this.state.partialApp.memory : this.props.app.memory;
 
     return (
     <div>
@@ -124,7 +126,7 @@ export default class UsageAndLimits extends React.Component {
           max={ Math.floor(this.props.quota.memory_limit / this.state.partialApp.instances) }
           name="memory"
           onChange={ onChange }
-          amountTotal={ this.state.partialApp.memory * 1024 * 1024 }
+          amountTotal={ memory * 1024 * 1024 }
         />
       </div>
     </div>
@@ -159,9 +161,13 @@ export default class UsageAndLimits extends React.Component {
       this._onChange('instances', value);
     };
 
+    const instanceCount = this.state.editing ?
+      this.state.partialApp.instances : this.props.app.instances;
+
+
     let instances = (
       <span className={ this.styler('stat-primary')}>
-	{ this.state.partialApp.instances }X
+	{ instanceCount }X
       </span>
     );
 
@@ -175,7 +181,7 @@ export default class UsageAndLimits extends React.Component {
           max={ 64 }
           name="scale"
           onValidate={ onValidate }
-          value={ this.state.partialApp.instances }
+          value={ instanceCount }
         />
       );
     }
