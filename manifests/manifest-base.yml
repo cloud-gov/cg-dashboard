@@ -4,6 +4,6 @@ memory: 256M
 services:
   - deck-ups
 env:
-  GOVERSION: go1.6.4
+  GOVERSION: go1.6.3
   GOPACKAGENAME: github.com/18F/cg-dashboard
   GO15VENDOREXPERIMENT: 1
