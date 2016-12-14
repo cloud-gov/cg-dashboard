@@ -152,11 +152,11 @@ export default class RoutesPanel extends React.Component {
   }
 
   renderRoutes(routes) {
-    let content = <PanelRow><h4>No routes</h4></PanelRow>;
+    let content = <PanelRow styleClass="bordered"><h4>No routes</h4></PanelRow>;
 
     if (routes && routes.length) {
       content = routes.map((route) =>
-        <PanelRow key={ route.guid + route.app_guid }>
+        <PanelRow styleClass="bordered" key={ route.guid + route.app_guid }>
           <Route route={ route } appGuid={ this.state.appGuid} />
         </PanelRow>
       );
@@ -172,6 +172,7 @@ export default class RoutesPanel extends React.Component {
         <PanelGroup>
           <PanelHeader>
             <h3>Bound routes</h3>
+            <span>Manage routes in {this.spaceLink}</span>
           </PanelHeader>
           { this.renderRoutes(this.state.boundRoutes) }
         </PanelGroup>
