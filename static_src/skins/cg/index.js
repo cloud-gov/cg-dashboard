@@ -47,7 +47,7 @@ export const config = {
       },
       {
         text: 'Documentation',
-        url: 'https://docs.cloud.gov'
+        url: 'https://cloud.gov/docs'
       },
       {
         text: 'Updates',
@@ -64,7 +64,9 @@ export const config = {
     ]
   },
   docs: {
-    cli: 'https://docs.cloud.gov/getting-started/setup/'
+    cli: 'https://cloud.gov/docs/getting-started/setup/',
+    concepts_spaces: 'https://cloud.gov/docs/getting-started/concepts/',
+    use: 'https://cloud.gov/docs/intro/overview/using-cloudgov-paas/'
   },
   github: {
     url: 'https://github.com/18F/cg-dashboard'

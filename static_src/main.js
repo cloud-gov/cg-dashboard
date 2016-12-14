@@ -68,6 +68,9 @@ function space(orgGuid, spaceGuid) {
   spaceActions.changeCurrentSpace(spaceGuid);
   cfApi.fetchOrg(orgGuid);
   spaceActions.fetch(spaceGuid);
+  serviceActions.fetchAllInstances(spaceGuid);
+  userActions.changeCurrentlyViewedType('space_users');
+  userActions.fetchSpaceUsers(spaceGuid);
 }
 
 function renderSpaceContainer(page) {
@@ -86,7 +89,6 @@ function apps(orgGuid, spaceGuid) {
 
 function services(orgGuid, spaceGuid) {
   space(orgGuid, spaceGuid);
-  serviceActions.fetchAllInstances(spaceGuid);
   renderSpaceContainer('services');
 }
 

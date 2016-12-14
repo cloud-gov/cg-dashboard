@@ -8,7 +8,7 @@ import Immutable from 'immutable';
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import { serviceActionTypes } from '../constants.js';
+import { appStates, serviceActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 import ServicePlanStore from './service_plan_store.js';
 
@@ -24,6 +24,14 @@ OPERATION_STATES[OPERATION_DELETING] = 'Deleting';
 OPERATION_STATES[OPERATION_PROCESSING] = 'Reconfiguring';
 OPERATION_STATES[OPERATION_RUNNING] = 'Available';
 OPERATION_STATES[OPERATION_INACTIVE] = 'Stopped';
+
+const APP_STATE_MAP = {
+  [OPERATION_FAILED]: appStates.crashed,
+  [OPERATION_DELETING]: appStates.stopped,
+  [OPERATION_INACTIVE]: appStates.stopped,
+  [OPERATION_PROCESSING]: appStates.running,
+  [OPERATION_RUNNING]: appStates.running
+};
 
 class ServiceInstanceStore extends BaseStore {
   constructor() {
@@ -62,6 +70,11 @@ class ServiceInstanceStore extends BaseStore {
       if (lastOp.state === 'in progress') return OPERATION_PROCESSING;
     }
     return OPERATION_RUNNING;
+  }
+
+  getMappedAppState(serviceInstance) {
+    const serviceState = this.getInstanceState(serviceInstance);
+    return APP_STATE_MAP[serviceState];
   }
 
   getInstanceReadableState(serviceInstance) {

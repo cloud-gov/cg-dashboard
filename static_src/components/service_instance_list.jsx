@@ -130,7 +130,7 @@ export default class ServiceInstanceList extends React.Component {
                 </td>
                 <td column="Delete" style={specialtdStyles}>
                   <span>
-                    <div style={{ float: 'left' }}>
+                    <div>
                       <Action
                         style="secondary"
                         classes={ ['test-delete_instance'] }

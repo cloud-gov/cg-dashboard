@@ -5,6 +5,7 @@ import React from 'react';
 import Reactable from 'reactable';
 
 import createStyler from '../util/create_styler';
+import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
@@ -22,6 +23,7 @@ function stateSetter() {
     apps: apps.sort((a, b) => a.name.localeCompare(b.name)),
     currentOrgGuid,
     currentSpaceGuid,
+    currentSpaceName: SpaceStore.currentSpaceName,
     loading: SpaceStore.loading,
     empty: !SpaceStore.loading && !apps.length
   };
@@ -48,32 +50,18 @@ export default class AppList extends React.Component {
     SpaceStore.removeChangeListener(this._onChange);
   }
 
-  getRows(apps) {
-    return apps.map((app) => {
-      const name = unsafe(`<a href="${this.appUrl(app)}">${app.name}</a>`);
-      return Object.assign(app, { name });
-    });
+  _onChange() {
+    this.setState(stateSetter(this.props));
   }
 
-  appUrl(app) {
+  appURL(app) {
     return dedent`/#/org/${this.state.currentOrgGuid}
             /spaces/${this.state.currentSpaceGuid}
             /apps/${app.guid}`;
   }
 
-  _onChange() {
-    this.setState(stateSetter(this.props));
-  }
-
-  get columns() {
-    return [
-      { label: 'App Name', key: 'name' },
-      { label: 'Buildpack', key: 'detected_buildpack' },
-      { label: 'Memory', key: 'memory' },
-      { label: 'Instances', key: 'instances' },
-      { label: 'State', key: 'state' },
-      { label: 'Disk quota', key: 'disk_quota' }
-    ];
+  appName(app) {
+    return <a href={ this.appURL(app) }>{ app.name }</a>
   }
 
   render() {
@@ -87,12 +75,15 @@ export default class AppList extends React.Component {
         <table sortable>
           <thead>
             <tr>
-            { this.columns.map((column) =>
-              <th column={ column.label } className={ column.key }
-                key={ column.key }>
-                { column.label }
+              <th>
+                Apps in <EntityIcon entity="space" />{ this.state.currentSpaceName }
               </th>
-            )}
+              <th>
+                Memory allocated
+              </th>
+              <th>
+                Memory limit
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -100,13 +91,15 @@ export default class AppList extends React.Component {
             return ([
               <tr key={ app.guid }>
                 <td label="Name">
-                  <a href={ this.appUrl(app) }>{ app.name }</a>
+                  <h4 className={ this.styler('sans-s5') }>
+                    <EntityIcon entity="app" state={ app.state } />
+                    <span>
+                      { this.state.currentSpaceName } / { this.appName(app) }
+                    </span>
+                  </h4>
                 </td>
-                <td label="Buildpack">{ app.buildpack }</td>
-                <td label="Memory">{ app.memory } MB</td>
-                <td label="Instances">{ app.instances }</td>
-                <td label="State">{ app.state }</td>
-                <td label="Disk quota">{ app.disk_quota } MB</td>
+                <td label="Allocation">{ app.memory } MB</td>
+                <td label="Limit">{ app.disk_quota } MB</td>
               </tr>
             ])
           })}
