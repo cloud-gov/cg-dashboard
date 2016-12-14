@@ -145,12 +145,12 @@ export default class AppContainer extends React.Component {
           </Panel>
 
           <PanelGroup>
-            <PanelGroup columns={ 6 }>
+            <PanelGroup>
               <div className={ this.styler('panel-routes')}>
                 <RoutesPanel />
               </div>
             </PanelGroup>
-            <PanelGroup columns={ 6 }>
+            <PanelGroup>
               <div className={ this.styler('panel-services')}>
                 <ServiceInstancePanel />
               </div>
