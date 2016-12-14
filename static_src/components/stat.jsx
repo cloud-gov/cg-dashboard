@@ -3,9 +3,10 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import { FormNumber } from './form';
+import { FormNumber, FormText } from './form';
 import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
+import { validateNumber } from '../util/validators';
 
 
 const STATES = [
@@ -88,7 +89,7 @@ export default class Stat extends React.Component {
     if (this.props.editable) {
       primaryStat = (
         <div>
-          <FormNumber
+          <StatFormNumber
             className={ this.styler('stat-input', 'stat-input-text') }
             type="text"
             id={ `${this.props.name}-value` }
@@ -100,10 +101,6 @@ export default class Stat extends React.Component {
             max={ this.props.max }
             onValidate={ this.onValidate }
           />
-          <label
-            className={ this.styler('stat-input', 'stat-input-label') }
-            htmlFor={ `${this.props.name}-value` }
-          >MB</label>
         </div>
       );
     }
@@ -121,3 +118,36 @@ export default class Stat extends React.Component {
 
 Stat.propTypes = propTypes;
 Stat.defaultProps = defaultProps;
+
+class StatFormNumber extends FormNumber {
+  render() {
+    const props = Object.assign({}, this.props, { validator: this.validateNumber });
+    return <StatFormText { ...props } />;
+  }
+}
+
+
+// Extend FormText for control over layout
+class StatFormText extends FormText {
+  constructor(props) {
+    super(props);
+    this.styler = createStyler(style);
+  }
+
+  render() {
+    return (
+      <span>
+        <input type="text" id={ this.key } value={ this.state.value }
+          onChange={ this.onChange } className={ this.classes }
+        />
+        <label
+          className={ this.styler('stat-input', 'stat-input-label') }
+          htmlFor={ `${this.props.name}-value` }
+        >{ this.props.label }</label>
+        <div>
+          { this.error }
+        </div>
+      </span>
+    );
+  }
+}
