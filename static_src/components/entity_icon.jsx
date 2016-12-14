@@ -39,7 +39,7 @@ export default class EntityIcon extends React.Component {
         name={ this.props.entity }
         styleType={ stateClass }
         iconType="fill"
-        bordered={ ['app', 'space'].includes(this.props.entity) }
+        bordered={ ['app', 'space', 'service'].includes(this.props.entity) }
       />
     );
   }
