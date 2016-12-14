@@ -4,6 +4,7 @@ import dedent from 'dedent';
 import React from 'react';
 import Reactable from 'reactable';
 
+import { appStates } from '../constants.js';
 import createStyler from '../util/create_styler';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
@@ -88,6 +89,10 @@ export default class AppList extends React.Component {
           </thead>
           <tbody>
           { this.state.apps.map((app) => {
+            let crashed = (app.state === appStates.crashed) &&
+              (<span className={ this.styler('status', app.state.toLowerCase()) }>
+                { app.state.toLowerCase() }
+              </span>);
             return ([
               <tr key={ app.guid }>
                 <td label="Name">
@@ -96,10 +101,11 @@ export default class AppList extends React.Component {
                     <span>
                       { this.state.currentSpaceName } / { this.appName(app) }
                     </span>
+                    <span>{ crashed }</span>
                   </h4>
                 </td>
-                <td label="Allocation">{ app.memory } MB</td>
-                <td label="Limit">{ app.disk_quota } MB</td>
+                <td label="Allocation">{ app.memory } MB <br /></td>
+                <td label="Limit">{ app.disk_quota } MB <br /></td>
               </tr>
             ])
           })}
