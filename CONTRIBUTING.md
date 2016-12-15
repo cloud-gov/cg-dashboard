@@ -22,7 +22,7 @@ The criteria for moving a card through the columns is in the main cloud.gov prod
   - Have all new files and newly touched files linted (new files can skip linting if under tight deadline)
   - Have all previous unit tests running without error.
   - Non-JSX code covered in units tests.
-  - Is deployed on a staging site or live site so other team members can see/use it.
+  - Is deployed on a demo, staging or live site so other team members can see/use it.
 
 ##### Done
   - Stakeholders see and approve the work as meeting acceptance criteria.
@@ -75,13 +75,14 @@ For more information, see the high-level [cloud.gov respository](https://github.
 - Any team member (code author or otherwise) can merge the code once it has an
   approved review.
   - Updates on PRs in the repo will be posted in the #cloud-gov-nav-news Slack channel
-- It's fine to merge code that isn't "feature complete." The staging branch is
-  not currently in use, so it is fine to use it for "in progress work".
+- It's fine to merge code that isn't "feature complete." The `demo` branch is
+  not currently in use, so it is fine to force push the branch for "in progress
+  work", e.g. `git push -f origin HEAD:demo`.
 - We're currently not focusing on acceptance tests right now due to the tests not being easily repeatable and having a clean data state. If a change breaks an acceptance test, spend 10 minutes trying to fix it before disabling the test. Do not write new acceptance tests.
 
 #### Other Git standards
 - Squashing commits is allowed but discouraged, except in rare instances.
-- The team prefers rebasing over merging, though we use GitHub to close out pull requests. This means that PRs will be merged, but if you're refreshing a local branch make sure to use rebase. For example, if you want to update your `staging` branch to reflect the most recent changes on GitHub use `git pull --rebase origin staging`.
+- The team prefers rebasing over merging, though we use GitHub to close out pull requests. This means that PRs will be merged, but if you're refreshing a local branch make sure to use rebase. For example, if you want to update your `new-feature` branch to reflect the most recent changes on GitHub use `git pull --rebase origin new-feature`.
 
 ### Branches
 - Open branches off main repo due to Circle CI env var problem. For now, remember to branch off of the `master` branch.
@@ -145,7 +146,7 @@ The code base includes linting configurations and tools, but is currently not fu
 ## Performance
 Adding performance tracking and metrics is currently a TODO. Here are some items in consideration:
 - What metrics should be tracked? ie: page load, speed index, custom events, number of requests, total request size, etc.
-- When should performance be measured? ie: on live staging site, locally during test runs.
+- When should performance be measured? ie: on staging site, locally during test runs.
 - How should performance be measured? ie: with what tools
 - What should performance budgets for decided metrics be? ie: faster then 1000 for speed index, faster then 1s for certain custom event, total request size below 2mb.
 - How should performance metrics and budgets be incorporated into workflow? Going over a budget requires re-implementation, or issue.

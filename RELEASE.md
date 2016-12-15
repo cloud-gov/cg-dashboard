@@ -29,11 +29,12 @@ change the version:
 
 Currently, the site does not have visual regression testing so must be manually
 tested for breaking visual changes. Here is a simple script to assist in manual
-testing. Generally, it's best to look through all the pages and check if anything
-looks off. Testing should generally be done on the master environment,
-dashboard-master.apps.cloud.gov, when all the necessary code is on the master branch
-and has been deployed. To check that the master branch has been deployed, check
-travis CI.
+testing. Generally, it's best to look through all the pages and check if
+anything looks off. Testing should generally be done on the staging environment,
+[dashboard-staging.apps.cloud.gov](https://dashboard-staging.apps.cloud.gov/),
+when all the necessary code is on the master branch and has been deployed. To
+check that the master branch has been deployed, check [Circle
+CI](https://circleci.com/gh/18F/cg-dashboard).
 
 #### Script
 
