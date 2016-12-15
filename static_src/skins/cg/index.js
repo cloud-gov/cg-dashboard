@@ -47,10 +47,6 @@ export const config = {
     show_flag: true,
     links: [
       {
-        text: 'About',
-        url: 'https://cloud.gov/#about'
-      },
-      {
         text: 'Documentation',
         url: 'https://cloud.gov/docs'
       },
@@ -61,10 +57,6 @@ export const config = {
       {
         text: 'Status',
         url: 'https://cloudgov.statuspage.io/'
-      },
-      {
-        text: 'Contact',
-        url: 'https://cloud.gov/#contact'
       }
     ]
   },

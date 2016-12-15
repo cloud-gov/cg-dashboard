@@ -11,9 +11,13 @@ export default class HeaderLink extends React.Component {
   }
 
   render() {
+    let linkContent = (<a href={this.props.url} className={ this.styler(this.props.classes) }>
+      {this.props.text}</a>);
+    if (this.props.children)
+      linkContent = this.props.children;
     return (
       <li className={ this.styler('nav-link') }>
-        <a href={this.props.url}>{this.props.text}</a>
+        {linkContent}
       </li>
     );
   }

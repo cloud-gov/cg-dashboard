@@ -1,4 +1,3 @@
-
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
@@ -22,13 +21,14 @@ const BUTTON_TYPES = [
 ];
 
 const propTypes = {
-  style: React.PropTypes.oneOf(BUTTON_STYLES),
+  children: React.PropTypes.any,
   classes: React.PropTypes.array,
-  label: React.PropTypes.string,
-  type: React.PropTypes.oneOf(BUTTON_TYPES),
-  disabled: React.PropTypes.bool,
   clickHandler: React.PropTypes.func,
-  children: React.PropTypes.any
+  disabled: React.PropTypes.bool,
+  href: React.PropTypes.string,
+  label: React.PropTypes.string,
+  style: React.PropTypes.oneOf(BUTTON_STYLES),
+  type: React.PropTypes.oneOf(BUTTON_TYPES)
 };
 
 const defaultProps = {
@@ -68,17 +68,18 @@ export default class Action extends React.Component {
       classes = this.styler(...classList);
     }
 
-    if (this.props.type === 'link') {
+    if (this.props.type === 'link' || this.props.href) {
       classList.push('action-link');
 
       classes = this.styler(...classList);
 
       content = (
-        <a href="#"
+        <a
           className={ classes }
           title={ this.props.label }
           onClick={ (ev) => this.props.clickHandler(ev) }
           disabled={ this.props.disabled }
+          href={ this.props.href || '#' }
         >
           { this.props.children }
         </a>
