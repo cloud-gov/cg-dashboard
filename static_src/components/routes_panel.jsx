@@ -172,7 +172,6 @@ export default class RoutesPanel extends React.Component {
         <PanelGroup>
           <PanelHeader>
             <h3>Bound routes</h3>
-            <span>Manage routes in {this.spaceLink}</span>
           </PanelHeader>
           { this.renderRoutes(this.state.boundRoutes) }
         </PanelGroup>

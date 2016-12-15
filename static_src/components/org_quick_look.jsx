@@ -62,7 +62,7 @@ export default class OrgQuickLook extends React.Component {
 
   render() {
     const props = this.props;
-    const panelStyle = props.org.quicklook_open ? { marginBottom: '3rem' } : null;
+    const panelStyle = props.org.quicklook_open ? { marginBottom: '1rem' } : null;
 
     return (
     <div style={ panelStyle } onClick={ this.onRowClick }
