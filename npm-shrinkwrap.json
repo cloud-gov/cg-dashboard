@@ -1557,11 +1557,6 @@
       "from": "ent@>=2.2.0 <2.3.0",
       "resolved": "https://registry.npmjs.org/ent/-/ent-2.2.0.tgz"
     },
-    "envify": {
-      "version": "3.4.1",
-      "from": "envify@>=3.0.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/envify/-/envify-3.4.1.tgz"
-    },
     "errno": {
       "version": "0.1.4",
       "from": "https://registry.npmjs.org/errno/-/errno-0.1.4.tgz",
@@ -4364,9 +4359,9 @@
       "resolved": "https://registry.npmjs.org/raw-body/-/raw-body-2.1.7.tgz"
     },
     "react": {
-      "version": "0.14.8",
-      "from": "https://registry.npmjs.org/react/-/react-0.14.8.tgz",
-      "resolved": "https://registry.npmjs.org/react/-/react-0.14.8.tgz",
+      "version": "15.4.1",
+      "from": "react@>=15.0.0 <16.0.0",
+      "resolved": "https://registry.npmjs.org/react/-/react-15.4.1.tgz",
       "dependencies": {
         "core-js": {
           "version": "1.2.7",
@@ -4374,21 +4369,28 @@
           "resolved": "https://registry.npmjs.org/core-js/-/core-js-1.2.7.tgz"
         },
         "fbjs": {
-          "version": "0.6.1",
-          "from": "https://registry.npmjs.org/fbjs/-/fbjs-0.6.1.tgz",
-          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.6.1.tgz"
-        },
-        "whatwg-fetch": {
-          "version": "0.9.0",
-          "from": "whatwg-fetch@>=0.9.0 <0.10.0",
-          "resolved": "https://registry.npmjs.org/whatwg-fetch/-/whatwg-fetch-0.9.0.tgz"
+          "version": "0.8.6",
+          "from": "fbjs@>=0.8.4 <0.9.0",
+          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.6.tgz"
         }
       }
     },
     "react-dom": {
-      "version": "0.14.8",
-      "from": "https://registry.npmjs.org/react-dom/-/react-dom-0.14.8.tgz",
-      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-0.14.8.tgz"
+      "version": "15.4.1",
+      "from": "react-dom@>=15.0.0 <16.0.0",
+      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-15.4.1.tgz",
+      "dependencies": {
+        "core-js": {
+          "version": "1.2.7",
+          "from": "core-js@^1.0.0",
+          "resolved": "https://registry.npmjs.org/core-js/-/core-js-1.2.7.tgz"
+        },
+        "fbjs": {
+          "version": "0.8.6",
+          "from": "fbjs@^0.8.1",
+          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.6.tgz"
+        }
+      }
     },
     "react-hot-api": {
       "version": "0.4.7",
@@ -4411,11 +4413,6 @@
       "version": "2.0.0",
       "from": "https://registry.npmjs.org/react-jasmine-matchers/-/react-jasmine-matchers-2.0.0.tgz",
       "resolved": "https://registry.npmjs.org/react-jasmine-matchers/-/react-jasmine-matchers-2.0.0.tgz"
-    },
-    "reactable": {
-      "version": "0.11.5",
-      "from": "https://registry.npmjs.org/reactable/-/reactable-0.11.5.tgz",
-      "resolved": "https://registry.npmjs.org/reactable/-/reactable-0.11.5.tgz"
     },
     "read-pkg": {
       "version": "1.1.0",
