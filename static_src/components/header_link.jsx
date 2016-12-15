@@ -14,8 +14,7 @@ export default class HeaderLink extends React.Component {
   render() {
     let linkContent = (<a href={this.props.url} className={ this.styler(this.props.classes) }>
       {this.props.text}</a>);
-    if (this.props.children)
-      linkContent = this.props.children;
+    if (this.props.children) {linkContent = this.props.children;}
     return (
       <li className={ this.styler('nav-link') }>
         {linkContent}
@@ -26,5 +25,7 @@ export default class HeaderLink extends React.Component {
 
 HeaderLink.propTypes = {
   url: React.PropTypes.string.isRequired,
-  text: React.PropTypes.string.isRequired
+  text: React.PropTypes.string.isRequired,
+  children: React.PropTypes.any,
+  classes: React.PropTypes.array
 };
