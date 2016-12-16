@@ -43,6 +43,7 @@ const config = {
         }
       },
       {
+        name: 'css',
         test: /\.css$/,
         include: [
           path.resolve(__dirname, 'static_src/css'),
@@ -50,7 +51,7 @@ const config = {
           CG_STYLE_PATH || ''
         ],
         loader: ExtractTextPlugin.extract('style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]')
+          'css-loader')
       },
       {
         test: /\.(svg|ico|png|gif|jpe?g)$/,
@@ -99,6 +100,11 @@ if (PRODUCTION) {
       'NODE_ENV': JSON.stringify('production')
     }
   }));
+  const idx = config.module.loaders.findIndex((loader) => loader.name === 'css');
+  config.module.loaders[idx].loader = (
+    ExtractTextPlugin.extract('style-loader',
+      'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]')
+  );
 }
 
 module.exports = config;

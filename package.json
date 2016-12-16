@@ -10,7 +10,7 @@
   "scripts": {
     "build": "npm run clean && npm run check-style && node_modules/webpack/bin/webpack.js",
     "build-style": "cd node_modules/cloudgov-style && npm install && npm run build",
-    "check-style": "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"github.com\" ]] && npm run build-style || exit 0'",
+    "check-style": "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"git://github.com\" ]] && npm run build-style || exit 0'",
     "clean": "rm -rf ./static/assets/*",
     "lint": "eslint --ext .js --ext .jsx -c .eslintrc ./static_src",
     "test": "npm run lint && karma start --single-run",
