@@ -1,6 +1,5 @@
 
 require('babel-polyfill');
-import TestUtils from 'react/lib/ReactTestUtils';
 
 
 Function.prototype.bind = Function.prototype.bind || function (thisp) {
