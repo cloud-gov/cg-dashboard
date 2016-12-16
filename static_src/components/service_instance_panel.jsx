@@ -125,7 +125,8 @@ export default class ServiceInstancePanel extends React.Component {
     let content = <div>{ loading }</div>;
 
     if (!this.state.loading) {
-      content = [
+      content = (
+      <div>
         <PanelGroup key="1">
           <PanelHeader>
             <h3>Bound service instances</h3>
@@ -136,7 +137,7 @@ export default class ServiceInstancePanel extends React.Component {
             bound
             empty={ boundReady(this.state.boundServiceInstances) }
           />
-        </PanelGroup>,
+        </PanelGroup>
         <PanelGroup key="2">
           <PanelHeader>
             <h3>Service instances available in { this.spaceLink }</h3>
@@ -146,7 +147,7 @@ export default class ServiceInstancePanel extends React.Component {
             serviceInstances={ this.state.unboundServiceInstances }
             empty={ unboundReady(this.state.unboundServiceInstances) }
           />
-        </PanelGroup>,
+        </PanelGroup>
         <PanelGroup key="3">
           <PanelActions>
           <Action clickHandler={ this.handlePurchaseLink }
@@ -156,14 +157,11 @@ export default class ServiceInstancePanel extends React.Component {
             </Action>
           </PanelActions>
         </PanelGroup>
-      ];
+      </div>
+      );
     }
 
-    return (
-      <Panel title="Services">
-        { content }
-      </Panel>
-    );
+    return content;
   }
 }
 

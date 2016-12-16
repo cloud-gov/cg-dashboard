@@ -255,13 +255,11 @@ export default class UsageAndLimits extends React.Component {
             </PanelRow>
           </PanelGroup>
         </PanelGroup>
-        <PanelGroup>
-          <PanelRow>
-            <div className={ this.styler('panel-controls') }>
-              { controls }
-            </div>
-          </PanelRow>
-        </PanelGroup>
+        <PanelRow>
+          <div className={ this.styler('panel-actions-right') }>
+            { controls }
+          </div>
+        </PanelRow>
       </div>
       );
     }

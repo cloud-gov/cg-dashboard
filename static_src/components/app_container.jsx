@@ -144,18 +144,13 @@ export default class AppContainer extends React.Component {
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 
-          <PanelGroup>
-            <PanelGroup>
-              <div className={ this.styler('panel-routes')}>
-                <RoutesPanel />
-              </div>
-            </PanelGroup>
-            <PanelGroup>
-              <div className={ this.styler('panel-services')}>
-                <ServiceInstancePanel />
-              </div>
-            </PanelGroup>
-          </PanelGroup>
+          <Panel title="Routes">
+            <RoutesPanel />
+          </Panel>
+
+          <Panel title="Services">
+            <ServiceInstancePanel />
+          </Panel>
 
           <Panel title="Recent activity">
             <ActivityLog initialAppGuid={ this.state.app.guid } />

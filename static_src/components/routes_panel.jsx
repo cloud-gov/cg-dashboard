@@ -6,7 +6,6 @@ import AppStore from '../stores/app_store.js';
 import Action from './action.jsx';
 import DomainStore from '../stores/domain_store.js';
 import OrgStore from '../stores/org_store.js';
-import Panel from './panel.jsx';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelHeader from './panel_header.jsx';
@@ -167,7 +166,7 @@ export default class RoutesPanel extends React.Component {
   render() {
 
     return (
-      <Panel title="Routes">
+      <div>
         { this.createRouteForm }
         <PanelGroup>
           <PanelHeader>
@@ -186,7 +185,7 @@ export default class RoutesPanel extends React.Component {
             { this.addRouteAction }
           </PanelActions>
         </PanelGroup>
-      </Panel>
+      </div>
     );
   }
 }
