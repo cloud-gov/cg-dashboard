@@ -15,7 +15,6 @@ import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
 import Login from './components/login.jsx';
 import MainContainer from './components/main_container.jsx';
-import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
 import Overview from './components/overview_container.jsx';
 import quotaActions from './actions/quota_actions.js';
@@ -71,6 +70,8 @@ function space(orgGuid, spaceGuid) {
   serviceActions.fetchAllInstances(spaceGuid);
   userActions.changeCurrentlyViewedType('space_users');
   userActions.fetchSpaceUsers(spaceGuid);
+  orgActions.fetch(orgGuid);
+  serviceActions.fetchAllServices(orgGuid);
 }
 
 function renderSpaceContainer(page) {
@@ -125,21 +126,6 @@ function app(orgGuid, spaceGuid, appGuid) {
     </MainContainer>, mainEl);
 }
 
-function marketplace(orgGuid, serviceGuid, servicePlanGuid) {
-  orgActions.fetch(orgGuid);
-  serviceActions.fetchAllServices(orgGuid);
-  orgActions.toggleSpaceMenu(orgGuid);
-  spaceActions.changeCurrentSpace('0');
-  if (serviceGuid && servicePlanGuid) {
-    serviceActions.createInstanceForm(serviceGuid, servicePlanGuid);
-  }
-  ReactDOM.render(
-    <MainContainer>
-      <Marketplace />
-    </MainContainer>,
-  mainEl);
-}
-
 function checkAuth() {
   cfApi.getAuthStatus().then(() => {
     uaaApi.fetchUserInfo();
@@ -178,12 +164,6 @@ const routes = {
           },
           on: apps
         }
-      },
-      '/marketplace': {
-        '/create/:serviceGuid/:servicePlanGuid': {
-          on: marketplace
-        },
-        on: marketplace
       },
       on: org
     }
