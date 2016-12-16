@@ -4,6 +4,7 @@ import React from 'react';
 import Action from './action.jsx';
 import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
+import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
 import Panel from './panel.jsx';
 import PanelActions from './panel_actions.jsx';
@@ -103,6 +104,9 @@ export default class SpaceContainer extends React.Component {
         </Panel>
         <Panel title="Service instances">
           <ServiceInstanceList />
+        </Panel>
+        <Panel title="Marketplace">
+          <Marketplace />
         </Panel>
       </div>
       );

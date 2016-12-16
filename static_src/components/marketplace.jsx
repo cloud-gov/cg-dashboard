@@ -63,7 +63,6 @@ export default class Marketplace extends React.Component {
   render() {
     const state = this.state;
     let form;
-    let marketplace = <h2>Marketplace</h2>;
 
     if (state.createInstanceForm) {
       form = (
@@ -74,10 +73,6 @@ export default class Marketplace extends React.Component {
       );
     }
 
-    if (state.currentOrg) {
-      marketplace = <h2>Marketplace for your <strong>{state.currentOrg.name}</strong> organization</h2>;
-    }
-
     let loading = <Loading text="Loading marketplace services" />;
     let content = <div>{ loading }</div>;
     if (!this.state.loading) {
@@ -85,7 +80,6 @@ export default class Marketplace extends React.Component {
       content = (
         <div>
           <div>
-            { marketplace }
             <p className={ this.styler('page-dek') }>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</p>
           </div>
           { list }

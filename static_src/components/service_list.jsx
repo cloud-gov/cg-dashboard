@@ -6,9 +6,12 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
+import PanelGroup from './panel_group.jsx';
+import PanelRow from './panel_row.jsx';
 import ServiceStore from '../stores/service_store.js';
 import ServicePlanList from './service_plan_list.jsx';
 import createStyler from '../util/create_styler';
+import formatDateTime from '../util/format_date.js';
 
 function stateSetter(props) {
   const services = props.initialServices;
@@ -32,72 +35,49 @@ export default class ServiceList extends React.Component {
     this.setState(stateSetter(nextProps));
   }
 
-  get columns() {
-    const columns = [
-      { label: 'Service Name', key: 'label' },
-      { label: 'Description', key: 'description' },
-      { label: 'Date Created', key: 'created_at' }
-    ];
-
-    return columns;
-  }
-
-  get rows() {
-    const rows = this.state.services;
-    return rows;
-  }
-
   render() {
     let content = <div></div>;
 
     if (this.state.empty) {
       let content = <h4 className="test-none_message">No services</h4>;
     } else if (this.state.services.length) {
+      const state = this.state;
       content = (
-      <div>
-        <table>
-          <thead>
-            <tr>
-            { this.columns.map((column) =>
-              <th className={ column.key } key={ column.key }>
-                { column.label }
-              </th>
-            )}
-            </tr>
-          </thead>
-          <tbody>
-          { this.rows.map((row) => {
-            let instance = [];
-            instance.push(
-              <tr key={ row.guid }>
-                { this.columns.map((rowcolumn) =>
-                  <td key={ rowcolumn.key }><span>
-                    { row[rowcolumn.key] }
-                  </span></td>
-                )}
-              </tr>
-            );
-            if (row.servicePlans.length) {
-              instance.push(
-                <tr colSpan="3">
-                  <td colSpan="3">
-                  <ServicePlanList initialServiceGuid={ row.guid }
-                    initialServicePlans={ row.servicePlans }
-                  />
-                  </td>
-                </tr>
+        <div>
+          { state.services.map((service) => {
+            let servicePlans;
+
+            if (service.servicePlans.length) {
+              servicePlans = (
+                <ServicePlanList initialServiceGuid={ service.guid }
+                  initialServicePlans={ service.servicePlans }
+                />
               );
             }
-            return instance;
+
+            return (
+              <PanelGroup key={ service.guid }>
+                <div>
+                  <span className={ this.styler('panel-column') }>
+                    <h3 className={ this.styler('sans-s6') }>
+                      <strong>{ service.label }</strong>
+                    </h3>
+                    <span>{ service.description }</span>
+                  </span>
+                  <span className={ this.styler('panel-column', 'panel-actions-right') }>
+                    Updated { formatDateTime(service.updated_at) }
+                  </span>
+                </div>
+                { servicePlans }
+              </PanelGroup>
+            );
           })}
-          </tbody>
-        </table>
-      </div>
+        </div>
       );
     }
 
     return (
-    <div className={ this.styler('tableWrapper') }>
+    <div>
       { content }
     </div>
     );

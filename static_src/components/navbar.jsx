@@ -68,10 +68,6 @@ export class Nav extends React.Component {
     return this.orgHref(org) + linkHref;
   }
 
-  marketplaceHref(org) {
-    return this.orgSubHref(org, '/marketplace');
-  }
-
   spaceHref(org, spaceGuid) {
     return this.orgSubHref(org, `/spaces/${spaceGuid}`);
   }
@@ -126,9 +122,6 @@ export class Nav extends React.Component {
                       );
                     })}
                   </ul>
-                </li>
-                <li className={ this.styler('marketplace') }>
-                  <a href={ this.marketplaceHref(org) }>{ org.name } marketplace</a>
                 </li>
               </ul>
             );
