@@ -69,9 +69,9 @@ export default class OrgQuickLook extends React.Component {
       className={ this.styler('panel-row-is_clickable') }
     >
       <div className={ this.styler('panel-column') }>
-        <h2 className={ this.styler('sans-s6') } onClick={ this.onOrgClick }>
+        <h2 className={ this.styler('sans-s6') }>
           <EntityIcon entity="org" />
-          <a href={ this.orgHref() }>{ props.org.name }</a>
+          <a onClick={ this.onOrgClick }>{ props.org.name }</a>
         </h2>
       </div>
       <div className={ this.styler('panel-column') }>
