@@ -12,7 +12,6 @@ import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
 import Panel from './panel.jsx';
-import PanelGroup from './panel_group.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
 import appActions from '../actions/app_actions.js';
