@@ -5,6 +5,7 @@ import React from 'react';
 import LoginStore from '../stores/login_store.js';
 import HeaderLink from './header_link.jsx';
 
+import Action from './action.jsx';
 import createStyler from '../util/create_styler';
 import { config } from 'skin';
 
@@ -22,7 +23,17 @@ export default class Header extends React.Component {
 
   render() {
     const loggedIn = LoginStore.isLoggedIn();
-    let loginLink = (!loggedIn) ? <HeaderLink url="/handshake" text="Login" /> : <HeaderLink url="/v2/logout" text="Logout" />;
+    let loginLink = (!loggedIn) ?
+    <HeaderLink>
+      <Action href="/handshake" label="Login" type="outline">
+        Login
+      </Action>
+    </HeaderLink>:
+    <HeaderLink>
+      <Action href="/v2/logout" label="Log Out" type="outline">
+        Log Out
+      </Action>
+    </HeaderLink>;
     return (
     <header className={ this.styler('header') }>
       <div className={ this.styler('header-wrap') }>
