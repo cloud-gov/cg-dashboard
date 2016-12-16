@@ -77,7 +77,8 @@ export default class AppList extends React.Component {
           <thead>
             <tr>
               <th>
-                Apps in <EntityIcon entity="space" />{ this.state.currentSpaceName }
+                <span>Apps in</span> <EntityIcon entity="space" />
+                <span> { this.state.currentSpaceName }</span>
               </th>
               <th>
                 Memory allocated
