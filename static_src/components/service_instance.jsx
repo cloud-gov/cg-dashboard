@@ -136,8 +136,7 @@ export default class ServiceInstance extends React.Component {
       const style = { color: '#595959' };
       const message = (
         <div>
-          <h3 style={ style }>Are you sure you want to
-            unbind { this.props.serviceInstance.name }?</h3>
+          <h3 style={ style }>Unbind { this.props.serviceInstance.name } service?</h3>
           <p>Unbinding a service may break your application.</p>
         </div>
       );
@@ -146,7 +145,7 @@ export default class ServiceInstance extends React.Component {
           <ConfirmationBox
             style="block"
             message={ message }
-            confirmationText="Unbind"
+            confirmationText="Yes, unbind"
             confirmHandler={ this.unbindConfirmedHandler }
             cancelHandler={ this.unbindCancelHandler }
           />
@@ -186,7 +185,8 @@ export default class ServiceInstance extends React.Component {
               { serviceInstance.name }
             </span>
           </span>
-          <span className={ this.styler('panel-column') }>
+          <span className={ this.styler('panel-column', 'panel-column-less',
+            'panel-column-last') }>
             <span>{ this.cost }</span>
           </span>
           { this.displayError }
