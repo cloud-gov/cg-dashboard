@@ -9,6 +9,12 @@ const ICON_TYPES = [
   'stroke'
 ];
 
+const ICON_SIZE = [
+  'small',
+  'medium',
+  'large'
+];
+
 const STYLE_TYPES = [
   'alt',
   'ok',
@@ -21,12 +27,14 @@ const propTypes = {
   name: React.PropTypes.string.isRequired,
   styleType: React.PropTypes.oneOf(STYLE_TYPES),
   iconType: React.PropTypes.oneOf(ICON_TYPES),
+  iconSize:React.PropTypes.oneOf(ICON_SIZE),
   bordered: React.PropTypes.bool
 };
 
 const defaultProps = {
   styleType: 'default',
   iconType: 'stroke',
+  iconSize: 'small',
   bordered: false
 };
 
@@ -45,7 +53,7 @@ export default class Icon extends React.Component {
 
   render() {
     const mainClass = this.props.iconType === 'fill' ? 'icon-fill' : 'icon';
-    const styleClass = `icon-${this.props.styleType}`;
+    const styleClass = `icon-${this.props.styleType} icon-${this.props.iconSize}`;
     const borderedClass = (this.props.bordered) &&
       'icon-bordered';
     const iconClasses = this.styler(mainClass, styleClass, borderedClass);
