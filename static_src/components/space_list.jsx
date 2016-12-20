@@ -67,7 +67,7 @@ export default class SpaceList extends React.Component {
           <thead>
             <tr>
             { this.columns.map((column) =>
-              <th column={ column.label } className={ column.key }
+              <th className={ column.key }
                 key={ column.key }>
                 { column.label }
               </th>

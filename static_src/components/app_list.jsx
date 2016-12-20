@@ -73,11 +73,12 @@ export default class AppList extends React.Component {
       content = <h4 className="test-none_message">No apps</h4>;
     } else if (!this.state.loading && this.state.apps.length > 0) {
       content = (
-        <table sortable>
+        <table>
           <thead>
             <tr>
               <th>
-                Apps in <EntityIcon entity="space" />{ this.state.currentSpaceName }
+                <span>Apps in</span> <EntityIcon entity="space" />
+                <span> { this.state.currentSpaceName }</span>
               </th>
               <th>
                 Memory allocated
