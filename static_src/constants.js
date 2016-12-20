@@ -23,6 +23,10 @@ const loginActionTypes = keymirror({
   RECEIVED_STATUS: null
 });
 
+const pageMetadataTypes = keymirror({
+  PAGE_METADATA_UPDATE: null
+});
+
 const quotaActionTypes = keymirror({
   // Action of fetching quotas for all organizations
   ORGS_QUOTAS_FETCH: null,
@@ -246,6 +250,7 @@ export {
   errorActionTypes,
   loginActionTypes,
   orgActionTypes,
+  pageMetadataTypes,
   quotaActionTypes,
   routeActionTypes,
   spaceActionTypes,
