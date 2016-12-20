@@ -68,7 +68,6 @@ export default class OverviewContainer extends React.Component {
     } else if (!state.loading && this.state.orgs.length > 0 || this.anyOrgsOpen()) {
       content = (
       <div className={ this.styler('grid') }>
-        <h1>Overview</h1>
         <Panel title="Your organizations">
           { state.orgs.map((org) =>
             <PanelRow key={ org.guid } styleClass="boxed">
