@@ -185,8 +185,7 @@ export default class ServiceInstance extends React.Component {
               { serviceInstance.name }
             </span>
           </span>
-          <span className={ this.styler('panel-column', 'panel-column-less',
-            'panel-column-last') }>
+          <span className={ this.styler('panel-column', 'panel-column-less') }>
             <span>{ this.cost }</span>
           </span>
           { this.displayError }
