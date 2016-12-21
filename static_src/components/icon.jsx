@@ -34,7 +34,6 @@ const propTypes = {
 const defaultProps = {
   styleType: 'default',
   iconType: 'stroke',
-  iconSize: 'small',
   bordered: false
 };
 
