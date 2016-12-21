@@ -129,7 +129,7 @@ export default class ServiceInstancePanel extends React.Component {
       <div>
         <PanelGroup key="1">
           <PanelHeader>
-            <h3>Bound service instances</h3>
+            <h2>Bound service instances</h2>
           </PanelHeader>
           <ServiceInstanceListPanel
             currentAppGuid={ this.state.currentAppGuid }
@@ -140,7 +140,7 @@ export default class ServiceInstancePanel extends React.Component {
         </PanelGroup>
         <PanelGroup key="2">
           <PanelHeader>
-            <h3>Service instances available in { this.spaceLink }</h3>
+            <h2>Service instances available in { this.spaceLink }</h2>
           </PanelHeader>
           <ServiceInstanceListPanel
             currentAppGuid={ this.state.currentAppGuid }
