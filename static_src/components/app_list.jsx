@@ -2,7 +2,6 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import dedent from 'dedent';
 import React from 'react';
-import Reactable from 'reactable';
 
 import { appStates } from '../constants.js';
 import createStyler from '../util/create_styler';
@@ -11,7 +10,6 @@ import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 
-const unsafe = Reactable.unsafe;
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
