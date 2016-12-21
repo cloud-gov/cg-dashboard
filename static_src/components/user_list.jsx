@@ -83,11 +83,11 @@ export default class UserList extends React.Component {
         <p><em>
           <a href="https://github.com/18F/cg-deck/issues/409">We’ll improve this.</a>
         </em></p>
-        <table sortable={ true }>
+        <table>
           <thead>
             <tr>
             { this.columns.map((column) =>
-              <th column={ column.label } className={ column.key }
+              <th className={ column.key }
                   key={ column.key }>
                 { column.label }</th>
             )}
@@ -109,15 +109,15 @@ export default class UserList extends React.Component {
                 );
               }
               actions = (
-                <td column="Actions" style={{ width: '14rem' }}>
+                <td style={{ width: '14rem' }}>
                   { button }
                 </td>
               );
             }
             return ([
               <tr key={ user.guid }>
-                <td column="Name"><span>{ user.username }</span></td>
-                <td column="Permissions" key={ `${user.guid}-role` }>
+                <td><span>{ user.username }</span></td>
+                <td key={ `${user.guid}-role` }>
                   <UserRoleListControl
                     initialUserType={ this.state.userType }
                     initialCurrentUserAccess={ this.state.currentUserAccess }
@@ -126,7 +126,7 @@ export default class UserList extends React.Component {
                     user={ user }
                   />
                 </td>
-                <td column="Date Created">{ formatDateTime(user.created_at) }</td>
+                <td>{ formatDateTime(user.created_at) }</td>
                 { actions }
               </tr>
               ]);

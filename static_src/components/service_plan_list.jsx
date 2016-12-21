@@ -75,7 +75,7 @@ export default class ServicePlanList extends React.Component {
           <tr>
             { this.columns.map((column) => {
               return (
-                <th column={ column.label } className={ column.key }
+                <th className={ column.key }
                   key={ column.key }
                 >
                   { column.label }</th>

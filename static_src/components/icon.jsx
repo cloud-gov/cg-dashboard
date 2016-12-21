@@ -52,10 +52,12 @@ export default class Icon extends React.Component {
 
   render() {
     const mainClass = this.props.iconType === 'fill' ? 'icon-fill' : 'icon';
-    const styleClass = `icon-${this.props.styleType} icon-${this.props.iconSize}`;
+    const styleClass = `icon-${this.props.styleType}`
+    const sizeClass = this.props.iconSize && `icon-${this.props.iconSize}`;
     const borderedClass = (this.props.bordered) &&
       'icon-bordered';
-    const iconClasses = this.styler(mainClass, styleClass, borderedClass);
+    const iconClasses = this.styler(mainClass, styleClass, sizeClass,
+                                    borderedClass);
 
     return (
       <svg className={ iconClasses }>
