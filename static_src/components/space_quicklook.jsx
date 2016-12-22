@@ -76,7 +76,8 @@ export default class SpaceQuicklook extends React.Component {
                 orgGuid={ this.props.orgGuid }
                 spaceGuid={ space.guid }
                 spaceName={ space.name }
-                extraInfo={ this.props.showAppDetail ? 'memory': 'state' }
+                extraInfo={ this.props.showAppDetail ?
+                  ['state', 'memory', 'diskQuota'] : ['state'] }
               />
           )}
         </PanelRow>

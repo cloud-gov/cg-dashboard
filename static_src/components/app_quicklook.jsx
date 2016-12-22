@@ -10,7 +10,8 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const EXTRA_INFO = [
   'state',
-  'memory'
+  'memory',
+  'diskQuota'
 ];
 
 const propTypes = {
@@ -18,12 +19,12 @@ const propTypes = {
   orgGuid: React.PropTypes.string.isRequired,
   spaceGuid: React.PropTypes.string.isRequired,
   spaceName: React.PropTypes.string,
-  extraInfo: React.PropTypes.oneOf(EXTRA_INFO)
+  extraInfo: React.PropTypes.arrayOf((propVal) => EXTRA_INFO.includes(propVal))
 };
 
 const defaultProps = {
   spaceName: '',
-  extraInfo: 'state'
+  extraInfo: ['state']
 };
 
 export default class AppQuicklook extends React.Component {
@@ -62,24 +63,28 @@ export default class AppQuicklook extends React.Component {
     const app = this.props.app;
     let info = [];
 
-    if (this.props.extraInfo === 'state') {
-      info.push(
-        <span key="1" className={ this.styler('panel-column', 'panel-column-less') }>
-          { this.appState(app.state) }
-        </span>
-      );
-    } else if (this.props.extraInfo === 'memory') {
-      info.push(
-        <span key="1" className={ this.styler('panel-column', 'panel-column-shrink') }>
-          { this.appState(app.state) }
-        </span>
-      );
+    if (this.props.extraInfo.includes('state')) {
+      const oneInfo = this.props.extraInfo.length === 1;
+      const panelModClass = oneInfo ? 'panel-column-less' : 'panel-column-shrink';
+
+      // Only show the state if app is crashed or theres only one extra col
+      if (app.state === appStates.crashed || oneInfo) {
+        info.push(
+          <span key="1" className={ this.styler('panel-column', panelModClass) }>
+            { this.appState(app.state) }
+          </span>
+        );
+      }
+    }
+    if (this.props.extraInfo.includes('memory')) {
       info.push(
         <span key="2" className={ this.styler('panel-column', 'panel-column-shrink') }>
           { app.memory } MB <br />
           <span className={ this.styler('subtext') }>memory allocated</span>
         </span>
       );
+    }
+    if (this.props.extraInfo.includes('diskQuota')) {
       info.push(
         <span key="3" className={ this.styler('panel-column', 'panel-column-shrink') }>
           { app.disk_quota } MB <br />
