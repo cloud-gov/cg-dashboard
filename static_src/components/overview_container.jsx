@@ -8,6 +8,7 @@ import { config } from 'skin';
 import Loading from './loading.jsx';
 import OrgQuickLook from './org_quick_look.jsx';
 import OrgStore from '../stores/org_store.js';
+import pageMetadataActions from '../actions/page_metadata_actions';
 import Panel from './panel.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelRow from './panel_row.jsx';
@@ -37,6 +38,7 @@ export default class OverviewContainer extends React.Component {
   componentDidMount() {
     OrgStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
+    pageMetadataActions.update({ title: 'Overview' });
   }
 
   componentWillUnmount() {

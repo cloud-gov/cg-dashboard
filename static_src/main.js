@@ -18,7 +18,6 @@ import MainContainer from './components/main_container.jsx';
 import Marketplace from './components/marketplace.jsx';
 import orgActions from './actions/org_actions.js';
 import Overview from './components/overview_container.jsx';
-import pageMetadataActions from './actions/page_metadata_actions';
 import quotaActions from './actions/quota_actions.js';
 import routeActions from './actions/route_actions.js';
 import spaceActions from './actions/space_actions.js';
@@ -43,7 +42,6 @@ function login() {
 }
 
 function overview() {
-  pageMetadataActions.update({ title: 'Overview' });
   cfApi.fetchSpaces().then((spaces) => {
     let i = 0;
     const max = Math.min(MAX_OVERVIEW_SPACES, spaces.length);
@@ -108,7 +106,6 @@ function users(orgGuid, spaceGuid, potentialPage) {
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
-  pageMetadataActions.loadPage('app');
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
   spaceActions.fetch(spaceGuid);

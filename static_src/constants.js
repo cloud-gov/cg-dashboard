@@ -13,7 +13,13 @@ const appStates = {
 
 const pageKinds = {
   // The app page
-  APP_PAGE: 'app'
+  APP_PAGE: 'app',
+  // The org page
+  ORG_PAGE: 'org',
+  // A page without a specific kind (like the overview)
+  DEFAULT_PAGE: 'default',
+  // The space page
+  SPACE_PAGE: 'space'
 };
 
 // All global error action types
