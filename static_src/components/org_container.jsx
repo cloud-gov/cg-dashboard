@@ -102,11 +102,12 @@ export default class OrgContainer extends React.Component {
 
         <Panel title="">
           { state.spaces.map((space) => (
-            <PanelRow key={ space.guid }>
-              <SpaceQuicklook space={ space } orgGuid={ state.org.guid }
-                showAppDetail={ true }
-              />
-            </PanelRow>
+            <SpaceQuicklook
+              key={ space.guid }
+              space={ space }
+              orgGuid={ state.org.guid }
+              showAppDetail={ true }
+            />
             )
           )}
         </Panel>

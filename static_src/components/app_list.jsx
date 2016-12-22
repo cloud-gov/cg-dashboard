@@ -1,13 +1,16 @@
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
-import dedent from 'dedent';
 import React from 'react';
+
+import dedent from 'dedent';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import { appStates } from '../constants.js';
 import createStyler from '../util/create_styler';
+import AppQuicklook from './app_quicklook.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
+import PanelRow from './panel_row.jsx';
 import SpaceStore from '../stores/space_store.js';
 
 
@@ -71,53 +74,28 @@ export default class AppList extends React.Component {
       content = <h4 className="test-none_message">No apps</h4>;
     } else if (!this.state.loading && this.state.apps.length > 0) {
       content = (
-        <table>
-          <thead>
-            <tr>
-              <th>
-                <span>Apps in</span> <EntityIcon entity="space" />
-                <span> { this.state.currentSpaceName }</span>
-              </th>
-              <th>
-                Memory allocated
-              </th>
-              <th>
-                Memory limit
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+        <div>
+          <div className={ this.styler('panel-row-header') }>
+            <span>Apps in</span> <EntityIcon entity="space" />
+            <span> { this.state.currentSpaceName }</span>
+          </div>
           { this.state.apps.map((app) => {
-            let crashed = (app.state === appStates.crashed) &&
-              (<span className={ this.styler('status', app.state.toLowerCase()) }>
-                { app.state.toLowerCase() }
-              </span>);
-            return ([
-              <tr key={ app.guid }>
-                <td label="Name">
-                  <h4 className={ this.styler('sans-s5') }>
-                    <EntityIcon entity="app" state={ app.state } />
-                    <span>
-                      { this.state.currentSpaceName } / { this.appName(app) }
-                    </span>
-                    <span>{ crashed }</span>
-                  </h4>
-                </td>
-                <td label="Allocation">{ app.memory } MB <br /></td>
-                <td label="Limit">{ app.disk_quota } MB <br /></td>
-              </tr>
-            ])
+            return (
+             <AppQuicklook
+                key={ app.guid }
+                app={ app }
+                orgGuid={ this.state.currentOrgGuid }
+                spaceGuid={ this.state.currentSpaceGuid }
+                spaceName={ this.state.currentSpaceName }
+                extraInfo={ ['state', 'memory', 'diskQuota'] }
+              />
+            );
           })}
-          </tbody>
-        </table>
+        </div>
       );
     }
 
-    return (
-      <div className={ this.styler('tableWrapper') }>
-        { content }
-      </div>
-    );
+    return content;
   }
 }
 

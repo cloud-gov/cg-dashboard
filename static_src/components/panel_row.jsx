@@ -15,9 +15,7 @@ const propTypes = {
   styleClass: React.PropTypes.oneOf(STYLES)
 };
 
-const defaultProps = {
-  styleClass: 'none'
-};
+const defaultProps = {};
 
 export default class PanelRow extends React.Component {
   constructor(props) {
@@ -29,9 +27,10 @@ export default class PanelRow extends React.Component {
   render() {
     const props = this.props;
     const styleClass = props.styleClass && `panel-row-${this.props.styleClass}`;
+    const mainClass = props.styleClass !== 'boxed' && 'panel-row';
 
     return (
-      <div className={ this.styler('panel-row', styleClass) }>
+      <div className={ this.styler(mainClass, styleClass) }>
         { this.props.children }
       </div>
     );
