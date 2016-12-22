@@ -21,8 +21,9 @@ function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
 
   const org = OrgStore.get(currentOrgGuid);
-  const spaces = SpaceStore.getAll().filter(
-    (space) => space.organization_guid === currentOrgGuid);
+  const spaces = SpaceStore.getAll()
+    .filter((space) => space.organization_guid === currentOrgGuid)
+    .sort((a, b) => a.name < b.name ? -1 : 1);
 
   return {
     empty: !OrgStore.loading && !SpaceStore.loading && !org,
@@ -100,6 +101,12 @@ export default class OrgContainer extends React.Component {
         </div>
 
         <Panel title="">
+          { state.spaces.map((space) => (
+            <PanelRow>
+              <SpaceQuicklook space={ space } orgGuid={ state.org.guid } />
+            </PanelRow>
+            )
+          )}
         </Panel>
       </div>
       );
