@@ -102,8 +102,10 @@ export default class OrgContainer extends React.Component {
 
         <Panel title="">
           { state.spaces.map((space) => (
-            <PanelRow>
-              <SpaceQuicklook space={ space } orgGuid={ state.org.guid } />
+            <PanelRow key={ space.guid }>
+              <SpaceQuicklook space={ space } orgGuid={ state.org.guid }
+                showAppDetail={ true }
+              />
             </PanelRow>
             )
           )}
