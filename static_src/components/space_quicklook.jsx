@@ -71,14 +71,14 @@ export default class SpaceQuicklook extends React.Component {
           </h3>
           { space.apps && space.apps.map((app) =>
              <AppQuicklook
-                key={ app.guid }
-                app={ app }
-                orgGuid={ this.props.orgGuid }
-                spaceGuid={ space.guid }
-                spaceName={ space.name }
-                extraInfo={ this.props.showAppDetail ?
-                  ['state', 'memory', 'diskQuota'] : ['state'] }
-              />
+               key={ app.guid }
+               app={ app }
+               orgGuid={ this.props.orgGuid }
+               spaceGuid={ space.guid }
+               spaceName={ space.name }
+               extraInfo={ this.props.showAppDetail ?
+                 ['state', 'memory', 'diskQuota'] : ['state'] }
+             />
           )}
         </PanelRow>
       );

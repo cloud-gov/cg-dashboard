@@ -5,13 +5,10 @@ import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 
-import { config } from 'skin';
 import AppCountStatus from './app_count_status.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import Panel from './panel.jsx';
-import PanelGroup from './panel_group.jsx';
-import PanelRow from './panel_row.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
 import SpaceStore from '../stores/space_store.js';
@@ -23,7 +20,7 @@ function stateSetter() {
   const org = OrgStore.get(currentOrgGuid);
   const spaces = SpaceStore.getAll()
     .filter((space) => space.organization_guid === currentOrgGuid)
-    .sort((a, b) => a.name < b.name ? -1 : 1);
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return {
     empty: !OrgStore.loading && !SpaceStore.loading && !org,
@@ -106,7 +103,7 @@ export default class OrgContainer extends React.Component {
               key={ space.guid }
               space={ space }
               orgGuid={ state.org.guid }
-              showAppDetail={ true }
+              showAppDetail
             />
             )
           )}

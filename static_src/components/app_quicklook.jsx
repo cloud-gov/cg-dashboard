@@ -2,7 +2,6 @@
 import React from 'react';
 
 import EntityIcon from './entity_icon.jsx';
-import Loading from './loading.jsx';
 import PanelRow from './panel_row.jsx';
 import { appStates } from '../constants.js';
 import createStyler from '../util/create_styler';

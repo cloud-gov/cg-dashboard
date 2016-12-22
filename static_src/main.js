@@ -23,7 +23,6 @@ import routeActions from './actions/route_actions.js';
 import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
 import SpaceContainer from './components/space_container.jsx';
-import SpaceList from './components/space_list.jsx';
 import { trackPageView } from './util/analytics.js';
 import uaaApi from './util/uaa_api.js';
 import userActions from './actions/user_actions.js';
