@@ -11,7 +11,6 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UserStore from '../stores/user_store.js';
-import Tabnav from './tabnav.jsx';
 
 const TAB_SPACE_NAME = 'space_users';
 const TAB_ORG_NAME = 'org_users';
