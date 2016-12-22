@@ -57,6 +57,9 @@ function org(orgGuid) {
   orgActions.toggleSpaceMenu(orgGuid);
   orgActions.fetch(orgGuid);
   cfApi.fetchSpaces().then(() => spaceActions.fetchAllForOrg(orgGuid));
+  userActions.changeCurrentlyViewedType('org_users');
+  userActions.fetchOrgUsers(orgGuid);
+  userActions.fetchOrgUserRoles(orgGuid);
   ReactDOM.render(
     <MainContainer>
       <OrgContainer />
@@ -87,24 +90,6 @@ function renderSpaceContainer(page) {
 function apps(orgGuid, spaceGuid) {
   space(orgGuid, spaceGuid);
   renderSpaceContainer('apps');
-}
-
-function services(orgGuid, spaceGuid) {
-  space(orgGuid, spaceGuid);
-  renderSpaceContainer('services');
-}
-
-function users(orgGuid, spaceGuid, potentialPage) {
-  space(orgGuid, spaceGuid);
-  if (potentialPage === 'org') {
-    userActions.changeCurrentlyViewedType('org_users');
-    userActions.fetchOrgUsers(orgGuid);
-    userActions.fetchOrgUserRoles(orgGuid);
-  } else {
-    userActions.changeCurrentlyViewedType('space_users');
-    userActions.fetchSpaceUsers(spaceGuid);
-  }
-  renderSpaceContainer('users');
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
@@ -147,16 +132,6 @@ const routes = {
     '/:orgGuid': {
       '/spaces': {
         '/:spaceGuid': {
-          '/services': {
-            on: services
-          },
-          '/users': {
-            '/:page': {
-              on: users
-            },
-
-            on: users
-          },
           '/apps': {
             '/:appGuid': {
               on: app

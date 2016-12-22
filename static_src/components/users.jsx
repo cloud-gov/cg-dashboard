@@ -152,10 +152,6 @@ export default class Users extends React.Component {
 
     return (
       <div>
-      <Tabnav items={ this.subNav }
-        classes={ ['test-subnav-users'] }
-        initialItem={ this.state.currentTab }
-      />
         { errorMessage }
         <div>
           <div role="tabpanel">
