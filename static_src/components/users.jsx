@@ -12,18 +12,18 @@ import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UserStore from '../stores/user_store.js';
 
-const TAB_SPACE_NAME = 'space_users';
-const TAB_ORG_NAME = 'org_users';
+const SPACE_NAME = 'space_users';
+const ORG_NAME = 'org_users';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
-  const currentTab = UserStore.currentlyViewedType;
+  const currentType = UserStore.currentlyViewedType;
 
   let users = [];
   let currentUserAccess = false;
 
-  if (currentTab === TAB_SPACE_NAME) {
+  if (currentType === SPACE_NAME) {
     users = UserStore.getAllInSpace(currentSpaceGuid);
     currentUserAccess = UserStore.currentUserHasSpaceRole('space_manager');
   } else {
@@ -36,7 +36,7 @@ function stateSetter() {
     currentUserAccess: currentUserAccess,
     currentOrgGuid,
     currentSpaceGuid,
-    currentTab,
+    currentType,
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users
@@ -87,12 +87,12 @@ export default class Users extends React.Component {
   }
 
   get resourceType() {
-    var resourceType = this.state.currentTab === TAB_ORG_NAME ? 'org' : 'space';
+    var resourceType = this.state.currentType === ORG_NAME ? 'org' : 'space';
     return resourceType;
   }
 
   get resourceGuid() {
-    const resourceGuid = this.state.currentTab === TAB_ORG_NAME ?
+    const resourceGuid = this.state.current === ORG_NAME ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
     return resourceGuid;
   }
@@ -101,38 +101,18 @@ export default class Users extends React.Component {
     return `/#/org/${this.state.currentOrgGuid}/spaces/${this.state.currentSpaceGuid}/users/${page}`;
   }
 
-  get subNav() {
-    const tabs = [
-      { name: 'space_users' },
-      { name: 'org_users' }
-    ];
-    // TODO refactor link, use a special link component.
-    tabs[0].element = (
-      <a href={ this.userUrl('space') }>
-        Current space users
-      </a>
-    );
-
-    tabs[1].element = (
-      <a href={ this.userUrl('org') }>
-        All organization users
-      </a>
-    );
-
-    return tabs;
-  }
 
   render() {
     let removeHandler;
     let errorMessage;
 
-    if (this.state.currentTab === TAB_ORG_NAME) {
+    if (this.state.currentType === ORG_NAME) {
       removeHandler = this.handleRemove;
     }
 
     let content = (<UserList
       initialUsers={ this.state.users }
-      initialUserType= { this.state.currentTab }
+      initialUserType= { this.state.currentType }
       initialCurrentUserAccess={ this.state.currentUserAccess }
       initialEmpty={ this.state.empty }
       initialLoading={ this.state.loading }
@@ -153,7 +133,7 @@ export default class Users extends React.Component {
       <div>
         { errorMessage }
         <div>
-          <div role="tabpanel">
+          <div>
             { content }
           </div>
         </div>
