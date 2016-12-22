@@ -61,7 +61,6 @@ export default class AppContainer extends React.Component {
     AppStore.addChangeListener(this._onChange);
     OrgStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
-
     pageMetadataActions.loadPage('app');
   }
 
@@ -69,6 +68,7 @@ export default class AppContainer extends React.Component {
     AppStore.removeChangeListener(this._onChange);
     OrgStore.removeChangeListener(this._onChange);
     SpaceStore.removeChangeListener(this._onChange);
+    pageMetadataActions.unloadPage();
   }
 
   _onChange() {

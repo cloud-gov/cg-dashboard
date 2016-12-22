@@ -1,8 +1,9 @@
+import { pageKinds } from '../constants';
 import Model from './model';
 
 
 const defaults = {
-  kind: null,
+  kind: pageKinds.DEFAULT_PAGE,
   title: null
 };
 

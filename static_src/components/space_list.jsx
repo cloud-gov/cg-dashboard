@@ -37,6 +37,7 @@ export default class SpaceList extends React.Component {
 
   componentWillUnmount() {
     OrgStore.removeChangeListener(this._onChange);
+    pageMetadataActions.unloadPage();
   }
 
   _onChange() {

@@ -14,5 +14,11 @@ export default {
       type: pageMetadataTypes.PAGE_METADATA_LOAD_PAGE,
       kind
     });
+  },
+
+  unloadPage() {
+    AppDispatcher.handleViewAction({
+      type: pageMetadataTypes.PAGE_METADATA_UNLOAD_PAGE
+    });
   }
 };

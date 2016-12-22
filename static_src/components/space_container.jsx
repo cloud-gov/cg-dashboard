@@ -43,6 +43,7 @@ export default class SpaceContainer extends React.Component {
 
   componentWillUnmount() {
     SpaceStore.removeChangeListener(this._onChange);
+    pageMetadataActions.unloadPage();
   }
 
   _onChange() {

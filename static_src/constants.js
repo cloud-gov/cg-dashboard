@@ -37,6 +37,8 @@ const loginActionTypes = keymirror({
 const pageMetadataTypes = keymirror({
   // Load a page
   PAGE_METADATA_LOAD_PAGE: null,
+  // Unload a page
+  PAGE_METADATA_UNLOAD_PAGE: null,
   // Update the page's metadata
   PAGE_METADATA_UPDATE: null
 });

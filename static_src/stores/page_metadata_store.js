@@ -18,6 +18,13 @@ export class PageMetadataStore extends BaseStore {
         break;
       }
 
+      case pageMetadataTypes.PAGE_METADATA_UNLOAD_PAGE: {
+        const defaultPageMetadata = new PageMetadataModel();
+        this.current = this.current.merge(defaultPageMetadata);
+        this.emitChange();
+        break;
+      }
+
       case pageMetadataTypes.PAGE_METADATA_UPDATE: {
         if (this.current.equals(action.pageMetadata)) {
           break;
