@@ -2,11 +2,39 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
+import AppStore from '../stores/app_store';
 import PageMetadataStore from '../stores/page_metadata_store';
 
-function stateSetter(props) {
+const PAGE_KINDS = {
+  APP_PAGE: 'app'
+};
+
+// Prefer title set by props or PageMetadataStore, then fallback to guessing by
+// page type
+function getTitle(props) {
   const pageMetadata = PageMetadataStore.current;
-  const title = props.title || pageMetadata.title;
+  let title = props.title || pageMetadata.title;
+  if (title) {
+    return title;
+  }
+
+  switch (pageMetadata.kind) {
+    case PAGE_KINDS.APP_PAGE: {
+      const app = AppStore.get(AppStore.currentAppGuid);
+      if (app) {
+        title = app.name;
+      }
+      break;
+    }
+    default:
+      break;
+  }
+
+  return title;
+}
+
+function stateSetter(props) {
+  const title = getTitle(props);
 
   return {
     title
@@ -18,14 +46,17 @@ export default class PageHeader extends React.Component {
     super(props);
     this.styler = createStyler(style);
     this.state = stateSetter(props);
+    this._onChange = this._onChange.bind(this);
   }
 
   componentDidMount() {
     PageMetadataStore.addChangeListener(this._onChange);
+    AppStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     PageMetadataStore.removeChangeListener(this._onChange);
+    AppStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {

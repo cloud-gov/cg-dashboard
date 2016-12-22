@@ -12,6 +12,12 @@ export class PageMetadataStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
+      case pageMetadataTypes.PAGE_METADATA_LOAD_PAGE: {
+        this.current = this.current.merge({ kind: action.kind });
+        this.emitChange();
+        break;
+      }
+
       case pageMetadataTypes.PAGE_METADATA_UPDATE: {
         if (this.current.equals(action.pageMetadata)) {
           break;

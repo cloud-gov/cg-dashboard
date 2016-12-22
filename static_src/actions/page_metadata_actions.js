@@ -7,5 +7,12 @@ export default {
       type: pageMetadataTypes.PAGE_METADATA_UPDATE,
       pageMetadata
     });
+  },
+
+  loadPage(kind) {
+    AppDispatcher.handleViewAction({
+      type: pageMetadataTypes.PAGE_METADATA_LOAD_PAGE,
+      kind
+    });
   }
 };

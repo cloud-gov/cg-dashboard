@@ -108,6 +108,7 @@ function users(orgGuid, spaceGuid, potentialPage) {
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
+  pageMetadataActions.loadPage('app');
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
   spaceActions.fetch(spaceGuid);
