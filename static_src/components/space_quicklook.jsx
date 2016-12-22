@@ -8,7 +8,6 @@ import AppQuicklook from './app_quicklook.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import PanelRow from './panel_row.jsx';
-import { appStates } from '../constants.js';
 
 const propTypes = {
   space: React.PropTypes.object.isRequired,
@@ -32,29 +31,6 @@ export default class SpaceQuicklook extends React.Component {
   spaceHref() {
     const props = this.props;
     return `/#/org/${props.orgGuid}/spaces/${props.space.guid}`;
-  }
-
-  appHref(appGuid) {
-    const props = this.props;
-    return `/#/org/${props.orgGuid}/spaces/${props.space.guid}/apps/${appGuid}`;
-  }
-
-  appState(appState) {
-    const statusClass = `status-${appState.toLowerCase()}`;
-    return (
-      <span className={ this.styler('status', statusClass) }>
-        { appState.toLowerCase() }
-      </span>
-    );
-  }
-
-  appName(app) {
-    const statusClass = (app.state === appStates.crashed) && 'status-crashed';
-    return (
-      <a className={ this.styler(statusClass) } href={ this.appHref(app.guid) }>
-        { app.name }
-      </a>
-    );
   }
 
   render() {

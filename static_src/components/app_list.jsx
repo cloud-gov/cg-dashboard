@@ -56,16 +56,6 @@ export default class AppList extends React.Component {
     this.setState(stateSetter(this.props));
   }
 
-  appURL(app) {
-    return dedent`/#/org/${this.state.currentOrgGuid}
-            /spaces/${this.state.currentSpaceGuid}
-            /apps/${app.guid}`;
-  }
-
-  appName(app) {
-    return <a href={ this.appURL(app) }>{ app.name }</a>
-  }
-
   render() {
     let loading = <Loading text="Loading apps" />;
     let content = <div>{ loading }</div>;
