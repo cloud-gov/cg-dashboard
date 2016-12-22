@@ -1,14 +1,12 @@
 import '../../global_setup.js';
 
-import defineModel from '../../../models/model';
+import Model from '../../../models/model';
 
-describe('defineModel', function () {
+describe('Model', function () {
   let TestModel;
 
   beforeEach(function () {
-    TestModel = defineModel('Test', {
-      value: null
-    });
+    TestModel = class extends Model('Test', { value: null }) {};
   });
 
   it('returns a constructor', function () {
@@ -57,13 +55,11 @@ describe('defineModel', function () {
 
   describe('with methods', function () {
     beforeEach(function () {
-      TestModel = defineModel('Test', {
-        name: null
-      }, {
+      TestModel = class extends Model('Test', { name: null }) {
         sayHello() {
           return this.name ? `Hello ${this.name}` : 'I forget';
         }
-      });
+      };
     });
 
     it('has a method', function () {

@@ -3,11 +3,9 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
 import AppStore from '../stores/app_store';
+import { pageKinds } from '../constants';
 import PageMetadataStore from '../stores/page_metadata_store';
 
-const PAGE_KINDS = {
-  APP_PAGE: 'app'
-};
 
 // Prefer title set by props or PageMetadataStore, then fallback to guessing by
 // page type
@@ -19,7 +17,7 @@ function getTitle(props) {
   }
 
   switch (pageMetadata.kind) {
-    case PAGE_KINDS.APP_PAGE: {
+    case pageKinds.APP_PAGE: {
       const app = AppStore.get(AppStore.currentAppGuid);
       if (app) {
         title = app.name;

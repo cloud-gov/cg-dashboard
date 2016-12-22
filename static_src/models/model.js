@@ -4,7 +4,7 @@
 import Immutable from 'immutable';
 
 
-export default function defineModel(name, defaults, methods = {}) {
+export default function Model(name, defaults) {
   if (!defaults) {
     throw new Error('You must pass a set of defaults for your model.');
   }
@@ -12,7 +12,6 @@ export default function defineModel(name, defaults, methods = {}) {
   const modelName = `${name}Model`;
   const ModelClass = class extends Immutable.Record(defaults, modelName) {} // eslint-disable-line
 
-  Object.assign(ModelClass.prototype, methods);
   ModelClass.modelName = modelName;
   return ModelClass;
 }

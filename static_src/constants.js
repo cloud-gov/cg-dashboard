@@ -11,6 +11,11 @@ const appStates = {
   default: 'STOPPED'
 };
 
+const pageKinds = {
+  // The app page
+  APP_PAGE: 'app'
+};
+
 // All global error action types
 const errorActionTypes = keymirror({
   FETCH: null
@@ -253,6 +258,7 @@ export {
   errorActionTypes,
   loginActionTypes,
   orgActionTypes,
+  pageKinds,
   pageMetadataTypes,
   quotaActionTypes,
   routeActionTypes,
