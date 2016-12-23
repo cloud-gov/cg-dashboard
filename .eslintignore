@@ -7,7 +7,6 @@ test/**/*.js
 # and remove them from this list.
 /static_src/components/activity_log_item.jsx
 /static_src/components/activity_log.jsx
-/static_src/components/app_list.jsx
 /static_src/components/app_settings_panel.jsx
 /static_src/components/box.jsx
 /static_src/components/button.jsx
@@ -17,7 +16,6 @@ test/**/*.js
 /static_src/components/dropdown.jsx
 /static_src/components/header.jsx
 /static_src/components/home.jsx
-/static_src/components/icon.jsx
 /static_src/components/login.jsx
 /static_src/components/main_container.jsx
 /static_src/components/marketplace.jsx
@@ -27,7 +25,6 @@ test/**/*.js
 /static_src/components/panel_header.jsx
 /static_src/components/panel.jsx
 /static_src/components/panel_row_error.jsx
-/static_src/components/panel_row.jsx
 /static_src/components/route_form.jsx
 /static_src/components/route_list.jsx
 /static_src/components/routes_panel.jsx
@@ -37,7 +34,6 @@ test/**/*.js
 /static_src/components/service_list.jsx
 /static_src/components/service_plan_list.jsx
 /static_src/components/space_container.jsx
-/static_src/components/space_list.jsx
 /static_src/components/tabnav_item.jsx
 /static_src/components/tabnav.jsx
 /static_src/components/user_list.jsx

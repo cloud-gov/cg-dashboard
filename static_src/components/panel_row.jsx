@@ -12,6 +12,7 @@ const STYLES = [
 ];
 
 const propTypes = {
+  children: React.PropTypes.any,
   styleClass: React.PropTypes.oneOf(STYLES)
 };
 

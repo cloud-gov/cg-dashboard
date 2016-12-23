@@ -22,7 +22,6 @@ const propTypes = {
 };
 
 const defaultProps = {
-  spaceName: '',
   extraInfo: ['state']
 };
 

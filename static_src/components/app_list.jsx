@@ -1,16 +1,13 @@
 
 import React from 'react';
 
-import dedent from 'dedent';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import { appStates } from '../constants.js';
 import createStyler from '../util/create_styler';
 import AppQuicklook from './app_quicklook.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
-import PanelRow from './panel_row.jsx';
 import SpaceStore from '../stores/space_store.js';
 
 
@@ -69,18 +66,16 @@ export default class AppList extends React.Component {
             <span>Apps in</span> <EntityIcon entity="space" />
             <span> { this.state.currentSpaceName }</span>
           </div>
-          { this.state.apps.map((app) => {
-            return (
-             <AppQuicklook
-                key={ app.guid }
-                app={ app }
-                orgGuid={ this.state.currentOrgGuid }
-                spaceGuid={ this.state.currentSpaceGuid }
-                spaceName={ this.state.currentSpaceName }
-                extraInfo={ ['state', 'memory', 'diskQuota'] }
-              />
-            );
-          })}
+          { this.state.apps.map((app) =>
+            <AppQuicklook
+              key={ app.guid }
+              app={ app }
+              orgGuid={ this.state.currentOrgGuid }
+              spaceGuid={ this.state.currentSpaceGuid }
+              spaceName={ this.state.currentSpaceName }
+              extraInfo={ ['state', 'memory', 'diskQuota'] }
+            />
+          )}
         </div>
       );
     }
