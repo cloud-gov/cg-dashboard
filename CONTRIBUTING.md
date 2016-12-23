@@ -134,7 +134,7 @@ To upgrade all dependencies to version stipulated in package.json
 To update a package to a major version outside of what's in package.json
 
 - Ensure cloudgov-style or other dependencies are unlinked by runnging `npm unlink cloudgov-style`.
-- Run `npm install --save[Dev] {package name}` where package name is the name of the package to update.
+- Run `npm install --save[Dev] {package name}@{version}` where package name is the name of the package to update and version is the version you want to update to.
 - If there are errors related to peer dependencies, continue installing them in the same fashion.
 - If there are no errors, both package.json and npm-shrinkwrap.json should have changes that can be commited.
 
