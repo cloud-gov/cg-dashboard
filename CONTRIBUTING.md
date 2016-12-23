@@ -116,16 +116,27 @@ The code base includes linting configurations and tools, but is currently not fu
 
 ### Dependency management
 - The only language level dependencies should be `nodejs` and `go`.
-- Front end dependencies (as in `package.json`) should be pinned to a specific version
+- Front end dependencies (as in `package.json`) should be pinned to minor versions and below under most circumstances.
 - Front end dependencies should be shrink-wrapped with `npm`.
-- Every two weeks, front end dependencies will be upgraded.
+- Every month, front end dependencies will be upgraded to most recent patch or minor version as stipulated in package.json.
+- React, Babel, Webpack, ImmutableJS, and other major libraries should upgraded to major versions when there's time to test the changes.
 
-#### Steps for dependency upgrades
-- React and Babel are moving very quick, so they're the largest concern
-- Remove `npm-shrinkwrap.json`
-- Use `npm update --save --saveDev` to update any devDependencies
-- Make sure it works (run linting, tests, and acceptance tests)
-- Add back the shrinkwrap with `npm shrinkwrap --dev` and check it in
+#### How to upgrade dependencies
+
+To upgrade all dependencies to version stipulated in package.json
+
+- Ensure cloudgov-style or other dependencies are unlinked by runnging `npm unlink cloudgov-style`.
+- Remove `npm-shrinkwrap.json`.
+- Use `npm update --save --saveDev` to update all dependencies.
+- Make sure it works (run linting, tests, and acceptance tests).
+- Add back the shrinkwrap with `npm shrinkwrap --dev` and commit it.
+
+To update a package to a major version outside of what's in package.json
+
+- Ensure cloudgov-style or other dependencies are unlinked by runnging `npm unlink cloudgov-style`.
+- Run `npm install --save[Dev] {package name}` where package name is the name of the package to update.
+- If there are errors related to peer dependencies, continue installing them in the same fashion.
+- If there are no errors, both package.json and npm-shrinkwrap.json should have changes that can be commited.
 
 ### Code review
 - When doing code reviews, the reviewer should pull down the code and test on their local computer. This is because the staging site is not often used, meaning bugs could be present for long amounts of time.
