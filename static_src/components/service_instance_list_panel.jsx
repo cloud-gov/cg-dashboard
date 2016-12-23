@@ -38,7 +38,7 @@ export default class ServiceInstanceListPanel extends React.Component {
       content = (
         <div>
         { this.props.serviceInstances.map((serviceInstance) =>
-          <PanelRow key={serviceInstance.guid}>
+          <PanelRow key={serviceInstance.guid} styleClass="bordered">
             <ServiceInstance
               currentAppGuid={this.props.currentAppGuid}
               serviceInstance={serviceInstance}

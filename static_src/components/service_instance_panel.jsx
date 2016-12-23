@@ -127,9 +127,10 @@ export default class ServiceInstancePanel extends React.Component {
     if (!this.state.loading) {
       content = (
       <div>
+        <span>Manage services in { this.spaceLink } </span>
         <PanelGroup key="1">
           <PanelHeader>
-            <h3>Bound service instances</h3>
+            <h2>Bound service instances</h2>
           </PanelHeader>
           <ServiceInstanceListPanel
             currentAppGuid={ this.state.currentAppGuid }
@@ -140,7 +141,7 @@ export default class ServiceInstancePanel extends React.Component {
         </PanelGroup>
         <PanelGroup key="2">
           <PanelHeader>
-            <h3>Service instances available in { this.spaceLink }</h3>
+            <h2>Service instances available in { this.spaceLink }</h2>
           </PanelHeader>
           <ServiceInstanceListPanel
             currentAppGuid={ this.state.currentAppGuid }
@@ -151,9 +152,9 @@ export default class ServiceInstancePanel extends React.Component {
         <PanelGroup key="3">
           <PanelActions>
           <Action clickHandler={ this.handlePurchaseLink }
-            label="Purchase new services"
+            label="Add new services"
             type="outline">
-              Purchase a new service for this app
+              Add a new service from the marketplace
             </Action>
           </PanelActions>
         </PanelGroup>
