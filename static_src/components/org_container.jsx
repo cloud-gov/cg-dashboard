@@ -13,6 +13,7 @@ import ServiceCountStatus from './service_count_status.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
 import SpaceStore from '../stores/space_store.js';
 import SpaceQuicklook from './space_quicklook.jsx';
+import Users from './users.jsx';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
@@ -107,6 +108,10 @@ export default class OrgContainer extends React.Component {
             />
             )
           )}
+        </Panel>
+
+        <Panel title="Organization users">
+          <Users />
         </Panel>
       </div>
       );
