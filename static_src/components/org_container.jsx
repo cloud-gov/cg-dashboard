@@ -14,7 +14,6 @@ import SpaceCountStatus from './space_count_status.jsx';
 import SpaceStore from '../stores/space_store.js';
 import SpaceQuicklook from './space_quicklook.jsx';
 import Users from './users.jsx';
-import UserStore from '../stores/user_store.js';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
