@@ -188,7 +188,7 @@ export default class UsageAndLimits extends React.Component {
 
     return (
       <div className={ this.styler('stat-single_box') }>
-        <h2>Instances</h2>
+        <h2 className={ this.styler('stat-header')}>Instances</h2>
 	{ instances }
         <br />
         <span className={ this.styler('subtext') }>
