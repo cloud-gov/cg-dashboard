@@ -170,13 +170,13 @@ export default class RoutesPanel extends React.Component {
         { this.createRouteForm }
         <PanelGroup>
           <PanelHeader>
-            <h3>Bound routes</h3>
+            <h2>Bound routes</h2>
           </PanelHeader>
           { this.renderRoutes(this.state.boundRoutes) }
         </PanelGroup>
         <PanelGroup>
           <PanelHeader>
-            <h3>Routes available in {this.spaceLink}</h3>
+            <h2>Routes available in {this.spaceLink}</h2>
           </PanelHeader>
           { this.renderRoutes(this.state.unboundRoutes) }
         </PanelGroup>

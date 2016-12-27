@@ -167,7 +167,7 @@ export default class UsageAndLimits extends React.Component {
 
     let instances = (
       <span className={ this.styler('stat-primary')}>
-	{ instanceCount }X
+	{ instanceCount }
       </span>
     );
 
@@ -188,12 +188,12 @@ export default class UsageAndLimits extends React.Component {
 
     return (
       <div className={ this.styler('stat-single_box') }>
-        <h5>App scale</h5>
+        <h2 className={ this.styler('stat-header')}>Instances</h2>
 	{ instances }
         <br />
-        <h5 className={ this.styler('stat-info') }>
-          Scale applies to memory and disk
-        </h5>
+        <span className={ this.styler('subtext') }>
+          Instance applies to memory and disk
+        </span>
       </div>
     );
   }

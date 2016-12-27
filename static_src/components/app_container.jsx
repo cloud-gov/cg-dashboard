@@ -140,6 +140,7 @@ export default class AppContainer extends React.Component {
           <h2>{ this.fullTitle } { this.statusUI }</h2>
           { this.restart }
           <Panel title="Usage and allocation">
+              <span>View more usage data at <a href="https://logs.cloud.gov">logs.cloud.gov</a></span>
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 
