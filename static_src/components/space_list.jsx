@@ -3,6 +3,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import OrgStore from '../stores/org_store';
+import pageMetadataActions from '../actions/page_metadata_actions';
 
 import createStyler from '../util/create_styler';
 
@@ -31,10 +32,12 @@ export default class SpaceList extends React.Component {
   componentDidMount() {
     OrgStore.addChangeListener(this._onChange);
     this.setState(stateSetter());
+    pageMetadataActions.loadPage('org');
   }
 
   componentWillUnmount() {
     OrgStore.removeChangeListener(this._onChange);
+    pageMetadataActions.unloadPage();
   }
 
   _onChange() {

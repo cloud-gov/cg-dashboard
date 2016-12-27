@@ -4,6 +4,7 @@ import React from 'react';
 
 import LoginStore from '../stores/login_store.js';
 import HeaderLink from './header_link.jsx';
+import PageHeader from './page_header.jsx';
 
 import Action from './action.jsx';
 import createStyler from '../util/create_styler';
@@ -53,6 +54,7 @@ export default class Header extends React.Component {
             { loginLink }
           </ul>
         </nav>
+        <PageHeader />
       </div>
     </header>
     );

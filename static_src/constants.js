@@ -11,6 +11,17 @@ const appStates = {
   default: 'STOPPED'
 };
 
+const pageKinds = {
+  // The app page
+  APP_PAGE: 'app',
+  // The org page
+  ORG_PAGE: 'org',
+  // A page without a specific kind (like the overview)
+  DEFAULT_PAGE: 'default',
+  // The space page
+  SPACE_PAGE: 'space'
+};
+
 // All global error action types
 const errorActionTypes = keymirror({
   FETCH: null
@@ -21,6 +32,15 @@ const loginActionTypes = keymirror({
   FETCH_STATUS: null,
   // Action when the login status is received from the server.
   RECEIVED_STATUS: null
+});
+
+const pageMetadataTypes = keymirror({
+  // Load a page
+  PAGE_METADATA_LOAD_PAGE: null,
+  // Unload a page
+  PAGE_METADATA_UNLOAD_PAGE: null,
+  // Update the page's metadata
+  PAGE_METADATA_UPDATE: null
 });
 
 const quotaActionTypes = keymirror({
@@ -246,6 +266,8 @@ export {
   errorActionTypes,
   loginActionTypes,
   orgActionTypes,
+  pageKinds,
+  pageMetadataTypes,
   quotaActionTypes,
   routeActionTypes,
   spaceActionTypes,

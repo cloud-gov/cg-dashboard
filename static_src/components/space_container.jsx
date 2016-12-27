@@ -6,6 +6,7 @@ import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
+import pageMetadataActions from '../actions/page_metadata_actions';
 import Panel from './panel.jsx';
 import PanelActions from './panel_actions.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
@@ -38,10 +39,12 @@ export default class SpaceContainer extends React.Component {
 
   componentDidMount() {
     SpaceStore.addChangeListener(this._onChange);
+    pageMetadataActions.loadPage('space');
   }
 
   componentWillUnmount() {
     SpaceStore.removeChangeListener(this._onChange);
+    pageMetadataActions.unloadPage();
   }
 
   _onChange() {
