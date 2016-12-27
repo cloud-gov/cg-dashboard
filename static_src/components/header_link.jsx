@@ -24,8 +24,8 @@ export default class HeaderLink extends React.Component {
 }
 
 HeaderLink.propTypes = {
-  url: React.PropTypes.string.isRequired,
-  text: React.PropTypes.string.isRequired,
+  url: React.PropTypes.string,
+  text: React.PropTypes.string,
   children: React.PropTypes.any,
   classes: React.PropTypes.array
 };

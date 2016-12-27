@@ -17,12 +17,12 @@ import Login from './components/login.jsx';
 import MainContainer from './components/main_container.jsx';
 import orgActions from './actions/org_actions.js';
 import Overview from './components/overview_container.jsx';
+import OrgContainer from './components/org_container.jsx';
 import quotaActions from './actions/quota_actions.js';
 import routeActions from './actions/route_actions.js';
 import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
 import SpaceContainer from './components/space_container.jsx';
-import SpaceList from './components/space_list.jsx';
 import { trackPageView } from './util/analytics.js';
 import uaaApi from './util/uaa_api.js';
 import userActions from './actions/user_actions.js';
@@ -56,9 +56,13 @@ function overview() {
 function org(orgGuid) {
   orgActions.toggleSpaceMenu(orgGuid);
   orgActions.fetch(orgGuid);
+  cfApi.fetchSpaces().then(() => spaceActions.fetchAllForOrg(orgGuid));
+  userActions.changeCurrentlyViewedType('org_users');
+  userActions.fetchOrgUsers(orgGuid);
+  userActions.fetchOrgUserRoles(orgGuid);
   ReactDOM.render(
     <MainContainer>
-      <SpaceList />
+      <OrgContainer />
     </MainContainer>, mainEl);
 }
 
@@ -86,24 +90,6 @@ function renderSpaceContainer(page) {
 function apps(orgGuid, spaceGuid) {
   space(orgGuid, spaceGuid);
   renderSpaceContainer('apps');
-}
-
-function services(orgGuid, spaceGuid) {
-  space(orgGuid, spaceGuid);
-  renderSpaceContainer('services');
-}
-
-function users(orgGuid, spaceGuid, potentialPage) {
-  space(orgGuid, spaceGuid);
-  if (potentialPage === 'org') {
-    userActions.changeCurrentlyViewedType('org_users');
-    userActions.fetchOrgUsers(orgGuid);
-    userActions.fetchOrgUserRoles(orgGuid);
-  } else {
-    userActions.changeCurrentlyViewedType('space_users');
-    userActions.fetchSpaceUsers(spaceGuid);
-  }
-  renderSpaceContainer('users');
 }
 
 function app(orgGuid, spaceGuid, appGuid) {
@@ -146,16 +132,6 @@ const routes = {
     '/:orgGuid': {
       '/spaces': {
         '/:spaceGuid': {
-          '/services': {
-            on: services
-          },
-          '/users': {
-            '/:page': {
-              on: users
-            },
-
-            on: users
-          },
           '/apps': {
             '/:appGuid': {
               on: app

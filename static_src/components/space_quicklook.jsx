@@ -4,19 +4,21 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
+import AppQuicklook from './app_quicklook.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import PanelRow from './panel_row.jsx';
-import { appStates } from '../constants.js';
 
 const propTypes = {
   space: React.PropTypes.object.isRequired,
   orgGuid: React.PropTypes.string.isRequired,
-  loading: React.PropTypes.bool
+  loading: React.PropTypes.bool,
+  showAppDetail: React.PropTypes.bool
 };
 
 const defaultProps = {
-  loading: false
+  loading: false,
+  showAppDetail: false
 };
 
 export default class SpaceQuicklook extends React.Component {
@@ -29,29 +31,6 @@ export default class SpaceQuicklook extends React.Component {
   spaceHref() {
     const props = this.props;
     return `/#/org/${props.orgGuid}/spaces/${props.space.guid}`;
-  }
-
-  appHref(appGuid) {
-    const props = this.props;
-    return `/#/org/${props.orgGuid}/spaces/${props.space.guid}/apps/${appGuid}`;
-  }
-
-  appState(appState) {
-    const statusClass = `status-${appState.toLowerCase()}`;
-    return (
-      <span className={ this.styler('status', statusClass) }>
-        { appState.toLowerCase() }
-      </span>
-    );
-  }
-
-  appName(app) {
-    const statusClass = (app.state === appStates.crashed) && 'status-crashed';
-    return (
-      <a className={ this.styler(statusClass) } href={ this.appHref(app.guid) }>
-        { app.name }
-      </a>
-    );
   }
 
   render() {
@@ -67,17 +46,15 @@ export default class SpaceQuicklook extends React.Component {
             <a href={ this.spaceHref() }>{ space.name }</a>
           </h3>
           { space.apps && space.apps.map((app) =>
-            <PanelRow key={ app.guid }>
-              <span className={ this.styler('panel-column') }>
-                <h3 className={ this.styler('sans-s5') }>
-                  <EntityIcon entity="app" state={ app.state } />
-                  <span>{ space.name } / { this.appName(app) }</span>
-                </h3>
-              </span>
-              <span className={ this.styler('panel-column', 'panel-column-less') }>
-                { this.appState(app.state) }
-              </span>
-            </PanelRow>
+             <AppQuicklook
+               key={ app.guid }
+               app={ app }
+               orgGuid={ this.props.orgGuid }
+               spaceGuid={ space.guid }
+               spaceName={ space.name }
+               extraInfo={ this.props.showAppDetail ?
+                 ['state', 'memory', 'diskQuota'] : ['state'] }
+             />
           )}
         </PanelRow>
       );

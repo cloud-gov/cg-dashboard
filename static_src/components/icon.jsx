@@ -27,7 +27,7 @@ const propTypes = {
   name: React.PropTypes.string.isRequired,
   styleType: React.PropTypes.oneOf(STYLE_TYPES),
   iconType: React.PropTypes.oneOf(ICON_TYPES),
-  iconSize:React.PropTypes.oneOf(ICON_SIZE),
+  iconSize: React.PropTypes.oneOf(ICON_SIZE),
   bordered: React.PropTypes.bool
 };
 
@@ -52,15 +52,16 @@ export default class Icon extends React.Component {
 
   render() {
     const mainClass = this.props.iconType === 'fill' ? 'icon-fill' : 'icon';
-    const styleClass = `icon-${this.props.styleType} icon-${this.props.iconSize}`;
+    const styleClass = `icon-${this.props.styleType}`;
+    const sizeClass = this.props.iconSize && `icon-${this.props.iconSize}`;
     const borderedClass = (this.props.bordered) &&
       'icon-bordered';
-    const iconClasses = this.styler(mainClass, styleClass, borderedClass);
+    const iconClasses = this.styler(mainClass, styleClass, sizeClass,
+                                    borderedClass);
 
     return (
       <svg className={ iconClasses }>
-        <use
-          xlinkHref={ this.getImagePath(this.props.name) }>
+        <use xlinkHref={ this.getImagePath(this.props.name) }>
         </use>
       </svg>
     );
