@@ -92,13 +92,6 @@ export default class SpaceContainer extends React.Component {
           <PanelActions>
             <span>Learn how to <a href={ config.docs.deploying_apps }>deploy a
             new app</a>.</span>
-            <Action
-            label="Add a new service instance"
-            classes={ ['panel-actions-right'] }
-            clickHandler={ this.handleNewService }
-            >
-              Add a new service instance
-            </Action>
           </PanelActions>
         </Panel>
         <Panel title="Space users">
