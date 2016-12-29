@@ -17,6 +17,7 @@ const STATE_MAP = {
 
 const propTypes = {
   entity: React.PropTypes.oneOf(ENTITIES).isRequired,
+  iconSize: React.PropTypes.string,
   state: React.PropTypes.oneOf(Object.values(appStates))
 };
 
@@ -38,6 +39,7 @@ export default class EntityIcon extends React.Component {
       <Icon
         name={ this.props.entity }
         styleType={ stateClass }
+        iconSize={ this.props.iconSize }
         iconType="fill"
         bordered={ ['app', 'space', 'service'].includes(this.props.entity) }
       />
