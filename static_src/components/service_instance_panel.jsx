@@ -127,7 +127,6 @@ export default class ServiceInstancePanel extends React.Component {
     if (!this.state.loading) {
       content = (
       <div>
-        <span>Manage services in { this.spaceLink } </span>
         <PanelGroup key="1">
           <PanelHeader>
             <h2>Bound service instances</h2>
