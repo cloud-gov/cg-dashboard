@@ -234,10 +234,10 @@ export default class UsageAndLimits extends React.Component {
       <div>
         <PanelGroup>
           <PanelGroup columns={ 6 }>
-            <PanelRow>
+            <PanelRow styleClass="clean" >
               { this.memory }
             </PanelRow>
-            <PanelRow>
+            <PanelRow styleClass="clean" >
               { this.disk }
             </PanelRow>
           </PanelGroup>
@@ -247,15 +247,15 @@ export default class UsageAndLimits extends React.Component {
             </PanelBlock>
           </PanelGroup>
           <PanelGroup columns={ 3 }>
-            <PanelRow>
+            <PanelRow styleClass="clean" >
               { this.totalMemory }
             </PanelRow>
-            <PanelRow>
+            <PanelRow styleClass="clean" >
               { this.totalDisk }
             </PanelRow>
           </PanelGroup>
         </PanelGroup>
-        <PanelRow>
+        <PanelRow styleClass="clean" >
           <div className={ this.styler('panel-actions-right') }>
             { controls }
           </div>

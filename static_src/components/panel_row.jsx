@@ -8,6 +8,7 @@ import createStyler from '../util/create_styler';
 const STYLES = [
   'bordered',
   'boxed',
+  'clean', // TODO this should be reconciled with panel-row and panel-row-bordered
   'none'
 ];
 
