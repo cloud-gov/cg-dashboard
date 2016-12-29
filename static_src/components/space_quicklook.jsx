@@ -42,7 +42,7 @@ export default class SpaceQuicklook extends React.Component {
       content = (
         <PanelRow>
           <h3>
-            <EntityIcon entity="space" />
+            <EntityIcon entity="space" iconSize="medium" />
             <a href={ this.spaceHref() }>{ space.name }</a>
           </h3>
           { space.apps && space.apps.map((app) =>

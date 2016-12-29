@@ -70,15 +70,17 @@ export default class OrgQuickLook extends React.Component {
     >
       <div className={ this.styler('panel-column') }>
         <h2 className={ this.styler('sans-s6') }>
-          <EntityIcon entity="org" />
+          <EntityIcon entity="org" iconSize="medium" />
           <a onClick={ this.onOrgClick }>{ props.org.name }</a>
         </h2>
       </div>
       <div className={ this.styler('panel-column') }>
-        <SpaceCountStatus spaces={ props.org.spaces } />
-        <AppCountStatus appCount={ this.totalAppCount(props.org.spaces) }
-          apps={ this.allApps() }
-        />
+        <div className={ this.styler('count_status_container') }>
+          <SpaceCountStatus spaces={ props.org.spaces } />
+          <AppCountStatus appCount={ this.totalAppCount(props.org.spaces) }
+            apps={ this.allApps() }
+          />
+        </div>
       </div>
     </div>
     );

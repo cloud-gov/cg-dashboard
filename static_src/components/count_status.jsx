@@ -38,14 +38,14 @@ export default class CountStatus extends React.Component {
     const statusClass = `count_status-${props.status.toLowerCase()}`;
 
     return (
-      <span className={ this.styler('count_status', statusClass) }>
-        <span className={ this.styler('count_status-icon') }>
-          <EntityIcon entity={ props.iconType } state={ props.status } />
-        </span>
-        <span className={ this.styler('count_status-text') }>
+      <div className={ this.styler('count_status', statusClass) }>
+        <div className={ this.styler('count_status-icon') }>
+          <EntityIcon entity={ props.iconType } state={ props.status } iconSize="medium" />
+        </div>
+        <div className={ this.styler('count_status-text') }>
           <strong>{ props.count }</strong> { props.name }
-        </span>
-      </span>
+        </div>
+      </div>
     );
   }
 }
