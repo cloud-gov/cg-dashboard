@@ -79,10 +79,12 @@ export default class SpaceContainer extends React.Component {
             <h2>Space overview</h2>
           </div>
           <div className={ this.styler('grid-width-4') }>
-            <AppCountStatus apps={ space.apps } appCount={ space.apps && space.apps.length } />
-            <ServiceCountStatus services={ space.services }
-              serviceCount={ space.services && space.services.length }
-            />
+            <div className={ this.styler('count_status_container') }>
+              <AppCountStatus apps={ space.apps } appCount={ space.apps && space.apps.length } />
+              <ServiceCountStatus services={ space.services }
+                serviceCount={ space.services && space.services.length }
+              />
+            </div>
           </div>
         </div>
         <Panel title="">

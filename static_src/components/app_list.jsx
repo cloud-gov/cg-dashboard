@@ -63,7 +63,7 @@ export default class AppList extends React.Component {
       content = (
         <div>
           <div className={ this.styler('panel-row-header') }>
-            <span>Apps in</span> <EntityIcon entity="space" />
+            <span>Apps in</span> <EntityIcon entity="space" iconSize="medium" />
             <span> { this.state.currentSpaceName }</span>
           </div>
           { this.state.apps.map((app) =>

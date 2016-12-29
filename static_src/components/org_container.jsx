@@ -90,11 +90,13 @@ export default class OrgContainer extends React.Component {
             <h2>Organization overview</h2>
           </div>
           <div className={ this.styler('grid-width-6') }>
-            <SpaceCountStatus spaces={ state.spaces } />
-            <AppCountStatus apps={ allApps } appCount={ allApps && allApps.length } />
-            <ServiceCountStatus services={ allServices }
-              serviceCount={ allServices && allServices.length }
-            />
+            <div className={ this.styler('count_status_container') } >
+              <SpaceCountStatus spaces={ state.spaces } />
+              <AppCountStatus apps={ allApps } appCount={ allApps && allApps.length } />
+              <ServiceCountStatus services={ allServices }
+                serviceCount={ allServices && allServices.length }
+              />
+            </div>
           </div>
         </div>
 
