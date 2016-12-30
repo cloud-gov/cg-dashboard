@@ -21,9 +21,15 @@ export default class Panel extends React.Component {
   }
 
   render() {
+
+    let panelHed = null;
+    if (this.props.title != '') {
+      panelHed = <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>;
+    }
+
     return (
       <div className={ this.styler('panel') }>
-        <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>
+        {panelHed}
         <div className={ this.styler('panel-rows') }>
           { this.props.children }
         </div>
