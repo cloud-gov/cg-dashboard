@@ -8,6 +8,7 @@ import { config } from 'skin';
 import Loading from './loading.jsx';
 import OrgQuickLook from './org_quick_look.jsx';
 import OrgStore from '../stores/org_store.js';
+import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelRow from './panel_row.jsx';
@@ -68,7 +69,7 @@ export default class OverviewContainer extends React.Component {
     } else if (!state.loading && this.state.orgs.length > 0 || this.anyOrgsOpen()) {
       content = (
       <div className={ this.styler('grid') }>
-        <h1>Overview</h1>
+        <PageHeader title="Overview" />
         <Panel title="Your organizations">
           { state.orgs.map((org) =>
             <PanelRow key={ org.guid } styleClass="boxed">

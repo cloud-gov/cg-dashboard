@@ -8,6 +8,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import AppCountStatus from './app_count_status.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
+import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
@@ -26,7 +27,7 @@ function stateSetter() {
   return {
     empty: !OrgStore.loading && !SpaceStore.loading && !org,
     loading: OrgStore.loading || SpaceStore.loading,
-    org,
+    org: org || {},
     spaces: spaces || []
   };
 }
@@ -120,6 +121,11 @@ export default class OrgContainer extends React.Component {
       );
     }
 
-    return content;
+    return (
+      <div>
+        <PageHeader title={ state.org.name } />
+        { content }
+      </div>
+    );
   }
 }

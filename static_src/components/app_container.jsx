@@ -11,6 +11,7 @@ import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
+import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
@@ -131,14 +132,16 @@ export default class AppContainer extends React.Component {
   render() {
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
+    const title = <span>{ this.state.app.name } { this.statusUI }</span>;
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
     } else if (!this.state.loading && appReady(this.state.app)) {
       content = (
         <div>
-          <h2>{ this.fullTitle } { this.statusUI }</h2>
-          { this.restart }
+          <PageHeader title={ title }>
+            { this.restart }
+          </PageHeader>
           <Panel title="Usage and allocation">
               <span>View more usage data at <a href="https://logs.cloud.gov">logs.cloud.gov</a></span>
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />

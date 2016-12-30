@@ -6,6 +6,7 @@ import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
+import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import PanelActions from './panel_actions.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
@@ -18,7 +19,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 function stateSetter() {
   return {
-    space: SpaceStore.currentSpace(),
+    space: SpaceStore.currentSpace() || {},
     currentOrg: OrgStore.currentOrg(),
     currentOrgGuid: OrgStore.currentOrgGuid,
     currentSpaceGuid: SpaceStore.currentSpaceGuid
@@ -74,6 +75,7 @@ export default class SpaceContainer extends React.Component {
       const space = this.state.space;
       main = (
       <div>
+        <PageHeader title={ this.state.space.name } />
         <Panel title="">
 
           <div className={ this.styler('grid panel-overview-header') }>
