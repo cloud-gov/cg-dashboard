@@ -31,7 +31,6 @@ export default class SpaceContainer extends React.Component {
     this.props = props;
     this.state = stateSetter();
     this._onChange = this._onChange.bind(this);
-    this.handleNewService = this.handleNewService.bind(this);
     this.spaceUrl = this.spaceUrl.bind(this);
     this.styler = createStyler(style);
   }
@@ -58,11 +57,6 @@ export default class SpaceContainer extends React.Component {
 
   get currentOrgGuid() {
     return this.state.currentOrg || '0';
-  }
-
-  handleNewService(ev) {
-    ev.preventDefault();
-    window.location.href = `/#/org/${this.state.currentOrg.guid}/marketplace`;
   }
 
   render() {
