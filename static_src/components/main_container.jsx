@@ -55,7 +55,7 @@ export default class App extends React.Component {
       <div>
         <Disclaimer />
         <Header />
-        <div className={ this.styler('main_content', 'content-dashboard') }>
+        <div className={ this.styler('main_content', 'content-no_sidebar') }>
           <main className={ this.styler('usa-content') }>
             <div className={ this.styler('content', 'grid') }>
               { content }
