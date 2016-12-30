@@ -17,11 +17,11 @@ export default class Disclaimer extends React.Component {
     let flagImg;
     if (config.header.show_flag) {
       const flag = require('cloudgov-style/img/us_flag_small.png');
-      const flagAlt = 'US flag signifying that this is a United States Federal Government website';
+      const flagAlt = 'US flag signifying that this is a United States federal government website';
       flagImg = <img alt={ flagAlt } src={ flag }></img>;
     }
     return (
-      <div className={ this.styler('usa-disclaimer') }>
+      <div className={ this.styler('usa-disclaimer disclaimer-wide') }>
         <div className={ this.styler('grid') }>
           <span className={ this.styler('usa-disclaimer-official') }>
             { config.header.disclaimer }
