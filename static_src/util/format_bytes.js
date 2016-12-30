@@ -6,9 +6,9 @@
  * @returns {String} Formatted byte value with unit eg. 1.3 MB
  **/
 export default function formatBytes(bytes, decimals = 0) {
-  if (bytes === 0) return `${bytes.toFixed(decimals)} Bytes`;
+  if (!bytes) return `${Number(0).toFixed(decimals)} B`;
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${parseFloat((bytes / Math.pow(k, i))).toFixed(decimals)} ${sizes[i]}`;
 }
