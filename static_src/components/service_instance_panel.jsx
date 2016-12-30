@@ -88,7 +88,6 @@ export default class ServiceInstancePanel extends React.Component {
     this.styler = createStyler(style);
 
     this._onChange = this._onChange.bind(this);
-    this.handlePurchaseLink = this.handlePurchaseLink.bind(this);
   }
 
   componentDidMount() {
@@ -105,11 +104,6 @@ export default class ServiceInstancePanel extends React.Component {
 
   _onChange() {
     this.setState(stateSetter());
-  }
-
-  handlePurchaseLink(ev) {
-    ev.preventDefault();
-    window.location.href = `/#/org/${this.state.currentOrgGuid}/marketplace`;
   }
 
   get spaceLink() {
@@ -147,15 +141,6 @@ export default class ServiceInstancePanel extends React.Component {
             serviceInstances={ this.state.unboundServiceInstances }
             empty={ unboundReady(this.state.unboundServiceInstances) }
           />
-        </PanelGroup>
-        <PanelGroup key="3">
-          <PanelActions>
-          <Action clickHandler={ this.handlePurchaseLink }
-            label="Add new services"
-            type="outline">
-              Add a new service from the marketplace
-            </Action>
-          </PanelActions>
         </PanelGroup>
       </div>
       );
