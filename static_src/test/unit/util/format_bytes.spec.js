@@ -3,12 +3,16 @@ import '../../global_setup.js';
 import formatBytes from '../../../util/format_bytes';
 
 describe('format_bytes util', function () {
+  it('formats undefined', function () {
+    expect(formatBytes(undefined)).toBe('0 B');
+  });
+
   it('formats zero', function () {
-    expect(formatBytes(0)).toBe('0 Bytes');
+    expect(formatBytes(0)).toBe('0 B');
   });
 
   it('formats bytes', function () {
-    expect(formatBytes(10)).toBe('10 Bytes');
+    expect(formatBytes(10)).toBe('10 B');
   });
 
   it('formats KB', function () {
@@ -21,11 +25,11 @@ describe('format_bytes util', function () {
 
   describe('with decimals', function () {
     it('formats zero', function () {
-      expect(formatBytes(0, 1)).toBe('0.0 Bytes');
+      expect(formatBytes(0, 1)).toBe('0.0 B');
     });
 
     it('formats bytes', function () {
-      expect(formatBytes(10, 1)).toBe('10.0 Bytes');
+      expect(formatBytes(10, 1)).toBe('10.0 B');
     });
 
     it('formats KB', function () {
