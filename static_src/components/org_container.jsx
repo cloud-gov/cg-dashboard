@@ -6,6 +6,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 
 import AppCountStatus from './app_count_status.jsx';
+import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
@@ -76,6 +77,11 @@ export default class OrgContainer extends React.Component {
     const state = this.state;
     let loading = <Loading text="Loading organization" />;
     let content = <div>{ loading }</div>;
+    const title = (
+      <span>
+        <EntityIcon entity="org" iconSize="large" /> { state.org.name }
+      </span>
+    );
 
     if (state.empty) {
       content = <h4 className="test-none_message">No organizations</h4>;
@@ -86,7 +92,7 @@ export default class OrgContainer extends React.Component {
       // TODO repeated pattern space_container, overview
       content = (
       <div className={ this.styler('grid') }>
-
+        <PageHeader title={ title } />
         <Panel title="">
           <div className={ this.styler('grid panel-overview-header') }>
             <div className={ this.styler('grid-width-6') }>
@@ -121,11 +127,6 @@ export default class OrgContainer extends React.Component {
       );
     }
 
-    return (
-      <div>
-        <PageHeader title={ state.org.name } />
-        { content }
-      </div>
-    );
+    return content;
   }
 }

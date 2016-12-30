@@ -4,6 +4,7 @@ import React from 'react';
 import Action from './action.jsx';
 import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
+import EntityIcon from './entity_icon.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
@@ -70,12 +71,17 @@ export default class SpaceContainer extends React.Component {
     let Content = this.currentContent;
     let tabNav = <div></div>;
     let main = <div></div>;
+    const title = (
+      <span>
+        <EntityIcon entity="space" iconSize="large" /> { this.state.space.name }
+      </span>
+    );
 
     if (this.state.space && this.state.space.guid) {
       const space = this.state.space;
       main = (
       <div>
-        <PageHeader title={ this.state.space.name } />
+        <PageHeader title={ title } />
         <Panel title="">
 
           <div className={ this.styler('grid panel-overview-header') }>

@@ -4,8 +4,8 @@ import React from 'react';
 
 import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
-import UsageLimits from './usage_and_limits.jsx';
 import AppStore from '../stores/app_store.js';
+import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
@@ -15,6 +15,7 @@ import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
+import UsageLimits from './usage_and_limits.jsx';
 import appActions from '../actions/app_actions.js';
 
 import createStyler from '../util/create_styler';
@@ -132,7 +133,11 @@ export default class AppContainer extends React.Component {
   render() {
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
-    const title = <span>{ this.state.app.name } { this.statusUI }</span>;
+    const title = (
+      <span>
+       <EntityIcon entity="app" iconSize="large" /> { this.state.app.name } { this.statusUI }
+     </span>
+    );
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
