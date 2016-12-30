@@ -21,8 +21,8 @@ export default class Disclaimer extends React.Component {
       flagImg = <img alt={ flagAlt } src={ flag }></img>;
     }
     return (
-      <div className={ this.styler('usa-disclaimer') }>
-        <div className={ this.styler('usa-grid') }>
+      <div className={ this.styler('usa-disclaimer', 'disclaimer-no_sidebar') }>
+        <div className={ this.styler('grid') }>
           <span className={ this.styler('usa-disclaimer-official') }>
             { config.header.disclaimer }
             { flagImg }
