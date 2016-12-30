@@ -85,22 +85,23 @@ export default class OrgContainer extends React.Component {
       // TODO repeated pattern space_container, overview
       content = (
       <div className={ this.styler('grid') }>
-        <div className={ this.styler('grid') }>
-          <div className={ this.styler('grid-width-6') }>
-            <h2>Organization overview</h2>
-          </div>
-          <div className={ this.styler('grid-width-6') }>
-            <div className={ this.styler('count_status_container') } >
-              <SpaceCountStatus spaces={ state.spaces } />
-              <AppCountStatus apps={ allApps } appCount={ allApps && allApps.length } />
-              <ServiceCountStatus services={ allServices }
-                serviceCount={ allServices && allServices.length }
-              />
-            </div>
-          </div>
-        </div>
 
         <Panel title="">
+          <div className={ this.styler('grid panel-overview-header') }>
+            <div className={ this.styler('grid-width-6') }>
+              <h1 className={ this.styler('panel-title') }>Organization overview</h1>
+            </div>
+            <div className={ this.styler('grid-width-6') }>
+              <div className={ this.styler('count_status_container') } >
+                <SpaceCountStatus spaces={ state.spaces } />
+                <AppCountStatus apps={ allApps } appCount={ allApps && allApps.length } />
+                <ServiceCountStatus services={ allServices }
+                  serviceCount={ allServices && allServices.length }
+                />
+              </div>
+            </div>
+          </div>
+
           { state.spaces.map((space) => (
             <SpaceQuicklook
               key={ space.guid }
