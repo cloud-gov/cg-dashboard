@@ -95,9 +95,10 @@ export default class AppQuicklook extends React.Component {
       <PanelRow key={ app.guid }>
         <div>
           <span className={ this.styler('panel-column') }>
-            <h3 className={ this.styler('sans-s5') }>
+            <h3 className={ this.styler('contents-secondary') }>
               <EntityIcon entity="app" state={ app.state } iconSize="medium" />
-              <span>{ this.props.spaceName } / { this.appName() }</span>
+              <span className={ this.styler('contents-path') }>
+                { this.props.spaceName } / </span>{ this.appName() }
             </h3>
           </span>
           { info }
