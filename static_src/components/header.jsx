@@ -41,7 +41,7 @@ export default class Header extends React.Component {
           <a href="/" className={ this.styler('logo') } title="Home">
             <svg className={ this.styler('logo-img') }>
               <use
-                xlinkHref={ this.getImagePath('logo') }>
+                xlinkHref={ this.getImagePath('logo-dashboard') }>
               </use>
             </svg>
           </a>
