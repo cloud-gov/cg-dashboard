@@ -174,6 +174,12 @@ cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_
 cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret","CONSOLE_NEW_RELIC_LICENSE":"your-new-relic-license", "SESSION_KEY": "a-really-long-secure-value"}'
 ```
 
+Create a redis service instance:
+
+```bash
+cf create-service redis28 standard deck-redis
+```
+
 ### Create a Client with UAAC
 - Make sure [UAAC](https://github.com/cloudfoundry/cf-uaac) is installed.
 - Target your UAA server. `uaac target <uaa.your-domain.com>`
