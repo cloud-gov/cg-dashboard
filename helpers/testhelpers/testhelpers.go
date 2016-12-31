@@ -1,13 +1,6 @@
 package testhelpers
 
 import (
-	"github.com/18F/cg-dashboard/controllers"
-	"github.com/18F/cg-dashboard/helpers"
-	"github.com/gocraft/web"
-	"github.com/gorilla/sessions"
-	"golang.org/x/net/context"
-	"golang.org/x/oauth2"
-
 	"bytes"
 	"fmt"
 	"html/template"
@@ -17,6 +10,15 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/cloudfoundry-community/go-cfenv"
+	"github.com/gocraft/web"
+	"github.com/gorilla/sessions"
+	"golang.org/x/net/context"
+	"golang.org/x/oauth2"
+
+	"github.com/18F/cg-dashboard/controllers"
+	"github.com/18F/cg-dashboard/helpers"
 )
 
 // MockSessionStore represents an easily fillable session store that implements
@@ -89,7 +91,8 @@ var ValidTokenData = map[string]interface{}{
 func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars helpers.EnvVars) (*web.Router, *MockSessionStore) {
 	// Initialize settings.
 	settings := helpers.Settings{}
-	settings.InitSettings(envVars)
+	env, _ := cfenv.Current()
+	settings.InitSettings(envVars, env)
 
 	// Initialize a new session store.
 	store := MockSessionStore{}
@@ -190,7 +193,8 @@ func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testS
 
 		// Assign settings to context
 		mockSettings := &helpers.Settings{}
-		mockSettings.InitSettings(test.EnvVars)
+		env, _ := cfenv.Current()
+		mockSettings.InitSettings(test.EnvVars, env)
 		mockSettings.TokenContext = context.TODO()
 		c.Settings = mockSettings
 

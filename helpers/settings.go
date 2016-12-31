@@ -1,13 +1,17 @@
 package helpers
 
 import (
+	"encoding/gob"
+	"errors"
+	"net/url"
+	"os"
+
+	"github.com/boj/redistore"
+	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gorilla/sessions"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
-
-	"encoding/gob"
-	"errors"
 )
 
 // Settings is the object to hold global values and objects for the service.
@@ -40,7 +44,7 @@ type Settings struct {
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
 // otherwise it returns nil for success.
-func (s *Settings) InitSettings(envVars EnvVars) error {
+func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	if len(envVars.ClientID) == 0 {
 		return errors.New("Unable to find '" + ClientIDEnvVar + "' in environment. Exiting.\n")
 	}
@@ -94,15 +98,32 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	}
 
 	// Initialize Sessions.
-	// Temp FIXME that fixes the problem of using a cookie store which would cause the secure encoding
-	// of the oauth 2.0 token struct in production to exceed the max size of 4096 bytes.
-	filesystemStore := sessions.NewFilesystemStore("", []byte(envVars.SessionKey))
-	filesystemStore.MaxLength(4096 * 4)
-	filesystemStore.Options = &sessions.Options{
-		HttpOnly: true,
-		Secure:   s.SecureCookies,
+	switch envVars.SessionBackend {
+	case "redis":
+		address, password, err := getRedisSettings(env)
+		if err != nil {
+			return err
+		}
+		store, err := redistore.NewRediStore(10, "tcp", address, password, []byte(envVars.SessionKey))
+		if err != nil {
+			return err
+		}
+		store.SetMaxLength(4096 * 4)
+		store.Options = &sessions.Options{
+			HttpOnly: true,
+			Secure:   s.SecureCookies,
+		}
+		s.Sessions = store
+	default:
+		store := sessions.NewFilesystemStore("", []byte(envVars.SessionKey))
+		store.MaxLength(4096 * 4)
+		store.Options = &sessions.Options{
+			HttpOnly: true,
+			Secure:   s.SecureCookies,
+		}
+		s.Sessions = store
 	}
-	s.Sessions = filesystemStore
+
 	// Want to save a struct into the session. Have to register it.
 	gob.Register(oauth2.Token{})
 
@@ -114,4 +135,44 @@ func (s *Settings) InitSettings(envVars EnvVars) error {
 	}
 
 	return nil
+}
+
+func getRedisSettings(env *cfenv.App) (string, string, error) {
+	uri, err := getRedisService(env)
+	if err != nil {
+		uri = os.Getenv("REDIS_URI")
+	}
+	if uri == "" {
+		uri = "redis://localhost:6379"
+	}
+
+	u, err := url.Parse(uri)
+	if err != nil {
+		return "", "", err
+	}
+
+	password := ""
+	if u.User != nil {
+		password, _ = u.User.Password()
+	}
+
+	return u.Host, password, nil
+}
+
+func getRedisService(env *cfenv.App) (string, error) {
+	if env == nil {
+		return "", errors.New("Empty Cloud Foundry environment")
+	}
+	services, err := env.Services.WithTag("redis")
+	if err != nil {
+		return "", err
+	}
+	if len(services) == 0 {
+		return "", errors.New(`Could not find service with tag "redis"`)
+	}
+	uri, ok := services[0].Credentials["uri"].(string)
+	if !ok {
+		return "", errors.New("Could not parse redis uri")
+	}
+	return uri, nil
 }

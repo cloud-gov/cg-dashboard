@@ -4,8 +4,10 @@ import (
 	"html/template"
 	"path/filepath"
 
-	"github.com/18F/cg-dashboard/helpers"
+	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gocraft/web"
+
+	"github.com/18F/cg-dashboard/helpers"
 )
 
 // InitRouter sets up the router (and subrouters).
@@ -67,10 +69,10 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 }
 
 // InitApp takes in envars and sets up the router and settings that will be used for the unstarted server.
-func InitApp(envVars helpers.EnvVars) (*web.Router, *helpers.Settings, error) {
+func InitApp(envVars helpers.EnvVars, env *cfenv.App) (*web.Router, *helpers.Settings, error) {
 	// Initialize the settings.
 	settings := helpers.Settings{}
-	if err := settings.InitSettings(envVars); err != nil {
+	if err := settings.InitSettings(envVars, env); err != nil {
 		return nil, nil, err
 	}
 

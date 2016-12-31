@@ -1,6 +1,8 @@
-hash: b7b2d728634b4196e6c1245b6654c114a3653c05102fee91fbf4edff60336d18
-updated: 2016-11-20T17:24:09.261823773-05:00
+hash: 21b3b7794093d7bc40e681fabff2fd9bf9bb8f7ee8eb933070dfc4431e5562a0
+updated: 2016-12-31T12:15:06.088081013-05:00
 imports:
+- name: github.com/boj/redistore
+  version: fc113767cd6b051980f260d6dbe84b2740c46ab0
 - name: github.com/cloudfoundry-community/go-cfenv
   version: 96ad7376813bfd13c95af69ca5b4ef5725f6b335
 - name: github.com/cloudfoundry/loggregatorlib
@@ -8,6 +10,11 @@ imports:
   subpackages:
   - logmessage
   - signature
+- name: github.com/garyburd/redigo
+  version: 827b38687c49d680c6bd9ac6114111b98cc16cdf
+  subpackages:
+  - internal
+  - redis
 - name: github.com/gocraft/web
   version: 12b4630b4fee3e485b334c4d544bd9dd68fb3d4f
 - name: github.com/gogo/protobuf
@@ -15,7 +22,7 @@ imports:
   subpackages:
   - proto
 - name: github.com/golang/protobuf
-  version: 7cc19b78d562895b13596ddce7aafb59dd789318
+  version: 874264fbbb43f4d91e999fecb4b40143ed611400
   subpackages:
   - proto
 - name: github.com/gorilla/context
@@ -25,11 +32,11 @@ imports:
 - name: github.com/gorilla/securecookie
   version: 667fe4e3466a040b780561fe9b51a83a3753eefc
 - name: github.com/gorilla/sessions
-  version: a4e6dd28f9e9274729417506b9bd0a6c3edb91ce
+  version: ca9ada44574153444b00d3fd9c8559e4cc95f896
 - name: github.com/mitchellh/mapstructure
   version: d2dd0262208475919e1a362f675cfc0e7c10e905
 - name: github.com/onsi/ginkgo
-  version: 5437a97bf824dec14e58d68c56ee36e772670c2e
+  version: 43e2af1f01ace55adbb6d7d0f30416476db1baae
   subpackages:
   - config
   - internal/codelocation
@@ -46,7 +53,7 @@ imports:
   - reporters/stenographer
   - types
 - name: github.com/onsi/gomega
-  version: c73e51675ad2455a4515b6213eb7145eaade4824
+  version: c90bd38f8da6e92f8b114953db2f0ad7361fb4b4
   subpackages:
   - format
   - internal/assertion
@@ -79,7 +86,7 @@ imports:
 - name: github.com/yvasiyarov/newrelic_platform_go
   version: 9c099fbc30e90de5bb5c5f94aa5fd08f2daeaacd
 - name: golang.org/x/net
-  version: 3b993948b6f0e651ffb58ba135d8538a68b1cddf
+  version: 96dbb961a39ddccf16860cdd355bfa639c497f23
   subpackages:
   - context
 - name: golang.org/x/oauth2
@@ -87,6 +94,10 @@ imports:
   subpackages:
   - clientcredentials
   - internal
+- name: golang.org/x/sys
+  version: a408501be4d17ee978c04a618e7a1b22af058c0e
+  subpackages:
+  - unix
 - name: google.golang.org/appengine
   version: e234e71924d4aa52444bc76f2f831f13fa1eca60
   subpackages:
@@ -98,5 +109,5 @@ imports:
   - internal/urlfetch
   - urlfetch
 - name: gopkg.in/yaml.v2
-  version: a83829b6f1293c91addabc89d0571c246397bbf4
+  version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
 testImports: []

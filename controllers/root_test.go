@@ -1,16 +1,19 @@
 package controllers_test
 
 import (
-	"github.com/18F/cg-dashboard/controllers"
-	. "github.com/18F/cg-dashboard/helpers/testhelpers"
-
 	"strings"
 	"testing"
+
+	"github.com/cloudfoundry-community/go-cfenv"
+
+	"github.com/18F/cg-dashboard/controllers"
+	. "github.com/18F/cg-dashboard/helpers/testhelpers"
 )
 
 func TestPing(t *testing.T) {
 	response, request := NewTestRequest("GET", "/ping", nil)
-	router, _, _ := controllers.InitApp(MockCompleteEnvVars)
+	env, _ := cfenv.Current()
+	router, _, _ := controllers.InitApp(MockCompleteEnvVars, env)
 	router.ServeHTTP(response, request)
 	if response.Body.String() != "{\"status\": \"alive\", \"build-info\": \"developer-build\"}" {
 		t.Errorf("Expected alive. Found %s\n", response.Body.String())
