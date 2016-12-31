@@ -9,6 +9,7 @@ import EntityIcon from './entity_icon.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
 import orgActions from '../actions/org_actions.js';
 import spaceActions from '../actions/space_actions.js';
+import { orgHref } from '../util/url';
 
 const propTypes = {
   org: React.PropTypes.object.isRequired,
@@ -44,7 +45,7 @@ export default class OrgQuickLook extends React.Component {
   }
 
   orgHref() {
-    return `/#/org/${this.props.org.guid}`;
+    return orgHref(this.props.org.guid);
   }
 
   totalAppCount(spaces) {

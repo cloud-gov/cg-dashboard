@@ -9,6 +9,7 @@ import spaceActions from '../actions/space_actions.js';
 import orgActions from '../actions/org_actions.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
+import * as url from '../util/url';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
@@ -59,17 +60,12 @@ export class Nav extends React.Component {
     orgActions.toggleSpaceMenu(orgGuid);
   }
 
-  // currently displays the space listing
   orgHref(org) {
-    return `/#/org/${org.guid}`;
-  }
-
-  orgSubHref(org, linkHref) {
-    return this.orgHref(org) + linkHref;
+    return url.orgHref(org);
   }
 
   spaceHref(org, spaceGuid) {
-    return this.orgSubHref(org, `/spaces/${spaceGuid}`);
+    return url.spaceHref(org, spaceGuid);
   }
 
   isCurrentSpace(spaceGuid) {

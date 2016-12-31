@@ -6,6 +6,7 @@ import PanelRow from './panel_row.jsx';
 import { appStates } from '../constants.js';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import { appHref } from '../util/url';
 
 const EXTRA_INFO = [
   'state',
@@ -35,7 +36,7 @@ export default class AppQuicklook extends React.Component {
   appHref() {
     const props = this.props;
     const appGuid = props.app.guid;
-    return `/#/org/${props.orgGuid}/spaces/${props.spaceGuid}/apps/${appGuid}`;
+    return appHref(props.orgGuid, props.spaceGuid, appGuid);
   }
 
   appState(appState) {

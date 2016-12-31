@@ -16,6 +16,7 @@ import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import SpaceStore from '../stores/space_store.js';
+import { spaceHref } from '../util/url';
 
 import createStyler from '../util/create_styler';
 
@@ -143,7 +144,7 @@ export default class RoutesPanel extends React.Component {
 
   get spaceLink() {
     return (
-      <a href={ `/#/org/${this.state.orgGuid}/spaces/${this.state.spaceGuid}` }
+      <a href={ spaceHref(this.state.orgGuid, this.state.spaceGuid) }
       className={this.styler('space-link')}>
         { this.state.spaceName }
       </a>

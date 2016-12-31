@@ -97,11 +97,6 @@ export default class Users extends React.Component {
     return resourceGuid;
   }
 
-  userUrl(page) {
-    return `/#/org/${this.state.currentOrgGuid}/spaces/${this.state.currentSpaceGuid}/users/${page}`;
-  }
-
-
   render() {
     let removeHandler;
     let errorMessage;

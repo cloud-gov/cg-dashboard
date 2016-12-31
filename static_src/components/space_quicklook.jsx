@@ -8,6 +8,7 @@ import AppQuicklook from './app_quicklook.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import PanelRow from './panel_row.jsx';
+import { spaceHref } from '../util/url';
 
 const propTypes = {
   space: React.PropTypes.object.isRequired,
@@ -30,7 +31,7 @@ export default class SpaceQuicklook extends React.Component {
 
   spaceHref() {
     const props = this.props;
-    return `/#/org/${props.orgGuid}/spaces/${props.space.guid}`;
+    return spaceHref(props.orgGuid, props.space.guid);
   }
 
   render() {

@@ -16,6 +16,7 @@ import ServiceInstanceListPanel from './service_instance_list_panel.jsx';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import SpaceStore from '../stores/space_store.js';
+import { spaceHref } from '../util/url';
 
 import createStyler from '../util/create_styler';
 
@@ -108,7 +109,7 @@ export default class ServiceInstancePanel extends React.Component {
 
   get spaceLink() {
     return (
-      <a href={ `/#/org/${this.state.currentOrgGuid}/spaces/${this.state.currentSpaceGuid}` }>
+      <a href={ spaceHref(this.state.currentOrgGuid, this.state.currentSpaceGuid) }>
         { this.state.currentSpaceName }
       </a>
     );

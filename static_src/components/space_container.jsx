@@ -33,7 +33,6 @@ export default class SpaceContainer extends React.Component {
     this.props = props;
     this.state = stateSetter();
     this._onChange = this._onChange.bind(this);
-    this.spaceUrl = this.spaceUrl.bind(this);
     this.styler = createStyler(style);
   }
 
@@ -47,10 +46,6 @@ export default class SpaceContainer extends React.Component {
 
   _onChange() {
     this.setState(stateSetter());
-  }
-
-  spaceUrl(page) {
-    return `/#/org/${this.state.currentOrg.guid}/spaces/${this.state.space.guid}/${page}`;
   }
 
   get currentOrgName() {
