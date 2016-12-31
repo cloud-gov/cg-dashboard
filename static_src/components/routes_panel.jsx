@@ -34,7 +34,7 @@ function stateSetter() {
     let newRoute = Object.assign({}, route);
     const domain = DomainStore.get(route.domain_guid);
     if (domain) {
-      newRoute = Object.assign({}, newRoute, { domain_name: domain.name});
+      newRoute = Object.assign({}, newRoute, { domain_name: domain.name });
     }
     if (route.path && (route.path[0] === '/')) {
       newRoute.path = route.path.replace('/', '');
@@ -145,7 +145,8 @@ export default class RoutesPanel extends React.Component {
   get spaceLink() {
     return (
       <a href={ spaceHref(this.state.orgGuid, this.state.spaceGuid) }
-      className={this.styler('space-link')}>
+        className={this.styler('space-link')}
+      >
         { this.state.spaceName }
       </a>
     );
@@ -165,7 +166,6 @@ export default class RoutesPanel extends React.Component {
   }
 
   render() {
-
     return (
       <div>
         { this.createRouteForm }

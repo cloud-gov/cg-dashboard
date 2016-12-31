@@ -33,7 +33,7 @@ function stateSetter() {
 
   return {
     error: UserStore.getError(),
-    currentUserAccess: currentUserAccess,
+    currentUserAccess,
     currentOrgGuid,
     currentSpaceGuid,
     currentType,
@@ -87,8 +87,7 @@ export default class Users extends React.Component {
   }
 
   get resourceType() {
-    var resourceType = this.state.currentType === ORG_NAME ? 'org' : 'space';
-    return resourceType;
+    return this.state.currentType === ORG_NAME ? 'org' : 'space';
   }
 
   get resourceGuid() {

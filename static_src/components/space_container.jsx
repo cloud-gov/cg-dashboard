@@ -1,7 +1,6 @@
 
 import React from 'react';
 
-import Action from './action.jsx';
 import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
 import EntityIcon from './entity_icon.jsx';
@@ -57,8 +56,6 @@ export default class SpaceContainer extends React.Component {
   }
 
   render() {
-    let Content = this.currentContent;
-    let tabNav = <div></div>;
     let main = <div></div>;
     const title = (
       <span>
@@ -108,7 +105,7 @@ export default class SpaceContainer extends React.Component {
 
     return main;
   }
-};
+}
 
 SpaceContainer.propTypes = {
   currentPage: React.PropTypes.string

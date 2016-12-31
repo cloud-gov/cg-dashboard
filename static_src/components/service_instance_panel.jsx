@@ -3,12 +3,9 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import Action from './action.jsx';
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
-import Panel from './panel.jsx';
-import PanelActions from './panel_actions.jsx';
 import PanelHeader from './panel_header.jsx';
 import PanelGroup from './panel_group.jsx';
 import ServiceBindingStore from '../stores/service_binding_store.js';
