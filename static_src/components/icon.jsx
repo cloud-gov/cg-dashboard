@@ -24,6 +24,7 @@ const STYLE_TYPES = [
 ];
 
 const propTypes = {
+  children: React.PropTypes.node,
   name: React.PropTypes.string.isRequired,
   styleType: React.PropTypes.oneOf(STYLE_TYPES),
   iconType: React.PropTypes.oneOf(ICON_TYPES),
@@ -60,10 +61,12 @@ export default class Icon extends React.Component {
                                     borderedClass);
 
     return (
-      <svg className={ iconClasses }>
-        <use xlinkHref={ this.getImagePath(this.props.name) }>
-        </use>
-      </svg>
+      <span>
+        <svg className={ iconClasses }>
+          <use xlinkHref={ this.getImagePath(this.props.name) }>
+          </use>
+        </svg> { this.props.children }
+      </span>
     );
   }
 }
