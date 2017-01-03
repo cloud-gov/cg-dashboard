@@ -41,7 +41,7 @@ export default class SpaceQuicklook extends React.Component {
     if (!this.props.loading) {
       content = (
         <PanelRow>
-          <h3>
+          <h3 className={ this.styler('contents-primary') }>
             <EntityIcon entity="space" iconSize="medium" />
             <a href={ this.spaceHref() }>{ space.name }</a>
           </h3>

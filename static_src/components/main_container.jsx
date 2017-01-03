@@ -43,11 +43,9 @@ export default class App extends React.Component {
 
   render() {
     let content;
-    let sidebar;
 
     if (this.state.isLoggedIn) {
       content = this.props.children;
-      sidebar = <Nav />;
     } else {
       content = <Login />;
     }
@@ -57,11 +55,8 @@ export default class App extends React.Component {
       <div>
         <Disclaimer />
         <Header />
-        <div className={ this.styler('sidenav-parent', 'main_content', 'content-dashboard') }>
-          <nav className={ this.styler('sidenav') }>
-            { sidebar }
-          </nav>
-          <main className={ this.styler('sidenav-main', 'usa-content') }>
+        <div className={ this.styler('main_content', 'content-no_sidebar') }>
+          <main className={ this.styler('usa-content') }>
             <div className={ this.styler('content', 'grid') }>
               { content }
             </div>
