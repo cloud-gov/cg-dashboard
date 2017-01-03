@@ -30,8 +30,8 @@ export default class Header extends React.Component {
       </Action>
     </HeaderLink>:
     <HeaderLink>
-      <Action href="/v2/logout" label="Log Out" type="outline">
-        Log Out
+      <Action href="/v2/logout" label="Log out" type="outline">
+        Log out
       </Action>
     </HeaderLink>;
     return (
@@ -41,7 +41,7 @@ export default class Header extends React.Component {
           <a href="/" className={ this.styler('logo') } title="Home">
             <svg className={ this.styler('logo-img') }>
               <use
-                xlinkHref={ this.getImagePath('logo') }>
+                xlinkHref={ this.getImagePath('logo-dashboard') }>
               </use>
             </svg>
           </a>
