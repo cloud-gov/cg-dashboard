@@ -1,10 +1,11 @@
 
 import React from 'react';
 
-import Action from './action.jsx';
 import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
+import Breadcrumbs from './breadcrumbs.jsx';
 import EntityIcon from './entity_icon.jsx';
+import Icon from './icon.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
@@ -17,6 +18,7 @@ import Users from './users.jsx';
 import { config } from 'skin';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import { orgHref } from '../util/url';
 
 function stateSetter() {
   return {
@@ -33,7 +35,6 @@ export default class SpaceContainer extends React.Component {
     this.props = props;
     this.state = stateSetter();
     this._onChange = this._onChange.bind(this);
-    this.spaceUrl = this.spaceUrl.bind(this);
     this.styler = createStyler(style);
   }
 
@@ -49,8 +50,15 @@ export default class SpaceContainer extends React.Component {
     this.setState(stateSetter());
   }
 
-  spaceUrl(page) {
-    return `/#/org/${this.state.currentOrg.guid}/spaces/${this.state.space.guid}/${page}`;
+  get breadcrumbs() {
+    const org = this.state.currentOrg || {};
+
+    const breadcrumbs = [
+      [<Icon name="home" iconType="fill" iconSize="small" bordered />, '/#/'],
+      [<EntityIcon entity="org" iconSize="small">{ org.name }</EntityIcon>, orgHref(org)]
+    ];
+
+    return <Breadcrumbs path={ breadcrumbs } />;
   }
 
   get currentOrgName() {
@@ -62,8 +70,6 @@ export default class SpaceContainer extends React.Component {
   }
 
   render() {
-    let Content = this.currentContent;
-    let tabNav = <div></div>;
     let main = <div></div>;
     const title = (
       <span>
@@ -75,7 +81,12 @@ export default class SpaceContainer extends React.Component {
       const space = this.state.space;
       main = (
       <div>
-        <PageHeader title={ title } />
+        <div className={ this.styler('grid') }>
+          <div className={ this.styler('grid-width-12') }>
+            { this.breadcrumbs }
+            <PageHeader title={ title } />
+          </div>
+        </div>
         <Panel title="">
 
           <div className={ this.styler('grid panel-overview-header') }>
@@ -113,7 +124,7 @@ export default class SpaceContainer extends React.Component {
 
     return main;
   }
-};
+}
 
 SpaceContainer.propTypes = {
   currentPage: React.PropTypes.string
