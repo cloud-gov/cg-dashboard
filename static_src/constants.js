@@ -2,14 +2,31 @@
 import keymirror from 'keymirror';
 
 const appStates = {
+  crashed: 'CRASHED',
+  down: 'DOWN',
+  flapping: 'FLAPPING',
+  none: 'NONE',
+  restarting: 'RESTARTING',
   running: 'RUNNING',
   started: 'STARTED',
   stopped: 'STOPPED',
-  crashed: 'CRASHED',
-  restarting: 'RESTARTING',
-  none: 'NONE',
   default: 'STOPPED'
 };
+
+// Descriptive states to represent entity health
+const entityHealth = keymirror({
+  // Healthy entity
+  ok: null,
+  // Something is not right, might want to investigate
+  warning: null,
+  // Something is definitely not right and requires some attention
+  error: null,
+  // Entity is inactive
+  inactive: null,
+  // This warrants a bug, so we can figure out what the correct health
+  // assessment is when in this state
+  unknown: null
+});
 
 // All global error action types
 const errorActionTypes = keymirror({
@@ -241,6 +258,7 @@ const activityActionTypes = keymirror({
 export {
   activityActionTypes,
   appActionTypes,
+  entityHealth,
   appStates,
   domainActionTypes,
   errorActionTypes,
