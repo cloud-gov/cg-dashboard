@@ -6,6 +6,14 @@ const HEALTHY_STATES = [
   entityHealth.ok
 ];
 
+const HEALTH_RANKED = [
+  entityHealth.error,
+  entityHealth.warning,
+  entityHealth.ok,
+  entityHealth.inactive
+];
+
+
 export function appHealth(app) {
   if (!app) {
     throw new Error('`app` must be provided.');
@@ -36,4 +44,20 @@ export function appHealth(app) {
 
 export function isHealthyApp(app) {
   return HEALTHY_STATES.includes(appHealth(app));
+}
+
+// Lowest score is worst
+// Unknown health is worst (-1)
+export function rankWorseHealth(health) {
+  return HEALTH_RANKED.indexOf(health);
+}
+
+export function worstHealth(healths) {
+  if (!healths || !healths.length) {
+    return entityHealth.unknown;
+  }
+
+  return healths.reduce((worst, health) =>
+    (rankWorseHealth(worst) > rankWorseHealth(health) ? health : worst)
+  , entityHealth.inactive);
 }
