@@ -3,9 +3,8 @@ import React from 'react';
 
 import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
-import Breadcrumbs from './breadcrumbs.jsx';
+import Breadcrumbs, { HomeBreadcrumbsItem, OrgBreadcrumbsItem } from './breadcrumbs';
 import EntityIcon from './entity_icon.jsx';
-import Icon from './icon.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
@@ -18,7 +17,6 @@ import Users from './users.jsx';
 import { config } from 'skin';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
-import { orgHref } from '../util/url';
 
 function stateSetter() {
   return {
@@ -51,14 +49,12 @@ export default class SpaceContainer extends React.Component {
   }
 
   get breadcrumbs() {
-    const org = this.state.currentOrg || {};
-
-    const breadcrumbs = [
-      [<Icon name="home" iconType="fill" iconSize="small" bordered />, '/#/'],
-      [<EntityIcon entity="org" iconSize="small">{ org.name }</EntityIcon>, orgHref(org)]
-    ];
-
-    return <Breadcrumbs path={ breadcrumbs } />;
+    return (
+      <Breadcrumbs>
+        <HomeBreadcrumbsItem />
+        <OrgBreadcrumbsItem org={ this.state.currentOrg } />
+      </Breadcrumbs>
+    );
   }
 
   get currentOrgName() {
