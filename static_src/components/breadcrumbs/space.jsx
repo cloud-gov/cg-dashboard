@@ -5,7 +5,6 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import BreadcrumbsItem from './breadcrumbs_item.jsx';
 import createStyler from '../../util/create_styler';
-import EntityIcon from '../entity_icon.jsx';
 import { spaceHref } from '../../util/url';
 
 
@@ -17,12 +16,11 @@ export default class OrgBreadcrumbsItem extends React.Component {
 
   render() {
     return (
-      <BreadcrumbsItem url={ spaceHref(this.props.org, this.props.space) }>
-        <EntityIcon entity="space" iconSize="small" bordered>
-          <span className={ this.styler('breadcrumbs-item-link_text') }>
-            { this.props.space.name }
-          </span>
-        </EntityIcon>
+      <BreadcrumbsItem
+        key={ this.props.space.guid }
+        url={ spaceHref(this.props.org, this.props.space) }
+      >
+        { this.props.space.name }
       </BreadcrumbsItem>
     );
   }
