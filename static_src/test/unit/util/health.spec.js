@@ -39,8 +39,8 @@ describe('appHealth()', function() {
         app = { ...app, instances: 2, running_instances: 0 };
       });
 
-      it('returns critical', function() {
-        expect(appHealth(app)).toBe('critical');
+      it('returns error', function() {
+        expect(appHealth(app)).toBe('error');
       });
     });
   });
