@@ -2,28 +2,21 @@
 import React from 'react';
 
 import Icon from './icon.jsx';
-import { appStates } from '../constants.js';
+import { entityHealth } from '../constants.js';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const ENTITIES = ['app', 'service', 'space', 'org'];
 
-const STATE_MAP = {
-  [appStates.running]: 'ok',
-  [appStates.started]: 'ok',
-  [appStates.stopped]: 'inactive',
-  [appStates.crashed]: 'error'
-};
-
 const propTypes = {
   children: React.PropTypes.children,
   entity: React.PropTypes.oneOf(ENTITIES).isRequired,
   iconSize: React.PropTypes.string,
-  state: React.PropTypes.oneOf(Object.values(appStates))
+  health: React.PropTypes.oneOf(Object.values(entityHealth))
 };
 
 const defaultProps = {
-  state: appStates.default
+  health: entityHealth.default
 };
 
 export default class EntityIcon extends React.Component {
@@ -34,12 +27,12 @@ export default class EntityIcon extends React.Component {
   }
 
   render() {
-    const stateClass = STATE_MAP[this.props.state];
+    const statusClass = this.props.health;
 
     return (
       <Icon
         name={ this.props.entity }
-        styleType={ stateClass }
+        styleType={ statusClass }
         iconSize={ this.props.iconSize }
         iconType="fill"
         bordered={ ['app', 'space', 'service'].includes(this.props.entity) }

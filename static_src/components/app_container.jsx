@@ -4,6 +4,7 @@ import React from 'react';
 
 import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
+import { appHealth } from '../util/health';
 import AppStore from '../stores/app_store.js';
 import Breadcrumbs from './breadcrumbs.jsx';
 import EntityIcon from './entity_icon.jsx';
@@ -156,7 +157,7 @@ export default class AppContainer extends React.Component {
     let content = <div>{ loading }</div>;
     const title = (
       <span>
-       <EntityIcon entity="app" state={ this.state.app.state } iconSize="large" />
+       <EntityIcon entity="app" health={ appHealth(this.state.app) } iconSize="large" />
        { this.state.app.name } { this.statusUI }
      </span>
     );

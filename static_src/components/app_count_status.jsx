@@ -5,7 +5,8 @@ import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import CountStatus from './count_status.jsx';
-import { appStates } from '../constants.js';
+import { entityHealth } from '../constants.js';
+import { appHealth } from '../util/health';
 
 const propTypes = {
   appCount: React.PropTypes.number,
@@ -17,17 +18,17 @@ const defaultProps = {
   apps: []
 };
 
-const APP_STATES_RANKED = [
-  appStates.default,
-  appStates.restarting,
-  appStates.running,
-  appStates.started,
-  appStates.stopped,
-  appStates.crashed
+const APP_HEALTH_RANKED = [
+  entityHealth.error,
+  entityHealth.warning,
+  entityHealth.ok,
+  entityHealth.inactive
 ];
 
-function rankWorseState(state) {
-  return APP_STATES_RANKED.indexOf(state);
+// Lowest score is worst
+// Unknown health is worst (-1)
+function rankWorseHealth(state) {
+  return APP_HEALTH_RANKED.indexOf(state);
 }
 
 export default class AppCountStatus extends React.Component {
@@ -37,26 +38,28 @@ export default class AppCountStatus extends React.Component {
     this.styler = createStyler(style);
   }
 
-  worstStatus(apps) {
-    return apps.reduce((previousState, app) => {
-      if (rankWorseState(previousState) < rankWorseState(app.state)) {
-        return app.state;
+  worstHealth(apps) {
+    return apps.reduce((worstHealth, app) => {
+      const health = appHealth(app);
+      if (rankWorseHealth(worstHealth) > rankWorseHealth(health)) {
+        return health;
       }
-      return previousState;
-    }, appStates.none);
+
+      return worstHealth;
+    }, entityHealth.inactive);
   }
 
   render() {
     const props = this.props;
-    let status = appStates.none;
+    let health = entityHealth.inactive;
 
     if (props.apps.length) {
-      status = this.worstStatus(props.apps);
+      health = this.worstHealth(props.apps);
     }
 
     return (
       <CountStatus count={ props.appCount } name="apps"
-        status={ status } iconType="app"
+        health={ health } iconType="app"
       />
     );
   }
