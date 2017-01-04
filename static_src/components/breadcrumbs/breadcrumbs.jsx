@@ -46,9 +46,9 @@ export default class Breadcrumbs extends React.Component {
     }
 
     return (
-      <div className={ this.styler('breadcrumbs') }>
+      <ol className={ this.styler('breadcrumbs') }>
         { breadcrumbs }
-      </div>
+      </ol>
     );
   }
 }

@@ -22,9 +22,9 @@ export default class BreadcrumbsItem extends React.Component {
       : <span className={ this.styler('breadcrumbs-item-current') }>{ this.props.children }</span>;
 
     return (
-      <div className={ this.styler('breadcrumbs-item') }>
+      <li className={ this.styler('breadcrumbs-item') }>
         { content }
-      </div>
+      </li>
     );
   }
 }
