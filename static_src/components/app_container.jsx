@@ -5,10 +5,9 @@ import React from 'react';
 import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
 import AppStore from '../stores/app_store.js';
-import Breadcrumbs from './breadcrumbs.jsx';
+import Breadcrumbs from './breadcrumbs';
 import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
-import Icon from './icon.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
@@ -19,7 +18,6 @@ import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
 import UsageLimits from './usage_and_limits.jsx';
 import appActions from '../actions/app_actions.js';
-import * as url from '../util/url';
 
 import createStyler from '../util/create_styler';
 
@@ -135,22 +133,6 @@ export default class AppContainer extends React.Component {
     );
   }
 
-  get breadcrumbs() {
-    const org = this.state.org || {};
-    const space = this.state.space || {};
-
-    const breadcrumbs = [
-      [<Icon name="home" iconType="fill" iconSize="small" bordered />, '/#/'],
-      [<EntityIcon entity="org" iconSize="small">{ org.name }</EntityIcon>, url.orgHref(org)],
-      [
-        <EntityIcon entity="space" iconSize="small" bordered>{ space.name }</EntityIcon>,
-        url.spaceHref(org, space)
-      ]
-    ];
-
-    return <Breadcrumbs path={ breadcrumbs } />;
-  }
-
   render() {
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
@@ -168,7 +150,7 @@ export default class AppContainer extends React.Component {
         <div>
           <div className={ this.styler('grid') }>
             <div className={ this.styler('grid-width-12') }>
-              { this.breadcrumbs }
+              <Breadcrumbs />
               <PageHeader title={ title }>
                 { this.restart }
               </PageHeader>

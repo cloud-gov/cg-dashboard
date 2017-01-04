@@ -16,7 +16,7 @@ const STATE_MAP = {
 };
 
 const propTypes = {
-  children: React.PropTypes.children,
+  children: React.PropTypes.node,
   entity: React.PropTypes.oneOf(ENTITIES).isRequired,
   iconSize: React.PropTypes.string,
   state: React.PropTypes.oneOf(Object.values(appStates))

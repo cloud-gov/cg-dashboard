@@ -143,6 +143,10 @@ export default class RoutesPanel extends React.Component {
   }
 
   get spaceLink() {
+    if (!this.state.orgGuid || !this.state.spaceGuid) {
+      return null;
+    }
+
     return (
       <a href={ spaceHref(this.state.orgGuid, this.state.spaceGuid) }
         className={this.styler('space-link')}

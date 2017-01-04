@@ -41,6 +41,11 @@ function login() {
 }
 
 function overview() {
+  // Reset the state
+  orgActions.changeCurrentOrg();
+  spaceActions.changeCurrentSpace();
+  appActions.changeCurrentApp();
+
   cfApi.fetchSpaces().then((spaces) => {
     let i = 0;
     const max = Math.min(MAX_OVERVIEW_SPACES, spaces.length);
@@ -54,6 +59,10 @@ function overview() {
 }
 
 function org(orgGuid) {
+  // Reset the state
+  spaceActions.changeCurrentSpace();
+  appActions.changeCurrentApp();
+
   orgActions.toggleSpaceMenu(orgGuid);
   orgActions.fetch(orgGuid);
   cfApi.fetchSpaces().then(() => spaceActions.fetchAllForOrg(orgGuid));
@@ -67,6 +76,9 @@ function org(orgGuid) {
 }
 
 function space(orgGuid, spaceGuid) {
+  // Reset the state
+  appActions.changeCurrentApp();
+
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
   cfApi.fetchOrg(orgGuid);
@@ -121,6 +133,11 @@ function checkAuth() {
 }
 
 function notFound() {
+  // Reset the state
+  orgActions.changeCurrentOrg();
+  spaceActions.changeCurrentSpace();
+  appActions.changeCurrentApp();
+
   ReactDOM.render(<h1>Not Found</h1>, mainEl);
 }
 

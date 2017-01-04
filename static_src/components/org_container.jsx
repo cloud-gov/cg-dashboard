@@ -6,9 +6,9 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 
 import AppCountStatus from './app_count_status.jsx';
-import Breadcrumbs from './breadcrumbs.jsx';
+import Breadcrumbs from './breadcrumbs';
+
 import EntityIcon from './entity_icon.jsx';
-import Icon from './icon.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
@@ -75,14 +75,6 @@ export default class OrgContainer extends React.Component {
     }, []);
   }
 
-  get breadcrumbs() {
-    const breadcrumbs = [
-      [<Icon name="home" iconType="fill" iconSize="small" bordered />, '/#/']
-    ];
-
-    return <Breadcrumbs path={ breadcrumbs } />;
-  }
-
   render() {
     const state = this.state;
     let loading = <Loading text="Loading organization" />;
@@ -104,7 +96,7 @@ export default class OrgContainer extends React.Component {
       <div className={ this.styler('grid') }>
         <div className={ this.styler('grid') }>
           <div className={ this.styler('grid-width-12') }>
-            { this.breadcrumbs }
+            <Breadcrumbs />
             <PageHeader title={ title } />
           </div>
         </div>
