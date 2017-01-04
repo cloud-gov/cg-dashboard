@@ -3,7 +3,7 @@ import React from 'react';
 
 import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
-import Breadcrumbs, { HomeBreadcrumbsItem, OrgBreadcrumbsItem } from './breadcrumbs';
+import Breadcrumbs from './breadcrumbs';
 import EntityIcon from './entity_icon.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
@@ -48,15 +48,6 @@ export default class SpaceContainer extends React.Component {
     this.setState(stateSetter());
   }
 
-  get breadcrumbs() {
-    return (
-      <Breadcrumbs>
-        <HomeBreadcrumbsItem />
-        <OrgBreadcrumbsItem org={ this.state.currentOrg } />
-      </Breadcrumbs>
-    );
-  }
-
   get currentOrgName() {
     return this.state.currentOrg ? this.state.currentOrg.name : '';
   }
@@ -79,7 +70,7 @@ export default class SpaceContainer extends React.Component {
       <div>
         <div className={ this.styler('grid') }>
           <div className={ this.styler('grid-width-12') }>
-            { this.breadcrumbs }
+            <Breadcrumbs />
             <PageHeader title={ title } />
           </div>
         </div>

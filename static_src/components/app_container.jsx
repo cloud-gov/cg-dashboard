@@ -5,10 +5,7 @@ import React from 'react';
 import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
 import AppStore from '../stores/app_store.js';
-import Breadcrumbs, {
-  HomeBreadcrumbsItem,
-  OrgBreadcrumbsItem,
-  SpaceBreadcrumbsItem } from './breadcrumbs';
+import Breadcrumbs from './breadcrumbs';
 import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
 import Loading from './loading.jsx';
@@ -136,19 +133,6 @@ export default class AppContainer extends React.Component {
     );
   }
 
-  get breadcrumbs() {
-    const org = this.state.org || {};
-    const space = this.state.space || {};
-
-    return (
-      <Breadcrumbs>
-        <HomeBreadcrumbsItem />
-        <OrgBreadcrumbsItem org={ org } />
-        <SpaceBreadcrumbsItem org={ org } space={ space } />
-      </Breadcrumbs>
-    );
-  }
-
   render() {
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
@@ -166,7 +150,7 @@ export default class AppContainer extends React.Component {
         <div>
           <div className={ this.styler('grid') }>
             <div className={ this.styler('grid-width-12') }>
-              { this.breadcrumbs }
+              <Breadcrumbs />
               <PageHeader title={ title }>
                 { this.restart }
               </PageHeader>
