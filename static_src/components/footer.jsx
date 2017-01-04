@@ -1,7 +1,6 @@
 
 import React from 'react';
 
-import Action from './action.jsx';
 import createStyler from '../util/create_styler';
 import { config } from 'skin';
 import style from 'cloudgov-style/css/cloudgov-style.css';

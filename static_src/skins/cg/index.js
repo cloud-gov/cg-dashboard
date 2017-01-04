@@ -50,16 +50,16 @@ export const config = {
     disclaimer: <span>cloud.gov is a United States Government platform.</span>,
     links: [
       {
-        text: "cloud.gov home",
-        url: "https://cloud.gov"
+        text: 'cloud.gov home',
+        url: 'https://cloud.gov'
       },
       {
-        text: "Contact",
-        url: "https://cloud.gov/docs/help/"
+        text: 'Contact',
+        url: 'https://cloud.gov/docs/help/'
       },
       {
-        text: "Contributing to cloud.gov",
-        url: "https://cloud.gov/docs/ops/repos/"
+        text: 'Contributing to cloud.gov',
+        url: 'https://cloud.gov/docs/ops/repos/'
       }
     ]
   },
