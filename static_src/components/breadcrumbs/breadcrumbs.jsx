@@ -3,11 +3,10 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../../util/create_styler';
 import AppStore from '../../stores/app_store';
+import BreadcrumbsItem from './breadcrumbs_item.jsx';
 import OrgStore from '../../stores/org_store';
 import SpaceStore from '../../stores/space_store';
-import HomeBreadcrumbsItem from './home.jsx';
-import OrgBreadcrumbsItem from './org.jsx';
-import SpaceBreadcrumbsItem from './space.jsx';
+import { orgHref, spaceHref } from '../../util/url';
 
 
 function stateSetter() {
@@ -31,18 +30,27 @@ export default class Breadcrumbs extends React.Component {
 
   render() {
     let breadcrumbs = [];
+    const { org, space, app } = this.state;
 
     // Add the parent states
-    if (this.state.org && this.state.org.name) {
-      breadcrumbs.push(<HomeBreadcrumbsItem />);
+    if (org && org.name) {
+      breadcrumbs.push(<BreadcrumbsItem key="home" url="/#/">overview</BreadcrumbsItem>);
     }
 
-    if (this.state.space && this.state.space.name) {
-      breadcrumbs.push(<OrgBreadcrumbsItem org={ this.state.org } />);
+    if (space && space.name) {
+      breadcrumbs.push(
+        <BreadcrumbsItem key={ org.guid } url={ orgHref(org) }>{ org.name }</BreadcrumbsItem>
+      );
     }
 
-    if (this.state.app && this.state.app.name) {
-      breadcrumbs.push(<SpaceBreadcrumbsItem org={ this.state.org } space={ this.state.space } />);
+    if (app && app.name) {
+      breadcrumbs.push(
+        (
+          <BreadcrumbsItem key={ space.guid } url={ spaceHref(org, space) }>
+            { space.name }
+          </BreadcrumbsItem>
+        )
+      );
     }
 
     return (
