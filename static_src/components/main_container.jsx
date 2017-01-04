@@ -6,6 +6,7 @@ import overrideStyle from '../css/overrides.css';
 import createStyler from '../util/create_styler';
 
 import Disclaimer from './disclaimer.jsx';
+import Footer from './footer.jsx';
 import Header from './header.jsx';
 import Login from './login.jsx';
 import LoginStore from '../stores/login_store.js';
@@ -62,6 +63,7 @@ export default class App extends React.Component {
             </div>
           </main>
         </div>
+        <Footer />
       </div>
     );
   }
