@@ -36,12 +36,33 @@
  * ```
  */
 
+import React from 'react';
+
 import InfoActivities from '../../components/info_activities.jsx';
 import InfoEnvironments from '../../components/info_environments.jsx';
 import InfoSandbox from '../../components/info_sandbox.jsx';
 import InfoStructure from '../../components/info_structure.jsx';
 
 export const config = {
+  footer: {
+    author_note: <span>Built and maintained by <a href="https://18f.gsa.gov">18F</a></span>,
+    code_note: <span><a href="https://cloud.gov/docs/ops/repos/">Open source</a> and in the public domain</span>,
+    disclaimer: <span>A United States government platform</span>,
+    links: [
+      {
+        text: 'cloud.gov home',
+        url: 'https://cloud.gov'
+      },
+      {
+        text: 'Contact',
+        url: 'https://cloud.gov/docs/help/'
+      },
+      {
+        text: 'Contribute to cloud.gov',
+        url: 'https://cloud.gov/docs/ops/repos/'
+      }
+    ]
+  },
   header: {
     disclaimer: 'An official website of the United States Government',
     show_flag: true,
