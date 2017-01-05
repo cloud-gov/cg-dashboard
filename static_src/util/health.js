@@ -13,6 +13,16 @@ const HEALTH_RANKED = [
   entityHealth.inactive
 ];
 
+const APP_INSTANCE_STATE_RANKED = [
+  appStates.down,
+  appStates.crashed,
+  appStates.flapping,
+  appStates.restarting,
+  appStates.running,
+  appStates.started,
+  appStates.stopped
+];
+
 
 export function appHealth(app) {
   if (!app) {
@@ -42,14 +52,18 @@ export function appHealth(app) {
   return entityHealth.unknown;
 }
 
+// Lowest score is worst
+function rank(ranked, value) {
+  return ranked.indexOf(value);
+}
+
 export function isHealthyApp(app) {
   return HEALTHY_STATES.includes(appHealth(app));
 }
 
-// Lowest score is worst
 // Unknown health is worst (-1)
 export function rankWorseHealth(health) {
-  return HEALTH_RANKED.indexOf(health);
+  return rank(HEALTH_RANKED, health);
 }
 
 export function worstHealth(healths) {
@@ -57,7 +71,27 @@ export function worstHealth(healths) {
     return entityHealth.unknown;
   }
 
-  return healths.reduce((worst, health) =>
-    (rankWorseHealth(worst) > rankWorseHealth(health) ? health : worst)
-  , entityHealth.inactive);
+  return healths.reduce((worst, health) => {
+    if (!worst) {
+      return health;
+    }
+
+    return rankWorseHealth(worst) > rankWorseHealth(health) ? health : worst;
+  });
+}
+
+export function worstAppInstanceState(states) {
+  if (!states || !states.length) {
+    return appStates.none;
+  }
+
+  const score = rank.bind(null, APP_INSTANCE_STATE_RANKED);
+
+  return states.reduce((worst, state) => {
+    if (!worst) {
+      return state;
+    }
+
+    return score(worst) > score(state) ? state : worst;
+  });
 }

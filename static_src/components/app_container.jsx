@@ -4,7 +4,7 @@ import React from 'react';
 
 import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
-import { appHealth } from '../util/health';
+import { appHealth, worstAppInstanceState } from '../util/health';
 import AppStore from '../stores/app_store.js';
 import Breadcrumbs from './breadcrumbs.jsx';
 import EntityIcon from './entity_icon.jsx';
@@ -96,8 +96,11 @@ export default class AppContainer extends React.Component {
   }
 
   get statusUI() {
+    const worstState = worstAppInstanceState(
+      (this.state.app.app_instances || []).map(instance => instance.state)
+    );
     return (
-      <span className={ this.styler('usa-label') }>{ this.state.app.state }</span>
+      <span className={ this.styler('usa-label') }>{ worstState }</span>
     );
   }
 
