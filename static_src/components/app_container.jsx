@@ -6,7 +6,7 @@ import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
 import { appHealth } from '../util/health';
 import AppStore from '../stores/app_store.js';
-import Breadcrumbs from './breadcrumbs';
+import Breadcrumbs from './breadcrumbs.jsx';
 import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
 import Loading from './loading.jsx';
