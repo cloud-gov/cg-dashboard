@@ -147,6 +147,9 @@ export default class AppContainer extends React.Component {
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
     } else if (!this.state.loading && appReady(this.state.app)) {
+      const usageSecondary = (
+        <span>View more usage data at <a href="https://logs.cloud.gov">logs.cloud.gov</a></span>
+      );
       content = (
         <div>
           <div className={ this.styler('grid') }>
@@ -157,8 +160,7 @@ export default class AppContainer extends React.Component {
               </PageHeader>
             </div>
           </div>
-          <Panel title="Usage and allocation">
-              <span>View more usage data at <a href="https://logs.cloud.gov">logs.cloud.gov</a></span>
+          <Panel title="Usage and allocation" secondary={ usageSecondary }>
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 
