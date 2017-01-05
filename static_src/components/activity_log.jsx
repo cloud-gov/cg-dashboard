@@ -88,8 +88,10 @@ export default class ActivityLog extends React.Component {
     }
 
     return (
-      <div className={ this.styler('activity_log-container') }>
-        { content }
+      <div className={ this.styler('panel-content') }>
+        <div className={ this.styler('activity_log-container') }>
+          { content }
+        </div>
       </div>
     );
   }

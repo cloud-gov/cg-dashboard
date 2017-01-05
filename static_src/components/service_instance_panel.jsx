@@ -118,7 +118,7 @@ export default class ServiceInstancePanel extends React.Component {
 
     if (!this.state.loading) {
       content = (
-      <div>
+      <div className={ this.styler('panel-content') }>
         <PanelGroup key="1">
           <PanelHeader>
             <h2 className={ this.styler('panel-row-header') }>Bound service instances</h2>

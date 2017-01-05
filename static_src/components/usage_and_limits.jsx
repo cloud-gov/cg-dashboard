@@ -231,7 +231,7 @@ export default class UsageAndLimits extends React.Component {
 
     if (this.props.app) {
       content = (
-      <div>
+      <div className={ this.styler('panel-content') }>
         <PanelGroup>
           <PanelGroup columns={ 6 }>
             <PanelRow styleClass="clean" >

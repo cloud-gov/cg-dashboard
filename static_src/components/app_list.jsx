@@ -58,10 +58,14 @@ export default class AppList extends React.Component {
     let content = <div>{ loading }</div>;
 
     if (this.state.empty) {
-      content = <h4 className="test-none_message">No apps</h4>;
+      content = (
+        <div className={ this.styler('panel-content') }>
+          <h4 className="test-none_message">No apps</h4>
+        </div>
+      );
     } else if (!this.state.loading && this.state.apps.length > 0) {
       content = (
-        <div>
+        <div className={ this.styler('panel-content') }>
           <div className={ this.styler('panel-row-header') }>
             <span>Apps in</span> <EntityIcon entity="space" iconSize="medium" />
             <span> { this.state.currentSpaceName }</span>

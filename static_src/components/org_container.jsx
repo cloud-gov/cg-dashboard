@@ -86,7 +86,11 @@ export default class OrgContainer extends React.Component {
     );
 
     if (state.empty) {
-      content = <h4 className="test-none_message">No organizations</h4>;
+      content = (
+        <div className={ this.styler('panel-content') }>
+          <h4 className="test-none_message">No organizations</h4>
+        </div>
+      );
     } else if (!state.loading && state.org) {
       const allApps = this.allApps();
       const allServices = this.allServices();
@@ -100,7 +104,7 @@ export default class OrgContainer extends React.Component {
             <PageHeader title={ title } />
           </div>
         </div>
-        <Panel title="">
+        <Panel>
           <div className={ this.styler('grid panel-overview-header') }>
             <div className={ this.styler('grid-width-6') }>
               <h1 className={ this.styler('panel-title') }>Organization overview</h1>
@@ -116,15 +120,17 @@ export default class OrgContainer extends React.Component {
             </div>
           </div>
 
-          { state.spaces.map((space) => (
-            <SpaceQuicklook
-              key={ space.guid }
-              space={ space }
-              orgGuid={ state.org.guid }
-              showAppDetail
-            />
-            )
-          )}
+          <div className={ this.styler('panel-content') }>
+            { state.spaces.map((space) => (
+              <SpaceQuicklook
+                key={ space.guid }
+                space={ space }
+                orgGuid={ state.org.guid }
+                showAppDetail
+              />
+              )
+            )}
+          </div>
         </Panel>
 
         <Panel title="Organization users">

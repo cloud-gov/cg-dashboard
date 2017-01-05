@@ -74,14 +74,12 @@ export default class Marketplace extends React.Component {
     }
 
     let loading = <Loading text="Loading marketplace services" />;
-    let content = <div>{ loading }</div>;
+    let content = <div className={ this.styler('panel-content') }>{ loading }</div>;
     if (!this.state.loading) {
       let list = <ServiceList initialServices={ state.services } />;
       content = (
-        <div>
-          <div>
-            <p className={ this.styler('page-dek') }>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</p>
-          </div>
+        <div className={ this.styler('panel-content') }>
+          <p className={ this.styler('page-dek') }>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</p>
           { list }
           { form }
         </div>

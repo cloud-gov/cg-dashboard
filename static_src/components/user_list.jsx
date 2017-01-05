@@ -138,8 +138,10 @@ export default class UserList extends React.Component {
     }
 
     return (
-    <div className={ this.styler('tableWrapper') }>
-      { content }
+    <div className={ this.styler('panel-content') }>
+      <div className={ this.styler('tableWrapper') }>
+        { content }
+      </div>
     </div>
     );
   }

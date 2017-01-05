@@ -100,10 +100,14 @@ export default class ServiceInstanceList extends React.Component {
     };
 
     if (this.state.empty) {
-      content = <h4 className="test-none_message">No service instances</h4>;
+      content = (
+        <div className={ this.styler('panel-content') }>
+          <h4 className="test-none_message">No service instances</h4>
+        </div>
+      );
     } else if (!this.state.loading && this.state.serviceInstances.length) {
       content = (
-      <div>
+        <div className={ this.styler('panel-content') }>
         <p><em>
           To create service instances for this space, use this org’s marketplace (at left or on the command line). Then bind instances to apps using the command line. (<a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.)
         </em></p>
