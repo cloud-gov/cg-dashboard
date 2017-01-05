@@ -43,7 +43,7 @@ export default class ConfirmationBox extends React.Component {
         { this.props.message }</span>
         <div>
           <Action label="Cancel"
-              style="cautious"
+              style="base"
               type="outline"
               clickHandler={ this._cancelHandler }>
             <span>Cancel</span>
