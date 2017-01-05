@@ -24,22 +24,23 @@ export default class Panel extends React.Component {
 
   render() {
 
-    let panelHed = null;
-    if (this.props.title != '') {
-      panelHed = <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>;
-    }
-
+    let panelTitle = null;
     let panelSecondary = null;
-    if (this.props.secondary != '') {
-      panelSecondary = <p className={ this.styler('panel-secondary') }>{ this.props.secondary }</p>;
+    let panelHed = null;
+    if (this.props.title != null) {
+      panelTitle = <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>;
+      if (this.props.secondary != null) {
+        panelSecondary = <p className={ this.styler('panel-secondary') }>{ this.props.secondary }</p>;
+      }
+      panelHed =  <div className={ this.styler('panel-header') }>
+                    { panelTitle }
+                    { panelSecondary }
+                  </div>;
     }
 
     return (
       <div className={ this.styler('panel') }>
-        <div className={ this.styler('panel-header') }>
-          {panelHed}
-          {panelSecondary}
-        </div>
+        { panelHed }
         <div className={ this.styler('panel-rows') }>
           { this.props.children }
         </div>
