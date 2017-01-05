@@ -64,7 +64,7 @@ class AppStore extends BaseStore {
         }).catch((error) => {
           const erroredApp = Object.assign({}, action.app, {
             error,
-            state: appStates.none
+            state: appStates.unknown
           });
 
           this.merge('guid', erroredApp);

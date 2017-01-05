@@ -246,7 +246,7 @@ export default {
 
   fetchAppStats(appGuid) {
     return http.get(`${APIV}/apps/${appGuid}/stats`).then((res) => {
-      appActions.receivedAppStats(appGuid, res.data[0]);
+      appActions.receivedAppStats(appGuid, { app_instances: Object.values(res.data) });
     }).catch((err) => {
       handleError(err);
     });

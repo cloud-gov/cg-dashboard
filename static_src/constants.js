@@ -5,7 +5,7 @@ const appStates = {
   crashed: 'CRASHED',
   down: 'DOWN',
   flapping: 'FLAPPING',
-  none: 'NONE',
+  unknown: 'UNKNOWN',
   restarting: 'RESTARTING',
   running: 'RUNNING',
   started: 'STARTED',
