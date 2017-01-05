@@ -82,7 +82,7 @@ export function worstHealth(healths) {
 
 export function worstAppInstanceState(states) {
   if (!states || !states.length) {
-    return appStates.none;
+    return appStates.unknown;
   }
 
   const score = rank.bind(null, APP_INSTANCE_STATE_RANKED);
