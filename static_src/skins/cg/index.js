@@ -45,7 +45,7 @@ import InfoStructure from '../../components/info_structure.jsx';
 
 export const config = {
   footer: {
-    author_note: <span>Built and maintained by <a href="18f.gsa.gov">18F</a></span>,
+    author_note: <span>Built and maintained by <a href="https://18f.gsa.gov">18F</a></span>,
     code_note: <span><a href="https://cloud.gov/docs/ops/repos/">Open source</a> and in the public domain</span>,
     disclaimer: <span>A United States government platform</span>,
     links: [
