@@ -174,7 +174,7 @@ export default class RouteForm extends React.Component {
         <div className={ this.styler('route-form-actions') }>
           <PanelActions>
             <Action clickHandler={ this.props.cancelHandler } label="Cancel"
-              style="cautious" type="outline"
+              style="base" type="outline"
             >
               Cancel
             </Action>
