@@ -105,13 +105,13 @@ export default class UsageAndLimits extends React.Component {
     return (
     <div className={ this.styler('panel-row-space') }>
       <div className={ this.styler('panel-column') }>
-        <ResourceUsage title="Instance disk"
+        <ResourceUsage title="Instance disk used"
           amountUsed={ this.getStat('disk', average.bind(null, this.props.app.running_instances)) }
           amountTotal={ this.getStat('disk_quota') }
         />
       </div>
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
-        <ResourceUsage title="Instance disk"
+        <ResourceUsage title="Instance disk allocation"
           editable={ this.state.editing }
           max={ 2 * 1024 }
           min={ 1 }
@@ -132,13 +132,13 @@ export default class UsageAndLimits extends React.Component {
     return (
     <div>
       <div className={ this.styler('panel-column') }>
-        <ResourceUsage title="Instance memory"
+        <ResourceUsage title="Instance memory used"
           amountUsed={ this.getStat('mem', average.bind(null, this.props.app.running_instances)) }
           amountTotal={ this.getStat('mem_quota') }
         />
       </div>
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
-        <ResourceUsage title="Instance memory"
+        <ResourceUsage title="Instance memory allocation"
           editable={ this.state.editing }
           min={ 1 }
           max={ Math.floor(this.props.quota.memory_limit / this.state.partialApp.instances) }
@@ -152,25 +152,28 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get totalDisk() {
-    // TODO get space quota
+    // There is no org/space level disk quota, so only show single stat
     return (
-    <div className={ this.styler('panel-row-space') }>
-      <ResourceUsage title="Total disk"
-        amountUsed={ this.getStat('disk', sum) }
-        amountTotal={ this.getStat('disk_quota') * this.props.app.instances }
-      />
-    </div>
+      <div className={ this.styler('panel-row-space') }>
+        <ResourceUsage title="Total disk used"
+          amountTotal={ this.getStat('disk', sum) }
+        />
+      </div>
     );
   }
 
   get totalMemory() {
+    const amountTotal = this.props.quota.memory_limit * 1024 * 1024;
+    const amountUsed = this.getStat('mem', sum);
+    const title = amountUsed ? 'Total memory used' : 'Total memory available';
+
     return (
-    <div>
-      <ResourceUsage title="Total memory"
-        amountUsed={ this.getStat('mem', sum) }
-        amountTotal={ this.props.quota.memory_limit * 1024 * 1024 }
-      />
-    </div>
+      <div>
+        <ResourceUsage title={ title }
+          amountUsed={ amountUsed }
+          amountTotal={ amountTotal }
+        />
+      </div>
     );
   }
 

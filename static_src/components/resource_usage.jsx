@@ -43,7 +43,7 @@ export default class ResourceUsage extends React.Component {
 
   render() {
     const props = this.props;
-    let title = <h2 className={ this.styler('stat-header')}>{ props.title } allocated</h2>;
+    let title = <h2 className={ this.styler('stat-header')}>{ props.title }</h2>;
     let stat = (
       <Stat
         editable={ props.editable }
@@ -55,8 +55,8 @@ export default class ResourceUsage extends React.Component {
       />
     );
 
-    if (props.amountUsed) {
-      title = <h2 className={ this.styler('stat-header')}>{ props.title } used</h2>;
+    if (props.amountUsed && props.amountTotal) {
+      title = <h2 className={ this.styler('stat-header')}>{ props.title }</h2>;
       stat = (
         <Stat
           primaryStat={ props.amountUsed }
@@ -65,6 +65,7 @@ export default class ResourceUsage extends React.Component {
         />
       );
     }
+
     return (
       <div style={{ width: '100%' }}>
         { title }
