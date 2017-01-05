@@ -213,7 +213,7 @@ export default {
       .then((res) => {
         serviceActions.createdInstance(this.formatSplitResponse(res.data));
       }).catch((err) => {
-        handleError(err, serviceActions.errorCreateInstance);
+        handleError(err.response, serviceActions.errorCreateInstance);
       });
   },
 
@@ -266,13 +266,15 @@ export default {
         const updatedApp = Object.assign({}, res.data.entity, { guid: appGuid });
         appActions.updatedApp(updatedApp);
       })
-      .catch((err) => handleError(err, appActions.error.bind(null, appGuid)));
+      .catch((err) => handleError(err.response,
+        appActions.error.bind(null, appGuid)));
   },
 
   postAppRestart(appGuid) {
     return http.post(`${APIV}/apps/${appGuid}/restage`).then(() => {
       appActions.restarted(appGuid);
-    }).catch((err) => handleError(err, appActions.error.bind(this, appGuid)));
+    }).catch((err) => handleError(err.response,
+      appActions.error.bind(this, appGuid)));
   },
 
   /**
@@ -308,10 +310,10 @@ export default {
       .then(() => {
         userActions.deletedUser(userGuid, orgGuid);
       }).catch((err) => {
-        if (err.data) {
+        if (err.response.data) {
           userActions.errorRemoveUser(userGuid, err.data);
         } else {
-          handleError(err);
+          handleError(err.response);
         }
       });
   },
@@ -393,7 +395,7 @@ export default {
     return http.post(`${APIV}/routes`, payload).then((res) => {
       routeActions.createdRoute(this.formatSplitResponse(res.data));
       return res.data;
-    }).catch((err) => handleError(err, routeActions.errorCreateRoute));
+    }).catch((err) => handleError(err.response, routeActions.errorCreateRoute));
   },
 
   // http://apidocs.cloudfoundry.org/241/routes/delete_a_particular_route.html
@@ -402,7 +404,7 @@ export default {
     return http.delete(url).then(() => {
       routeActions.deletedRoute(routeGuid);
     }).catch((err) => {
-      handleError(err, routeActions.error.bind(this, routeGuid));
+      handleError(err.response, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -412,7 +414,7 @@ export default {
     return http.put(url).then(() => {
       routeActions.associatedApp(routeGuid, appGuid);
     }).catch((err) => {
-      handleError(err, routeActions.error.bind(this, routeGuid));
+      handleError(err.response, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -421,7 +423,7 @@ export default {
     return http.delete(url).then(() => {
       routeActions.unassociatedApp(routeGuid, appGuid);
     }).catch((err) => {
-      handleError(err, routeActions.error.bind(this, routeGuid));
+      handleError(err.response, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -437,7 +439,7 @@ export default {
     return http.put(url, payload).then(() => {
       routeActions.updatedRoute(routeGuid, route);
     }).catch((err) => {
-      handleError(err, routeActions.error.bind(this, routeGuid));
+      handleError(err.response, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -468,7 +470,7 @@ export default {
     return http.post(`${APIV}/service_bindings`, payload).then((res) => {
       serviceActions.boundService(this.formatSplitResponse(res.data));
     }).catch((err) => {
-      handleError(err, serviceActions.instanceError.bind(
+      handleError(err.response, serviceActions.instanceError.bind(
         this, serviceInstanceGuid));
     });
   },
@@ -478,7 +480,7 @@ export default {
     () => {
       serviceActions.unboundService(serviceBinding);
     }).catch((err) => {
-      handleError(err, serviceActions.instanceError.bind(
+      handleError(err.response, serviceActions.instanceError.bind(
         this, serviceBinding.service_instance_guid));
     });
   }

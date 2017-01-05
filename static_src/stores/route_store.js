@@ -218,7 +218,8 @@ class RouteStore extends BaseStore {
         const route = this.get(action.routeGuid);
         if (!route) break;
         const newRoute = Object.assign({}, route, {
-          error: action.error
+          error: action.error,
+          loading: null
         });
         this.merge('guid', newRoute, (changed) => {
           if (changed) this.emitChange();
