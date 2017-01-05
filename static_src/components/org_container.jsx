@@ -6,7 +6,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 
 import AppCountStatus from './app_count_status.jsx';
-import Breadcrumbs from './breadcrumbs';
+import Breadcrumbs from './breadcrumbs.jsx';
 
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';

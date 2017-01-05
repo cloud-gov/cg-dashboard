@@ -1,12 +1,12 @@
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import createStyler from '../../util/create_styler';
-import AppStore from '../../stores/app_store';
+import createStyler from '../util/create_styler';
+import AppStore from '../stores/app_store';
 import BreadcrumbsItem from './breadcrumbs_item.jsx';
-import OrgStore from '../../stores/org_store';
-import SpaceStore from '../../stores/space_store';
-import { orgHref, spaceHref } from '../../util/url';
+import OrgStore from '../stores/org_store';
+import SpaceStore from '../stores/space_store';
+import { orgHref, spaceHref } from '../util/url';
 
 
 function stateSetter() {
