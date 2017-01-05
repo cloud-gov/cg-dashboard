@@ -17,14 +17,20 @@ const APIV = '/v2';
 
 function handleError(err, errHandler = errorActions.errorFetch) {
   // An http error should be passed to error actions.
-  if (err.status && err.status >= 400) {
-    if (err.data) {
-      errHandler(err.data);
+  // When an error has a `reponse` object, it's likely from ajax.
+  if (err.response) {
+    const errRes = err.response;
+    if (errRes.status && errRes.status >= 400) {
+      if (errRes.data) {
+        errHandler(errRes.data);
+      } else {
+        errHandler(errRes);
+      }
+      noticeError(err);
     } else {
-      errHandler(err);
+      throw err;
     }
-    noticeError(err);
-  // Other exceptions should be thrown so they surface.
+    // Other exceptions should be thrown so they surface.
   } else {
     throw err;
   }
@@ -213,7 +219,7 @@ export default {
       .then((res) => {
         serviceActions.createdInstance(this.formatSplitResponse(res.data));
       }).catch((err) => {
-        handleError(err.response, serviceActions.errorCreateInstance);
+        handleError(err, serviceActions.errorCreateInstance);
       });
   },
 
@@ -266,14 +272,14 @@ export default {
         const updatedApp = Object.assign({}, res.data.entity, { guid: appGuid });
         appActions.updatedApp(updatedApp);
       })
-      .catch((err) => handleError(err.response,
+      .catch((err) => handleError(err,
         appActions.error.bind(null, appGuid)));
   },
 
   postAppRestart(appGuid) {
     return http.post(`${APIV}/apps/${appGuid}/restage`).then(() => {
       appActions.restarted(appGuid);
-    }).catch((err) => handleError(err.response,
+    }).catch((err) => handleError(err,
       appActions.error.bind(this, appGuid)));
   },
 
@@ -313,7 +319,7 @@ export default {
         if (err.response.data) {
           userActions.errorRemoveUser(userGuid, err.data);
         } else {
-          handleError(err.response);
+          handleError(err);
         }
       });
   },
@@ -395,7 +401,7 @@ export default {
     return http.post(`${APIV}/routes`, payload).then((res) => {
       routeActions.createdRoute(this.formatSplitResponse(res.data));
       return res.data;
-    }).catch((err) => handleError(err.response, routeActions.errorCreateRoute));
+    }).catch((err) => handleError(err, routeActions.errorCreateRoute));
   },
 
   // http://apidocs.cloudfoundry.org/241/routes/delete_a_particular_route.html
@@ -404,7 +410,7 @@ export default {
     return http.delete(url).then(() => {
       routeActions.deletedRoute(routeGuid);
     }).catch((err) => {
-      handleError(err.response, routeActions.error.bind(this, routeGuid));
+      handleError(err, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -414,7 +420,7 @@ export default {
     return http.put(url).then(() => {
       routeActions.associatedApp(routeGuid, appGuid);
     }).catch((err) => {
-      handleError(err.response, routeActions.error.bind(this, routeGuid));
+      handleError(err, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -423,7 +429,7 @@ export default {
     return http.delete(url).then(() => {
       routeActions.unassociatedApp(routeGuid, appGuid);
     }).catch((err) => {
-      handleError(err.response, routeActions.error.bind(this, routeGuid));
+      handleError(err, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -439,7 +445,7 @@ export default {
     return http.put(url, payload).then(() => {
       routeActions.updatedRoute(routeGuid, route);
     }).catch((err) => {
-      handleError(err.response, routeActions.error.bind(this, routeGuid));
+      handleError(err, routeActions.error.bind(this, routeGuid));
     });
   },
 
@@ -470,7 +476,7 @@ export default {
     return http.post(`${APIV}/service_bindings`, payload).then((res) => {
       serviceActions.boundService(this.formatSplitResponse(res.data));
     }).catch((err) => {
-      handleError(err.response, serviceActions.instanceError.bind(
+      handleError(err, serviceActions.instanceError.bind(
         this, serviceInstanceGuid));
     });
   },
@@ -480,7 +486,7 @@ export default {
     () => {
       serviceActions.unboundService(serviceBinding);
     }).catch((err) => {
-      handleError(err.response, serviceActions.instanceError.bind(
+      handleError(err, serviceActions.instanceError.bind(
         this, serviceBinding.service_instance_guid));
     });
   }
