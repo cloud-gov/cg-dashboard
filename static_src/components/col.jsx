@@ -27,7 +27,12 @@ export default class Col extends React.Component {
     const gutterClass = props.gutters && 'col-gutters';
 
     return (
-      <div className={ this.styler(mainClass, flexClass, gutterClass) }>
+      <div className={ this.styler(
+        'col',
+        flexClass,
+        gutterClass
+      )}
+      >
         { this.props.children }
       </div>
     );

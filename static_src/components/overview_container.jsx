@@ -13,7 +13,6 @@ import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import PanelGroup from './panel_group.jsx';
-import Row from './row.jsx';
 import SpaceStore from '../stores/space_store.js';
 import SpaceQuicklook from './space_quicklook.jsx';
 

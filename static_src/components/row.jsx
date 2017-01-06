@@ -58,7 +58,8 @@ export default class Row extends React.Component {
           typeClass,
           alignClass,
           gutterClass
-        ) }>
+        )}
+      >
         { this.props.children }
       </div>
     );
