@@ -157,11 +157,11 @@ export default class RoutesPanel extends React.Component {
   }
 
   renderRoutes(routes) {
-    let content = <Row styleClass="bordered"><h4>No routes</h4></Row>;
+    let content = <Row type="panel-row"><h4>No routes</h4></Row>;
 
     if (routes && routes.length) {
       content = routes.map((route) =>
-        <Row type="panel-row" styleClass="bordered" key={ route.guid + route.app_guid }>
+        <Row type="panel-row" key={ route.guid + route.app_guid }>
           <Route route={ route } appGuid={ this.state.appGuid} />
         </Row>
       );

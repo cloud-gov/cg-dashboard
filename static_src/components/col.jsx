@@ -6,14 +6,11 @@ import createStyler from '../util/create_styler';
 const propTypes = {
   children: React.PropTypes.any,
   gutters: React.PropTypes.bool,
-  borders: React.PropTypes.bool,
   flex: React.PropTypes.number
 };
 
 const defaultProps = {
-  styleClass: 'clean',
   gutters: false,
-  borders: false,
   flex: 0
 };
 
@@ -26,13 +23,11 @@ export default class Col extends React.Component {
 
   render() {
     const props = this.props;
-    const mainClass = props.styleClass !== 'boxed' && 'col';
     const flexClass = `col-flex-${this.props.flex}`;
     const gutterClass = props.gutters && 'col-gutters';
-    const borderClass = props.borders && 'col-bordered';
 
     return (
-      <div className={ this.styler(mainClass, flexClass, gutterClass, borderClass) }>
+      <div className={ this.styler(mainClass, flexClass, gutterClass) }>
         { this.props.children }
       </div>
     );

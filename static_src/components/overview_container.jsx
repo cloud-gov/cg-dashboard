@@ -5,6 +5,7 @@ import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import { config } from 'skin';
+import Card from './card.jsx';
 import Icon from './icon.jsx';
 import Loading from './loading.jsx';
 import OrgQuickLook from './org_quick_look.jsx';
@@ -78,7 +79,7 @@ export default class OverviewContainer extends React.Component {
         <PageHeader title={ title } />
         <Panel title="Your organizations">
           { state.orgs.map((org) =>
-            <Row key={ org.guid } styleClass="boxed">
+            <Card key={ org.guid }>
               <OrgQuickLook
                 org={ org }
                 spaces={ this.orgSpaces(org.guid) }
@@ -88,7 +89,7 @@ export default class OverviewContainer extends React.Component {
                   key={ space.guid } loading={ state.loading }
                 />
               )}
-            </Row>
+            </Card>
           )}
         </Panel>
         <Panel title="Tips for new users">
