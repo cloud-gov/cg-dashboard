@@ -104,7 +104,7 @@ export default class Route extends React.Component {
   bindAction(unbind) {
     return (
       <Action key="unbind" label={ (!!unbind) ? 'Unbind' : 'Bind' }
-        style={ (!!unbind) ? 'warning' : 'outline' } type={ (!!unbind) ? 'link' : 'button' }
+        style={ (!!unbind) ? 'warning' : 'primary' } type={ (!!unbind) ? 'link' : 'button' }
         clickHandler={ (!!unbind) ? this._toggleRemove : this._bindHandler }
       >
         { (!!unbind) ? 'Unbind' : 'Bind' }
@@ -195,12 +195,12 @@ export default class Route extends React.Component {
         }
         content = (
           <div>
-            <span className={this.styler('panel-column')}>
+            <span className={this.styler('col', 'col-flex-1')}>
               { displayUrl }
             </span>
             { this.displayError }
-            <span className={this.styler('panel-column', 'panel-column-less')}>
-              <PanelActions>
+            <span className={this.styler('col', 'col-flex-0')}>
+              <PanelActions align="right">
                 { this.actions }
               </PanelActions>
             </span>

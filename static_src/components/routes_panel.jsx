@@ -114,7 +114,7 @@ export default class RoutesPanel extends React.Component {
     if (this.state.showCreateForm) return null;
     return (
       <Action clickHandler={ this._addCreateRouteForm }
-        label="Create a new route for this app" type="outline"
+        label="Create a new route for this app"
       >
         Create a new route for this app
       </Action>
@@ -161,7 +161,7 @@ export default class RoutesPanel extends React.Component {
 
     if (routes && routes.length) {
       content = routes.map((route) =>
-        <Row styleClass="bordered" key={ route.guid + route.app_guid }>
+        <Row type="panel-row" styleClass="bordered" key={ route.guid + route.app_guid }>
           <Route route={ route } appGuid={ this.state.appGuid} />
         </Row>
       );
@@ -186,11 +186,9 @@ export default class RoutesPanel extends React.Component {
           </PanelHeader>
           { this.renderRoutes(this.state.unboundRoutes) }
         </PanelGroup>
-        <PanelGroup>
-          <PanelActions>
-            { this.addRouteAction }
-          </PanelActions>
-        </PanelGroup>
+        <PanelActions align="left">
+          { this.addRouteAction }
+        </PanelActions>
       </div>
     );
   }

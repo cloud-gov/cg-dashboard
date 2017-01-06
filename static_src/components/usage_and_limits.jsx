@@ -5,6 +5,7 @@ import React from 'react';
 import Action from './action.jsx';
 import Col from './col.jsx';
 import { FormNumber } from './form';
+import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelBlock from './panel_block.jsx';
 import Row from './row.jsx';
@@ -252,9 +253,9 @@ export default class UsageAndLimits extends React.Component {
           </Row>
         </PanelGroup>
 
-        <div className={ this.styler('panel-actions', 'panel-actions-right') }>
+        <PanelActions align="right">
           { controls }
-        </div>
+        </PanelActions>
       </div>
       );
     }

@@ -16,8 +16,13 @@ const ALIGNS = [
   'end'
 ];
 
+const TYPES = [
+  'panel-row'
+];
+
 const propTypes = {
   children: React.PropTypes.any,
+  type: React.PropTypes.oneOf(TYPES),
   styleClass: React.PropTypes.oneOf(STYLES),
   align: React.PropTypes.oneOf(ALIGNS),
   gutters: React.PropTypes.bool,
@@ -26,6 +31,7 @@ const propTypes = {
 
 const defaultProps = {
   styleClass: 'clean',
+  type: null,
   align: 'middle',
   gutters: false,
   borders: false
@@ -40,15 +46,15 @@ export default class Row extends React.Component {
 
   render() {
     const props = this.props;
-    const styleClass = props.styleClass && `panel-row-${this.props.styleClass}`;
+    const styleClass = props.styleClass && `panel-row-${props.styleClass}`;
+    const typeClass = props.type;
     const mainClass = props.styleClass !== 'boxed' && 'row';
-    const alignClass = props.align !== 'middle' &&
-     `row-${this.props.align}`;
+    const alignClass = props.align !== 'middle' && `row-${props.align}`;
     const gutterClass = props.gutters && 'row-gutters';
     const borderClass = props.borders && 'row-bordered';
 
     return (
-      <div className={ this.styler(mainClass, alignClass, gutterClass, borderClass, styleClass) }>
+      <div className={ this.styler(mainClass, typeClass, alignClass, gutterClass, borderClass, styleClass) }>
         { this.props.children }
       </div>
     );
