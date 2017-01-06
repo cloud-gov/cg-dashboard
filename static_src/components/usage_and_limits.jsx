@@ -235,14 +235,14 @@ export default class UsageAndLimits extends React.Component {
       <div className={ this.styler('panel-content') }>
         <PanelGroup>
           <Row>
-            <Col flex={ 2 } gutters={ true }>
+            <Col flex={ 2 } gutters>
               { this.memory }
               { this.disk }
             </Col>
             <Col flex={ 1 }>
               { this.scale }
             </Col>
-            <Col flex={ 1 } gutters={ true }>
+            <Col flex={ 1 } gutters>
               <Row>
                 { this.totalMemory }
               </Row>
