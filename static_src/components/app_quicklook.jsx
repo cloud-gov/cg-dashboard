@@ -2,7 +2,7 @@
 import React from 'react';
 
 import EntityIcon from './entity_icon.jsx';
-import PanelRow from './panel_row.jsx';
+import Row from './row.jsx';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import { appHref } from '../util/url';
@@ -95,7 +95,7 @@ export default class AppQuicklook extends React.Component {
     }
 
     return (
-      <PanelRow key={ app.guid }>
+      <Row key={ app.guid }>
         <div>
           <span className={ this.styler('panel-column') }>
             <h3 className={ this.styler('contents-secondary') }>
@@ -106,7 +106,7 @@ export default class AppQuicklook extends React.Component {
           </span>
           { info }
         </div>
-      </PanelRow>
+      </Row>
     );
   }
 }

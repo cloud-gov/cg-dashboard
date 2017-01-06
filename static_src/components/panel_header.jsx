@@ -13,7 +13,7 @@ export default class PanelHeader extends React.Component {
 
   render() {
     return (
-      <header className={ this.styler('panel-header') }>
+      <header className={ this.styler('panel-group-header') }>
         { this.props.children }
       </header>
     );

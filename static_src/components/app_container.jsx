@@ -160,7 +160,7 @@ export default class AppContainer extends React.Component {
               </PageHeader>
             </div>
           </div>
-          <Panel title="Usage and allocation" secondary={ usageSecondary }>
+          <Panel title="App usage and allocation" secondary={ usageSecondary }>
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 

@@ -3,7 +3,7 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import PanelRow from './panel_row.jsx';
+import Row from './row.jsx';
 import ServiceInstance from './service_instance.jsx';
 
 import createStyler from '../util/create_styler';
@@ -33,18 +33,18 @@ export default class ServiceInstanceListPanel extends React.Component {
     let content = <div></div>;
 
     if (this.props.empty) {
-      content = <div><PanelRow><h4>No services</h4></PanelRow></div>;
+      content = <div><Row><h4>No services</h4></Row></div>;
     } else {
       content = (
         <div>
         { this.props.serviceInstances.map((serviceInstance) =>
-          <PanelRow key={serviceInstance.guid} styleClass="bordered">
+          <Row key={serviceInstance.guid} styleClass="bordered">
             <ServiceInstance
               currentAppGuid={this.props.currentAppGuid}
               serviceInstance={serviceInstance}
               bound={this.props.bound}
             />
-          </PanelRow>
+          </Row>
         )}
         </div>
       );

@@ -7,7 +7,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import PanelGroup from './panel_group.jsx';
-import PanelRow from './panel_row.jsx';
+import Row from './row.jsx';
 import ServiceStore from '../stores/service_store.js';
 import ServicePlanList from './service_plan_list.jsx';
 import createStyler from '../util/create_styler';

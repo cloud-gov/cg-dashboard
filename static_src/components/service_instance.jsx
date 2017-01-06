@@ -7,7 +7,7 @@ import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import Loading from './loading.jsx';
 import PanelActions from './panel_actions.jsx';
-import PanelRowError from './panel_row_error.jsx';
+import RowError from './panel_row_error.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
@@ -159,7 +159,7 @@ export default class ServiceInstance extends React.Component {
     const instance = this.props.serviceInstance;
     if (instance.error) {
       return (
-        <PanelRowError message={instance.error.description} />
+        <RowError message={instance.error.description} />
       );
     }
   }

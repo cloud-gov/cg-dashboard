@@ -12,7 +12,7 @@ import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import PanelGroup from './panel_group.jsx';
-import PanelRow from './panel_row.jsx';
+import Row from './row.jsx';
 import SpaceStore from '../stores/space_store.js';
 import SpaceQuicklook from './space_quicklook.jsx';
 
@@ -78,7 +78,7 @@ export default class OverviewContainer extends React.Component {
         <PageHeader title={ title } />
         <Panel title="Your organizations">
           { state.orgs.map((org) =>
-            <PanelRow key={ org.guid } styleClass="boxed">
+            <Row key={ org.guid } styleClass="boxed">
               <OrgQuickLook
                 org={ org }
                 spaces={ this.orgSpaces(org.guid) }
@@ -88,23 +88,23 @@ export default class OverviewContainer extends React.Component {
                   key={ space.guid } loading={ state.loading }
                 />
               )}
-            </PanelRow>
+            </Row>
           )}
         </Panel>
-        <Panel title="Cheatsheet">
+        <Panel title="Tips for new users">
           { config.home.tiles.map((Tile, i) => {
             let cheatContent;
             if (i % 2 === 0) {
               cheatContent = (
                 <div key={ `tile-${i}` }>
-                  <PanelGroup columns={ 6 }>
+                  <PanelGroup flex={ 1 }>
                     <Tile />
                   </PanelGroup>
                 </div>
               );
             } else {
               cheatContent = (
-                <PanelGroup columns={ 6 } key={ `tile-${i}` }>
+                <PanelGroup flex={ 1 } key={ `tile-${i}` }>
                   <Tile />
                 </PanelGroup>
               );

@@ -3,10 +3,11 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
+import Col from './col.jsx';
 import { FormNumber } from './form';
 import PanelGroup from './panel_group.jsx';
 import PanelBlock from './panel_block.jsx';
-import PanelRow from './panel_row.jsx';
+import Row from './row.jsx';
 import ResourceUsage from './resource_usage.jsx';
 
 import appActions from '../actions/app_actions.js';
@@ -86,14 +87,14 @@ export default class UsageAndLimits extends React.Component {
     const disk = this.state.editing ? this.state.partialApp.disk_quota : this.props.app.disk_quota;
 
     return (
-    <div className={ this.styler('panel-row-space') }>
-      <div className={ this.styler('panel-column') }>
+      <div className={ this.styler('row', 'row-gutters') }>
+      <div className={ this.styler('col', 'col-flex-1') }>
         <ResourceUsage title="Instance disk"
           amountUsed={ this.getStat('disk') }
           amountTotal={ this.getStat('disk_quota') }
         />
       </div>
-      <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
+      <div className={ this.styler('col', 'col-flex-1') } style={{ textAlign: 'left' }}>
         <ResourceUsage title="Instance disk"
           editable={ this.state.editing }
           max={ 2 * 1024 }
@@ -112,14 +113,14 @@ export default class UsageAndLimits extends React.Component {
     const memory = this.state.editing ? this.state.partialApp.memory : this.props.app.memory;
 
     return (
-    <div>
-      <div className={ this.styler('panel-column') }>
+    <div className={ this.styler('row', 'row-gutters') }>
+      <div className={ this.styler('col', 'col-flex-1') }>
         <ResourceUsage title="Instance memory"
           amountUsed={ this.getStat('mem') }
           amountTotal={ this.getStat('mem_quota') }
         />
       </div>
-      <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
+      <div className={ this.styler('col', 'col-flex-1') } style={{ textAlign: 'left' }}>
         <ResourceUsage title="Instance memory"
           editable={ this.state.editing }
           min={ 1 }
@@ -136,7 +137,7 @@ export default class UsageAndLimits extends React.Component {
   get totalDisk() {
     // TODO get space quota
     return (
-    <div className={ this.styler('panel-row-space') }>
+    <div className={ this.styler('col', 'col-flex-1') }>
       <ResourceUsage title="Total disk"
         amountUsed={ this.getStat('disk') * this.props.app.running_instances }
         amountTotal={ this.getStat('disk_quota') }
@@ -147,7 +148,7 @@ export default class UsageAndLimits extends React.Component {
 
   get totalMemory() {
     return (
-    <div>
+    <div className={ this.styler('col', 'col-flex-1') }>
       <ResourceUsage title="Total memory"
         amountUsed={ this.getStat('mem') * this.props.app.running_instances }
         amountTotal={ this.props.quota.memory_limit * 1024 * 1024 }
@@ -208,22 +209,21 @@ export default class UsageAndLimits extends React.Component {
     let controls = (
       <Action
         style="primary"
-        type="outline"
         label="Modify allocation and scale"
         clickHandler={ this._onToggleEdit }
       >
-          <span>Modify allocation and scale</span>
+          <span>Modify allocation and instances</span>
         </Action>
     );
 
     if (this.state.editing) {
       controls = (
         <div>
+          <Action style="base" type="outline" label="Cancel" clickHandler={ this._onToggleEdit }>
+            <span>Cancel</span>
+          </Action>
           <Action style="finish" type="button" label="OK" clickHandler={ this._onSubmit }>
             <span>OK</span>
-          </Action>
-          <Action type="outline" label="Cancel" clickHandler={ this._onToggleEdit }>
-            <span>Cancel</span>
           </Action>
         </div>
       );
@@ -233,33 +233,28 @@ export default class UsageAndLimits extends React.Component {
       content = (
       <div className={ this.styler('panel-content') }>
         <PanelGroup>
-          <PanelGroup columns={ 6 }>
-            <PanelRow styleClass="clean" >
+          <Row>
+            <Col flex={ 2 } gutters={ true }>
               { this.memory }
-            </PanelRow>
-            <PanelRow styleClass="clean" >
               { this.disk }
-            </PanelRow>
-          </PanelGroup>
-          <PanelGroup columns={ 3 }>
-            <PanelBlock>
+            </Col>
+            <Col flex={ 1 }>
               { this.scale }
-            </PanelBlock>
-          </PanelGroup>
-          <PanelGroup columns={ 3 }>
-            <PanelRow styleClass="clean" >
-              { this.totalMemory }
-            </PanelRow>
-            <PanelRow styleClass="clean" >
-              { this.totalDisk }
-            </PanelRow>
-          </PanelGroup>
+            </Col>
+            <Col flex={ 1 } gutters={ true }>
+              <Row>
+                { this.totalMemory }
+              </Row>
+              <Row>
+                { this.totalDisk }
+              </Row>
+            </Col>
+          </Row>
         </PanelGroup>
-        <PanelRow styleClass="clean" >
-          <div className={ this.styler('panel-actions-right') }>
-            { controls }
-          </div>
-        </PanelRow>
+
+        <div className={ this.styler('panel-actions', 'panel-actions-right') }>
+          { controls }
+        </div>
       </div>
       );
     }

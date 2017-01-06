@@ -6,7 +6,7 @@ import ConfirmationBox from './confirmation_box.jsx';
 import DomainStore from '../stores/domain_store.js';
 import Loading from './loading.jsx';
 import PanelActions from './panel_actions.jsx';
-import PanelRowError from './panel_row_error.jsx';
+import RowError from './panel_row_error.jsx';
 import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
 import createStyler from '../util/create_styler';
@@ -150,7 +150,7 @@ export default class Route extends React.Component {
     const route = this.props.route;
     if (route.error) {
       return (
-        <PanelRowError message={route.error.description} />
+        <RowError message={route.error.description} />
       );
     }
     return null;

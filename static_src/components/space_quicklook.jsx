@@ -7,7 +7,7 @@ import createStyler from '../util/create_styler';
 import AppQuicklook from './app_quicklook.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
-import PanelRow from './panel_row.jsx';
+import Row from './row.jsx';
 import { spaceHref } from '../util/url';
 
 const propTypes = {
@@ -41,7 +41,7 @@ export default class SpaceQuicklook extends React.Component {
 
     if (!this.props.loading) {
       content = (
-        <PanelRow>
+        <Row>
           <h3 className={ this.styler('contents-primary') }>
             <EntityIcon entity="space" iconSize="medium" />
             <a href={ this.spaceHref() }>{ space.name }</a>
@@ -57,7 +57,7 @@ export default class SpaceQuicklook extends React.Component {
                  ['state', 'memory', 'diskQuota'] : ['state'] }
              />
           )}
-        </PanelRow>
+        </Row>
       );
     }
 
