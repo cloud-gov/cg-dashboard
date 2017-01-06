@@ -240,7 +240,7 @@ export default class UsageAndLimits extends React.Component {
     if (this.state.editing) {
       controls = (
         <div>
-          <Action type="outline" label="Cancel" clickHandler={ this._onToggleEdit }>
+          <Action style="base" type="outline" label="Cancel" clickHandler={ this._onToggleEdit }>
             <span>Cancel</span>
           </Action>
           <Action style="finish" type="button" label="OK" clickHandler={ this._onSubmit }>

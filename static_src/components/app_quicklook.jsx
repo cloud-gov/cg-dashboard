@@ -79,16 +79,22 @@ export default class AppQuicklook extends React.Component {
     }
     if (this.props.extraInfo.includes('memory')) {
       info.push(
-        <span key="2" className={ this.styler('panel-column', 'panel-column-shrink') }>
-          { app.memory } MB <br />
+        <span key="1" className={ this.styler('col',
+          'col-flex-0', 'contents-tree-column') }
+        >
+          <span className={ this.styler('contents-tree-value') }>
+            { app.memory } MB </span>
           <span className={ this.styler('subtext') }>memory allocated</span>
         </span>
       );
     }
     if (this.props.extraInfo.includes('diskQuota')) {
       info.push(
-        <span key="3" className={ this.styler('panel-column', 'panel-column-shrink') }>
-          { app.disk_quota } MB <br />
+        <span key="2" className={ this.styler('col',
+          'col-flex-0', 'contents-tree-column') }
+        >
+          <span className={ this.styler('contents-tree-value') }>
+          { app.disk_quota } MB </span>
           <span className={ this.styler('subtext') }>disk quota</span>
         </span>
       );
