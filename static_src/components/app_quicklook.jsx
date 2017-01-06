@@ -73,9 +73,7 @@ export default class AppQuicklook extends React.Component {
           <span key="3" className={ this.styler('col',
             'col-flex-0', 'contents-tree-column') }
           >
-            <span className={ this.styler('status', 'status-error') }>
-              Crashed
-            </span>
+            { this.appState(app) }
           </span>
         );
       }
