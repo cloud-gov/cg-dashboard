@@ -115,9 +115,9 @@ export default class ServiceInstanceList extends React.Component {
           <thead>
             <tr>
             { this.columns.map((column) =>
-              <th column={ column.label } className={ column.key }
-                key={ column.key }>
-                { column.label }</th>
+              <th className={ column.key } key={ column.key }>
+                { column.label }
+              </th>
             )}
             </tr>
           </thead>
@@ -127,16 +127,16 @@ export default class ServiceInstanceList extends React.Component {
             const lastOpTime = lastOp.updated_at || lastOp.created_at;
             return (
               <tr key={ instance.guid }>
-                <td column="Name"><span>{ instance.name }</span></td>
-                <td column="Last operation">{ instance.last_operation.type }</td>
-                <td column="Updated at">
+                <td><span>{ instance.name }</span></td>
+                <td>{ instance.last_operation.type }</td>
+                <td>
                   { formatDateTime(lastOpTime) }
                 </td>
-                <td column="Delete" style={specialtdStyles}>
+                <td style={specialtdStyles}>
                   <span>
                     <div>
                       <Action
-                        style="secondary"
+                        style="base"
                         classes={ ['test-delete_instance'] }
                         disabled={instance.confirmDelete}
                         clickHandler={ this._handleDeleteConfirmation.bind(

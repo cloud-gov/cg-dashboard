@@ -101,7 +101,7 @@ export default class UserList extends React.Component {
               if (this.state.currentUserAccess) {
                 button = (
                   <Action
-                    style="secondary"
+                    style="base"
                     clickHandler={ this._handleDelete.bind(this, user.guid) }
                     label="delete">
                     <span>Remove User From Org</span>

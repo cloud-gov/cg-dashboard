@@ -30,8 +30,18 @@ function createPromise(res, err) {
 };
 
 describe('cfApi', function() {
-  var sandbox,
-      errorFetchRes = { message: 'error', status: 404, data: {} };
+  let sandbox;
+  let errorFetchRes = { message: 'error', status: 404, data: {} };
+  let fakeCFErrorRes = {
+    message: 'Request returned an error state',
+    response: {
+      status: 500,
+      data: {
+        code: '234',
+        description: 'Something went wrong'
+      }
+    }
+  };
 
   beforeEach(() => {
     OrgStore._data = new Immutable.List();
@@ -45,7 +55,7 @@ describe('cfApi', function() {
   function fetchErrorSetup() {
     const stub = sandbox.stub(http, 'get');
     const spy = sandbox.stub(errorActions, 'errorFetch').returns();
-    const expected = errorFetchRes;
+    const expected = fakeCFErrorRes;
 
     let testPromise = createPromise(true, expected);
     stub.returns(testPromise);
@@ -122,7 +132,7 @@ describe('cfApi', function() {
         expect(args[0]).toMatch('/routes');
         expect(args[1]).toEqual(expectedPayload);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call routeActions.createdRoute with response data', function(done) {
@@ -146,18 +156,18 @@ describe('cfApi', function() {
         expect(actionSpy).toHaveBeenCalledOnce();
         expect(arg).toEqual(cfApi.formatSplitResponse(data));
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call route actions create error on request failure', function(done) {
       const spy = sandbox.stub(routeActions, 'errorCreateRoute');
       const stub = sandbox.stub(http, 'post');
-      stub.returns(createPromise(true, errorFetchRes));
+      stub.returns(createPromise(true, fakeCFErrorRes));
 
       cfApi.createRoute('a', 'b', 'c', 'd').then(() => {
         expect(spy).toHaveBeenCalledOnce();
         done();
-      });
+      }).catch(done.fail);
 
     });
   });
@@ -173,7 +183,7 @@ describe('cfApi', function() {
         expect(spy).toHaveBeenCalledOnce();
         expect(args[0]).toMatch(`/routes/${routeGuid}`);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call routeActions.deletedRoute with response data', function(done) {
@@ -187,14 +197,14 @@ describe('cfApi', function() {
         expect(spy).toHaveBeenCalledOnce();
         expect(arg).toEqual(routeGuid);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call route actions error with guid on request failure',
         function(done) {
       const spy = sandbox.stub(routeActions, 'error');
       const stub = sandbox.stub(http, 'delete');
-      stub.returns(createPromise(true, errorFetchRes));
+      stub.returns(createPromise(true, fakeCFErrorRes));
       const routeGuid = 'zxcvasdf24';
 
       cfApi.deleteRoute(routeGuid).then(() => {
@@ -202,9 +212,9 @@ describe('cfApi', function() {
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
         arg = spy.getCall(0).args[1];
-        expect(arg).toEqual(errorFetchRes.data);
+        expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -247,7 +257,7 @@ describe('cfApi', function() {
       cfApi.fetchOne().then(() => {
         expect(spy).toHaveBeenCalledOnce();
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should pass any additional arguments to the action', function(done) {
@@ -670,15 +680,17 @@ describe('cfApi', function() {
             let actual = spy.getCall(0).args[0];
             expect(actual).toEqual(expected.data.metadata);
             done();
-          });
+          }).catch(done.fail);
     });
 
     it('should call an service error action on failure', function(done) {
       const stub = sandbox.stub(http, 'post');
       const spy = sandbox.stub(serviceActions, 'errorCreateInstance');
       const expectedErr = { status: 500, data: { code: 234 } };
+      const err = fakeCFErrorRes;
+      err.response.data = { code: 234 };
 
-      let testPromise = createPromise(true, expectedErr);
+      let testPromise = createPromise(true, err);
       stub.returns(testPromise);
 
       cfApi.createServiceInstance(
@@ -689,7 +701,7 @@ describe('cfApi', function() {
             let actual = spy.getCall(0).args[0];
             expect(actual).toEqual(expectedErr.data);
             done();
-        });
+        }).catch(done.fail);
     });
   });
 
@@ -721,7 +733,7 @@ describe('cfApi', function() {
         let actual = spy.getCall(0).args[0];
         expect(actual).toEqual(expectedGuid);
         done();
-      });
+      }).catch(done.fail);
     });
 
     // TODO should be error action for non fetch errors.
@@ -823,7 +835,7 @@ describe('cfApi', function() {
         expect(args[0]).toMatch('apps');
         expect(args[0]).toMatch(appGuid);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call app restarted with app guid on success', function(done) {
@@ -838,7 +850,7 @@ describe('cfApi', function() {
         const arg = spy.getCall(0).args[0];
         expect(arg).toEqual(appGuid);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call app error with app guid on failure', function(done) {
@@ -846,14 +858,14 @@ describe('cfApi', function() {
       const spy = sandbox.stub(appActions, 'error');
       const stub = sandbox.stub(http, 'post');
       spy.returns();
-      stub.returns(createPromise(true, errorFetchRes));
+      stub.returns(createPromise(true, fakeCFErrorRes));
 
       cfApi.postAppRestart(appGuid).then(() => {
         expect(spy).toHaveBeenCalledOnce();
         const arg = spy.getCall(0).args[0];
         expect(arg).toEqual(appGuid);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -873,8 +885,7 @@ describe('cfApi', function() {
           expect(app).toEqual(expectedApp);
           expect(updatedSpy).toHaveBeenCalledOnce();
           done();
-        })
-        .catch(done.fail);
+        }).catch(done.fail);
     });
   })
 
@@ -966,7 +977,7 @@ describe('cfApi', function() {
         expect(args[0]).toEqual(expectedUserGuid);
         expect(args[1]).toEqual(expectedOrgGuid);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -1009,7 +1020,7 @@ describe('cfApi', function() {
           expect(actual).toMatch(new RegExp(expectedOrgGuid));
           expect(actual).toMatch(new RegExp(expectedPermission));
           done();
-        });
+        }).catch(done.fail);
     });
 
     it(`should call user action on a 400 response that has code 10006 with
@@ -1033,7 +1044,7 @@ describe('cfApi', function() {
         expect(args[0]).toEqual(expectedUserGuid);
         expect(args[1]).toEqual(expected);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -1248,7 +1259,7 @@ describe('cfApi', function() {
         expect(spy).toHaveBeenCalledOnce();
         expect(args[0]).toMatch(`/routes/${routeGuid}/apps/${appGuid}`);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call routeActions.associatedApp() with the routeGuid and appGuid', function(done) {
@@ -1266,14 +1277,14 @@ describe('cfApi', function() {
         expect(args[0]).toEqual(routeGuid);
         expect(args[1]).toEqual(appGuid);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call route actions error with guid on request failure',
         function(done) {
       const spy = sandbox.stub(routeActions, 'error');
       const stub = sandbox.stub(http, 'put');
-      stub.returns(createPromise(true, errorFetchRes));
+      stub.returns(createPromise(true, fakeCFErrorRes));
       const routeGuid = 'sdf2dsfzxcv4';
 
       cfApi.putAppRouteAssociation('adfads', routeGuid).then(() => {
@@ -1281,9 +1292,9 @@ describe('cfApi', function() {
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
         arg = spy.getCall(0).args[1];
-        expect(arg).toEqual(errorFetchRes.data);
+        expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -1302,7 +1313,7 @@ describe('cfApi', function() {
         expect(spy).toHaveBeenCalledOnce();
         expect(args[0]).toMatch(`/apps/${appGuid}/routes/${routeGuid}`);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call routeActions.unassociatedApp() with the routeGuid and appGuid',
@@ -1321,14 +1332,14 @@ describe('cfApi', function() {
         expect(args[0]).toEqual(routeGuid);
         expect(args[1]).toEqual(appGuid);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call route actions error with guid on request failure',
         function(done) {
       const spy = sandbox.stub(routeActions, 'error');
       const stub = sandbox.stub(http, 'delete');
-      stub.returns(createPromise(true, errorFetchRes));
+      stub.returns(createPromise(true, fakeCFErrorRes));
       const routeGuid = 'sdf2dsfzxcv4';
 
       cfApi.deleteAppRouteAssociation('adfads', routeGuid).then(() => {
@@ -1336,9 +1347,9 @@ describe('cfApi', function() {
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
         arg = spy.getCall(0).args[1];
-        expect(arg).toEqual(errorFetchRes.data);
+        expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -1370,14 +1381,14 @@ describe('cfApi', function() {
         expect(args[0]).toEqual(routeGuid);
         expect(args[1]).toEqual(route);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call route actions error with guid on request failure',
         function(done) {
       const spy = sandbox.stub(routeActions, 'error');
       const stub = sandbox.stub(http, 'put');
-      stub.returns(createPromise(true, errorFetchRes));
+      stub.returns(createPromise(true, fakeCFErrorRes));
       const routeGuid = 'sdf2dsfzxcv4';
       const route = {
         host: 'fake-host',
@@ -1389,9 +1400,9 @@ describe('cfApi', function() {
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
         arg = spy.getCall(0).args[1];
-        expect(arg).toEqual(errorFetchRes.data);
+        expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -1415,16 +1426,19 @@ describe('cfApi', function() {
           service_instance_guid: serviceInstanceGuid };
         expect(args[1]).toEqual(expected);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call instance error if request fails with err', function(done) {
       const appGuid = 'xvc34598mn';
       const serviceInstanceGuid = 'zcvx239784ahfjk';
       const expectedErr = { status: 500, data: { code: 23500 }};
+      const err = fakeCFErrorRes;
+      err.response.status = expectedErr.status;
+      err.response.data = expectedErr.data;
       const stub = sandbox.stub(http, 'post');
       const spy = sandbox.stub(serviceActions, 'instanceError').returns();
-      stub.returns(createPromise(true, expectedErr));
+      stub.returns(createPromise(true, err));
 
       cfApi.createServiceBinding(appGuid, serviceInstanceGuid).then(() => {
         expect(spy).toHaveBeenCalledOnce();
@@ -1451,7 +1465,7 @@ describe('cfApi', function() {
         const arg = spy.getCall(0).args[0];
         expect(arg).toEqual(cfApi.formatSplitResponse(expected.data));
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -1469,7 +1483,7 @@ describe('cfApi', function() {
         const arg = spy.getCall(0).args[0];
         expect(arg).toMatch('service_bindings');
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should call delete error if request fails', function(done) {
@@ -1480,9 +1494,12 @@ describe('cfApi', function() {
         service_instance_guid: serviceInstanceGuid
       };
       const expectedErr = { status: 503, data: { code: 23500 }};
+      const err = fakeCFErrorRes;
+      err.response.status = expectedErr.status;
+      err.response.data = expectedErr.data;
       const stub = sandbox.stub(http, 'delete');
       const spy = sandbox.stub(serviceActions, 'instanceError').returns();
-      stub.returns(createPromise(true, expectedErr));
+      stub.returns(createPromise(true, err));
 
       cfApi.deleteServiceBinding(binding).then(() => {
         expect(spy).toHaveBeenCalledOnce();
@@ -1511,7 +1528,7 @@ describe('cfApi', function() {
         const arg = spy.getCall(0).args[0];
         expect(arg).toEqual(binding);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 });

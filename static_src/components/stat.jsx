@@ -85,6 +85,15 @@ export default class Stat extends React.Component {
       </span>
     );
 
+    // Avoid rendering 0 or non-numbers
+    if (!this.state.primaryStat) {
+      primaryStat = (
+        <span className={ this.styler('stat-primary')}>
+          N/A
+        </span>
+      );
+    }
+
     if (this.props.editable) {
       primaryStat = (
         <div>
