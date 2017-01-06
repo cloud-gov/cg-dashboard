@@ -253,9 +253,11 @@ export default class UsageAndLimits extends React.Component {
           </Row>
         </PanelGroup>
 
-        <PanelActions align="right">
-          { controls }
-        </PanelActions>
+        <PanelGroup>
+          <PanelActions align="right">
+            { controls }
+          </PanelActions>
+        </PanelGroup>
       </div>
       );
     }

@@ -121,14 +121,13 @@ export default class ServiceInstance extends React.Component {
         <Action
           clickHandler={ this.bindHandler }
           label="Bind"
-          type="outline"
         >
           Bind
         </Action>
       );
     }
 
-    return <PanelActions>{ content }</PanelActions>;
+    return content;
   }
 
   get confirmation() {
@@ -174,8 +173,8 @@ export default class ServiceInstance extends React.Component {
         this.props.serviceInstance) === OPERATION_FAILED) ? 'panel-column-error' : null;
 
       content = (
-        <div style={{ flexWrap: 'wrap' }}>
-          <span className={ this.styler('panel-column', statusClass) }>
+        <div>
+          <span className={ this.styler('col', 'col-flex-1', statusClass) }>
             { serviceInstance.servicePlan &&
               <strong>{ serviceInstance.servicePlan.name }</strong>
             }
@@ -185,13 +184,14 @@ export default class ServiceInstance extends React.Component {
               { serviceInstance.name }
             </span>
           </span>
-          <span className={ this.styler('panel-column', 'panel-column-less') }>
-            <span>{ this.cost }</span>
+          <span className={ this.styler('col', 'col-flex-0') }>
+            <span className={ this.styler('instance-cost') }>{ this.cost }</span>
           </span>
           { this.displayError }
-          <span className={ this.styler('panel-column', 'panel-column-less',
-            'panel-column-last') }>
-            { this.actions }
+          <span className={ this.styler('col', 'col-flex-0') }>
+            <PanelActions align="right">
+              { this.actions }
+            </PanelActions>
           </span>
           { confirmation }
         </div>

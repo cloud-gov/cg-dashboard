@@ -181,7 +181,7 @@ export default class RoutesPanel extends React.Component {
         </PanelGroup>
         <PanelGroup>
           <PanelHeader>
-            <h2 className={ this.styler('panel-row-header') }>Routes available in
+            <h2 className={ this.styler('panel-row-header') }>Routes available in&#160;
               {this.spaceLink}</h2>
           </PanelHeader>
           { this.renderRoutes(this.state.unboundRoutes) }

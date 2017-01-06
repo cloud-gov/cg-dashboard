@@ -7,12 +7,14 @@ import ActivityLog from './activity_log.jsx';
 import { appHealth } from '../util/health';
 import AppStore from '../stores/app_store.js';
 import Breadcrumbs from './breadcrumbs';
+import Col from './col.jsx';
 import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
+import Row from './row.jsx';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
@@ -120,11 +122,10 @@ export default class AppContainer extends React.Component {
     return (
       <div>
         <Action
-          style="primary"
+          style="warning"
           clickHandler={ this._onRestart }
           label="restart app"
           disabled={ !AppStore.isRunning(this.state.app) }
-          type="outline"
         >
           <span>Restart app</span>
         </Action>
@@ -164,13 +165,18 @@ export default class AppContainer extends React.Component {
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 
-          <Panel title="Routes">
-            <RoutesPanel />
-          </Panel>
-
-          <Panel title="Services">
-            <ServiceInstancePanel />
-          </Panel>
+          <Row gutters={ true } align="start">
+            <Col flex={ 1 }>
+              <Panel title="Routes">
+                <RoutesPanel />
+              </Panel>
+            </Col>
+            <Col flex={ 1 }>
+              <Panel title="Services">
+                <ServiceInstancePanel />
+              </Panel>
+            </Col>
+          </Row>
 
           <Panel title="Recent activity">
             <ActivityLog initialAppGuid={ this.state.app.guid } />
