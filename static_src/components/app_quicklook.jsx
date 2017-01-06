@@ -95,7 +95,7 @@ export default class AppQuicklook extends React.Component {
     }
 
     return (
-      <Row key={ app.guid }>
+      <Row key={ app.guid } type="panel-row">
         <div>
           <span className={ this.styler('panel-column') }>
             <h3 className={ this.styler('contents-secondary') }>

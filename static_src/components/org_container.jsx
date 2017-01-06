@@ -120,7 +120,7 @@ export default class OrgContainer extends React.Component {
             </div>
           </div>
 
-          <div className={ this.styler('panel-content') }>
+          <div className={ this.styler('panel-content', 'contents-tree') }>
             { state.spaces.map((space) => (
               <SpaceQuicklook
                 key={ space.guid }

@@ -42,10 +42,13 @@ export default class SpaceQuicklook extends React.Component {
     if (!this.props.loading) {
       content = (
         <Row>
-          <h3 className={ this.styler('contents-primary') }>
-            <EntityIcon entity="space" iconSize="medium" />
-            <a href={ this.spaceHref() }>{ space.name }</a>
-          </h3>
+          <Row type="panel-row" tree="level-one">
+            <h3 className={ this.styler('contents-primary') }>
+              <EntityIcon entity="space" iconSize="medium" />
+              <a href={ this.spaceHref() }>{ space.name }</a>
+            </h3>
+          </Row>
+          <div className={ this.styler('row', 'tree-level-two') }>
           { space.apps && space.apps.map((app) =>
              <AppQuicklook
                key={ app.guid }
@@ -57,6 +60,7 @@ export default class SpaceQuicklook extends React.Component {
                  ['state', 'memory', 'diskQuota'] : ['state'] }
              />
           )}
+          </div>
         </Row>
       );
     }
