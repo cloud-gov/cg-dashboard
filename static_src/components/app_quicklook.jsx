@@ -66,12 +66,13 @@ export default class AppQuicklook extends React.Component {
 
     if (this.props.extraInfo.includes('state')) {
       const oneInfo = this.props.extraInfo.length === 1;
-      const panelModClass = oneInfo ? 'panel-column-less' : 'panel-column-shrink';
 
       // Only show the state if app is crashed or theres only one extra col
       if (!isHealthyApp(app) || oneInfo) {
         info.push(
-          <span key="1" className={ this.styler('panel-column', panelModClass) }>
+          <span key="3" className={ this.styler('col',
+            'col-flex-0', 'contents-tree-column') }
+          >
             { this.appState(app) }
           </span>
         );
