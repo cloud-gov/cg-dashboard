@@ -3,10 +3,10 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
-const ALIGNS = [
-  'start',
+const VALIGNS = [
+  'top',
   'center',
-  'end'
+  'bottom'
 ];
 
 const TYPES = [
@@ -21,7 +21,7 @@ const TREES = [
 const propTypes = {
   children: React.PropTypes.any,
   type: React.PropTypes.oneOf(TYPES),
-  align: React.PropTypes.oneOf(ALIGNS),
+  valign: React.PropTypes.oneOf(VALIGNS),
   gutters: React.PropTypes.bool,
   boxed: React.PropTypes.bool,
   tree: React.PropTypes.oneOf(TREES)
@@ -30,7 +30,7 @@ const propTypes = {
 const defaultProps = {
   tree: null,
   type: null,
-  align: 'center',
+  valign: 'center',
   boxed: null,
   gutters: false
 };
@@ -46,7 +46,8 @@ export default class Row extends React.Component {
     const props = this.props;
     const treeClass = props.tree && `tree-${props.tree}`;
     const typeClass = props.type;
-    const alignClass = props.align !== 'center' && `row-${props.align}`;
+    const valignClass = props.valign !== 'center' &&
+      `row-${props.valign}`;
     const gutterClass = props.gutters && 'row-gutters';
     const boxedClass = props.boxed && 'row-boxed';
 
@@ -56,7 +57,7 @@ export default class Row extends React.Component {
           boxedClass,
           treeClass,
           typeClass,
-          alignClass,
+          valignClass,
           gutterClass
         )}
       >

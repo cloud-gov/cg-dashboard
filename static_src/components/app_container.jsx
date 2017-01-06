@@ -165,7 +165,7 @@ export default class AppContainer extends React.Component {
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 
-          <Row gutters align="start">
+          <Row gutters valign="top">
             <Col flex={ 1 }>
               <Panel title="Routes">
                 <RoutesPanel />
