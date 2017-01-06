@@ -39,7 +39,6 @@ function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const currentSpaceName = SpaceStore.currentSpaceName;
   const currentAppGuid = AppStore.currentAppGuid;
-
   const appServiceBindings = ServiceBindingStore.getAllByApp(currentAppGuid);
   const allServiceBindings = ServiceBindingStore.getAll();
 

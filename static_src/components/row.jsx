@@ -62,7 +62,10 @@ export default class Row extends React.Component {
     const borderClass = props.borders && 'row-bordered';
 
     return (
-      <div className={ this.styler(mainClass, treeClass, typeClass, alignClass, gutterClass, borderClass, styleClass) }>
+      <div className={ this.styler(
+          mainClass, treeClass, typeClass, alignClass,
+          gutterClass, borderClass, styleClass
+        ) }>
         { this.props.children }
       </div>
     );

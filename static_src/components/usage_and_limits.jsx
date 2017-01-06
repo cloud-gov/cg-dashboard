@@ -7,7 +7,6 @@ import Col from './col.jsx';
 import { FormNumber } from './form';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
-import PanelBlock from './panel_block.jsx';
 import Row from './row.jsx';
 import ResourceUsage from './resource_usage.jsx';
 
