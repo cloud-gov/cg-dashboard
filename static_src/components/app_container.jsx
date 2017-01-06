@@ -7,7 +7,7 @@ import ActivityLog from './activity_log.jsx';
 import { appHealth, worstAppInstanceState } from '../util/health';
 import { appStates } from '../constants';
 import AppStore from '../stores/app_store.js';
-import Breadcrumbs from './breadcrumbs';
+import Breadcrumbs from './breadcrumbs.jsx';
 import Col from './col.jsx';
 import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
