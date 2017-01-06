@@ -5,7 +5,7 @@ import createStyler from '../util/create_styler';
 
 const ALIGNS = [
   'start',
-  'middle',
+  'center',
   'end'
 ];
 
@@ -30,7 +30,7 @@ const propTypes = {
 const defaultProps = {
   tree: null,
   type: null,
-  align: 'middle',
+  align: 'center',
   boxed: null,
   gutters: false
 };
@@ -46,7 +46,7 @@ export default class Row extends React.Component {
     const props = this.props;
     const treeClass = props.tree && `tree-${props.tree}`;
     const typeClass = props.type;
-    const alignClass = props.align !== 'middle' && `row-${props.align}`;
+    const alignClass = props.align !== 'center' && `row-${props.align}`;
     const gutterClass = props.gutters && 'row-gutters';
     const boxedClass = props.boxed && 'row-boxed';
 
