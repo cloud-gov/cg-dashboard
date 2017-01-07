@@ -20,29 +20,43 @@ describe('spaceActions', () => {
   });
 
   describe('fetch()', () => {
-    it('should call apis fetch method', () => {
-      var spy = sandbox.spy(cfApi, 'fetchSpace'),
-          expected = 'abc1';
+    let expectedSpace,
+      dispatcherSpy,
+      fetchSpaceStub,
+      receivedSpaceStub,
+      expectedGuid;
 
-      spaceActions.fetch(expected);
-
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(expected);
+    beforeEach(function(done) {
+      dispatcherSpy = setupViewSpy(sandbox);
+      fetchSpaceStub = sandbox.stub(cfApi, 'fetchSpace').yieldsAsync(expectedSpace);
+      receivedSpaceStub = sandbox.stub(spaceActions, 'receivedSpace');
+      expectedGuid = 'abc1';
+      expectedSpace = { guid: expectedGuid };
+      spaceActions.fetch(expectedGuid).then(done, done.fail);
     });
 
-    it('should dispatch a view event of type space fetch', () => {
-      let spy = setupViewSpy(sandbox);
+    it('dispatches SPACE_FETCH action', function() {
+      expect(dispatcherSpy).toHaveBeenCalledWith(spaceActionTypes.SPACE_FETCH);
+    });
 
-      spaceActions.fetch();
+    it('calls api method once', (done) => {
+      expect(fetchSpaceStub).toHaveBeenCalledOnce();
+    });
 
-      let arg = spy.getCall(0).args[0];
-      expect(arg.type).toEqual(spaceActionTypes.SPACE_FETCH);
+    it('calls api with the guid', function() {
+      expect(fetchSpaceStub).toHaveBeenCalledWith(expected);
+    });
+
+    it('calls the receivedSpace action creator', function() {
+      expect(receivedSpaceStub).toHaveBeenCalledWith(expectedSpace);
     });
   });
 
   describe('fetchAll()', () => {
     it('should dispatch a view event to fetch all spaces', () => {
       let spy = setupViewSpy(sandbox);
+      const spy = sandbox.spy(cfApi, 'fetchSpace').yieldsAsync(sentinel);
+      const receivedSpaceStub = sandbox.stub(spaceActions, 'receivedSpace');
 
       spaceActions.fetchAll();
 
