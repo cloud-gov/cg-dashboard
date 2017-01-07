@@ -206,16 +206,16 @@ describe('OrgStore', () => {
   });
 
   describe('on toggle quicklook', function() {
-    it('should set quicklook_open to true for the org', function() {
+    it('should set quicklook.open to true for the org', function() {
       const guid = 'osdvnx23bvc2';
       const org = { guid, name: 'org' };
 
       OrgStore.push(org);
 
-      orgActions.toggleQuicklook(guid);
+      orgActions.toggleQuicklook(org);
 
       const actual = OrgStore.get(guid);
-      expect(actual.quicklook_open).toBeTruthy();
+      expect(actual.quicklook.open).toBeTruthy();
     });
 
     it('should emit a change', function() {
@@ -225,7 +225,7 @@ describe('OrgStore', () => {
       OrgStore.push(org);
       const spy = sandbox.spy(OrgStore, 'emitChange');
 
-      orgActions.toggleQuicklook(guid);
+      orgActions.toggleQuicklook(org);
 
       expect(spy).toHaveBeenCalledOnce();
     });

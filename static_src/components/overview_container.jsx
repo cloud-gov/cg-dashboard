@@ -56,7 +56,7 @@ export default class OverviewContainer extends React.Component {
   }
 
   anyOrgsOpen() {
-    return this.state.orgs.reduce((prev, org) => prev || !!org.quicklook_open,
+    return this.state.orgs.reduce((prev, org) => prev || !!(org.quicklook && org.quicklook.open),
       false);
   }
 
@@ -83,7 +83,7 @@ export default class OverviewContainer extends React.Component {
                 org={ org }
                 spaces={ this.orgSpaces(org.guid) }
               />
-              { org.quicklook_open && this.orgSpaces(org.guid).map((space) =>
+              { org.quicklook && org.quicklook.open && this.orgSpaces(org.guid).map((space) =>
                 <SpaceQuicklook space={ space } orgGuid={ org.guid }
                   key={ space.guid }
                 />
