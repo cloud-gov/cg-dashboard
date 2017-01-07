@@ -16,7 +16,7 @@ function stateSetter(props) {
 
   let service;
   if (item.metadata.request && item.metadata.service_instance_guid) {
-    service = ServiceInstanceStore.get(item.metadata.request.service_instance_guid)
+    service = ServiceInstanceStore.get(item.metadata.request.service_instance_guid);
   }
 
   let domain;
@@ -118,9 +118,9 @@ export default class ActivityLogItem extends React.Component {
   get content() {
     if (this.props.item.activity_type === 'log') {
       return this.logContent;
-    } else {
-      return this.eventContent;
     }
+
+    return this.eventContent;
   }
 
   get eventContent() {
@@ -144,7 +144,9 @@ export default class ActivityLogItem extends React.Component {
       content = this.crashContent;
     } else if (item.type === 'audit.app.create') {
       content = (
-        <span>{ item.actor_name } created the app with { metadata.request.memory } MBs of memory.</span>
+        <span>
+          { item.actor_name } created the app with { metadata.request.memory } MBs of memory.
+        </span>
       );
     } else if (item.type === 'audit.app.map-route') {
       content = (
@@ -200,6 +202,8 @@ export default class ActivityLogItem extends React.Component {
           break;
         case 'audit.app.create':
           css = 'activity_log-item-success';
+          break;
+        default:
           break;
       }
     }
