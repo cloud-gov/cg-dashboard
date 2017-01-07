@@ -69,18 +69,28 @@ export default {
     });
 
     let fetch = Promise.resolve();
-    if (!org.quicklook || !org.quicklook.open) {
-      // TODO only fetch if spaces haven't already been fetched
+    if (!org.quicklook || !org.quicklook.isLoaded) {
       fetch = spaceActions.fetchAllForOrg(org.guid);
     }
 
-    fetch.then(() => {
-      AppDispatcher.handleUIAction({
-        type: orgActionTypes.ORG_TOGGLE_QUICKLOOK_SUCCESS,
-        orgGuid: org.guid
-      });
-    });
+    return fetch.then(
+      () => this.toggleQuicklookSuccess(org.guid),
+      (err) => this.toggleQuicklookError(org.guid, err)
+    );
+  },
 
-    return fetch;
+  toggleQuicklookSuccess(orgGuid) {
+    AppDispatcher.handleUIAction({
+      type: orgActionTypes.ORG_TOGGLE_QUICKLOOK_SUCCESS,
+      orgGuid
+    });
+  },
+
+  toggleQuicklookError(orgGuid, err) {
+    AppDispatcher.handleUIAction({
+      type: orgActionTypes.ORG_TOGGLE_QUICKLOOK_ERROR,
+      orgGuid,
+      err
+    });
   }
 };

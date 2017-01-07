@@ -67,7 +67,11 @@ const orgActionTypes = keymirror({
   // Action when user toggles a space submenu in the sidenav
   ORG_TOGGLE_SPACE_MENU: null,
   // Action when a user opens up an org quick look
-  ORG_TOGGLE_QUICKLOOK: null
+  ORG_TOGGLE_QUICKLOOK: null,
+  // Action when the toggle completes successfully
+  ORG_TOGGLE_QUICKLOOK_SUCCESS: null,
+  // Action when the toggle fails to complete
+  ORG_TOGGLE_QUICKLOOK_ERROR: null
 });
 
 const spaceActionTypes = keymirror({

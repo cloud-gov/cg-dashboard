@@ -2,6 +2,7 @@ import Immutable from 'immutable';
 
 
 const defaults = {
+  error: null,
   isLoaded: false,
   open: false
 };
