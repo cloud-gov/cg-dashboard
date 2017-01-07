@@ -5,6 +5,7 @@ import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
 import Breadcrumbs from './breadcrumbs.jsx';
 import EntityIcon from './entity_icon.jsx';
+import Loading from './loading.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
@@ -23,7 +24,8 @@ function stateSetter() {
     space: SpaceStore.currentSpace() || {},
     currentOrg: OrgStore.currentOrg(),
     currentOrgGuid: OrgStore.currentOrgGuid,
-    currentSpaceGuid: SpaceStore.currentSpaceGuid
+    currentSpaceGuid: SpaceStore.currentSpaceGuid,
+    loading: SpaceStore.loading || OrgStore.loading
   };
 }
 
@@ -37,10 +39,12 @@ export default class SpaceContainer extends React.Component {
   }
 
   componentDidMount() {
+    OrgStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
+    OrgStore.removeChangeListener(this._onChange);
     SpaceStore.removeChangeListener(this._onChange);
   }
 
@@ -57,6 +61,10 @@ export default class SpaceContainer extends React.Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return <Loading />;
+    }
+
     let main = <div></div>;
     const title = (
       <span>
