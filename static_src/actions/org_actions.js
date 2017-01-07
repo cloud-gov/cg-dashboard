@@ -6,6 +6,7 @@
 
 import AppDispatcher from '../dispatcher.js';
 import { orgActionTypes } from '../constants';
+import spaceActions from './space_actions';
 
 export default {
 
@@ -61,10 +62,25 @@ export default {
     });
   },
 
-  toggleQuicklook(orgGuid) {
+  toggleQuicklook(org) {
     AppDispatcher.handleUIAction({
       type: orgActionTypes.ORG_TOGGLE_QUICKLOOK,
-      orgGuid
+      orgGuid: org.guid
     });
+
+    let fetch = Promise.resolve();
+    if (!org.quicklook || !org.quicklook.open) {
+      // TODO only fetch if spaces haven't already been fetched
+      fetch = spaceActions.fetchAllForOrg(org.guid);
+    }
+
+    fetch.then(() => {
+      AppDispatcher.handleUIAction({
+        type: orgActionTypes.ORG_TOGGLE_QUICKLOOK_SUCCESS,
+        orgGuid: org.guid
+      });
+    });
+
+    return fetch;
   }
 };

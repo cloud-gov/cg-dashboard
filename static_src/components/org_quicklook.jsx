@@ -6,9 +6,10 @@ import createStyler from '../util/create_styler';
 
 import AppCountStatus from './app_count_status.jsx';
 import EntityIcon from './entity_icon.jsx';
+import Loading from './loading.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
+import SpaceQuicklook from './space_quicklook.jsx';
 import orgActions from '../actions/org_actions.js';
-import spaceActions from '../actions/space_actions.js';
 import { orgHref } from '../util/url';
 
 const propTypes = {
@@ -32,10 +33,7 @@ export default class OrgQuicklook extends React.Component {
 
   onRowClick(ev) {
     ev.preventDefault();
-    if (!this.props.org.quicklook_open) {
-      spaceActions.fetchAllForOrg(this.props.org.guid);
-    }
-    orgActions.toggleQuicklook(this.props.org.guid);
+    orgActions.toggleQuicklook(this.props.org);
   }
 
   onOrgClick(ev) {
@@ -60,29 +58,48 @@ export default class OrgQuicklook extends React.Component {
     }, []);
   }
 
+  get spacesContent() {
+    if (!this.props.org.quicklook || !this.props.org.quicklook.open) {
+      return null;
+    }
+
+    if (!this.props.org.quicklook.isLoaded) {
+      return <Loading />;
+    }
+
+    return this.props.spaces.map(space =>
+      <SpaceQuicklook space={ space } orgGuid={ this.props.org.guid } key={ space.guid } />
+    );
+  }
+
   render() {
     const props = this.props;
-    const panelStyle = props.org.quicklook_open ? { marginBottom: '1rem' } : null;
+    const panelStyle = props.org.quicklook && props.org.quicklook.open ?
+      { marginBottom: '1rem' } :
+      null;
 
     return (
-    <div style={ panelStyle } onClick={ this.onRowClick }
-      className={ this.styler('panel-row-is_clickable', 'test-org-quicklook') }
-    >
-      <div className={ this.styler('panel-column') }>
-        <h2 className={ this.styler('card-title-primary') }>
-          <EntityIcon entity="org" iconSize="medium" />
-          <a onClick={ this.onOrgClick }>{ props.org.name }</a>
-        </h2>
-      </div>
-      <div className={ this.styler('panel-column') }>
-        <div className={ this.styler('count_status_container') }>
-          <SpaceCountStatus spaces={ props.org.spaces } />
-          <AppCountStatus appCount={ this.totalAppCount(props.org.spaces) }
-            apps={ this.allApps() }
-          />
+      <div>
+        <div style={ panelStyle } onClick={ this.onRowClick }
+          className={ this.styler('panel-row-is_clickable', 'test-org-quicklook') }
+        >
+          <div className={ this.styler('panel-column') }>
+            <h2 className={ this.styler('card-title-primary') }>
+              <EntityIcon entity="org" iconSize="medium" />
+              <a onClick={ this.onOrgClick }>{ props.org.name }</a>
+            </h2>
+          </div>
+          <div className={ this.styler('panel-column') }>
+            <div className={ this.styler('count_status_container') }>
+              <SpaceCountStatus spaces={ props.org.spaces } />
+              <AppCountStatus appCount={ this.totalAppCount(props.org.spaces) }
+                apps={ this.allApps() }
+              />
+            </div>
+          </div>
         </div>
+        { this.spacesContent }
       </div>
-    </div>
     );
   }
 }
