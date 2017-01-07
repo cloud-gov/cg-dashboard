@@ -20,8 +20,7 @@ const defaultProps = {
   spaces: []
 };
 
-// TODO rename org_quicklook and org_quick_look to remain consistent with store.
-export default class OrgQuickLook extends React.Component {
+export default class OrgQuicklook extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -88,5 +87,5 @@ export default class OrgQuickLook extends React.Component {
   }
 }
 
-OrgQuickLook.propTypes = propTypes;
-OrgQuickLook.defaultProps = defaultProps;
+OrgQuicklook.propTypes = propTypes;
+OrgQuicklook.defaultProps = defaultProps;

@@ -7,7 +7,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import { config } from 'skin';
 import Icon from './icon.jsx';
 import Loading from './loading.jsx';
-import OrgQuickLook from './org_quick_look.jsx';
+import OrgQuicklook from './org_quicklook.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
@@ -79,7 +79,7 @@ export default class OverviewContainer extends React.Component {
         <Panel title="Your organizations">
           { state.orgs.map((org) =>
             <PanelRow key={ org.guid } className="test-panel-row-organizations" styleClass="boxed">
-              <OrgQuickLook
+              <OrgQuicklook
                 org={ org }
                 spaces={ this.orgSpaces(org.guid) }
               />
