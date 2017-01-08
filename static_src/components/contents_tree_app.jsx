@@ -108,8 +108,7 @@ export default class ContentsTreeApp extends React.Component {
             <span className={ this.styler('panel-column') }>
               <h3 className={ this.styler('contents-secondary') }>
                 <EntityIcon entity="app" health={ appHealth(app) } iconSize="medium" />
-                <span className={ this.styler('contents-path') }>
-                  { this.props.spaceName } / </span>{ this.appName() }
+                { this.appName() }
               </h3>
             </span>
             { info }
