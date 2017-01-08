@@ -60,7 +60,7 @@ export default class UserList extends React.Component {
 
   render() {
     let loading = <Loading text="Loading users" />;
-    let content = <div>{ loading }</div>;
+    let content = <div className={ this.styler('loading-container')}>{ loading }</div>;
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No users</h4>;

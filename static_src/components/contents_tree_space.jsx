@@ -37,7 +37,7 @@ export default class ContentsTreeSpace extends React.Component {
   render() {
     const space = this.props.space;
     let loading = <Loading text="Loading spaces" loadingDelayMS={ 1 } />;
-    let content = <div>{ loading }</div>;
+    let content = <div className={ this.styler('loading-container')}>{ loading }</div>;
 
     if (!this.props.loading) {
       content = (

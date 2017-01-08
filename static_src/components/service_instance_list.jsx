@@ -92,7 +92,7 @@ export default class ServiceInstanceList extends React.Component {
 
   render() {
     let loading = <Loading text="Loading service instances" />;
-    let content = <div>{ loading }</div>;
+    let content = <div className={ this.styler('loading-container')}>{ loading }</div>;
 
     const specialtdStyles = {
       whiteSpace: 'nowrap',
