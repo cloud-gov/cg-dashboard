@@ -73,9 +73,11 @@ class Loading extends React.Component {
           switch (this.props.style) {
             case 'cover': {
               return (
-              <img className={ this.styler('loading-indicator') }
-                src={ `/assets/${loadingImg}` } alt={ this.props.text }
-              />
+              <div className={ this.styler('loading-indicator') }>
+                <span className={ this.styler('loading-inline-dot') }>•</span>
+                <span className={ this.styler('loading-inline-dot') }>•</span>
+                <span className={ this.styler('loading-inline-dot') }>•</span>
+              </div>
               );
             }
             case 'inline': {
