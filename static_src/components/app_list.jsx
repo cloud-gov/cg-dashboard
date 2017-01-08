@@ -5,7 +5,6 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
 import ContentsTreeApp from './contents_tree_app.jsx';
-import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
@@ -66,10 +65,7 @@ export default class AppList extends React.Component {
     } else if (!this.state.loading && this.state.apps.length > 0) {
       content = (
         <div className={ this.styler('panel-content') }>
-          <div className={ this.styler('panel-row-header') }>
-            <span>Apps in</span> <EntityIcon entity="space" iconSize="medium" />
-            <span> { this.state.currentSpaceName }</span>
-          </div>
+          <div className={ this.styler('panel-row-header') }>Apps</div>
           { this.state.apps.map((app) =>
             <ContentsTreeApp
               key={ app.guid }

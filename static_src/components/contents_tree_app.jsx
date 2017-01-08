@@ -2,7 +2,7 @@
 import React from 'react';
 
 import EntityIcon from './entity_icon.jsx';
-import Row from './row.jsx';
+import PanelEntry from './panel_entry.jsx';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import { appHref } from '../util/url';
@@ -103,7 +103,7 @@ export default class ContentsTreeApp extends React.Component {
 
     return (
       <div className={ this.styler('contents-tree-app')}>
-        <Row key={ app.guid } type="panel-row">
+        <PanelEntry key={ app.guid }>
           <div>
             <span className={ this.styler('panel-column') }>
               <h3 className={ this.styler('contents-secondary') }>
@@ -114,7 +114,7 @@ export default class ContentsTreeApp extends React.Component {
             </span>
             { info }
           </div>
-        </Row>
+        </PanelEntry>
       </div>
     );
   }

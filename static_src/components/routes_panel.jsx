@@ -9,7 +9,7 @@ import OrgStore from '../stores/org_store.js';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelHeader from './panel_header.jsx';
-import Row from './row.jsx';
+import PanelEntry from './panel_entry.jsx';
 import routeActions from '../actions/route_actions.js';
 import Route from './route.jsx';
 import RouteForm from './route_form.jsx';
@@ -157,13 +157,13 @@ export default class RoutesPanel extends React.Component {
   }
 
   renderRoutes(routes) {
-    let content = <Row type="panel-row"><h4>No routes</h4></Row>;
+    let content = <PanelEntry><h4>No routes</h4></PanelEntry>;
 
     if (routes && routes.length) {
       content = routes.map((route) =>
-        <Row type="panel-row" key={ route.guid + route.app_guid }>
+        <PanelEntry key={ route.guid + route.app_guid }>
           <Route route={ route } appGuid={ this.state.appGuid} />
-        </Row>
+        </PanelEntry>
       );
     }
     return content;
@@ -195,5 +195,4 @@ export default class RoutesPanel extends React.Component {
 }
 
 RoutesPanel.propTypes = {};
-
 RoutesPanel.defaultProps = {};

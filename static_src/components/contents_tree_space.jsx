@@ -7,7 +7,7 @@ import createStyler from '../util/create_styler';
 import ContentsTreeApp from './contents_tree_app.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
-import Row from './row.jsx';
+import PanelEntry from './panel_entry.jsx';
 import { spaceHref } from '../util/url';
 
 const propTypes = {
@@ -42,12 +42,12 @@ export default class ContentsTreeSpace extends React.Component {
     if (!this.props.loading) {
       content = (
         <div className={ this.styler('contents-tree-space')}>
-          <Row type="panel-row">
+          <PanelEntry>
             <h3 className={ this.styler('contents-primary') }>
               <EntityIcon entity="space" iconSize="medium" />
               <a href={ this.spaceHref() }>{ space.name }</a>
             </h3>
-          </Row>
+          </PanelEntry>
           <div className={ this.styler('row')}>
             { space.apps && space.apps.map((app) =>
                <ContentsTreeApp

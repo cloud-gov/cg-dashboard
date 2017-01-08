@@ -9,20 +9,14 @@ const VALIGNS = [
   'bottom'
 ];
 
-const TYPES = [
-  'panel-row'
-];
-
 const propTypes = {
   children: React.PropTypes.any,
-  type: React.PropTypes.oneOf(TYPES),
   valign: React.PropTypes.oneOf(VALIGNS),
   gutters: React.PropTypes.bool,
   boxed: React.PropTypes.bool
 };
 
 const defaultProps = {
-  type: null,
   valign: 'center',
   boxed: null,
   gutters: false
@@ -37,7 +31,6 @@ export default class Row extends React.Component {
 
   render() {
     const props = this.props;
-    const typeClass = props.type;
     const valignClass = props.valign !== 'center' &&
       `row-${props.valign}`;
     const gutterClass = props.gutters && 'row-gutters';
@@ -47,7 +40,6 @@ export default class Row extends React.Component {
       <div className={ this.styler(
           'row',
           boxedClass,
-          typeClass,
           valignClass,
           gutterClass
         )}
