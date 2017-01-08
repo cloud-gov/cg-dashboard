@@ -16,7 +16,7 @@ import Panel from './panel.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
 import SpaceStore from '../stores/space_store.js';
-import SpaceQuicklook from './space_quicklook.jsx';
+import ContentsTreeSpace from './contents_tree_space.jsx';
 import Users from './users.jsx';
 
 function stateSetter() {
@@ -120,16 +120,18 @@ export default class OrgContainer extends React.Component {
             </div>
           </div>
 
-          <div className={ this.styler('panel-content', 'contents-tree') }>
-            { state.spaces.map((space) => (
-              <SpaceQuicklook
-                key={ space.guid }
-                space={ space }
-                orgGuid={ state.org.guid }
-                showAppDetail
-              />
-              )
-            )}
+          <div className={ this.styler('panel-content') }>
+            <div className={ this.styler('contents-tree') }>
+              { state.spaces.map((space) => (
+                <ContentsTreeSpace
+                  key={ space.guid }
+                  space={ space }
+                  orgGuid={ state.org.guid }
+                  showAppDetail
+                />
+                )
+              )}
+            </div>
           </div>
         </Panel>
 

@@ -14,7 +14,7 @@ import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import PanelGroup from './panel_group.jsx';
 import SpaceStore from '../stores/space_store.js';
-import SpaceQuicklook from './space_quicklook.jsx';
+import ContentsTreeSpace from './contents_tree_space.jsx';
 
 function stateSetter() {
   const orgs = OrgStore.getAll() || [];
@@ -84,7 +84,7 @@ export default class OverviewContainer extends React.Component {
                 spaces={ this.orgSpaces(org.guid) }
               />
               { org.quicklook_open && this.orgSpaces(org.guid).map((space) =>
-                <SpaceQuicklook space={ space } orgGuid={ org.guid }
+                <ContentsTreeSpace space={ space } orgGuid={ org.guid }
                   key={ space.guid } loading={ state.loading }
                 />
               )}

@@ -13,22 +13,15 @@ const TYPES = [
   'panel-row'
 ];
 
-const TREES = [
-  'level-one',
-  'level-two'
-];
-
 const propTypes = {
   children: React.PropTypes.any,
   type: React.PropTypes.oneOf(TYPES),
   valign: React.PropTypes.oneOf(VALIGNS),
   gutters: React.PropTypes.bool,
-  boxed: React.PropTypes.bool,
-  tree: React.PropTypes.oneOf(TREES)
+  boxed: React.PropTypes.bool
 };
 
 const defaultProps = {
-  tree: null,
   type: null,
   valign: 'center',
   boxed: null,
@@ -44,7 +37,6 @@ export default class Row extends React.Component {
 
   render() {
     const props = this.props;
-    const treeClass = props.tree && `tree-${props.tree}`;
     const typeClass = props.type;
     const valignClass = props.valign !== 'center' &&
       `row-${props.valign}`;
@@ -55,7 +47,6 @@ export default class Row extends React.Component {
       <div className={ this.styler(
           'row',
           boxedClass,
-          treeClass,
           typeClass,
           valignClass,
           gutterClass

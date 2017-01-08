@@ -26,7 +26,7 @@ const defaultProps = {
   extraInfo: ['state']
 };
 
-export default class AppQuicklook extends React.Component {
+export default class ContentsTreeApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -102,21 +102,23 @@ export default class AppQuicklook extends React.Component {
     }
 
     return (
-      <Row key={ app.guid } type="panel-row">
-        <div>
-          <span className={ this.styler('panel-column') }>
-            <h3 className={ this.styler('contents-secondary') }>
-              <EntityIcon entity="app" health={ appHealth(app) } iconSize="medium" />
-              <span className={ this.styler('contents-path') }>
-                { this.props.spaceName } / </span>{ this.appName() }
-            </h3>
-          </span>
-          { info }
-        </div>
-      </Row>
+      <div className={ this.styler('contents-tree-app')}>
+        <Row key={ app.guid } type="panel-row">
+          <div>
+            <span className={ this.styler('panel-column') }>
+              <h3 className={ this.styler('contents-secondary') }>
+                <EntityIcon entity="app" health={ appHealth(app) } iconSize="medium" />
+                <span className={ this.styler('contents-path') }>
+                  { this.props.spaceName } / </span>{ this.appName() }
+              </h3>
+            </span>
+            { info }
+          </div>
+        </Row>
+      </div>
     );
   }
 }
 
-AppQuicklook.propTypes = propTypes;
-AppQuicklook.defaultProps = defaultProps;
+ContentsTreeApp.propTypes = propTypes;
+ContentsTreeApp.defaultProps = defaultProps;

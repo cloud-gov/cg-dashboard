@@ -4,7 +4,7 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
-import AppQuicklook from './app_quicklook.jsx';
+import ContentsTreeApp from './contents_tree_app.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import Row from './row.jsx';
@@ -22,7 +22,7 @@ const defaultProps = {
   showAppDetail: false
 };
 
-export default class SpaceQuicklook extends React.Component {
+export default class ContentsTreeSpace extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -41,27 +41,27 @@ export default class SpaceQuicklook extends React.Component {
 
     if (!this.props.loading) {
       content = (
-        <Row>
-          <Row type="panel-row" tree="level-one">
+        <div className={ this.styler('contents-tree-space')}>
+          <Row type="panel-row">
             <h3 className={ this.styler('contents-primary') }>
               <EntityIcon entity="space" iconSize="medium" />
               <a href={ this.spaceHref() }>{ space.name }</a>
             </h3>
           </Row>
-          <div className={ this.styler('row', 'tree-level-two') }>
-          { space.apps && space.apps.map((app) =>
-             <AppQuicklook
-               key={ app.guid }
-               app={ app }
-               orgGuid={ this.props.orgGuid }
-               spaceGuid={ space.guid }
-               spaceName={ space.name }
-               extraInfo={ this.props.showAppDetail ?
-                 ['state', 'memory', 'diskQuota'] : ['state'] }
-             />
-          )}
+          <div className={ this.styler('row')}>
+            { space.apps && space.apps.map((app) =>
+               <ContentsTreeApp
+                 key={ app.guid }
+                 app={ app }
+                 orgGuid={ this.props.orgGuid }
+                 spaceGuid={ space.guid }
+                 spaceName={ space.name }
+                 extraInfo={ this.props.showAppDetail ?
+                   ['state', 'memory', 'diskQuota'] : ['state'] }
+               />
+            )}
           </div>
-        </Row>
+        </div>
       );
     }
 
@@ -69,5 +69,5 @@ export default class SpaceQuicklook extends React.Component {
   }
 }
 
-SpaceQuicklook.propTypes = propTypes;
-SpaceQuicklook.defaultProps = defaultProps;
+ContentsTreeSpace.propTypes = propTypes;
+ContentsTreeSpace.defaultProps = defaultProps;

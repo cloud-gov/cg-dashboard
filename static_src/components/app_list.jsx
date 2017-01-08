@@ -4,7 +4,7 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
-import AppQuicklook from './app_quicklook.jsx';
+import ContentsTreeApp from './contents_tree_app.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
@@ -71,7 +71,7 @@ export default class AppList extends React.Component {
             <span> { this.state.currentSpaceName }</span>
           </div>
           { this.state.apps.map((app) =>
-            <AppQuicklook
+            <ContentsTreeApp
               key={ app.guid }
               app={ app }
               orgGuid={ this.state.currentOrgGuid }
