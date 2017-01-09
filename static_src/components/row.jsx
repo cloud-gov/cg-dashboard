@@ -12,13 +12,11 @@ const VALIGNS = [
 const propTypes = {
   children: React.PropTypes.any,
   valign: React.PropTypes.oneOf(VALIGNS),
-  gutters: React.PropTypes.bool,
-  boxed: React.PropTypes.bool
+  gutters: React.PropTypes.bool
 };
 
 const defaultProps = {
   valign: 'center',
-  boxed: null,
   gutters: false
 };
 
@@ -34,12 +32,10 @@ export default class Row extends React.Component {
     const valignClass = props.valign !== 'center' &&
       `row-${props.valign}`;
     const gutterClass = props.gutters && 'row-gutters';
-    const boxedClass = props.boxed && 'row-boxed';
 
     return (
       <div className={ this.styler(
           'row',
-          boxedClass,
           valignClass,
           gutterClass
         )}
