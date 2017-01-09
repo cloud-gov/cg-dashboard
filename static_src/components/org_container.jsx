@@ -8,11 +8,13 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import AppCountStatus from './app_count_status.jsx';
 import Breadcrumbs from './breadcrumbs.jsx';
 
+import Col from './col.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
+import Row from './row.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
 import SpaceStore from '../stores/space_store.js';
@@ -105,19 +107,21 @@ export default class OrgContainer extends React.Component {
           </div>
         </div>
         <Panel>
-          <div className={ this.styler('grid panel-overview-header') }>
-            <div className={ this.styler('grid-width-6') }>
-              <h1 className={ this.styler('panel-title') }>Organization overview</h1>
-            </div>
-            <div className={ this.styler('grid-width-6') }>
-              <div className={ this.styler('count_status_container') } >
-                <SpaceCountStatus spaces={ state.spaces } />
-                <AppCountStatus apps={ allApps } appCount={ allApps && allApps.length } />
-                <ServiceCountStatus services={ allServices }
-                  serviceCount={ allServices && allServices.length }
-                />
-              </div>
-            </div>
+          <div className={ this.styler('panel-overview-header') }>
+            <Row valign="top">
+              <Col flex={ 1 }>
+                <h1 className={ this.styler('panel-title') }>Organization overview</h1>
+              </Col>
+              <Col flex={ 1 }>
+                <div className={ this.styler('count_status_container') } >
+                  <SpaceCountStatus spaces={ state.spaces } />
+                  <AppCountStatus apps={ allApps } appCount={ allApps && allApps.length } />
+                  <ServiceCountStatus services={ allServices }
+                    serviceCount={ allServices && allServices.length }
+                  />
+                </div>
+              </Col>
+            </Row>
           </div>
 
           <div className={ this.styler('panel-content') }>

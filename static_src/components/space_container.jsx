@@ -4,12 +4,14 @@ import React from 'react';
 import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
 import Breadcrumbs from './breadcrumbs.jsx';
+import Col from './col.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import PanelActions from './panel_actions.jsx';
+import Row from './row.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
 import ServiceInstanceList from '../components/service_instance_list.jsx';
 import SpaceStore from '../stores/space_store.js';
@@ -75,18 +77,23 @@ export default class SpaceContainer extends React.Component {
           </div>
         </div>
         <Panel>
-          <div className={ this.styler('grid panel-overview-header') }>
-            <div className={ this.styler('grid-width-8') }>
-              <h1 className={ this.styler('panel-title') }>Space overview</h1>
-            </div>
-            <div className={ this.styler('grid-width-4') }>
-              <div className={ this.styler('count_status_container') }>
-                <AppCountStatus apps={ space.apps } appCount={ space.apps && space.apps.length } />
-                <ServiceCountStatus services={ space.services }
-                  serviceCount={ space.services && space.services.length }
-                />
-              </div>
-            </div>
+          <div className={ this.styler('panel-overview-header') }>
+            <Row valign="top">
+              <Col flex={ 1 }>
+                <h1 className={ this.styler('panel-title') }>Space overview</h1>
+              </Col>
+              <Col flex={ 1 }>
+                <div className={ this.styler('count_status_container') }>
+                  <AppCountStatus
+                    apps={ space.apps }
+                    appCount={ space.apps && space.apps.length }
+                  />
+                  <ServiceCountStatus services={ space.services }
+                    serviceCount={ space.services && space.services.length }
+                  />
+                </div>
+              </Col>
+            </Row>
           </div>
           <AppList />
           <PanelActions>
