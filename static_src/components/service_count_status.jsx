@@ -7,7 +7,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import CountStatus from './count_status.jsx';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import { entityHealth } from '../constants.js';
-import { worstHealth } from '../util/health';
+import { appInstanceHealth, worstAppInstanceState } from '../util/health';
 
 
 const propTypes = {
@@ -32,9 +32,9 @@ export default class ServiceCountStatus extends React.Component {
     let health = entityHealth.inactive;
 
     if (props.services.length) {
-      health = worstHealth(
+      health = appInstanceHealth(worstAppInstanceState(
 	props.services.map(ServiceInstanceStore.getMappedAppState.bind(ServiceInstanceStore))
-      );
+      ));
     }
 
     return (

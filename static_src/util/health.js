@@ -52,6 +52,25 @@ export function appHealth(app) {
   return entityHealth.unknown;
 }
 
+export function appInstanceHealth(state) {
+  switch (state) {
+    case appStates.crashed:
+    case appStates.down:
+    case appStates.flapping:
+      return entityHealth.error;
+
+    case appStates.stopped:
+      return entityHealth.inactive;
+
+    case appStates.running:
+    case appStates.started:
+      return entityHealth.ok;
+
+    default:
+      return entityHealth.unknown;
+  }
+}
+
 // Lowest score is worst
 function rank(ranked, value) {
   return ranked.indexOf(value);
