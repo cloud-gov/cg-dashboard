@@ -8,6 +8,7 @@ import ContentsTreeApp from './contents_tree_app.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import PanelEntry from './panel_entry.jsx';
+import Row from './row.jsx';
 import { spaceHref } from '../util/url';
 
 const propTypes = {
@@ -48,7 +49,7 @@ export default class ContentsTreeSpace extends React.Component {
               <a href={ this.spaceHref() }>{ space.name }</a>
             </h3>
           </PanelEntry>
-          <div className={ this.styler('row')}>
+          <Row>
             { space.apps && space.apps.map((app) =>
                <ContentsTreeApp
                  key={ app.guid }
@@ -60,7 +61,7 @@ export default class ContentsTreeSpace extends React.Component {
                    ['state', 'memory', 'diskQuota'] : ['state'] }
                />
             )}
-          </div>
+          </Row>
         </div>
       );
     }

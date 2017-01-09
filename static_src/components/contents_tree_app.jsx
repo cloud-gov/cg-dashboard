@@ -1,6 +1,8 @@
 
 import React from 'react';
 
+import Col from './col.jsx';
+import ContentsTreeCol from './contents_tree_col.jsx';
 import EntityIcon from './entity_icon.jsx';
 import PanelEntry from './panel_entry.jsx';
 import createStyler from '../util/create_styler';
@@ -70,49 +72,41 @@ export default class ContentsTreeApp extends React.Component {
       // Only show the state if app is crashed or theres only one extra col
       if (!isHealthyApp(app) || oneInfo) {
         info.push(
-          <span key="3" className={ this.styler('col',
-            'col-flex-0', 'contents-tree-column') }
-          >
+          <ContentsTreeCol key="3">
             { this.appState(app) }
-          </span>
+          </ContentsTreeCol>
         );
       }
     }
     if (this.props.extraInfo.includes('memory')) {
       info.push(
-        <span key="1" className={ this.styler('col',
-          'col-flex-0', 'contents-tree-column') }
-        >
+        <ContentsTreeCol key="1">
           <span className={ this.styler('contents-tree-value') }>
             { app.memory } MB </span>
           <span className={ this.styler('subtext') }>memory allocated</span>
-        </span>
+        </ContentsTreeCol>
       );
     }
     if (this.props.extraInfo.includes('diskQuota')) {
       info.push(
-        <span key="2" className={ this.styler('col',
-          'col-flex-0', 'contents-tree-column') }
-        >
+        <ContentsTreeCol key="2">
           <span className={ this.styler('contents-tree-value') }>
           { app.disk_quota } MB </span>
           <span className={ this.styler('subtext') }>disk quota</span>
-        </span>
+        </ContentsTreeCol>
       );
     }
 
     return (
       <div className={ this.styler('contents-tree-app')}>
         <PanelEntry key={ app.guid }>
-          <div>
-            <span className={ this.styler('panel-column') }>
-              <h3 className={ this.styler('contents-secondary') }>
-                <EntityIcon entity="app" health={ appHealth(app) } iconSize="medium" />
-                { this.appName() }
-              </h3>
-            </span>
-            { info }
-          </div>
+          <Col flex={ 1 }>
+            <h3 className={ this.styler('contents-secondary') }>
+              <EntityIcon entity="app" health={ appHealth(app) } iconSize="medium" />
+              { this.appName() }
+            </h3>
+          </Col>
+          { info }
         </PanelEntry>
       </div>
     );
