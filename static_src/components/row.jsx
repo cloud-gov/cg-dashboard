@@ -6,7 +6,8 @@ import createStyler from '../util/create_styler';
 const VALIGNS = [
   'top',
   'center',
-  'bottom'
+  'bottom',
+  'stretch'
 ];
 
 const propTypes = {

@@ -254,7 +254,7 @@ export default class UsageAndLimits extends React.Component {
       content = (
       <div className={ this.styler('panel-content') }>
         <PanelGroup>
-          <Row>
+          <Row valign="stretch">
             <Col flex={ 2 } gutters>
               { this.memory }
               { this.disk }
