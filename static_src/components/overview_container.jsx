@@ -62,7 +62,7 @@ export default class OverviewContainer extends React.Component {
 
   render() {
     const state = this.state;
-    let loading = <Loading text="Loading orgs" />;
+    let loading = <Loading text="Loading your organizations" />;
     let content = <div>{ loading }</div>;
     const title = (
       <span>
