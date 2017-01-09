@@ -157,7 +157,7 @@ export default class UsageAndLimits extends React.Component {
     return (
     <div className={ this.styler('col', 'col-flex-1') }>
       <ResourceUsage title="Total disk used"
-        amountTotal={ this.getStat('disk_quota') }
+        amountTotal={ this.getStat('disk', sum) }
       />
     </div>
     );
