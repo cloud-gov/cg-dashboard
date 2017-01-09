@@ -7,12 +7,12 @@ import createStyler from '../util/create_styler';
 
 const propTypes = {
   title: React.PropTypes.string,
-  secondary: React.PropTypes.object
+  helperText: React.PropTypes.object
 };
 
 const defaultProps = {
   title: null,
-  secondary: null
+  helperText: null
 };
 
 export default class Panel extends React.Component {
@@ -25,16 +25,16 @@ export default class Panel extends React.Component {
   render() {
 
     let panelTitle = null;
-    let panelSecondary = null;
+    let panelHelperText = null;
     let panelHed = null;
     if (this.props.title != null) {
       panelTitle = <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>;
-      if (this.props.secondary != null) {
-        panelSecondary = <p className={ this.styler('panel-secondary') }>{ this.props.secondary }</p>;
+      if (this.props.helperText != null) {
+        panelHelperText = <p className={ this.styler('panel-helpertext') }>{ this.props.helperText }</p>;
       }
       panelHed =  <div className={ this.styler('panel-header') }>
                     { panelTitle }
-                    { panelSecondary }
+                    { panelHelperText }
                   </div>;
     }
 

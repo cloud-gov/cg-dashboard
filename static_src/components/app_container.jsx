@@ -157,7 +157,7 @@ export default class AppContainer extends React.Component {
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
     } else if (!this.state.loading && appReady(this.state.app)) {
-      const usageSecondary = (
+      const usageHelperText = (
         <span>View more usage data at <a href="https://logs.cloud.gov">logs.cloud.gov</a></span>
       );
       content = (
@@ -170,7 +170,7 @@ export default class AppContainer extends React.Component {
               </PageHeader>
             </div>
           </div>
-          <Panel title="App usage and allocation" secondary={ usageSecondary }>
+          <Panel title="App usage and allocation" helperText={ usageHelperText }>
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 
