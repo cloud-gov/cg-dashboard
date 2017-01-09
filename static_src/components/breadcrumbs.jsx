@@ -26,6 +26,23 @@ export default class Breadcrumbs extends React.Component {
     super(props);
     this.styler = createStyler(style);
     this.state = stateSetter();
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
+    AppStore.addChangeListener(this._onChange);
+    OrgStore.addChangeListener(this._onChange);
+    SpaceStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    AppStore.removeChangeListener(this._onChange);
+    OrgStore.removeChangeListener(this._onChange);
+    SpaceStore.removeChangeListener(this._onChange);
+  }
+
+  _onChange() {
+    this.setState(stateSetter());
   }
 
   render() {
@@ -37,13 +54,13 @@ export default class Breadcrumbs extends React.Component {
       breadcrumbs.push(<BreadcrumbsItem key="home" url="/#/">overview</BreadcrumbsItem>);
     }
 
-    if (space && space.name) {
+    if (org && space && space.name) {
       breadcrumbs.push(
         <BreadcrumbsItem key={ org.guid } url={ orgHref(org) }>{ org.name }</BreadcrumbsItem>
       );
     }
 
-    if (app && app.name) {
+    if (org && space && app && app.name) {
       breadcrumbs.push(
         (
           <BreadcrumbsItem key={ space.guid } url={ spaceHref(org, space) }>
