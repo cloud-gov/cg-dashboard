@@ -17,6 +17,7 @@ export const OPERATION_DELETING = 'deleting';
 const OPERATION_PROCESSING = 'processing';
 export const OPERATION_RUNNING = 'running';
 const OPERATION_INACTIVE = 'inactive';
+export const CREATED_NOTIFICATION_TIME_MS = 2000;
 
 const OPERATION_STATES = {};
 OPERATION_STATES[OPERATION_FAILED] = 'Failed';
@@ -41,6 +42,8 @@ class ServiceInstanceStore extends BaseStore {
     this._data = new Immutable.List();
     this._createInstanceForm = null;
     this._createError = null;
+    this._createLoading = false;
+    this._createdTempNotification = false;
   }
 
   get createInstanceForm() {
@@ -49,6 +52,14 @@ class ServiceInstanceStore extends BaseStore {
 
   get createError() {
     return this._createError;
+  }
+
+  get createLoading() {
+    return this._createLoading;
+  }
+
+  get createdTempNotification() {
+    return this._createdTempNotification;
   }
 
   getAllBySpaceGuid(spaceGuid) {
@@ -150,18 +161,27 @@ class ServiceInstanceStore extends BaseStore {
           action.spaceGuid,
           action.servicePlanGuid
         );
+        this._createLoading = true;
+        this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATED: {
         cfApi.fetchServiceInstance(action.serviceInstance.guid);
-        this._createInstanceForm = null;
+        this._createLoading = false;
+        this._createdTempNotification = true;
         this.emitChange();
+        setTimeout(() => {
+          this._createInstanceForm = null
+          this._createdTempNotification = false;
+          this.emitChange();
+        }, CREATED_NOTIFICATION_TIME_MS);
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR: {
         this._createError = action.error;
+        this._createLoading = false;
         this.emitChange();
         break;
       }
