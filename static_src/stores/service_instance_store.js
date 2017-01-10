@@ -172,7 +172,7 @@ class ServiceInstanceStore extends BaseStore {
         this._createdTempNotification = true;
         this.emitChange();
         setTimeout(() => {
-          this._createInstanceForm = null
+          this._createInstanceForm = null;
           this._createdTempNotification = false;
           this.emitChange();
         }, CREATED_NOTIFICATION_TIME_MS);
