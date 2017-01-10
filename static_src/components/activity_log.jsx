@@ -8,16 +8,23 @@ import ActivityStore from '../stores/activity_store';
 import createStyler from '../util/create_styler';
 
 function stateSetter(props) {
-  const activity = ActivityStore.getAll().filter((item) => {
-    if (item.activity_type === 'event') {
-      if (item.type === 'audit.service_binding.create') {
+  const activity = ActivityStore
+    .getAll()
+    .filter(item => {
+      if (item.activity_type === 'log') {
+        return item.app_guid === props.initialAppGuid && item.status_code >= 400;
+      }
+
+      if (item.activity_type === 'event' && item.type === 'audit.service_binding.create') {
         return item.metadata.request.app_guid === props.initialAppGuid;
       }
-      return item.actee === props.initialAppGuid;
-    } else if (item.activity_type === 'log') {
-      return item.app_guid === props.initialAppGuid && item.status_code >= 400;
-    }
-  }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      if (item.activity_type === 'event') {
+        return item.actee === props.initialAppGuid;
+      }
+
+      return false;
+    }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
   return {
     activity,
@@ -74,11 +81,10 @@ export default class ActivityLog extends React.Component {
         <div>
           <p>View advanced logs at <a href="https://logs.cloud.gov">logs.cloud.gov</a></p>
           <ul className={ this.styler('activity_log') }>
-            { this.state.activity.slice(0, this.state.maxItems).map((item) => {
-              return (
-                <ActivityLogItem key={ item.guid } item={ item } />
-              );
-            })}
+            { this.state.activity
+                .slice(0, this.state.maxItems)
+                .map(item => <ActivityLogItem key={ item.guid } item={ item } />)
+            }
           </ul>
           <Action label="View more" clickHandler={ this.handleMore }>
             Show more activity
