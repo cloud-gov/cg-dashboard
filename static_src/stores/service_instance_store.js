@@ -17,7 +17,7 @@ export const OPERATION_DELETING = 'deleting';
 const OPERATION_PROCESSING = 'processing';
 export const OPERATION_RUNNING = 'running';
 const OPERATION_INACTIVE = 'inactive';
-export const CREATED_NOTIFICATION_TIME_MS = 2000;
+export const CREATED_NOTIFICATION_TIME_MS = 3000;
 
 const OPERATION_STATES = {};
 OPERATION_STATES[OPERATION_FAILED] = 'Failed';
@@ -168,6 +168,7 @@ class ServiceInstanceStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATED: {
         cfApi.fetchServiceInstance(action.serviceInstance.guid);
+        this._createError = null;
         this._createLoading = false;
         this._createdTempNotification = true;
         this.emitChange();
