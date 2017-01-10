@@ -39,7 +39,6 @@ function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const currentSpaceName = SpaceStore.currentSpaceName;
   const currentAppGuid = AppStore.currentAppGuid;
-
   const appServiceBindings = ServiceBindingStore.getAllByApp(currentAppGuid);
   const allServiceBindings = ServiceBindingStore.getAll();
 
@@ -114,11 +113,11 @@ export default class ServiceInstancePanel extends React.Component {
 
   render() {
     let loading = <Loading text="Loading services" />;
-    let content = <div>{ loading }</div>;
+    let content = <div className={ this.styler('loading-container')}>{ loading }</div>;
 
     if (!this.state.loading) {
       content = (
-      <div>
+      <div className={ this.styler('panel-content') }>
         <PanelGroup key="1">
           <PanelHeader>
             <h2 className={ this.styler('panel-row-header') }>Bound service instances</h2>
@@ -132,7 +131,7 @@ export default class ServiceInstancePanel extends React.Component {
         </PanelGroup>
         <PanelGroup key="2">
           <PanelHeader>
-            <h2 className={ this.styler('panel-row-header') }>Service instances available in
+            <h2 className={ this.styler('panel-row-header') }>Service instances available in&#160;
               { this.spaceLink }</h2>
           </PanelHeader>
           <ServiceInstanceListPanel

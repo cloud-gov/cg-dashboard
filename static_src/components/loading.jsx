@@ -1,7 +1,6 @@
 
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
-import loadingImg from 'cloudgov-style/img/loading.gif';
 
 import createStyler from '../util/create_styler';
 
@@ -73,9 +72,16 @@ class Loading extends React.Component {
           switch (this.props.style) {
             case 'cover': {
               return (
-              <img className={ this.styler('loading-indicator') }
-                src={ `/assets/${loadingImg}` } alt={ this.props.text }
-              />
+              <div className={ this.styler('loading-information') }>
+                <div className={ this.styler('loading-indicator') }>
+                  <span className={ this.styler('loading-inline-dot') }>•</span>
+                  <span className={ this.styler('loading-inline-dot') }>•</span>
+                  <span className={ this.styler('loading-inline-dot') }>•</span>
+                </div>
+                <div className={ this.styler('loading-text') }>
+                  { this.props.text }
+                </div>
+              </div>
               );
             }
             case 'inline': {

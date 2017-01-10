@@ -1,8 +1,10 @@
 
 import React from 'react';
 
+import Col from './col.jsx';
+import ContentsTreeCol from './contents_tree_col.jsx';
 import EntityIcon from './entity_icon.jsx';
-import PanelRow from './panel_row.jsx';
+import PanelEntry from './panel_entry.jsx';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import { appHref } from '../util/url';
@@ -26,7 +28,7 @@ const defaultProps = {
   extraInfo: ['state']
 };
 
-export default class AppQuicklook extends React.Component {
+export default class ContentsTreeApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -66,50 +68,50 @@ export default class AppQuicklook extends React.Component {
 
     if (this.props.extraInfo.includes('state')) {
       const oneInfo = this.props.extraInfo.length === 1;
-      const panelModClass = oneInfo ? 'panel-column-less' : 'panel-column-shrink';
 
       // Only show the state if app is crashed or theres only one extra col
       if (!isHealthyApp(app) || oneInfo) {
         info.push(
-          <span key="1" className={ this.styler('panel-column', panelModClass) }>
+          <ContentsTreeCol key="3">
             { this.appState(app) }
-          </span>
+          </ContentsTreeCol>
         );
       }
     }
     if (this.props.extraInfo.includes('memory')) {
       info.push(
-        <span key="2" className={ this.styler('panel-column', 'panel-column-shrink') }>
-          { app.memory } MB <br />
+        <ContentsTreeCol key="1">
+          <span className={ this.styler('contents-tree-value') }>
+            { app.memory } MB </span>
           <span className={ this.styler('subtext') }>memory allocated</span>
-        </span>
+        </ContentsTreeCol>
       );
     }
     if (this.props.extraInfo.includes('diskQuota')) {
       info.push(
-        <span key="3" className={ this.styler('panel-column', 'panel-column-shrink') }>
-          { app.disk_quota } MB <br />
+        <ContentsTreeCol key="2">
+          <span className={ this.styler('contents-tree-value') }>
+          { app.disk_quota } MB </span>
           <span className={ this.styler('subtext') }>disk quota</span>
-        </span>
+        </ContentsTreeCol>
       );
     }
 
     return (
-      <PanelRow key={ app.guid }>
-        <div>
-          <span className={ this.styler('panel-column') }>
+      <div className={ this.styler('contents-tree-app')}>
+        <PanelEntry key={ app.guid }>
+          <Col flex={ 1 }>
             <h3 className={ this.styler('contents-secondary') }>
               <EntityIcon entity="app" health={ appHealth(app) } iconSize="medium" />
-              <span className={ this.styler('contents-path') }>
-                { this.props.spaceName } / </span>{ this.appName() }
+              { this.appName() }
             </h3>
-          </span>
+          </Col>
           { info }
-        </div>
-      </PanelRow>
+        </PanelEntry>
+      </div>
     );
   }
 }
 
-AppQuicklook.propTypes = propTypes;
-AppQuicklook.defaultProps = defaultProps;
+ContentsTreeApp.propTypes = propTypes;
+ContentsTreeApp.defaultProps = defaultProps;

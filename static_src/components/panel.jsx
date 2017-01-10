@@ -6,11 +6,13 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  title: React.PropTypes.string
+  title: React.PropTypes.string,
+  helperText: React.PropTypes.object
 };
 
 const defaultProps = {
-  title: 'Default title'
+  title: null,
+  helperText: null
 };
 
 export default class Panel extends React.Component {
@@ -22,17 +24,24 @@ export default class Panel extends React.Component {
 
   render() {
 
+    let panelTitle = null;
+    let panelHelperText = null;
     let panelHed = null;
-    if (this.props.title != '') {
-      panelHed = <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>;
+    if (this.props.title != null) {
+      panelTitle = <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>;
+      if (this.props.helperText != null) {
+        panelHelperText = <p className={ this.styler('panel-helpertext') }>{ this.props.helperText }</p>;
+      }
+      panelHed =  <div className={ this.styler('panel-header') }>
+                    { panelTitle }
+                    { panelHelperText }
+                  </div>;
     }
 
     return (
       <div className={ this.styler('panel') }>
-        {panelHed}
-        <div className={ this.styler('panel-rows') }>
-          { this.props.children }
-        </div>
+        { panelHed }
+        { this.props.children }
       </div>
     );
   }

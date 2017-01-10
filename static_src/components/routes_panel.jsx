@@ -9,7 +9,7 @@ import OrgStore from '../stores/org_store.js';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelHeader from './panel_header.jsx';
-import PanelRow from './panel_row.jsx';
+import PanelEntry from './panel_entry.jsx';
 import routeActions from '../actions/route_actions.js';
 import Route from './route.jsx';
 import RouteForm from './route_form.jsx';
@@ -114,7 +114,7 @@ export default class RoutesPanel extends React.Component {
     if (this.state.showCreateForm) return null;
     return (
       <Action clickHandler={ this._addCreateRouteForm }
-        label="Create a new route for this app" type="outline"
+        label="Create a new route for this app"
       >
         Create a new route for this app
       </Action>
@@ -157,13 +157,13 @@ export default class RoutesPanel extends React.Component {
   }
 
   renderRoutes(routes) {
-    let content = <PanelRow styleClass="bordered"><h4>No routes</h4></PanelRow>;
+    let content = <PanelEntry><h4>No routes</h4></PanelEntry>;
 
     if (routes && routes.length) {
       content = routes.map((route) =>
-        <PanelRow styleClass="bordered" key={ route.guid + route.app_guid }>
+        <PanelEntry key={ route.guid + route.app_guid }>
           <Route route={ route } appGuid={ this.state.appGuid} />
-        </PanelRow>
+        </PanelEntry>
       );
     }
     return content;
@@ -171,7 +171,7 @@ export default class RoutesPanel extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={ this.styler('panel-content') }>
         { this.createRouteForm }
         <PanelGroup>
           <PanelHeader>
@@ -181,21 +181,18 @@ export default class RoutesPanel extends React.Component {
         </PanelGroup>
         <PanelGroup>
           <PanelHeader>
-            <h2 className={ this.styler('panel-row-header') }>Routes available in
+            <h2 className={ this.styler('panel-row-header') }>Routes available in&#160;
               {this.spaceLink}</h2>
           </PanelHeader>
           { this.renderRoutes(this.state.unboundRoutes) }
         </PanelGroup>
-        <PanelGroup>
-          <PanelActions>
-            { this.addRouteAction }
-          </PanelActions>
-        </PanelGroup>
+        <PanelActions align="left">
+          { this.addRouteAction }
+        </PanelActions>
       </div>
     );
   }
 }
 
 RoutesPanel.propTypes = {};
-
 RoutesPanel.defaultProps = {};

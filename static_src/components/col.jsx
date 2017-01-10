@@ -3,23 +3,18 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
-const ALIGNS = [
-  'left',
-  'center',
-  'right'
-];
-
 const propTypes = {
   children: React.PropTypes.any,
-  align: React.PropTypes.oneOf(ALIGNS)
+  gutters: React.PropTypes.bool,
+  flex: React.PropTypes.number
 };
 
 const defaultProps = {
-  children: [],
-  align: null
+  gutters: false,
+  flex: 0
 };
 
-export default class PanelActions extends React.Component {
+export default class Col extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -28,15 +23,21 @@ export default class PanelActions extends React.Component {
 
   render() {
     const props = this.props;
-    const alignClass = props.align && `panel-actions-${this.props.align}`;
+    const flexClass = `col-flex-${this.props.flex}`;
+    const gutterClass = props.gutters && 'col-gutters';
 
     return (
-      <div className={ this.styler('panel-actions', alignClass) }>
+      <div className={ this.styler(
+        'col',
+        flexClass,
+        gutterClass
+      )}
+      >
         { this.props.children }
       </div>
     );
   }
 }
 
-PanelActions.propTypes = propTypes;
-PanelActions.defaultProps = defaultProps;
+Col.propTypes = propTypes;
+Col.defaultProps = defaultProps;

@@ -8,12 +8,14 @@ import { appHealth, worstAppInstanceState } from '../util/health';
 import { appStates } from '../constants';
 import AppStore from '../stores/app_store.js';
 import Breadcrumbs from './breadcrumbs.jsx';
+import Col from './col.jsx';
 import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
+import Row from './row.jsx';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
@@ -129,11 +131,10 @@ export default class AppContainer extends React.Component {
     return (
       <div>
         <Action
-          style="primary"
+          style="warning"
           clickHandler={ this._onRestart }
           label="restart app"
           disabled={ !AppStore.isRunning(this.state.app) }
-          type="outline"
         >
           <span>Restart app</span>
         </Action>
@@ -156,6 +157,9 @@ export default class AppContainer extends React.Component {
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
     } else if (!this.state.loading && appReady(this.state.app)) {
+      const usageHelperText = (
+        <span>View more usage data at <a href="https://logs.cloud.gov">logs.cloud.gov</a></span>
+      );
       content = (
         <div>
           <div className={ this.styler('grid') }>
@@ -166,18 +170,22 @@ export default class AppContainer extends React.Component {
               </PageHeader>
             </div>
           </div>
-          <Panel title="Usage and allocation">
-              <span>View more usage data at <a href="https://logs.cloud.gov">logs.cloud.gov</a></span>
+          <Panel title="App usage and allocation" helperText={ usageHelperText }>
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 
-          <Panel title="Routes">
-            <RoutesPanel />
-          </Panel>
-
-          <Panel title="Services">
-            <ServiceInstancePanel />
-          </Panel>
+          <Row gutters valign="top">
+            <Col flex={ 1 }>
+              <Panel title="Routes">
+                <RoutesPanel />
+              </Panel>
+            </Col>
+            <Col flex={ 1 }>
+              <Panel title="Services">
+                <ServiceInstancePanel />
+              </Panel>
+            </Col>
+          </Row>
 
           <Panel title="Recent activity">
             <ActivityLog initialAppGuid={ this.state.app.guid } />

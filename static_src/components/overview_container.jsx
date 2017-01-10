@@ -5,6 +5,7 @@ import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import { config } from 'skin';
+import Card from './card.jsx';
 import Icon from './icon.jsx';
 import Loading from './loading.jsx';
 import OrgQuickLook from './org_quick_look.jsx';
@@ -12,9 +13,8 @@ import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import PanelGroup from './panel_group.jsx';
-import PanelRow from './panel_row.jsx';
 import SpaceStore from '../stores/space_store.js';
-import SpaceQuicklook from './space_quicklook.jsx';
+import ContentsTreeSpace from './contents_tree_space.jsx';
 
 function stateSetter() {
   const orgs = OrgStore.getAll() || [];
@@ -62,7 +62,7 @@ export default class OverviewContainer extends React.Component {
 
   render() {
     const state = this.state;
-    let loading = <Loading text="Loading orgs" />;
+    let loading = <Loading text="Loading your organizations" />;
     let content = <div>{ loading }</div>;
     const title = (
       <span>
@@ -78,33 +78,33 @@ export default class OverviewContainer extends React.Component {
         <PageHeader title={ title } />
         <Panel title="Your organizations">
           { state.orgs.map((org) =>
-            <PanelRow key={ org.guid } styleClass="boxed">
+            <Card key={ org.guid }>
               <OrgQuickLook
                 org={ org }
                 spaces={ this.orgSpaces(org.guid) }
               />
               { org.quicklook_open && this.orgSpaces(org.guid).map((space) =>
-                <SpaceQuicklook space={ space } orgGuid={ org.guid }
+                <ContentsTreeSpace space={ space } orgGuid={ org.guid }
                   key={ space.guid } loading={ state.loading }
                 />
               )}
-            </PanelRow>
+            </Card>
           )}
         </Panel>
-        <Panel title="Cheatsheet">
+        <Panel title="Tips for new users">
           { config.home.tiles.map((Tile, i) => {
             let cheatContent;
             if (i % 2 === 0) {
               cheatContent = (
                 <div key={ `tile-${i}` }>
-                  <PanelGroup columns={ 6 }>
+                  <PanelGroup flex={ 1 }>
                     <Tile />
                   </PanelGroup>
                 </div>
               );
             } else {
               cheatContent = (
-                <PanelGroup columns={ 6 } key={ `tile-${i}` }>
+                <PanelGroup flex={ 1 } key={ `tile-${i}` }>
                   <Tile />
                 </PanelGroup>
               );
