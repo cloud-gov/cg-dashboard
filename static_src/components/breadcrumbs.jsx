@@ -51,7 +51,7 @@ export default class Breadcrumbs extends React.Component {
 
     // Add the parent states
     if (org && org.name) {
-      breadcrumbs.push(<BreadcrumbsItem key="home" url="/#/">overview</BreadcrumbsItem>);
+      breadcrumbs.push(<BreadcrumbsItem key="home" url="/#/">Overview</BreadcrumbsItem>);
     }
 
     if (org && space && space.name) {

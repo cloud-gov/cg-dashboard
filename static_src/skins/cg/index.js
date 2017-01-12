@@ -64,7 +64,7 @@ export const config = {
     ]
   },
   header: {
-    disclaimer: 'An official website of the United States Government',
+    disclaimer: 'An official website of the United States government',
     show_flag: true,
     links: [
       {
