@@ -267,8 +267,8 @@ module.exports = function api(smocks) {
   });
 
   smocks.route({
-    id: 'service-plan',
-    label: 'Service plan',
+    id: 'service-plans',
+    label: 'Service plans',
     path: `${BASE_URL}/service_plans/{guid}`,
     handler: function (req, reply) {
       const guid = req.params.guid;
@@ -276,6 +276,19 @@ module.exports = function api(smocks) {
         return servicePlan.metadata.guid === guid;
       });
       reply(MultiResponse(plan));
+    }
+  });
+
+  smocks.route({
+    id: 'service-service-plans',
+    label: 'Service service plans',
+    path: `${BASE_URL}/services/{guid}/service_plans`,
+    handler: function (req, reply) {
+      const serviceGuid = req.params.guid;
+      const plans = servicePlans.filter(function(servicePlan) {
+        return servicePlan.entity.service_guid === serviceGuid;
+      });
+      reply(MultiResponse(plans));
     }
   });
 
