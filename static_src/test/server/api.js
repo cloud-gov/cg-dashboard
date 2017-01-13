@@ -9,6 +9,7 @@ var organizationUsers = require('./fixtures/organization_users.js');
 var organizationUserRoles = require('./fixtures/organization_user_roles.js');
 var organizationSummaries = require('./fixtures/organization_summaries');
 var organizationMemoryUsage = require('./fixtures/organization_memory_usage');
+var services = require('./fixtures/services');
 var serviceBindings = require('./fixtures/service_bindings.js');
 var serviceInstances = require('./fixtures/service_instances.js');
 var servicePlans = require('./fixtures/service_plans.js');
@@ -17,6 +18,7 @@ var spaces = require('./fixtures/spaces');
 var spaceRoutes = require('./fixtures/space_routes');
 var spaceSummaries = require('./fixtures/space_summaries');
 var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
+var spaceUserRoles = require('./fixtures/space_user_roles.js');
 
 var BASE_URL = '/v2';
 
@@ -92,6 +94,15 @@ module.exports = function api(smocks) {
         return organization.metadata.guid === guid;
       });
       reply(SingleResponse(org));
+    }
+  });
+
+  smocks.route({
+    id: 'organizations-services',
+    label: 'Organizations services',
+    path: `${BASE_URL}/organizations/{guid}/services`,
+    handler: function (req, reply) {
+      reply(MultiResponse(services));
     }
   });
 
@@ -182,8 +193,6 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/spaces/{guid}/events`,
     handler: function (req, reply) {
       const guid = req.params.guid;
-      console.log('fuck');
-      console.log(anyEvents);
       const spaceEvents = anyEvents.filter(function(event) {
         return event.entity.space_guid === guid;
       });
@@ -236,6 +245,15 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/space_quota_definitions`,
     handler: function (req, reply) {
       reply(MultiResponse(spaceQuotaDefinitions));
+    }
+  });
+
+  smocks.route({
+    id: 'space-user-roles',
+    label: 'Space user roles',
+    path: `${BASE_URL}/spaces/{guid}/user_roles`,
+    handler: function (req, reply) {
+      reply(MultiResponse(spaceUserRoles));
     }
   });
 
