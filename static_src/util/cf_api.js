@@ -17,14 +17,20 @@ const APIV = '/v2';
 
 function handleError(err, errHandler = errorActions.errorFetch) {
   // An http error should be passed to error actions.
-  if (err.status && err.status >= 400) {
-    if (err.data) {
-      errHandler(err.data);
+  // When an error has a `reponse` object, it's likely from ajax.
+  if (err.response) {
+    const errRes = err.response;
+    if (errRes.status && errRes.status >= 400) {
+      if (errRes.data) {
+        errHandler(errRes.data);
+      } else {
+        errHandler(errRes);
+      }
+      noticeError(err);
     } else {
-      errHandler(err);
+      throw err;
     }
-    noticeError(err);
-  // Other exceptions should be thrown so they surface.
+    // Other exceptions should be thrown so they surface.
   } else {
     throw err;
   }
@@ -246,7 +252,7 @@ export default {
 
   fetchAppStats(appGuid) {
     return http.get(`${APIV}/apps/${appGuid}/stats`).then((res) => {
-      appActions.receivedAppStats(appGuid, res.data[0]);
+      appActions.receivedAppStats(appGuid, { app_instances: Object.values(res.data) });
     }).catch((err) => {
       handleError(err);
     });
@@ -266,13 +272,15 @@ export default {
         const updatedApp = Object.assign({}, res.data.entity, { guid: appGuid });
         appActions.updatedApp(updatedApp);
       })
-      .catch((err) => handleError(err, appActions.error.bind(null, appGuid)));
+      .catch((err) => handleError(err,
+        appActions.error.bind(null, appGuid)));
   },
 
   postAppRestart(appGuid) {
     return http.post(`${APIV}/apps/${appGuid}/restage`).then(() => {
       appActions.restarted(appGuid);
-    }).catch((err) => handleError(err, appActions.error.bind(this, appGuid)));
+    }).catch((err) => handleError(err,
+      appActions.error.bind(this, appGuid)));
   },
 
   /**
@@ -308,7 +316,7 @@ export default {
       .then(() => {
         userActions.deletedUser(userGuid, orgGuid);
       }).catch((err) => {
-        if (err.data) {
+        if (err.response.data) {
           userActions.errorRemoveUser(userGuid, err.data);
         } else {
           handleError(err);

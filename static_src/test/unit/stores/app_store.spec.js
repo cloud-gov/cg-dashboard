@@ -109,7 +109,7 @@ describe('AppStore', function() {
       var sharedGuid = 'cmadkljcsa';
 
       let existingApp = { guid: sharedGuid, name: 'adsfa' };
-      let newApp = { guid: sharedGuid, instances: [{ guid: 'dfs' }] }
+      let newApp = { guid: sharedGuid, instances: 2 }
 
       AppStore.push(existingApp);
 
@@ -122,7 +122,7 @@ describe('AppStore', function() {
 
       let actual = AppStore.get(sharedGuid);
       expect(actual).toEqual({ guid: sharedGuid, name: 'adsfa',
-          instances: [{ guid: 'dfs' }] });
+          instances: 2 });
     });
 
     it('should add app to data if it doesn\'t already exist', function() {
@@ -164,7 +164,7 @@ describe('AppStore', function() {
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_STATS_RECEIVED,
         appGuid: sharedGuid,
-        app: { stats: {} }
+        app: { app_instances: [{stats: {}}] }
       });
 
       expect(spy).toHaveBeenCalledOnce();
@@ -174,7 +174,7 @@ describe('AppStore', function() {
       var sharedGuid = 'cmadkljcsa';
 
       let existingApp = { guid: sharedGuid, name: 'adsfa' };
-      let newApp = { stats: { mem_quota: 123543 }};
+      let newApp = { app_instances: [{ stats: { mem_quota: 123543 } }] };
 
       AppStore.push(existingApp);
       expect(AppStore.get(sharedGuid)).toEqual(existingApp);
@@ -186,13 +186,18 @@ describe('AppStore', function() {
       });
 
       let actual = AppStore.get(sharedGuid);
-      expect(actual).toEqual({ guid: sharedGuid, name: 'adsfa',
-          stats: { mem_quota: 123543 }});
+      expect(actual).toEqual({
+        guid: sharedGuid,
+        name: 'adsfa',
+        app_instances: [{
+          stats: { mem_quota: 123543 }
+        }]
+      });
     });
 
     it('should create a new app if it doesn\'t already exist', function() {
       var expectedGuid = 'adcasdcccsss',
-          expected = {stats: { mem_quota: 12 }};
+          expected = { app_instances: [{stats: { mem_quota: 12 }}] };
 
       AppDispatcher.handleServerAction({
         type: appActionTypes.APP_STATS_RECEIVED,
@@ -203,7 +208,7 @@ describe('AppStore', function() {
       let actual = AppStore.get(expectedGuid);
       expect(actual).toEqual({
         guid: expectedGuid,
-        stats: { mem_quota: 12 }
+        app_instances: [{stats: { mem_quota: 12 }}]
       });
     });
   });

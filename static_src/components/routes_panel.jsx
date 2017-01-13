@@ -16,6 +16,7 @@ import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import SpaceStore from '../stores/space_store.js';
+import { spaceHref } from '../util/url';
 
 import createStyler from '../util/create_styler';
 
@@ -33,7 +34,7 @@ function stateSetter() {
     let newRoute = Object.assign({}, route);
     const domain = DomainStore.get(route.domain_guid);
     if (domain) {
-      newRoute = Object.assign({}, newRoute, { domain_name: domain.name});
+      newRoute = Object.assign({}, newRoute, { domain_name: domain.name });
     }
     if (route.path && (route.path[0] === '/')) {
       newRoute.path = route.path.replace('/', '');
@@ -142,9 +143,14 @@ export default class RoutesPanel extends React.Component {
   }
 
   get spaceLink() {
+    if (!this.state.orgGuid || !this.state.spaceGuid) {
+      return null;
+    }
+
     return (
-      <a href={ `/#/org/${this.state.orgGuid}/spaces/${this.state.spaceGuid}` }
-      className={this.styler('space-link')}>
+      <a href={ spaceHref(this.state.orgGuid, this.state.spaceGuid) }
+        className={this.styler('space-link')}
+      >
         { this.state.spaceName }
       </a>
     );
@@ -164,19 +170,20 @@ export default class RoutesPanel extends React.Component {
   }
 
   render() {
-
     return (
       <div>
         { this.createRouteForm }
         <PanelGroup>
           <PanelHeader>
-            <h2>Bound routes</h2>
+            <h2 className={ this.styler('panel-row-header') }>Bound routes</h2>
           </PanelHeader>
           { this.renderRoutes(this.state.boundRoutes) }
         </PanelGroup>
         <PanelGroup>
           <PanelHeader>
-            <h2>Routes available in {this.spaceLink}</h2>
+            <h2 className={ this.styler('panel-row-header') }>
+              Routes available in {this.spaceLink}
+            </h2>
           </PanelHeader>
           { this.renderRoutes(this.state.unboundRoutes) }
         </PanelGroup>

@@ -24,11 +24,19 @@ const defaultProps = {
   route: {}
 };
 
+function stateSetter(props) {
+  return {
+    domains: DomainStore.getAll(),
+    route: props.route
+  };
+}
+
 export default class Route extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
     this.styler = createStyler(style);
+    this.state = stateSetter(props);
 
     this._deleteHandler = this._deleteHandler.bind(this);
     this._unbindHandler = this._unbindHandler.bind(this);
@@ -36,41 +44,54 @@ export default class Route extends React.Component {
     this._editHandler = this._editHandler.bind(this);
     this._updateHandler = this._updateHandler.bind(this);
     this._toggleRemove = this._toggleRemove.bind(this);
+    this._onChange = this._onChange.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.props = nextProps;
+  componentWillMount() {
+    DomainStore.addChangeListener(this._onChange);
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState(stateSetter(props));
+  }
+
+  componentWillUnmount() {
+    DomainStore.removeChangeListener(this._onChange);
+  }
+
+  _onChange() {
+    this.setState(stateSetter(this.props));
   }
 
   _toggleRemove(ev) {
     ev.preventDefault();
-    routeActions.toggleRemove(this.props.route.guid);
+    routeActions.toggleRemove(this.state.route.guid);
   }
 
   _deleteHandler(ev) {
     ev.preventDefault();
-    routeActions.deleteRoute(this.props.route.guid);
+    routeActions.deleteRoute(this.state.route.guid);
   }
 
   _editHandler(ev) {
     ev.preventDefault();
-    routeActions.toggleEdit(this.props.route.guid);
+    routeActions.toggleEdit(this.state.route.guid);
   }
 
   _bindHandler(ev) {
     ev.preventDefault();
-    const route = this.props.route;
+    const route = this.state.route;
     routeActions.associateApp(route.guid, this.props.appGuid);
   }
 
   _unbindHandler(ev) {
     ev.preventDefault();
-    const route = this.props.route;
+    const route = this.state.route;
     routeActions.unassociateApp(route.guid, route.app_guid);
   }
 
   _updateHandler(route) {
-    const routeGuid = this.props.route.guid;
+    const routeGuid = this.state.route.guid;
     const domainGuid = route.domain_guid;
     const spaceGuid = route.space_guid;
     let path = route.path;
@@ -104,7 +125,7 @@ export default class Route extends React.Component {
   bindAction(unbind) {
     return (
       <Action key="unbind" label={ (!!unbind) ? 'Unbind' : 'Bind' }
-        style={ (!!unbind) ? 'warning' : 'outline' } type={ (!!unbind) ? 'link' : 'button' }
+        style={ (!!unbind) ? 'warning' : 'primary' } type={ (!!unbind) ? 'link' : 'button' }
         clickHandler={ (!!unbind) ? this._toggleRemove : this._bindHandler }
       >
         { (!!unbind) ? 'Unbind' : 'Bind' }
@@ -114,7 +135,7 @@ export default class Route extends React.Component {
 
   get actions() {
     const actions = [];
-    const route = this.props.route;
+    const route = this.state.route;
     if (!route) return actions;
 
     if (route.loading) {
@@ -138,16 +159,16 @@ export default class Route extends React.Component {
   }
 
   get confirmationMsg() {
-    const { domain_name, host, path } = this.props.route;
+    const { domain_name, host, path } = this.state.route;
     const url = formatRoute(domain_name, host, path);
     const displayUrl = <a href={ url } title="See app route">{ url }</a>;
-    return (RouteStore.isRouteBoundToApp(this.props.route)) ?
+    return (RouteStore.isRouteBoundToApp(this.state.route)) ?
         <span>Unbind {displayUrl} route from this app?</span> :
         <span>Delete {displayUrl} route from this space?</span>;
   }
 
   get displayError() {
-    const route = this.props.route;
+    const route = this.state.route;
     if (route.error) {
       return (
         <PanelRowError message={route.error.description} />
@@ -159,14 +180,14 @@ export default class Route extends React.Component {
   render() {
     let content = <div></div>;
 
-    if (this.props.route) {
-      const route = this.props.route;
-      const { domain_name, host, path } = this.props.route;
+    if (this.state.route) {
+      const route = this.state.route;
+      const { domain_name, host, path } = this.state.route;
       const url = formatRoute(domain_name, host, path);
 
       if (route.editing) {
         content = (
-          <RouteForm route={ route } domains={ DomainStore.getAll() }
+          <RouteForm route={ route } domains={ this.state.domains }
             cancelHandler={ this._editHandler }
             submitHandler={ this._updateHandler }
           />

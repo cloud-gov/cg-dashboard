@@ -3,9 +3,10 @@ import React from 'react';
 
 import EntityIcon from './entity_icon.jsx';
 import PanelRow from './panel_row.jsx';
-import { appStates } from '../constants.js';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import { appHref } from '../util/url';
+import { appHealth, isHealthyApp } from '../util/health';
 
 const EXTRA_INFO = [
   'state',
@@ -35,21 +36,23 @@ export default class AppQuicklook extends React.Component {
   appHref() {
     const props = this.props;
     const appGuid = props.app.guid;
-    return `/#/org/${props.orgGuid}/spaces/${props.spaceGuid}/apps/${appGuid}`;
+    return appHref(props.orgGuid, props.spaceGuid, appGuid);
   }
 
-  appState(appState) {
-    const statusClass = `status-${appState.toLowerCase()}`;
+  appState(app) {
+    const health = appHealth(app);
+    const statusClass = `status-${health}`;
     return (
       <span className={ this.styler('status', statusClass) }>
-        { appState.toLowerCase() }
+        { app.state.toLowerCase() }
       </span>
     );
   }
 
   appName() {
     const app = this.props.app;
-    const statusClass = (app.state === appStates.crashed) && 'status-crashed';
+    const statusClass = !isHealthyApp(app) && 'status-error';
+
     return (
       <a className={ this.styler(statusClass) } href={ this.appHref() }>
         { app.name }
@@ -66,10 +69,10 @@ export default class AppQuicklook extends React.Component {
       const panelModClass = oneInfo ? 'panel-column-less' : 'panel-column-shrink';
 
       // Only show the state if app is crashed or theres only one extra col
-      if (app.state === appStates.crashed || oneInfo) {
+      if (!isHealthyApp(app) || oneInfo) {
         info.push(
           <span key="1" className={ this.styler('panel-column', panelModClass) }>
-            { this.appState(app.state) }
+            { this.appState(app) }
           </span>
         );
       }
@@ -96,7 +99,7 @@ export default class AppQuicklook extends React.Component {
         <div>
           <span className={ this.styler('panel-column') }>
             <h3 className={ this.styler('contents-secondary') }>
-              <EntityIcon entity="app" state={ app.state } iconSize="medium" />
+              <EntityIcon entity="app" health={ appHealth(app) } iconSize="medium" />
               <span className={ this.styler('contents-path') }>
                 { this.props.spaceName } / </span>{ this.appName() }
             </h3>

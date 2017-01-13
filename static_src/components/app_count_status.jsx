@@ -5,7 +5,8 @@ import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import CountStatus from './count_status.jsx';
-import { appStates } from '../constants.js';
+import { entityHealth } from '../constants.js';
+import { appHealth, worstHealth } from '../util/health';
 
 const propTypes = {
   appCount: React.PropTypes.number,
@@ -17,19 +18,6 @@ const defaultProps = {
   apps: []
 };
 
-const APP_STATES_RANKED = [
-  appStates.default,
-  appStates.restarting,
-  appStates.running,
-  appStates.started,
-  appStates.stopped,
-  appStates.crashed
-];
-
-function rankWorseState(state) {
-  return APP_STATES_RANKED.indexOf(state);
-}
-
 export default class AppCountStatus extends React.Component {
   constructor(props) {
     super(props);
@@ -37,26 +25,17 @@ export default class AppCountStatus extends React.Component {
     this.styler = createStyler(style);
   }
 
-  worstStatus(apps) {
-    return apps.reduce((previousState, app) => {
-      if (rankWorseState(previousState) < rankWorseState(app.state)) {
-        return app.state;
-      }
-      return previousState;
-    }, appStates.none);
-  }
-
   render() {
     const props = this.props;
-    let status = appStates.none;
+    let health = entityHealth.inactive;
 
     if (props.apps.length) {
-      status = this.worstStatus(props.apps);
+      health = worstHealth(props.apps.map(appHealth));
     }
 
     return (
       <CountStatus count={ props.appCount } name="apps"
-        status={ status } iconType="app"
+        health={ health } iconType="app"
       />
     );
   }

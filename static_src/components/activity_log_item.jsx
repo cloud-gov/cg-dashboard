@@ -9,10 +9,33 @@ import RouteStore from '../stores/route_store';
 import DomainStore from '../stores/domain_store';
 import ServiceInstanceStore from '../stores/service_instance_store';
 
+
+function stateSetter(props) {
+  const item = props.item;
+  const route = RouteStore.get(item.metadata.route_guid);
+
+  let service;
+  if (item.metadata.request && item.metadata.service_instance_guid) {
+    service = ServiceInstanceStore.get(item.metadata.request.service_instance_guid);
+  }
+
+  let domain;
+  if (route) {
+    domain = DomainStore.get(route.domain_guid);
+  }
+
+  return {
+    domain,
+    route,
+    service
+  };
+}
+
+
 export default class ActivityLogItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = { ...stateSetter(props),
       showRawJson: false,
       relativeTimestamp: false
     };
@@ -24,15 +47,19 @@ export default class ActivityLogItem extends React.Component {
   }
 
   componentDidMount() {
+    DomainStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
+    ServiceInstanceStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
+    DomainStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
+    ServiceInstanceStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
-    this.setState({});
+    this.setState(stateSetter(this.props));
   }
 
   formatTimestamp(timestamp) {
@@ -91,9 +118,9 @@ export default class ActivityLogItem extends React.Component {
   get content() {
     if (this.props.item.activity_type === 'log') {
       return this.logContent;
-    } else {
-      return this.eventContent;
     }
+
+    return this.eventContent;
   }
 
   get eventContent() {
@@ -101,9 +128,9 @@ export default class ActivityLogItem extends React.Component {
     let url = 'a url';
     const item = this.props.item;
     const metadata = item.metadata;
-    const route = RouteStore.get(metadata.route_guid);
-    if (route) {
-      const domain = DomainStore.get(route.domain_guid);
+    const route = this.state.route;
+    const domain = this.state.domain;
+    if (route && domain) {
       url = formatRoute(domain.name, route.host, route.path);
     }
     const link = (route) ? (<a href={ `//${url}` }>{ url }</a>) : url;
@@ -111,11 +138,15 @@ export default class ActivityLogItem extends React.Component {
     // TODO: if route is not found, trigger fetch action to get it
     // https://github.com/18F/cg-dashboard/pull/533#discussion_r73931508
 
+    // TODO break each type out into it's own component to avoid so many
+    // concerns (and store listeners) in a single component
     if (item.type === 'app.crash') {
       content = this.crashContent;
     } else if (item.type === 'audit.app.create') {
       content = (
-        <span>{ item.actor_name } created the app with { metadata.request.memory } MBs of memory.</span>
+        <span>
+          { item.actor_name } created the app with { metadata.request.memory } MBs of memory.
+        </span>
       );
     } else if (item.type === 'audit.app.map-route') {
       content = (
@@ -135,7 +166,7 @@ export default class ActivityLogItem extends React.Component {
         <span>{ item.actor_name } { appState } the app.</span>
       );
     } else if (item.type === 'audit.service_binding.create') {
-      const service = ServiceInstanceStore.get(metadata.request.service_instance_guid);
+      const service = this.state.service;
       const serviceText = (service) ? service.guid : 'a service';
       content = (
         <span>{ item.actor_name} bound { serviceText } to the app.</span>
@@ -171,6 +202,8 @@ export default class ActivityLogItem extends React.Component {
           break;
         case 'audit.app.create':
           css = 'activity_log-item-success';
+          break;
+        default:
           break;
       }
     }

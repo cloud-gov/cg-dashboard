@@ -9,7 +9,7 @@ export default class Login extends React.Component {
   render() {
     return (
     <div>
-      <h1>Welcome to the Dashboard</h1>
+      <h1>Welcome to the cloud.gov dashboard</h1>
       <a href="/handshake" className="test-login">
         Login</a>
       <div className="text-right">

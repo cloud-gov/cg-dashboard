@@ -3,12 +3,9 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import Action from './action.jsx';
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
-import Panel from './panel.jsx';
-import PanelActions from './panel_actions.jsx';
 import PanelHeader from './panel_header.jsx';
 import PanelGroup from './panel_group.jsx';
 import ServiceBindingStore from '../stores/service_binding_store.js';
@@ -16,6 +13,7 @@ import ServiceInstanceListPanel from './service_instance_list_panel.jsx';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import SpaceStore from '../stores/space_store.js';
+import { spaceHref } from '../util/url';
 
 import createStyler from '../util/create_styler';
 
@@ -108,7 +106,7 @@ export default class ServiceInstancePanel extends React.Component {
 
   get spaceLink() {
     return (
-      <a href={ `/#/org/${this.state.currentOrgGuid}/spaces/${this.state.currentSpaceGuid}` }>
+      <a href={ spaceHref(this.state.currentOrgGuid, this.state.currentSpaceGuid) }>
         { this.state.currentSpaceName }
       </a>
     );
@@ -123,7 +121,7 @@ export default class ServiceInstancePanel extends React.Component {
       <div>
         <PanelGroup key="1">
           <PanelHeader>
-            <h2>Bound service instances</h2>
+            <h2 className={ this.styler('panel-row-header') }>Bound service instances</h2>
           </PanelHeader>
           <ServiceInstanceListPanel
             currentAppGuid={ this.state.currentAppGuid }
@@ -134,7 +132,8 @@ export default class ServiceInstancePanel extends React.Component {
         </PanelGroup>
         <PanelGroup key="2">
           <PanelHeader>
-            <h2>Service instances available in { this.spaceLink }</h2>
+            <h2 className={ this.styler('panel-row-header') }>Service instances available in
+              { this.spaceLink }</h2>
           </PanelHeader>
           <ServiceInstanceListPanel
             currentAppGuid={ this.state.currentAppGuid }

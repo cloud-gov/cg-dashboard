@@ -12,16 +12,32 @@ import ResourceUsage from './resource_usage.jsx';
 import appActions from '../actions/app_actions.js';
 import createStyler from '../util/create_styler';
 
-function getStat(statName, props) {
+// Calculates the running average based on a fixed n number of items To average
+// across instances you can do something like `average.bind(null, // numberOfInstances)`
+function average(n, avg, value) {
+  return avg + (value / n);
+}
+
+// Calculate the cumulative sum
+function sum(s, value) {
+  return s + value;
+}
+
+function getStat(statName, props, accumulator) {
+  const _accumulator = accumulator || sum;
   if (statName.indexOf('quota') > -1) {
-    return (props.app.stats &&
-            props.app.stats[statName] ||
+    return (props.app.app_instances &&
+            props.app.app_instances.length &&
+            props.app.app_instances[0].stats &&
+            props.app.app_instances[0].stats[statName] ||
             0);
   }
 
-  return (props.app.stats &&
-          props.app.stats.usage[statName] ||
-          0);
+  // For usage, sometimes we want an average across instances, sometimes we
+  // want the total. Use the accumulator to delegate this to the caller
+  return (props.app.app_instances || [])
+    .map(instance => instance.stats && instance.stats.usage[statName] || 0)
+    .reduce((cumulative, value) => _accumulator(cumulative, value || 0), 0);
 }
 
 function megabytes(value) {
@@ -52,8 +68,8 @@ export default class UsageAndLimits extends React.Component {
     this._onToggleEdit = this._onToggleEdit.bind(this);
   }
 
-  getStat(statName) {
-    return getStat(statName, this.props);
+  getStat(statName, accumulator) {
+    return getStat(statName, this.props, accumulator);
   }
 
   _onToggleEdit() {
@@ -85,16 +101,17 @@ export default class UsageAndLimits extends React.Component {
     const onChange = this._onChange.bind(this, 'disk_quota');
     const disk = this.state.editing ? this.state.partialApp.disk_quota : this.props.app.disk_quota;
 
+    // For instance usage, we average the instances together
     return (
     <div className={ this.styler('panel-row-space') }>
       <div className={ this.styler('panel-column') }>
-        <ResourceUsage title="Instance disk"
-          amountUsed={ this.getStat('disk') }
+        <ResourceUsage title="Instance disk used"
+          amountUsed={ this.getStat('disk', average.bind(null, this.props.app.running_instances)) }
           amountTotal={ this.getStat('disk_quota') }
         />
       </div>
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
-        <ResourceUsage title="Instance disk"
+        <ResourceUsage title="Instance disk allocation"
           editable={ this.state.editing }
           max={ 2 * 1024 }
           min={ 1 }
@@ -111,16 +128,17 @@ export default class UsageAndLimits extends React.Component {
     const onChange = this._onChange.bind(this, 'memory');
     const memory = this.state.editing ? this.state.partialApp.memory : this.props.app.memory;
 
+    // For instance usage, we average the instances together
     return (
     <div>
       <div className={ this.styler('panel-column') }>
-        <ResourceUsage title="Instance memory"
-          amountUsed={ this.getStat('mem') }
+        <ResourceUsage title="Instance memory used"
+          amountUsed={ this.getStat('mem', average.bind(null, this.props.app.running_instances)) }
           amountTotal={ this.getStat('mem_quota') }
         />
       </div>
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
-        <ResourceUsage title="Instance memory"
+        <ResourceUsage title="Instance memory allocation"
           editable={ this.state.editing }
           min={ 1 }
           max={ Math.floor(this.props.quota.memory_limit / this.state.partialApp.instances) }
@@ -134,25 +152,28 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get totalDisk() {
-    // TODO get space quota
+    // There is no org/space level disk quota, so only show single stat
     return (
-    <div className={ this.styler('panel-row-space') }>
-      <ResourceUsage title="Total disk"
-        amountUsed={ this.getStat('disk') * this.props.app.running_instances }
-        amountTotal={ this.getStat('disk_quota') }
-      />
-    </div>
+      <div className={ this.styler('panel-row-space') }>
+        <ResourceUsage title="Total disk used"
+          amountTotal={ this.getStat('disk', sum) }
+        />
+      </div>
     );
   }
 
   get totalMemory() {
+    const amountTotal = this.props.quota.memory_limit * 1024 * 1024;
+    const amountUsed = this.getStat('mem', sum);
+    const title = amountUsed ? 'Total memory used' : 'Total memory available';
+
     return (
-    <div>
-      <ResourceUsage title="Total memory"
-        amountUsed={ this.getStat('mem') * this.props.app.running_instances }
-        amountTotal={ this.props.quota.memory_limit * 1024 * 1024 }
-      />
-    </div>
+      <div>
+        <ResourceUsage title={ title }
+          amountUsed={ amountUsed }
+          amountTotal={ amountTotal }
+        />
+      </div>
     );
   }
 

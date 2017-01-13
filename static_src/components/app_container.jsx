@@ -4,16 +4,21 @@ import React from 'react';
 
 import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
-import UsageLimits from './usage_and_limits.jsx';
+import { appHealth, worstAppInstanceState } from '../util/health';
+import { appStates } from '../constants';
 import AppStore from '../stores/app_store.js';
+import Breadcrumbs from './breadcrumbs.jsx';
+import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
+import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
+import UsageLimits from './usage_and_limits.jsx';
 import appActions from '../actions/app_actions.js';
 
 import createStyler from '../util/create_styler';
@@ -40,7 +45,9 @@ function stateSetter() {
     currentSpaceName: SpaceStore.currentSpaceName,
     empty: !AppStore.loading && !appReady(app) && !QuotaStore.loading,
     loading: AppStore.loading || QuotaStore.loading,
-    quota
+    org,
+    quota,
+    space
   };
 }
 
@@ -88,8 +95,16 @@ export default class AppContainer extends React.Component {
   }
 
   get statusUI() {
+    let worstState = this.state.app.state;
+    if (this.state.app.state === appStates.started) {
+      // If the app is started, use the instance state
+      worstState = worstAppInstanceState(
+	(this.state.app.app_instances || []).map(instance => instance.state)
+      );
+    }
+
     return (
-      <span className={ this.styler('usa-label') }>{ this.state.app.state }</span>
+      <span className={ this.styler('usa-label') }>{ worstState }</span>
     );
   }
 
@@ -131,14 +146,26 @@ export default class AppContainer extends React.Component {
   render() {
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
+    const title = (
+      <span>
+       <EntityIcon entity="app" health={ appHealth(this.state.app) } iconSize="large" />
+       { this.state.app.name } { this.statusUI }
+     </span>
+    );
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No app</h4>;
     } else if (!this.state.loading && appReady(this.state.app)) {
       content = (
         <div>
-          <h2>{ this.fullTitle } { this.statusUI }</h2>
-          { this.restart }
+          <div className={ this.styler('grid') }>
+            <div className={ this.styler('grid-width-12') }>
+              <Breadcrumbs />
+              <PageHeader title={ title }>
+                { this.restart }
+              </PageHeader>
+            </div>
+          </div>
           <Panel title="Usage and allocation">
               <span>View more usage data at <a href="https://logs.cloud.gov">logs.cloud.gov</a></span>
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />

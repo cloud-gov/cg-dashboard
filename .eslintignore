@@ -5,8 +5,6 @@ test/**/*.js
 
 # Current exceptions. As you touch these files, you should fix the lint errors
 # and remove them from this list.
-/static_src/components/activity_log_item.jsx
-/static_src/components/activity_log.jsx
 /static_src/components/app_settings_panel.jsx
 /static_src/components/box.jsx
 /static_src/components/button.jsx
@@ -27,16 +25,10 @@ test/**/*.js
 /static_src/components/panel_row_error.jsx
 /static_src/components/route_form.jsx
 /static_src/components/route_list.jsx
-/static_src/components/routes_panel.jsx
 /static_src/components/service_instance.jsx
 /static_src/components/service_instance_list.jsx
-/static_src/components/service_instance_panel.jsx
 /static_src/components/service_list.jsx
 /static_src/components/service_plan_list.jsx
-/static_src/components/space_container.jsx
-/static_src/components/tabnav_item.jsx
-/static_src/components/tabnav.jsx
 /static_src/components/user_list.jsx
 /static_src/components/user_role_control.jsx
 /static_src/components/user_role_list_control.jsx
-/static_src/components/users.jsx
