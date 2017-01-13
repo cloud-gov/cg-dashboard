@@ -177,7 +177,7 @@ cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_
 Create a redis service instance:
 
 ```bash
-cf create-service redis28 standard deck-redis
+cf create-service redis28 standard dashboard-redis
 ```
 
 ### Create a Client with UAAC
