@@ -123,7 +123,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 			// TODO remove this; work-around for
 			// https://github.com/gorilla/sessions/issues/96
 			MaxAge: 60 * 60 * 24 * 7,
-			Secure:   s.SecureCookies,
+			Secure: s.SecureCookies,
 		}
 		s.Sessions = store
 	}
