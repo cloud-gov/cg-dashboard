@@ -34,6 +34,7 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.BuildInfo = os.Getenv(helpers.BuildInfoEnvVar)
 	envVars.NewRelicLicense = os.Getenv(helpers.NewRelicLicenseEnvVar)
 	envVars.SecureCookies = os.Getenv(helpers.SecureCookiesEnvVar)
+	envVars.SessionBackend = os.Getenv(helpers.SessionBackendEnvVar)
 	envVars.SessionKey = os.Getenv(helpers.SessionKeyEnvVar)
 	envVars.BasePath = os.Getenv(helpers.BasePathEnvVar)
 	return envVars
@@ -58,15 +59,11 @@ func replaceEnvVar(envVars *helpers.EnvVars, envVar string, value interface{}) {
 	}
 }
 
-func loadUPSVars(envVars *helpers.EnvVars) {
-	// Try to load the user-provided-service
-	// for backup of certain environment variables.
-	cfEnv, err := cfenv.Current()
-	if err != nil || cfEnv == nil {
-		fmt.Println("Warning: No Cloud Foundry Environment found")
+func loadUPSVars(envVars *helpers.EnvVars, cfEnv *cfenv.App) {
+	if cfEnv == nil {
 		return
 	}
-	fmt.Println("Cloud Foundry Environment found")
+
 	if cfUPS, err := cfEnv.Services.WithName(cfUserProvidedService); err == nil {
 		fmt.Println("User Provided Service found")
 		if clientID, found := cfUPS.Credentials[helpers.ClientIDEnvVar]; found {
@@ -98,7 +95,15 @@ func main() {
 		port = defaultPort
 	}
 	fmt.Println("using port: " + port)
-	startApp(port)
+
+	// Try to load the user-provided-service
+	// for backup of certain environment variables.
+	cfEnv, err := cfenv.Current()
+	if err != nil || cfEnv == nil {
+		fmt.Println("Warning: No Cloud Foundry Environment found")
+	}
+
+	startApp(port, cfEnv)
 }
 
 func startMonitoring(license string) {
@@ -112,13 +117,13 @@ func startMonitoring(license string) {
 	}
 }
 
-func startApp(port string) {
+func startApp(port string, env *cfenv.App) {
 	// Load environment variables
 	envVars := loadEnvVars()
 	// Override with cloud foundry user provided service credentials if specified.
-	loadUPSVars(&envVars)
+	loadUPSVars(&envVars, env)
 
-	app, settings, err := controllers.InitApp(envVars)
+	app, settings, err := controllers.InitApp(envVars, env)
 	if err != nil {
 		// Print the error.
 		fmt.Println(err.Error())

@@ -4,6 +4,6 @@ domain: fr.cloud.gov
 applications:
 - name: cg-dashboard
   host: dashboard
-  instances: 1
+  instances: 3
   env:
     CONSOLE_HOSTNAME: https://dashboard.fr.cloud.gov

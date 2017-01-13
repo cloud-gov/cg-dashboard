@@ -24,3 +24,5 @@ import:
 - package: github.com/cloudfoundry-community/go-cfenv
 - package: github.com/gorilla/csrf
   version: ~1.4.0
+- package: github.com/boj/redistore
+  version: ~1.2.0

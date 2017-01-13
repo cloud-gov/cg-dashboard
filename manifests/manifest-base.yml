@@ -2,8 +2,10 @@
 buildpack: go_buildpack
 memory: 256M
 services:
-  - deck-ups
+- deck-ups
+- dashboard-redis
 env:
   GOVERSION: go1.6.3
   GOPACKAGENAME: github.com/18F/cg-dashboard
   GO15VENDOREXPERIMENT: 1
+  SESSION_BACKEND: redis

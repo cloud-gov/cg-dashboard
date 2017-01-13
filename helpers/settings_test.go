@@ -1,8 +1,11 @@
 package helpers_test
 
 import (
-	"github.com/18F/cg-dashboard/helpers"
 	"testing"
+
+	"github.com/cloudfoundry-community/go-cfenv"
+
+	"github.com/18F/cg-dashboard/helpers"
 )
 
 type initSettingsTest struct {
@@ -133,8 +136,9 @@ var initSettingsTests = []initSettingsTest{
 
 func TestInitSettings(t *testing.T) {
 	s := helpers.Settings{}
+	env, _ := cfenv.Current()
 	for _, test := range initSettingsTests {
-		ret := s.InitSettings(test.envVars)
+		ret := s.InitSettings(test.envVars, env)
 		if (ret == nil) != test.returnValueNull {
 			t.Errorf("Test %s did not return correct value. Expected %t, Actual %t", test.testName, test.returnValueNull, (ret == nil))
 		}
