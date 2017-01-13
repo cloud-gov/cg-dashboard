@@ -2,11 +2,11 @@
 
 [![CircleCI](https://circleci.com/gh/18F/cg-dashboard.svg?style=svg)](https://circleci.com/gh/18F/cg-dashboard)
 [![Code Climate](https://codeclimate.com/github/18F/cg-dashboard/badges/gpa.svg)](https://codeclimate.com/github/18F/cg-dashboard)
+[![Dependency Status](https://gemnasium.com/18F/cg-dashboard.svg)](https://gemnasium.com/18F/cg-dashboard)
 
 Environments: [Production](https://dashboard.cloud.gov)
 [Staging](https://dashboard-staging.apps.cloud.gov)
 [Demo](https://dashboard-demo.apps.cloud.gov)
-
 
 ## Introduction
 
@@ -72,7 +72,7 @@ npm run watch
 
 To run the tests:
 ```
-npm run test
+npm test
 ```
 or to continually watch for changes and run test suite:
 ```
@@ -122,9 +122,9 @@ To kill that process, run `kill %N` where "N" is the number from the line.
 - `go test $(glide nv)`
 
 ### Running Javascript unit tests
-Test can then be run with the command:
+Tests can then be run with the command:
 ```
-npm run test
+npm test
 ```
 
 ## Acceptance Tests
@@ -189,10 +189,8 @@ uaac client add <your-client-id> \
 ```
 - Unable to create an account still? Troubleshoot [here](https://docs.cloudfoundry.org/adminguide/uaa-user-management.html#creating-admin-users)
 
-
 ### CI
 This project uses CircleCI
 - The following environment variables need to be set in plain text in the global env section:
   - `CONSOLE_API_URL`, `CONSOLE_UAA_URL`, `CONSOLE_LOG_URL`, `CONSOLE_LOGIN_URL`, `CONSOLE_HOSTNAME="http://localhost:9999"`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, and `CONSOLE_TEST_APP_NAME`
 - In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the CircleCI CLI UI to set the variables
-
