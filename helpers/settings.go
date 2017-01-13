@@ -3,6 +3,7 @@ package helpers
 import (
 	"encoding/gob"
 	"errors"
+	"fmt"
 	"net/url"
 	"os"
 
@@ -172,7 +173,30 @@ func getRedisService(env *cfenv.App) (string, error) {
 	}
 	uri, ok := services[0].Credentials["uri"].(string)
 	if !ok {
+		if uri, err = getRedisURIFromParts(services[0]); err == nil {
+			return uri, nil
+		}
 		return "", errors.New("Could not parse redis uri")
 	}
 	return uri, nil
+}
+
+// TODO: Delete after east-west is retired
+func getRedisURIFromParts(service cfenv.Service) (string, error) {
+	host, ok := service.Credentials["hostname"].(string)
+	if !ok {
+		return "", errors.New(`Could not find "host" key`)
+	}
+
+	port, ok := service.Credentials["port"].(string)
+	if !ok {
+		return "", errors.New(`Could not find "port" key`)
+	}
+
+	password, ok := service.Credentials["password"].(string)
+	if !ok {
+		return "", errors.New(`Could not find "password" key`)
+	}
+
+	return fmt.Sprintf("redis://:%s@%s:%s", password, host, port), nil
 }
