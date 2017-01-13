@@ -120,6 +120,9 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 		store.MaxLength(4096 * 4)
 		store.Options = &sessions.Options{
 			HttpOnly: true,
+			// TODO remove this; work-around for
+			// https://github.com/gorilla/sessions/issues/96
+			MaxAge: 60 * 60 * 24 * 7,
 			Secure:   s.SecureCookies,
 		}
 		s.Sessions = store
