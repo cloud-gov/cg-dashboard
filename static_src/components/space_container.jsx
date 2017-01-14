@@ -76,7 +76,7 @@ export default class SpaceContainer extends React.Component {
         </div>
         <Panel title="">
 
-          <div className={ this.styler('grid panel-overview-header') }>
+          <div className={ this.styler('grid', 'panel-overview-header') }>
             <div className={ this.styler('grid-width-8') }>
               <h1 className={ this.styler('panel-title') }>Space overview</h1>
             </div>
