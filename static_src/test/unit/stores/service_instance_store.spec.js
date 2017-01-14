@@ -10,6 +10,7 @@ import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
 import ServiceStore from '../../../stores/service_store.js';
 import ServicePlanStore from '../../../stores/service_plan_store.js';
+import { CREATED_NOTIFICATION_TIME_MS } from '../../../stores/service_instance_store.js';
 
 describe('ServiceInstanceStore', function() {
   var sandbox;
@@ -17,6 +18,7 @@ describe('ServiceInstanceStore', function() {
   beforeEach(() => {
     ServiceInstanceStore._data = Immutable.List();
     ServiceInstanceStore._createError = null;
+    ServiceInstanceStore._createLoading = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -319,13 +321,11 @@ describe('ServiceInstanceStore', function() {
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should set form to nothing', function() {
-      ServiceInstanceStore._createInstanceForm = { service: {} };
-      expect(ServiceInstanceStore.createInstanceForm).toBeTruthy();
+    it('should set created temporary notification to true', function() {
       serviceActions.createdInstance(
         { guid: 'asdf9a8fasss', name: 'nameA' });
 
-      expect(ServiceInstanceStore.createInstanceForm).toBeFalsy();
+      expect(ServiceInstanceStore.createdTempNotification).toBeTruthy();
     });
   });
 

@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom';
 import Box from './box.jsx';
 import Action from './action.jsx';
 import { Form, FormText, FormSelect, FormElement, FormError } from './form';
+import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
@@ -19,6 +20,8 @@ import { validateString } from '../util/validators';
 function stateSetter() {
   return {
     createError: ServiceInstanceStore.createError,
+    createLoading: ServiceInstanceStore.createLoading,
+    createdTempNotification: ServiceInstanceStore.createdTempNotification,
     spaces: SpaceStore.getAll()
   };
 }
@@ -89,9 +92,22 @@ export default class CreateServiceInstance extends React.Component {
   render() {
     const currentOrgGuid = OrgStore.currentOrgGuid;
     let createError;
+    let createAction = (
+      <Action label="submit" type="submit">Create service instance</Action>
+    );
 
     if (this.state.createError) {
       createError = <FormError message={ this.state.createError.description } />
+    }
+
+    if (this.state.createLoading) {
+      createAction = <Loading style="inline" />;
+    } else if (this.state.createdTempNotification) {
+      createAction = (
+        <span className={ this.styler('status', 'status-ok') }>
+          Created! Find your instance in the service instances panel
+        </span>
+      );
     }
 
     return (
@@ -128,7 +144,7 @@ export default class CreateServiceInstance extends React.Component {
             })}
             validator={ this.validateString }
           />
-          <Action label="submit" type="submit">Create service instance</Action>
+          { createAction }
           <p><em>
             After you create a service instance, you can look at your space to check whether your service instance was created. (<a href="https://github.com/18F/cg-dashboard/issues/457">We’ll make this better.</a>) Then you can bind the service instance to an app <a href="https://docs.cloud.gov/apps/managed-services/">using the command line</a>.
           </em></p>
