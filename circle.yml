@@ -45,6 +45,7 @@ deployment:
     branch: [master, demo, deprecated]
     owner: 18F
     commands:
+      - cd $WS && NODE_ENV="prod" npm run build
       - cd $WS && pip install --user ruamel.yaml
       - cd $WS && export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
       - cd $WS && chmod a+x deploy/circle_deploy.sh && deploy/circle_deploy.sh
