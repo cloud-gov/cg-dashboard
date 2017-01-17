@@ -9,6 +9,8 @@ engines:
     enabled: true
   nodesecurity:
     enabled: true
+    exclude_fingerprints:
+      - db2b925f6a46b556ffeaf17fa6a26952 https://github.com/hueniverse/hawk/issues/168
   eslint:
     enabled: false
   fixme:
