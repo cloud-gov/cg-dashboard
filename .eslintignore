@@ -1,7 +1,5 @@
-static_src/test/**/*.js
 static_src/tests.bundle.js
 test/**/*.js
-*.spec.jsx
 
 # Current exceptions. As you touch these files, you should fix the lint errors
 # and remove them from this list.
@@ -32,3 +30,43 @@ test/**/*.js
 /static_src/components/user_list.jsx
 /static_src/components/user_role_control.jsx
 /static_src/components/user_role_list_control.jsx
+/static_src/test/global_setup.js
+/static_src/test/server/api.js
+/static_src/test/server/authstatus.js
+/static_src/test/server/fixtures.js
+/static_src/test/server/server.js
+/static_src/test/unit/actions/activity_actions.spec.js
+/static_src/test/unit/actions/app_actions.spec.js
+/static_src/test/unit/actions/domain_actions.spec.js
+/static_src/test/unit/actions/org_actions.spec.js
+/static_src/test/unit/actions/quota_actions.spec.js
+/static_src/test/unit/actions/route_actions.spec.js
+/static_src/test/unit/actions/service_actions.spec.js
+/static_src/test/unit/actions/space_actions.spec.js
+/static_src/test/unit/actions/user_actions.spec.js
+/static_src/test/unit/helpers.js
+/static_src/test/unit/stores/activity_store.spec.js
+/static_src/test/unit/stores/app_store.spec.js
+/static_src/test/unit/stores/base_store.spec.js
+/static_src/test/unit/stores/domain_store.spec.js
+/static_src/test/unit/stores/login_store.spec.js
+/static_src/test/unit/stores/org_store.spec.js
+/static_src/test/unit/stores/quota_store.spec.js
+/static_src/test/unit/stores/route_store.spec.js
+/static_src/test/unit/stores/service_binding_store.spec.js
+/static_src/test/unit/stores/service_instance_store.spec.js
+/static_src/test/unit/stores/service_plan_store.spec.js
+/static_src/test/unit/stores/service_store.spec.js
+/static_src/test/unit/stores/space_store.spec.js
+/static_src/test/unit/stores/user_store.spec.js
+/static_src/test/unit/util/analytics.spec.js
+/static_src/test/unit/util/cf_api.spec.js
+/static_src/test/unit/util/format_bytes.spec.js
+/static_src/test/unit/util/format_date.spec.js
+/static_src/test/unit/util/health.spec.js
+/static_src/test/unit/util/loading_status.spec.js
+/static_src/test/unit/util/poll.spec.js
+/static_src/test/unit/util/uaa_api.spec.js
+/static_src/test/unit/util/url.spec.js
+/static_src/test/unit/util/validators.spec.js
+/static_src/test/webpack-karma-warnings-plugin.js
