@@ -1,6 +1,7 @@
 
 require('babel-polyfill');
 
+import jasmineEnzyme from 'jasmine-enzyme';
 
 Function.prototype.bind = Function.prototype.bind || function (thisp) {
   var fn = this;
@@ -212,6 +213,7 @@ function createJasmineSinonMatchers(matchers) {
 }
 
 beforeEach(function() {
+  jasmineEnzyme();
   jasmine.addMatchers(createJasmineSinonMatchers(sinonMatchers));
   //jasmine.addMatchers(reactMatchers);
 });
