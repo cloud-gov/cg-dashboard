@@ -13,10 +13,10 @@
     "check-style": "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"git://github.com\" ]] && npm run build-style || exit 0'",
     "clean": "rm -rf ./static/assets/*",
     "lint": "eslint --ext .js --ext .jsx ./static_src",
-    "test": "npm run lint && karma start --single-run",
+    "test": "export NODE_ENV=test && npm run lint && karma start --single-run",
     "testing-server": "node ./static_src/test/server/server.js",
     "watch-server": "npm run testing-server & npm run watch",
-    "watch-test": "karma start --browsers Chrome",
+    "watch-test": "export NODE_ENV=test && karma start --browsers Chrome",
     "watch": "webpack --watch"
   },
   "author": "Marco Segreto (marco.segreto@gsa.gov)",
@@ -87,7 +87,7 @@
     "moment-timezone": "^0.5.10",
     "node-libs-browser": "^0.5.2",
     "normalize.css": "^3.0.3",
-    "react": "^15.4.1",
+    "react": "^15.4.2",
     "react-dom": "^15.4.1",
     "react-hot-loader": "^1.3.1",
     "react-jasmine-matchers": "^2.0.0",
@@ -98,6 +98,10 @@
     "webpack": "^1.14.0"
   },
   "devDependencies": {
-    "eslint-plugin-jasmine": "^2.2.0"
+    "enzyme": "^2.7.0",
+    "eslint-plugin-jasmine": "^2.2.0",
+    "jasmine-enzyme": "^2.1.0",
+    "react-addons-test-utils": "^15.4.2",
+    "react-dom": "^15.4.2"
   }
 }

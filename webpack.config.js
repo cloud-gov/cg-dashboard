@@ -89,6 +89,12 @@ const config = {
 
 if (TEST) {
   config.plugins.push(new WebpackKarmaWarningsPlugin());
+  config.externals = {
+    'cheerio': 'window',
+    'react/addons': true,
+    'react/lib/ExecutionEnvironment': true,
+    'react/lib/ReactContext': true
+  };
 }
 
 if (PRODUCTION) {
