@@ -21,7 +21,7 @@ dependencies:
     - go version
     - go get github.com/Masterminds/glide
     - rm -rf $WS
-    - mkdir -p $WS && chmod -R u+rw $WS && cp -R /home/ubuntu/cg-dashboard/. $WS
+    - mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
     - cd $WS && glide install
     - cd $WS && npm install
   override:
