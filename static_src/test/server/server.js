@@ -1,11 +1,10 @@
-var path = require('path');
 
-var hapi = require('hapi');
-var inert = require('inert');
-var smocks = require('smocks');
+import hapi from 'hapi';
+import inert from 'inert';
+import smocks from 'smocks';
 
-var authstatus = require('./authstatus');
-var api = require('./api');
+import authstatus from './authstatus';
+import api from './api';
 
 smocks.id('cg-dashboard-testing');
 
@@ -15,7 +14,7 @@ authstatus(smocks);
 api(smocks);
 
 // now start the server
-var server = new hapi.Server();
+const server = new hapi.Server();
 server.connection({
   port: 8000,
   host: 'localhost'
@@ -23,7 +22,7 @@ server.connection({
 
 
 // configure smocks as a hapi plugin
-var smocksplugin = require('smocks/hapi').toPlugin();
+const smocksplugin = require('smocks/hapi').toPlugin();
 smocksplugin.attributes = {
   pkg: require('../../../package.json')
 };
@@ -49,5 +48,7 @@ server.start(function (err) {
     throw err;
   }
 
-  console.log('started smocks server on ' + server.info.port + '.  visit ' + server.info.uri + '/_admin to configure');
+  console.log( // eslint-disable-line no-console
+    `Started smocks server on ${server.info.port}. Visit ${server.info.uri}/_admin to configure.`
+  );
 });

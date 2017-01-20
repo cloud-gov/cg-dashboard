@@ -1,5 +1,6 @@
 static_src/tests.bundle.js
 test/**/*.js
+static_src/test/server/fixtures/
 
 # Current exceptions. As you touch these files, you should fix the lint errors
 # and remove them from this list.
