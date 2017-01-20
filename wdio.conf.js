@@ -36,5 +36,9 @@ exports.config = {
   framework: 'jasmine',
   jasmineNodeOpts: {
     defaultTimeoutInterval: 10000
+  },
+
+  before: function () {
+    require('babel-register');
   }
 };

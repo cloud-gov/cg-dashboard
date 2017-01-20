@@ -43,12 +43,18 @@ server.route({
   }
 });
 
-server.start(function (err) {
-  if (err) {
-    throw err;
+export function start(cb) {
+  function __cb(err) {
+    if (err) {
+      throw err;
+    }
+
+    console.log( // eslint-disable-line no-console
+      `Started smocks server on ${server.info.port}. Visit ${server.info.uri}/_admin to configure.`
+    );
   }
 
-  console.log( // eslint-disable-line no-console
-    `Started smocks server on ${server.info.port}. Visit ${server.info.uri}/_admin to configure.`
-  );
-});
+  server.start(cb || __cb);
+}
+
+export default server;
