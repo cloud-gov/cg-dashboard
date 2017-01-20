@@ -105,7 +105,6 @@
     "enzyme": "^2.7.0",
     "eslint-plugin-jasmine": "^2.2.0",
     "jasmine-enzyme": "^2.1.0",
-    "phantomjs": "^2.1.7",
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "^15.4.2",
     "selenium-standalone": "^5.11.0",
