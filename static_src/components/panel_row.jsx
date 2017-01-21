@@ -13,6 +13,8 @@ const STYLES = [
 ];
 
 const propTypes = {
+  id: React.PropTypes.string,
+  className: React.PropTypes.string,
   children: React.PropTypes.any,
   styleClass: React.PropTypes.oneOf(STYLES)
 };
@@ -32,7 +34,9 @@ export default class PanelRow extends React.Component {
     const mainClass = props.styleClass !== 'boxed' && 'panel-row';
 
     return (
-      <div className={ this.styler(mainClass, styleClass) }>
+      <div id={ this.props.id }
+        className={ [this.props.className, this.styler(mainClass, styleClass)].join(' ') }
+      >
         { this.props.children }
       </div>
     );
