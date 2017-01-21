@@ -1,14 +1,10 @@
-
-const browserName = process.env.CI ? 'phantomjs' : 'chrome';
-
-
 exports.config = {
   specs: [
     './static_src/test/functional/**/*.spec.js'
   ],
 
   capabilities: [{
-    browserName: browserName
+    browserName: 'chrome'
   }],
 
   sync: true,

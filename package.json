@@ -16,7 +16,7 @@
     "test": "npm run lint && npm run test-karma && npm run test-functional",
     "test-functional": "NODE_ENV=test wdio wdio.conf.js",
     "test-karma": "NODE_ENV=test karma start --single-run",
-    "test-selenium-install": "selenium-standalone install --drivers.phantomjs",
+    "test-selenium-install": "selenium-standalone install",
     "testing-server": "node ./static_src/test/server/server.js",
     "watch-server": "npm run testing-server & npm run watch",
     "watch-test": "NODE_ENV=test karma start --browsers Chrome",

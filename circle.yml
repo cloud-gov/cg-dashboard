@@ -24,6 +24,7 @@ dependencies:
     - mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
     - cd $WS && glide install
     - cd $WS && npm install
+    - cd $WS && npm run test-selenium-install
   override:
     - cd $WS && go build
     - cd $WS && npm run build
