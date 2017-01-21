@@ -13,37 +13,48 @@ authstatus(smocks);
 // add all api routes
 api(smocks);
 
-// now start the server
-const server = new hapi.Server();
-server.connection({
-  port: 8000,
-  host: 'localhost'
-});
+const DEFAULT_PORT = 8000;
 
+/*
+ * Starts the server.
+ *
+ * @param port (optional)
+ * @param cb (optional) callback to notify when server starts
+ **/
+export function start(...args) {
+  const cb = args.pop();
+  const port = args[0] || DEFAULT_PORT;
 
-// configure smocks as a hapi plugin
-const smocksplugin = require('smocks/hapi').toPlugin();
-smocksplugin.attributes = {
-  pkg: require('../../../package.json')
-};
+  const server = new hapi.Server();
 
-server.register([
-  inert,
-  smocksplugin
-]);
+  server.connection({
+    port,
+    host: 'localhost'
+  });
 
-// serve static assets
-server.route({
-  method: 'get',
-  path: '/{p*}',
-  handler: {
-    directory: {
-      path: 'static'
+  // configure smocks as a hapi plugin
+  const smocksplugin = require('smocks/hapi').toPlugin();
+  smocksplugin.attributes = {
+    pkg: require('../../../package.json')
+  };
+
+  server.register([
+    inert,
+    smocksplugin
+  ]);
+
+  // serve static assets
+  server.route({
+    method: 'get',
+    path: '/{p*}',
+    handler: {
+      directory: {
+        path: 'static'
+      }
     }
-  }
-});
+  });
 
-export function start(cb) {
+  // Default callback
   function __cb(err) {
     if (err) {
       throw err;
@@ -55,6 +66,6 @@ export function start(cb) {
   }
 
   server.start(cb || __cb);
-}
 
-export default server;
+  return server;
+}

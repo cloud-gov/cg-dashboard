@@ -1,10 +1,14 @@
+
+const browserName = process.env.CI ? 'phantomjs' : 'chrome';
+
+
 exports.config = {
   specs: [
     './static_src/test/functional/**/*.spec.js'
   ],
 
   capabilities: [{
-    browserName: 'phantomjs'
+    browserName: browserName
   }],
 
   sync: true,
@@ -20,7 +24,7 @@ exports.config = {
 
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
-  baseUrl: 'http://localhost:8000',
+  baseUrl: 'http://localhost:8001',
 
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
