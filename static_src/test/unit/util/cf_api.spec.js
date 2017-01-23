@@ -838,21 +838,6 @@ describe('cfApi', function() {
       }).catch(done.fail);
     });
 
-    it('should call app restarted with app guid on success', function(done) {
-      const appGuid = '2398dhgf028ulfd';
-      const stub = sandbox.stub(http, 'post');
-      const spy = sandbox.stub(appActions, 'restarted');
-      spy.returns();
-      stub.returns(createPromise({response: 'success'}));
-
-      cfApi.postAppRestart(appGuid).then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        const arg = spy.getCall(0).args[0];
-        expect(arg).toEqual(appGuid);
-        done();
-      }).catch(done.fail);
-    });
-
     it('should call app error with app guid on failure', function(done) {
       const appGuid = '2398dhgf028ulfd';
       const spy = sandbox.stub(appActions, 'error');

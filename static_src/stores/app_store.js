@@ -108,7 +108,6 @@ class AppStore extends BaseStore {
       }
 
       case appActionTypes.APP_RESTART: {
-        cfApi.postAppRestart(action.appGuid);
         const app = this.get(action.appGuid);
         if (app) {
           const restartingApp = Object.assign({}, app,
@@ -121,12 +120,6 @@ class AppStore extends BaseStore {
       }
 
       case appActionTypes.APP_RESTARTED: {
-        this.poll(
-          (app) => app.data.running_instances > 0,
-          cfApi.fetchAppStatus.bind(cfApi, action.appGuid)
-        ).then((res) => {
-          this.merge('guid', res.data);
-        });
         break;
       }
 

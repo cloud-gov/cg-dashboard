@@ -6,6 +6,8 @@ import { assertAction, setupUISpy, setupViewSpy, setupServerSpy } from '../helpe
 import cfApi from '../../../util/cf_api.js';
 import appActions from '../../../actions/app_actions.js';
 import { appActionTypes } from '../../../constants.js';
+import poll from '../../../util/poll.js';
+import * as pollUtil from '../../../util/poll.js';
 
 describe('appActions', function() {
   var sandbox;
@@ -137,6 +139,17 @@ describe('appActions', function() {
 
       assertAction(spy, appActionTypes.APP_RESTART, expectedParams);
     });
+
+    it('should call cf api post to restart the app', function() {
+      const spy = sandbox.spy(cfApi, 'postAppRestart');
+      const expectedGuid = 'asdfasd2vdamcdksa';
+
+      appActions.restart(expectedGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+      let arg = spy.getCall(0).args[0];
+      expect(arg).toEqual(expectedGuid);
+    });
   });
 
   describe('restarted()', function() {
@@ -150,6 +163,21 @@ describe('appActions', function() {
       appActions.restarted(appGuid);
 
       assertAction(spy, appActionTypes.APP_RESTARTED, expectedParams);
+    });
+
+    it('should poll until running instances is greater then 0', function() {
+      const spy = sandbox.stub(pollUtil, 'default').returns(Promise.resolve());
+      const expectedRes = {
+        data: { running_instances: 1 }
+      };
+
+      appActions.restarted('zxlcvkjklv');
+
+      expect(spy).toHaveBeenCalledOnce();
+      let args = spy.getCall(0).args;
+      expect(args[0]).toBeFunction();
+      expect(args[0](expectedRes)).toBeTruthy();
+      expect(args[1]).toBeFunction();
     });
   });
 

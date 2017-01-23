@@ -232,17 +232,6 @@ describe('AppStore', function() {
   });
 
   describe('on app restart', function() {
-    it('should call cf api to restart the app with guid', function() {
-      const spy = sandbox.spy(cfApi, 'postAppRestart');
-      const expectedGuid = 'asdfasd2vdamcdksa';
-
-      appActions.restart(expectedGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedGuid);
-    });
-
     it('should set app "state" to "restarting"', function() {
       const appGuid = 'zkvkljsf';
       const app = { guid: appGuid, state: 'RUNNING' };
@@ -267,20 +256,7 @@ describe('AppStore', function() {
   });
 
   describe('on app restarted', function() {
-    it('should poll until running instances is greater then 0', function() {
-      const spy = sandbox.stub(AppStore, 'poll').returns(Promise.resolve());
-      const expectedRes = {
-        data: { running_instances: 1 }
-      };
-
-      appActions.restarted('zxlcvkjklv');
-
-      expect(spy).toHaveBeenCalledOnce();
-      let args = spy.getCall(0).args;
-      expect(args[0]).toBeFunction();
-      expect(args[0](expectedRes)).toBeTruthy();
-      expect(args[1]).toBeFunction();
-    });
+    // TODO still needed?
   });
 
   describe('on app update', function () {
