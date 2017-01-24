@@ -130,7 +130,7 @@ describe('appActions', function() {
   describe('start()', function() {
     it('should dispatch a view event of type app start with guid', function() {
       sandbox.stub(appActions, 'restarted').returns(Promise.resolve());
-      sandbox.stub(cfApi, 'postAppRestart').returns(Promise.resolve());
+      sandbox.stub(cfApi, 'putApp').returns(Promise.resolve());
       const appGuid = 'zzcvxkadsf';
       const expectedParams = {
         appGuid
@@ -142,13 +142,13 @@ describe('appActions', function() {
       assertAction(spy, appActionTypes.APP_START, expectedParams);
     });
 
-    it('should call cf api post to restart the app', function(done) {
-      const spy = sandbox.stub(cfApi, 'postAppRestart').returns(Promise.resolve());
+    it('should call cf api put app with state started to restart the app',
+        function(done) {
+      const spy = sandbox.stub(cfApi, 'putApp').returns(Promise.resolve());
       sandbox.stub(appActions, 'restarted').returns(Promise.resolve());
       const expectedGuid = 'asdfasd2vdamcdksa';
 
       appActions.start(expectedGuid).then(() => {
-        console.log('HEEEERRREEEE');
         expect(spy).toHaveBeenCalledOnce();
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(expectedGuid);

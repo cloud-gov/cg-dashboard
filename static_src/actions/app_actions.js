@@ -81,7 +81,8 @@ export default {
       appGuid
     });
 
-    return cfApi.postAppRestart(appGuid).then(() => this.restarted(appGuid));
+    return cfApi.putApp(appGuid, { state: 'STARTED' }).then(() =>
+      this.restarted(appGuid));
   },
 
   restart(appGuid) {
