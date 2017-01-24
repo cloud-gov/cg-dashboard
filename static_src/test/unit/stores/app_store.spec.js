@@ -231,6 +231,30 @@ describe('AppStore', function() {
     });
   });
 
+  describe('on app start', function() {
+    it('should set app "state" to "starting"', function() {
+      const appGuid = 'zkvkljsf';
+      const app = { guid: appGuid, state: 'STOPPED' };
+      AppStore.push(app);
+
+      appActions.start(appGuid);
+
+      const actual = AppStore.get(appGuid);
+      expect(actual.state).toEqual('STARTING');
+    });
+
+    it('should emit a change', function() {
+      const appGuid = 'zkvkljsf';
+      const app = { guid: appGuid, state: 'STOPPED' };
+      AppStore.push(app);
+      const spy = sandbox.spy(AppStore, 'emitChange');
+
+      appActions.start(appGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('on app restart', function() {
     it('should set app "state" to "restarting"', function() {
       const appGuid = 'zkvkljsf';

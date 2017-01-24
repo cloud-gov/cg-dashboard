@@ -107,6 +107,18 @@ class AppStore extends BaseStore {
         break;
       }
 
+      case appActionTypes.APP_START: {
+        const app = this.get(action.appGuid);
+        if (app) {
+          const startingApp = Object.assign({}, app,
+            { state: appStates.starting });
+          this.merge('guid', startingApp, (changed) => {
+            if (changed) this.emitChange();
+          });
+        }
+        break;
+      }
+
       case appActionTypes.APP_RESTART: {
         const app = this.get(action.appGuid);
         if (app) {

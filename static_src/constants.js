@@ -9,6 +9,7 @@ const appStates = {
   restarting: 'RESTARTING',
   running: 'RUNNING',
   started: 'STARTED',
+  starting: 'STARTING',
   stopped: 'STOPPED',
   default: 'STOPPED'
 };
