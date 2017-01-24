@@ -1,0 +1,7 @@
+{
+  "extends": "../.eslintrc",
+  "globals": {
+    "browser": true,
+    "sinon": true
+  }
+}

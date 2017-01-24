@@ -202,3 +202,29 @@ This project uses CircleCI
   - `CONSOLE_API_URL`, `CONSOLE_UAA_URL`, `CONSOLE_LOG_URL`, `CONSOLE_LOGIN_URL`, `CONSOLE_HOSTNAME="http://localhost:9999"`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, and `CONSOLE_TEST_APP_NAME`
 - In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the CircleCI CLI UI to set the variables
 
+
+## Functional Tests
+
+Functional tests are our high-level automated UI tests that are run from the
+browser. They can be slow to run, but often catch issues that only appear when
+functional components appear together, like when running in a real web browser.
+
+### Prerequisites
+
+The tests are based on Webdriver and use the Selenium Standalone server to drive
+the browsers.
+
+- Java 8
+
+
+### Setup
+
+You'll only have to do this once. This downloads the browser-specific drivers
+that we have configured.
+
+    $ npm run test-selenium-install
+
+
+### Run the tests
+
+    $ npm run test-functional

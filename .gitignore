@@ -2,6 +2,7 @@
 *.swo
 *.cov
 .env
+/screenshots/
 static/bower_components/
 node_modules/
 npm-debug.log

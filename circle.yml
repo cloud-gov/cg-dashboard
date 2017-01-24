@@ -16,18 +16,15 @@ machine:
 dependencies:
   cache_directories:
     - "node_modules"
-    - "/home/ubuntu/bin/phantomjs-2.1.1"
   pre:
     - sudo apt-get update; sudo apt-get install libicu52
-    - curl --output /home/ubuntu/bin/phantomjs-2.1.1 https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
-    - chmod a+x /home/ubuntu/bin/phantomjs-2.1.1
-    - sudo ln -s --force /home/ubuntu/bin/phantomjs-2.1.1 /usr/local/bin/phantomjs
     - go version
     - go get github.com/Masterminds/glide
     - rm -rf $WS
-    - mkdir -p $WS && chmod -R u+rw $WS && cp -R /home/ubuntu/cg-dashboard/. $WS
+    - mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
     - cd $WS && glide install
     - cd $WS && npm install
+    - cd $WS && npm run test-selenium-install
   override:
     - cd $WS && go build
     - cd $WS && npm run build

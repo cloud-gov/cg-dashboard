@@ -13,10 +13,13 @@
     "check-style": "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"git://github.com\" ]] && npm run build-style || exit 0'",
     "clean": "rm -rf ./static/assets/*",
     "lint": "eslint --ext .js --ext .jsx ./static_src",
-    "test": "export NODE_ENV=test && npm run lint && karma start --single-run",
+    "test": "npm run lint && npm run test-unit && npm run test-functional",
+    "test-functional": "NODE_ENV=test wdio wdio.conf.js",
+    "test-unit": "NODE_ENV=test karma start --single-run",
+    "test-selenium-install": "selenium-standalone install",
     "testing-server": "node ./static_src/test/server/server.js",
     "watch-server": "npm run testing-server & npm run watch",
-    "watch-test": "export NODE_ENV=test && karma start --browsers Chrome",
+    "watch-test": "NODE_ENV=test karma start --browsers Chrome",
     "watch": "webpack --watch"
   },
   "author": "Marco Segreto (marco.segreto@gsa.gov)",
@@ -98,10 +101,15 @@
     "webpack": "^1.14.0"
   },
   "devDependencies": {
+    "babel-register": "^6.18.0",
     "enzyme": "^2.7.0",
     "eslint-plugin-jasmine": "^2.2.0",
     "jasmine-enzyme": "^2.1.0",
     "react-addons-test-utils": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "selenium-standalone": "^5.11.0",
+    "wdio-jasmine-framework": "^0.2.19",
+    "wdio-selenium-standalone-service": "0.0.7",
+    "webdriverio": "^4.6.1"
   }
 }
