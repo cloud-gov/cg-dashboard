@@ -285,24 +285,11 @@ describe('AppStore', function() {
 
   describe('on app update', function () {
     let putApp;
+
     beforeEach(function () {
       putApp = sandbox.stub(cfApi, 'putApp');
       AppStore.push({ guid: '1234', instances: 2, memory: 128 });
       appActions.updateApp('1234', { instances: 3 });
-    });
-
-    it('calls api with guid', function () {
-      expect(putApp).toHaveBeenCalledOnce();
-
-      const [guid, app] = putApp.args[0];
-      expect(guid).toBe('1234');
-    });
-
-    it('calls api with partial app', function () {
-      const [guid, app] = putApp.args[0];
-
-      expect(app.memory).toBeFalsy();
-      expect(app.instances).toBe(3);
     });
   });
 

@@ -46,7 +46,6 @@ class AppStore extends BaseStore {
         const existingApp = this.get(action.appGuid);
         const updatedApp = Object.assign({}, existingApp, { updating: true });
         this.merge('guid', updatedApp);
-        cfApi.putApp(action.appGuid, action.appPartial);
         break;
       }
 
