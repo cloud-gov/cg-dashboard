@@ -30,6 +30,8 @@ export default {
       appPartial,
       appGuid
     });
+
+    return cfApi.putApp(appGuid, appPartial).then((app) => this.updatedApp(app));
   },
 
   updatedApp(app) {
@@ -104,6 +106,7 @@ export default {
         (app) => app.data.running_instances > 0,
         cfApi.fetchAppStatus.bind(cfApi, appGuid)
       ).then((res) => {
+        this.fetchStats(appGuid);
         this.receivedApp(res.data);
       });
   },

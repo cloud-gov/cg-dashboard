@@ -158,7 +158,6 @@ export default class AppContainer extends React.Component {
       <div>
         { action }
         { error }
-        { loading }
       </div>
     );
   }
