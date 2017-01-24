@@ -127,37 +127,6 @@ Test can then be run with the command:
 npm run test
 ```
 
-## Acceptance Tests
-*Note: Acceptance tests are currently not being developed*
-This project currently uses a combination of [Agouti](http://agouti.org/) + [Ginkgo](http://onsi.github.io/ginkgo/) + [Gomega](http://onsi.github.io/gomega/) to provide BDD acceptance testing.
-All the acceptance tests are in the 'acceptance' folder.
-
-### Setup
-- Make sure you have PhantomJS installed: `brew install phantomjs`
-- Install aogut: `go get github.com/sclevine/agouti`
-- Install ginkgo `go get github.com/onsi/ginkgo/ginkgo`
-- Install gomega `go get github.com/onsi/gomega`
-- To run locally, in addition to the variables in the "Set the environmnent variables" section, you will need to set two more variables in your environment
-- `CONSOLE_TEST_USERNAME`: The username of the account you want the tests to use to login into your `CONSOLE_LOGIN_URL`
-- `CONSOLE_TEST_PASSWORD`: The password of the account you want the tests to use to login into your `CONSOLE_LOGIN_URL`
-- `CONSOLE_TEST_ORG_NAME`: The test organization the user should be navigating to.
-- `CONSOLE_TEST_SPACE_NAME`: The test space the user should be navigating to.
-- `CONSOLE_TEST_APP_NAME`: The test app the user should be navigating to.
-- `CONSOLE_TEST_HOST`: The host that the app can create a mock route for.
-- `CONSOLE_TEST_DOMAIN`: The domain for the mock route.
-
-#### Running acceptance tests
-##### Make sure you have docker installed on your computer
-
-For automated mode:
-
-- `acceptance/scripts/run_test.sh -a`
-
-For debug mode where the developer can vnc into the container and the browser execute the commands:
-
-- `acceptance/scripts/run_test.sh -d`
-- Once inside the container, run `acceptance/scripts/debug.sh`
-
 ## Deploying
 
 The cloud.gov dashboard is continuously deployed by CircleCI. To deploy manually:

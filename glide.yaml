@@ -9,11 +9,6 @@ import:
   - proto
 - package: github.com/gorilla/context
 - package: github.com/gorilla/sessions
-- package: github.com/onsi/ginkgo
-- package: github.com/onsi/gomega
-- package: github.com/sclevine/agouti
-  subpackages:
-  - matchers
 - package: golang.org/x/net
   subpackages:
   - context
