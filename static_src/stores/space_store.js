@@ -6,7 +6,6 @@
 import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
-import cfApi from '../util/cf_api.js';
 import { orgActionTypes, spaceActionTypes } from '../constants.js';
 
 class SpaceStore extends BaseStore {
@@ -14,7 +13,27 @@ class SpaceStore extends BaseStore {
     super();
     this._data = new Immutable.List();
     this._currentSpaceGuid = null;
+    this._loading = [];
+    this._fetchAll = false;
     this.subscribe(() => this._registerToActions.bind(this));
+  }
+
+  get loading() {
+    return !!this._loading.length || this._fetchAll;
+  }
+
+  // TODO this could be moved to a helper
+  _startLoading(guid) {
+    this._loading.push(guid);
+  }
+
+  // TODO this could be moved to a helper
+  _completeLoading(guid) {
+    const index = this._loading.indexOf(guid);
+    if (index > -1) {
+      // Maybe throw an error if the item isn't in the array
+      this._loading.splice(index, 1);
+    }
   }
 
   _registerToActions(action) {
@@ -34,35 +53,26 @@ class SpaceStore extends BaseStore {
       }
 
       case spaceActionTypes.SPACE_FETCH: {
-        this.load([cfApi.fetchSpace(action.spaceGuid)]);
+        this._startLoading(action.spaceGuid);
         this.emitChange();
         break;
       }
 
       case spaceActionTypes.SPACES_FETCH: {
-        this.load([cfApi.fetchSpaces()]);
+        this._fetchAll = true;
         this.emitChange();
         break;
       }
 
-      case spaceActionTypes.SPACES_FOR_ORG_FETCH: {
-        const orgSpaces = this.getAll().filter((space) =>
-          space.organization_guid === action.orgGuid);
-        if (orgSpaces.length) {
-          const spaceRequests = orgSpaces.map((orgSpace) =>
-            cfApi.fetchSpace(orgSpace.guid));
-          this.load(spaceRequests);
-        }
-        break;
-      }
-
       case spaceActionTypes.SPACE_RECEIVED: {
+        this._completeLoading(action.space.guid);
         this.merge('guid', action.space, () => { });
         this.emitChange();
         break;
       }
 
       case spaceActionTypes.SPACES_RECEIVED: {
+        this._fetchAll = false;
         this.mergeMany('guid', action.spaces, () => {
           this.emitChange();
         });

@@ -7,14 +7,14 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import { config } from 'skin';
 import Icon from './icon.jsx';
 import Loading from './loading.jsx';
-import OrgQuickLook from './org_quick_look.jsx';
+import OrgQuicklook from './org_quicklook.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelRow from './panel_row.jsx';
 import SpaceStore from '../stores/space_store.js';
-import SpaceQuicklook from './space_quicklook.jsx';
+
 
 function stateSetter() {
   const orgs = OrgStore.getAll() || [];
@@ -56,7 +56,7 @@ export default class OverviewContainer extends React.Component {
   }
 
   anyOrgsOpen() {
-    return this.state.orgs.reduce((prev, org) => prev || !!org.quicklook_open,
+    return this.state.orgs.reduce((prev, org) => prev || !!(org.quicklook && org.quicklook.open),
       false);
   }
 
@@ -79,15 +79,10 @@ export default class OverviewContainer extends React.Component {
         <Panel title="Your organizations">
           { state.orgs.map((org) =>
             <PanelRow key={ org.guid } className="test-panel-row-organizations" styleClass="boxed">
-              <OrgQuickLook
+              <OrgQuicklook
                 org={ org }
                 spaces={ this.orgSpaces(org.guid) }
               />
-              { org.quicklook_open && this.orgSpaces(org.guid).map((space) =>
-                <SpaceQuicklook space={ space } orgGuid={ org.guid }
-                  key={ space.guid } loading={ state.loading }
-                />
-              )}
             </PanelRow>
           )}
         </Panel>

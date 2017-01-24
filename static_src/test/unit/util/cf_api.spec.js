@@ -536,8 +536,6 @@ describe('cfApi', function() {
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('space'));
-      actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(spaceActions.receivedSpace);
     });
   });
 
@@ -553,21 +551,6 @@ describe('cfApi', function() {
       expect(stub).toHaveBeenCalledOnce();
       let actual = stub.getCall(0).args[0];
       expect(actual).toMatch(new RegExp('spaces'));
-    });
-
-    it('calls spaceActions.receivedSpaces action', function (done) {
-      const stub = sandbox.stub(http, 'get');
-      const actionSpy = sandbox.spy(spaceActions, 'receivedSpaces');
-      const expected = wrapInRes([{ guid: 'fake-guid-one' }]);
-      let testPromise = createPromise({ data: { resources: expected } });
-      stub.returns(testPromise);
-
-      cfApi.fetchSpaces().then(() => {
-        const args = actionSpy.getCall(0).args[0];
-        expect(args).toEqual(unwrapOfRes(expected));
-        expect(actionSpy).toHaveBeenCalledOnce();
-        done();
-      });
     });
   });
 

@@ -6,6 +6,7 @@
 
 import AppDispatcher from '../dispatcher.js';
 import { orgActionTypes } from '../constants';
+import spaceActions from './space_actions';
 
 export default {
 
@@ -61,10 +62,35 @@ export default {
     });
   },
 
-  toggleQuicklook(orgGuid) {
+  toggleQuicklook(org) {
     AppDispatcher.handleUIAction({
       type: orgActionTypes.ORG_TOGGLE_QUICKLOOK,
+      orgGuid: org.guid
+    });
+
+    let fetch = Promise.resolve();
+    if (!org.quicklook || !org.quicklook.isLoaded) {
+      fetch = spaceActions.fetchAllForOrg(org.guid);
+    }
+
+    return fetch.then(
+      () => this.toggleQuicklookSuccess(org.guid),
+      (err) => this.toggleQuicklookError(org.guid, err)
+    );
+  },
+
+  toggleQuicklookSuccess(orgGuid) {
+    AppDispatcher.handleUIAction({
+      type: orgActionTypes.ORG_TOGGLE_QUICKLOOK_SUCCESS,
       orgGuid
+    });
+  },
+
+  toggleQuicklookError(orgGuid, err) {
+    AppDispatcher.handleUIAction({
+      type: orgActionTypes.ORG_TOGGLE_QUICKLOOK_ERROR,
+      orgGuid,
+      err
     });
   }
 };

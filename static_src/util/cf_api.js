@@ -9,7 +9,6 @@ import loginActions from '../actions/login_actions.js';
 import orgActions from '../actions/org_actions.js';
 import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
-import spaceActions from '../actions/space_actions.js';
 import serviceActions from '../actions/service_actions.js';
 import userActions from '../actions/user_actions.js';
 
@@ -47,7 +46,9 @@ export default {
     return resources.map((r) => this.formatSplitResponse(r));
   },
 
-  fetch(url, action, multiple, ...params) {
+  fetch(url, _action, multiple, ...params) {
+    // Set a default noop action handler
+    const action = typeof _action === 'function' ? _action : () => {};
     return http.get(APIV + url).then((res) => {
       let data;
       if (!multiple) {
@@ -179,18 +180,15 @@ export default {
   },
 
   fetchSpaces() {
-    return http.get(`${APIV}/spaces`).then((res) => {
-      const spaces = this.formatSplitResponses(res.data.resources);
-      spaceActions.receivedSpaces(spaces);
-      return spaces;
-    }).catch((err) => {
+    return http.get(`${APIV}/spaces`).then(res =>
+      this.formatSplitResponses(res.data.resources)
+    ).catch((err) => {
       handleError(err);
     });
   },
 
   fetchSpace(spaceGuid) {
-    return this.fetchOne(`/spaces/${spaceGuid}/summary`,
-                         spaceActions.receivedSpace);
+    return this.fetchOne(`/spaces/${spaceGuid}/summary`);
   },
 
   fetchSpaceEvents(spaceGuid) {

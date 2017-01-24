@@ -11,6 +11,7 @@ import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import LoginStore from './login_store.js';
 import { orgActionTypes } from '../constants.js';
+import Quicklook from '../models/quicklook';
 
 class OrgStore extends BaseStore {
   constructor() {
@@ -83,11 +84,31 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORG_TOGGLE_QUICKLOOK: {
         const org = this.get(action.orgGuid);
-        if (org) {
-          const toggledOrg = Object.assign({}, org,
-            { quicklook_open: !org.quicklook_open });
-          this.merge('guid', toggledOrg, () => this.emitChange());
-        }
+        const orgQuicklook = new Quicklook(org.quicklook || {});
+        const toggledOrg = { ...org,
+          quicklook: orgQuicklook.merge({ open: !orgQuicklook.open })
+        };
+        this.merge('guid', toggledOrg);
+        break;
+      }
+
+      case orgActionTypes.ORG_TOGGLE_QUICKLOOK_SUCCESS: {
+        const org = this.get(action.orgGuid);
+        const orgQuicklook = new Quicklook(org.quicklook);
+        const toggledOrg = { ...org,
+          quicklook: orgQuicklook.merge({ isLoaded: true, error: null })
+        };
+        this.merge('guid', toggledOrg);
+        break;
+      }
+
+      case orgActionTypes.ORG_TOGGLE_QUICKLOOK_ERROR: {
+        const org = this.get(action.orgGuid);
+        const orgQuicklook = org.quicklook;
+        const toggledOrg = { ...org,
+          quicklook: orgQuicklook.merge({ isLoaded: true, error: action.error })
+        };
+        this.merge('guid', toggledOrg);
         break;
       }
 
