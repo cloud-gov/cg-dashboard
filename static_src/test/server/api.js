@@ -1,21 +1,40 @@
-var data = require('./fixtures');
 
-var apps = data.apps;
-var appStats = data.appStats;
-var domains = data.domains
-var organizations = data.organizations;
-var routes = data.routes;
-var services = data.services;
-var serviceInstances = data.serviceInstances;
-var serviceInstanceBindings = data.serviceInstanceBindings;
-var servicePlans = data.servicePlans;
-var spaces = data.spaces;
-var currentUser = data.currentUser;
-var spaceUsers = data.spaceUsers;
-var orgUsers = data.orgUsers;
-var orgUserRoles = data.orgUserRoles;
+var anyEvents = require('./fixtures/events');
+var appRoutes = require('./fixtures/app_routes.js');
+var appSummaries = require('./fixtures/app_summaries');
+var appStats = require('./fixtures/app_stats');
+var organizations = require('./fixtures/organizations');
+var organizationQuotaDefinitions = require('./fixtures/organization_quota_definitions.js');
+var organizationUsers = require('./fixtures/organization_users.js');
+var organizationUserRoles = require('./fixtures/organization_user_roles.js');
+var organizationSummaries = require('./fixtures/organization_summaries');
+var organizationMemoryUsage = require('./fixtures/organization_memory_usage');
+var services = require('./fixtures/services');
+var serviceBindings = require('./fixtures/service_bindings.js');
+var serviceInstances = require('./fixtures/service_instances.js');
+var servicePlans = require('./fixtures/service_plans.js');
+var sharedDomains = require('./fixtures/shared_domains.js');
+var spaces = require('./fixtures/spaces');
+var spaceRoutes = require('./fixtures/space_routes');
+var spaceSummaries = require('./fixtures/space_summaries');
+var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
+var spaceUserRoles = require('./fixtures/space_user_roles.js');
 
 var BASE_URL = '/v2';
+
+function SingleResponse(response) {
+  return response;
+}
+
+function MultiResponse(responses) {
+  return {
+    total_results: responses.length,
+    total_pages: 1,
+    prev_url: null,
+    next_url: null,
+    resources: responses
+  }
+}
 
 module.exports = function api(smocks) {
 
@@ -24,61 +43,9 @@ module.exports = function api(smocks) {
     label: 'App routes',
     path: `${BASE_URL}/apps/{guid}/routes`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      var route = routes.pop();
-      reply(route);
-    }
-  });
-
-  smocks.route({
-    id: 'uaa-userinfo',
-    label: 'UAA user info',
-    path: '/uaa/userinfo',
-    handler: function(req, reply) {
-      reply(currentUser);
-    }
-  });
-
-  smocks.route({
-    id: 'app-stats',
-    label: 'App stats',
-    path: `${BASE_URL}/apps/{guid}/stats`,
-    handler: function (req, reply) {
-      var app = apps.filter((app) => app.guid === req.params.guid).pop();
-      if (app.state === 'STOPPED') {
-        return reply({
-          code: 200003,
-          description: `Could not fetch stats for stopped app: ${app.name}`,
-          error_code: 'CF-AppStoppedStatsError'
-        }).code(400);
-      }
-      reply(appStats);
-    }
-  });
-
-  smocks.route({
-    id: 'shared-domain',
-    label: 'Shared domain',
-    path: `${BASE_URL}/shared_domains/{guid}`,
-    handler: function (req, reply) {
-      var guid = req.params.guid;
-      var domain = domains.find(function(domain) {
-        return domain.metadata.guid === guid;
-      });
-      reply(domain);
-    }
-  });
-
-  smocks.route({
-    id: 'private-domain',
-    label: 'Private domain',
-    path: `${BASE_URL}/private_domains/{guid}`,
-    handler: function (req, reply) {
-      var guid = req.params.guid;
-      var domain = domains.find(function(domain) {
-        return domain.metadata.guid === guid;
-      });
-      reply(domain);
+      const guid = req.params.guid;
+      const routes = appRoutes;
+      reply(MultiResponse(routes));
     }
   });
 
@@ -87,9 +54,24 @@ module.exports = function api(smocks) {
     label: 'App summary',
     path: `${BASE_URL}/apps/{guid}/summary`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      var app = apps.filter((app) => app.guid === guid).pop();
-      reply(app);
+      const guid = req.params.guid;
+      const app = appSummaries.find(function(app) {
+        return app.guid === guid;
+      });
+      reply(SingleResponse(app));
+    }
+  });
+
+  smocks.route({
+    id: 'app-stats',
+    label: 'App stats',
+    path: `${BASE_URL}/apps/{guid}/stats`,
+    handler: function (req, reply) {
+      const guid = req.params.guid;
+      const appStat = appStats.find(function(app) {
+        return app.guid === guid;
+      });
+      reply(SingleResponse(appStat));
     }
   });
 
@@ -98,13 +80,7 @@ module.exports = function api(smocks) {
     label: 'Organizations',
     path: `${BASE_URL}/organizations`,
     handler: function (req, reply) {
-      reply({
-        "total_results": organizations.length,
-        "total_pages": 1,
-        "prev_url": null,
-        "next_url": null,
-        "resources": organizations
-      })
+      reply(MultiResponse(organizations));
     }
   });
 
@@ -113,27 +89,33 @@ module.exports = function api(smocks) {
     label: 'Organization',
     path: `${BASE_URL}/organizations/{guid}`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      var organization = organizations.filter((org) => org.metadata.guid === guid).pop();
-      reply(organization);
+      const guid = req.params.guid;
+      const org = organizations.find(function(organization) {
+        return organization.metadata.guid === guid;
+      });
+      reply(SingleResponse(org));
     }
   });
 
   smocks.route({
-    id: 'organization-summary',
-    label: 'Organization summary',
+    id: 'organizations-services',
+    label: 'Organizations services',
+    path: `${BASE_URL}/organizations/{guid}/services`,
+    handler: function (req, reply) {
+      reply(MultiResponse(services));
+    }
+  });
+
+  smocks.route({
+    id: 'organizations-summary',
+    label: 'Organization Summary',
     path: `${BASE_URL}/organizations/{guid}/summary`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      var unwrappedSpaces = spaces.map(function(space) {
-        return Object.assign({}, space.entity, space.metadata);
+      const guid = req.params.guid;
+      const organization = organizationSummaries.find(function(organizationSummary) {
+        return organizationSummary.guid === guid;
       });
-      reply({
-        guid: guid,
-        name: 'org-name',
-        status: 'active',
-        spaces: unwrappedSpaces
-      });
+      reply(SingleResponse(organization));
     }
   });
 
@@ -142,10 +124,20 @@ module.exports = function api(smocks) {
     label: 'Organization memory usage',
     path: `${BASE_URL}/organizations/{guid}/memory_usage`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      reply({
-        memory_usage_in_mb: 17616
+      reply(SingleResponse(organizationMemoryUsage));
+    }
+  });
+
+  smocks.route({
+    id: 'organization-quota-definitions',
+    label: 'Organization quota definitions',
+    path: `${BASE_URL}/quota_definitions/{guid}`,
+    handler: function (req, reply) {
+      const guid = req.params.guid;
+      const quota = organizationQuotaDefinitions.find(function(orgQuota) {
+        return orgQuota.metadata.guid === guid;
       });
+      reply(SingleResponse(quota));
     }
   });
 
@@ -154,76 +146,35 @@ module.exports = function api(smocks) {
     label: 'Organization users',
     path: `${BASE_URL}/organizations/{guid}/users`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      reply({
-        total_results: orgUsers.length,
-        total_pages: 1,
-        prev_url: null,
-        next_url: null,
-        resources: orgUsers
-      });
+      reply(MultiResponse(organizationUsers));
     }
   });
 
   smocks.route({
-    id: 'organization-user-roles',
+    id: 'organization-users-roles',
     label: 'Organization user roles',
     path: `${BASE_URL}/organizations/{guid}/user_roles`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      reply({
-        total_results: orgUserRoles.length,
-        total_pages: 1,
-        prev_url: null,
-        next_url: null,
-        resources: orgUserRoles
-      });
+      reply(MultiResponse(organizationUserRoles));
     }
   });
 
   smocks.route({
-    id: 'service-instance-bindings',
-    label: 'Serivce instance bindings',
-    path: `${BASE_URL}/apps/{appGuid}/service_bindings`,
+    id: 'uaa-userinfo',
+    label: 'UAA user info',
+    path: '/uaa/userinfo',
     handler: function(req, reply) {
-      var guid = req.params.guid;
-      reply({
-        total_results: serviceInstanceBindings.length,
-        total_pages: 1,
-        prev_url: null,
-        next_url: null,
-        resources: serviceInstanceBindings
-      });
-    }
-  });
-
-  smocks.route({
-    id: 'service-plan',
-    label: 'Service plan',
-    path: `${BASE_URL}/service_plans/{guid}`,
-    handler: function (req, reply) {
-      var guid = req.params.guid;
-      var plan = servicePlans('a').find(function(servicePlan) {
-        return servicePlan.metadata.guid === guid;
-      });
-      reply(plan);
-    }
-  });
-
-  smocks.route({
-    id: 'service-plans',
-    label: 'Service plans',
-    path: `${BASE_URL}/services/{guid}/service_plans`,
-    handler: function (req, reply) {
-      var guid = req.params.guid;
-      var plans = servicePlans(guid);
-      reply({
-        total_results: plans.length,
-        total_pages: 1,
-        prev_url: null,
-        next_url: null,
-        resources: plans
-      });
+      // TODO move to fixtures
+      const firstUser = organizationUsers[0];
+      const currentUser = {
+        email: firstUser.username,
+        family_name: firstUser.username,
+        given_name: firstUser.username,
+        name: firstUser.username,
+        user_id: firstUser.metadata.guid,
+        user_name:firstUser.username
+      };
+      reply(currentUser);
     }
   });
 
@@ -232,14 +183,46 @@ module.exports = function api(smocks) {
     label: 'Spaces',
     path: `${BASE_URL}/spaces`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      reply({
-        total_results: spaces.length,
-        total_pages: 1,
-        prev_url: null,
-        next_url: null,
-        resources: spaces
+      reply(MultiResponse(spaces));
+    }
+  });
+
+  smocks.route({
+    id: 'space-events',
+    label: 'Space events',
+    path: `${BASE_URL}/spaces/{guid}/events`,
+    handler: function (req, reply) {
+      const guid = req.params.guid;
+      const spaceEvents = anyEvents.filter(function(event) {
+        return event.entity.space_guid === guid;
       });
+      reply(MultiResponse(spaceEvents));
+    }
+  });
+
+  smocks.route({
+    id: 'space-service-instances',
+    label: 'Space service instsances',
+    path: `${BASE_URL}/spaces/{guid}/service_instances`,
+    handler: function (req, reply) {
+      const guid = req.params.guid;
+      const instances = serviceInstances.filter(function(serviceInstance) {
+        return serviceInstance.entity.space_guid === guid;
+      });
+      reply(MultiResponse(instances));
+    }
+  });
+
+  smocks.route({
+    id: 'space-routes',
+    label: 'Space routes',
+    path: `${BASE_URL}/spaces/{guid}/routes`,
+    handler: function (req, reply) {
+      const guid = req.params.guid;
+      const routes = spaceRoutes.filter(function(spaceRoute) {
+        return spaceRoute.entity.space_guid === guid;
+      });
+      reply(MultiResponse(routes));
     }
   });
 
@@ -248,45 +231,21 @@ module.exports = function api(smocks) {
     label: 'Space summary',
     path: `${BASE_URL}/spaces/{guid}/summary`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      reply({
-        guid: guid,
-        name: `space-${guid}`,
-        apps: apps
+      const guid = req.params.guid;
+      const space = spaceSummaries.find(function(spaceSummary) {
+        return spaceSummary.guid === guid;
       });
+      reply(SingleResponse(space));
     }
   });
 
   smocks.route({
-    id: 'organization-services',
-    label: 'Organization services',
-    path: `${BASE_URL}/organizations/{guid}/services`,
-    handler: function(req, reply) {
-      var guid = req.params.guid;
-      reply({
-        total_results: services.length,
-        total_pages: 1,
-        prev_url: null,
-        next_url: null,
-        resources: services
-      });
-    }
-  });
-
-  smocks.route({
-    id: 'space-service-instances',
-    label: 'Space service instances',
-    path: `${BASE_URL}/spaces/{guid}/service_instances`,
+    id: 'space-quota-definitions',
+    label: 'Space quota definitions',
+    path: `${BASE_URL}/space_quota_definitions`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      reply({
-        total_results: serviceInstances.length,
-        total_pages: 1,
-        prev_url: null,
-        next_url: null,
-        resources: serviceInstances
-     });
-   }
+      reply(MultiResponse(spaceQuotaDefinitions));
+    }
   });
 
   smocks.route({
@@ -294,14 +253,65 @@ module.exports = function api(smocks) {
     label: 'Space user roles',
     path: `${BASE_URL}/spaces/{guid}/user_roles`,
     handler: function (req, reply) {
-      var guid = req.params.guid;
-      reply({
-        total_results: spaceUsers.length,
-        total_pages: 1,
-        prev_url: null,
-        next_url: null,
-        resources: spaceUsers
+      reply(MultiResponse(spaceUserRoles));
+    }
+  });
+
+  smocks.route({
+    id: 'service-bindings',
+    label: 'Service bindings',
+    path: `${BASE_URL}/service_bindings`,
+    handler: function (req, reply) {
+      reply(MultiResponse(serviceBindings));
+    }
+  });
+
+  smocks.route({
+    id: 'service-plans',
+    label: 'Service plans',
+    path: `${BASE_URL}/service_plans/{guid}`,
+    handler: function (req, reply) {
+      const guid = req.params.guid;
+      const plan = servicePlans.find(function(servicePlan) {
+        return servicePlan.metadata.guid === guid;
       });
+      reply(MultiResponse(plan));
+    }
+  });
+
+  smocks.route({
+    id: 'service-service-plans',
+    label: 'Service service plans',
+    path: `${BASE_URL}/services/{guid}/service_plans`,
+    handler: function (req, reply) {
+      const serviceGuid = req.params.guid;
+      const plans = servicePlans.filter(function(servicePlan) {
+        return servicePlan.entity.service_guid === serviceGuid;
+      });
+      reply(MultiResponse(plans));
+    }
+  });
+
+  smocks.route({
+    id: 'quota-definitions',
+    label: 'Quota definitions',
+    path: `${BASE_URL}/quota_definitions`,
+    handler: function (req, reply) {
+      // TODO should be renamed just quotaDefinitions?
+      reply(MultiResponse(organizationQuotaDefinitions));
+    }
+  });
+
+  smocks.route({
+    id: 'shared-domains',
+    label: 'Shared domains',
+    path: `${BASE_URL}/shared_domains/{guid}`,
+    handler: function (req, reply) {
+      const guid = req.params.guid;
+      const domain = sharedDomains.find(function(sharedDomain) {
+        return sharedDomain.metadata.guid === guid;
+      });
+      reply(SingleResponse(domain));
     }
   });
 };
