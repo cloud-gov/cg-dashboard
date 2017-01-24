@@ -119,10 +119,10 @@ export default class AppContainer extends React.Component {
     let error;
 
     let handler = this._onRestart;
-    let actionText = "Restart app";
+    let actionText = 'Restart app';
     if (!AppStore.isRunning(this.state.app)) {
       handler = this._onStart;
-      actionText = "Start app";
+      actionText = 'Start app';
     }
 
     if (AppStore.isStarting(this.state.app)) {
@@ -143,7 +143,7 @@ export default class AppContainer extends React.Component {
       );
     }
 
-    action = loading ? loading : (
+    action = loading || (
       <Action
         style="primary"
         clickHandler={ handler }
