@@ -27,5 +27,4 @@ ratings:
 exclude_paths:
   - static_src/test/*
   - helpers/*
-  - acceptance/*
   - "**/*_test.go"

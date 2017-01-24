@@ -7,6 +7,5 @@ node_modules/
 cf-deck
 cg-deck
 cg-dashboard
-acceptance/
 /screenshots/
 static/tests/
