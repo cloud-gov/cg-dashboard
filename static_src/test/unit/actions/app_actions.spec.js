@@ -127,6 +127,48 @@ describe('appActions', function() {
     });
   });
 
+  describe('start()', function() {
+    it('should dispatch a view event of type app start with guid', function() {
+      sandbox.stub(appActions, 'restarted').returns(Promise.resolve());
+      sandbox.stub(cfApi, 'postAppRestart').returns(Promise.resolve());
+      const appGuid = 'zzcvxkadsf';
+      const expectedParams = {
+        appGuid
+      };
+      let spy = setupViewSpy(sandbox)
+
+      appActions.start(appGuid);
+
+      assertAction(spy, appActionTypes.APP_START, expectedParams);
+    });
+
+    it('should call cf api post to restart the app', function(done) {
+      const spy = sandbox.stub(cfApi, 'postAppRestart').returns(Promise.resolve());
+      sandbox.stub(appActions, 'restarted').returns(Promise.resolve());
+      const expectedGuid = 'asdfasd2vdamcdksa';
+
+      appActions.start(expectedGuid).then(() => {
+        console.log('HEEEERRREEEE');
+        expect(spy).toHaveBeenCalledOnce();
+        let arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(expectedGuid);
+        done();
+      }).catch(done.fail);
+    });
+
+    it('should call restarted with guid on success of request', function(done) {
+      const spy = sandbox.stub(appActions, 'restarted').returns(Promise.resolve());
+      const expectedGuid = 'znxmcv23i4yzxvc';
+
+      appActions.start(expectedGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let arg = spy.getCall(0).args[0];
+        expect(arg).toEqual(expectedGuid);
+        done();
+      }).catch(done.fail);
+    });
+  });
+
   describe('restart()', function() {
     it('should dispatch a view event of type app restart with guid', function() {
       const appGuid = 'zvmn3hkl';

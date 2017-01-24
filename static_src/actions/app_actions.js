@@ -75,6 +75,15 @@ export default {
     });
   },
 
+  start(appGuid) {
+    AppDispatcher.handleViewAction({
+      type: appActionTypes.APP_START,
+      appGuid
+    });
+
+    return cfApi.postAppRestart(appGuid).then(() => this.restarted(appGuid));
+  },
+
   restart(appGuid) {
     AppDispatcher.handleViewAction({
       type: appActionTypes.APP_RESTART,
