@@ -19,6 +19,10 @@ class AppStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
+  isStarting(app) {
+    return app.state === appStates.starting;
+  }
+
   isRestarting(app) {
     return app.state === appStates.restarting;
   }
