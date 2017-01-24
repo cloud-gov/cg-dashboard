@@ -8,8 +8,8 @@ import BaseElement from './base.element';
 
 // TODO attach to class as static property
 const selectors = {
-  title: '.panel-row-is_clickable .panel-column a',
-  spaceQuicklookRow: '.space-quicklook'
+  title: '.test-org-quicklook .panel-column a',
+  spaceQuicklookRow: '.test-space-quicklook'
 };
 
 export default class OrgQuicklookElement extends BaseElement {

@@ -67,7 +67,7 @@ export default class OrgQuickLook extends React.Component {
 
     return (
     <div style={ panelStyle } onClick={ this.onRowClick }
-      className={ this.styler('panel-row-is_clickable') }
+      className={ this.styler('panel-row-is_clickable', 'test-org-quicklook') }
     >
       <div className={ this.styler('panel-column') }>
         <h2 className={ this.styler('card-title-primary') }>

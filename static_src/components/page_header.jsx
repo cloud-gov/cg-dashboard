@@ -21,7 +21,7 @@ export default class PageHeader extends React.Component {
   render() {
     return (
       <div className={ this.styler('page-header') }>
-        <h1 className={ this.styler('page-header-title') }>
+        <h1 className={ this.styler('page-header-title', 'test-page-header-title') }>
           { this.props.title }
         </h1>
         { this.actions }

@@ -14,7 +14,7 @@ describe('Overview page', function () {
   });
 
   it('has a page header', function () {
-    const pageHeader = browser.element('.page-header-title');
+    const pageHeader = browser.element('.test-page-header-title');
     expect(pageHeader.getText()).toBe('Overview');
   });
 
@@ -22,7 +22,10 @@ describe('Overview page', function () {
     let quicklookElement;
 
     it('exists', function () {
-      quicklookElement = new OrgQuicklookElement(browser, browser.element('.panel-row-boxed'));
+      quicklookElement = new OrgQuicklookElement(
+        browser,
+        browser.element('.test-panel-row-organizations')
+      );
       expect(quicklookElement.isVisible()).toBe(true);
     });
 
