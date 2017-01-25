@@ -131,6 +131,7 @@ export default class AppContainer extends React.Component {
         </Action>
       </div>
     );
+    return null;
   }
 
   get restart() {
