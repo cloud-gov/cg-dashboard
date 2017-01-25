@@ -7,7 +7,9 @@
 import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
+import DomainStore from './domain_store.js';
 import cfApi from '../util/cf_api.js';
+import formatRoute from '../util/format_route.js';
 import { routeActionTypes } from '../constants.js';
 
 class RouteStore extends BaseStore {
@@ -38,6 +40,26 @@ class RouteStore extends BaseStore {
 
   isRouteBoundToApp(route) {
     return !!route.app_guid;
+  }
+
+  getRouteURLForApp(app) {
+    const allRoutes = this.getAll();
+    const boundRoutes = allRoutes.filter((route) => route.app_guid == app.guid);
+    let url;
+    if (boundRoutes.length) {
+      const route = boundRoutes[0];
+      let mainRoute = Object.assign({}, route);
+      const domain = DomainStore.get(route.domain_guid);
+      if (domain) {
+        mainRoute = Object.assign({}, mainRoute, { domain_name: domain.name });
+      }
+      if (route.path && (route.path[0] === '/')) {
+        mainRoute.path = route.path.replace('/', '');
+      }
+      const { domain_name, host, path } = mainRoute;
+      url = formatRoute(domain_name, host, path);
+    }
+    return `https://${url}`;
   }
 
   _registerToActions(action) {

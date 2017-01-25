@@ -6,6 +6,7 @@ import '../../global_setup.js';
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import routeActions from '../../../actions/route_actions.js';
+import DomainStore from '../../../stores/domain_store.js';
 import RouteStore from '../../../stores/route_store.js';
 import { domainActionTypes, routeActionTypes } from '../../../constants';
 
@@ -26,6 +27,40 @@ describe('RouteStore', function() {
     it('should start data as empty array', function() {
       expect(RouteStore.getAll()).toBeEmptyArray();
       expect(RouteStore.error).toEqual(null);
+    });
+  });
+
+  describe('gerRouteURLForApp()', function() {
+    it('should a full url for a route with no domain', function() {
+      const appGuid = 'zmxcvnw4r';
+      const domain_name = 'cloud.com'
+      const host = 'cloud';
+      const route = {
+        app_guid: appGuid,
+        domain_name,
+        host
+      };
+
+      RouteStore.push(route);
+      const actual = RouteStore.getRouteURLForApp({ guid: appGuid });
+
+      expect(actual).toEqual('https://cloud.cloud.com');
+    });
+
+    it('should a full url for a route with a domain', function() {
+      const appGuid = 'zmxcvnw4r';
+      const domainName = 'sky.net';
+      const host = 'rain';
+      const route = {
+        app_guid: appGuid,
+        host
+      };
+      sandbox.stub(DomainStore, 'get').returns({ name: domainName });
+
+      RouteStore.push(route);
+      const actual = RouteStore.getRouteURLForApp({ guid: appGuid });
+
+      expect(actual).toEqual('https://rain.sky.net');
     });
   });
 

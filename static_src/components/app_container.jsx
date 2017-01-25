@@ -8,6 +8,7 @@ import { appHealth, worstAppInstanceState } from '../util/health';
 import { appStates } from '../constants';
 import AppStore from '../stores/app_store.js';
 import Breadcrumbs from './breadcrumbs.jsx';
+import RouteStore from '../stores/route_store.js';
 import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
 import Loading from './loading.jsx';
@@ -110,15 +111,18 @@ export default class AppContainer extends React.Component {
 
   get openApp() {
     if (AppStore.isRunning(this.state.app)) {
+      const route = RouteStore.getRouteURLForApp(this.state.app);
       return (
-        <Action
-          style="primary"
-          href=""
-          label="open app"
-          type="outline"
-        >
-          <span>Open app</span>
-        </Action>
+        <div>
+          <Action
+            style="primary"
+            href={ route }
+            label="open app"
+            type="outline"
+          >
+            <span>Open app</span>
+          </Action>
+        </div>
       );
     }
     return null;
