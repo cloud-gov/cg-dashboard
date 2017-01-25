@@ -1,6 +1,6 @@
 {
   "name": "cloudgov-dashboard",
-  "version": "1.13.3",
+  "version": "1.13.4",
   "dependencies": {
     "abbrev": {
       "version": "1.0.9",
