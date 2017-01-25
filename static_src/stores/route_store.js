@@ -44,7 +44,7 @@ class RouteStore extends BaseStore {
 
   getRouteURLForApp(app) {
     const allRoutes = this.getAll();
-    const boundRoutes = allRoutes.filter((route) => route.app_guid == app.guid);
+    const boundRoutes = allRoutes.filter((route) => route.app_guid === app.guid);
     let url;
     if (boundRoutes.length) {
       const route = boundRoutes[0];
@@ -59,7 +59,7 @@ class RouteStore extends BaseStore {
       const { domain_name, host, path } = mainRoute;
       url = formatRoute(domain_name, host, path);
     }
-    return `https://${url}`;
+    return url;
   }
 
   _registerToActions(action) {

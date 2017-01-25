@@ -66,12 +66,14 @@ export default class AppContainer extends React.Component {
   componentDidMount() {
     AppStore.addChangeListener(this._onChange);
     OrgStore.addChangeListener(this._onChange);
+    RouteStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     AppStore.removeChangeListener(this._onChange);
     OrgStore.removeChangeListener(this._onChange);
+    RouteStore.removeChangeListener(this._onChange);
     SpaceStore.removeChangeListener(this._onChange);
   }
 
@@ -112,18 +114,21 @@ export default class AppContainer extends React.Component {
   get openApp() {
     if (AppStore.isRunning(this.state.app)) {
       const route = RouteStore.getRouteURLForApp(this.state.app);
-      return (
-        <div>
-          <Action
-            style="primary"
-            href={ route }
-            label="open app"
-            type="outline"
-          >
-            <span>Open app</span>
-          </Action>
-        </div>
-      );
+      console.log('route', route);
+      if (route) {
+        return (
+          <div>
+            <Action
+              style="primary"
+              href={ `https://${route}` }
+              label="open app"
+              type="outline"
+            >
+              <span>Open app</span>
+            </Action>
+          </div>
+        );
+      }
     }
     return null;
   }

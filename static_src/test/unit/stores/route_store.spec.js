@@ -44,7 +44,7 @@ describe('RouteStore', function() {
       RouteStore.push(route);
       const actual = RouteStore.getRouteURLForApp({ guid: appGuid });
 
-      expect(actual).toEqual('https://cloud.cloud.com');
+      expect(actual).toEqual('cloud.cloud.com');
     });
 
     it('should a full url for a route with a domain', function() {
@@ -60,7 +60,7 @@ describe('RouteStore', function() {
       RouteStore.push(route);
       const actual = RouteStore.getRouteURLForApp({ guid: appGuid });
 
-      expect(actual).toEqual('https://rain.sky.net');
+      expect(actual).toEqual('rain.sky.net');
     });
   });
 
