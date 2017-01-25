@@ -77,6 +77,12 @@ export default class ActivityLog extends React.Component {
     if (this.state.empty) {
       content = <h5 className="test-none_message">No recent activity</h5>;
     } else {
+      let showMore = (this.state.activity.length >= this.props.maxItems) &&
+        (
+          <Action label="View more" clickHandler={ this.handleMore }>
+            Show more activity
+          </Action>
+        );
       content = (
         <div>
           <p>View advanced logs at <a href="https://logs.cloud.gov">logs.cloud.gov</a></p>
@@ -85,10 +91,8 @@ export default class ActivityLog extends React.Component {
                 .slice(0, this.state.maxItems)
                 .map(item => <ActivityLogItem key={ item.guid } item={ item } />)
             }
+            { showMore }
           </ul>
-          <Action label="View more" clickHandler={ this.handleMore }>
-            Show more activity
-          </Action>
         </div>
       );
     }
