@@ -1,6 +1,6 @@
 {
   "name": "cloudgov-dashboard",
-  "version": "1.13.2",
+  "version": "1.13.4",
   "engines": {
     "node": "6.x.x",
     "npm": "3.x.x"
@@ -58,7 +58,7 @@
     "babel-preset-react": "^6.16.0",
     "babel-runtime": "^6.20.0",
     "classnames": "^2.1.5",
-    "cloudgov-style": "^2.5.1",
+    "cloudgov-style": "^2.5.2",
     "codecov.io": "^0.1.6",
     "css-loader": "^0.23.0",
     "dedent": "^0.6.0",
