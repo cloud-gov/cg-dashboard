@@ -19,6 +19,10 @@ class AppStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
+  isStarting(app) {
+    return app.state === appStates.starting;
+  }
+
   isRestarting(app) {
     return app.state === appStates.restarting;
   }
@@ -42,7 +46,6 @@ class AppStore extends BaseStore {
         const existingApp = this.get(action.appGuid);
         const updatedApp = Object.assign({}, existingApp, { updating: true });
         this.merge('guid', updatedApp);
-        cfApi.putApp(action.appGuid, action.appPartial);
         break;
       }
 
@@ -107,8 +110,19 @@ class AppStore extends BaseStore {
         break;
       }
 
+      case appActionTypes.APP_START: {
+        const app = this.get(action.appGuid);
+        if (app) {
+          const startingApp = Object.assign({}, app,
+            { state: appStates.starting });
+          this.merge('guid', startingApp, (changed) => {
+            if (changed) this.emitChange();
+          });
+        }
+        break;
+      }
+
       case appActionTypes.APP_RESTART: {
-        cfApi.postAppRestart(action.appGuid);
         const app = this.get(action.appGuid);
         if (app) {
           const restartingApp = Object.assign({}, app,
@@ -121,12 +135,6 @@ class AppStore extends BaseStore {
       }
 
       case appActionTypes.APP_RESTARTED: {
-        this.poll(
-          (app) => app.data.running_instances > 0,
-          cfApi.fetchAppStatus.bind(cfApi, action.appGuid)
-        ).then((res) => {
-          this.merge('guid', res.data);
-        });
         break;
       }
 

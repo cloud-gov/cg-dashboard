@@ -231,18 +231,31 @@ describe('AppStore', function() {
     });
   });
 
-  describe('on app restart', function() {
-    it('should call cf api to restart the app with guid', function() {
-      const spy = sandbox.spy(cfApi, 'postAppRestart');
-      const expectedGuid = 'asdfasd2vdamcdksa';
+  describe('on app start', function() {
+    it('should set app "state" to "starting"', function() {
+      const appGuid = 'zkvkljsf';
+      const app = { guid: appGuid, state: 'STOPPED' };
+      AppStore.push(app);
 
-      appActions.restart(expectedGuid);
+      appActions.start(appGuid);
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedGuid);
+      const actual = AppStore.get(appGuid);
+      expect(actual.state).toEqual('STARTING');
     });
 
+    it('should emit a change', function() {
+      const appGuid = 'zkvkljsf';
+      const app = { guid: appGuid, state: 'STOPPED' };
+      AppStore.push(app);
+      const spy = sandbox.spy(AppStore, 'emitChange');
+
+      appActions.start(appGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on app restart', function() {
     it('should set app "state" to "restarting"', function() {
       const appGuid = 'zkvkljsf';
       const app = { guid: appGuid, state: 'RUNNING' };
@@ -267,42 +280,16 @@ describe('AppStore', function() {
   });
 
   describe('on app restarted', function() {
-    it('should poll until running instances is greater then 0', function() {
-      const spy = sandbox.stub(AppStore, 'poll').returns(Promise.resolve());
-      const expectedRes = {
-        data: { running_instances: 1 }
-      };
-
-      appActions.restarted('zxlcvkjklv');
-
-      expect(spy).toHaveBeenCalledOnce();
-      let args = spy.getCall(0).args;
-      expect(args[0]).toBeFunction();
-      expect(args[0](expectedRes)).toBeTruthy();
-      expect(args[1]).toBeFunction();
-    });
+    // TODO still needed?
   });
 
   describe('on app update', function () {
     let putApp;
+
     beforeEach(function () {
       putApp = sandbox.stub(cfApi, 'putApp');
       AppStore.push({ guid: '1234', instances: 2, memory: 128 });
       appActions.updateApp('1234', { instances: 3 });
-    });
-
-    it('calls api with guid', function () {
-      expect(putApp).toHaveBeenCalledOnce();
-
-      const [guid, app] = putApp.args[0];
-      expect(guid).toBe('1234');
-    });
-
-    it('calls api with partial app', function () {
-      const [guid, app] = putApp.args[0];
-
-      expect(app.memory).toBeFalsy();
-      expect(app.instances).toBe(3);
     });
   });
 

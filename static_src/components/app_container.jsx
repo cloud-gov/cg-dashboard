@@ -59,6 +59,7 @@ export default class AppContainer extends React.Component {
 
     this._onChange = this._onChange.bind(this);
     this._onRestart = this._onRestart.bind(this);
+    this._onStart = this._onStart.bind(this);
     this.styler = createStyler(style);
   }
 
@@ -80,6 +81,10 @@ export default class AppContainer extends React.Component {
 
   _onRestart() {
     appActions.restart(this.state.app.guid);
+  }
+
+  _onStart() {
+    appActions.start(this.state.app.guid);
   }
 
   get fullTitle() {
@@ -109,8 +114,20 @@ export default class AppContainer extends React.Component {
   }
 
   get restart() {
+    let action;
     let loading;
     let error;
+
+    let handler = this._onRestart;
+    let actionText = 'Restart app';
+    if (!AppStore.isRunning(this.state.app)) {
+      handler = this._onStart;
+      actionText = 'Start app';
+    }
+
+    if (AppStore.isStarting(this.state.app)) {
+      loading = <Loading text="Starting app" style="inline" />;
+    }
 
     if (AppStore.isRestarting(this.state.app)) {
       loading = <Loading text="Restarting app" style="inline" />;
@@ -126,19 +143,21 @@ export default class AppContainer extends React.Component {
       );
     }
 
+    action = loading || (
+      <Action
+        style="primary"
+        clickHandler={ handler }
+        label={ actionText }
+        type="outline"
+      >
+        <span>{ actionText }</span>
+      </Action>
+    );
+
     return (
       <div>
-        <Action
-          style="primary"
-          clickHandler={ this._onRestart }
-          label="restart app"
-          disabled={ !AppStore.isRunning(this.state.app) }
-          type="outline"
-        >
-          <span>Restart app</span>
-        </Action>
+        { action }
         { error }
-        { loading }
       </div>
     );
   }

@@ -821,21 +821,6 @@ describe('cfApi', function() {
       }).catch(done.fail);
     });
 
-    it('should call app restarted with app guid on success', function(done) {
-      const appGuid = '2398dhgf028ulfd';
-      const stub = sandbox.stub(http, 'post');
-      const spy = sandbox.stub(appActions, 'restarted');
-      spy.returns();
-      stub.returns(createPromise({response: 'success'}));
-
-      cfApi.postAppRestart(appGuid).then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        const arg = spy.getCall(0).args[0];
-        expect(arg).toEqual(appGuid);
-        done();
-      }).catch(done.fail);
-    });
-
     it('should call app error with app guid on failure', function(done) {
       const appGuid = '2398dhgf028ulfd';
       const spy = sandbox.stub(appActions, 'error');
@@ -853,20 +838,17 @@ describe('cfApi', function() {
   });
 
   describe('putApp()', function() {
-    it('calls apps endpoint with guid', function (done) {
+    it('returns mapped app from the response', function (done) {
       const put = sandbox.stub(http, 'put', (url, app) => {
         return createPromise({data: {entity: app}});
       });
-      const updatedSpy = sandbox.spy(appActions, 'updatedApp');
       const expectedApp = {guid: '123'};
 
       cfApi.putApp(expectedApp.guid, expectedApp)
         .then(function () {
-          console.log(put.args);
           let [url, app] = put.args[0];
           expect(url).toMatch(new RegExp('/v2/apps/123$'));
           expect(app).toEqual(expectedApp);
-          expect(updatedSpy).toHaveBeenCalledOnce();
           done();
         }).catch(done.fail);
     });

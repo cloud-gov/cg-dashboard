@@ -6,6 +6,8 @@
 
 import AppDispatcher from '../dispatcher.js';
 import { appActionTypes } from '../constants';
+import cfApi from '../util/cf_api.js';
+import poll from '../util/poll.js';
 
 export default {
   fetch(appGuid) {
@@ -28,6 +30,8 @@ export default {
       appPartial,
       appGuid
     });
+
+    return cfApi.putApp(appGuid, appPartial).then((app) => this.updatedApp(app));
   },
 
   updatedApp(app) {
@@ -73,11 +77,23 @@ export default {
     });
   },
 
+  start(appGuid) {
+    AppDispatcher.handleViewAction({
+      type: appActionTypes.APP_START,
+      appGuid
+    });
+
+    return cfApi.putApp(appGuid, { state: 'STARTED' }).then(() =>
+      this.restarted(appGuid));
+  },
+
   restart(appGuid) {
     AppDispatcher.handleViewAction({
       type: appActionTypes.APP_RESTART,
       appGuid
     });
+
+    return cfApi.postAppRestart(appGuid).then(() => this.restarted(appGuid));
   },
 
   restarted(appGuid) {
@@ -85,6 +101,14 @@ export default {
       type: appActionTypes.APP_RESTARTED,
       appGuid
     });
+
+    return poll(
+        (app) => app.data.running_instances > 0,
+        cfApi.fetchAppStatus.bind(cfApi, appGuid)
+      ).then((res) => {
+        this.fetchStats(appGuid);
+        this.receivedApp(res.data);
+      });
   },
 
   error(appGuid, err) {

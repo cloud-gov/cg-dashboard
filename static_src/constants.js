@@ -9,6 +9,7 @@ const appStates = {
   restarting: 'RESTARTING',
   running: 'RUNNING',
   started: 'STARTED',
+  starting: 'STARTING',
   stopped: 'STOPPED',
   default: 'STOPPED'
 };
@@ -166,6 +167,10 @@ const appActionTypes = keymirror({
   APP_ALL_RECEIVED: null,
   // Action when user views a different app
   APP_CHANGE_CURRENT: null,
+  // Action when starting an app.
+  APP_START: null,
+  // Action when request to start app completed on server.
+  APP_STARTED: null,
   // Action when restarting an app.
   APP_RESTART: null,
   // Action when app restarted on server.

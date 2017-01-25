@@ -266,18 +266,14 @@ export default {
 
   putApp(appGuid, app) {
     return http.put(`${APIV}/apps/${appGuid}`, app)
-      .then((res) => {
-        const updatedApp = Object.assign({}, res.data.entity, { guid: appGuid });
-        appActions.updatedApp(updatedApp);
-      })
+      .then((res) => Object.assign({}, res.data.entity, { guid: appGuid }))
       .catch((err) => handleError(err,
         appActions.error.bind(null, appGuid)));
   },
 
   postAppRestart(appGuid) {
-    return http.post(`${APIV}/apps/${appGuid}/restage`).then(() => {
-      appActions.restarted(appGuid);
-    }).catch((err) => handleError(err,
+    return http.post(`${APIV}/apps/${appGuid}/restage`).then(() => appGuid
+    ).catch((err) => handleError(err,
       appActions.error.bind(this, appGuid)));
   },
 
