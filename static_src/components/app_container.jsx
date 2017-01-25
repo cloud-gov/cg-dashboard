@@ -108,6 +108,22 @@ export default class AppContainer extends React.Component {
     );
   }
 
+  get openApp() {
+    if (AppStore.isRunning(this.state.app)) {
+      return (
+        <Action
+          style="primary"
+          href=""
+          label="open app"
+          type="outline"
+        >
+          <span>Open app</span>
+        </Action>
+      );
+    }
+    return null;
+  }
+
   get restart() {
     let loading;
     let error;
@@ -162,6 +178,7 @@ export default class AppContainer extends React.Component {
             <div className={ this.styler('grid-width-12') }>
               <Breadcrumbs />
               <PageHeader title={ title }>
+                { this.openApp }
                 { this.restart }
               </PageHeader>
             </div>
