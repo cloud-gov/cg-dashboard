@@ -161,7 +161,7 @@ export default class Route extends React.Component {
   get confirmationMsg() {
     const { domain_name, host, path } = this.state.route;
     const url = formatRoute(domain_name, host, path);
-    const displayUrl = <a href={ url } title="See app route">{ url }</a>;
+    const displayUrl = <a href={ `//${url}` } title="See app route">{ url }</a>;
     return (RouteStore.isRouteBoundToApp(this.state.route)) ?
         <span>Unbind {displayUrl} route from this app?</span> :
         <span>Delete {displayUrl} route from this space?</span>;
@@ -211,8 +211,13 @@ export default class Route extends React.Component {
       } else {
         let displayUrl = <span>{ url }</span>;
         if (RouteStore.isRouteBoundToApp(route)) {
-          displayUrl =
-          <a href={ url } title="See app route" className={this.styler('route-link')}>{ url }</a>;
+          displayUrl = (
+            <a
+              href={ `//${url}` }
+              title="See app route"
+              className={this.styler('route-link')}
+            >{ url }</a>
+          );
         }
         content = (
           <div>
