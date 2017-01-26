@@ -154,11 +154,6 @@ describe('ServicePlanStore', function() {
       let arg = spy.getCall(0).args[0];
       expect(arg).toEqual(expectedServiceGuid);
     });
-
-    it('should set loading to true', function() {
-      serviceActions.fetchAllPlans('zxncvz8xcvhn32');
-      expect(ServicePlanStore.loading).toEqual(true);
-    });
   });
 
   describe('on service plans received', function() {
