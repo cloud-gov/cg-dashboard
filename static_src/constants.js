@@ -41,6 +41,15 @@ const loginActionTypes = keymirror({
   RECEIVED_STATUS: null
 });
 
+const pageActionTypes = keymirror({
+  // When a browser page starts loading e.g. during navigation
+  PAGE_LOAD_STARTED: null,
+  // All data for rendering the page has loaded successfully
+  PAGE_LOAD_SUCCESS: null,
+  // An error occurred when loading the page
+  PAGE_LOAD_ERROR: null
+});
+
 const quotaActionTypes = keymirror({
   // Action of fetching quotas for all organizations
   ORGS_QUOTAS_FETCH: null,
@@ -273,6 +282,7 @@ export {
   errorActionTypes,
   loginActionTypes,
   orgActionTypes,
+  pageActionTypes,
   quotaActionTypes,
   routeActionTypes,
   spaceActionTypes,
