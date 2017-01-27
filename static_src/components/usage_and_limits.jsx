@@ -11,6 +11,7 @@ import ResourceUsage from './resource_usage.jsx';
 
 import appActions from '../actions/app_actions.js';
 import createStyler from '../util/create_styler';
+import formatBytes from '../util/format_bytes';
 
 // Calculates the running average based on a fixed n number of items To average
 // across instances you can do something like `average.bind(null, // numberOfInstances)`
@@ -166,12 +167,13 @@ export default class UsageAndLimits extends React.Component {
     const amountTotal = this.props.quota.memory_limit * 1024 * 1024;
     const amountUsed = this.getStat('mem', sum);
     const title = amountUsed ? 'Total memory used' : 'Total memory available';
+    const secondaryInfo = `${formatBytes(amountTotal)} quota`;
 
     return (
       <div>
         <ResourceUsage title={ title }
-          amountUsed={ amountUsed }
-          amountTotal={ amountTotal }
+          amountTotal={ amountUsed }
+          secondaryInfo={ secondaryInfo }
         />
       </div>
     );
