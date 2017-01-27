@@ -15,7 +15,8 @@ const propTypes = {
   title: React.PropTypes.string.isRequired,
   amountUsed: React.PropTypes.number,
   amountTotal: React.PropTypes.number,
-  byteWarningThreshold: React.PropTypes.number
+  byteWarningThreshold: React.PropTypes.number,
+  secondaryInfo: React.PropTypes.string
 };
 
 const defaultProps = {
@@ -52,6 +53,7 @@ export default class ResourceUsage extends React.Component {
         onChange={ props.onChange }
         name={ props.name }
         primaryStat={ props.amountTotal }
+        secondaryInfo={ props.secondaryInfo }
       />
     );
 
