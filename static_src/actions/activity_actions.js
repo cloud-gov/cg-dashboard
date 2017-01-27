@@ -2,6 +2,7 @@
 
 import AppDispatcher from '../dispatcher.js';
 import { activityActionTypes } from '../constants';
+import cfApi from '../util/cf_api.js';
 
 export default {
   fetchSpaceEvents(spaceGuid) {
@@ -9,6 +10,8 @@ export default {
       type: activityActionTypes.EVENTS_FETCH,
       spaceGuid
     });
+
+    return cfApi.fetchSpaceEvents(spaceGuid);
   },
 
   receivedSpaceEvents(events) {
@@ -16,6 +19,8 @@ export default {
       type: activityActionTypes.EVENTS_RECEIVED,
       events
     });
+
+    return Promise.resolve(events);
   },
 
   fetchAppLogs(appGuid) {
@@ -23,6 +28,8 @@ export default {
       type: activityActionTypes.LOGS_FETCH,
       appGuid
     });
+
+    return cfApi.fetchAppLogs(appGuid);
   },
 
   receivedAppLogs(appGuid, logs) {
@@ -31,5 +38,7 @@ export default {
       appGuid,
       logs
     });
+
+    return Promise.resolve(logs);
   }
 };

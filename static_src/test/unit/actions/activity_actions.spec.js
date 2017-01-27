@@ -18,17 +18,28 @@ describe('activityActions', () => {
   });
 
   describe('space events', () => {
-    it('should dispatch a EVENTS_FETCH view action', () => {
-      var spaceGuid = 'adsfa',
-          expectedParams = {
-            spaceGuid
-          };
+    describe('.fetchSpaceEvents()', () => {
+      let viewSpy, fetchSpaceEventsStub, expectedParams;
 
-      let spy = setupViewSpy(sandbox)
+      beforeEach(function () {
+        let spaceGuid = 'adsfa';
+        expectedParams = {
+          spaceGuid
+        };
 
-      activityActions.fetchSpaceEvents(spaceGuid);
+        viewSpy = setupViewSpy(sandbox)
+        fetchSpaceEventsStub = sandbox.stub(cfApi, 'fetchSpaceEvents').returns(Promise.resolve());
 
-      assertAction(spy, activityActionTypes.EVENTS_FETCH, expectedParams);
+        return activityActions.fetchSpaceEvents(spaceGuid);
+      });
+
+      it('should dispatch a EVENTS_FETCH view action', () => {
+        assertAction(viewSpy, activityActionTypes.EVENTS_FETCH, expectedParams);
+      });
+
+      it('should call cfApi.fetchSpaceEvents', function () {
+        expect(fetchSpaceEventsStub).toHaveBeenCalledOnce();
+      });
     });
 
     it('should dispatch a EVENTS_RECEIVED server action', () => {
@@ -45,17 +56,28 @@ describe('activityActions', () => {
   });
 
   describe('app logs', () => {
-    it('should dispatch a LOGS_FETCH view action', () => {
-      var appGuid = 'adsfa',
-          expectedParams = {
-            appGuid
-          };
+    describe('.fetchAppLogs()', () => {
+      let viewSpy, fetchAppLogsStub, expectedParams;
 
-      let spy = setupViewSpy(sandbox)
+      beforeEach(() => {
+        const appGuid = 'adsfa';
+        expectedParams = {
+          appGuid
+        };
 
-      activityActions.fetchAppLogs(appGuid);
+        viewSpy = setupViewSpy(sandbox)
+        fetchAppLogsStub = sandbox.stub(cfApi, 'fetchAppLogs').returns(Promise.resolve());
 
-      assertAction(spy, activityActionTypes.LOGS_FETCH, expectedParams);
+        return activityActions.fetchAppLogs(appGuid);
+      });
+
+      it('should dispatch a LOGS_FETCH view action', () => {
+        assertAction(viewSpy, activityActionTypes.LOGS_FETCH, expectedParams);
+      });
+
+      it('should call cfApi.fetchAppLogs', function () {
+        expect(fetchAppLogsStub).toHaveBeenCalledOnce();
+      });
     });
 
     it('should dispatch a LOGS_RECEIVED server action', () => {

@@ -2,7 +2,6 @@
 import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
-import cfApi from '../util/cf_api.js';
 import { activityActionTypes } from '../constants.js';
 
 function parseLogTimestamp(timestamp) {
@@ -80,7 +79,6 @@ class ActivityStore extends BaseStore {
       case activityActionTypes.EVENTS_FETCH:
         this._eventsFetching = true;
         this._eventsFetched = false;
-        cfApi.fetchSpaceEvents(action.spaceGuid);
         this.emitChange();
         break;
 
@@ -100,7 +98,6 @@ class ActivityStore extends BaseStore {
       case activityActionTypes.LOGS_FETCH:
         this._logsFetching = true;
         this._logsFetched = false;
-        cfApi.fetchAppLogs(action.appGuid);
         this.emitChange();
         break;
 

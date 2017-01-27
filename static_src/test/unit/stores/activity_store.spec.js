@@ -31,17 +31,6 @@ describe('ActivityStore', function() {
   });
 
   describe('on event fetch', function () {
-    it('should call cfApi.fetchSpaceEvents', function () {
-      var spy = sandbox.spy(cfApi, 'fetchSpaceEvents');
-
-      AppDispatcher.handleViewAction({
-        type: activityActionTypes.EVENTS_FETCH,
-        spaceGuid: 'fakeSpaceGuid'
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
-    });
-
     it('should set events fetching to true fetched to false', function() {
       AppDispatcher.handleViewAction({
         type: activityActionTypes.EVENTS_FETCH,
@@ -109,17 +98,6 @@ describe('ActivityStore', function() {
   });
 
   describe('on logs fetch', function () {
-    it('should call cfApi.fetchAppLogs', function () {
-      var spy = sandbox.spy(cfApi, 'fetchAppLogs');
-
-      AppDispatcher.handleViewAction({
-        type: activityActionTypes.LOGS_FETCH,
-        appGuid: 'fakeAppGuid'
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
-    });
-
     it('should set logs fetching to true fetched to false', function() {
       AppDispatcher.handleViewAction({
         type: activityActionTypes.LOGS_FETCH,
