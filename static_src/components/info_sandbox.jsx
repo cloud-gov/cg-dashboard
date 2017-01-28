@@ -14,7 +14,7 @@ export default class InfoSandbox extends React.Component {
     return (
       <section className={ this.props.className }>
         <h4>Looking at an empty sandbox?</h4>
-        <p><a href="https://docs.cloud.gov/getting-started/your-first-deploy/">Try making a “hello world” app</a>.</p>
+        <p><a href="https://cloud.gov/docs/getting-started/your-first-deploy/">Try making a “hello world” app</a>.</p>
       </section>
     );
   }

@@ -69,7 +69,7 @@ export const config = {
     links: [
       {
         text: 'Documentation',
-        url: 'https://cloud.gov/docs'
+        url: 'https://cloud.gov/docs/'
       },
       {
         text: 'Updates',
@@ -84,7 +84,7 @@ export const config = {
   docs: {
     cli: 'https://cloud.gov/docs/getting-started/setup/',
     concepts_spaces: 'https://cloud.gov/docs/getting-started/concepts/',
-    deploying_apps: 'https://cloud.gov/docs/apps/deployment/',
+    deploying_apps: 'https://cloud.gov/docs/getting-started/your-first-deploy/',
     use: 'https://cloud.gov/docs/intro/overview/using-cloudgov-paas/'
   },
   github: {

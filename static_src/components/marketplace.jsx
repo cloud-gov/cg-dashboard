@@ -80,7 +80,7 @@ export default class Marketplace extends React.Component {
       content = (
         <div>
           <div>
-            <p className={ this.styler('page-dek') }>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps using the command line. <a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.</p>
+            <p className={ this.styler('page-dek') }>Use this marketplace to create service instances for spaces in this org. Then bind service instances to apps. <a href="https://cloud.gov/docs/apps/managed-services/">Learn about using service instances</a>.</p>
           </div>
           { list }
           { form }
