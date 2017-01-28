@@ -1,6 +1,5 @@
 import http from 'axios';
 
-import activityActions from '../actions/activity_actions.js';
 import { noticeError } from '../util/analytics.js';
 import appActions from '../actions/app_actions.js';
 import domainActions from '../actions/domain_actions.js';
@@ -192,8 +191,7 @@ export default {
   },
 
   fetchSpaceEvents(spaceGuid) {
-    return this.fetchAllPages(`/spaces/${spaceGuid}/events`,
-                               activityActions.receivedSpaceEvents);
+    return this.fetchAllPages(`/spaces/${spaceGuid}/events`, results => results);
   },
 
   fetchServiceInstance(instanceGuid) {
@@ -257,11 +255,11 @@ export default {
   },
 
   fetchAppLogs(appGuid) {
-    return http.get(`log/recent?app=${appGuid}`).then((res) => {
-      activityActions.receivedAppLogs(appGuid, res.data);
-    }).catch((err) => {
-      handleError(err);
-    });
+    return http.get(`log/recent?app=${appGuid}`)
+      .then(res => res.data)
+      .catch((err) => {
+        handleError(err);
+      });
   },
 
   putApp(appGuid, app) {

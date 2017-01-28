@@ -4,7 +4,6 @@ import '../../global_setup.js';
 import http from 'axios';
 import Immutable from 'immutable';
 
-import activityActions from '../../../actions/activity_actions.js';
 import appActions from '../../../actions/app_actions.js';
 import cfApi from '../../../util/cf_api.js';
 import domainActions from '../../../actions/domain_actions.js';
@@ -562,9 +561,6 @@ describe('cfApi', function() {
 
         cfApi.fetchSpaceEvents(spaceGuid);
         expect(spy).toHaveBeenCalledOnce();
-
-        action = spy.getCall(0).args[1];
-        expect(action).toEqual(activityActions.receivedSpaceEvents);
     });
   });
 
@@ -789,20 +785,6 @@ describe('cfApi', function() {
 
       let calledUrl = spy.getCall(0).args[0];
       expect(calledUrl).toEqual(expected);
-    });
-
-    it('calls the receivedAppLogs activity action', function (done) {
-      var expected = 'yyyybba1',
-          spy = sandbox.spy(activityActions, 'receivedAppLogs'),
-          stub = sandbox.stub(http, 'get'),
-          testPromise = createPromise({ status: true, data: [] });
-
-      stub.returns(testPromise);
-
-      cfApi.fetchAppLogs(expected).then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        done();
-      });
     });
   });
 

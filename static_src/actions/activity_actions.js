@@ -4,14 +4,14 @@ import AppDispatcher from '../dispatcher.js';
 import { activityActionTypes } from '../constants';
 import cfApi from '../util/cf_api.js';
 
-export default {
+const activityActions = {
   fetchSpaceEvents(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: activityActionTypes.EVENTS_FETCH,
       spaceGuid
     });
 
-    return cfApi.fetchSpaceEvents(spaceGuid);
+    return cfApi.fetchSpaceEvents(spaceGuid).then(activityActions.receivedSpaceEvents);
   },
 
   receivedSpaceEvents(events) {
@@ -29,7 +29,8 @@ export default {
       appGuid
     });
 
-    return cfApi.fetchAppLogs(appGuid);
+    return cfApi.fetchAppLogs(appGuid)
+      .then(logs => activityActions.receivedAppLogs(appGuid, logs));
   },
 
   receivedAppLogs(appGuid, logs) {
@@ -42,3 +43,5 @@ export default {
     return Promise.resolve(logs);
   }
 };
+
+export default activityActions;
