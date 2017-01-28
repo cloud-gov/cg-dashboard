@@ -78,6 +78,10 @@ export const config = {
       {
         text: 'Status',
         url: 'https://cloudgov.statuspage.io/'
+      },
+      {
+        text: 'Contact',
+        url: 'https://cloud.gov/docs/help/'
       }
     ]
   },
