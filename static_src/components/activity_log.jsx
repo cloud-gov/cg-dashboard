@@ -85,7 +85,7 @@ export default class ActivityLog extends React.Component {
         );
       content = (
         <div>
-          <p>View advanced logs at <a href="https://logs.cloud.gov">logs.cloud.gov</a></p>
+          <p>View more logs at <a href="https://logs.cloud.gov">logs.cloud.gov</a> (for East/West environment) or <a href="https://logs.fr.cloud.gov">logs.fr.cloud.gov</a> (for GovCloud environment).</p>
           <ul className={ this.styler('activity_log') }>
             { this.state.activity
                 .slice(0, this.state.maxItems)

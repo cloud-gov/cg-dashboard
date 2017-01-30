@@ -105,7 +105,7 @@ export default class CreateServiceInstance extends React.Component {
     } else if (this.state.createdTempNotification) {
       createAction = (
         <span className={ this.styler('status', 'status-ok') }>
-          Created! Find your instance in the service instances panel
+          Created! To bind the service instance to an app, go to an application page and use the services panel.
         </span>
       );
     }
@@ -145,9 +145,6 @@ export default class CreateServiceInstance extends React.Component {
             validator={ this.validateString }
           />
           { createAction }
-          <p><em>
-            After you create a service instance, you can look at your space to check whether your service instance was created. (<a href="https://github.com/18F/cg-dashboard/issues/457">We’ll make this better.</a>) Then you can bind the service instance to an app <a href="https://docs.cloud.gov/apps/managed-services/">using the command line</a>.
-          </em></p>
                                                                                                                                        <Action label="cancel" style="base" type="outline"
               clickHandler={ this._onCancelForm.bind(this) }>
             Cancel
