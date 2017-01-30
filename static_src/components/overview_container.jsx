@@ -10,6 +10,7 @@ import Loading from './loading.jsx';
 import OrgQuicklook from './org_quicklook.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
+import PageStore from '../stores/page_store.js';
 import Panel from './panel.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelRow from './panel_row.jsx';
@@ -21,8 +22,8 @@ function stateSetter() {
   const spaces = SpaceStore.getAll() || [];
 
   return {
-    empty: !OrgStore.loading && !SpaceStore.loading && !orgs.length,
-    loading: OrgStore.loading || SpaceStore.loading,
+    empty: !PageStore.loading && !orgs.length,
+    loading: PageStore.loading,
     orgs: orgs.sort((a, b) => a.name.localeCompare(b.name)),
     spaces
   };
@@ -38,11 +39,13 @@ export default class OverviewContainer extends React.Component {
 
   componentDidMount() {
     OrgStore.addChangeListener(this._onChange);
+    PageStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     OrgStore.removeChangeListener(this._onChange);
+    PageStore.removeChangeListener(this._onChange);
     SpaceStore.removeChangeListener(this._onChange);
   }
 

@@ -18,6 +18,7 @@ import MainContainer from './components/main_container.jsx';
 import orgActions from './actions/org_actions.js';
 import Overview from './components/overview_container.jsx';
 import OrgContainer from './components/org_container.jsx';
+import pageActions from './actions/page_actions.js';
 import quotaActions from './actions/quota_actions.js';
 import routeActions from './actions/route_actions.js';
 import spaceActions from './actions/space_actions.js';
@@ -41,18 +42,26 @@ function login() {
 }
 
 function overview() {
+  pageActions.load();
+
   // Reset the state
   orgActions.changeCurrentOrg();
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
 
-  cfApi.fetchSpaces().then((spaces) => {
-    let i = 0;
-    const max = Math.min(MAX_OVERVIEW_SPACES, spaces.length);
-    for (; i < max; i++) {
-      spaceActions.fetch(spaces[i].guid);
-    }
-  });
+  spaceActions.fetchAll()
+    .then(spaces => {
+      let i = 0;
+      const max = Math.min(MAX_OVERVIEW_SPACES, spaces.length);
+      const fetches = [];
+      for (; i < max; i++) {
+        fetches.push(spaceActions.fetch(spaces[i].guid));
+      }
+
+      return Promise.all(fetches);
+    })
+    .then(pageActions.loadSuccess, pageActions.loadError);
+
   ReactDOM.render(<MainContainer>
     <Overview />
   </MainContainer>, mainEl);

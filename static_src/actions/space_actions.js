@@ -47,6 +47,8 @@ export default {
       type: spaceActionTypes.SPACE_RECEIVED,
       space
     });
+
+    return Promise.resolve(space);
   },
 
   receivedSpaces(spaces) {
@@ -54,6 +56,8 @@ export default {
       type: spaceActionTypes.SPACES_RECEIVED,
       spaces
     });
+
+    return Promise.resolve(spaces);
   },
 
   changeCurrentSpace(spaceGuid) {
@@ -61,5 +65,7 @@ export default {
       type: spaceActionTypes.SPACE_CHANGE_CURRENT,
       spaceGuid
     });
+
+    return Promise.resolve(spaceGuid || null);
   }
 };
