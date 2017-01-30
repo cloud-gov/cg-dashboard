@@ -1,11 +1,12 @@
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
 import ActivityLogItem from './activity_log_item.jsx';
 import ActivityStore from '../stores/activity_store';
 import createStyler from '../util/create_styler';
+import { config } from 'skin';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 function stateSetter(props) {
   const activity = ActivityStore
@@ -71,6 +72,10 @@ export default class ActivityLog extends React.Component {
     this.setState(currentState);
   }
 
+  get documentation() {
+    return <config.snippets.logs />;
+  }
+
   render() {
     let content = <div></div>;
 
@@ -85,7 +90,7 @@ export default class ActivityLog extends React.Component {
         );
       content = (
         <div>
-          <p>View more logs at <a href="https://logs.cloud.gov">logs.cloud.gov</a> (for East/West environment) or <a href="https://logs.fr.cloud.gov">logs.fr.cloud.gov</a> (for GovCloud environment).</p>
+          { this.documentation }
           <ul className={ this.styler('activity_log') }>
             { this.state.activity
                 .slice(0, this.state.maxItems)

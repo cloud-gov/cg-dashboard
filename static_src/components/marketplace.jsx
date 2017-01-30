@@ -3,17 +3,18 @@
  */
 
 import React from 'react';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-import createStyler from '../util/create_styler';
 
 import CreateServiceInstance from './create_service_instance.jsx';
 import Loading from './loading.jsx';
-import ServiceList from './service_list.jsx';
-
 import OrgStore from '../stores/org_store.js';
-import ServiceStore from '../stores/service_store.js';
+import PanelDocumentation from './panel_documentation.jsx';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
+import ServiceList from './service_list.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
+import ServiceStore from '../stores/service_store.js';
+import createStyler from '../util/create_styler';
+import { config } from 'skin';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 function stateSetter() {
   const loading = ServiceStore.loading || ServicePlanStore.loading;
@@ -60,6 +61,21 @@ export default class Marketplace extends React.Component {
     this.setState(stateSetter());
   }
 
+  get documentation() {
+    return (
+      <PanelDocumentation description>
+        <p>
+          Use this marketplace to create service instances for apps in this space. Then bind service instances to apps.
+          { config.docs.managed_services &&
+            <span>
+              <a href={ config.docs.managed_services }> Learn about using service instances</a>.
+            </span>
+          }
+        </p>
+      </PanelDocumentation>
+    );
+  }
+
   render() {
     const state = this.state;
     let form;
@@ -79,9 +95,7 @@ export default class Marketplace extends React.Component {
       let list = <ServiceList initialServices={ state.services } />;
       content = (
         <div>
-          <div>
-            <p className={ this.styler('page-dek') }>Use this marketplace to create service instances for apps in this space. Then bind service instances to apps. <a href="https://cloud.gov/docs/apps/managed-services/">Learn about using service instances</a>.</p>
-          </div>
+          { this.documentation }
           { list }
           { form }
         </div>
