@@ -30,8 +30,8 @@ describe('RouteStore', function() {
     });
   });
 
-  describe('gerRouteURLForApp()', function() {
-    it('should a full url for a route with no domain', function() {
+  describe('getRouteURLForApp()', function() {
+    it('should be a full url for a route with no domain', function() {
       const appGuid = 'zmxcvnw4r';
       const domain_name = 'cloud.com'
       const host = 'cloud';
