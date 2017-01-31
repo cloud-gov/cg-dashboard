@@ -4,6 +4,7 @@ import React from 'react';
 import Action from './action.jsx';
 import ActivityLogItem from './activity_log_item.jsx';
 import ActivityStore from '../stores/activity_store';
+import PanelActions from './panel_actions.jsx';
 import createStyler from '../util/create_styler';
 import { config } from 'skin';
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -84,9 +85,11 @@ export default class ActivityLog extends React.Component {
     } else {
       let showMore = (this.state.activity.length >= this.props.maxItems) &&
         (
-          <Action label="View more" clickHandler={ this.handleMore }>
-            Show more activity
-          </Action>
+          <PanelActions>
+            <Action label="View more" clickHandler={ this.handleMore }>
+              Show more activity
+            </Action>
+          </PanelActions>
         );
       content = (
         <div>

@@ -187,11 +187,9 @@ export default class RoutesPanel extends React.Component {
           </PanelHeader>
           { this.renderRoutes(this.state.unboundRoutes) }
         </PanelGroup>
-        <PanelGroup>
-          <PanelActions>
-            { this.addRouteAction }
-          </PanelActions>
-        </PanelGroup>
+        <PanelActions>
+          { this.addRouteAction }
+        </PanelActions>
       </div>
     );
   }
