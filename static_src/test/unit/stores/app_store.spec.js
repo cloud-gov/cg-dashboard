@@ -7,15 +7,14 @@ import appActions from '../../../actions/app_actions.js';
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
-import AppStore from '../../../stores/app_store.js';
+import { AppStore as AppStoreClass } from '../../../stores/app_store.js';
 import { appActionTypes } from '../../../constants';
 
 describe('AppStore', function() {
-  var sandbox;
+  let AppStore, sandbox;
 
   beforeEach(() => {
-    AppStore._data = Immutable.List();
-    AppStore._currentAppGuid = null;
+    AppStore = new AppStoreClass();
     sandbox = sinon.sandbox.create();
   });
 
@@ -30,55 +29,63 @@ describe('AppStore', function() {
   });
 
   describe('on app fetch', function() {
-    it('should fetch app with guid from api', function() {
-      var spy = sandbox.spy(cfApi, 'fetchApp'),
-          expectedGuid = 'adfasd.vdam;dksa';
+    it('should update fetch state', function() {
+      let expectedGuid = 'adfasd.vdam;dksa';
 
+      expect(AppStore._fetchApp).toBe(false);
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_FETCH,
         appGuid: expectedGuid
       });
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedGuid);
+      expect(AppStore._fetchApp).toBe(true);
+      expect(AppStore.loading).toBe(true);
     });
   });
 
   describe('on app stats fetch', function() {
-    it('should fetch app stats with guid from api', function() {
-      var spy = sandbox.spy(cfApi, 'fetchAppStats'),
-          expectedGuid = 'adfasddksazxcvzxcvz';
+    it('should update fetch state for app stats', function() {
+      let expectedGuid = 'adfasddksazxcvzxcvz';
 
+      expect(AppStore._fetchAppStats).toBe(false);
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_STATS_FETCH,
         appGuid: expectedGuid
       });
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedGuid);
+      expect(AppStore._fetchAppStats).toBe(true);
+      expect(AppStore.loading).toBe(true);
     });
   });
 
   describe('on app all fetch', function() {
     it('should fetch all of an app\'s information from api', function() {
-      var spy = sandbox.spy(cfApi, 'fetchAppAll'),
-          expectedGuid = 'adfasddksazxcvzxcvz';
+      let expectedGuid = 'adfasddksazxcvzxcvz';
 
+      expect(AppStore._fetchAll).toBe(false);
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_ALL_FETCH,
         appGuid: expectedGuid
       });
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedGuid);
-      expect(AppStore.loading).toEqual(true);
+      expect(AppStore._fetchAll).toBe(true);
+      expect(AppStore.loading).toBe(true);
     });
   });
 
   describe('on app received', function() {
+    it('should update the fetch state to not loading', function() {
+      AppStore._fetchApp = true;
+      expect(AppStore.loading).toBe(true);
+      AppDispatcher.handleViewAction({
+        type: appActionTypes.APP_RECEIVED,
+        app: { guid: 'asdf' }
+      });
+
+      expect(AppStore._fetchApp).toBe(false);
+      expect(AppStore.loading).toBe(false);
+    });
+
     it('should emit a change event if data was updated', function() {
       var spy = sandbox.spy(AppStore, 'emitChange');
 
@@ -90,7 +97,7 @@ describe('AppStore', function() {
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should not emit a change event if data was not changed', function() {
+    it('should emit a change event even if data was not changed', function() {
       var app = { guid: 'asdf' };
 
       AppStore.push(app);
@@ -143,16 +150,32 @@ describe('AppStore', function() {
     it('should emit change', function() {
       var spy = sandbox.spy(AppStore, 'emitChange');
 
+      AppStore._fetchAll = true;
+      expect(AppStore.loading).toBe(true);
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_ALL_RECEIVED,
         appGuid: 'asdf'
       });
 
       expect(spy).toHaveBeenCalledOnce();
+      expect(AppStore._fetchAll).toBe(false);
+      expect(AppStore.loading).toBe(false);
     });
   });
 
   describe('on app stats received', function() {
+    it('should update the fetch state to not loading', function() {
+      AppStore._fetchAppStats = true;
+      expect(AppStore.loading).toBe(true);
+      AppDispatcher.handleViewAction({
+        type: appActionTypes.APP_STATS_RECEIVED,
+        app: { guid: 'asdf' }
+      });
+
+      expect(AppStore._fetchAppStats).toBe(false);
+      expect(AppStore.loading).toBe(false);
+    });
+
     it('should emit a change event if data was updated', function() {
       const sharedGuid = '2893hazxcmv';
 

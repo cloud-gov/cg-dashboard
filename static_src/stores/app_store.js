@@ -11,12 +11,19 @@ import cfApi from '../util/cf_api.js';
 import { appStates, appActionTypes } from '../constants.js';
 
 
-class AppStore extends BaseStore {
+export class AppStore extends BaseStore {
   constructor() {
     super();
     this._data = new Immutable.List();
     this._currentAppGuid = null;
+    this._fetchAll = false;
+    this._fetchApp = false;
+    this._fetchAppStats = false;
     this.subscribe(() => this._registerToActions.bind(this));
+  }
+
+  get loading() {
+    return this._fetchAll || this._fetchApp || this._fetchAppStats;
   }
 
   isStarting(app) {
@@ -38,7 +45,7 @@ class AppStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case appActionTypes.APP_FETCH:
-        this.load([cfApi.fetchApp(action.appGuid)]);
+        this._fetchApp = true;
         this.emitChange();
         break;
 
@@ -77,29 +84,36 @@ class AppStore extends BaseStore {
       }
 
       case appActionTypes.APP_STATS_FETCH:
-        cfApi.fetchAppStats(action.appGuid);
-        break;
-
-      case appActionTypes.APP_RECEIVED:
-        this.merge('guid', action.app, () => { });
+        this._fetchAppStats = true;
         this.emitChange();
         break;
 
+      case appActionTypes.APP_RECEIVED:
+        this._fetchApp = false;
+        this.merge('guid', action.app, () => {
+          // Emit regardless because the loading state has changed
+          this.emitChange();
+        });
+        break;
+
       case appActionTypes.APP_STATS_RECEIVED: {
+        this._fetchAppStats = false;
         const app = Object.assign({}, action.app, { guid: action.appGuid });
-        this.merge('guid', app, (changed) => {
-          if (changed) this.emitChange();
+        this.merge('guid', app, () => {
+          // Emit change regardless of app because loading state changed
+          this.emitChange();
         });
         break;
       }
 
       case appActionTypes.APP_ALL_FETCH: {
-        this.load([cfApi.fetchAppAll(action.appGuid)]);
+        this._fetchAll = true;
         this.emitChange();
         break;
       }
 
       case appActionTypes.APP_ALL_RECEIVED: {
+        this._fetchAll = false;
         this.emitChange();
         break;
       }

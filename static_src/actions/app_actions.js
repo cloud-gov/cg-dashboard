@@ -15,6 +15,8 @@ export default {
       type: appActionTypes.APP_FETCH,
       appGuid
     });
+
+    return cfApi.fetchApp(appGuid);
   },
 
   receivedApp(app) {
@@ -46,6 +48,8 @@ export default {
       type: appActionTypes.APP_STATS_FETCH,
       appGuid
     });
+
+    return cfApi.fetchAppStats(appGuid);
   },
 
   receivedAppStats(appGuid, app) {
@@ -61,6 +65,8 @@ export default {
       type: appActionTypes.APP_ALL_FETCH,
       appGuid
     });
+
+    return cfApi.fetchAppAll(appGuid);
   },
 
   receivedAppAll(appGuid) {
