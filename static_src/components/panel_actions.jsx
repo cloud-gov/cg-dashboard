@@ -9,7 +9,7 @@ const ALIGN_TYPES = ['left', 'right', 'both'];
 
 const propTypes = {
   children: React.PropTypes.any,
-  align:  React.PropTypes.oneOf(ALIGN_TYPES)
+  align: React.PropTypes.oneOf(ALIGN_TYPES)
 };
 const defaultProps = {
   children: [],
