@@ -1,7 +1,6 @@
 import http from 'axios';
 
 import { noticeError } from '../util/analytics.js';
-import appActions from '../actions/app_actions.js';
 import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
 import loginActions from '../actions/login_actions.js';
@@ -13,6 +12,7 @@ import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
 
+// TODO handleError should probably return a (rejected) Promise
 function handleError(err, errHandler = errorActions.errorFetch) {
   // An http error should be passed to error actions.
   // When an error has a `reponse` object, it's likely from ajax.
@@ -232,26 +232,25 @@ export default {
     return Promise.all([
       this.fetchApp(appGuid),
       this.fetchAppStats(appGuid)
-    ]).then(() => {
-      appActions.receivedAppAll(appGuid);
-    });
+    ]);
   },
 
   fetchApp(appGuid) {
-    return this.fetchOne(`/apps/${appGuid}/summary`,
-                          appActions.receivedApp);
+    return this.fetchOne(`/apps/${appGuid}/summary`);
   },
 
   fetchAppStatus(appGuid) {
-    return http.get(`${APIV}/apps/${appGuid}/summary`).then((res) => res);
+    return http.get(`${APIV}/apps/${appGuid}/summary`).then((res) => res.data);
   },
 
   fetchAppStats(appGuid) {
-    return http.get(`${APIV}/apps/${appGuid}/stats`).then((res) => {
-      appActions.receivedAppStats(appGuid, { app_instances: Object.values(res.data) });
-    }).catch((err) => {
-      handleError(err);
-    });
+    return http.get(`${APIV}/apps/${appGuid}/stats`)
+      .then(res => {
+        // Helper variable is here to avoid block statement getting confused
+        // with object literal
+        const app = { app_instances: Object.values(res.data) };
+        return app;
+      }).catch(handleError);
   },
 
   fetchAppLogs(appGuid) {
@@ -265,14 +264,13 @@ export default {
   putApp(appGuid, app) {
     return http.put(`${APIV}/apps/${appGuid}`, app)
       .then((res) => Object.assign({}, res.data.entity, { guid: appGuid }))
-      .catch((err) => handleError(err,
-        appActions.error.bind(null, appGuid)));
+      .catch(err => handleError(err, e => Promise.reject(e)));
   },
 
   postAppRestart(appGuid) {
-    return http.post(`${APIV}/apps/${appGuid}/restage`).then(() => appGuid
-    ).catch((err) => handleError(err,
-      appActions.error.bind(this, appGuid)));
+    return http.post(`${APIV}/apps/${appGuid}/restage`)
+      .then(() => appGuid)
+      .catch(err => handleError(err, e => Promise.reject(e)));
   },
 
   /**

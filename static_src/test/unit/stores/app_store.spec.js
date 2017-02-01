@@ -236,13 +236,15 @@ describe('AppStore', function() {
     });
   });
 
-  describe('on app change current', function() {
-    it('should set the current app guid to passed guid', function() {
+  describe('on app change current', function () {
+    it('should set the current app guid to passed guid', function (done) {
       const expectedGuid = 'aldfjvcczxcv';
 
-      appActions.changeCurrentApp(expectedGuid);
-
-      expect(AppStore.currentAppGuid).toEqual(expectedGuid);
+      appActions.changeCurrentApp(expectedGuid)
+        .then(() => {
+          expect(AppStore.currentAppGuid).toEqual(expectedGuid);
+        })
+        .then(done, done.fail);
     });
 
     it('should emit a change event', function() {

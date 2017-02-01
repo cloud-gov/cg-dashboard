@@ -20,19 +20,22 @@ describe('appActions', function() {
     sandbox.restore();
   });
 
-  describe('fetch()', function() {
-    it('should dispatch a view event of type app fetch', function() {
-      var expectedAppGuid = 'asdflkjz',
-          expectedParams = {
-            appGuid: expectedAppGuid
-          };
+  describe('fetch()', function () {
+    let expectedAppGuid, viewSpy;
 
-      let spy = setupViewSpy(sandbox)
+    beforeEach(function (done) {
+      expectedAppGuid = 'asdflkjz';
+      viewSpy = setupViewSpy(sandbox);
 
-      appActions.fetch(expectedAppGuid);
+      appActions.fetch(expectedAppGuid).then(done, done.fail);
+    });
 
-      assertAction(spy, appActionTypes.APP_FETCH,
-                   expectedParams);
+    it('should dispatch a view event of type app fetch', function () {
+      const expectedParams = {
+        appGuid: expectedAppGuid
+      };
+
+      assertAction(viewSpy, appActionTypes.APP_FETCH, expectedParams);
     });
   });
 

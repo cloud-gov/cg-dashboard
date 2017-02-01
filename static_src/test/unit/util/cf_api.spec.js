@@ -718,34 +718,32 @@ describe('cfApi', function() {
     // TODO should be error action for non fetch errors.
   });
 
-  describe('fetchApp()', function() {
-    it('should call fetch with apps url and received app space', function() {
-      var expected = 'yyyybba1',
-          spy = sandbox.stub(cfApi, 'fetchOne');
+  describe('fetchApp()', function () {
+    it('should call fetch with apps url', function () {
+      const expected = 'yyyybba1',
+        spy = sandbox.stub(cfApi, 'fetchOne');
 
       cfApi.fetchApp(expected);
 
       expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp(expected));
-      expect(actual).toMatch(new RegExp('apps'));
-      actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(appActions.receivedApp);
+      const url = spy.getCall(0).args[0];
+      expect(url).toMatch(new RegExp(expected));
+      expect(url).toMatch(new RegExp('apps'));
     });
   });
 
-  describe('fetchAppStats()', function() {
-    it('should call fetch with apps url and received app space', function() {
-      var expected = 'yyyybbaxbba1',
-          spy = sandbox.spy(http, 'get');
+  describe('fetchAppStats()', function () {
+    it('should call fetch with app stats url', function () {
+      const expected = 'yyyybbaxbba1',
+        spy = sandbox.spy(http, 'get');
 
       cfApi.fetchAppStats(expected);
 
       expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp(expected));
-      expect(actual).toMatch(new RegExp('apps'));
-      expect(actual).toMatch(new RegExp('stats'));
+      const url = spy.getCall(0).args[0];
+      expect(url).toMatch(new RegExp(expected));
+      expect(url).toMatch(new RegExp('apps'));
+      expect(url).toMatch(new RegExp('stats'));
     });
   });
 
@@ -759,19 +757,6 @@ describe('cfApi', function() {
 
       expect(fetchAppSpy).toHaveBeenCalledOnce();
       expect(fetchAppStatsSpy).toHaveBeenCalledOnce();
-    });
-
-    it('should call the receivedAppAll app action', function (done) {
-      const guid = 'shouldCallActionCreatorGuid';
-      const actionCreatorSpy = sandbox.spy(appActions, 'receivedAppAll');
-
-      sandbox.stub(cfApi, 'fetchApp').returns(createPromise({data: {}}));
-      sandbox.stub(cfApi, 'fetchAppStats').returns(createPromise({data: {}}));
-
-      cfApi.fetchAppAll(guid).then(() => {
-        expect(actionCreatorSpy).toHaveBeenCalled();
-        done();
-      });
     });
   });
 
@@ -799,23 +784,7 @@ describe('cfApi', function() {
         const args = spy.getCall(0).args;
         expect(args[0]).toMatch('apps');
         expect(args[0]).toMatch(appGuid);
-        done();
-      }).catch(done.fail);
-    });
-
-    it('should call app error with app guid on failure', function(done) {
-      const appGuid = '2398dhgf028ulfd';
-      const spy = sandbox.stub(appActions, 'error');
-      const stub = sandbox.stub(http, 'post');
-      spy.returns();
-      stub.returns(createPromise(true, fakeCFErrorRes));
-
-      cfApi.postAppRestart(appGuid).then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        const arg = spy.getCall(0).args[0];
-        expect(arg).toEqual(appGuid);
-        done();
-      }).catch(done.fail);
+      }).then(done, done.fail);
     });
   });
 

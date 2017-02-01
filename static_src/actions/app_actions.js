@@ -9,14 +9,14 @@ import { appActionTypes } from '../constants';
 import cfApi from '../util/cf_api.js';
 import poll from '../util/poll.js';
 
-export default {
+const appActions = {
   fetch(appGuid) {
     AppDispatcher.handleViewAction({
       type: appActionTypes.APP_FETCH,
       appGuid
     });
 
-    return cfApi.fetchApp(appGuid);
+    return cfApi.fetchApp(appGuid).then(appActions.receivedApp);
   },
 
   receivedApp(app) {
@@ -24,6 +24,8 @@ export default {
       type: appActionTypes.APP_RECEIVED,
       app
     });
+
+    return Promise.resolve(app);
   },
 
   updateApp(appGuid, appPartial) {
@@ -41,7 +43,7 @@ export default {
           cfApi.fetchAppStatus.bind(cfApi, app.guid)
         )
         .then(() => app) // Return the original result
-      ).then(this.updatedApp, (err) => this.error(appGuid, err));
+      ).then(appActions.updatedApp, (err) => appActions.error(appGuid, err));
   },
 
   updatedApp(app) {
@@ -59,7 +61,10 @@ export default {
       appGuid
     });
 
-    return cfApi.fetchAppStats(appGuid);
+    return cfApi.fetchAppStats(appGuid)
+      .then(app =>
+        appActions.receivedAppStats(appGuid, app)
+      );
   },
 
   receivedAppStats(appGuid, app) {
@@ -68,6 +73,8 @@ export default {
       appGuid,
       app
     });
+
+    return Promise.resolve(app);
   },
 
   fetchAll(appGuid) {
@@ -76,7 +83,7 @@ export default {
       appGuid
     });
 
-    return cfApi.fetchAppAll(appGuid);
+    return cfApi.fetchAppAll(appGuid).then(() => appActions.receivedAppAll(appGuid));
   },
 
   receivedAppAll(appGuid) {
@@ -84,6 +91,8 @@ export default {
       type: appActionTypes.APP_ALL_RECEIVED,
       appGuid
     });
+
+    return Promise.resolve(appGuid);
   },
 
   changeCurrentApp(appGuid) {
@@ -91,6 +100,8 @@ export default {
       type: appActionTypes.APP_CHANGE_CURRENT,
       appGuid
     });
+
+    return Promise.resolve(appGuid);
   },
 
   start(appGuid) {
@@ -99,8 +110,9 @@ export default {
       appGuid
     });
 
-    return cfApi.putApp(appGuid, { state: 'STARTED' }).then(() =>
-      this.restarted(appGuid));
+    return cfApi.putApp(appGuid, { state: 'STARTED' })
+      .then(() => appActions.restarted(appGuid))
+      .catch(err => appActions.error(appGuid, err));
   },
 
   restart(appGuid) {
@@ -116,11 +128,11 @@ export default {
           cfApi.fetchAppStatus.bind(cfApi, appGuid)
         ).then((app) =>
           Promise.all([
-            this.fetchStats(appGuid),
-            this.receivedApp(app)
+            appActions.fetchStats(appGuid),
+            appActions.receivedApp(app)
           ])
         )
-      ).then(() => this.restarted(appGuid));
+      ).then(() => appActions.restarted(appGuid));
   },
 
   restarted(appGuid) {
@@ -143,3 +155,5 @@ export default {
     return Promise.reject(err);
   }
 };
+
+export default appActions;

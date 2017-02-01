@@ -75,7 +75,7 @@ export class AppStore extends BaseStore {
 
       case appActionTypes.APP_RECEIVED:
         this._fetchApp = false;
-        this.merge('guid', action.app, () => {
+        this.merge('guid', action.app || {}, () => {
           // Emit regardless because the loading state has changed
           this.emitChange();
         });
