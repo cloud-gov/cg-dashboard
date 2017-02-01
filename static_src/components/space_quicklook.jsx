@@ -5,6 +5,8 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 import AppQuicklook from './app_quicklook.jsx';
+import ComplexList from './complex_list.jsx';
+import ComplexListItem from './complex_list_item.jsx';
 import EntityIcon from './entity_icon.jsx';
 import PanelRow from './panel_row.jsx';
 import { spaceHref } from '../util/url';
@@ -34,23 +36,25 @@ export default class SpaceQuicklook extends React.Component {
   render() {
     const space = this.props.space;
     return (
-      <PanelRow id={ `space-quicklook-${space.guid}` } className="test-space-quicklook">
+      <ComplexList>
         <h3 className={ this.styler('contents-primary') }>
           <EntityIcon entity="space" iconSize="medium" />
           <a href={ this.spaceHref() }>{ space.name }</a>
         </h3>
-        { space.apps && space.apps.map((app) =>
-           <AppQuicklook
-             key={ app.guid }
-             app={ app }
-             orgGuid={ this.props.orgGuid }
-             spaceGuid={ space.guid }
-             spaceName={ space.name }
-             extraInfo={ this.props.showAppDetail ?
-               ['state', 'memory', 'diskQuota'] : ['state'] }
-           />
-        )}
-      </PanelRow>
+        <ComplexList>
+          { space.apps && space.apps.map((app) =>
+             <AppQuicklook
+               key={ app.guid }
+               app={ app }
+               orgGuid={ this.props.orgGuid }
+               spaceGuid={ space.guid }
+               spaceName={ space.name }
+               extraInfo={ this.props.showAppDetail ?
+                 ['state', 'memory', 'diskQuota'] : ['state'] }
+             />
+          )}
+        </ComplexList>
+      </ComplexList>
     );
   }
 }
