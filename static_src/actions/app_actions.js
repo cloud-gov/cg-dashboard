@@ -109,7 +109,18 @@ export default {
       appGuid
     });
 
-    return cfApi.postAppRestart(appGuid).then(() => this.restarted(appGuid));
+    return cfApi.postAppRestart(appGuid)
+      .then(() =>
+        poll(
+          (app) => app.running_instances > 0,
+          cfApi.fetchAppStatus.bind(cfApi, appGuid)
+        ).then((app) =>
+          Promise.all([
+            this.fetchStats(appGuid),
+            this.receivedApp(app)
+          ])
+        )
+      ).then(() => this.restarted(appGuid));
   },
 
   restarted(appGuid) {
@@ -118,13 +129,7 @@ export default {
       appGuid
     });
 
-    return poll(
-        (app) => app.running_instances > 0,
-        cfApi.fetchAppStatus.bind(cfApi, appGuid)
-      ).then((res) => {
-        this.fetchStats(appGuid);
-        this.receivedApp(res.data);
-      });
+    return Promise.resolve();
   },
 
   error(appGuid, err) {

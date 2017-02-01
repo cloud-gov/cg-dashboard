@@ -32,7 +32,7 @@ describe('appActions', function() {
       appActions.fetch(expectedAppGuid);
 
       assertAction(spy, appActionTypes.APP_FETCH,
-                   expectedParams)
+                   expectedParams);
     });
   });
 
@@ -213,57 +213,58 @@ describe('appActions', function() {
     });
   });
 
-  describe('restart()', function() {
-    it('should dispatch a view event of type app restart with guid', function() {
-      const appGuid = 'zvmn3hkl';
+  describe('restart()', function () {
+    let appGuid, viewSpy;
+
+    beforeEach(function (done) {
+      appGuid = 'zvmn3hkl';
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'postAppRestart').returns(Promise.resolve());
+      sandbox.stub(cfApi, 'fetchAppStatus').returns(Promise.resolve({ running_instances: 1 }));
+      sandbox.spy(appActions, 'restarted');
+
+      appActions.restart(appGuid).then(done, done.fail);
+    });
+
+    it('should dispatch a view event of type app restart with guid', function () {
       const expectedParams = {
         appGuid
       };
-      let spy = setupViewSpy(sandbox)
 
-      appActions.restart(appGuid);
 
-      assertAction(spy, appActionTypes.APP_RESTART, expectedParams);
+      expect(viewSpy).toHaveBeenCalledWith(sinon.match({
+        ...expectedParams,
+        type: appActionTypes.APP_RESTART
+      }));
     });
 
-    it('should call cf api post to restart the app', function() {
-      const spy = sandbox.spy(cfApi, 'postAppRestart');
-      const expectedGuid = 'asdfasd2vdamcdksa';
+    it('should call cf api post to restart the app', function () {
+      expect(cfApi.postAppRestart).toHaveBeenCalledOnce();
 
-      appActions.restart(expectedGuid);
+      const guid = cfApi.postAppRestart.getCall(0).args[0];
+      expect(guid).toEqual(appGuid);
+    });
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedGuid);
+    it('should poll until running instances is greater then 0', function () {
+      expect(cfApi.fetchAppStatus).toHaveBeenCalledOnce();
+    });
+
+    it('calls restarted action', function () {
+      expect(appActions.restarted).toHaveBeenCalledOnce();
     });
   });
 
-  describe('restarted()', function() {
-    it('should dispatch a server event of type app restarted', function() {
+  describe('restarted()', function () {
+    it('should dispatch a server event of type app restarted', function () {
       const appGuid = '230894dgvk2r';
       const expectedParams = {
         appGuid
       };
-      let spy = setupServerSpy(sandbox)
+      const spy = setupServerSpy(sandbox);
 
       appActions.restarted(appGuid);
 
       assertAction(spy, appActionTypes.APP_RESTARTED, expectedParams);
-    });
-
-    it('should poll until running instances is greater then 0', function() {
-      const spy = sandbox.stub(pollUtil, 'default').returns(Promise.resolve());
-      const expectedRes = {
-        data: { running_instances: 1 }
-      };
-
-      appActions.restarted('zxlcvkjklv');
-
-      expect(spy).toHaveBeenCalledOnce();
-      let args = spy.getCall(0).args;
-      expect(args[0]).toBeFunction();
-      expect(args[0](expectedRes)).toBeTruthy();
-      expect(args[1]).toBeFunction();
     });
   });
 
