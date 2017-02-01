@@ -113,21 +113,19 @@ export default class AppContainer extends React.Component {
 
   get openApp() {
     const route = RouteStore.getRouteURLForApp(this.state.app);
-    if (route) {
-      return (
-        <div>
-          <Action
-            style="primary"
-            href={ `https://${route}` }
-            label="open app"
-            type="outline"
-          >
+    if (!route) return null;
+    return (
+      <div>
+        <Action
+          style="primary"
+          href={ `https://${route}` }
+          label="open app"
+          type="outline"
+        >
           <span>Open app</span>
         </Action>
       </div>
-      );
-    }
-    return null;
+    );
   }
 
   get restart() {
