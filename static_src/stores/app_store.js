@@ -7,7 +7,6 @@
 import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
-import cfApi from '../util/cf_api.js';
 import { appStates, appActionTypes } from '../constants.js';
 
 
@@ -65,20 +64,6 @@ export class AppStore extends BaseStore {
           state: appStates.restarting
         });
 
-        // Setup a poll so that we know when the app is back up.
-        this.poll(
-          (res) => res.data.running_instances > 0,
-          cfApi.fetchAppStatus.bind(cfApi, restartingApp.guid)
-        ).then((res) => {
-          this.merge('guid', res.data);
-        }).catch((error) => {
-          const erroredApp = Object.assign({}, action.app, {
-            error,
-            state: appStates.unknown
-          });
-
-          this.merge('guid', erroredApp);
-        });
         this.merge('guid', restartingApp);
         break;
       }
@@ -161,7 +146,6 @@ export class AppStore extends BaseStore {
             restarting: false
           });
           this.merge('guid', erroredApp);
-          setTimeout(() => { cfApi.fetchAppAll(action.appGuid); }, 3000);
         }
         break;
       }

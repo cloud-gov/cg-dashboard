@@ -33,7 +33,15 @@ export default {
       appGuid
     });
 
-    return cfApi.putApp(appGuid, appPartial).then((app) => this.updatedApp(app));
+    return cfApi.putApp(appGuid, appPartial)
+      .then((app) =>
+        // Setup a poll so that we know when the app is back up.
+        poll(
+          (appStatus) => appStatus.running_instances > 0,
+          cfApi.fetchAppStatus.bind(cfApi, app.guid)
+        )
+        .then(() => app) // Return the original result
+      ).then(this.updatedApp, (err) => this.error(appGuid, err));
   },
 
   updatedApp(app) {
@@ -41,6 +49,8 @@ export default {
       type: appActionTypes.APP_UPDATED,
       app
     });
+
+    return Promise.resolve(app);
   },
 
   fetchStats(appGuid) {
@@ -109,7 +119,7 @@ export default {
     });
 
     return poll(
-        (app) => app.data.running_instances > 0,
+        (app) => app.running_instances > 0,
         cfApi.fetchAppStatus.bind(cfApi, appGuid)
       ).then((res) => {
         this.fetchStats(appGuid);
@@ -123,5 +133,8 @@ export default {
       appGuid,
       error: err
     });
+
+    // TODO Not sure if this should return null or reject
+    return Promise.reject(err);
   }
 };

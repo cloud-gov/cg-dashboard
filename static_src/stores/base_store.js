@@ -8,7 +8,6 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../dispatcher.js';
 import LoadingStatus from '../util/loading_status.js';
-import poll from '../util/poll.js';
 
 function defaultChangedCallback(changed) {
   if (changed) this.emitChange();
@@ -98,10 +97,6 @@ export default class BaseStore extends EventEmitter {
 
   load(promises) {
     this._loadingStatus.load(promises);
-  }
-
-  poll(condition, promise) {
-    return poll(condition, promise);
   }
 
   /* merge with no side effects

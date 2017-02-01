@@ -127,55 +127,47 @@ describe('appActions', function() {
     });
   });
 
-  describe('updateApp()', function() {
-    it('should dispatch a view event of type app update with partial and guid',
-        function(done) {
-      sandbox.stub(appActions, 'updatedApp').returns(Promise.resolve());
-      sandbox.stub(cfApi, 'putApp').returns(Promise.resolve());
-      const appGuid = 'zxc,vnadsfj';
-      const appPartial = { mem: 123 };
+  describe('updateApp()', function () {
+    let appGuid, appPartial, viewSpy;
+
+    beforeEach(function (done) {
+      appGuid = 'zxc,vnadsfj';
+      appPartial = { mem: 123 };
+
+      sandbox.spy(appActions, 'updatedApp');
+      sandbox.stub(cfApi, 'putApp').returns(Promise.resolve({ guid: appGuid, mem: 123 }));
+      sandbox.stub(cfApi, 'fetchAppStatus')
+        .returns(Promise.resolve({ guid: appGuid, running_instances: 1 }));
+
+      viewSpy = setupViewSpy(sandbox);
+
+      appActions.updateApp(appGuid, appPartial).then(done, done.fail);
+    });
+
+    it('should dispatch a view event of type app update with partial and guid', function () {
       const expectedParams = {
         appGuid,
         appPartial
       };
 
-      let spy = setupViewSpy(sandbox);
-
-      appActions.updateApp(appGuid, appPartial).then(function() {
-        assertAction(spy, appActionTypes.APP_UPDATE,
-                     expectedParams)
-        done();
-      }).catch(done.fail);
+      assertAction(viewSpy, appActionTypes.APP_UPDATE, expectedParams);
     });
 
-    it('should call cf api put app endpoint with guid and app partial',
-        function(done) {
-      const appGuid = 'zxc,vnadsfj';
-      const appPartial = { mem: 123 };
-      const spy = sandbox.stub(cfApi, 'putApp').returns(Promise.resolve());
-      sandbox.stub(appActions, 'updatedApp').returns(Promise.resolve());
+    it('should call cf api put app endpoint with guid and app partial', function () {
+      expect(cfApi.putApp).toHaveBeenCalledOnce();
 
-      appActions.updateApp(appGuid, appPartial).then(function() {
-        expect(spy).toHaveBeenCalledOnce();
-        let args = spy.getCall(0).args;
-        expect(args[0]).toEqual(appGuid);
-        expect(args[1]).toEqual(appPartial);
-        done();
-      }).catch(done.fail);
+      const [guid, partial] = cfApi.putApp.getCall(0).args;
+      expect(guid).toEqual(appGuid);
+      expect(partial).toEqual(appPartial);
     });
 
-    it('should call updated app action with app on success', function(done) {
-      const spy = sandbox.stub(appActions, 'updatedApp').returns(Promise.resolve());
-      const guid = '134ds3i4yzxvc';
-      const expectedApp = { guid, mem: 1034 };
-      sandbox.stub(cfApi, 'putApp').returns(Promise.resolve(expectedApp));
+    it('should call updated app action with app on success', function () {
+      const expectedApp = { ...appPartial, guid: appGuid };
 
-      appActions.updateApp(guid).then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        let arg = spy.getCall(0).args[0];
-        expect(arg).toEqual(expectedApp);
-        done();
-      }).catch(done.fail);
+      expect(appActions.updatedApp).toHaveBeenCalledOnce();
+
+      const app = appActions.updatedApp.getCall(0).args[0];
+      expect(app).toEqual(expectedApp);
     });
   });
 
