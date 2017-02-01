@@ -8,6 +8,7 @@ import { appHealth, worstAppInstanceState } from '../util/health';
 import { appStates } from '../constants';
 import AppStore from '../stores/app_store.js';
 import Breadcrumbs from './breadcrumbs.jsx';
+import RouteStore from '../stores/route_store.js';
 import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
 import Loading from './loading.jsx';
@@ -66,12 +67,14 @@ export default class AppContainer extends React.Component {
   componentDidMount() {
     AppStore.addChangeListener(this._onChange);
     OrgStore.addChangeListener(this._onChange);
+    RouteStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     AppStore.removeChangeListener(this._onChange);
     OrgStore.removeChangeListener(this._onChange);
+    RouteStore.removeChangeListener(this._onChange);
     SpaceStore.removeChangeListener(this._onChange);
   }
 
@@ -110,6 +113,23 @@ export default class AppContainer extends React.Component {
 
     return (
       <span className={ this.styler('usa-label') }>{ worstState }</span>
+    );
+  }
+
+  get openApp() {
+    const route = RouteStore.getRouteURLForApp(this.state.app);
+    if (!route) return null;
+    return (
+      <div>
+        <Action
+          style="primary"
+          href={ `https://${route}` }
+          label="open app"
+          type="outline"
+        >
+          <span>Open app</span>
+        </Action>
+      </div>
     );
   }
 
@@ -181,6 +201,7 @@ export default class AppContainer extends React.Component {
             <div className={ this.styler('grid-width-12') }>
               <Breadcrumbs />
               <PageHeader title={ title }>
+                { this.openApp }
                 { this.restart }
               </PageHeader>
             </div>
