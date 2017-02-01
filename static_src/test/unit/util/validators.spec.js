@@ -15,12 +15,12 @@ describe('vaidateNumber', function () {
 
     it('fails for empty', function () {
       const result = validator();
-      expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID'});
+      expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
     });
 
     it('fails for NaN', function () {
       const result = validator('Not a number');
-      expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID'});
+      expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
     });
 
     it('passes for number string', function () {
@@ -52,7 +52,6 @@ describe('vaidateNumber', function () {
     });
 
     it('fails for above max', function () {
-      debugger;
       const result = validator('1025');
       expect(result).toEqual({ message: 'Total exceeds 1024', type: 'NUMBER_MAX' });
     });
@@ -118,12 +117,12 @@ describe('vaidateNumber', function () {
       expect(result).toBe(null);
     });
 
-    it('accepts min', function () {
+    it('accepts min', function () { // eslint-disable-line jasmine/no-spec-dupes
       const result = validator('1');
       expect(result).toBe(null);
     });
 
-    it('accepts max', function () {
+    it('accepts max', function () { // eslint-disable-line jasmine/no-spec-dupes
       const result = validator('1024');
       expect(result).toBe(null);
     });

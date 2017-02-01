@@ -36,7 +36,6 @@ static_src/test/server/fixtures/
 /static_src/test/server/authstatus.js
 /static_src/test/server/fixtures.js
 /static_src/test/server/server.js
-/static_src/test/unit/actions/activity_actions.spec.js
 /static_src/test/unit/actions/app_actions.spec.js
 /static_src/test/unit/actions/domain_actions.spec.js
 /static_src/test/unit/actions/org_actions.spec.js
@@ -46,7 +45,6 @@ static_src/test/server/fixtures/
 /static_src/test/unit/actions/space_actions.spec.js
 /static_src/test/unit/actions/user_actions.spec.js
 /static_src/test/unit/helpers.js
-/static_src/test/unit/stores/activity_store.spec.js
 /static_src/test/unit/stores/app_store.spec.js
 /static_src/test/unit/stores/base_store.spec.js
 /static_src/test/unit/stores/domain_store.spec.js
@@ -69,5 +67,4 @@ static_src/test/server/fixtures/
 /static_src/test/unit/util/poll.spec.js
 /static_src/test/unit/util/uaa_api.spec.js
 /static_src/test/unit/util/url.spec.js
-/static_src/test/unit/util/validators.spec.js
 /static_src/test/webpack-karma-warnings-plugin.js
