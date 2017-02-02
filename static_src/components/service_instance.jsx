@@ -8,7 +8,6 @@ import ConfirmationBox from './confirmation_box.jsx';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import Loading from './loading.jsx';
-import PanelRowError from './panel_row_error.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';

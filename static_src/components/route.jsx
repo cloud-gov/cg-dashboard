@@ -7,7 +7,6 @@ import DomainStore from '../stores/domain_store.js';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import Loading from './loading.jsx';
-import PanelRowError from './panel_row_error.jsx';
 import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
 import createStyler from '../util/create_styler';
