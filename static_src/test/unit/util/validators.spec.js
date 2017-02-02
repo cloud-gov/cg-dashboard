@@ -117,12 +117,12 @@ describe('vaidateNumber', function () {
       expect(result).toBe(null);
     });
 
-    it('accepts min', function () { // eslint-disable-line jasmine/no-spec-dupes
+    it('accepts min', function () {
       const result = validator('1');
       expect(result).toBe(null);
     });
 
-    it('accepts max', function () { // eslint-disable-line jasmine/no-spec-dupes
+    it('accepts max', function () {
       const result = validator('1024');
       expect(result).toBe(null);
     });
