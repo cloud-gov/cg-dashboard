@@ -18,17 +18,29 @@ describe('orgActions', () => {
   });
 
   describe('fetch()', () => {
+    let expectedGuid, viewSpy;
+
+    beforeEach(function (done) {
+      expectedGuid = 'adsfa';
+      viewSpy = setupViewSpy(sandbox);
+
+      sandbox.spy(cfApi, 'fetchOrg');
+
+      orgActions.fetch(expectedGuid).then(done, done.fail);
+    });
+
     it('should dispatch a view event of type org fetch', () => {
-      var expected = 'adsfa',
-          expectedParams = {
-            orgGuid: expected
-          };
+      const expectedParams = {
+        orgGuid: expectedGuid
+      };
 
-      let spy = setupViewSpy(sandbox)
+      assertAction(viewSpy, orgActionTypes.ORG_FETCH, expectedParams);
+    });
 
-      orgActions.fetch(expected);
-
-      assertAction(spy, orgActionTypes.ORG_FETCH, expectedParams);
+    it('should call the api org fetch function', function () {
+      expect(cfApi.fetchOrg).toHaveBeenCalledOnce();
+      const [guid] = cfApi.fetchOrg.getCall(0).args;
+      expect(guid).toBe(expectedGuid);
     });
   });
 

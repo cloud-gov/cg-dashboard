@@ -5,6 +5,7 @@
  */
 
 import AppDispatcher from '../dispatcher.js';
+import cfApi from '../util/cf_api.js';
 import { orgActionTypes } from '../constants';
 import spaceActions from './space_actions';
 
@@ -22,16 +23,24 @@ export default {
       type: orgActionTypes.ORG_FETCH,
       orgGuid
     });
+
+    return cfApi.fetchOrg(orgGuid);
   },
 
   fetchAll() {
     // TODO investigate more why timeout is needed here.
     // Currently being used to allow different actions to happen at same time.
-    setTimeout(() => {
-      AppDispatcher.handleViewAction({
-        type: orgActionTypes.ORGS_FETCH
-      });
-    }, 1);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        AppDispatcher.handleViewAction({
+          type: orgActionTypes.ORGS_FETCH
+        });
+
+        return cfApi.fetchOrgs()
+          .then(orgs => Promise.all(orgs.map(o => cfApi.fetchOrgSummary(o.guid))))
+          .then(resolve, reject);
+      }, 1);
+    });
   },
 
   receivedOrg(org) {

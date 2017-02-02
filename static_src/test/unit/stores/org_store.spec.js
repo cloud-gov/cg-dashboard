@@ -4,7 +4,6 @@ import Immutable from 'immutable';
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import cfApi from '../../../util/cf_api.js';
 import OrgStore from '../../../stores/org_store.js';
 import orgActions from '../../../actions/org_actions.js';
 import { orgActionTypes } from '../../../constants';
@@ -111,20 +110,6 @@ describe('OrgStore', () => {
       });
 
       expect(OrgStore.loading).toEqual(true);
-    });
-
-    it('should call the api org fetch function', function() {
-      var spy = sandbox.spy(cfApi, 'fetchOrg'),
-          expected = 'xsfewq';
-
-      AppDispatcher.handleViewAction({
-        type: orgActionTypes.ORG_FETCH,
-        orgGuid: expected
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expected);
     });
   });
 
