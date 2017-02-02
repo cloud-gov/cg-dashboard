@@ -108,7 +108,6 @@ export default class SpaceContainer extends React.Component {
           <Users />
         </Panel>
         <Panel title="Service instances">
-          <ServiceInstanceList />
         </Panel>
         <Panel title="Marketplace">
           <Marketplace />

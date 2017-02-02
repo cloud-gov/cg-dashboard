@@ -162,7 +162,7 @@ export default class RoutesPanel extends React.Component {
 
     if (routes && routes.length) {
       content = routes.map((route) =>
-        <Route route={ route } appGuid={ this.state.appGuid} />
+        <Route key={ route.guid } route={ route } appGuid={ this.state.appGuid} />
       );
     }
     return content;
