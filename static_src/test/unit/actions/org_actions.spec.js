@@ -23,8 +23,11 @@ describe('orgActions', () => {
     beforeEach(function (done) {
       expectedGuid = 'adsfa';
       viewSpy = setupViewSpy(sandbox);
-
       sandbox.spy(cfApi, 'fetchOrg');
+      sandbox.stub(orgActions, 'receivedOrg');
+
+      // Avoid side-effects on the receive action
+      sandbox.stub(AppDispatcher, 'handleServerAction');
 
       orgActions.fetch(expectedGuid).then(done, done.fail);
     });
@@ -42,19 +45,30 @@ describe('orgActions', () => {
       const [guid] = cfApi.fetchOrg.getCall(0).args;
       expect(guid).toBe(expectedGuid);
     });
+
+    it('calls the receivedOrg action', function () {
+      expect(orgActions.receivedOrg).toHaveBeenCalledOnce();
+    });
   });
 
-  describe('fetchAll()', () => {
-    it('should dispatch a view event of type orgs fetch', (done) => {
-      var spy = setupViewSpy(sandbox)
+  describe('fetchAll()', function () {
+    let viewSpy;
 
-      orgActions.fetchAll();
+    beforeEach(function (done) {
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(orgActions, 'receivedOrgs').returns(Promise.resolve());
+      sandbox.stub(cfApi, 'fetchOrgs').returns(Promise.resolve([{ guid: '1234' }]));
+      sandbox.stub(cfApi, 'fetchOrgSummary').returns(Promise.resolve());
 
-      setTimeout(() => {
-        let arg = spy.getCall(0).args[0];
-        expect(arg.type).toEqual(orgActionTypes.ORGS_FETCH);
-        done();
-      });
+      orgActions.fetchAll().then(done, done.fail);
+    });
+
+    it('should dispatch a view event of type orgs fetch', function () {
+      expect(viewSpy).toHaveBeenCalledWith(sinon.match({ type: orgActionTypes.ORGS_FETCH }));
+    });
+
+    it('calls receivedOrgs action', function () {
+      expect(orgActions.receivedOrgs).toHaveBeenCalledOnce();
     });
   });
 
