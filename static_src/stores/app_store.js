@@ -56,15 +56,11 @@ export class AppStore extends BaseStore {
       }
 
       case appActionTypes.APP_UPDATED: {
-        // Once the platform receives the update, it will restart the app
-        // instances behind the scenes. Update the UI here to give the user a
-        // clue that wheels are churning.
-        const restartingApp = Object.assign({}, action.app, {
-          updating: false,
-          state: appStates.restarting
+        const app = Object.assign({}, action.app, {
+          updating: false
         });
 
-        this.merge('guid', restartingApp);
+        this.merge('guid', app);
         break;
       }
 

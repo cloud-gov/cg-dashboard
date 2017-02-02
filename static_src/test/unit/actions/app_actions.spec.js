@@ -131,16 +131,17 @@ describe('appActions', function() {
   });
 
   describe('updateApp()', function () {
-    let appGuid, appPartial, viewSpy;
+    let appGuid, appPartial, appUpdated, viewSpy;
 
     beforeEach(function (done) {
       appGuid = 'zxc,vnadsfj';
       appPartial = { mem: 123 };
+      appUpdated = { guid: appGuid, mem: 123, running_instances: 1 };
 
       sandbox.spy(appActions, 'updatedApp');
       sandbox.stub(cfApi, 'putApp').returns(Promise.resolve({ guid: appGuid, mem: 123 }));
       sandbox.stub(cfApi, 'fetchAppStatus')
-        .returns(Promise.resolve({ guid: appGuid, running_instances: 1 }));
+        .returns(Promise.resolve(appUpdated));
 
       viewSpy = setupViewSpy(sandbox);
 
@@ -165,12 +166,10 @@ describe('appActions', function() {
     });
 
     it('should call updated app action with app on success', function () {
-      const expectedApp = { ...appPartial, guid: appGuid };
-
       expect(appActions.updatedApp).toHaveBeenCalledOnce();
 
       const app = appActions.updatedApp.getCall(0).args[0];
-      expect(app).toEqual(expectedApp);
+      expect(app).toEqual(appUpdated);
     });
   });
 

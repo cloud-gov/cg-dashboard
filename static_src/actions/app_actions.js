@@ -39,10 +39,11 @@ const appActions = {
       .then((app) =>
         // Setup a poll so that we know when the app is back up.
         poll(
-          (appStatus) => appStatus.running_instances > 0,
+          appStatus => appStatus.running_instances > 0,
+          // TODO if this was an action that updated the store, the UI would
+          // give richer information from the poll
           cfApi.fetchAppStatus.bind(cfApi, app.guid)
         )
-        .then(() => app) // Return the original result
       ).then(appActions.updatedApp, (err) => appActions.error(appGuid, err));
   },
 
