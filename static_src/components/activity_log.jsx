@@ -28,7 +28,9 @@ function stateSetter(props) {
 
   return {
     activity,
-    empty: (ActivityStore.fetched && activity.length === 0)
+    empty: (ActivityStore.fetched && activity.length === 0),
+    hasErrors: ActivityStore.hasErrors,
+    errors: ActivityStore.errors
   };
 }
 
@@ -74,7 +76,9 @@ export default class ActivityLog extends React.Component {
   render() {
     let content = <div></div>;
 
-    if (this.state.empty) {
+    if (this.state.empty && this.state.hasErrors) {
+      content = <h5 className="test-none_message">An error occured fetching recent activity</h5>;
+    } else if (this.state.empty) {
       content = <h5 className="test-none_message">No recent activity</h5>;
     } else {
       let showMore = (this.state.activity.length >= this.props.maxItems) &&

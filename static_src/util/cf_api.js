@@ -34,6 +34,15 @@ function handleError(err, errHandler = errorActions.errorFetch) {
   }
 }
 
+// Some general error handling for API calls
+// Logs the error, reports to NR, and rejects the error so error actions can
+// handle them appropriately.
+function promiseHandleError(err) {
+  console.warn('cf_api error', { err }); // eslint-disable-line no-console
+  noticeError(err);
+  return Promise.reject(err);
+}
+
 export default {
   version: APIV,
 
@@ -257,9 +266,7 @@ export default {
   fetchAppLogs(appGuid) {
     return http.get(`log/recent?app=${appGuid}`)
       .then(res => res.data)
-      .catch((err) => {
-        handleError(err);
-      });
+      .catch(promiseHandleError);
   },
 
   putApp(appGuid, app) {

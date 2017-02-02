@@ -269,6 +269,9 @@ const domainActionTypes = keymirror({
 const activityActionTypes = keymirror({
   EVENTS_FETCH: null,
   EVENTS_RECEIVED: null,
+
+  // An error occured while fetching logs
+  LOGS_ERROR: null,
   LOGS_FETCH: null,
   LOGS_RECEIVED: null
 });

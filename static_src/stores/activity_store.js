@@ -63,6 +63,7 @@ class ActivityStore extends BaseStore {
     this._eventsFetching = false;
     this._logsFetched = false;
     this._logsFetching = false;
+    this.errors = {};
   }
 
   get fetched() {
@@ -71,6 +72,10 @@ class ActivityStore extends BaseStore {
 
   get fetching() {
     return this._eventsFetching || this._logsFetching;
+  }
+
+  get hasErrors() {
+    return this.errors.log || this.errors.event;
   }
 
   _registerToActions(action) {
@@ -98,6 +103,7 @@ class ActivityStore extends BaseStore {
       case activityActionTypes.LOGS_FETCH:
         this._logsFetching = true;
         this._logsFetched = false;
+        this.errors.log = null;
         this.emitChange();
         break;
 
@@ -111,6 +117,13 @@ class ActivityStore extends BaseStore {
           return parsed;
         });
         this.mergeMany('guid', activity, () => {});
+        this.emitChange();
+        break;
+
+      case activityActionTypes.LOGS_ERROR:
+        this._logsFetching = false;
+        this._logsFetched = true;
+        this.errors.log = action.err;
         this.emitChange();
         break;
 

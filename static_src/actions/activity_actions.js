@@ -30,7 +30,8 @@ const activityActions = {
     });
 
     return cfApi.fetchAppLogs(appGuid)
-      .then(logs => activityActions.receivedAppLogs(appGuid, logs));
+      .then(logs => activityActions.receivedAppLogs(appGuid, logs))
+      .catch(err => activityActions.errorAppLogs(appGuid, err));
   },
 
   receivedAppLogs(appGuid, logs) {
@@ -41,6 +42,16 @@ const activityActions = {
     });
 
     return Promise.resolve(logs);
+  },
+
+  errorAppLogs(appGuid, err) {
+    AppDispatcher.handleServerAction({
+      type: activityActionTypes.LOGS_ERROR,
+      appGuid,
+      err
+    });
+
+    return Promise.resolve();
   }
 };
 
