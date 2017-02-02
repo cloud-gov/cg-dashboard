@@ -19,7 +19,6 @@ export default class ElasticLine extends React.Component {
   }
 
   render() {
-
     return (
       <div className={ this.styler('elastic_line') }>
         { this.props.children }

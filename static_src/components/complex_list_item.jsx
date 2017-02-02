@@ -18,8 +18,6 @@ export default class ComplexListItem extends React.Component {
   }
 
   render() {
-    const props = this.props;
-
     return (
       <div className={ this.styler('complex_list-item') }>
         { this.props.children }

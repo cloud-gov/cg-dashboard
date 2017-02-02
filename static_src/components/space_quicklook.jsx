@@ -6,9 +6,7 @@ import createStyler from '../util/create_styler';
 
 import AppQuicklook from './app_quicklook.jsx';
 import ComplexList from './complex_list.jsx';
-import ComplexListItem from './complex_list_item.jsx';
 import EntityIcon from './entity_icon.jsx';
-import PanelRow from './panel_row.jsx';
 import { spaceHref } from '../util/url';
 
 const propTypes = {

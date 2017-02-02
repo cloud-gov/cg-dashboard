@@ -6,8 +6,6 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
-import PanelHeader from './panel_header.jsx';
-import PanelGroup from './panel_group.jsx';
 import ServiceBindingStore from '../stores/service_binding_store.js';
 import ServiceInstanceList from './service_instance_list.jsx';
 import ServiceInstanceStore from '../stores/service_instance_store.js';

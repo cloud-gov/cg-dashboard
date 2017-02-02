@@ -45,7 +45,7 @@ export default class ComplexList extends React.Component {
       } else {
         title = this.props.title;
       }
-      header  = (
+      header = (
         <header className={ this.styler('complex_list-header') }>
           <h4 className={ this.styler('complex_list-title') }>
             { title }
@@ -66,7 +66,7 @@ export default class ComplexList extends React.Component {
             <ComplexListItem key={ i }>
               { child }
             </ComplexListItem>
-          )
+          );
         })}
       </div>
     );
