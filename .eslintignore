@@ -36,7 +36,6 @@ static_src/test/server/fixtures/
 /static_src/test/server/authstatus.js
 /static_src/test/server/fixtures.js
 /static_src/test/server/server.js
-/static_src/test/unit/actions/app_actions.spec.js
 /static_src/test/unit/actions/domain_actions.spec.js
 /static_src/test/unit/actions/org_actions.spec.js
 /static_src/test/unit/actions/quota_actions.spec.js
@@ -45,7 +44,6 @@ static_src/test/server/fixtures/
 /static_src/test/unit/actions/space_actions.spec.js
 /static_src/test/unit/actions/user_actions.spec.js
 /static_src/test/unit/helpers.js
-/static_src/test/unit/stores/app_store.spec.js
 /static_src/test/unit/stores/base_store.spec.js
 /static_src/test/unit/stores/domain_store.spec.js
 /static_src/test/unit/stores/login_store.spec.js
