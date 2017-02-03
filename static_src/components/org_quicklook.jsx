@@ -5,7 +5,6 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 import AppCountStatus from './app_count_status.jsx';
-import ComplexList from './complex_list.jsx';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import EntityIcon from './entity_icon.jsx';
@@ -72,7 +71,7 @@ export default class OrgQuicklook extends React.Component {
     }
 
     if (!this.props.spaces.length) {
-      return <h4>No spaces in this organization</h4>
+      return <h4>No spaces in this organization</h4>;
     }
 
     return this.props.spaces.map(space =>
@@ -88,7 +87,7 @@ export default class OrgQuicklook extends React.Component {
       <ExpandableBox
         clickHandler={ this.onRowClick }
         isExpanded={ expand }
-        classes={["test-org-quicklook"]}
+        classes={['test-org-quicklook']}
         clickableContent={(
           <ElasticLine>
             <ElasticLineItem>

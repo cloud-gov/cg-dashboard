@@ -15,7 +15,7 @@ const propTypes = {
 const defaultProps = {
   children: null,
   classes: [],
-  clickHandler: function() {},
+  clickHandler: () => {},
   clickableContent: null,
   isExpanded: false
 };

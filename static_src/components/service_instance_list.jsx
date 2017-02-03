@@ -39,8 +39,7 @@ export default class ServiceInstanceList extends React.Component {
       content = (
         <ComplexList titleElement={ this.props.titleElement }
           emptyMessage={ <h4>No services</h4> }
-        >
-        </ComplexList>
+        />
       );
     } else {
       content = (
