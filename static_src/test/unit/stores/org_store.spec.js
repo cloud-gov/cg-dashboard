@@ -4,19 +4,19 @@ import Immutable from 'immutable';
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import OrgStore from '../../../stores/org_store.js';
+import { OrgStore as OrgStoreClass } from '../../../stores/org_store.js';
 import { orgActionTypes } from '../../../constants';
 
 describe('OrgStore', () => {
-  let sandbox;
+  let sandbox, OrgStore;
 
   beforeEach(() => {
-    OrgStore._currentOrgGuid = null;
-    OrgStore._data = Immutable.List();
+    OrgStore = new OrgStoreClass();
     sandbox = sinon.sandbox.create();
   });
 
   afterEach(() => {
+    OrgStore.unsubscribe();
     sandbox.restore();
   });
 

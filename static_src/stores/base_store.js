@@ -27,6 +27,10 @@ export default class BaseStore extends EventEmitter {
     this._dispatchToken = AppDispatcher.register(actionSubscribe());
   }
 
+  unsubscribe() {
+    AppDispatcher.unregister(this._dispatchToken);
+  }
+
   get dispatchToken() {
     return this._dispatchToken;
   }

@@ -4,20 +4,17 @@
  * server.
  */
 
-import Immutable from 'immutable';
-
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import LoginStore from './login_store.js';
 import { orgActionTypes } from '../constants.js';
 import Quicklook from '../models/quicklook';
 
-class OrgStore extends BaseStore {
+export class OrgStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
     this._currentOrgGuid = null;
-    this._data = new Immutable.List();
     this._fetchOrg = false;
     this._fetchAll = false;
   }
@@ -86,6 +83,10 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORG_TOGGLE_QUICKLOOK: {
         const org = this.get(action.orgGuid);
+        if (!org) {
+          break;
+        }
+
         const orgQuicklook = new Quicklook(org.quicklook || {});
         const toggledOrg = { ...org,
           quicklook: orgQuicklook.merge({ open: !orgQuicklook.open })
@@ -96,6 +97,10 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORG_TOGGLE_QUICKLOOK_SUCCESS: {
         const org = this.get(action.orgGuid);
+        if (!org) {
+          break;
+        }
+
         const orgQuicklook = new Quicklook(org.quicklook);
         const toggledOrg = { ...org,
           quicklook: orgQuicklook.merge({ isLoaded: true, error: null })
@@ -106,6 +111,10 @@ class OrgStore extends BaseStore {
 
       case orgActionTypes.ORG_TOGGLE_QUICKLOOK_ERROR: {
         const org = this.get(action.orgGuid);
+        if (!org) {
+          break;
+        }
+
         const orgQuicklook = org.quicklook;
         const toggledOrg = { ...org,
           quicklook: orgQuicklook.merge({ isLoaded: true, error: action.error })
