@@ -173,7 +173,7 @@ export default class ServiceInstance extends React.Component {
     if (serviceInstance) {
       const confirmation = this.confirmation;
       const statusClass = (ServiceInstanceStore.getInstanceState(
-        this.props.serviceInstance) === OPERATION_FAILED) ? 'panel-column-error' : null;
+        this.props.serviceInstance) === OPERATION_FAILED) ? 'form-error' : null;
 
       if (confirmation) {
         content = (

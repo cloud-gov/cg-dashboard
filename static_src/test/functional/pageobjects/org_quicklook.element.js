@@ -8,7 +8,7 @@ import BaseElement from './base.element';
 
 // TODO attach to class as static property
 const selectors = {
-  title: '.test-org-quicklook .panel-column a',
+  title: '.test-org-quicklook-title',
   spaceQuicklookRow: '.test-space-quicklook'
 };
 

@@ -81,12 +81,12 @@ export default class OverviewContainer extends React.Component {
         <PageHeader title={ title } />
         <Panel title="Your organizations">
           { state.orgs.map((org) =>
-            <PanelRow key={ org.guid } className="test-panel-row-organizations" styleClass="boxed">
+            <div key={ org.guid } className="test-panel-row-organizations">
               <OrgQuicklook
                 org={ org }
                 spaces={ this.orgSpaces(org.guid) }
               />
-            </PanelRow>
+            </div>
           )}
         </Panel>
         <Panel title="Cheatsheet">
