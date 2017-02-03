@@ -101,59 +101,66 @@ const spaceActionTypes = keymirror({
 });
 
 const serviceActionTypes = keymirror({
+  // Services
+  // Action to bind a service instance to an app.
+  SERVICE_BIND: null,
+  // Action when a service instance was bound to an app.
+  SERVICE_BOUND: null,
   // Action to fetch all services (for marketplace) for an org.
   SERVICES_FETCH: null,
   // Action when all services for an org were received from the server.
   SERVICES_RECEIVED: null,
+  // Action to unbind a service instance from an app.
+  SERVICE_UNBIND: null,
+  // Aciton when a service instance was unbound from an app.
+  SERVICE_UNBOUND: null,
+
+  // Service Bindings
+  // Action to fetch service bindins for an app.
+  SERVICE_BINDINGS_FETCH: null,
+  // Action when received service bindings from server.
+  SERVICE_BINDINGS_RECEIVED: null,
+
+  // Service Plans
   // Action when a single service plan received from server.
   SERVICE_PLAN_RECEIVED: null,
   // Action to fetch all service plans for a certain service.
   SERVICE_PLANS_FETCH: null,
   // Action when all service plans for a service were received from the server.
   SERVICE_PLANS_RECEIVED: null,
-  // Action to decide whether to delete a single service instance.
-  SERVICE_INSTANCE_DELETE_CONFIRM: null,
-  // Action to decide whether to cancel deletion of a single service instance.
-  SERVICE_INSTANCE_DELETE_CANCEL: null,
-  // Action to delete a single service instance.
-  SERVICE_INSTANCE_DELETE: null,
-  // Action when a single service instance was deleted on the server.
-  SERVICE_INSTANCE_DELETED: null,
-  // Action to fetch a all service instances from the server.
-  SERVICE_INSTANCES_FETCH: null,
-  // Action when service instance was received from the server.
-  SERVICE_INSTANCE_RECEIVED: null,
-  // Action when all service instances were received from the server.
-  SERVICE_INSTANCES_RECEIVED: null,
-  // Action to open UI to create a service instance.
-  SERVICE_INSTANCE_CREATE_FORM: null,
-  // Action to cancel the form to create a service instance.
-  SERVICE_INSTANCE_CREATE_FORM_CANCEL: null,
-  // Action when an error happens attempting to create a service instance on
-  // server.
-  SERVICE_INSTANCE_CREATE_ERROR: null,
-  // Action to create a service instance.
-  SERVICE_INSTANCE_CREATE: null,
-  // Action when a service instance was created on the server.
-  SERVICE_INSTANCE_CREATED: null,
+
+  // Service Instances
   // Action when a user wants to modify the service instance.
   SERVICE_INSTANCE_CHANGE_CHECK: null,
   // Action when a user cancels modifying the instance.
   SERVICE_INSTANCE_CHANGE_CANCEL: null,
-  // Action to fetch service bindins for an app.
-  SERVICE_BINDINGS_FETCH: null,
-  // Action when received service bindings from server.
-  SERVICE_BINDINGS_RECEIVED: null,
-  // Action to bind a service instance to an app.
-  SERVICE_BIND: null,
-  // Action to unbind a service instance from an app.
-  SERVICE_UNBIND: null,
-  // Action when a service instance was bound to an app.
-  SERVICE_BOUND: null,
-  // Aciton when a service instance was unbound from an app.
-  SERVICE_UNBOUND: null,
+  // Action to create a service instance.
+  SERVICE_INSTANCE_CREATE: null,
+  // Action when an error happens attempting to create a service instance on
+  // server.
+  SERVICE_INSTANCE_CREATE_ERROR: null,
+  // Action to open UI to create a service instance.
+  SERVICE_INSTANCE_CREATE_FORM: null,
+  // Action to cancel the form to create a service instance.
+  SERVICE_INSTANCE_CREATE_FORM_CANCEL: null,
+  // Action when a service instance was created on the server.
+  SERVICE_INSTANCE_CREATED: null,
+  // Action to delete a single service instance.
+  SERVICE_INSTANCE_DELETE: null,
+  // Action when a single service instance was deleted on the server.
+  SERVICE_INSTANCE_DELETED: null,
+  // Action to decide whether to cancel deletion of a single service instance.
+  SERVICE_INSTANCE_DELETE_CANCEL: null,
+  // Action to decide whether to delete a single service instance.
+  SERVICE_INSTANCE_DELETE_CONFIRM: null,
   // Action when any error happens with a specific instance.
-  SERVICE_INSTANCE_ERROR: null
+  SERVICE_INSTANCE_ERROR: null,
+  // Action when service instance was received from the server.
+  SERVICE_INSTANCE_RECEIVED: null,
+  // Action to fetch a all service instances from the server.
+  SERVICE_INSTANCES_FETCH: null,
+  // Action when all service instances were received from the server.
+  SERVICE_INSTANCES_RECEIVED: null
 });
 
 const appActionTypes = keymirror({
