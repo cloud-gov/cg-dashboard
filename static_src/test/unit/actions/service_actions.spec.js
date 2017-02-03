@@ -21,16 +21,27 @@ describe('serviceActions', function() {
     sandbox.restore();
   });
 
-  describe('fetchAllServices()', function() {
-    it('should dispatch a view event of type service fetch', function() {
-      let expectedParams = {
-        orgGuid: 'adsfa'
-      }
-      let spy = setupViewSpy(sandbox)
+  describe('fetchAllServices()', function () {
+    let viewSpy, guid;
 
-      serviceActions.fetchAllServices(expectedParams.orgGuid);
+    beforeEach(function (done) {
+      guid = 'asdfa';
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'fetchAllServices').returns(Promise.resolve());
 
-      assertAction(spy, serviceActionTypes.SERVICES_FETCH, expectedParams);
+      serviceActions.fetchAllServices(guid).then(done, done.fail);
+    });
+
+    it('should dispatch a view event of type service fetch', function () {
+      const expectedParams = {
+        orgGuid: guid
+      };
+
+      assertAction(viewSpy, serviceActionTypes.SERVICES_FETCH, expectedParams);
+    });
+
+    it('calls cf_api fetchAllServices', function () {
+      expect(cfApi.fetchAllServices).toHaveBeenCalledOnce();
     });
   });
 

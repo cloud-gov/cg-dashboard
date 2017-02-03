@@ -5,6 +5,7 @@
  */
 
 import AppDispatcher from '../dispatcher.js';
+import cfApi from '../util/cf_api.js';
 import { serviceActionTypes } from '../constants';
 
 export default {
@@ -13,6 +14,8 @@ export default {
       type: serviceActionTypes.SERVICES_FETCH,
       orgGuid
     });
+
+    return cfApi.fetchAllServices(orgGuid);
   },
 
   receivedServices(services) {
