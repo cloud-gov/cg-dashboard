@@ -34,7 +34,7 @@ export default class SpaceQuicklook extends React.Component {
   render() {
     const space = this.props.space;
     return (
-      <ComplexList>
+      <ComplexList className="test-space-quicklook">
         <h3 className={ this.styler('contents-primary') }>
           <EntityIcon entity="space" iconSize="medium" />
           <a href={ this.spaceHref() }>{ space.name }</a>

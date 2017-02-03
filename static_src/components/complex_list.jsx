@@ -7,6 +7,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const propTypes = {
   children: React.PropTypes.array,
+  className: React.PropTypes.string,
   title: React.PropTypes.string,
   titleElement: React.PropTypes.element,
   emptyMessage: React.PropTypes.element
@@ -55,7 +56,7 @@ export default class ComplexList extends React.Component {
     }
 
     return (
-      <div className={ this.styler('complex_list') }>
+      <div className={ [this.props.className, this.styler('complex_list')].join(' ') }>
         { header }
         { emptyMessage }
         { this.props.children.length > 0 && this.props.children.map((child, i) => {
