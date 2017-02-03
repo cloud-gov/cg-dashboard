@@ -4,7 +4,6 @@ import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import ComplexList from './complex_list.jsx';
-import PanelRow from './panel_row.jsx';
 import ServiceInstance from './service_instance.jsx';
 
 import createStyler from '../util/create_styler';
