@@ -6,6 +6,9 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
+import ComplexList from './complex_list.jsx';
+import ElasticLine from './elastic_line.jsx';
+import ElasticLineItem from './elastic_line_item.jsx';
 import PanelGroup from './panel_group.jsx';
 import ServiceStore from '../stores/service_store.js';
 import ServicePlanList from './service_plan_list.jsx';
@@ -56,17 +59,17 @@ export default class ServiceList extends React.Component {
 
             return (
               <PanelGroup key={ service.guid }>
-                <div>
-                  <span className={ this.styler('panel-column') }>
+                <ElasticLine>
+                  <ElasticLineItem>
                     <h3 className={ this.styler('sans-s6') }>
                       <strong>{ service.label }</strong>
                     </h3>
                     <span>{ service.description }</span>
-                  </span>
-                  <span>
+                  </ElasticLineItem>
+                  <ElasticLineItem align="end">
                     Updated { formatDateTime(service.updated_at) }
-                  </span>
-                </div>
+                  </ElasticLineItem>
+                </ElasticLine>
                 { servicePlans }
               </PanelGroup>
             );
