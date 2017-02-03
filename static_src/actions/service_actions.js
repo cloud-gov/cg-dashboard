@@ -7,8 +7,9 @@
 import AppDispatcher from '../dispatcher.js';
 import cfApi from '../util/cf_api.js';
 import { serviceActionTypes } from '../constants';
+import ServiceInstanceStore from '../stores/service_instance_store';
 
-export default {
+const serviceActions = {
   fetchAllServices(orgGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICES_FETCH,
@@ -74,6 +75,9 @@ export default {
       spaceGuid,
       servicePlanGuid
     });
+
+    return cfApi.createServiceInstance(name, spaceGuid, servicePlanGuid)
+      .then(serviceInstance => serviceActions.fetchInstance(serviceInstance.guid));
   },
 
   createdInstance(serviceInstance) {
@@ -88,6 +92,15 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR,
       error: err
     });
+  },
+
+  fetchInstance(serviceInstanceGuid) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_FETCH,
+      serviceInstanceGuid
+    });
+
+    return cfApi.fetchServiceInstance(serviceInstanceGuid);
   },
 
   receivedInstance(serviceInstance) {
@@ -123,6 +136,13 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
       serviceInstanceGuid: instanceGuid
     });
+
+    const toDelete = ServiceInstanceStore.get(instanceGuid);
+    if (!toDelete) {
+      return Promise.reject(new Error(`ServiceInstance ${instanceGuid} is not in store`));
+    }
+
+    return cfApi.deleteUnboundServiceInstance(toDelete);
   },
 
   deletedInstance(serviceInstanceGuid) {
@@ -197,3 +217,5 @@ export default {
     });
   }
 };
+
+export default serviceActions;

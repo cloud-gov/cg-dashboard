@@ -155,6 +155,8 @@ const serviceActionTypes = keymirror({
   SERVICE_INSTANCE_DELETE_CONFIRM: null,
   // Action when any error happens with a specific instance.
   SERVICE_INSTANCE_ERROR: null,
+  // Action when service instance is fetched from the server.
+  SERVICE_INSTANCE_FETCH: null,
   // Action when service instance was received from the server.
   SERVICE_INSTANCE_RECEIVED: null,
   // Action to fetch a all service instances from the server.

@@ -83,6 +83,12 @@ export default class BaseStore extends EventEmitter {
     return cb(true);
   }
 
+  clear(cb = defaultChangedCallback.bind(this)) {
+    const old = this._data;
+    this._data = this._data.clear();
+    return cb(!this._data.equals(old));
+  }
+
   formatSplitResponse(resources) {
     return resources.map((r) => Object.assign(r.entity, r.metadata));
   }

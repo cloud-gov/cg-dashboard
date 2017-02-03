@@ -7,7 +7,6 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
-import cfApi from '../util/cf_api.js';
 import { appStates, serviceActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 import ServicePlanStore from './service_plan_store.js';
@@ -34,7 +33,7 @@ const APP_STATE_MAP = {
   [OPERATION_RUNNING]: appStates.running
 };
 
-class ServiceInstanceStore extends BaseStore {
+export class ServiceInstanceStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
@@ -44,6 +43,8 @@ class ServiceInstanceStore extends BaseStore {
     this._createError = null;
     this._createLoading = false;
     this._createdTempNotification = false;
+    this._fetchAll = false;
+    this._fetching = false;
   }
 
   get createInstanceForm() {
@@ -60,6 +61,10 @@ class ServiceInstanceStore extends BaseStore {
 
   get createdTempNotification() {
     return this._createdTempNotification;
+  }
+
+  get loading() {
+    return this._fetchAll || this._fetching;
   }
 
   getAllBySpaceGuid(spaceGuid) {
@@ -119,24 +124,31 @@ class ServiceInstanceStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_INSTANCES_FETCH: {
-        this.load([cfApi.fetchServiceInstances(action.spaceGuid)]);
+        this._fetchAll = true;
+        this.emitChange();
+        break;
+      }
+
+      case serviceActionTypes.SERVICE_INSTANCE_FETCH: {
+        // TODO this isn't really correct, because if fetching multiple
+        // instances they will clobber state. When fetching individual
+        // entities, we should store the fetch state on the entity itself
+        this._fetching = true;
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_RECEIVED: {
+        this._fetching = false;
         const instance = action.serviceInstance;
-        this.merge('guid', instance, () => {
-          this.emitChange();
-        });
+        this.merge('guid', instance);
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
+        this._fetchAll = false;
         const services = action.serviceInstances;
-        this.mergeMany('guid', services, () => {
-          this.emitChange();
-        });
+        this.mergeMany('guid', services);
         break;
       }
 
@@ -156,18 +168,13 @@ class ServiceInstanceStore extends BaseStore {
         break;
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE: {
-        cfApi.createServiceInstance(
-          action.name,
-          action.spaceGuid,
-          action.servicePlanGuid
-        );
         this._createLoading = true;
+        // TODO create a "creating" service instance in the UI to update later
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATED: {
-        cfApi.fetchServiceInstance(action.serviceInstance.guid);
         this._createError = null;
         this._createLoading = false;
         this._createdTempNotification = true;
@@ -217,17 +224,14 @@ class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_DELETE: {
-        const toDelete = this.get(action.serviceInstanceGuid);
-        if (toDelete) {
-          cfApi.deleteUnboundServiceInstance(toDelete);
-        }
+        const serviceInstance = this.get(action.serviceInstanceGuid);
+        const toDelete = Object.assign({}, serviceInstance, { deleting: true });
+        this.merge('guid', toDelete);
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_DELETED: {
-        this.delete(action.serviceInstanceGuid, (changed) => {
-          if (changed) this.emitChange();
-        });
+        this.delete(action.serviceInstanceGuid);
         break;
       }
 

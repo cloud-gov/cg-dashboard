@@ -8,6 +8,7 @@ import { assertAction, setupViewSpy, setupServerSpy, setupUISpy } from
 import cfApi from '../../../util/cf_api.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
+import ServiceInstanceStore from '../../../stores/service_instance_store';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
 
 describe('serviceActions', function() {
@@ -304,33 +305,44 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('deleteInstance()', function() {
-    it('should dispatch a instance delete view event with instance guid', () => {
-      var expectedInstanceGuid = 'asdfasdf';
-      var expectedParams = {
-        serviceInstanceGuid: expectedInstanceGuid
-      }
+  describe('deleteInstance()', function () {
+    let expectedInstanceGuid, expected, viewSpy;
 
-      let spy = setupUISpy(sandbox)
-      serviceActions.deleteInstanceConfirm(expectedInstanceGuid);
+    beforeEach(function (done) {
+      expectedInstanceGuid = 'asdfasdf';
+      expected = { guid: expectedInstanceGuid, url: `/${expectedInstanceGuid}` };
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETE_CONFIRM,
-                   expectedParams);
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'deleteUnboundServiceInstance').returns(Promise.resolve());
+
+      // TODO this should be a fresh instance of ServiceInstanceStore, but the
+      // actions use the global singletons
+      ServiceInstanceStore.clear();
+      ServiceInstanceStore.push(expected);
+
+      serviceActions.deleteInstance(expectedInstanceGuid).then(done, done.fail);
     });
-  });
 
-  describe('deleteInstance()', function() {
     it('should dispatch a instance delete view event with instance guid', () => {
-      var expectedInstanceGuid = 'asdfasdf';
-      var expectedParams = {
+      const expectedParams = {
         serviceInstanceGuid: expectedInstanceGuid
-      }
+      };
 
-      let spy = setupViewSpy(sandbox)
-      serviceActions.deleteInstance(expectedInstanceGuid);
+      assertAction(viewSpy, serviceActionTypes.SERVICE_INSTANCE_DELETE, expectedParams);
+    });
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETE,
-                   expectedParams);
+    it('should call api delete with the service', function () {
+      expect(cfApi.deleteUnboundServiceInstance).toHaveBeenCalledOnce();
+      const arg = cfApi.deleteUnboundServiceInstance.getCall(0).args[0];
+      expect(arg).toEqual(expected);
+    });
+
+    describe('for non existing instance', function () {
+      it('should do nothing if the service isn\'t in data', function () {
+        cfApi.deleteUnboundServiceInstance.reset();
+        serviceActions.deleteInstance('1234');
+        expect(cfApi.deleteUnboundServiceInstance).not.toHaveBeenCalled();
+      });
     });
   });
 
