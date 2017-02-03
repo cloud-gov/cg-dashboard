@@ -7,7 +7,7 @@ import orgActions from '../../../actions/org_actions.js';
 import { orgActionTypes } from '../../../constants.js';
 
 describe('orgActions', () => {
-  var sandbox;
+  let sandbox;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
@@ -72,14 +72,14 @@ describe('orgActions', () => {
     });
   });
 
-  describe('receivedOrg()', function() {
-    it('should dispatch a server event for org fetch with the org', function() {
-      var expected = { guid: 'asdf', name: 'adsfa' },
-          expectedParams = {
-            org: expected
-          };
+  describe('receivedOrg()', function () {
+    it('should dispatch a server event for org fetch with the org', function () {
+      const expected = { guid: 'asdf', name: 'adsfa' },
+        expectedParams = {
+          org: expected
+        };
 
-      let spy = setupServerSpy(sandbox)
+      const spy = setupServerSpy(sandbox);
 
       orgActions.receivedOrg(expected);
 
@@ -87,23 +87,23 @@ describe('orgActions', () => {
     });
   });
 
-  describe('changeCurrentOrg()', function() {
-    it('should send an org change current event action with new org', function() {
-      var expected = 'asdlfka',
-          expectedParams = {
-            orgGuid: expected
-          };
+  describe('changeCurrentOrg()', function () {
+    it('should send an org change current event action with new org', function () {
+      const expected = 'asdlfka',
+        expectedParams = {
+          orgGuid: expected
+        };
 
-      let spy = setupViewSpy(sandbox)
+      const spy = setupViewSpy(sandbox);
 
       orgActions.changeCurrentOrg(expected);
 
       assertAction(spy, orgActionTypes.ORG_CHANGE_CURRENT, expectedParams);
     });
 
-    it('should send a space menu toggle UI action', function() {
-      let expected = 'asdlfka';
-      let spy = setupUISpy(sandbox)
+    it('should send a space menu toggle UI action', function () {
+      const expected = 'asdlfka';
+      const spy = setupUISpy(sandbox);
 
       orgActions.toggleSpaceMenu(expected);
 
@@ -111,12 +111,9 @@ describe('orgActions', () => {
     });
   });
 
-  describe('toggleQuicklook()', function() {
-    it('should dispatch a UI event of type toggle quicklook', function() {
+  describe('toggleQuicklook()', function () {
+    it('should dispatch a UI event of type toggle quicklook', function () {
       const orgGuid = 'asdlfka';
-      const expectedParams = {
-        orgGuid
-      };
       const spy = setupUISpy(sandbox);
 
       orgActions.toggleQuicklook(orgGuid);
