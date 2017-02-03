@@ -5,6 +5,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
 import AppQuicklook from './app_quicklook.jsx';
+import ComplexList from './complex_list.jsx';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
@@ -56,16 +57,18 @@ export default class AppList extends React.Component {
   render() {
     let loading = <Loading text="Loading apps" />;
     let content = <div>{ loading }</div>;
+    const title = (
+      <span>
+        <span>Apps in</span> <EntityIcon entity="space" iconSize="medium" />
+        <span> { this.state.currentSpaceName }</span>
+      </span>
+    );
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No apps</h4>;
     } else if (!this.state.loading && this.state.apps.length > 0) {
       content = (
-        <div>
-          <div className={ this.styler('panel-row-header') }>
-            <span>Apps in</span> <EntityIcon entity="space" iconSize="medium" />
-            <span> { this.state.currentSpaceName }</span>
-          </div>
+        <ComplexList titleElement={ title }>
           { this.state.apps.map((app) =>
             <AppQuicklook
               key={ app.guid }
@@ -76,7 +79,7 @@ export default class AppList extends React.Component {
               extraInfo={ ['state', 'memory', 'diskQuota'] }
             />
           )}
-        </div>
+        </ComplexList>
       );
     }
 
