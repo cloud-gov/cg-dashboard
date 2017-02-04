@@ -195,6 +195,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_BINDINGS_FETCH,
       appGuid
     });
+
+    return cfApi.fetchServiceBindings(appGuid);
   },
 
   receivedServiceBindings(serviceBindings) {
@@ -210,6 +212,8 @@ const serviceActions = {
       appGuid,
       serviceInstanceGuid
     });
+
+    return cfApi.createServiceBinding(appGuid, serviceInstanceGuid);
   },
 
   unbindService(serviceBinding) {
@@ -217,6 +221,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_UNBIND,
       serviceBinding
     });
+
+    return cfApi.deleteServiceBinding(serviceBinding);
   },
 
   boundService(serviceBinding) {

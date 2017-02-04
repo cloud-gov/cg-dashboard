@@ -5,65 +5,54 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import ServiceBindingStore from '../../../stores/service_binding_store.js';
-import serviceActions from '../../../actions/service_actions.js';
+import {
+  ServiceBindingStore as ServiceBindingStoreClass
+} from '../../../stores/service_binding_store.js';
+
 import { serviceActionTypes } from '../../../constants.js';
 
-describe('ServiceBindingStore', function() {
-  var sandbox;
+describe('ServiceBindingStore', function () {
+  let sandbox, ServiceBindingStore;
 
   beforeEach(() => {
-    ServiceBindingStore._data = Immutable.List();
+    ServiceBindingStore = new ServiceBindingStoreClass();
     sandbox = sinon.sandbox.create();
   });
 
   afterEach(() => {
+    ServiceBindingStore.unsubscribe();
     sandbox.restore();
   });
 
-  describe('constructor()', () => {
-    it('should set _data to empty array', () => {
-      expect(ServiceBindingStore.getAll()).toBeEmptyArray();
-    });
-  });
-
-  describe('on service bindings fetch', function() {
-    it('should call the cf api for all service bindings with app guid',
-        function() {
-      const spy = sandbox.spy(cfApi, 'fetchServiceBindings');
+  describe('on service bindings fetch', function () {
+    beforeEach(function () {
       const expectedAppGuid = 'zxncvz8xcvhn32';
+      sandbox.spy(ServiceBindingStore, 'emitChange');
 
-      serviceActions.fetchServiceBindings(expectedAppGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedAppGuid);
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_BINDINGS_FETCH,
+        appGuid: expectedAppGuid
+      });
     });
 
-    it('should set loading to true', function() {
-      serviceActions.fetchServiceBindings('zxncvz8xcvhn32');
-
+    it('should set loading to true', function () {
       expect(ServiceBindingStore.loading).toEqual(true);
     });
 
-    it('should emit a change', function() {
-      const spy = sandbox.spy(ServiceBindingStore, 'emitChange');
-      serviceActions.fetchServiceBindings('zxncvz8xcvhn32');
-
-      // change is emitted twice, once on the action, once for loading status
-      expect(spy).toHaveBeenCalled();
+    it('should emit a change', function () {
+      expect(ServiceBindingStore.emitChange).toHaveBeenCalledOnce();
     });
   });
 
-  describe('getAllByApp()', function() {
-    it('should return all bindings by app guid', function() {
+  describe('getAllByApp()', function () {
+    it('should return all bindings by app guid', function () {
       const appGuid = 'zxclvkjzxcvsdf23';
       const bindingA = { guid: 'binda', app_guid: appGuid };
       const bindingB = { guid: 'bindb', app_guid: appGuid };
 
       ServiceBindingStore._data = Immutable.fromJS([bindingA, bindingB]);
 
-      const actual = ServiceBindingStore.getAllByApp(appGuid)
+      const actual = ServiceBindingStore.getAllByApp(appGuid);
 
       expect(actual).toBeTruthy();
       expect(actual.length).toEqual(2);
@@ -72,117 +61,124 @@ describe('ServiceBindingStore', function() {
     });
   });
 
-  describe('on service bindings received', function() {
-    const fakeBindings = [
-      { metadata: { guid: 'adsfa' }, entity: { service_instance_guid: 'zcv'} }
-    ];
+  describe('on service bindings received', function () {
+    let fakeBindings;
 
-    it('should emit a change', function() {
-      const spy = sandbox.spy(ServiceBindingStore, 'emitChange');
-      serviceActions.receivedServiceBindings(fakeBindings);
+    beforeEach(function () {
+      fakeBindings = [
+        { metadata: { guid: 'adsfa' }, entity: { service_instance_guid: 'zcv' } }
+      ];
 
-      expect(spy).toHaveBeenCalledOnce();
+      sandbox.spy(ServiceBindingStore, 'emitChange');
+      sandbox.spy(ServiceBindingStore, 'mergeMany');
+
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_BINDINGS_RECEIVED,
+        serviceBindings: fakeBindings
+      });
     });
 
-    it('should merge many with guid', function() {
-      const spy = sandbox.spy(ServiceBindingStore, 'mergeMany');
-      serviceActions.receivedServiceBindings(fakeBindings);
-
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith('guid');
+    it('should emit a change', function () {
+      expect(ServiceBindingStore.emitChange).toHaveBeenCalledOnce();
     });
-  });
 
-  describe('on service bind', function() {
-    it('should call api create binding with app, instance guid', function() {
-      const spy = sandbox.stub(cfApi, 'createServiceBinding');
-      spy.returns(Promise.resolve({data: {}}));
-      const appGuid = 'adfa3456vc';
-      const serviceInstanceGuid = 'zvcx234';
-
-      serviceActions.bindService(appGuid, serviceInstanceGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let args = spy.getCall(0).args;
-      expect(args[0]).toEqual(appGuid);
-      expect(args[1]).toEqual(serviceInstanceGuid);
+    it('should merge many with guid', function () {
+      expect(ServiceBindingStore.mergeMany).toHaveBeenCalledOnce();
+      expect(ServiceBindingStore.mergeMany).toHaveBeenCalledWith('guid');
     });
   });
 
-  describe('on service unbind', function() {
-    it('should call api delete binding with binding', function() {
+  describe('on service unbind', function () {
+    it('should binding with state unbinding', function () {
       const spy = sandbox.stub(cfApi, 'deleteServiceBinding');
-      spy.returns(Promise.resolve({data: {}}))
+      spy.returns(Promise.resolve({ data: {} }));
       const binding = {
         guid: 'zxvadf'
-      }
+      };
 
-      serviceActions.unbindService(binding);
+      ServiceBindingStore.push(binding);
 
-      expect(spy).toHaveBeenCalledOnce();
-      let args = spy.getCall(0).args;
-      expect(args[0]).toEqual(binding);
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_UNBIND,
+        serviceBinding: binding
+      });
+
+      const actualBinding = ServiceBindingStore.get(binding.guid);
+      expect(actualBinding.unbinding).toBe(true);
     });
   });
 
-  describe('on service bound', function() {
-    const bindingGuid = 'xcvm,n32980cvxn';
-    const testBinding = {
-      guid: bindingGuid,
-      app_guid: 'zcxv32',
-      service_instance_guid: 'xxcv2133'
-    };
+  describe('on service bound', function () {
+    let bindingGuid, testBinding;
 
-    it('should add the new binding to the store', function() {
-      const bindingGuid = 'xcvm,n32980cvxn';
+    beforeEach(function () {
+      bindingGuid = 'xcvm,n32980cvxn';
+      testBinding = {
+        guid: bindingGuid,
+        app_guid: 'zcxv32',
+        service_instance_guid: 'xxcv2133'
+      };
+
+      sandbox.spy(ServiceBindingStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_BOUND,
+        serviceBinding: testBinding
+      });
+    });
+
+    it('should add the new binding to the store', function () {
       const expected = testBinding;
-
-      serviceActions.boundService(expected);
-
       const actual = ServiceBindingStore.get(bindingGuid);
 
       expect(actual).toBeTruthy();
       expect(actual).toEqual(expected);
     });
 
-    it('should emit a change', function() {
-      const spy = sandbox.spy(ServiceBindingStore, 'emitChange');
-
-      serviceActions.boundService(testBinding);
-
-      expect(spy).toHaveBeenCalledOnce();
+    it('should emit a change', function () {
+      expect(ServiceBindingStore.emitChange).toHaveBeenCalledOnce();
     });
   });
 
-  describe('on service unbound', function() {
-    const testBinding = {
-      guid: '2dfg25sd',
-      app_guid: 'zcvx234xcb',
-      service_instance_guid: 'zxcv234bvc'
-    };
+  describe('on service unbound', function () {
+    let testBinding;
 
-    it('should remove the service binding', function() {
+    beforeEach(function () {
+      testBinding = {
+        guid: '2dfg25sd',
+        app_guid: 'zcvx234xcb',
+        service_instance_guid: 'zxcv234bvc'
+      };
+
       ServiceBindingStore._data = Immutable.fromJS([testBinding]);
+      sandbox.spy(ServiceBindingStore, 'emitChange');
 
-      serviceActions.unboundService(testBinding);
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_UNBOUND,
+        serviceBinding: testBinding
+      });
+    });
 
+    it('should remove the service binding', function () {
       expect(ServiceBindingStore.get(testBinding.guid)).toBeFalsy();
     });
 
-    it('should do nothing if service binding not found', function() {
-      const spy = sandbox.spy(ServiceBindingStore, 'emitChange');
-      serviceActions.unboundService(testBinding);
-
-      expect(spy).not.toHaveBeenCalledOnce();
+    it('should emit a change', function () {
+      expect(ServiceBindingStore.emitChange).toHaveBeenCalledOnce();
     });
 
-    it('should emit a change', function() {
-      ServiceBindingStore._data = Immutable.fromJS([testBinding]);
-      const spy = sandbox.spy(ServiceBindingStore, 'emitChange');
+    describe('when service binding not found', function () {
+      beforeEach(function () {
+        ServiceBindingStore.emitChange.reset();
+        AppDispatcher.handleViewAction({
+          type: serviceActionTypes.SERVICE_UNBOUND,
+          serviceBinding: { guid: 'not-exist' }
+        });
+      });
 
-      serviceActions.unboundService(testBinding);
-
-      expect(spy).toHaveBeenCalledOnce();
+      it('should do nothing if service binding not found', function () {
+        expect(ServiceBindingStore.emitChange).not.toHaveBeenCalledOnce();
+      });
     });
   });
 });
