@@ -5,15 +5,15 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import ServicePlanStore from '../../../stores/service_plan_store.js';
+import { ServicePlanStore as ServicePlanStoreClass } from '../../../stores/service_plan_store.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
 
-describe('ServicePlanStore', function() {
-  var sandbox;
+describe('ServicePlanStore', function () {
+  let sandbox, ServicePlanStore;
 
   beforeEach(() => {
-    ServicePlanStore._data = Immutable.List();
+    ServicePlanStore = new ServicePlanStoreClass();
     sandbox = sinon.sandbox.create();
   });
 
@@ -77,68 +77,22 @@ describe('ServicePlanStore', function() {
     });
   });
 
-  describe('on service instances received', function() {
-    const servicePlanGuid = 'zxkv,12398dajkh';
-    const fakeInstances = [
-      {
-        metadata: {
-          guid: 'zcvkzlxkcjvzxcz'
-        },
-        entity: {
-          name: 'adfadsf',
-          service_plan_guid: servicePlanGuid
-        }
-      }
-    ];
+  describe('on service plans fetch', function () {
+    beforeEach(function () {
+      sandbox.spy(ServicePlanStore, 'emitChange');
 
-    it('should set loading to true if there are instances', function() {
-      serviceActions.receivedInstances(fakeInstances);
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_PLANS_FETCH,
+        serviceGuid: '1234'
+      });
+    });
+
+    it('should set loading to true', function () {
       expect(ServicePlanStore.loading).toEqual(true);
     });
 
-    it('should emit a change', function() {
-      const spy = sandbox.spy(ServicePlanStore, 'emitChange');
-      serviceActions.receivedInstances(fakeInstances);
-
-      // change will be called once on the event, again from the loading status
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should fetch service plans with each instance plan guid', function() {
-      const spy = sandbox.spy(cfApi, 'fetchServicePlan');
-      const servicePlanGuidA = 'zcxlxbnlk;adsjfkzcvx';
-      const servicePlanGuidB = 'bzzcxvlkjzxcvldkzcvx';
-      const serviceInstanceA = {
-        metadata: {
-          guid: 'adsfadcvzczxcvxvz'
-        },
-        entity: {
-          service_plan_guid: servicePlanGuidA
-        }
-      };
-      const serviceInstanceB = {
-        metadata: {
-          guid: 'adsfadcvb234zxva'
-        },
-        entity: {
-          app_guid: "2a3820bb-febd-4c90-ab66-80faa4362142",
-          service_plan_guid: servicePlanGuidB
-        }
-      }
-      const serviceInstances = [serviceInstanceA, serviceInstanceB];
-
-      serviceActions.receivedInstances(serviceInstances);
-
-      expect(spy).toHaveBeenCalledTwice();
-
-    });
-  });
-
-  describe('on services received', function() {
-    it('should set loading to true', function() {
-      const services = [{ guid: '3981f', name: 'adlfskzxcv' }];
-      serviceActions.receivedServices(services);
-      expect(ServicePlanStore.loading).toEqual(true);
+    it('should emit a change', function () {
+      expect(ServicePlanStore.emitChange).toHaveBeenCalledOnce();
     });
   });
 
@@ -196,15 +150,16 @@ describe('ServicePlanStore', function() {
       expect(actual.extra).toEqual(expected);
     });
 
-    it('should do nothing if there are no service plans', function() {
-      var spy = sandbox.spy(ServicePlanStore, 'emitChange');
+    it('should set loading state false', function () {
+      sandbox.spy(ServicePlanStore, 'emitChange');
+      ServicePlanStore._fetchAll = true;
 
-      ServicePlanStore._data = Immutable.fromJS([{ guid: 'adsfklj'}]);
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_PLANS_RECEIVED,
+        servicePlans: []
+      });
 
-      serviceActions.receivedPlans();
-
-      expect(spy).not.toHaveBeenCalled();
-      expect(ServicePlanStore.getAll().length).toEqual(1);
+      expect(ServicePlanStore.loading).toBe(false);
     });
   });
 });

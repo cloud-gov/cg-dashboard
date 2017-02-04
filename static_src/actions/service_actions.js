@@ -16,7 +16,12 @@ const serviceActions = {
       orgGuid
     });
 
-    return cfApi.fetchAllServices(orgGuid);
+    return cfApi.fetchAllServices(orgGuid)
+      .then(services =>
+        // Fetch associated service plans
+        Promise.all(services.map(service => serviceActions.fetchAllPlans(service.guid)))
+          .then(() => services)
+      );
   },
 
   receivedServices(services) {
@@ -24,6 +29,15 @@ const serviceActions = {
       type: serviceActionTypes.SERVICES_RECEIVED,
       services
     });
+  },
+
+  fetchPlan(servicePlanGuid) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_PLAN_FETCH,
+      servicePlanGuid
+    });
+
+    return cfApi.fetchServicePlan(servicePlanGuid);
   },
 
   receivedPlan(servicePlan) {
@@ -38,6 +52,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_PLANS_FETCH,
       serviceGuid
     });
+
+    return cfApi.fetchAllServicePlans(serviceGuid);
   },
 
   receivedPlans(servicePlans) {
@@ -52,6 +68,14 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
       spaceGuid
     });
+
+    return cfApi.fetchServiceInstances(spaceGuid)
+      .then(serviceInstances =>
+         Promise.all(serviceInstances.map(
+           serviceInstance => serviceActions.fetchPlan(serviceInstance.service_plan_guid)
+         ))
+         .then(() => serviceInstances)
+      );
   },
 
   createInstanceForm(serviceGuid, planGuid) {
@@ -132,15 +156,15 @@ const serviceActions = {
   },
 
   deleteInstance(instanceGuid) {
-    AppDispatcher.handleViewAction({
-      type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
-      serviceInstanceGuid: instanceGuid
-    });
-
     const toDelete = ServiceInstanceStore.get(instanceGuid);
     if (!toDelete) {
       return Promise.reject(new Error(`ServiceInstance ${instanceGuid} is not in store`));
     }
+
+    AppDispatcher.handleViewAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
+      serviceInstanceGuid: instanceGuid
+    });
 
     return cfApi.deleteUnboundServiceInstance(toDelete);
   },

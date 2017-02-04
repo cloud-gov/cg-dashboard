@@ -106,14 +106,14 @@ const serviceActionTypes = keymirror({
   SERVICE_BIND: null,
   // Action when a service instance was bound to an app.
   SERVICE_BOUND: null,
-  // Action to fetch all services (for marketplace) for an org.
-  SERVICES_FETCH: null,
-  // Action when all services for an org were received from the server.
-  SERVICES_RECEIVED: null,
   // Action to unbind a service instance from an app.
   SERVICE_UNBIND: null,
   // Aciton when a service instance was unbound from an app.
   SERVICE_UNBOUND: null,
+  // Action to fetch all services (for marketplace) for an org.
+  SERVICES_FETCH: null,
+  // Action when all services for an org were received from the server.
+  SERVICES_RECEIVED: null,
 
   // Service Bindings
   // Action to fetch service bindins for an app.
@@ -122,6 +122,8 @@ const serviceActionTypes = keymirror({
   SERVICE_BINDINGS_RECEIVED: null,
 
   // Service Plans
+  // Action when a single service plan is fetched from server.
+  SERVICE_PLAN_FETCH: null,
   // Action when a single service plan received from server.
   SERVICE_PLAN_RECEIVED: null,
   // Action to fetch all service plans for a certain service.

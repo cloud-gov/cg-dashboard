@@ -23,14 +23,22 @@ describe('serviceActions', function() {
   });
 
   describe('fetchAllServices()', function () {
-    let viewSpy, guid;
+    let viewSpy, guid, services, result;
 
     beforeEach(function (done) {
       guid = 'asdfa';
+      services = [{ guid: '1234' }];
       viewSpy = setupViewSpy(sandbox);
-      sandbox.stub(cfApi, 'fetchAllServices').returns(Promise.resolve());
+      sandbox.stub(cfApi, 'fetchAllServices').returns(Promise.resolve(services));
+      sandbox.stub(serviceActions, 'fetchAllPlans').returns(Promise.resolve());
 
-      serviceActions.fetchAllServices(guid).then(done, done.fail);
+      serviceActions.fetchAllServices(guid)
+       .then(r => { result = r; })
+       .then(done, done.fail);
+    });
+
+    it('returns the services', function () {
+      expect(result).toBe(services);
     });
 
     it('should dispatch a view event of type service fetch', function () {
@@ -113,6 +121,36 @@ describe('serviceActions', function() {
 
       assertAction(spy, serviceActionTypes.SERVICE_PLANS_RECEIVED,
                    expectedParams);
+    });
+  });
+
+  describe('fetchAllInstances()', function () {
+    let spaceGuid, serviceInstances, result;
+    beforeEach(function (done) {
+      serviceInstances = [
+        { guid: '1234', service_plan_guid: 'plan-1234' },
+        { guid: 'abcd', service_plan_guid: 'plan-abcd' }
+      ];
+      sandbox.stub(cfApi, 'fetchServiceInstances').returns(Promise.resolve(serviceInstances));
+      sandbox.stub(cfApi, 'fetchServicePlan').returns(Promise.resolve());
+
+      serviceActions.fetchAllInstances(spaceGuid)
+        .then(r => { result = r; })
+        .then(done, done.fail);
+    });
+
+    it('resolves to serviceInstances', function () {
+      expect(result).toBe(serviceInstances);
+    });
+
+    it('calls fetchServiceInstances from api', function () {
+      expect(cfApi.fetchServiceInstances).toHaveBeenCalledOnce();
+    });
+
+    it('fetches the service plans associated with these instances', function () {
+      expect(cfApi.fetchServicePlan).toHaveBeenCalledTwice();
+      expect(cfApi.fetchServicePlan).toHaveBeenCalledWith('plan-1234');
+      expect(cfApi.fetchServicePlan).toHaveBeenCalledWith('plan-abcd');
     });
   });
 

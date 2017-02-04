@@ -4,19 +4,20 @@
  * separate functionality to get all plans under a particiular service.
  */
 
-import Immutable from 'immutable';
-
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
-import cfApi from '../util/cf_api.js';
 import { serviceActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 
-class ServicePlanStore extends BaseStore {
+export class ServicePlanStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = new Immutable.List();
+    this._fetchAll = false;
+  }
+
+  get loading() {
+    return this._fetchAll;
   }
 
   getAllFromService(serviceGuid) {
@@ -49,43 +50,35 @@ class ServicePlanStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
-      case serviceActionTypes.SERVICES_RECEIVED: {
-        const services = action.services;
-        this.load(services.map(service => cfApi.fetchAllServicePlans(service.guid)));
-        this.emitChange();
-        break;
-      }
-
-      case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
-        const instances = action.serviceInstances;
-        this.load(instances.map(instance => cfApi.fetchServicePlan(instance.service_plan_guid)));
-        this.emitChange();
+      case serviceActionTypes.SERVICE_PLAN_FETCH: {
+        const servicePlan = this.get(action.servicePlanGuid) || {};
+        const servicePlanFetching = Object.assign({}, servicePlan, { fetching: true });
+        this.merge('guid', servicePlanFetching);
         break;
       }
 
       case serviceActionTypes.SERVICE_PLANS_FETCH: {
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
-        cfApi.fetchAllServicePlans(action.serviceGuid);
+        this._fetchAll = true;
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_PLAN_RECEIVED: {
-        const servicePlan = this.parseJson(
-          action.servicePlan, 'extra');
-        this.merge('guid', servicePlan, () => {
-          this.emitChange();
-        });
+        const servicePlan = this.parseJson(action.servicePlan, 'extra');
+        const servicePlanReceived = Object.assign({}, servicePlan, { fetching: false });
+        this.merge('guid', servicePlanReceived);
         break;
       }
 
       case serviceActionTypes.SERVICE_PLANS_RECEIVED: {
+        this._fetchAll = false;
         if (action.servicePlans) {
           let servicePlans = action.servicePlans;
           servicePlans = this.parseAllJson(servicePlans, 'extra');
           this.mergeMany('guid', servicePlans, () => { });
-          this.emitChange();
         }
+        this.emitChange();
         break;
       }
 
