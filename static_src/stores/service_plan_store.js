@@ -28,19 +28,6 @@ export class ServicePlanStore extends BaseStore {
     return fromService.toJS();
   }
 
-  parseAllJson(entities, key) {
-    const e = entities.slice();
-    return e.map((entity) => this.parseJson(entity, key));
-  }
-
-  parseJson(entity, key) {
-    const parsed = {};
-    if (entity[key]) {
-      parsed[key] = JSON.parse(entity[key]);
-    }
-    return Object.assign({}, entity, parsed);
-  }
-
   getCost(servicePlan) {
     return (servicePlan.extra &&
       servicePlan.extra.costs &&
@@ -65,7 +52,7 @@ export class ServicePlanStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_PLAN_RECEIVED: {
-        const servicePlan = this.parseJson(action.servicePlan, 'extra');
+        const servicePlan = action.servicePlan;
         const servicePlanReceived = Object.assign({}, servicePlan, { fetching: false });
         this.merge('guid', servicePlanReceived);
         break;
@@ -74,8 +61,7 @@ export class ServicePlanStore extends BaseStore {
       case serviceActionTypes.SERVICE_PLANS_RECEIVED: {
         this._fetchAll = false;
         if (action.servicePlans) {
-          let servicePlans = action.servicePlans;
-          servicePlans = this.parseAllJson(servicePlans, 'extra');
+          const servicePlans = action.servicePlans;
           this.mergeMany('guid', servicePlans, () => { });
         }
         this.emitChange();

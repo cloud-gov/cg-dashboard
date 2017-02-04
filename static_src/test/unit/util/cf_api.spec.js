@@ -4,7 +4,7 @@ import '../../global_setup.js';
 import http from 'axios';
 import Immutable from 'immutable';
 
-import cfApi from '../../../util/cf_api.js';
+import cfApi, { tryParseJson } from '../../../util/cf_api.js';
 import domainActions from '../../../actions/domain_actions.js';
 import errorActions from '../../../actions/error_actions.js';
 import loginActions from '../../../actions/login_actions.js';
@@ -105,6 +105,37 @@ describe('cfApi', function() {
     });
   });
 
+  describe('tryParseJson()', function () {
+    it('should parse out the JSON', function (done) {
+      const field = '{"amount":{"usd":0.1}}';
+      const expected = { amount: { usd: 0.1 } };
+
+      tryParseJson(field)
+        .then(parsed => {
+          expect(parsed).toEqual(expected);
+        })
+        .then(done, done.fail);
+    });
+
+    it('accepts undefined', function (done) {
+      tryParseJson(undefined)
+        .then(parsed => {
+          expect(parsed).toEqual(null);
+        })
+        .then(done, done.fail);
+    });
+
+    it('rejects on error', function (done) {
+      const field = '{"amount"';
+
+      tryParseJson(field)
+        .then(done.fail)
+        .catch(err => {
+          expect(err).toEqual(jasmine.any(Error));
+          done();
+        });
+    });
+  });
 
   describe('createRoute()', function() {
     it('should POST to the versioned /routes endpoint with data', function(done) {

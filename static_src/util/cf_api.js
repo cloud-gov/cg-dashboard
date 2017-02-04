@@ -42,6 +42,22 @@ function promiseHandleError(err) {
   return Promise.reject(err);
 }
 
+// Some fields are serialized JSON that need parsing
+export function tryParseJson(serialized) {
+  if (!serialized) {
+    return Promise.resolve(null);
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(serialized);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+
+  return Promise.resolve(parsed);
+}
+
 export default {
   version: APIV,
 
@@ -350,8 +366,17 @@ export default {
   },
 
   fetchServicePlan(servicePlanGuid) {
-    return this.fetchOne(`/service_plans/${servicePlanGuid}`,
-                         serviceActions.receivedPlan);
+    return this.fetchOne(`/service_plans/${servicePlanGuid}`)
+      .then(servicePlan =>
+        // Service plans have an `extra` field of metadata
+        tryParseJson(servicePlan.extra)
+          .then(extra => ({ ...servicePlan, extra }))
+          .catch(err => {
+            const e = new Error('Failed to parse service plan extra data');
+            e.parseError = err;
+            return Promise.reject(e);
+          })
+      );
   },
 
   fetchAllServices(orgGuid) {
@@ -360,8 +385,19 @@ export default {
   },
 
   fetchAllServicePlans(serviceGuid) {
-    return this.fetchMany(`/services/${serviceGuid}/service_plans`,
-      serviceActions.receivedPlans);
+    return this.fetchMany(`/services/${serviceGuid}/service_plans`)
+      .then(servicePlans =>
+        Promise.all(servicePlans.map(servicePlan =>
+          // Service plans have an `extra` field of metadata
+          tryParseJson(servicePlan.extra)
+            .then(extra => ({ ...servicePlan, extra }))
+            .catch(err => {
+              const e = new Error(`Failed to parse service plan '${servicePlan.guid}' extra data`);
+              e.parseError = err;
+              return Promise.reject(e);
+            })
+        ))
+      );
   },
 
   fetchRoutesForApp(appGuid) {
