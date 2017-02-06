@@ -79,6 +79,14 @@ export default class ActivityLog extends React.Component {
     return <config.snippets.logs />;
   }
 
+  showMoreActivity() {
+    if (this.state.activity.length > this.props.maxItems &&
+        this.state.activity.length >= this.state.maxItems) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     let content = <div></div>;
 
@@ -87,7 +95,7 @@ export default class ActivityLog extends React.Component {
     } else if (this.state.empty) {
       content = <h5 className="test-none_message">No recent activity</h5>;
     } else {
-      let showMore = (this.state.activity.length >= this.props.maxItems) &&
+      let showMore = this.showMoreActivity() &&
         (
           <PanelActions>
             <Action label="View more" clickHandler={ this.handleMore }>
