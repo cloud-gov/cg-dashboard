@@ -154,6 +154,30 @@ To update a single package to a specific version
     to do so.
 - CSS in component files should opt to use CSS Modules first, and will use normal CSS class architecture after.
 
+### Working with React/Flux
+
+
+#### Action creators
+
+- Each action creator (each method in `*_actions.js`)  should dispatch only
+  a single action.
+- Each action creator should return a `Promise`.
+- Any XHR calls should happen within the fetch action creators which
+  should return a promise of the request.
+- Any `fetch` action should call the appropriate `receive`/`success`/`error` action on the resolve of the fetch's promise.
+- Each async action should have a fetch, success, and error sub-action (e.g.
+  `TOGGLE`, `TOGGLE_SUCCESS`, and `TOGGLE_ERROR`).
+
+
+#### Stores
+
+- Stores should avoid doing async work, including making any calls to the API.
+  Instead, action creators should manage the async data flow and dispatch
+  actions to update the store as async event occur.
+- Store specs should not use action creators, instead they should dispatch
+  actions directly.
+
+
 ## Performance
 Adding performance tracking and metrics is currently a TODO. Here are some items in consideration:
 - What metrics should be tracked? ie: page load, speed index, custom events, number of requests, total request size, etc.
