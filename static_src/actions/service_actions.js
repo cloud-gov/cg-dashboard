@@ -236,7 +236,8 @@ const serviceActions = {
       appGuid
     });
 
-    return cfApi.fetchServiceBindings(appGuid);
+    return cfApi.fetchServiceBindings(appGuid)
+      .then(serviceActions.receivedServiceBindings);
   },
 
   receivedServiceBindings(serviceBindings) {
@@ -244,6 +245,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_BINDINGS_RECEIVED,
       serviceBindings
     });
+
+    return Promise.resolve(serviceBindings);
   },
 
   bindService(appGuid, serviceInstanceGuid) {
@@ -253,7 +256,9 @@ const serviceActions = {
       serviceInstanceGuid
     });
 
-    return cfApi.createServiceBinding(appGuid, serviceInstanceGuid);
+    return cfApi.createServiceBinding(appGuid, serviceInstanceGuid)
+      .then(serviceActions.boundService)
+      .catch(err => serviceActions.instanceError(serviceInstanceGuid, err));
   },
 
   unbindService(serviceBinding) {
@@ -262,7 +267,9 @@ const serviceActions = {
       serviceBinding
     });
 
-    return cfApi.deleteServiceBinding(serviceBinding);
+    return cfApi.deleteServiceBinding(serviceBinding)
+      .then(() => serviceActions.unboundService(serviceBinding))
+      .catch(err => serviceActions.instanceError(serviceBinding.service_instance_guid, err));
   },
 
   boundService(serviceBinding) {
@@ -270,6 +277,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_BOUND,
       serviceBinding
     });
+
+    return Promise.resolve(serviceBinding);
   },
 
   unboundService(serviceBinding) {
@@ -277,6 +286,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_UNBOUND,
       serviceBinding
     });
+
+    return Promise.resolve(serviceBinding);
   },
 
   instanceError(serviceInstanceGuid, error) {

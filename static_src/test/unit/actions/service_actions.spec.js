@@ -529,19 +529,35 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('fetchServiceBindings()', function() {
-    it('should dispatch service bindings fetch view event with app guid',
-        function() {
-      const appGuid = 'aldkjfs';
+  describe('fetchServiceBindings()', function () {
+    let appGuid, viewSpy;
+
+    beforeEach(function (done) {
+      appGuid = 'aldkjfs';
+      viewSpy = setupViewSpy(sandbox);
+
+      sandbox.stub(cfApi, 'fetchServiceBindings').returns(Promise.resolve([]));
+      sandbox.spy(serviceActions, 'receivedServiceBindings');
+
+      serviceActions.fetchServiceBindings(appGuid)
+        .then(done, done.fail);
+    });
+
+    it('should dispatch service bindings fetch view event with app guid', function () {
       const expectedParams = {
         appGuid
       };
-      const spy = setupViewSpy(sandbox)
 
-      serviceActions.fetchServiceBindings(appGuid);
-
-      assertAction(spy, serviceActionTypes.SERVICE_BINDINGS_FETCH,
+      assertAction(viewSpy, serviceActionTypes.SERVICE_BINDINGS_FETCH,
                    expectedParams);
+    });
+
+    it('should call fetchServiceBindings', function () {
+      expect(cfApi.fetchServiceBindings).toHaveBeenCalledOnce();
+    });
+
+    it('should call receivedServiceBindings action', function () {
+      expect(serviceActions.receivedServiceBindings).toHaveBeenCalledOnce();
     });
   });
 
@@ -561,41 +577,100 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('bindService()', function() {
-    it('should dispatch a service bind view event with app guid and instance guid',
-        function() {
-      const appGuid = 'asldfjzzcxv';
-      const serviceInstanceGuid = 'zxclkjvzdfadfadsfasdfad';
+  describe('bindService()', function () {
+    let appGuid, serviceInstance, serviceInstanceGuid, viewSpy;
+
+    beforeEach(function (done) {
+      appGuid = 'asldfjzzcxv';
+      serviceInstanceGuid = 'zxclkjvzdfadfadsfasdfad';
+      viewSpy = setupViewSpy(sandbox);
+      serviceInstance = { guid: serviceInstanceGuid };
+
+      sandbox.stub(cfApi, 'createServiceBinding').returns(Promise.resolve(serviceInstance));
+      sandbox.spy(serviceActions, 'boundService');
+
+      serviceActions.bindService(appGuid, serviceInstanceGuid)
+        .then(done, done.fail);
+    });
+
+    it('should dispatch a service bind view event with app guid and instance guid', function () {
       const expectedParams = {
         appGuid,
         serviceInstanceGuid
       };
 
-      const spy = setupViewSpy(sandbox);
+      assertAction(viewSpy, serviceActionTypes.SERVICE_BIND, expectedParams);
+    });
 
-      serviceActions.bindService(appGuid, serviceInstanceGuid);
+    it('should call bound service with response if successful', function () {
+      expect(serviceActions.boundService).toHaveBeenCalledOnce();
+      expect(serviceActions.boundService).toHaveBeenCalledWith(serviceInstance);
+    });
 
-      assertAction(spy, serviceActionTypes.SERVICE_BIND, expectedParams);
+    describe('on error', function () {
+      beforeEach(function (done) {
+        cfApi.createServiceBinding.returns(Promise.reject(new Error('a fake error')));
+        sandbox.spy(serviceActions, 'instanceError');
+
+        serviceActions.bindService(appGuid, serviceInstanceGuid)
+          .then(done, done.fail);
+      });
+
+      it('should call instance error if request fails with err', function () {
+        expect(serviceActions.instanceError).toHaveBeenCalledOnce();
+        const [guid, err] = serviceActions.instanceError.getCall(0).args;
+        expect(err).toMatch(/a fake error/);
+        expect(guid).toBe(serviceInstanceGuid);
+      });
     });
   });
 
-  describe('unbindService()', function() {
-    it('should dispatch a service unbind view event with binding', function() {
-      const binding = {
+  describe('unbindService()', function () {
+    let binding, viewSpy;
+
+    beforeEach(function (done) {
+      binding = {
         service_instance_guid: 'asladsfdfjzzcxv',
         app_guid: '12346vzdfadfadsfasdfad'
       };
+
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'deleteServiceBinding').returns(Promise.resolve());
+      sandbox.spy(serviceActions, 'unboundService');
+
+      serviceActions.unbindService(binding)
+        .then(done, done.fail);
+    });
+
+    it('should dispatch a service unbind view event with binding', function () {
       const expectedParams = {
         serviceBinding: binding
       };
 
-      const spy = setupViewSpy(sandbox);
-
-      serviceActions.unbindService(binding);
-
-      assertAction(spy, serviceActionTypes.SERVICE_UNBIND, expectedParams);
+      assertAction(viewSpy, serviceActionTypes.SERVICE_UNBIND, expectedParams);
     });
 
+    it('calls unboundService action', function () {
+      expect(serviceActions.unboundService).toHaveBeenCalledOnce();
+    });
+
+    describe('on error', function () {
+      let error;
+
+      beforeEach(function (done) {
+        error = new Error('a test error');
+        sandbox.spy(serviceActions, 'instanceError');
+        cfApi.deleteServiceBinding.returns(Promise.reject(error));
+
+        serviceActions.unbindService(binding)
+          .then(done, done);
+      });
+
+      it('should call delete error if request fails', function () {
+        expect(serviceActions.instanceError).toHaveBeenCalledOnce();
+        expect(serviceActions.instanceError).toHaveBeenCalledWith(binding.service_instance_guid, error);
+      });
+    });
   });
 
   describe('boundService()', function() {

@@ -6,7 +6,6 @@ import errorActions from '../actions/error_actions.js';
 import loginActions from '../actions/login_actions.js';
 import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
-import serviceActions from '../actions/service_actions.js';
 import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
@@ -475,11 +474,10 @@ export default {
 
   fetchServiceBindings(appGuid) {
     if (!appGuid) {
-      return this.fetchMany('/service_bindings',
-        serviceActions.receivedServiceBindings);
+      return this.fetchMany('/service_bindings');
     }
-    return this.fetchMany(`/apps/${appGuid}/service_bindings`,
-                         serviceActions.receivedServiceBindings);
+
+    return this.fetchMany(`/apps/${appGuid}/service_bindings`);
   },
 
   createServiceBinding(appGuid, serviceInstanceGuid) {
@@ -487,21 +485,19 @@ export default {
       app_guid: appGuid,
       service_instance_guid: serviceInstanceGuid
     };
-    return http.post(`${APIV}/service_bindings`, payload).then((res) => {
-      serviceActions.boundService(this.formatSplitResponse(res.data));
-    }).catch((err) => {
-      handleError(err, serviceActions.instanceError.bind(
-        this, serviceInstanceGuid));
-    });
+    return http.post(`${APIV}/service_bindings`, payload)
+      .then(res => this.formatSplitResponse(res.data))
+      .catch(err => {
+        handleError(err);
+        return Promise.reject(err);
+      });
   },
 
   deleteServiceBinding(serviceBinding) {
-    return http.delete(`${APIV}/service_bindings/${serviceBinding.guid}`).then(
-    () => {
-      serviceActions.unboundService(serviceBinding);
-    }).catch((err) => {
-      handleError(err, serviceActions.instanceError.bind(
-        this, serviceBinding.service_instance_guid));
-    });
+    return http.delete(`${APIV}/service_bindings/${serviceBinding.guid}`)
+      .catch(err => {
+        handleError(err);
+        return Promise.reject(err);
+      });
   }
 };
