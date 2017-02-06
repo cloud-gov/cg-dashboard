@@ -3,15 +3,16 @@
  * Renders a list of users.
  */
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
-
-import formatDateTime from '../util/format_date';
 
 import Action from './action.jsx';
 import Loading from './loading.jsx';
+import PanelDocumentation from './panel_documentation.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 import createStyler from '../util/create_styler';
+import { config } from 'skin';
+import formatDateTime from '../util/format_date';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 function stateSetter(props) {
   return {
@@ -58,6 +59,21 @@ export default class UserList extends React.Component {
     return (this.state.userType === 'org_users') ? 'Organization' : 'Space';
   }
 
+  get documentation() {
+    return (
+      <PanelDocumentation description>
+        <p>
+          { this.userTypePretty } Managers can change these roles. For details
+            about these roles, see <a href="https://docs.cloudfoundry.org/concepts/roles.html#roles">Cloud Foundry roles and permissions</a>.
+          { config.docs.invite_user &&
+            <span> To invite a user and give them roles, see <a href={ config.docs.invite_user }>Managing Teammates</a>.
+            </span>
+          }
+        </p>
+      </PanelDocumentation>
+    );
+  }
+
   render() {
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
@@ -67,10 +83,7 @@ export default class UserList extends React.Component {
     } else if (!this.state.loading && this.state.users.length) {
       content = (
       <div>
-        <p><em>
-        { this.userTypePretty } Managers can change these roles. For details about these roles, see <a href="https://docs.cloudfoundry.org/concepts/roles.html#roles">Cloud Foundry roles and permissions</a>. To invite a user and give them roles, see <a href="https://cloud.gov/docs/apps/managing-teammates/">Managing Teammates</a>.
-        </em></p>
-
+        { this.documentation }
         <table>
           <thead>
             <tr>

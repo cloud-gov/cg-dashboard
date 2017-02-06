@@ -64,7 +64,7 @@ export default class ServiceList extends React.Component {
                     </h3>
                     <span>{ service.description }</span>
                   </span>
-                  <span className={ this.styler('panel-column', 'panel-actions-right') }>
+                  <span>
                     Updated { formatDateTime(service.updated_at) }
                   </span>
                 </div>

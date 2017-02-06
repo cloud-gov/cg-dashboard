@@ -6,7 +6,6 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import Loading from './loading.jsx';
-import PanelActions from './panel_actions.jsx';
 import PanelRowError from './panel_row_error.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
@@ -128,7 +127,7 @@ export default class ServiceInstance extends React.Component {
       );
     }
 
-    return <PanelActions>{ content }</PanelActions>;
+    return content;
   }
 
   get confirmation() {

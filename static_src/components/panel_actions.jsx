@@ -5,11 +5,15 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
 
+const ALIGN_TYPES = ['left', 'right', 'both'];
+
 const propTypes = {
-  children: React.PropTypes.any
+  children: React.PropTypes.any,
+  align: React.PropTypes.oneOf(ALIGN_TYPES)
 };
 const defaultProps = {
-  children: []
+  children: [],
+  align: ALIGN_TYPES[0]
 };
 
 export default class PanelActions extends React.Component {
@@ -20,8 +24,9 @@ export default class PanelActions extends React.Component {
   }
 
   render() {
+    const alignClass = `panel-actions-${this.props.align}`;
     return (
-      <span className={ this.styler('panel-actions') }>
+      <span className={ this.styler('panel-actions', alignClass) }>
         { this.props.children }
       </span>
     );

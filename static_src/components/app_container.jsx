@@ -1,11 +1,11 @@
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
 import ActivityLog from './activity_log.jsx';
 import { appHealth, worstAppInstanceState } from '../util/health';
 import { appStates } from '../constants';
+import { config } from 'skin';
 import AppStore from '../stores/app_store.js';
 import Breadcrumbs from './breadcrumbs.jsx';
 import RouteStore from '../stores/route_store.js';
@@ -21,8 +21,9 @@ import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
 import UsageLimits from './usage_and_limits.jsx';
 import appActions from '../actions/app_actions.js';
-
 import createStyler from '../util/create_styler';
+import style from 'cloudgov-style/css/cloudgov-style.css';
+
 
 function appReady(app) {
   return !!app && !!app.name;
@@ -182,6 +183,11 @@ export default class AppContainer extends React.Component {
     );
   }
 
+  get logsDocumentation() {
+    return <config.snippets.logs />;
+  }
+
+
   render() {
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
@@ -207,7 +213,7 @@ export default class AppContainer extends React.Component {
             </div>
           </div>
           <Panel title="Usage and allocation">
-              <span>View more usage data at <a href="https://logs.cloud.gov">logs.cloud.gov</a> (for East/West environment) or <a href="https://logs.fr.cloud.gov">logs.fr.cloud.gov</a> (for GovCloud environment).</span>
+            { this.logsDocumentation }
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 

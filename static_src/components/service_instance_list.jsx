@@ -1,17 +1,17 @@
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
-
-import formatDateTime from '../util/format_date';
-
-import createStyler from '../util/create_styler';
 
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import Loading from './loading.jsx';
-import serviceActions from '../actions/service_actions.js';
+import PanelDocumentation from './panel_documentation.jsx';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import SpaceStore from '../stores/space_store.js';
+import { config } from 'skin';
+import createStyler from '../util/create_styler';
+import formatDateTime from '../util/format_date';
+import serviceActions from '../actions/service_actions.js';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
@@ -80,6 +80,21 @@ export default class ServiceInstanceList extends React.Component {
     ];
   }
 
+  get documentation() {
+    return (
+      <PanelDocumentation description>
+        <p>
+          To create service instances for this space, use this org’s marketplace (at left or on the command line). Then bind instances to apps using the command line.
+          { config.docs.managed_services &&
+            <span>
+              (<a href={ config.docs.managed_services }>Learn about using service instances and marketplaces</a>.)
+            </span>
+          }
+        </p>
+      </PanelDocumentation>
+    );
+  }
+
   renderConfirmationBox(instanceGuid) {
     return (
       <ConfirmationBox
@@ -104,9 +119,7 @@ export default class ServiceInstanceList extends React.Component {
     } else if (!this.state.loading && this.state.serviceInstances.length) {
       content = (
       <div>
-        <p><em>
-          To create service instances for this space, use this org’s marketplace (at left or on the command line). Then bind instances to apps using the command line. (<a href="https://docs.cloud.gov/apps/managed-services/">Learn about using service instances and marketplaces</a>.)
-        </em></p>
+        { this.documentation }
         <table>
           <thead>
             <tr>

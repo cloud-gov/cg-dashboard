@@ -5,7 +5,6 @@ import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import DomainStore from '../stores/domain_store.js';
 import Loading from './loading.jsx';
-import PanelActions from './panel_actions.jsx';
 import PanelRowError from './panel_row_error.jsx';
 import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
@@ -226,9 +225,7 @@ export default class Route extends React.Component {
             </span>
             { this.displayError }
             <span className={this.styler('panel-column', 'panel-column-less')}>
-              <PanelActions>
-                { this.actions }
-              </PanelActions>
+              { this.actions }
             </span>
           </div>
         );

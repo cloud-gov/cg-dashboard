@@ -42,6 +42,7 @@ import InfoActivities from '../../components/info_activities.jsx';
 import InfoEnvironments from '../../components/info_environments.jsx';
 import InfoSandbox from '../../components/info_sandbox.jsx';
 import InfoStructure from '../../components/info_structure.jsx';
+import InfoLogs from '../../components/info_logs.jsx';
 
 export const config = {
   footer: {
@@ -89,7 +90,12 @@ export const config = {
     cli: 'https://cloud.gov/docs/getting-started/setup/',
     concepts_spaces: 'https://cloud.gov/docs/getting-started/concepts/',
     deploying_apps: 'https://cloud.gov/docs/getting-started/your-first-deploy/',
-    use: 'https://cloud.gov/docs/intro/overview/using-cloudgov-paas/'
+    use: 'https://cloud.gov/docs/intro/overview/using-cloudgov-paas/',
+    invite_user: 'https://cloud.gov/docs/apps/managing-teammates',
+    managed_services: 'https://docs.cloud.gov/apps/managed-services/'
+  },
+  snippets: {
+    logs: InfoLogs
   },
   github: {
     url: 'https://github.com/18F/cg-dashboard'
