@@ -4,6 +4,9 @@
  * updating, etc should go here.
  */
 
+// TODO consider splitting this up into separate files for bind, instance, and
+// plan actions similar to how stores are divided
+
 import AppDispatcher from '../dispatcher.js';
 import cfApi from '../util/cf_api.js';
 import { serviceActionTypes } from '../constants';
@@ -21,7 +24,8 @@ const serviceActions = {
         // Fetch associated service plans
         Promise.all(services.map(service => serviceActions.fetchAllPlans(service.guid)))
           .then(() => services)
-      );
+      )
+      .then(serviceActions.receivedServices);
   },
 
   receivedServices(services) {
@@ -29,6 +33,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICES_RECEIVED,
       services
     });
+
+    return Promise.resolve(services);
   },
 
   fetchPlan(servicePlanGuid) {
@@ -75,7 +81,8 @@ const serviceActions = {
            serviceInstance => serviceActions.fetchPlan(serviceInstance.service_plan_guid)
          ))
          .then(() => serviceInstances)
-      );
+      )
+      .then(serviceActions.receivedInstances);
   },
 
   createInstanceForm(serviceGuid, planGuid) {
@@ -84,12 +91,16 @@ const serviceActions = {
       serviceGuid,
       servicePlanGuid: planGuid
     });
+
+    return Promise.resolve();
   },
 
   createInstanceFormCancel() {
     AppDispatcher.handleUIAction({
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM_CANCEL
     });
+
+    return Promise.resolve();
   },
 
   createInstance(name, spaceGuid, servicePlanGuid) {
@@ -101,7 +112,8 @@ const serviceActions = {
     });
 
     return cfApi.createServiceInstance(name, spaceGuid, servicePlanGuid)
-      .then(serviceInstance => serviceActions.fetchInstance(serviceInstance.guid));
+      .then(serviceInstance => serviceActions.fetchInstance(serviceInstance.guid))
+      .then(serviceActions.createdInstance, serviceActions.errorCreateInstance);
   },
 
   createdInstance(serviceInstance) {
@@ -109,6 +121,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_INSTANCE_CREATED,
       serviceInstance
     });
+
+    return Promise.resolve(serviceInstance);
   },
 
   errorCreateInstance(err) {
@@ -116,6 +130,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR,
       error: err
     });
+
+    return Promise.resolve();
   },
 
   fetchInstance(serviceInstanceGuid) {
@@ -124,7 +140,8 @@ const serviceActions = {
       serviceInstanceGuid
     });
 
-    return cfApi.fetchServiceInstance(serviceInstanceGuid);
+    return cfApi.fetchServiceInstance(serviceInstanceGuid)
+      .then(serviceActions.receivedInstance);
   },
 
   receivedInstance(serviceInstance) {
@@ -132,6 +149,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_INSTANCE_RECEIVED,
       serviceInstance
     });
+
+    return Promise.resolve(serviceInstance);
   },
 
   receivedInstances(serviceInstances) {
@@ -139,6 +158,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
       serviceInstances
     });
+
+    return Promise.resolve(serviceInstances);
   },
 
   deleteInstanceConfirm(instanceGuid) {
@@ -146,6 +167,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_INSTANCE_DELETE_CONFIRM,
       serviceInstanceGuid: instanceGuid
     });
+
+    return Promise.resolve();
   },
 
   deleteInstanceCancel(instanceGuid) {
@@ -153,6 +176,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_INSTANCE_DELETE_CANCEL,
       serviceInstanceGuid: instanceGuid
     });
+
+    return Promise.resolve(instanceGuid);
   },
 
   deleteInstance(instanceGuid) {
@@ -166,7 +191,10 @@ const serviceActions = {
       serviceInstanceGuid: instanceGuid
     });
 
-    return cfApi.deleteUnboundServiceInstance(toDelete);
+    return cfApi.deleteUnboundServiceInstance(toDelete)
+      .then(() => serviceActions.deletedInstance(instanceGuid))
+      // TODO if the delete fails, we want to expose it to the user
+      .catch(() => serviceActions.deletedInstance(instanceGuid)); // Swallow the error
   },
 
   deletedInstance(serviceInstanceGuid) {
@@ -174,6 +202,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
       serviceInstanceGuid
     });
+
+    return Promise.resolve(serviceInstanceGuid);
   },
 
   changeServiceInstanceCheck(serviceInstanceGuid) {
@@ -181,6 +211,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_INSTANCE_CHANGE_CHECK,
       serviceInstanceGuid
     });
+
+    return Promise.resolve(serviceInstanceGuid);
   },
 
   changeServiceInstanceCancel(serviceInstanceGuid) {
@@ -188,6 +220,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_INSTANCE_CHANGE_CANCEL,
       serviceInstanceGuid
     });
+
+    return Promise.resolve(serviceInstanceGuid);
   },
 
   fetchServiceBindings(appGuid) {
@@ -245,6 +279,8 @@ const serviceActions = {
       serviceInstanceGuid,
       error
     });
+
+    return Promise.resolve();
   }
 };
 

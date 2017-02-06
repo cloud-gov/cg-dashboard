@@ -31,6 +31,7 @@ describe('serviceActions', function() {
       viewSpy = setupViewSpy(sandbox);
       sandbox.stub(cfApi, 'fetchAllServices').returns(Promise.resolve(services));
       sandbox.stub(serviceActions, 'fetchAllPlans').returns(Promise.resolve());
+      sandbox.spy(serviceActions, 'receivedServices');
 
       serviceActions.fetchAllServices(guid)
        .then(r => { result = r; })
@@ -51,6 +52,10 @@ describe('serviceActions', function() {
 
     it('calls cf_api fetchAllServices', function () {
       expect(cfApi.fetchAllServices).toHaveBeenCalledOnce();
+    });
+
+    it('calls receivedServices action', function () {
+      expect(serviceActions.receivedServices).toHaveBeenCalledWith(services);
     });
   });
 
@@ -203,27 +208,69 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('createInstance()', function() {
-    it(`should dispatch a view event of type service instance create with name
-        space guid, and service plan guid`, function() {
-      var expectedSpaceGuid = 'alksjdfvcbxzzz',
-          expectedName = 'service',
-          expectedServicePlanGuid = '78900987adfasda';
+  describe('createInstance()', function () {
+    let expectedSpaceGuid, expectedName, expectedServicePlanGuid, viewSpy;
 
-      let expectedParams = {
+    beforeEach(function (done) {
+      expectedSpaceGuid = 'alksjdfvcbxzzz';
+      expectedName = 'service';
+      expectedServicePlanGuid = '78900987adfasda';
+      const serviceInstance = { guid: 'abcd' };
+
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'createServiceInstance').returns(Promise.resolve(serviceInstance));
+      sandbox.stub(serviceActions, 'fetchInstance').returns(Promise.resolve(serviceInstance));
+      sandbox.stub(serviceActions, 'createdInstance').returns(Promise.resolve());
+
+      serviceActions.createInstance(
+        expectedName,
+        expectedSpaceGuid,
+        expectedServicePlanGuid)
+          .then(done, done.fail);
+    });
+
+    it(`should dispatch a view event of type service instance create with name
+        space guid, and service plan guid`, function () {
+      const expectedParams = {
         name: expectedName,
         spaceGuid: expectedSpaceGuid,
         servicePlanGuid: expectedServicePlanGuid
       };
-      let spy = setupViewSpy(sandbox);
 
-      serviceActions.createInstance(
+      assertAction(viewSpy, serviceActionTypes.SERVICE_INSTANCE_CREATE, expectedParams);
+    });
+
+    it('calls the api for createServiceInstance', function () {
+      expect(cfApi.createServiceInstance).toHaveBeenCalledOnce();
+    });
+
+    it('fetches the instance just created', function () {
+      expect(serviceActions.fetchInstance).toHaveBeenCalledOnce();
+    });
+
+    it('should call service action for instance created on success', function () {
+      expect(serviceActions.createdInstance).toHaveBeenCalledOnce();
+      expect(serviceActions.createdInstance).toHaveBeenCalledWith({ guid: 'abcd' });
+    });
+
+    describe('on error', function () {
+      beforeEach(function (done) {
+        cfApi.createServiceInstance.returns(Promise.reject(new Error('a fake error')));
+        sandbox.stub(serviceActions, 'errorCreateInstance').returns(Promise.resolve());
+
+        serviceActions.createInstance(
           expectedName,
           expectedSpaceGuid,
-          expectedServicePlanGuid);
+          expectedServicePlanGuid)
+            .then(done, done);
+      });
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE,
-                   expectedParams);
+      it('should call service error action on failure', function () {
+        expect(serviceActions.errorCreateInstance).toHaveBeenCalledOnce();
+
+        const error = serviceActions.errorCreateInstance.getCall(0).args[0];
+        expect(error).toMatch(/a fake error/);
+      });
     });
   });
 

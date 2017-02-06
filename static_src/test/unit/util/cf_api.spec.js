@@ -545,38 +545,32 @@ describe('cfApi', function() {
     });
   });
 
-  describe('fetchServiceInstance()', function() {
-    it('should call fetch with spaces service instances url and recevied space',
-        function() {
-      var expected = '2qpofhskjdf',
-          spy = sandbox.stub(cfApi, 'fetchOne');
+  describe('fetchServiceInstance()', function () {
+    it('should call fetch with spaces service instances url and recevied space', function () {
+      const expected = '2qpofhskjdf',
+        spy = sandbox.stub(cfApi, 'fetchOne');
 
       cfApi.fetchServiceInstance(expected);
 
       expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
+      const actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('service_instances'));
-      actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(serviceActions.receivedInstance);
     });
   });
 
-  describe('fetchServiceInstances()', function() {
-    it('should call fetch with spaces service instances url and recevied space',
-        function() {
-      var expected = 'yyyybba1',
-          spy = sandbox.stub(cfApi, 'fetchMany');
+  describe('fetchServiceInstances()', function () {
+    it('should call fetch with spaces service instances url and recevied space', function () {
+      const expected = 'yyyybba1',
+        spy = sandbox.stub(cfApi, 'fetchMany');
 
       cfApi.fetchServiceInstances(expected);
 
       expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
+      const actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('spaces'));
       expect(actual).toMatch(new RegExp('service_instances'));
-      actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(serviceActions.receivedInstances);
     });
   });
 
@@ -622,47 +616,6 @@ describe('cfApi', function() {
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp('accepts_incomplete'));
     });
-
-    it('should call service action for instance created on success',
-        function(done) {
-      var stub = sandbox.stub(http, 'post'),
-          spy = sandbox.stub(serviceActions, 'createdInstance').returns(),
-          expected = { data: { metadata: { guid: 'znvmjahskf' }}};
-
-      let testPromise = createPromise(expected);
-      stub.returns(testPromise);
-
-      cfApi.createServiceInstance(
-          expectedName,
-          expectedSpaceGuid,
-          expectedServicePlanGuid).then(() => {
-            expect(spy).toHaveBeenCalledOnce();
-            let actual = spy.getCall(0).args[0];
-            expect(actual).toEqual(expected.data.metadata);
-            done();
-          }).catch(done.fail);
-    });
-
-    it('should call an service error action on failure', function(done) {
-      const stub = sandbox.stub(http, 'post');
-      const spy = sandbox.stub(serviceActions, 'errorCreateInstance');
-      const expectedErr = { status: 500, data: { code: 234 } };
-      const err = fakeCFErrorRes;
-      err.response.data = { code: 234 };
-
-      let testPromise = createPromise(true, err);
-      stub.returns(testPromise);
-
-      cfApi.createServiceInstance(
-          expectedName,
-          expectedSpaceGuid,
-          expectedServicePlanGuid).then(() => {
-            expect(spy).toHaveBeenCalledOnce();
-            let actual = spy.getCall(0).args[0];
-            expect(actual).toEqual(expectedErr.data);
-            done();
-        }).catch(done.fail);
-    });
   });
 
   describe('deleteUnboundServiceInstance()', function() {
@@ -678,25 +631,6 @@ describe('cfApi', function() {
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expectedGuid));
     });
-
-    it('should call service deleted action with guid', function(done) {
-      var stub = sandbox.stub(http, 'delete'),
-          spy = sandbox.spy(serviceActions, 'deletedInstance'),
-          expectedGuid = '38wofjasd',
-          expected = { guid: expectedGuid, url: '/' + expectedGuid};
-
-      let testPromise = createPromise({status: true});
-      stub.returns(testPromise);
-
-      cfApi.deleteUnboundServiceInstance(expected).then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        let actual = spy.getCall(0).args[0];
-        expect(actual).toEqual(expectedGuid);
-        done();
-      }).catch(done.fail);
-    });
-
-    // TODO should be error action for non fetch errors.
   });
 
   describe('fetchApp()', function () {
@@ -965,21 +899,17 @@ describe('cfApi', function() {
     });
   });
 
-  describe('fetchAllServices()', function() {
-    it('should fetch services with org guid and received services action',
-         function() {
-      var expected = 'yyyybba1',
-          spy = sandbox.stub(cfApi, 'fetchMany');
+  describe('fetchAllServices()', function () {
+    it('should fetch services with org guid', function () {
+      const expected = 'yyyybba1',
+        spy = sandbox.stub(cfApi, 'fetchMany');
 
       cfApi.fetchAllServices(expected);
 
       expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
+      const actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('services'));
-      actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(serviceActions.receivedServices);
-
     });
   });
 

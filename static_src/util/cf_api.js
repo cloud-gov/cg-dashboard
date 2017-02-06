@@ -209,13 +209,11 @@ export default {
   },
 
   fetchServiceInstance(instanceGuid) {
-    return this.fetchOne(`/service_instances/${instanceGuid}`,
-                          serviceActions.receivedInstance);
+    return this.fetchOne(`/service_instances/${instanceGuid}`);
   },
 
   fetchServiceInstances(spaceGuid) {
-    return this.fetchMany(`/spaces/${spaceGuid}/service_instances`,
-                          serviceActions.receivedInstances);
+    return this.fetchMany(`/spaces/${spaceGuid}/service_instances`);
   },
 
   createServiceInstance(name, spaceGuid, servicePlanGuid) {
@@ -226,20 +224,15 @@ export default {
     };
 
     return http.post(`${APIV}/service_instances?accepts_incomplete=true`, payload)
-      .then((res) => {
-        serviceActions.createdInstance(this.formatSplitResponse(res.data));
-      }).catch((err) => {
-        handleError(err, serviceActions.errorCreateInstance);
+      .then((res) => this.formatSplitResponse(res.data))
+      .catch((err) => {
+        handleError(err);
+        return Promise.reject(err);
       });
   },
 
   deleteUnboundServiceInstance(serviceInstance) {
-    return http.delete(serviceInstance.url)
-    .then(() => {
-      serviceActions.deletedInstance(serviceInstance.guid);
-    }).catch(() => {
-      // Do nothing.
-    });
+    return http.delete(serviceInstance.url);
   },
 
   fetchAppAll(appGuid) {
@@ -380,8 +373,7 @@ export default {
   },
 
   fetchAllServices(orgGuid) {
-    return this.fetchMany(`/organizations/${orgGuid}/services`,
-      serviceActions.receivedServices);
+    return this.fetchMany(`/organizations/${orgGuid}/services`);
   },
 
   fetchAllServicePlans(serviceGuid) {
