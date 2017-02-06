@@ -913,37 +913,31 @@ describe('cfApi', function() {
     });
   });
 
-  describe('fetchServicePlan()', function() {
-    it('should fetch plan with the plan guid', function() {
+  describe('fetchServicePlan()', function () {
+    it('should fetch plan with the plan guid', function () {
       const expected = 'zxbcjkladsfasdf';
-      const spy = sandbox.stub(cfApi, 'fetchOne');
+      const spy = sandbox.stub(cfApi, 'fetchOne').returns(Promise.resolve());
 
       cfApi.fetchServicePlan(expected);
 
       expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
+      const actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('service_plans'));
-      actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(serviceActions.receivedPlan);
     });
-
   });
 
-  describe('fetchAllServicePlans()', function() {
-    it('calls fetch services plans with service guid and received plans',
-         function() {
-      var expected = 'yyyybba1',
-          spy = sandbox.stub(cfApi, 'fetchMany');
+  describe('fetchAllServicePlans()', function () {
+    it('calls fetch services plans with service guid and received plans', function () {
+      const expected = 'yyyybba1',
+        spy = sandbox.stub(cfApi, 'fetchMany').returns(Promise.resolve());
 
       cfApi.fetchAllServicePlans(expected);
 
       expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
+      const actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expected));
       expect(actual).toMatch(new RegExp('service_plans'));
-      actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(serviceActions.receivedPlans);
     });
   });
 

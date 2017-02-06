@@ -130,26 +130,6 @@ describe('ServicePlanStore', function () {
       expect(actual).toEqual(expected[0]);
     });
 
-    it('should parse out the JSON in extra field', function() {
-      var expected = { amount: { usd: 0.1 }},
-          expectedGuid = 'adslkjfzcxv';
-
-      let plan = {
-        guid: expectedGuid,
-        extra: JSON.stringify(expected)
-      };
-
-      let testRes = [plan];
-
-      serviceActions.receivedPlans(testRes);
-
-      let actual = ServicePlanStore.get(expectedGuid);
-
-      expect(actual).toBeTruthy();
-      expect(actual.guid).toEqual(expectedGuid);
-      expect(actual.extra).toEqual(expected);
-    });
-
     it('should set loading state false', function () {
       sandbox.spy(ServicePlanStore, 'emitChange');
       ServicePlanStore._fetchAll = true;

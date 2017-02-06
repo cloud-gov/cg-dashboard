@@ -43,7 +43,8 @@ const serviceActions = {
       servicePlanGuid
     });
 
-    return cfApi.fetchServicePlan(servicePlanGuid);
+    return cfApi.fetchServicePlan(servicePlanGuid)
+      .then(serviceActions.receivedPlan);
   },
 
   receivedPlan(servicePlan) {
@@ -51,6 +52,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_PLAN_RECEIVED,
       servicePlan
     });
+
+    return Promise.resolve(servicePlan);
   },
 
   fetchAllPlans(serviceGuid) {
@@ -59,7 +62,8 @@ const serviceActions = {
       serviceGuid
     });
 
-    return cfApi.fetchAllServicePlans(serviceGuid);
+    return cfApi.fetchAllServicePlans(serviceGuid)
+      .then(serviceActions.receivedPlans);
   },
 
   receivedPlans(servicePlans) {
@@ -67,6 +71,8 @@ const serviceActions = {
       type: serviceActionTypes.SERVICE_PLANS_RECEIVED,
       servicePlans
     });
+
+    return Promise.resolve(servicePlans);
   },
 
   fetchAllInstances(spaceGuid) {

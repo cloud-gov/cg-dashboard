@@ -73,6 +73,27 @@ describe('serviceActions', function() {
     });
   });
 
+  describe('fetchPlan()', function () {
+    let planGuid;
+    beforeEach(function (done) {
+      planGuid = 'abcd';
+
+      sandbox.stub(cfApi, 'fetchServicePlan').returns(Promise.resolve({ guid: planGuid }));
+      sandbox.spy(serviceActions, 'receivedPlan');
+
+      serviceActions.fetchPlan(planGuid)
+        .then(done, done.fail);
+    });
+
+    it('calls api for fetch plan', function () {
+      expect(cfApi.fetchServicePlan).toHaveBeenCalledOnce();
+    });
+
+    it('calls receivedPlan action', function () {
+      expect(serviceActions.receivedPlan).toHaveBeenCalledWith({ guid: planGuid});
+    });
+  });
+
   describe('receivedPlan()', function() {
     it('should dispatch a server event with service plan', function() {
       const servicePlan = {
@@ -96,19 +117,36 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('fetchAllPlans()', function() {
-    it('should dispatch a view event with service guid', function() {
-      var expectedGuid = 'admxzcg',
-          expectedParams = {
-            serviceGuid: expectedGuid
-          };
+  describe('fetchAllPlans()', function () {
+    let planGuid, serviceGuid, viewSpy;
 
-      let spy = setupViewSpy(sandbox)
+    beforeEach(function (done) {
+      serviceGuid = 'asdf';
+      planGuid = 'admxzcg';
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'fetchAllServicePlans')
+        .returns(Promise.resolve([{ guid: planGuid }]));
+      sandbox.spy(serviceActions, 'receivedPlans');
 
-      serviceActions.fetchAllPlans(expectedGuid);
+      serviceActions.fetchAllPlans(serviceGuid)
+        .then(done, done.fail);
+    });
 
-      assertAction(spy, serviceActionTypes.SERVICE_PLANS_FETCH,
+    it('should dispatch a view event with service guid', function () {
+      const expectedParams = {
+        serviceGuid
+      };
+
+      assertAction(viewSpy, serviceActionTypes.SERVICE_PLANS_FETCH,
                    expectedParams);
+    });
+
+    it('calls api to fetch plans', function () {
+      expect(cfApi.fetchAllServicePlans).toHaveBeenCalledOnce();
+    });
+
+    it('calls receivedPlans action', function () {
+      expect(serviceActions.receivedPlans).toHaveBeenCalledWith([{ guid: planGuid }]);
     });
   });
 
@@ -138,6 +176,7 @@ describe('serviceActions', function() {
       ];
       sandbox.stub(cfApi, 'fetchServiceInstances').returns(Promise.resolve(serviceInstances));
       sandbox.stub(cfApi, 'fetchServicePlan').returns(Promise.resolve());
+      sandbox.spy(serviceActions, 'receivedInstances');
 
       serviceActions.fetchAllInstances(spaceGuid)
         .then(r => { result = r; })
@@ -156,6 +195,10 @@ describe('serviceActions', function() {
       expect(cfApi.fetchServicePlan).toHaveBeenCalledTwice();
       expect(cfApi.fetchServicePlan).toHaveBeenCalledWith('plan-1234');
       expect(cfApi.fetchServicePlan).toHaveBeenCalledWith('plan-abcd');
+    });
+
+    it('calls receivedInstances action', function () {
+      expect(serviceActions.receivedInstances).toHaveBeenCalledOnce();
     });
   });
 
@@ -399,6 +442,7 @@ describe('serviceActions', function() {
 
       viewSpy = setupViewSpy(sandbox);
       sandbox.stub(cfApi, 'deleteUnboundServiceInstance').returns(Promise.resolve());
+      sandbox.spy(serviceActions, 'deletedInstance');
 
       // TODO this should be a fresh instance of ServiceInstanceStore, but the
       // actions use the global singletons
@@ -420,6 +464,11 @@ describe('serviceActions', function() {
       expect(cfApi.deleteUnboundServiceInstance).toHaveBeenCalledOnce();
       const arg = cfApi.deleteUnboundServiceInstance.getCall(0).args[0];
       expect(arg).toEqual(expected);
+    });
+
+    it('should call service deleted action with guid', function () {
+      expect(serviceActions.deletedInstance).toHaveBeenCalledOnce();
+      expect(serviceActions.deletedInstance).toHaveBeenCalledWith(expectedInstanceGuid);
     });
 
     describe('for non existing instance', function () {
