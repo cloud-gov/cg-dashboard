@@ -30,20 +30,13 @@ const orgActions = {
   },
 
   fetchAll() {
-    // TODO investigate more why timeout is needed here.
-    // Currently being used to allow different actions to happen at same time.
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        AppDispatcher.handleViewAction({
-          type: orgActionTypes.ORGS_FETCH
-        });
-
-        return cfApi.fetchOrgs()
-          .then(orgs => Promise.all(orgs.map(o => cfApi.fetchOrgSummary(o.guid))))
-          .then(orgActions.receivedOrgs)
-          .then(resolve, reject);
-      }, 1);
+    AppDispatcher.handleViewAction({
+      type: orgActionTypes.ORGS_FETCH
     });
+
+    return cfApi.fetchOrgs()
+      .then(orgs => Promise.all(orgs.map(o => cfApi.fetchOrgSummary(o.guid))))
+      .then(orgActions.receivedOrgs);
   },
 
   receivedOrg(org) {
