@@ -18,6 +18,7 @@ const STATES = [
 
 const propTypes = {
   name: React.PropTypes.string,
+  title: React.PropTypes.string,
   editable: React.PropTypes.bool,
   min: React.PropTypes.number,
   max: React.PropTypes.number,
@@ -115,6 +116,7 @@ export default class Stat extends React.Component {
 
     return (
       <div className={ this.styler('stat', stateClass) }>
+        <h2 className={ this.styler('stat-header')}>{ this.props.title }</h2>
         { primaryStat }
         <span className={ this.styler('stat-info')}>
           { this.props.secondaryInfo }
