@@ -43,7 +43,7 @@ describe('Overview page', function () {
     });
 
     it('is expanded', function () {
-      browser.waitUntil(function() {
+      browser.waitUntil(function () {
         return quicklookElement.isExpanded();
       }, 2000, 'quicklook does not expand');
     });
