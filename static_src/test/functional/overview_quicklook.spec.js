@@ -43,7 +43,9 @@ describe('Overview page', function () {
     });
 
     it('is expanded', function () {
-      expect(quicklookElement.isExpanded()).toBe(true);
+      browser.waitUntil(function() {
+        return quicklookElement.isExpanded();
+      }, 2000, 'quicklook does not expand');
     });
 
     it('has 2 rows', function () {
