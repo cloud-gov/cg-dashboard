@@ -111,23 +111,20 @@ export default class AppContainer extends React.Component {
     const route = RouteStore.getRouteURLForApp(this.state.app);
     if (!route) return null;
     return (
-      <div>
-        <Action
-          style="primary"
-          href={ `https://${route}` }
-          label="open app"
-          type="outline"
-        >
-          <span>Open app</span>
-        </Action>
-      </div>
+      <Action
+        style="primary"
+        href={ `https://${route}` }
+        label="open app"
+        type="outline"
+      >
+        <span>Open app</span>
+      </Action>
     );
   }
 
   get restart() {
     let action;
     let loading;
-    let error;
 
     let handler = this._onRestart;
     let actionText = 'Restart app';
@@ -148,12 +145,6 @@ export default class AppContainer extends React.Component {
       loading = <Loading text="Updating app" style="inline" />;
     }
 
-    if (this.state.app.error) {
-      error = (
-        <ErrorMessage error={ this.state.app.error } />
-      );
-    }
-
     action = loading || (
       <Action
         style="primary"
@@ -165,12 +156,19 @@ export default class AppContainer extends React.Component {
       </Action>
     );
 
-    return (
-      <div>
-        { action }
-        { error }
-      </div>
-    );
+    return action;
+  }
+
+  get error() {
+    let error;
+
+    if (this.state.app.error) {
+      error = (
+        <ErrorMessage error={ this.state.app.error } />
+      );
+    }
+
+    return error;
   }
 
   get logsDocumentation() {
@@ -197,6 +195,7 @@ export default class AppContainer extends React.Component {
             <div className={ this.styler('grid-width-12') }>
               <Breadcrumbs />
               <PageHeader title={ title }>
+                { this.error }
                 { this.openApp }
                 { this.restart }
               </PageHeader>
