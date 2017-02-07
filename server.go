@@ -17,7 +17,7 @@ import (
 
 const (
 	defaultPort           = "9999"
-	cfUserProvidedService = "deck-ups"
+	cfUserProvidedService = "dashboard-ups"
 )
 
 func loadEnvVars() helpers.EnvVars {

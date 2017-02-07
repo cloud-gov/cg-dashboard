@@ -2,7 +2,7 @@
 buildpack: go_buildpack
 memory: 256M
 services:
-- deck-ups
+- dashboard-ups
 - dashboard-redis
 env:
   GOVERSION: go1.6.3
