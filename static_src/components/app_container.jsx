@@ -123,7 +123,6 @@ export default class AppContainer extends React.Component {
   }
 
   get restart() {
-    let action;
     let loading;
 
     let handler = this._onRestart;
@@ -145,7 +144,7 @@ export default class AppContainer extends React.Component {
       loading = <Loading text="Updating app" style="inline" />;
     }
 
-    action = loading || (
+    const action = loading || (
       <Action
         style="primary"
         clickHandler={ handler }
