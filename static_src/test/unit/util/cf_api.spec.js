@@ -347,7 +347,7 @@ describe('cfApi', function() {
         var callCount = stub.callCount;
         expect(callCount).toEqual(response.data.total_pages);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('should combine the responses from all the requests', function(done) {
@@ -356,32 +356,43 @@ describe('cfApi', function() {
       var dataOne = {
         data: {
           next_url: true,
-          total_pages: 2,
+          total_pages: 3,
           resources: [
             { metadata: { guid: 'higw' }}
           ]
         }
       };
-      var dataTwo = Object.assign({}, dataOne, {
+      var dataTwo =  {
+        data: {
+          next_url: true,
+          resources: [
+            { metadata: { guid: 'dmc' }},
+            { metadata: { guid: 'abc' }}
+          ]
+        }
+      };
+      const dataThree = {
         data: {
           next_url: false,
           resources: [
-            { metadata: { guid: 'xvms' }},
-            { metadata: { guid: 'zxc' }}
+            { metadata: { guid: '23fd' }},
+            { metadata: { guid: '234s' }}
           ]
         }
-      });
+      }
 
       stub.onFirstCall().returns(createPromise(dataOne));
       stub.onSecondCall().returns(createPromise(dataTwo));
+      stub.onThirdCall().returns(createPromise(dataThree));
 
       cfApi.fetchAllPages(expectedUrl, function(responses) {
-        var combined = dataOne.data.resources.concat(dataTwo.data.resources).map(
+        const combined = dataOne.data.resources.concat(dataTwo.data.resources)
+          .concat(dataThree.data.resources).map(
           (r) => Object.assign({}, r.metadata, r.entity));
-        expect(stub).toHaveBeenCalledTwice();
+        expect(stub).toHaveBeenCalledThrice();
         expect(responses).toEqual(combined);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
