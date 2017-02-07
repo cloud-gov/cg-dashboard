@@ -8,6 +8,7 @@ import { assertAction, setupViewSpy, setupServerSpy, setupUISpy } from
 import cfApi from '../../../util/cf_api.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
+import ServiceInstanceStore from '../../../stores/service_instance_store';
 import { wrapInRes, unwrapOfRes } from '../helpers.js';
 
 describe('serviceActions', function() {
@@ -21,16 +22,40 @@ describe('serviceActions', function() {
     sandbox.restore();
   });
 
-  describe('fetchAllServices()', function() {
-    it('should dispatch a view event of type service fetch', function() {
-      let expectedParams = {
-        orgGuid: 'adsfa'
-      }
-      let spy = setupViewSpy(sandbox)
+  describe('fetchAllServices()', function () {
+    let viewSpy, guid, services, result;
 
-      serviceActions.fetchAllServices(expectedParams.orgGuid);
+    beforeEach(function (done) {
+      guid = 'asdfa';
+      services = [{ guid: '1234' }];
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'fetchAllServices').returns(Promise.resolve(services));
+      sandbox.stub(serviceActions, 'fetchAllPlans').returns(Promise.resolve());
+      sandbox.spy(serviceActions, 'receivedServices');
 
-      assertAction(spy, serviceActionTypes.SERVICES_FETCH, expectedParams);
+      serviceActions.fetchAllServices(guid)
+       .then(r => { result = r; })
+       .then(done, done.fail);
+    });
+
+    it('returns the services', function () {
+      expect(result).toBe(services);
+    });
+
+    it('should dispatch a view event of type service fetch', function () {
+      const expectedParams = {
+        orgGuid: guid
+      };
+
+      assertAction(viewSpy, serviceActionTypes.SERVICES_FETCH, expectedParams);
+    });
+
+    it('calls cf_api fetchAllServices', function () {
+      expect(cfApi.fetchAllServices).toHaveBeenCalledOnce();
+    });
+
+    it('calls receivedServices action', function () {
+      expect(serviceActions.receivedServices).toHaveBeenCalledWith(services);
     });
   });
 
@@ -45,6 +70,27 @@ describe('serviceActions', function() {
       serviceActions.receivedServices(wrapInRes(expected));
 
       assertAction(spy, serviceActionTypes.SERVICES_RECEIVED, expectedParams);
+    });
+  });
+
+  describe('fetchPlan()', function () {
+    let planGuid;
+    beforeEach(function (done) {
+      planGuid = 'abcd';
+
+      sandbox.stub(cfApi, 'fetchServicePlan').returns(Promise.resolve({ guid: planGuid }));
+      sandbox.spy(serviceActions, 'receivedPlan');
+
+      serviceActions.fetchPlan(planGuid)
+        .then(done, done.fail);
+    });
+
+    it('calls api for fetch plan', function () {
+      expect(cfApi.fetchServicePlan).toHaveBeenCalledOnce();
+    });
+
+    it('calls receivedPlan action', function () {
+      expect(serviceActions.receivedPlan).toHaveBeenCalledWith({ guid: planGuid});
     });
   });
 
@@ -71,19 +117,36 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('fetchAllPlans()', function() {
-    it('should dispatch a view event with service guid', function() {
-      var expectedGuid = 'admxzcg',
-          expectedParams = {
-            serviceGuid: expectedGuid
-          };
+  describe('fetchAllPlans()', function () {
+    let planGuid, serviceGuid, viewSpy;
 
-      let spy = setupViewSpy(sandbox)
+    beforeEach(function (done) {
+      serviceGuid = 'asdf';
+      planGuid = 'admxzcg';
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'fetchAllServicePlans')
+        .returns(Promise.resolve([{ guid: planGuid }]));
+      sandbox.spy(serviceActions, 'receivedPlans');
 
-      serviceActions.fetchAllPlans(expectedGuid);
+      serviceActions.fetchAllPlans(serviceGuid)
+        .then(done, done.fail);
+    });
 
-      assertAction(spy, serviceActionTypes.SERVICE_PLANS_FETCH,
+    it('should dispatch a view event with service guid', function () {
+      const expectedParams = {
+        serviceGuid
+      };
+
+      assertAction(viewSpy, serviceActionTypes.SERVICE_PLANS_FETCH,
                    expectedParams);
+    });
+
+    it('calls api to fetch plans', function () {
+      expect(cfApi.fetchAllServicePlans).toHaveBeenCalledOnce();
+    });
+
+    it('calls receivedPlans action', function () {
+      expect(serviceActions.receivedPlans).toHaveBeenCalledWith([{ guid: planGuid }]);
     });
   });
 
@@ -101,6 +164,41 @@ describe('serviceActions', function() {
 
       assertAction(spy, serviceActionTypes.SERVICE_PLANS_RECEIVED,
                    expectedParams);
+    });
+  });
+
+  describe('fetchAllInstances()', function () {
+    let spaceGuid, serviceInstances, result;
+    beforeEach(function (done) {
+      serviceInstances = [
+        { guid: '1234', service_plan_guid: 'plan-1234' },
+        { guid: 'abcd', service_plan_guid: 'plan-abcd' }
+      ];
+      sandbox.stub(cfApi, 'fetchServiceInstances').returns(Promise.resolve(serviceInstances));
+      sandbox.stub(cfApi, 'fetchServicePlan').returns(Promise.resolve());
+      sandbox.spy(serviceActions, 'receivedInstances');
+
+      serviceActions.fetchAllInstances(spaceGuid)
+        .then(r => { result = r; })
+        .then(done, done.fail);
+    });
+
+    it('resolves to serviceInstances', function () {
+      expect(result).toBe(serviceInstances);
+    });
+
+    it('calls fetchServiceInstances from api', function () {
+      expect(cfApi.fetchServiceInstances).toHaveBeenCalledOnce();
+    });
+
+    it('fetches the service plans associated with these instances', function () {
+      expect(cfApi.fetchServicePlan).toHaveBeenCalledTwice();
+      expect(cfApi.fetchServicePlan).toHaveBeenCalledWith('plan-1234');
+      expect(cfApi.fetchServicePlan).toHaveBeenCalledWith('plan-abcd');
+    });
+
+    it('calls receivedInstances action', function () {
+      expect(serviceActions.receivedInstances).toHaveBeenCalledOnce();
     });
   });
 
@@ -153,27 +251,69 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('createInstance()', function() {
-    it(`should dispatch a view event of type service instance create with name
-        space guid, and service plan guid`, function() {
-      var expectedSpaceGuid = 'alksjdfvcbxzzz',
-          expectedName = 'service',
-          expectedServicePlanGuid = '78900987adfasda';
+  describe('createInstance()', function () {
+    let expectedSpaceGuid, expectedName, expectedServicePlanGuid, viewSpy;
 
-      let expectedParams = {
+    beforeEach(function (done) {
+      expectedSpaceGuid = 'alksjdfvcbxzzz';
+      expectedName = 'service';
+      expectedServicePlanGuid = '78900987adfasda';
+      const serviceInstance = { guid: 'abcd' };
+
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'createServiceInstance').returns(Promise.resolve(serviceInstance));
+      sandbox.stub(serviceActions, 'fetchInstance').returns(Promise.resolve(serviceInstance));
+      sandbox.stub(serviceActions, 'createdInstance').returns(Promise.resolve());
+
+      serviceActions.createInstance(
+        expectedName,
+        expectedSpaceGuid,
+        expectedServicePlanGuid)
+          .then(done, done.fail);
+    });
+
+    it(`should dispatch a view event of type service instance create with name
+        space guid, and service plan guid`, function () {
+      const expectedParams = {
         name: expectedName,
         spaceGuid: expectedSpaceGuid,
         servicePlanGuid: expectedServicePlanGuid
       };
-      let spy = setupViewSpy(sandbox);
 
-      serviceActions.createInstance(
+      assertAction(viewSpy, serviceActionTypes.SERVICE_INSTANCE_CREATE, expectedParams);
+    });
+
+    it('calls the api for createServiceInstance', function () {
+      expect(cfApi.createServiceInstance).toHaveBeenCalledOnce();
+    });
+
+    it('fetches the instance just created', function () {
+      expect(serviceActions.fetchInstance).toHaveBeenCalledOnce();
+    });
+
+    it('should call service action for instance created on success', function () {
+      expect(serviceActions.createdInstance).toHaveBeenCalledOnce();
+      expect(serviceActions.createdInstance).toHaveBeenCalledWith({ guid: 'abcd' });
+    });
+
+    describe('on error', function () {
+      beforeEach(function (done) {
+        cfApi.createServiceInstance.returns(Promise.reject(new Error('a fake error')));
+        sandbox.stub(serviceActions, 'errorCreateInstance').returns(Promise.resolve());
+
+        serviceActions.createInstance(
           expectedName,
           expectedSpaceGuid,
-          expectedServicePlanGuid);
+          expectedServicePlanGuid)
+            .then(done, done);
+      });
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE,
-                   expectedParams);
+      it('should call service error action on failure', function () {
+        expect(serviceActions.errorCreateInstance).toHaveBeenCalledOnce();
+
+        const error = serviceActions.errorCreateInstance.getCall(0).args[0];
+        expect(error).toMatch(/a fake error/);
+      });
     });
   });
 
@@ -293,33 +433,50 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('deleteInstance()', function() {
-    it('should dispatch a instance delete view event with instance guid', () => {
-      var expectedInstanceGuid = 'asdfasdf';
-      var expectedParams = {
-        serviceInstanceGuid: expectedInstanceGuid
-      }
+  describe('deleteInstance()', function () {
+    let expectedInstanceGuid, expected, viewSpy;
 
-      let spy = setupUISpy(sandbox)
-      serviceActions.deleteInstanceConfirm(expectedInstanceGuid);
+    beforeEach(function (done) {
+      expectedInstanceGuid = 'asdfasdf';
+      expected = { guid: expectedInstanceGuid, url: `/${expectedInstanceGuid}` };
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETE_CONFIRM,
-                   expectedParams);
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'deleteUnboundServiceInstance').returns(Promise.resolve());
+      sandbox.spy(serviceActions, 'deletedInstance');
+
+      // TODO this should be a fresh instance of ServiceInstanceStore, but the
+      // actions use the global singletons
+      ServiceInstanceStore.clear();
+      ServiceInstanceStore.push(expected);
+
+      serviceActions.deleteInstance(expectedInstanceGuid).then(done, done.fail);
     });
-  });
 
-  describe('deleteInstance()', function() {
     it('should dispatch a instance delete view event with instance guid', () => {
-      var expectedInstanceGuid = 'asdfasdf';
-      var expectedParams = {
+      const expectedParams = {
         serviceInstanceGuid: expectedInstanceGuid
-      }
+      };
 
-      let spy = setupViewSpy(sandbox)
-      serviceActions.deleteInstance(expectedInstanceGuid);
+      assertAction(viewSpy, serviceActionTypes.SERVICE_INSTANCE_DELETE, expectedParams);
+    });
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_DELETE,
-                   expectedParams);
+    it('should call api delete with the service', function () {
+      expect(cfApi.deleteUnboundServiceInstance).toHaveBeenCalledOnce();
+      const arg = cfApi.deleteUnboundServiceInstance.getCall(0).args[0];
+      expect(arg).toEqual(expected);
+    });
+
+    it('should call service deleted action with guid', function () {
+      expect(serviceActions.deletedInstance).toHaveBeenCalledOnce();
+      expect(serviceActions.deletedInstance).toHaveBeenCalledWith(expectedInstanceGuid);
+    });
+
+    describe('for non existing instance', function () {
+      it('should do nothing if the service isn\'t in data', function () {
+        cfApi.deleteUnboundServiceInstance.reset();
+        serviceActions.deleteInstance('1234');
+        expect(cfApi.deleteUnboundServiceInstance).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -372,19 +529,35 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('fetchServiceBindings()', function() {
-    it('should dispatch service bindings fetch view event with app guid',
-        function() {
-      const appGuid = 'aldkjfs';
+  describe('fetchServiceBindings()', function () {
+    let appGuid, viewSpy;
+
+    beforeEach(function (done) {
+      appGuid = 'aldkjfs';
+      viewSpy = setupViewSpy(sandbox);
+
+      sandbox.stub(cfApi, 'fetchServiceBindings').returns(Promise.resolve([]));
+      sandbox.spy(serviceActions, 'receivedServiceBindings');
+
+      serviceActions.fetchServiceBindings(appGuid)
+        .then(done, done.fail);
+    });
+
+    it('should dispatch service bindings fetch view event with app guid', function () {
       const expectedParams = {
         appGuid
       };
-      const spy = setupViewSpy(sandbox)
 
-      serviceActions.fetchServiceBindings(appGuid);
-
-      assertAction(spy, serviceActionTypes.SERVICE_BINDINGS_FETCH,
+      assertAction(viewSpy, serviceActionTypes.SERVICE_BINDINGS_FETCH,
                    expectedParams);
+    });
+
+    it('should call fetchServiceBindings', function () {
+      expect(cfApi.fetchServiceBindings).toHaveBeenCalledOnce();
+    });
+
+    it('should call receivedServiceBindings action', function () {
+      expect(serviceActions.receivedServiceBindings).toHaveBeenCalledOnce();
     });
   });
 
@@ -404,41 +577,100 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('bindService()', function() {
-    it('should dispatch a service bind view event with app guid and instance guid',
-        function() {
-      const appGuid = 'asldfjzzcxv';
-      const serviceInstanceGuid = 'zxclkjvzdfadfadsfasdfad';
+  describe('bindService()', function () {
+    let appGuid, serviceInstance, serviceInstanceGuid, viewSpy;
+
+    beforeEach(function (done) {
+      appGuid = 'asldfjzzcxv';
+      serviceInstanceGuid = 'zxclkjvzdfadfadsfasdfad';
+      viewSpy = setupViewSpy(sandbox);
+      serviceInstance = { guid: serviceInstanceGuid };
+
+      sandbox.stub(cfApi, 'createServiceBinding').returns(Promise.resolve(serviceInstance));
+      sandbox.spy(serviceActions, 'boundService');
+
+      serviceActions.bindService(appGuid, serviceInstanceGuid)
+        .then(done, done.fail);
+    });
+
+    it('should dispatch a service bind view event with app guid and instance guid', function () {
       const expectedParams = {
         appGuid,
         serviceInstanceGuid
       };
 
-      const spy = setupViewSpy(sandbox);
+      assertAction(viewSpy, serviceActionTypes.SERVICE_BIND, expectedParams);
+    });
 
-      serviceActions.bindService(appGuid, serviceInstanceGuid);
+    it('should call bound service with response if successful', function () {
+      expect(serviceActions.boundService).toHaveBeenCalledOnce();
+      expect(serviceActions.boundService).toHaveBeenCalledWith(serviceInstance);
+    });
 
-      assertAction(spy, serviceActionTypes.SERVICE_BIND, expectedParams);
+    describe('on error', function () {
+      beforeEach(function (done) {
+        cfApi.createServiceBinding.returns(Promise.reject(new Error('a fake error')));
+        sandbox.spy(serviceActions, 'instanceError');
+
+        serviceActions.bindService(appGuid, serviceInstanceGuid)
+          .then(done, done.fail);
+      });
+
+      it('should call instance error if request fails with err', function () {
+        expect(serviceActions.instanceError).toHaveBeenCalledOnce();
+        const [guid, err] = serviceActions.instanceError.getCall(0).args;
+        expect(err).toMatch(/a fake error/);
+        expect(guid).toBe(serviceInstanceGuid);
+      });
     });
   });
 
-  describe('unbindService()', function() {
-    it('should dispatch a service unbind view event with binding', function() {
-      const binding = {
+  describe('unbindService()', function () {
+    let binding, viewSpy;
+
+    beforeEach(function (done) {
+      binding = {
         service_instance_guid: 'asladsfdfjzzcxv',
         app_guid: '12346vzdfadfadsfasdfad'
       };
+
+      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'deleteServiceBinding').returns(Promise.resolve());
+      sandbox.spy(serviceActions, 'unboundService');
+
+      serviceActions.unbindService(binding)
+        .then(done, done.fail);
+    });
+
+    it('should dispatch a service unbind view event with binding', function () {
       const expectedParams = {
         serviceBinding: binding
       };
 
-      const spy = setupViewSpy(sandbox);
-
-      serviceActions.unbindService(binding);
-
-      assertAction(spy, serviceActionTypes.SERVICE_UNBIND, expectedParams);
+      assertAction(viewSpy, serviceActionTypes.SERVICE_UNBIND, expectedParams);
     });
 
+    it('calls unboundService action', function () {
+      expect(serviceActions.unboundService).toHaveBeenCalledOnce();
+    });
+
+    describe('on error', function () {
+      let error;
+
+      beforeEach(function (done) {
+        error = new Error('a test error');
+        sandbox.spy(serviceActions, 'instanceError');
+        cfApi.deleteServiceBinding.returns(Promise.reject(error));
+
+        serviceActions.unbindService(binding)
+          .then(done, done);
+      });
+
+      it('should call delete error if request fails', function () {
+        expect(serviceActions.instanceError).toHaveBeenCalledOnce();
+        expect(serviceActions.instanceError).toHaveBeenCalledWith(binding.service_instance_guid, error);
+      });
+    });
   });
 
   describe('boundService()', function() {

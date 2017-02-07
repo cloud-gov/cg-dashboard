@@ -4,16 +4,14 @@ import Immutable from 'immutable';
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import cfApi from '../../../util/cf_api.js';
-import ServiceStore from '../../../stores/service_store.js';
-import serviceActions from '../../../actions/service_actions.js';
+import { ServiceStore as ServiceStoreClass } from '../../../stores/service_store.js';
 import { serviceActionTypes } from '../../../constants.js';
 
-describe('ServiceStore', function() {
-  var sandbox;
+describe('ServiceStore', function () {
+  let sandbox, ServiceStore;
 
   beforeEach(() => {
-    ServiceStore._data = [];
+    ServiceStore = new ServiceStoreClass();
     sandbox = sinon.sandbox.create();
   });
 
@@ -21,56 +19,43 @@ describe('ServiceStore', function() {
     sandbox.restore();
   });
 
-  describe('constructor()', () => {
-    it('should set _data to empty array', () => {
-      expect(ServiceStore._data).toBeEmptyArray();
-    });
-  });
-
-  describe('on services fetch', function() {
-    it('should set loading to true', function() {
-      serviceActions.fetchAllServices('zxncvz8xcvhn32');
+  describe('on services fetch', function () {
+    it('should set loading to true', function () {
+      const guid = 'zxncvz8xcvhn32';
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICES_FETCH,
+        orgGuid: guid
+      });
 
       expect(ServiceStore.loading).toEqual(true);
     });
-
-    it('should call the cf api for all services belonging to the org', function() {
-      var spy = sandbox.spy(cfApi, 'fetchAllServices'),
-          expectedOrgGuid = 'zxncvz8xcvhn32';
-
-      serviceActions.fetchAllServices(expectedOrgGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedOrgGuid);
-    });
   });
 
-  describe('on services received', function() {
-    it('should merge in services to current data', function() {
+  describe('on services received', function () {
+    beforeEach(function () {
       const sharedGuid = 'adxvcbxv';
       const expected = [
         { guid: 'zxvcjz', name: 'zxkjv' },
         { guid: sharedGuid, name: 'adlfskzxcv' }
       ];
 
-      let testRes = expected;
+      const testRes = expected;
       ServiceStore._data = Immutable.fromJS([{ guid: sharedGuid }]);
+      sandbox.spy(ServiceStore, 'emitChange');
 
-
-      serviceActions.receivedServices(testRes);
-
-      let actual = ServiceStore.getAll();
-
-      expect(actual.length).toEqual(2);
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICES_RECEIVED,
+        services: testRes
+      });
     });
 
-    it('should emit a change event', function() {
-      var spy = sandbox.spy(ServiceStore, 'emitChange');
+    it('should merge in services to current data', function () {
+      const services = ServiceStore.getAll();
+      expect(services.length).toEqual(2);
+    });
 
-      serviceActions.receivedServices([{ guid: 'adfklj' }]);
-
-      expect(spy).toHaveBeenCalledOnce();
+    it('should emit a change event', function () {
+      expect(ServiceStore.emitChange).toHaveBeenCalledOnce();
     });
   });
 });

@@ -18,6 +18,12 @@ describe('BaseStore', () => {
     sandbox.restore();
   });
 
+  describe('constructor()', () => {
+    it('should set _data to empty list', () => {
+      expect(store._data).toEqual(Immutable.List());
+    });
+  });
+
   describe('subscribe()', function() {
     it('it should set the dispatch token to an app dispatcher register',
         function() {

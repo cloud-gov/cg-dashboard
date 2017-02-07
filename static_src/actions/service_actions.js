@@ -4,15 +4,28 @@
  * updating, etc should go here.
  */
 
-import AppDispatcher from '../dispatcher.js';
-import { serviceActionTypes } from '../constants';
+// TODO consider splitting this up into separate files for bind, instance, and
+// plan actions similar to how stores are divided
 
-export default {
+import AppDispatcher from '../dispatcher.js';
+import cfApi from '../util/cf_api.js';
+import { serviceActionTypes } from '../constants';
+import ServiceInstanceStore from '../stores/service_instance_store';
+
+const serviceActions = {
   fetchAllServices(orgGuid) {
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICES_FETCH,
       orgGuid
     });
+
+    return cfApi.fetchAllServices(orgGuid)
+      .then(services =>
+        // Fetch associated service plans
+        Promise.all(services.map(service => serviceActions.fetchAllPlans(service.guid)))
+          .then(() => services)
+      )
+      .then(serviceActions.receivedServices);
   },
 
   receivedServices(services) {
@@ -20,6 +33,18 @@ export default {
       type: serviceActionTypes.SERVICES_RECEIVED,
       services
     });
+
+    return Promise.resolve(services);
+  },
+
+  fetchPlan(servicePlanGuid) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_PLAN_FETCH,
+      servicePlanGuid
+    });
+
+    return cfApi.fetchServicePlan(servicePlanGuid)
+      .then(serviceActions.receivedPlan);
   },
 
   receivedPlan(servicePlan) {
@@ -27,6 +52,8 @@ export default {
       type: serviceActionTypes.SERVICE_PLAN_RECEIVED,
       servicePlan
     });
+
+    return Promise.resolve(servicePlan);
   },
 
   fetchAllPlans(serviceGuid) {
@@ -34,6 +61,9 @@ export default {
       type: serviceActionTypes.SERVICE_PLANS_FETCH,
       serviceGuid
     });
+
+    return cfApi.fetchAllServicePlans(serviceGuid)
+      .then(serviceActions.receivedPlans);
   },
 
   receivedPlans(servicePlans) {
@@ -41,6 +71,8 @@ export default {
       type: serviceActionTypes.SERVICE_PLANS_RECEIVED,
       servicePlans
     });
+
+    return Promise.resolve(servicePlans);
   },
 
   fetchAllInstances(spaceGuid) {
@@ -48,6 +80,15 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
       spaceGuid
     });
+
+    return cfApi.fetchServiceInstances(spaceGuid)
+      .then(serviceInstances =>
+         Promise.all(serviceInstances.map(
+           serviceInstance => serviceActions.fetchPlan(serviceInstance.service_plan_guid)
+         ))
+         .then(() => serviceInstances)
+      )
+      .then(serviceActions.receivedInstances);
   },
 
   createInstanceForm(serviceGuid, planGuid) {
@@ -56,12 +97,16 @@ export default {
       serviceGuid,
       servicePlanGuid: planGuid
     });
+
+    return Promise.resolve();
   },
 
   createInstanceFormCancel() {
     AppDispatcher.handleUIAction({
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM_CANCEL
     });
+
+    return Promise.resolve();
   },
 
   createInstance(name, spaceGuid, servicePlanGuid) {
@@ -71,6 +116,10 @@ export default {
       spaceGuid,
       servicePlanGuid
     });
+
+    return cfApi.createServiceInstance(name, spaceGuid, servicePlanGuid)
+      .then(serviceInstance => serviceActions.fetchInstance(serviceInstance.guid))
+      .then(serviceActions.createdInstance, serviceActions.errorCreateInstance);
   },
 
   createdInstance(serviceInstance) {
@@ -78,6 +127,8 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_CREATED,
       serviceInstance
     });
+
+    return Promise.resolve(serviceInstance);
   },
 
   errorCreateInstance(err) {
@@ -85,6 +136,18 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR,
       error: err
     });
+
+    return Promise.resolve();
+  },
+
+  fetchInstance(serviceInstanceGuid) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_FETCH,
+      serviceInstanceGuid
+    });
+
+    return cfApi.fetchServiceInstance(serviceInstanceGuid)
+      .then(serviceActions.receivedInstance);
   },
 
   receivedInstance(serviceInstance) {
@@ -92,6 +155,8 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_RECEIVED,
       serviceInstance
     });
+
+    return Promise.resolve(serviceInstance);
   },
 
   receivedInstances(serviceInstances) {
@@ -99,6 +164,8 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCES_RECEIVED,
       serviceInstances
     });
+
+    return Promise.resolve(serviceInstances);
   },
 
   deleteInstanceConfirm(instanceGuid) {
@@ -106,6 +173,8 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_DELETE_CONFIRM,
       serviceInstanceGuid: instanceGuid
     });
+
+    return Promise.resolve();
   },
 
   deleteInstanceCancel(instanceGuid) {
@@ -113,13 +182,25 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_DELETE_CANCEL,
       serviceInstanceGuid: instanceGuid
     });
+
+    return Promise.resolve(instanceGuid);
   },
 
   deleteInstance(instanceGuid) {
+    const toDelete = ServiceInstanceStore.get(instanceGuid);
+    if (!toDelete) {
+      return Promise.reject(new Error(`ServiceInstance ${instanceGuid} is not in store`));
+    }
+
     AppDispatcher.handleViewAction({
       type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
       serviceInstanceGuid: instanceGuid
     });
+
+    return cfApi.deleteUnboundServiceInstance(toDelete)
+      .then(() => serviceActions.deletedInstance(instanceGuid))
+      // TODO if the delete fails, we want to expose it to the user
+      .catch(() => serviceActions.deletedInstance(instanceGuid)); // Swallow the error
   },
 
   deletedInstance(serviceInstanceGuid) {
@@ -127,6 +208,8 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
       serviceInstanceGuid
     });
+
+    return Promise.resolve(serviceInstanceGuid);
   },
 
   changeServiceInstanceCheck(serviceInstanceGuid) {
@@ -134,6 +217,8 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_CHANGE_CHECK,
       serviceInstanceGuid
     });
+
+    return Promise.resolve(serviceInstanceGuid);
   },
 
   changeServiceInstanceCancel(serviceInstanceGuid) {
@@ -141,6 +226,8 @@ export default {
       type: serviceActionTypes.SERVICE_INSTANCE_CHANGE_CANCEL,
       serviceInstanceGuid
     });
+
+    return Promise.resolve(serviceInstanceGuid);
   },
 
   fetchServiceBindings(appGuid) {
@@ -148,6 +235,9 @@ export default {
       type: serviceActionTypes.SERVICE_BINDINGS_FETCH,
       appGuid
     });
+
+    return cfApi.fetchServiceBindings(appGuid)
+      .then(serviceActions.receivedServiceBindings);
   },
 
   receivedServiceBindings(serviceBindings) {
@@ -155,6 +245,8 @@ export default {
       type: serviceActionTypes.SERVICE_BINDINGS_RECEIVED,
       serviceBindings
     });
+
+    return Promise.resolve(serviceBindings);
   },
 
   bindService(appGuid, serviceInstanceGuid) {
@@ -163,6 +255,10 @@ export default {
       appGuid,
       serviceInstanceGuid
     });
+
+    return cfApi.createServiceBinding(appGuid, serviceInstanceGuid)
+      .then(serviceActions.boundService)
+      .catch(err => serviceActions.instanceError(serviceInstanceGuid, err));
   },
 
   unbindService(serviceBinding) {
@@ -170,6 +266,10 @@ export default {
       type: serviceActionTypes.SERVICE_UNBIND,
       serviceBinding
     });
+
+    return cfApi.deleteServiceBinding(serviceBinding)
+      .then(() => serviceActions.unboundService(serviceBinding))
+      .catch(err => serviceActions.instanceError(serviceBinding.service_instance_guid, err));
   },
 
   boundService(serviceBinding) {
@@ -177,6 +277,8 @@ export default {
       type: serviceActionTypes.SERVICE_BOUND,
       serviceBinding
     });
+
+    return Promise.resolve(serviceBinding);
   },
 
   unboundService(serviceBinding) {
@@ -184,6 +286,8 @@ export default {
       type: serviceActionTypes.SERVICE_UNBOUND,
       serviceBinding
     });
+
+    return Promise.resolve(serviceBinding);
   },
 
   instanceError(serviceInstanceGuid, error) {
@@ -192,5 +296,9 @@ export default {
       serviceInstanceGuid,
       error
     });
+
+    return Promise.resolve();
   }
 };
+
+export default serviceActions;

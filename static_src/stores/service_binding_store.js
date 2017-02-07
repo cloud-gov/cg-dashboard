@@ -3,17 +3,18 @@
  * instances.
  */
 
-import Immutable from 'immutable';
-
 import BaseStore from './base_store.js';
-import cfApi from '../util/cf_api.js';
 import { serviceActionTypes } from '../constants.js';
 
-class ServiceBindingStore extends BaseStore {
+export class ServiceBindingStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this._data = new Immutable.List();
+    this._fetching = false;
+  }
+
+  get loading() {
+    return this._fetching;
   }
 
   getAllByApp(appGuid) {
@@ -25,12 +26,13 @@ class ServiceBindingStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_BINDINGS_FETCH: {
-        this.load([cfApi.fetchServiceBindings(action.appGuid)]);
+        this._fetching = true;
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_BINDINGS_RECEIVED: {
+        this._fetching = false;
         const bindings = action.serviceBindings;
         this.mergeMany('guid', bindings, () => { });
         this.emitChange();
@@ -38,18 +40,20 @@ class ServiceBindingStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_BIND: {
-        cfApi.createServiceBinding(action.appGuid, action.serviceInstanceGuid);
+        // TODO store the biding-in-progress state within a new serviceBinding
         break;
       }
 
       case serviceActionTypes.SERVICE_UNBIND: {
-        cfApi.deleteServiceBinding(action.serviceBinding);
+        const binding = this.get(action.serviceBinding.guid);
+        const unbindingService = Object.assign({}, binding, { unbinding: true });
+        this.merge('guid', unbindingService);
         break;
       }
 
       case serviceActionTypes.SERVICE_BOUND: {
         const binding = action.serviceBinding;
-        this.merge('guid', binding, () => this.emitChange());
+        this.merge('guid', binding);
         break;
       }
 

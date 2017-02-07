@@ -141,28 +141,14 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
-  describe('on service instances fetch', function() {
-    it('should be loading', function() {
+  describe('on service instances fetch', function () {
+    it('should be loading', function () {
       AppDispatcher.handleViewAction({
         type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
         spaceGuid: 'fakeguid'
       });
 
       expect(ServiceInstanceStore.loading).toEqual(true);
-    });
-
-    it('should fetch service instances from api with space guid', function() {
-      var spy = sandbox.spy(cfApi, 'fetchServiceInstances'),
-          expectedSpaceGuid = '9998sdfa;dksa';
-
-      AppDispatcher.handleViewAction({
-        type: serviceActionTypes.SERVICE_INSTANCES_FETCH,
-        spaceGuid: expectedSpaceGuid
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedSpaceGuid);
     });
   });
 
@@ -301,27 +287,16 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
-  describe('on service instance created', function() {
-    it('should fetch the created instance with guid', function() {
-      const spy = sandbox.spy(cfApi, 'fetchServiceInstance');
-      const expectedGuid = 'akdfjzxcv32dfmnv23';
+  describe('on service instance created', function () {
+    it('emits a change event', function () {
+      const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
 
-      serviceActions.createdInstance({guid: expectedGuid });
-
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedGuid);
-    });
-
-    it('emits a change event', function() {
-      var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
-
-      serviceActions.createdInstance({guid: 'adsfavzxc' });
+      serviceActions.createdInstance({ guid: 'adsfavzxc' });
 
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should set created temporary notification to true', function() {
+    it('should set created temporary notification to true', function () {
       serviceActions.createdInstance(
         { guid: 'asdf9a8fasss', name: 'nameA' });
 
@@ -329,9 +304,9 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
-  describe('on service instance delete', function() {
-    it('should do nothing if the service isn\'t in data', function() {
-      var spy = sandbox.spy(cfApi, 'deleteUnboundServiceInstance');
+  describe('on service instance delete', function () {
+    it('should do nothing if the service isn\'t in data', function () {
+      const spy = sandbox.spy(cfApi, 'deleteUnboundServiceInstance');
 
       AppDispatcher.handleViewAction({
         type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
@@ -339,23 +314,6 @@ describe('ServiceInstanceStore', function() {
       });
 
       expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('should api delete with the service', function() {
-      var spy = sandbox.spy(cfApi, 'deleteUnboundServiceInstance'),
-          expectedGuid = 'qp98wfj',
-          expected = { guid: expectedGuid, url: '/' + expectedGuid };
-
-      ServiceInstanceStore.push(expected);
-
-      AppDispatcher.handleViewAction({
-        type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
-        serviceInstanceGuid: expectedGuid
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expected);
     });
   });
 

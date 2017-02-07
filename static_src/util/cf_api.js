@@ -6,7 +6,6 @@ import errorActions from '../actions/error_actions.js';
 import loginActions from '../actions/login_actions.js';
 import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
-import serviceActions from '../actions/service_actions.js';
 import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
@@ -40,6 +39,22 @@ function promiseHandleError(err) {
   console.warn('cf_api error', { err }); // eslint-disable-line no-console
   noticeError(err);
   return Promise.reject(err);
+}
+
+// Some fields are serialized JSON that need parsing
+export function tryParseJson(serialized) {
+  if (!serialized) {
+    return Promise.resolve(null);
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(serialized);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+
+  return Promise.resolve(parsed);
 }
 
 export default {
@@ -193,13 +208,11 @@ export default {
   },
 
   fetchServiceInstance(instanceGuid) {
-    return this.fetchOne(`/service_instances/${instanceGuid}`,
-                          serviceActions.receivedInstance);
+    return this.fetchOne(`/service_instances/${instanceGuid}`);
   },
 
   fetchServiceInstances(spaceGuid) {
-    return this.fetchMany(`/spaces/${spaceGuid}/service_instances`,
-                          serviceActions.receivedInstances);
+    return this.fetchMany(`/spaces/${spaceGuid}/service_instances`);
   },
 
   createServiceInstance(name, spaceGuid, servicePlanGuid) {
@@ -210,20 +223,15 @@ export default {
     };
 
     return http.post(`${APIV}/service_instances?accepts_incomplete=true`, payload)
-      .then((res) => {
-        serviceActions.createdInstance(this.formatSplitResponse(res.data));
-      }).catch((err) => {
-        handleError(err, serviceActions.errorCreateInstance);
+      .then((res) => this.formatSplitResponse(res.data))
+      .catch((err) => {
+        handleError(err);
+        return Promise.reject(err);
       });
   },
 
   deleteUnboundServiceInstance(serviceInstance) {
-    return http.delete(serviceInstance.url)
-    .then(() => {
-      serviceActions.deletedInstance(serviceInstance.guid);
-    }).catch(() => {
-      // Do nothing.
-    });
+    return http.delete(serviceInstance.url);
   },
 
   fetchAppAll(appGuid) {
@@ -350,18 +358,37 @@ export default {
   },
 
   fetchServicePlan(servicePlanGuid) {
-    return this.fetchOne(`/service_plans/${servicePlanGuid}`,
-                         serviceActions.receivedPlan);
+    return this.fetchOne(`/service_plans/${servicePlanGuid}`)
+      .then(servicePlan =>
+        // Service plans have an `extra` field of metadata
+        tryParseJson(servicePlan.extra)
+          .then(extra => ({ ...servicePlan, extra }))
+          .catch(err => {
+            const e = new Error('Failed to parse service plan extra data');
+            e.parseError = err;
+            return Promise.reject(e);
+          })
+      );
   },
 
   fetchAllServices(orgGuid) {
-    return this.fetchMany(`/organizations/${orgGuid}/services`,
-      serviceActions.receivedServices);
+    return this.fetchMany(`/organizations/${orgGuid}/services`);
   },
 
   fetchAllServicePlans(serviceGuid) {
-    return this.fetchMany(`/services/${serviceGuid}/service_plans`,
-      serviceActions.receivedPlans);
+    return this.fetchMany(`/services/${serviceGuid}/service_plans`)
+      .then(servicePlans =>
+        Promise.all(servicePlans.map(servicePlan =>
+          // Service plans have an `extra` field of metadata
+          tryParseJson(servicePlan.extra)
+            .then(extra => ({ ...servicePlan, extra }))
+            .catch(err => {
+              const e = new Error(`Failed to parse service plan '${servicePlan.guid}' extra data`);
+              e.parseError = err;
+              return Promise.reject(e);
+            })
+        ))
+      );
   },
 
   fetchRoutesForApp(appGuid) {
@@ -447,11 +474,10 @@ export default {
 
   fetchServiceBindings(appGuid) {
     if (!appGuid) {
-      return this.fetchMany('/service_bindings',
-        serviceActions.receivedServiceBindings);
+      return this.fetchMany('/service_bindings');
     }
-    return this.fetchMany(`/apps/${appGuid}/service_bindings`,
-                         serviceActions.receivedServiceBindings);
+
+    return this.fetchMany(`/apps/${appGuid}/service_bindings`);
   },
 
   createServiceBinding(appGuid, serviceInstanceGuid) {
@@ -459,21 +485,19 @@ export default {
       app_guid: appGuid,
       service_instance_guid: serviceInstanceGuid
     };
-    return http.post(`${APIV}/service_bindings`, payload).then((res) => {
-      serviceActions.boundService(this.formatSplitResponse(res.data));
-    }).catch((err) => {
-      handleError(err, serviceActions.instanceError.bind(
-        this, serviceInstanceGuid));
-    });
+    return http.post(`${APIV}/service_bindings`, payload)
+      .then(res => this.formatSplitResponse(res.data))
+      .catch(err => {
+        handleError(err);
+        return Promise.reject(err);
+      });
   },
 
   deleteServiceBinding(serviceBinding) {
-    return http.delete(`${APIV}/service_bindings/${serviceBinding.guid}`).then(
-    () => {
-      serviceActions.unboundService(serviceBinding);
-    }).catch((err) => {
-      handleError(err, serviceActions.instanceError.bind(
-        this, serviceBinding.service_instance_guid));
-    });
+    return http.delete(`${APIV}/service_bindings/${serviceBinding.guid}`)
+      .catch(err => {
+        handleError(err);
+        return Promise.reject(err);
+      });
   }
 };
