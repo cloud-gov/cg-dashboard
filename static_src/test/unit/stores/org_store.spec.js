@@ -4,21 +4,19 @@ import Immutable from 'immutable';
 import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
-import cfApi from '../../../util/cf_api.js';
-import OrgStore from '../../../stores/org_store.js';
-import orgActions from '../../../actions/org_actions.js';
+import { OrgStore as OrgStoreClass } from '../../../stores/org_store.js';
 import { orgActionTypes } from '../../../constants';
 
 describe('OrgStore', () => {
-  var sandbox;
+  let sandbox, OrgStore;
 
   beforeEach(() => {
-    OrgStore._currentOrgGuid = null;
-    OrgStore._data = Immutable.List();
+    OrgStore = new OrgStoreClass();
     sandbox = sinon.sandbox.create();
   });
 
   afterEach(() => {
+    OrgStore.unsubscribe();
     sandbox.restore();
   });
 
@@ -28,51 +26,51 @@ describe('OrgStore', () => {
     });
   });
 
-  describe('get currentOrgGuid', function() {
-    it('should start with null, none selected', function() {
+  describe('get currentOrgGuid', function () {
+    it('should start with null, none selected', function () {
       expect(OrgStore.currentOrgGuid).toBe(null);
     });
 
-    it('should return the current org its on', function() {
-      var expected = 'asdlfkja;';
+    it('should return the current org its on', function () {
+      const expected = 'asdlfkja;';
       OrgStore._currentOrgGuid = expected;
       expect(OrgStore.currentOrgGuid).toEqual(expected);
     });
   });
 
-  describe('updateOpenOrgs()', function() {
-    it('should return an array', function() {
-      var guid = 'orgguid';
-      var actual = OrgStore.updateOpenOrgs(guid);
+  describe('updateOpenOrgs()', function () {
+    it('should return an array', function () {
+      const guid = 'orgguid';
+      const actual = OrgStore.updateOpenOrgs(guid);
       expect(actual.length).toEqual(0);
     });
 
-    it('should set the org to open', function (){
-      var guid = 'orgguid';
-      OrgStore._data = Immutable.fromJS([{ guid: guid }]);
-      var expected = [{ guid: guid, space_menu_open: true }];
-      var actual = OrgStore.updateOpenOrgs(guid);
+    it('should set the org to open', function () {
+      const guid = 'orgguid';
+      OrgStore._data = Immutable.fromJS([{ guid }]);
+      const expected = [{ guid, space_menu_open: true }];
+      const actual = OrgStore.updateOpenOrgs(guid);
 
       expect(actual).toEqual(expected);
     });
 
     it('should set all other orgs to not open', function () {
-      var guid = 'orgguid';
-      var initial = [{ guid: guid }, { guid: guid * 2 }, { guid: guid * 3 }];
-      var expected = [
-        { guid: guid, space_menu_open: true },
+      const guid = 'orgguid';
+      const initial = [{ guid }, { guid: guid * 2 }, { guid: guid * 3 }];
+      const expected = [
+        { guid, space_menu_open: true },
         { guid: guid * 2, space_menu_open: false },
-        { guid: guid * 3, space_menu_open: false },
+        { guid: guid * 3, space_menu_open: false }
       ];
       OrgStore._data = Immutable.fromJS(initial);
-      var actual = OrgStore.updateOpenOrgs(guid);
+      const actual = OrgStore.updateOpenOrgs(guid);
       expect(actual).toEqual(expected);
     });
   });
 
   describe('on orgs received', () => {
     it('should set data to passed in orgs', () => {
-      var expected = [{guid: '1as'}, {guid: '2as'}];
+      const expected = [{ guid: '1as' }, { guid: '2as' }];
       expect(OrgStore.getAll()).toBeArray();
 
       AppDispatcher.handleViewAction({
@@ -85,9 +83,11 @@ describe('OrgStore', () => {
     });
 
     it('should merge data with existing orgs', () => {
-      var updates = [{guid: 'aaa1', name: 'sue'},
-            {guid: 'aaa2', name: 'see'}],
-          current = [{guid: 'aaa1', memory: 1024}];
+      const updates = [
+          { guid: 'aaa1', name: 'sue' },
+          { guid: 'aaa2', name: 'see' }
+        ],
+        current = [{ guid: 'aaa1', memory: 1024 }];
 
       OrgStore._data = Immutable.fromJS(current);
       AppDispatcher.handleViewAction({
@@ -96,15 +96,15 @@ describe('OrgStore', () => {
       });
 
       expect(OrgStore.getAll().length).toEqual(2);
-      let actual = OrgStore.get('aaa1');
+      const actual = OrgStore.get('aaa1');
       expect(actual).toBeTruthy();
       expect(actual.name).toEqual('sue');
       expect(actual.memory).toEqual(1024);
     });
   });
 
-  describe('on org fetch', function() {
-    it('should set loading to true', function() {
+  describe('on org fetch', function () {
+    it('should set loading to true', function () {
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORG_FETCH,
         orgGuid: 'orgGuid'
@@ -112,25 +112,11 @@ describe('OrgStore', () => {
 
       expect(OrgStore.loading).toEqual(true);
     });
-
-    it('should call the api org fetch function', function() {
-      var spy = sandbox.spy(cfApi, 'fetchOrg'),
-          expected = 'xsfewq';
-
-      AppDispatcher.handleViewAction({
-        type: orgActionTypes.ORG_FETCH,
-        orgGuid: expected
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expected);
-    });
   });
 
-  describe('on org received', function() {
-    it('should emit a change event', function() {
-      var spy = sandbox.spy(OrgStore, 'emitChange');
+  describe('on org received', function () {
+    it('should emit a change event', function () {
+      const spy = sandbox.spy(OrgStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORG_RECEIVED,
@@ -141,15 +127,15 @@ describe('OrgStore', () => {
     });
 
     it('should ensure org passed in has data added to it', () => {
-      var testGuid = 'xaaddf',
-          expected = {
-            guid: testGuid,
-            name: 'orgA',
-            spaces: [
-              { guid: 'xaaddf1', name: 'spaceA'},
-              { guid: 'xaaddf2', name: 'spaceB'}
-            ]
-          };
+      const testGuid = 'xaaddf',
+        expected = {
+          guid: testGuid,
+          name: 'orgA',
+          spaces: [
+            { guid: 'xaaddf1', name: 'spaceA' },
+            { guid: 'xaaddf2', name: 'spaceB' }
+          ]
+        };
 
       OrgStore.push({ guid: testGuid, spaceUrl: 'https://space' });
       expect(OrgStore.get(testGuid)).toBeObject();
@@ -164,15 +150,16 @@ describe('OrgStore', () => {
     });
   });
 
-  describe('on a space menu toggle', function() {
+  describe('on a space menu toggle', function () {
     let expected;
+
     beforeEach(function () {
       expected = { guid: 'sdsf', name: 'testA' };
       OrgStore.push(expected);
     });
 
-    it('should toggle space_menu_open on the correct org', function() {
-      var spy = sandbox.spy(OrgStore, 'emitChange');
+    it('should toggle space_menu_open on the correct org', function () {
+      const spy = sandbox.spy(OrgStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORG_TOGGLE_SPACE_MENU,
@@ -184,17 +171,17 @@ describe('OrgStore', () => {
     });
   });
 
-  describe('get currentOrgName()', function() {
-    it('should return emtpy string if no org', function() {
+  describe('get currentOrgName()', function () {
+    it('should return emtpy string if no org', function () {
       const actual = OrgStore.currentOrgName;
 
       expect(actual).toEqual('');
     });
 
-    it('should return org name if org', function() {
+    it('should return org name if org', function () {
       const guid = 'zmn,vweiqodnjt7';
       const expected = 'orgname';
-      const org = { guid: guid, name: expected };
+      const org = { guid, name: expected };
 
       OrgStore.push(org);
       OrgStore._currentOrgGuid = guid;
@@ -205,29 +192,30 @@ describe('OrgStore', () => {
     });
   });
 
-  describe('on toggle quicklook', function() {
-    it('should set quicklook.open to true for the org', function() {
-      const guid = 'osdvnx23bvc2';
-      const org = { guid, name: 'org' };
+  describe('on toggle quicklook', function () {
+    let guid;
 
+    beforeEach(function () {
+      guid = 'osdvnx23bvc2';
+
+      const org = { guid, name: 'org' };
       OrgStore.push(org);
 
-      orgActions.toggleQuicklook(org);
+      sandbox.spy(OrgStore, 'emitChange');
 
-      const actual = OrgStore.get(guid);
-      expect(actual.quicklook.open).toBeTruthy();
+      AppDispatcher.handleViewAction({
+        type: orgActionTypes.ORG_TOGGLE_QUICKLOOK,
+        orgGuid: guid
+      });
     });
 
-    it('should emit a change', function() {
-      const guid = 'osdvnx23435';
-      const org = { guid, name: 'org' };
+    it('should set quicklook.open to true for the org', function () {
+      const org = OrgStore.get(guid);
+      expect(org.quicklook.open).toBeTruthy();
+    });
 
-      OrgStore.push(org);
-      const spy = sandbox.spy(OrgStore, 'emitChange');
-
-      orgActions.toggleQuicklook(org);
-
-      expect(spy).toHaveBeenCalledOnce();
+    it('should emit a change', function () {
+      expect(OrgStore.emitChange).toHaveBeenCalledOnce();
     });
   });
 });

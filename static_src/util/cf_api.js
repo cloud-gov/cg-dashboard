@@ -4,7 +4,6 @@ import { noticeError } from '../util/analytics.js';
 import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
 import loginActions from '../actions/login_actions.js';
-import orgActions from '../actions/org_actions.js';
 import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
 import serviceActions from '../actions/service_actions.js';
@@ -131,24 +130,20 @@ export default {
   },
 
   fetchOrg(guid) {
-    let fullOrg = {};
-    const req = Promise.all(
-      [this.fetchOrgLinks(guid), this.fetchOrgDetails(guid)]);
-
-    return req.then((res) => {
-      fullOrg = Object.assign(...res);
-      return Promise.all([
-        this.fetchOrgMemoryUsage(guid),
-        this.fetchOrgMemoryLimit(fullOrg)
-      ]);
-    }).then((res) => {
-      let quota = {};
-      quota = Object.assign(quota, ...res);
-      fullOrg.quota = quota;
-      orgActions.receivedOrg(fullOrg);
-    }, (err) => {
-      errorActions.errorFetch(err);
-    });
+    return Promise.all([
+      this.fetchOrgLinks(guid),
+      this.fetchOrgDetails(guid),
+      this.fetchOrgMemoryUsage(guid)
+    ])
+    .then(([org, orgDetails, quota]) => Object.assign({}, org, orgDetails, { quota }))
+    .then(org =>
+      this.fetchOrgMemoryLimit(org)
+        .then(limit => {
+          const quota = Object.assign({}, org.quota, limit);
+          return Object.assign({}, org, { quota });
+        })
+    )
+    .catch(errorActions.errorFetch);
   },
 
   fetchOrgMemoryUsage(guid) {
@@ -162,19 +157,12 @@ export default {
   },
 
   fetchOrgs() {
-    return http.get(`${APIV}/organizations`).then((res) => {
-      orgActions.receivedOrgs(this.formatSplitResponses(res.data.resources));
-    }).catch((err) => {
-      handleError(err);
-    });
-  },
-
-  fetchOrgsSummaries(guids) {
-    return Promise.all(guids.map((guid) => this.fetchOrgSummary(guid)))
-    .then((res) => orgActions.receivedOrgsSummaries(res))
-    .catch((err) => {
-      handleError(err);
-    });
+    return http.get(`${APIV}/organizations`)
+      .then(res => this.formatSplitResponses(res.data.resources))
+      .catch(err => {
+        handleError(err);
+        return Promise.reject(err);
+      });
   },
 
   fetchOrgsQuotas() {
@@ -192,6 +180,7 @@ export default {
       this.formatSplitResponses(res.data.resources)
     ).catch((err) => {
       handleError(err);
+      return Promise.reject(err);
     });
   },
 

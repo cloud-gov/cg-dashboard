@@ -91,18 +91,6 @@ export default class AppContainer extends React.Component {
     appActions.start(this.state.app.guid);
   }
 
-  get fullTitle() {
-    let content = <span><strong>{ this.state.app.name }</strong> application</span>;
-    if (this.state.currentSpaceName && this.state.currentOrgName) {
-      content = (
-        <span><strong>{ this.state.app.name }</strong> application in your <strong>
-        { this.state.currentSpaceName }</strong> space, which is in your <strong>
-        { this.state.currentOrgName }</strong> organization</span>
-      );
-    }
-    return content;
-  }
-
   get statusUI() {
     let worstState = this.state.app.state;
     if (this.state.app.state === appStates.started) {

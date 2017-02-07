@@ -404,44 +404,17 @@ describe('cfApi', function() {
   });
 
   describe('fetchOrg()', () => {
-    it('calls http get request 2 times for all data with guid', (done) => {
-      const spy = sandbox.stub(http, 'get');
+    it('calls http get request 4 times for all data with guid', (done) => {
       const expected = 'xxxaa2';
-
-      let testPromise = createPromise({ data: {}});
-      spy.returns(testPromise);
+      const spy = sandbox.stub(http, 'get').returns(Promise.resolve({ data: {} }));
 
       cfApi.fetchOrg(expected).then(() => {
-        let actual = spy.getCall(0).args[0];
+        const url = spy.getCall(0).args[0];
 
-        expect(spy).toHaveBeenCalledTwice();
-        expect(actual).toMatch(new RegExp(expected));
-        done();
-      });
-    });
-
-    it('calls received org action with response data on success', (done) => {
-      var testRes = {
-            guid: 'xxaa',
-            name: 'testOrgA'
-          },
-          expected = { data: testRes },
-          spy = sandbox.spy(orgActions, 'receivedOrg');
-
-      sandbox.stub(cfApi, 'fetchOrgLinks').returns(
-        createPromise({quota_definition_url: 'http://api.com'}));
-      sandbox.stub(cfApi, 'fetchOrgDetails').returns(
-        createPromise(expected))
-      sandbox.stub(cfApi, 'fetchOrgMemoryUsage').returns(
-        createPromise({memory_usage_in_mb: 10}));
-      sandbox.stub(cfApi, 'fetchOrgMemoryLimit').returns(
-        createPromise({memory_limit: 20}));
-
-      let thing = cfApi.fetchOrg(testRes.guid);
-      thing.then(function() {
-        expect(spy).toHaveBeenCalledOnce();
-        done();
-      });
+        expect(spy.callCount).toBe(4);
+        expect(url).toMatch(new RegExp(expected));
+      })
+      .then(done, done.fail);
     });
   });
 
@@ -456,26 +429,6 @@ describe('cfApi', function() {
         expect(spy).toHaveBeenCalledOnce();
         let actual = spy.getCall(0).args[0];
         expect(actual).toMatch('organizations');
-        done();
-      });
-    });
-
-    it('calls orgs received with orgs on success', function(done) {
-      const expectedOrgs = [
-        { metadata: { guid: 'xxxaasdf' }, entity: { name: 'testA' }},
-        { metadata: { guid: 'xxxaasdg' }, entity: { name: 'testB' }}
-      ];
-      const expected = { data: { resources: expectedOrgs } };
-      const stub = sandbox.stub(http, 'get');
-      const spy = sandbox.stub(orgActions, 'receivedOrgs').returns();
-
-      let testPromise = createPromise(expected);
-      stub.returns(testPromise);
-
-      let actual = cfApi.fetchOrgs().then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        expect(spy).toHaveBeenCalledWith(expectedOrgs.map((org) =>
-          Object.assign({}, org.entity, org.metadata)));
         done();
       });
     });

@@ -16,6 +16,7 @@ describe('AppStore', function () {
   });
 
   afterEach(() => {
+    AppStore.unsubscribe();
     sandbox.restore();
   });
 

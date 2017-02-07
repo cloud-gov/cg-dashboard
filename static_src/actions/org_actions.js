@@ -5,16 +5,19 @@
  */
 
 import AppDispatcher from '../dispatcher.js';
+import cfApi from '../util/cf_api.js';
 import { orgActionTypes } from '../constants';
 import spaceActions from './space_actions';
 
-export default {
+const orgActions = {
 
   changeCurrentOrg(orgGuid) {
     AppDispatcher.handleViewAction({
       type: orgActionTypes.ORG_CHANGE_CURRENT,
       orgGuid
     });
+
+    return Promise.resolve(orgGuid);
   },
 
   fetch(orgGuid) {
@@ -22,16 +25,18 @@ export default {
       type: orgActionTypes.ORG_FETCH,
       orgGuid
     });
+
+    return cfApi.fetchOrg(orgGuid).then(orgActions.receivedOrg);
   },
 
   fetchAll() {
-    // TODO investigate more why timeout is needed here.
-    // Currently being used to allow different actions to happen at same time.
-    setTimeout(() => {
-      AppDispatcher.handleViewAction({
-        type: orgActionTypes.ORGS_FETCH
-      });
-    }, 1);
+    AppDispatcher.handleViewAction({
+      type: orgActionTypes.ORGS_FETCH
+    });
+
+    return cfApi.fetchOrgs()
+      .then(orgs => Promise.all(orgs.map(o => cfApi.fetchOrgSummary(o.guid))))
+      .then(orgActions.receivedOrgs);
   },
 
   receivedOrg(org) {
@@ -39,6 +44,8 @@ export default {
       type: orgActionTypes.ORG_RECEIVED,
       org
     });
+
+    return Promise.resolve(org);
   },
 
   receivedOrgs(orgs) {
@@ -46,13 +53,8 @@ export default {
       type: orgActionTypes.ORGS_RECEIVED,
       orgs
     });
-  },
 
-  receivedOrgsSummaries(orgs) {
-    AppDispatcher.handleServerAction({
-      type: orgActionTypes.ORGS_SUMMARIES_RECEIVED,
-      orgs
-    });
+    return Promise.resolve(orgs);
   },
 
   toggleSpaceMenu(orgGuid) {
@@ -60,6 +62,8 @@ export default {
       type: orgActionTypes.ORG_TOGGLE_SPACE_MENU,
       orgGuid
     });
+
+    return Promise.resolve(orgGuid);
   },
 
   toggleQuicklook(org) {
@@ -84,6 +88,8 @@ export default {
       type: orgActionTypes.ORG_TOGGLE_QUICKLOOK_SUCCESS,
       orgGuid
     });
+
+    return Promise.resolve(orgGuid);
   },
 
   toggleQuicklookError(orgGuid, err) {
@@ -92,5 +98,9 @@ export default {
       orgGuid,
       err
     });
+
+    return Promise.resolve();
   }
 };
+
+export default orgActions;
