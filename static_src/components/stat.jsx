@@ -82,7 +82,7 @@ export default class Stat extends React.Component {
     const stateClass = `stat-${this.props.statState}`;
     let primaryStat = (
       <span className={ this.styler('stat-primary')}>
-	{ formatBytes(this.state.primaryStat) }
+        { formatBytes(this.state.primaryStat) }
       </span>
     );
 
@@ -97,7 +97,7 @@ export default class Stat extends React.Component {
 
     if (this.props.editable) {
       primaryStat = (
-        <div>
+        <div className={ this.styler('stat-primary')}>
           <StatFormNumber
             className={ this.styler('stat-input', 'stat-input-text') }
             type="text"
