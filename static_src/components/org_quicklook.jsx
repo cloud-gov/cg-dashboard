@@ -5,7 +5,10 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 import AppCountStatus from './app_count_status.jsx';
+import ElasticLine from './elastic_line.jsx';
+import ElasticLineItem from './elastic_line_item.jsx';
 import EntityIcon from './entity_icon.jsx';
+import ExpandableBox from './expandable_box.jsx';
 import Loading from './loading.jsx';
 import SpaceCountStatus from './space_count_status.jsx';
 import SpaceQuicklook from './space_quicklook.jsx';
@@ -67,6 +70,10 @@ export default class OrgQuicklook extends React.Component {
       return <Loading />;
     }
 
+    if (!this.props.spaces.length) {
+      return <h4>No spaces in this organization</h4>;
+    }
+
     return this.props.spaces.map(space =>
       <SpaceQuicklook space={ space } orgGuid={ this.props.org.guid } key={ space.guid } />
     );
@@ -74,32 +81,36 @@ export default class OrgQuicklook extends React.Component {
 
   render() {
     const props = this.props;
-    const panelStyle = props.org.quicklook && props.org.quicklook.open ?
-      { marginBottom: '1rem' } :
-      null;
+    const expand = !!(props.org.quicklook && props.org.quicklook.open);
 
     return (
-      <div>
-        <div style={ panelStyle } onClick={ this.onRowClick }
-          className={ this.styler('panel-row-is_clickable', 'test-org-quicklook') }
-        >
-          <div className={ this.styler('panel-column') }>
-            <h2 className={ this.styler('card-title-primary') }>
-              <EntityIcon entity="org" iconSize="medium" />
-              <a onClick={ this.onOrgClick }>{ props.org.name }</a>
-            </h2>
-          </div>
-          <div className={ this.styler('panel-column') }>
-            <div className={ this.styler('count_status_container') }>
-              <SpaceCountStatus spaces={ props.org.spaces } />
-              <AppCountStatus appCount={ this.totalAppCount(props.org.spaces) }
-                apps={ this.allApps() }
-              />
-            </div>
-          </div>
-        </div>
+      <ExpandableBox
+        clickHandler={ this.onRowClick }
+        isExpanded={ expand }
+        classes={['test-org-quicklook']}
+        clickableContent={(
+          <ElasticLine>
+            <ElasticLineItem>
+              <h2 className={ this.styler('card-title-primary') }>
+                <EntityIcon entity="org" iconSize="medium" />
+                <a onClick={ this.onOrgClick } className="test-org-quicklook-title">
+                  { props.org.name }
+                </a>
+              </h2>
+            </ElasticLineItem>
+            <ElasticLineItem align="end">
+              <div className={ this.styler('count_status_container') }>
+                <SpaceCountStatus spaces={ props.org.spaces } />
+                <AppCountStatus appCount={ this.totalAppCount(props.org.spaces) }
+                  apps={ this.allApps() }
+                />
+              </div>
+            </ElasticLineItem>
+          </ElasticLine>
+        )}
+      >
         { this.spacesContent }
-      </div>
+      </ExpandableBox>
     );
   }
 }

@@ -1,8 +1,9 @@
 
 import React from 'react';
 
+import ElasticLine from './elastic_line.jsx';
+import ElasticLineItem from './elastic_line_item.jsx';
 import EntityIcon from './entity_icon.jsx';
-import PanelRow from './panel_row.jsx';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import { appHref } from '../util/url';
@@ -66,47 +67,44 @@ export default class AppQuicklook extends React.Component {
 
     if (this.props.extraInfo.includes('state')) {
       const oneInfo = this.props.extraInfo.length === 1;
-      const panelModClass = oneInfo ? 'panel-column-less' : 'panel-column-shrink';
 
       // Only show the state if app is crashed or theres only one extra col
       if (!isHealthyApp(app) || oneInfo) {
         info.push(
-          <span key="1" className={ this.styler('panel-column', panelModClass) }>
+          <ElasticLineItem key="1">
             { this.appState(app) }
-          </span>
+          </ElasticLineItem>
         );
       }
     }
     if (this.props.extraInfo.includes('memory')) {
       info.push(
-        <span key="2" className={ this.styler('panel-column', 'panel-column-shrink') }>
+        <ElasticLineItem key="2" align="end">
           { app.memory } MB <br />
           <span className={ this.styler('subtext') }>memory allocated</span>
-        </span>
+        </ElasticLineItem>
       );
     }
     if (this.props.extraInfo.includes('diskQuota')) {
       info.push(
-        <span key="3" className={ this.styler('panel-column', 'panel-column-shrink') }>
+        <ElasticLineItem key="3" align="end">
           { app.disk_quota } MB <br />
           <span className={ this.styler('subtext') }>disk quota</span>
-        </span>
+        </ElasticLineItem>
       );
     }
 
     return (
-      <PanelRow key={ app.guid }>
-        <div>
-          <span className={ this.styler('panel-column') }>
-            <h3 className={ this.styler('contents-secondary') }>
-              <EntityIcon entity="app" health={ appHealth(app) } iconSize="medium" />
-              <span className={ this.styler('contents-path') }>
-                { this.props.spaceName } / </span>{ this.appName() }
-            </h3>
-          </span>
-          { info }
-        </div>
-      </PanelRow>
+      <ElasticLine>
+        <ElasticLineItem>
+          <h3 className={ this.styler('contents-secondary') }>
+            <EntityIcon entity="app" health={ appHealth(app) } iconSize="medium" />
+            <span className={ this.styler('contents-path') }>
+              { this.props.spaceName } / </span>{ this.appName() }
+          </h3>
+        </ElasticLineItem>
+        { info }
+      </ElasticLine>
     );
   }
 }

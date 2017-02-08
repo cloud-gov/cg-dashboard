@@ -13,7 +13,6 @@ import PageHeader from './page_header.jsx';
 import PageStore from '../stores/page_store.js';
 import Panel from './panel.jsx';
 import PanelGroup from './panel_group.jsx';
-import PanelRow from './panel_row.jsx';
 import SpaceStore from '../stores/space_store.js';
 
 
@@ -81,12 +80,12 @@ export default class OverviewContainer extends React.Component {
         <PageHeader title={ title } />
         <Panel title="Your organizations">
           { state.orgs.map((org) =>
-            <PanelRow key={ org.guid } className="test-panel-row-organizations" styleClass="boxed">
+            <div key={ org.guid } className="test-panel-row-organizations">
               <OrgQuicklook
                 org={ org }
                 spaces={ this.orgSpaces(org.guid) }
               />
-            </PanelRow>
+            </div>
           )}
         </Panel>
         <Panel title="Cheatsheet">

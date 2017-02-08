@@ -12,7 +12,7 @@ import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import PanelActions from './panel_actions.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
-import ServiceInstanceList from '../components/service_instance_list.jsx';
+import ServiceInstanceTable from './service_instance_table.jsx';
 import SpaceStore from '../stores/space_store.js';
 import Users from './users.jsx';
 import { config } from 'skin';
@@ -61,6 +61,7 @@ export default class SpaceContainer extends React.Component {
   }
 
   render() {
+    // TODO add back in service instance lists
     if (this.state.loading) {
       return <Loading />;
     }
@@ -108,7 +109,7 @@ export default class SpaceContainer extends React.Component {
           <Users />
         </Panel>
         <Panel title="Service instances">
-          <ServiceInstanceList />
+          <ServiceInstanceTable />
         </Panel>
         <Panel title="Marketplace">
           <Marketplace />

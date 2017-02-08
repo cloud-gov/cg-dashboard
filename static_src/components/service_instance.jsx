@@ -5,8 +5,9 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
+import ElasticLine from './elastic_line.jsx';
+import ElasticLineItem from './elastic_line_item.jsx';
 import Loading from './loading.jsx';
-import PanelRowError from './panel_row_error.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
@@ -136,13 +137,13 @@ export default class ServiceInstance extends React.Component {
       const message = (
         <div>
           <h3 style={ style }>Unbind { this.props.serviceInstance.name } service?</h3>
-          <p>Unbinding a service may break your application.</p>
+          <span>Unbinding a service may break your application.</span>
         </div>
       );
       return (
         <form>
           <ConfirmationBox
-            style="block"
+            style="over"
             message={ message }
             confirmationText="Yes, unbind"
             confirmHandler={ this.unbindConfirmedHandler }
@@ -158,7 +159,9 @@ export default class ServiceInstance extends React.Component {
     const instance = this.props.serviceInstance;
     if (instance.error) {
       return (
-        <PanelRowError message={instance.error.description} />
+        <ElasticLineItem align="end">
+          <FormError message={ instance.error.description } />
+        </ElasticLineItem>
       );
     }
   }
@@ -170,31 +173,38 @@ export default class ServiceInstance extends React.Component {
     if (serviceInstance) {
       const confirmation = this.confirmation;
       const statusClass = (ServiceInstanceStore.getInstanceState(
-        this.props.serviceInstance) === OPERATION_FAILED) ? 'panel-column-error' : null;
+        this.props.serviceInstance) === OPERATION_FAILED) ? 'form-error' : null;
 
-      content = (
-        <div style={{ flexWrap: 'wrap' }}>
-          <span className={ this.styler('panel-column', statusClass) }>
-            { serviceInstance.servicePlan &&
-              <strong>{ serviceInstance.servicePlan.name }</strong>
-            }
-            { this.instanceState }
-            <br />
-            <span>
-              { serviceInstance.name }
-            </span>
-          </span>
-          <span className={ this.styler('panel-column', 'panel-column-less') }>
-            <span>{ this.cost }</span>
-          </span>
-          { this.displayError }
-          <span className={ this.styler('panel-column', 'panel-column-less',
-            'panel-column-last') }>
-            { this.actions }
-          </span>
+      if (confirmation) {
+        content = (
+        <ElasticLineItem>
           { confirmation }
-        </div>
-      );
+        </ElasticLineItem>
+        );
+      } else {
+        content = (
+          <ElasticLine>
+            <ElasticLineItem>
+              { serviceInstance.servicePlan &&
+                <strong>{ serviceInstance.servicePlan.name }</strong>
+              }
+              { this.instanceState }
+              <br />
+              <span>
+                { serviceInstance.name }
+              </span>
+            </ElasticLineItem>
+            <ElasticLineItem>
+              <span>{ this.cost }</span>
+            </ElasticLineItem>
+            { this.displayError }
+            <ElasticLineItem align="end">
+              { this.actions }
+            </ElasticLineItem>
+            { confirmation }
+          </ElasticLine>
+        );
+      }
     }
 
     return content;

@@ -25,7 +25,7 @@ static_src/test/server/fixtures/
 /static_src/components/route_form.jsx
 /static_src/components/route_list.jsx
 /static_src/components/service_instance.jsx
-/static_src/components/service_instance_list.jsx
+/static_src/components/service_instance_table.jsx
 /static_src/components/service_list.jsx
 /static_src/components/service_plan_list.jsx
 /static_src/components/user_list.jsx

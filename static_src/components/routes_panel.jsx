@@ -4,12 +4,10 @@ import React from 'react';
 
 import AppStore from '../stores/app_store.js';
 import Action from './action.jsx';
+import ComplexList from './complex_list.jsx';
 import DomainStore from '../stores/domain_store.js';
 import OrgStore from '../stores/org_store.js';
 import PanelActions from './panel_actions.jsx';
-import PanelGroup from './panel_group.jsx';
-import PanelHeader from './panel_header.jsx';
-import PanelRow from './panel_row.jsx';
 import routeActions from '../actions/route_actions.js';
 import Route from './route.jsx';
 import RouteForm from './route_form.jsx';
@@ -157,13 +155,11 @@ export default class RoutesPanel extends React.Component {
   }
 
   renderRoutes(routes) {
-    let content = <PanelRow styleClass="bordered"><h4>No routes</h4></PanelRow>;
+    let content = <h4>No routes</h4>;
 
     if (routes && routes.length) {
       content = routes.map((route) =>
-        <PanelRow styleClass="bordered" key={ route.guid + route.app_guid }>
-          <Route route={ route } appGuid={ this.state.appGuid} />
-        </PanelRow>
+        <Route key={ route.guid } route={ route } appGuid={ this.state.appGuid} />
       );
     }
     return content;
@@ -173,20 +169,12 @@ export default class RoutesPanel extends React.Component {
     return (
       <div>
         { this.createRouteForm }
-        <PanelGroup>
-          <PanelHeader>
-            <h2 className={ this.styler('panel-row-header') }>Bound routes</h2>
-          </PanelHeader>
+        <ComplexList title="Bound routes">
           { this.renderRoutes(this.state.boundRoutes) }
-        </PanelGroup>
-        <PanelGroup>
-          <PanelHeader>
-            <h2 className={ this.styler('panel-row-header') }>
-              Routes available in {this.spaceLink}
-            </h2>
-          </PanelHeader>
+        </ComplexList>
+        <ComplexList title="Routes available in space">
           { this.renderRoutes(this.state.unboundRoutes) }
-        </PanelGroup>
+        </ComplexList>
         <PanelActions>
           { this.addRouteAction }
         </PanelActions>
