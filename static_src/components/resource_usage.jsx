@@ -16,7 +16,7 @@ const propTypes = {
   amountUsed: React.PropTypes.number,
   amountTotal: React.PropTypes.number,
   byteWarningThreshold: React.PropTypes.number,
-  secondaryInfo: React.PropTypes.string
+  secondaryInfo: React.PropTypes.node
 };
 
 const defaultProps = {
@@ -44,36 +44,28 @@ export default class ResourceUsage extends React.Component {
 
   render() {
     const props = this.props;
-    let title = <h2 className={ this.styler('stat-header')}>{ props.title }</h2>;
-    let stat = (
-      <Stat
-        editable={ props.editable }
-        max={ props.max }
-        min={ props.min }
-        onChange={ props.onChange }
-        name={ props.name }
-        primaryStat={ props.amountTotal }
-        secondaryInfo={ props.secondaryInfo }
-      />
-    );
+    const title = <h2 className={ this.styler('stat-header')}>{ props.title }</h2>;
+
+    let properties = {
+      title,
+      primaryStat: props.amountTotal,
+      secondaryInfo: props.secondaryInfo,
+      editable: props.editable,
+      max: props.max,
+      min: props.min,
+      onChange: props.onChange,
+      name: props.name
+    };
 
     if (props.amountUsed && props.amountTotal) {
-      title = <h2 className={ this.styler('stat-header')}>{ props.title }</h2>;
-      stat = (
-        <Stat
-          primaryStat={ props.amountUsed }
-          secondaryInfo={ <span>{this.available()} available</span> }
-          statState={ this.statState(props.amountUsed, props.amountTotal) }
-        />
-      );
+      properties = { ...properties,
+        primaryStat: props.amountUsed,
+        secondaryInfo: <span>{this.available()} available</span>,
+        statState: this.statState(props.amountUsed, props.amountTotal)
+      };
     }
 
-    return (
-      <div style={{ width: '100%' }}>
-        { title }
-        { stat }
-      </div>
-    );
+    return <Stat { ...properties } />;
   }
 }
 

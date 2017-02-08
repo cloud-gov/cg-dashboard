@@ -18,13 +18,14 @@ const STATES = [
 
 const propTypes = {
   name: React.PropTypes.string,
+  title: React.PropTypes.string,
   editable: React.PropTypes.bool,
   min: React.PropTypes.number,
   max: React.PropTypes.number,
   onChange: React.PropTypes.func,
   primaryStat: React.PropTypes.number.isRequired,
   statState: React.PropTypes.oneOf(STATES),
-  secondaryInfo: React.PropTypes.element
+  secondaryInfo: React.PropTypes.node
 };
 
 const defaultProps = {
@@ -81,7 +82,7 @@ export default class Stat extends React.Component {
     const stateClass = `stat-${this.props.statState}`;
     let primaryStat = (
       <span className={ this.styler('stat-primary')}>
-	{ formatBytes(this.state.primaryStat) }
+        { formatBytes(this.state.primaryStat) }
       </span>
     );
 
@@ -96,7 +97,7 @@ export default class Stat extends React.Component {
 
     if (this.props.editable) {
       primaryStat = (
-        <div>
+        <div className={ this.styler('stat-primary')}>
           <StatFormNumber
             className={ this.styler('stat-input', 'stat-input-text') }
             type="text"
@@ -115,6 +116,7 @@ export default class Stat extends React.Component {
 
     return (
       <div className={ this.styler('stat', stateClass) }>
+        <h2 className={ this.styler('stat-header')}>{ this.props.title }</h2>
         { primaryStat }
         <span className={ this.styler('stat-info')}>
           { this.props.secondaryInfo }

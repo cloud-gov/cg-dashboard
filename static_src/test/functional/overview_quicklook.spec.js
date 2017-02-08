@@ -39,7 +39,7 @@ describe('Overview page', function () {
     });
 
     it('is clicked', function () {
-      quicklookElement.click();
+      quicklookElement.expand();
     });
 
     it('is expanded', function () {

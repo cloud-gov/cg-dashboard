@@ -57,8 +57,9 @@ export default class ServiceList extends React.Component {
               );
             }
 
+            // TODO use new panel section component
             return (
-              <PanelGroup key={ service.guid }>
+              <div className={ this.styler('panel-section') } key={ service.guid }>
                 <ElasticLine>
                   <ElasticLineItem>
                     <h3 className={ this.styler('sans-s6') }>
@@ -71,7 +72,7 @@ export default class ServiceList extends React.Component {
                   </ElasticLineItem>
                 </ElasticLine>
                 { servicePlans }
-              </PanelGroup>
+              </div>
             );
           })}
         </div>

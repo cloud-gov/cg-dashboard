@@ -7,7 +7,6 @@ import { FormNumber } from './form';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelBlock from './panel_block.jsx';
-import PanelRow from './panel_row.jsx';
 import ResourceUsage from './resource_usage.jsx';
 
 import appActions from '../actions/app_actions.js';
@@ -105,23 +104,19 @@ export default class UsageAndLimits extends React.Component {
 
     // For instance usage, we average the instances together
     return (
-    <div className={ this.styler('panel-row-space') }>
-      <div className={ this.styler('panel-column') }>
-        <ResourceUsage title="Instance disk used"
-          amountUsed={ this.getStat('disk', average.bind(null, this.props.app.running_instances)) }
-          amountTotal={ this.getStat('disk_quota') }
-        />
-      </div>
-      <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
-        <ResourceUsage title="Instance disk allocation"
-          editable={ this.state.editing }
-          max={ 2 * 1024 }
-          min={ 1 }
-          onChange={ onChange }
-          name="disk"
-          amountTotal={ disk * 1024 * 1024 }
-        />
-      </div>
+    <div className={ this.styler('stat-group') }>
+      <ResourceUsage title="Instance disk used"
+        amountUsed={ this.getStat('disk', average.bind(null, this.props.app.running_instances)) }
+        amountTotal={ this.getStat('disk_quota') }
+      />
+      <ResourceUsage title="Instance disk allocation"
+        editable={ this.state.editing }
+        max={ 2 * 1024 }
+        min={ 1 }
+        onChange={ onChange }
+        name="disk"
+        amountTotal={ disk * 1024 * 1024 }
+      />
     </div>
     );
   }
@@ -132,23 +127,19 @@ export default class UsageAndLimits extends React.Component {
 
     // For instance usage, we average the instances together
     return (
-    <div>
-      <div className={ this.styler('panel-column') }>
-        <ResourceUsage title="Instance memory used"
-          amountUsed={ this.getStat('mem', average.bind(null, this.props.app.running_instances)) }
-          amountTotal={ this.getStat('mem_quota') }
-        />
-      </div>
-      <div className={ this.styler('panel-column') } style={{ textAlign: 'left' }}>
-        <ResourceUsage title="Instance memory allocation"
-          editable={ this.state.editing }
-          min={ 1 }
-          max={ Math.floor(this.props.quota.memory_limit / this.state.partialApp.instances) }
-          name="memory"
-          onChange={ onChange }
-          amountTotal={ memory * 1024 * 1024 }
-        />
-      </div>
+    <div className={ this.styler('stat-group') }>
+      <ResourceUsage title="Instance memory used"
+        amountUsed={ this.getStat('mem', average.bind(null, this.props.app.running_instances)) }
+        amountTotal={ this.getStat('mem_quota') }
+      />
+      <ResourceUsage title="Instance memory allocation"
+        editable={ this.state.editing }
+        min={ 1 }
+        max={ Math.floor(this.props.quota.memory_limit / this.state.partialApp.instances) }
+        name="memory"
+        onChange={ onChange }
+        amountTotal={ memory * 1024 * 1024 }
+      />
     </div>
     );
   }
@@ -156,11 +147,9 @@ export default class UsageAndLimits extends React.Component {
   get totalDisk() {
     // There is no org/space level disk quota, so only show single stat
     return (
-      <div className={ this.styler('panel-row-space') }>
         <ResourceUsage title="Total disk used"
           amountTotal={ this.getStat('disk', sum) }
         />
-      </div>
     );
   }
 
@@ -171,12 +160,10 @@ export default class UsageAndLimits extends React.Component {
     const secondaryInfo = `${formatBytes(amountTotal)} quota`;
 
     return (
-      <div>
-        <ResourceUsage title={ title }
-          amountTotal={ amountUsed }
-          secondaryInfo={ secondaryInfo }
-        />
-      </div>
+      <ResourceUsage title={ title }
+        amountTotal={ amountUsed }
+        secondaryInfo={ secondaryInfo }
+      />
     );
   }
 
@@ -258,12 +245,8 @@ export default class UsageAndLimits extends React.Component {
       <div>
         <PanelGroup>
           <PanelGroup columns={ 6 }>
-            <PanelRow styleClass="clean" >
-              { this.memory }
-            </PanelRow>
-            <PanelRow styleClass="clean" >
-              { this.disk }
-            </PanelRow>
+            { this.memory }
+            { this.disk }
           </PanelGroup>
           <PanelGroup columns={ 3 }>
             <PanelBlock>
@@ -271,12 +254,8 @@ export default class UsageAndLimits extends React.Component {
             </PanelBlock>
           </PanelGroup>
           <PanelGroup columns={ 3 }>
-            <PanelRow styleClass="clean" >
-              { this.totalMemory }
-            </PanelRow>
-            <PanelRow styleClass="clean" >
-              { this.totalDisk }
-            </PanelRow>
+            { this.totalMemory }
+            { this.totalDisk }
           </PanelGroup>
         </PanelGroup>
         <PanelActions align="right">
