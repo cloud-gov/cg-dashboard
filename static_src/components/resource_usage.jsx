@@ -16,7 +16,7 @@ const propTypes = {
   amountUsed: React.PropTypes.number,
   amountTotal: React.PropTypes.number,
   byteWarningThreshold: React.PropTypes.number,
-  secondaryInfo: React.PropTypes.string
+  secondaryInfo: React.PropTypes.node
 };
 
 const defaultProps = {

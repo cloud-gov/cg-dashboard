@@ -25,7 +25,7 @@ const propTypes = {
   onChange: React.PropTypes.func,
   primaryStat: React.PropTypes.number.isRequired,
   statState: React.PropTypes.oneOf(STATES),
-  secondaryInfo: React.PropTypes.element
+  secondaryInfo: React.PropTypes.node
 };
 
 const defaultProps = {
