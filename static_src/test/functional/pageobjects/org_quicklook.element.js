@@ -28,8 +28,6 @@ export default class OrgQuicklookElement extends BaseElement {
 
   expand() {
     this.click();
-    browser.waitUntil(() => {
-      return this.isExpanded();
-    }, 2000);
+    browser.waitUntil(() => this.isExpanded(), 2000);
   }
 }
