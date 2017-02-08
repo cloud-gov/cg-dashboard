@@ -6,6 +6,7 @@ import (
 	"github.com/gocraft/web"
 	"golang.org/x/oauth2"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 )
@@ -48,7 +49,7 @@ func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url str
 func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request, url string, client *http.Client, responseHandler ResponseHandler) {
 	// Prevents lingering goroutines from living forever.
 	// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
-	client.Timeout = 5 * time.Second
+	client.Timeout = 20 * time.Second
 	// In case the body is not of io.Closer.
 	if req.Body != nil {
 		defer req.Body.Close()
@@ -67,6 +68,7 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 		defer res.Body.Close()
 	}
 	if err != nil {
+		log.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(rw, "unknown error. try again")
 		return
@@ -81,6 +83,7 @@ func (c *SecureContext) GenericResponseHandler(rw *http.ResponseWriter, response
 	// Read the body.
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
+		log.Println(err)
 		(*rw).WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(*rw, "unknown error. try again")
 		return
