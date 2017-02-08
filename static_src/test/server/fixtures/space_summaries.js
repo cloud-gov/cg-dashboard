@@ -500,7 +500,7 @@ const spaceSummaries = [
         ],
         service_count: 1,
         service_names: [
-          "fake-deck-ups"
+          "fake-dashboard-ups"
         ],
         running_instances: 1,
         name: "fake-cg-dashboard",
@@ -611,7 +611,7 @@ const spaceSummaries = [
     services: [
       {
         guid: "7d637f49-3979-448e-bc24-b3f3caf10711",
-        name: "deck-ups",
+        name: "dashboard-ups",
         bound_app_count: 1
       }
     ]
@@ -639,7 +639,7 @@ const spaceSummaries = [
         ],
         service_count: 1,
         service_names: [
-          "deck-ups"
+          "dashboard-ups"
         ],
         running_instances: 1,
         name: "fake-cg-dashboard-staging",
@@ -704,7 +704,7 @@ const spaceSummaries = [
         ],
         service_count: 1,
         service_names: [
-          "deck-ups"
+          "dashboard-ups"
         ],
         running_instances: 1,
         name: "fake-cg-dashboard-demo",
@@ -754,7 +754,7 @@ const spaceSummaries = [
     services: [
       {
         guid: "08f2a9e8-d527-43b5-b223-e383c28d1c51",
-        name: "deck-ups",
+        name: "dashboard-ups",
         bound_app_count: 2
       }
     ]
