@@ -56,6 +56,7 @@ export default class ResourceUsage extends React.Component {
       };
     } else {
       properties = { ...properties,
+        primaryStat: props.amountTotal,
         editable: props.editable,
         max: props.max,
         min: props.min,
