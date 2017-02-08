@@ -44,24 +44,24 @@ export default class ResourceUsage extends React.Component {
 
   render() {
     const props = this.props;
+    const title = <h2 className={ this.styler('stat-header')}>{ props.title }</h2>;
+
     let properties = {
-      primaryStat: props.amountUsed,
-      title: props.title,
-      secondaryInfo: <span>{this.available()} available</span>
+      title,
+      primaryStat: props.amountTotal,
+      secondaryInfo: props.secondaryInfo,
+      editable: props.editable,
+      max: props.max,
+      min: props.min,
+      onChange: props.onChange,
+      name: props.name
     };
 
     if (props.amountUsed && props.amountTotal) {
       properties = { ...properties,
+        primaryStat: props.amountUsed,
+        secondaryInfo: <span>{this.available()} available</span>,
         statState: this.statState(props.amountUsed, props.amountTotal)
-      };
-    } else {
-      properties = { ...properties,
-        primaryStat: props.amountTotal,
-        editable: props.editable,
-        max: props.max,
-        min: props.min,
-        onChange: props.onChange,
-        name: props.name
       };
     }
 

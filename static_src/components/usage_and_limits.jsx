@@ -160,10 +160,10 @@ export default class UsageAndLimits extends React.Component {
     const secondaryInfo = `${formatBytes(amountTotal)} quota`;
 
     return (
-        <ResourceUsage title={ title }
-          amountTotal={ amountUsed }
-          secondaryInfo={ secondaryInfo }
-        />
+      <ResourceUsage title={ title }
+        amountTotal={ amountUsed }
+        secondaryInfo={ secondaryInfo }
+      />
     );
   }
 
