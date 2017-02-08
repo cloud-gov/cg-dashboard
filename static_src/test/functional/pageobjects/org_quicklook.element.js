@@ -25,4 +25,11 @@ export default class OrgQuicklookElement extends BaseElement {
     // TODO this should return new SpaceQuicklookRowElements
     return this.elements(selectors.spaceQuicklookRow);
   }
+
+  expand() {
+    this.click();
+    browser.waitUntil(() => {
+      return this.isExpanded();
+    }, 2000);
+  }
 }

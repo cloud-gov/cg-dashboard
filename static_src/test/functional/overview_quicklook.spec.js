@@ -39,13 +39,11 @@ describe('Overview page', function () {
     });
 
     it('is clicked', function () {
-      quicklookElement.click();
+      quicklookElement.expand();
     });
 
     it('is expanded', function () {
-      browser.waitUntil(function () {
-        return quicklookElement.isExpanded();
-      }, 2000, 'quicklook does not expand');
+      expect(quicklookElement.isExpanded()).toBe(true);
     });
 
     it('has 2 rows', function () {
