@@ -68,6 +68,7 @@ export default class AppContainer extends React.Component {
   componentDidMount() {
     AppStore.addChangeListener(this._onChange);
     OrgStore.addChangeListener(this._onChange);
+    QuotaStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
   }
@@ -75,6 +76,7 @@ export default class AppContainer extends React.Component {
   componentWillUnmount() {
     AppStore.removeChangeListener(this._onChange);
     OrgStore.removeChangeListener(this._onChange);
+    QuotaStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
     SpaceStore.removeChangeListener(this._onChange);
   }
