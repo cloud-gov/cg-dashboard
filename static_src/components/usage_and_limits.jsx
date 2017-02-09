@@ -4,6 +4,7 @@ import React from 'react';
 
 import Action from './action.jsx';
 import { FormNumber } from './form';
+import Loading from './loading.jsx';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelBlock from './panel_block.jsx';
@@ -215,8 +216,11 @@ export default class UsageAndLimits extends React.Component {
   }
 
   render() {
+    console.log(this.props);
     let content = <div></div>;
-    let controls = (
+    let controls = this.props.app.updating ? (
+      <Loading text="Updating app" style="inline" />
+    ) : (
       <Action
         style="primary"
         type="outline"
