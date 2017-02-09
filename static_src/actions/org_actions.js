@@ -35,7 +35,14 @@ const orgActions = {
     });
 
     return cfApi.fetchOrgs()
-      .then(orgs => Promise.all(orgs.map(o => cfApi.fetchOrgSummary(o.guid))))
+      .then(orgs =>
+        Promise.all(
+          orgs.map(
+            org =>
+              cfApi.fetchOrgSummary(org.guid).then(summary => Object.assign({}, org, summary))
+          )
+        )
+      )
       .then(orgActions.receivedOrgs);
   },
 

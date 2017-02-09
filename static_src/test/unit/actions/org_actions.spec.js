@@ -52,13 +52,14 @@ describe('orgActions', () => {
   });
 
   describe('fetchAll()', function () {
-    let viewSpy;
+    let viewSpy, spaces;
 
     beforeEach(function (done) {
+      spaces = [{ guid: 'space-123' }, { guid: 'space-abc' }];
       viewSpy = setupViewSpy(sandbox);
       sandbox.stub(orgActions, 'receivedOrgs').returns(Promise.resolve());
       sandbox.stub(cfApi, 'fetchOrgs').returns(Promise.resolve([{ guid: '1234' }]));
-      sandbox.stub(cfApi, 'fetchOrgSummary').returns(Promise.resolve());
+      sandbox.stub(cfApi, 'fetchOrgSummary').returns(Promise.resolve({ spaces }));
 
       orgActions.fetchAll().then(done, done.fail);
     });
@@ -69,6 +70,16 @@ describe('orgActions', () => {
 
     it('calls receivedOrgs action', function () {
       expect(orgActions.receivedOrgs).toHaveBeenCalledOnce();
+    });
+
+    it('fetches org summary data for each org', function () {
+      expect(cfApi.fetchOrgSummary).toHaveBeenCalledOnce();
+    });
+
+    it('merges summary data with org', function () {
+      const [orgs] = orgActions.receivedOrgs.getCall(0).args;
+      const [org] = orgs;
+      expect(org).toEqual({ guid: '1234', spaces });
     });
   });
 
