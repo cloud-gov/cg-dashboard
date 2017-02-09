@@ -140,10 +140,6 @@ export default class AppContainer extends React.Component {
       loading = <Loading text="Restarting app" style="inline" />;
     }
 
-    if (AppStore.isUpdating(this.state.app)) {
-      loading = <Loading text="Updating app" style="inline" />;
-    }
-
     const action = loading || (
       <Action
         style="primary"
