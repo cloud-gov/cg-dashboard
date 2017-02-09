@@ -216,7 +216,6 @@ export default class UsageAndLimits extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     let content = <div></div>;
     let controls = this.props.app.updating ? (
       <Loading text="Updating app" style="inline" />
