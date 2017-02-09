@@ -63,6 +63,15 @@ describe('BaseStore', () => {
 
       expect(spy).toHaveBeenCalledOnce();
     });
+
+    it('warns if called more than MAX_LISTENERS_THRESHOLD', function () {
+      console.warn.returns();
+      for (let i = 1; i <= 11; i++) {
+        store.addChangeListener(() => {});
+      }
+
+      expect(console.warn).toHaveBeenCalledOnce();
+    });
   });
 
   describe('removeChangeListener()', function() {
