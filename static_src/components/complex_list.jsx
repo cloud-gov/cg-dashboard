@@ -60,7 +60,7 @@ export default class ComplexList extends React.Component {
         { header }
         { emptyMessage }
         { this.props.children.length > 0 && this.props.children.map((child, i) => {
-          if (child.type.name === 'ComplexList') {
+          if (child.type === ComplexList) {
             return child;
           }
           return (
