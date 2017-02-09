@@ -115,8 +115,8 @@ export default {
       const reqs = urls.map((u) => http.get(u).then((r) => r.data.resources));
 
       return Promise.all(reqs)
-        .then((all) => all.pop())
-        .then((all) => [].concat.call([], res.data.resources, all))
+        .then((all) => [].concat.apply([], all))
+        .then((all) => res.data.resources.concat(all))
         .then((all) => action(this.formatSplitResponses(all), ...params))
         .catch((err) => handleError(err));
     });
@@ -191,12 +191,7 @@ export default {
   },
 
   fetchSpaces() {
-    return http.get(`${APIV}/spaces`).then(res =>
-      this.formatSplitResponses(res.data.resources)
-    ).catch((err) => {
-      handleError(err);
-      return Promise.reject(err);
-    });
+    return this.fetchAllPages('/spaces', (results) => Promise.resolve(results));
   },
 
   fetchSpace(spaceGuid) {
