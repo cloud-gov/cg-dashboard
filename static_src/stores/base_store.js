@@ -21,6 +21,7 @@ export default class BaseStore extends EventEmitter {
     this._loadingStatus.on('loading', () => this.emitChange());
     this._loadingStatus.on('loaded', () => this.emitChange());
     this._data = new Immutable.List();
+    this.setMaxListeners(20);
   }
 
   subscribe(actionSubscribe) {
