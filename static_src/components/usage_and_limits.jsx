@@ -221,18 +221,17 @@ export default class UsageAndLimits extends React.Component {
     let content = <div></div>;
     let controls;
 
-    if (appHealth(this.props.app) === entityHealth.ok) {
-      controls = (
-        <Action
-          style="primary"
-          type="outline"
-          label="Modify allocation and scale"
-          clickHandler={ this._onToggleEdit }
-        >
-            <span>Modify allocation and scale</span>
-        </Action>
-      );
-    }
+    controls = (
+      <Action
+        disabled={ (appHealth(this.props.app) !== entityHealth.ok) }
+        style="primary"
+        type="outline"
+        label="Modify allocation and scale"
+        clickHandler={ this._onToggleEdit }
+      >
+          <span>Modify allocation and scale</span>
+      </Action>
+    );
 
     if (this.props.app.updating) {
       controls = <Loading text="Updating app" style="inline" />;
