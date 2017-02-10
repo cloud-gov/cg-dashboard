@@ -145,7 +145,6 @@ class StatFormText extends FormText {
   }
 
   render() {
-    const inputErrorClass = !!this.error ? 'error_input' : '';
     const errorClass = !!this.error && 'error';
     return (
       <span className={ this.styler(errorClass) }>
