@@ -50,7 +50,7 @@ export class AppStore extends BaseStore {
 
       case appActionTypes.APP_UPDATE: {
         const existingApp = this.get(action.appGuid);
-        const updatedApp = Object.assign({}, existingApp, { updating: true });
+        const updatedApp = Object.assign({}, existingApp, { updating: true, ...action.appPartial });
         this.merge('guid', updatedApp);
         break;
       }
