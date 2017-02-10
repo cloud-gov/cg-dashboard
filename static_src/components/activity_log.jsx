@@ -7,6 +7,7 @@ import ActivityStore from '../stores/activity_store';
 import PanelActions from './panel_actions.jsx';
 import createStyler from '../util/create_styler';
 import { config } from 'skin';
+import ServiceInstanceStore from '../stores/service_instance_store';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 function stateSetter(props) {
@@ -58,10 +59,12 @@ export default class ActivityLog extends React.Component {
 
   componentDidMount() {
     ActivityStore.addChangeListener(this._onChange);
+    ServiceInstanceStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     ActivityStore.removeChangeListener(this._onChange);
+    ServiceInstanceStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
@@ -109,7 +112,16 @@ export default class ActivityLog extends React.Component {
           <ul className={ this.styler('activity_log') }>
             { this.state.activity
                 .slice(0, this.state.maxItems)
-                .map(item => <ActivityLogItem key={ item.guid } item={ item } />)
+                .map(item => {
+                  let service;
+                  if (item.metadata.request && item.metadata.service_instance_guid) {
+                    service = ServiceInstanceStore.get(
+                      item.metadata.request.service_instance_guid
+                    );
+                  }
+
+                  return <ActivityLogItem key={ item.guid } item={ item } service={ service } />;
+                })
             }
             { showMore }
           </ul>

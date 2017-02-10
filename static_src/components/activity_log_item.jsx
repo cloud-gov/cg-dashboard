@@ -9,17 +9,10 @@ import ElasticLineItem from './elastic_line_item.jsx';
 import formatRoute from '../util/format_route';
 import RouteStore from '../stores/route_store';
 import DomainStore from '../stores/domain_store';
-import ServiceInstanceStore from '../stores/service_instance_store';
-
 
 function stateSetter(props) {
-  const item = props.item;
+  const { item, service } = props;
   const route = RouteStore.get(item.metadata.route_guid);
-
-  let service;
-  if (item.metadata.request && item.metadata.service_instance_guid) {
-    service = ServiceInstanceStore.get(item.metadata.request.service_instance_guid);
-  }
 
   let domain;
   if (route) {
@@ -49,13 +42,15 @@ export default class ActivityLogItem extends React.Component {
   componentDidMount() {
     DomainStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
-    ServiceInstanceStore.addChangeListener(this._onChange);
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState(stateSetter(props));
   }
 
   componentWillUnmount() {
     DomainStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
-    ServiceInstanceStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
