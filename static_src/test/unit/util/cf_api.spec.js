@@ -394,6 +394,86 @@ describe('cfApi', function() {
         done();
       }).catch(done.fail);
     });
+
+    describe('given data', function () {
+      let entities, path, data, results, expectedUrl;
+
+      beforeEach(function (done) {
+        path = '/multipage-call-with-data';
+        data = { sort: 1 };
+        expectedUrl = `/v2${path}`;
+
+        const entity1 = { guid: 'entity1' };
+        const entity2 = { guid: 'entity2' };
+        const entity3 = { guid: 'entity3' };
+        const entity4 = { guid: 'entity4' };
+        const entity5 = { guid: 'entity5' };
+
+        entities = [
+          entity1,
+          entity2,
+          entity3,
+          entity4,
+          entity5
+        ];
+
+        sandbox.stub(http, 'get')
+          .onFirstCall().returns(Promise.resolve({
+            data: {
+              next_url: true,
+              total_pages: 3,
+              resources: [
+                { metadata: entity1}
+              ]
+            }
+          }))
+          .onSecondCall().returns(Promise.resolve({
+            data: {
+              next_url: true,
+              resources: [
+                { metadata: entity2},
+                { metadata: entity3}
+              ]
+            }
+          }))
+          .onThirdCall().returns(Promise.resolve({
+            data: {
+              next_url: false,
+              resources: [
+                { metadata: entity4},
+                { metadata: entity5}
+              ]
+            }
+          }));
+
+        cfApi.fetchAllPages(path, data, function(responses) {
+          results = responses;
+        }).then(done, done.fail);
+      });
+
+      it('returns the entities', function () {
+        expect(results).toEqual(entities);
+      });
+
+      it('calls http.get 3 times', function () {
+        expect(http.get).toHaveBeenCalledThrice();
+      });
+
+      it('calls the url first with data', function () {
+        const call = http.get.firstCall;
+        expect(call).toHaveBeenCalledWith(expectedUrl, sinon.match({ params: data }));
+      });
+
+      it('appends the page to existing parameters on second call', function () {
+        const call = http.get.secondCall;
+        expect(call).toHaveBeenCalledWith(expectedUrl, sinon.match({ params: { ...data, page: 2 } }));
+      });
+
+      it('appends the page to existing parameters on third call', function () {
+        const call = http.get.thirdCall;
+        expect(call).toHaveBeenCalledWith(expectedUrl, sinon.match({ params: { ...data, page: 3 } }));
+      });
+    });
   });
 
   describe('getAuthStatus()', function() {
@@ -545,13 +625,38 @@ describe('cfApi', function() {
   });
 
   describe('fetchSpaceEvents()', function () {
-    it('calls fetch all pages with space guid', function () {
-      var spaceGuid = 'yyyybba1',
-          spy = sandbox.stub(cfApi, 'fetchAllPages'),
-          action;
+    let spaceGuid;
 
-        cfApi.fetchSpaceEvents(spaceGuid);
-        expect(spy).toHaveBeenCalledOnce();
+    beforeEach(function (done) {
+      spaceGuid = 'yyyybba1';
+      sandbox.stub(cfApi, 'fetchAllPages').returns(Promise.resolve());
+
+      cfApi.fetchSpaceEvents(spaceGuid)
+        .then(done, done.fail);
+    });
+
+    it('calls fetch all pages', function () {
+      expect(cfApi.fetchAllPages).toHaveBeenCalledOnce();
+    });
+
+    it('calls fetch all pages with space guid', function () {
+      expect(cfApi.fetchAllPages).toHaveBeenCalledWith(sinon.match(spaceGuid));
+    });
+
+    describe('with appGuid', function () {
+      let appGuid;
+
+      beforeEach(function (done) {
+        appGuid = 'abcd';
+        cfApi.fetchAllPages.reset();
+
+        cfApi.fetchSpaceEvents(spaceGuid, { appGuid })
+          .then(done, done.fail);
+      });
+
+      it('calls fetch all pages with query', function () {
+        expect(cfApi.fetchAllPages).toHaveBeenCalledWith(sinon.match(spaceGuid), sinon.match({ q: `actee:${appGuid}` }));
+      });
     });
   });
 
@@ -1021,7 +1126,7 @@ describe('cfApi', function() {
 
   describe('fetchOrgsQuotas()', function () {
     it('should call receivedQuotasForAllOrgs action after fetchAllPages', function () {
-      var spy = sandbox.stub(cfApi, 'fetchAllPages');
+      var spy = sandbox.stub(cfApi, 'fetchAllPages').returns(Promise.resolve());
 
       cfApi.fetchOrgsQuotas();
 
@@ -1035,7 +1140,7 @@ describe('cfApi', function() {
 
   describe('fetchSpacesQuotas()', function () {
     it('should call receivedQuotasForAllSpaces action after fetchAllPages', function () {
-      var spy = sandbox.stub(cfApi, 'fetchAllPages');
+      var spy = sandbox.stub(cfApi, 'fetchAllPages').returns(Promise.resolve());
 
       cfApi.fetchSpacesQuotas();
 

@@ -5,13 +5,13 @@ import { activityActionTypes } from '../constants';
 import cfApi from '../util/cf_api.js';
 
 const activityActions = {
-  fetchSpaceEvents(spaceGuid) {
+  fetchSpaceEvents(spaceGuid, appGuid) {
     AppDispatcher.handleViewAction({
       type: activityActionTypes.EVENTS_FETCH,
       spaceGuid
     });
 
-    return cfApi.fetchSpaceEvents(spaceGuid).then(activityActions.receivedSpaceEvents);
+    return cfApi.fetchSpaceEvents(spaceGuid, { appGuid }).then(activityActions.receivedSpaceEvents);
   },
 
   receivedSpaceEvents(events) {

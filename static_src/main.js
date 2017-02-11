@@ -117,7 +117,7 @@ function app(orgGuid, spaceGuid, appGuid) {
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
   spaceActions.fetch(spaceGuid);
-  activityActions.fetchSpaceEvents(spaceGuid);
+  activityActions.fetchSpaceEvents(spaceGuid, appGuid);
   activityActions.fetchAppLogs(appGuid);
   quotaActions.fetchAll();
   appActions.changeCurrentApp(appGuid);

@@ -100,25 +100,37 @@ export default {
     return this.fetch(url, action, true, ...params);
   },
 
-  fetchAllPages(url, action, ...params) {
-    return http.get(APIV + url).then((res) => {
-      const urls = [];
+  // fetchAllPages(url, data = {}, action = () => {})
+  fetchAllPages(url, ...args) {
+    let [data, action] = args;
+    if (typeof data === 'function') {
+      action = data;
+      data = {};
+    }
+
+    const path = `${APIV}${url}`;
+    return http.get(path, { params: data }).then((res) => {
+      const pages = [];
 
       if (!res.data.next_url) {
         return action(this.formatSplitResponses(res.data.resources));
       }
 
       for (let i = 2; i <= res.data.total_pages; i++) {
-        urls.push(`${APIV}${url}?page=${i}`);
+        pages.push(
+          http.get(path, { params: Object.assign({}, data, { page: i }) })
+            .then(page => page.data.resources)
+        );
       }
 
-      const reqs = urls.map((u) => http.get(u).then((r) => r.data.resources));
-
-      return Promise.all(reqs)
-        .then((all) => [].concat.apply([], all))
+      return Promise.all(pages)
+        .then((all) => Array.prototype.concat.apply([], all))
         .then((all) => res.data.resources.concat(all))
-        .then((all) => action(this.formatSplitResponses(all), ...params))
-        .catch((err) => handleError(err));
+        .then((all) => action(this.formatSplitResponses(all)))
+        .catch((err) => {
+          handleError(err);
+          return Promise.reject(err);
+        });
     });
   },
 
@@ -181,13 +193,13 @@ export default {
   },
 
   fetchOrgsQuotas() {
-    return this.fetchAllPages('/quota_definitions',
-                              quotaActions.receivedQuotasForAllOrgs);
+    return this.fetchAllPages('/quota_definitions', quotaActions.receivedQuotasForAllOrgs)
+      .catch(() => {}); // TODO handle error with error action
   },
 
   fetchSpacesQuotas() {
-    return this.fetchAllPages('/space_quota_definitions',
-                              quotaActions.receivedQuotasForAllSpaces);
+    return this.fetchAllPages('/space_quota_definitions', quotaActions.receivedQuotasForAllSpaces)
+      .catch(() => {}); // TODO handle error with error action
   },
 
   fetchSpaces() {
@@ -198,8 +210,15 @@ export default {
     return this.fetchOne(`/spaces/${spaceGuid}/summary`);
   },
 
-  fetchSpaceEvents(spaceGuid) {
-    return this.fetchAllPages(`/spaces/${spaceGuid}/events`, results => results);
+  fetchSpaceEvents(spaceGuid, options) {
+    const { appGuid } = options || {};
+
+    const data = {};
+    if (appGuid) {
+      data.q = `actee:${appGuid}`;
+    }
+
+    return this.fetchAllPages(`/spaces/${spaceGuid}/events`, data, results => results);
   },
 
   fetchServiceInstance(instanceGuid) {
