@@ -159,10 +159,16 @@ export default class ActivityLogItem extends React.Component {
         <span>{ item.actor_name } unmapped { url } from the app.</span>
       );
     } else if (item.type === 'audit.app.update') {
-      const appState = (metadata.request.state) ? metadata.request.state.toLowerCase() : 'updated';
-      content = (
-        <span>{ item.actor_name } { appState } the app.</span>
-      );
+      if ('memory' in metadata.request) {
+        // Updated one of memory, disk_quota, or instances
+        content =
+          <span>{ item.actor_name } modified resource allocation of the app.</span>;
+      } else {
+        const appState = metadata.request.state ? metadata.request.state.toLowerCase() : 'updated';
+        content = (
+          <span>{ item.actor_name } { appState } the app.</span>
+        );
+      }
     } else if (item.type === 'audit.service_binding.create') {
       const service = this.state.service;
       const serviceText = (service) ? service.guid : 'a service';
