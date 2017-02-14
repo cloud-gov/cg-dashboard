@@ -117,7 +117,7 @@ export default class RouteForm extends React.Component {
 
     return (
       <form className={ this.styler('route-form','panel-form-replace') }
-        onSubmit={ this._onSubmit }>
+        onSubmit={ this._onSubmit } action="javascript:void(0);">
         { limit }
         <fieldset>
           <div className={ this.styler('route-fields') }>

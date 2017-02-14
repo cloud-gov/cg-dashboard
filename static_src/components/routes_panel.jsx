@@ -91,8 +91,8 @@ export default class RoutesPanel extends React.Component {
     this.setState(stateSetter());
   }
 
-  _addCreateRouteForm(event) {
-    if (event) event.preventDefault();
+  _addCreateRouteForm(ev) {
+    if (ev) ev.preventDefault();
     routeActions.showCreateForm();
   }
 
