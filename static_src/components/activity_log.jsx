@@ -98,7 +98,7 @@ export default class ActivityLog extends React.Component {
       let showMore = this.showMoreActivity() &&
         (
           <PanelActions>
-            <Action label="View more" clickHandler={ this.handleMore }>
+            <Action label="View more" clickHandler={ this.handleMore } type="outline">
               Show more activity
             </Action>
           </PanelActions>

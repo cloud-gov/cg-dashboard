@@ -1,9 +1,11 @@
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
+import ElasticLine from './elastic_line.jsx';
+import ElasticLineItem from './elastic_line_item.jsx';
 import formatRoute from '../util/format_route';
 import RouteStore from '../stores/route_store';
 import DomainStore from '../stores/domain_store';
@@ -36,14 +38,12 @@ export default class ActivityLogItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = { ...stateSetter(props),
-      showRawJson: false,
-      relativeTimestamp: false
+      showRawJson: false
     };
 
     this.styler = createStyler(style);
     this._onChange = this._onChange.bind(this);
     this.toggleRawJson = this.toggleRawJson.bind(this);
-    this.toggleTimestampType = this.toggleTimestampType.bind(this);
   }
 
   componentDidMount() {
@@ -63,9 +63,7 @@ export default class ActivityLogItem extends React.Component {
   }
 
   formatTimestamp(timestamp) {
-    if (this.state.relativeTimestamp) return moment(timestamp).fromNow();
-
-    return moment(timestamp).format('MMM DD YYYY HH:mm:ss');
+    return moment(timestamp).tz(moment.tz.guess()).format('MMM DD YYYY HH:mm:ss z');
   }
 
   toggleRawJson() {
@@ -73,15 +71,12 @@ export default class ActivityLogItem extends React.Component {
     this.setState({ showRawJson: !current });
   }
 
-  toggleTimestampType() {
-    this.setState({ relativeTimestamp: !this.state.relativeTimestamp });
-  }
-
   get code() {
     let content;
     if (this.state.showRawJson) {
       content = (
         <div className={ this.styler('activity_log-item_raw') }>
+          <div>Raw event log</div>
           <code>
             <pre>
               { JSON.stringify(this.props.item, null, 2) }
@@ -109,8 +104,11 @@ export default class ActivityLogItem extends React.Component {
       case 'failed to accept connections within health check timeout':
         content = `it ${metadata.exit_description}`;
         break;
+      case 'failed to start':
+        content = 'it failed to start';
+        break;
       default:
-        content = 'bad things happened';
+        content = 'of an unknown reason';
     }
     return (<span>The app crashed because { content }.</span>);
   }
@@ -161,10 +159,16 @@ export default class ActivityLogItem extends React.Component {
         <span>{ item.actor_name } unmapped { url } from the app.</span>
       );
     } else if (item.type === 'audit.app.update') {
-      const appState = (metadata.request.state) ? metadata.request.state.toLowerCase() : 'updated';
-      content = (
-        <span>{ item.actor_name } { appState } the app.</span>
-      );
+      if ('memory' in metadata.request) {
+        // Updated one of memory, disk_quota, or instances
+        content =
+          <span>{ item.actor_name } modified resource allocation of the app.</span>;
+      } else {
+        const appState = metadata.request.state ? metadata.request.state.toLowerCase() : 'updated';
+        content = (
+          <span>{ item.actor_name } { appState } the app.</span>
+        );
+      }
     } else if (item.type === 'audit.service_binding.create') {
       const service = this.state.service;
       const serviceText = (service) ? service.guid : 'a service';
@@ -173,16 +177,16 @@ export default class ActivityLogItem extends React.Component {
       );
     }
 
-    return <p className={ this.styler('activity_log-item_text') }>{ content }</p>;
+    return <span className={ this.styler('activity_log-item_text') }>{ content }</span>;
   }
 
   get logContent() {
     const item = this.props.item;
 
     return (
-      <p className={ this.styler('activity_log-item_text') }>
+      <span className={ this.styler('activity_log-item_text') }>
         { item.status_code } { item.requested_url }
-      </p>
+      </span>
     );
   }
 
@@ -213,13 +217,20 @@ export default class ActivityLogItem extends React.Component {
   render() {
     return (
       <li className={ this.styler('activity_log-item', this.cssClass) }>
-        <div onClick={ this.toggleRawJson }>
-          { this.content }
-        </div>
-        <div className={ this.styler('activity_log-item_timestamp') }>
-          <span onClick={ this.toggleTimestampType }>
-            { this.formatTimestamp(this.props.item.timestamp) }
-          </span>
+        <div
+          className={ this.styler('activity_log-item_line') }
+          onClick={ this.toggleRawJson }
+        >
+          <ElasticLine>
+            <ElasticLineItem>
+              { this.content }
+            </ElasticLineItem>
+            <ElasticLineItem align="end">
+              <span className={ this.styler('activity_log-item_timestamp') }>
+                { this.formatTimestamp(this.props.item.timestamp) }
+              </span>
+            </ElasticLineItem>
+          </ElasticLine>
         </div>
         { this.code }
       </li>
