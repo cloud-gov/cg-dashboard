@@ -50,7 +50,6 @@ export default class ServicePlanList extends React.Component {
   get columns() {
     const columns = [
       { label: 'Service Plan Name', key: 'label' },
-      { label: 'Free', key: 'free' },
       { label: 'Description', key: 'description' },
       { label: 'Cost', key: 'extra.costs.amount.usd' },
       { label: 'Actions', key: 'actions' }
@@ -61,6 +60,12 @@ export default class ServicePlanList extends React.Component {
 
   get rows() {
     return this.state.servicePlans;
+  }
+
+  cost(plan) {
+    const cost = ServicePlanStore.getCost(plan);
+    if (plan.free || cost === 0) return 'Free';
+    return `$${cost.toFixed(2)} monthly`;
   }
 
   render() {
@@ -90,11 +95,10 @@ export default class ServicePlanList extends React.Component {
                 <td label="Name">
                   <span>{ plan.name }</span>
                 </td>
-                <td label="Free">{ (plan.free) ? 'Yes': 'No' }</td>
                 <td label="Description">{ plan.description }</td>
                 <td label="Cost">
                   <span>
-                    ${ ServicePlanStore.getCost(plan).toFixed(2) } monthly
+                    { this.cost(plan) }
                   </span>
                 </td>
                 <td label="Actions">
