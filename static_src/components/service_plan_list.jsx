@@ -12,9 +12,18 @@ import ServicePlanStore from '../stores/service_plan_store.js';
 import createStyler from '../util/create_styler';
 
 function stateSetter(serviceGuid) {
-  const servicePlans = ServicePlanStore.getAllFromService(serviceGuid);
+  const servicePlans = ServicePlanStore.getAllFromService(serviceGuid).sort((a, b) => {
+    const costA = ServicePlanStore.getCost(a);
+    const costB = ServicePlanStore.getCost(b);
+    if (costA === costB) {
+      return a.name.localeCompare(b.name);
+    } else {
+      return costA - costB;
+    }
+  });
 
   return {
+    serviceGuid,
     servicePlans,
     empty: !ServicePlanStore.loading && !servicePlans.length
   };
@@ -24,18 +33,15 @@ export default class ServicePlanList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      serviceGuid: props.initialServiceGuid,
-      servicePlans: this.props.initialServicePlans
-    };
+    this.state = stateSetter(props.initialServiceGuid);
+
     this._onChange = this._onChange.bind(this);
     this._handleAdd = this._handleAdd.bind(this);
     this.styler = createStyler(style);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ serviceGuid: nextProps.initialServiceGuid });
-    this.setState(stateSetter(this.state.serviceGuid));
+    this.setState(stateSetter(nextProps.initialServiceGuid));
   }
 
   _onChange() {
@@ -126,10 +132,7 @@ export default class ServicePlanList extends React.Component {
 }
 
 ServicePlanList.propTypes = {
-  initialServiceGuid: React.PropTypes.string,
-  initialServicePlans: React.PropTypes.array
+  initialServiceGuid: React.PropTypes.string
 };
 
-ServicePlanList.defaultProps = {
-  initialServicePlans: []
-};
+ServicePlanList.defaultProps = {};
