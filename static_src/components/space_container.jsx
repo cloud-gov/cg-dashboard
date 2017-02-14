@@ -105,14 +105,14 @@ export default class SpaceContainer extends React.Component {
             new app</a>.</span>
           </PanelActions>
         </Panel>
-        <Panel title="Space users">
-          <Users />
-        </Panel>
         <Panel title="Service instances">
           <ServiceInstanceTable />
         </Panel>
         <Panel title="Marketplace">
           <Marketplace />
+        </Panel>
+        <Panel title="Space users">
+          <Users />
         </Panel>
       </div>
       );
