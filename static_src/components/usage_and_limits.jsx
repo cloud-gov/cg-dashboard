@@ -4,11 +4,14 @@ import React from 'react';
 
 import Action from './action.jsx';
 import { FormNumber } from './form';
+import Loading from './loading.jsx';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelBlock from './panel_block.jsx';
 import ResourceUsage from './resource_usage.jsx';
 
+import { appHealth } from '../util/health';
+import { entityHealth } from '../constants';
 import appActions from '../actions/app_actions.js';
 import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
@@ -216,16 +219,23 @@ export default class UsageAndLimits extends React.Component {
 
   render() {
     let content = <div></div>;
-    let controls = (
+    let controls;
+
+    controls = (
       <Action
+        disabled={ (appHealth(this.props.app) !== entityHealth.ok) }
         style="primary"
         type="outline"
         label="Modify allocation and scale"
         clickHandler={ this._onToggleEdit }
       >
           <span>Modify allocation and scale</span>
-        </Action>
+      </Action>
     );
+
+    if (this.props.app.updating) {
+      controls = <Loading text="Updating app" style="inline" />;
+    }
 
     if (this.state.editing) {
       controls = (
