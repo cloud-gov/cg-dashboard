@@ -58,7 +58,8 @@ module.exports = function api(smocks) {
       const app = appSummaries.find(function(app) {
         return app.guid === guid;
       });
-      reply(SingleResponse(app));
+      reply({ message: 'There is a problem with the server'}).code(503);
+      //reply(SingleResponse(app));
     }
   });
 

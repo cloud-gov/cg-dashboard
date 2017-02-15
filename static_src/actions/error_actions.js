@@ -3,6 +3,10 @@
  * Actions for global errors across the whole application.
  */
 
+import AppDispatcher from '../dispatcher.js';
+import { errorActionTypes } from '../constants';
+import cfApi from '../util/cf_api.js';
+
 /* eslint-disable no-alert, no-console */
 export default {
   errorDelete(err) {
@@ -23,6 +27,14 @@ export default {
   errorPut(err) {
     console.error('put failure', err);
     // throw err;
+  },
+
+  importantDataFetchError(msg, err) {
+    AppDispatcher.handleServerAction({
+      type: errorActionTypes.IMPORTANT_FETCH,
+      msg,
+      err
+    });
   }
 };
 /* eslint-enable no-alert, no-console */
