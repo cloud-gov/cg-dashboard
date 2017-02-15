@@ -61,6 +61,11 @@ export default class Stat extends React.Component {
   }
 
   onValidate(err, value) {
+    if (err) {
+      // No need to update model on error
+      return;
+    }
+
     // TODO the max/min limits don't match this unit, the validators work on
     // raw input rather than the converted value.
     const unit = this.state.unit;

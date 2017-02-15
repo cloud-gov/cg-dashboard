@@ -172,6 +172,11 @@ export default class UsageAndLimits extends React.Component {
 
   get scale() {
     const onValidate = (err, value) => {
+      if (err) {
+        // No need to update model on error
+        return;
+      }
+
       this._onChange('instances', value);
     };
 
