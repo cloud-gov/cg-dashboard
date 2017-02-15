@@ -1,13 +1,16 @@
 import React from 'react';
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
 import FormElement from './form_element.jsx';
 import FormError from './form_error.jsx';
+import createStyler from '../../util/create_styler';
 
 
 export default class FormText extends FormElement {
   constructor(props) {
     super(props);
     this.state = this.state || {};
+    this.styler = createStyler(style);
   }
 
   get error() {
@@ -19,8 +22,9 @@ export default class FormText extends FormElement {
   }
 
   get inline() {
+    const errorClass = !!this.error && 'error';
     return (
-      <span>
+      <span className={ this.styler(errorClass) }>
         <input type="text" id={ this.key } value={ this.state.value }
           onChange={ this.onChange } className={ this.classes }
         />
