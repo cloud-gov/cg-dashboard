@@ -21,39 +21,38 @@ export default class FormText extends FormElement {
     return <FormError message={ this.state.err.message } />;
   }
 
-  get inline() {
-    const errorClass = !!this.error && 'error';
-    return (
-      <span className={ this.styler(errorClass) }>
-        <input type="text" id={ this.key } value={ this.state.value }
-          onChange={ this.onChange } className={ this.classes }
-        />
-        { this.error }
-      </span>
-    );
-  }
+  render() {
+    const classes = [];
 
-  get content() {
+    if (this.props.inline) {
+      classes.push('form_text-inline');
+    }
+
+    if (!!this.error) {
+      classes.push('error');
+    }
+
+    // Spaces in label give a healthy space for inline forms
+    const label = <label htmlFor={ this.key }> { this.props.label } </label>;
     return (
-      <div>
-        { this.error }
-        <label htmlFor={ this.key }>{ this.props.label }</label>
+      <div className={ this.styler(classes) }>
+        { !this.props.labelAfter && label }
         <input type="text" id={ this.key } value={ this.state.value }
           onChange={ this.onChange } className={ this.classes }
         />
+        { this.props.labelAfter && label }
+        { this.error }
       </div>
     );
-  }
-
-  render() {
-    return this.props.inline ? this.inline : this.content;
   }
 }
 
 FormText.propTypes = Object.assign({}, FormElement.propTypes, {
-  inline: React.PropTypes.bool
+  inline: React.PropTypes.bool,
+  labelAfter: React.PropTypes.bool
 });
 
 FormText.defaultProps = Object.assign({}, FormElement.defaultProps, {
-  inline: false
+  inline: false,
+  labelAfter: false
 });
