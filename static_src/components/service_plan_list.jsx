@@ -12,9 +12,18 @@ import ServicePlanStore from '../stores/service_plan_store.js';
 import createStyler from '../util/create_styler';
 
 function stateSetter(serviceGuid) {
-  const servicePlans = ServicePlanStore.getAllFromService(serviceGuid);
+  const servicePlans = ServicePlanStore.getAllFromService(serviceGuid).sort((a, b) => {
+    const costA = ServicePlanStore.getCost(a);
+    const costB = ServicePlanStore.getCost(b);
+    if (costA === costB) {
+      return a.name.localeCompare(b.name);
+    } else {
+      return costA - costB;
+    }
+  });
 
   return {
+    serviceGuid,
     servicePlans,
     empty: !ServicePlanStore.loading && !servicePlans.length
   };
@@ -24,18 +33,15 @@ export default class ServicePlanList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      serviceGuid: props.initialServiceGuid,
-      servicePlans: this.props.initialServicePlans
-    };
+    this.state = stateSetter(props.initialServiceGuid);
+
     this._onChange = this._onChange.bind(this);
     this._handleAdd = this._handleAdd.bind(this);
     this.styler = createStyler(style);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ serviceGuid: nextProps.initialServiceGuid });
-    this.setState(stateSetter(this.state.serviceGuid));
+    this.setState(stateSetter(nextProps.initialServiceGuid));
   }
 
   _onChange() {
@@ -50,7 +56,6 @@ export default class ServicePlanList extends React.Component {
   get columns() {
     const columns = [
       { label: 'Service Plan Name', key: 'label' },
-      { label: 'Free', key: 'free' },
       { label: 'Description', key: 'description' },
       { label: 'Cost', key: 'extra.costs.amount.usd' },
       { label: 'Actions', key: 'actions' }
@@ -61,6 +66,12 @@ export default class ServicePlanList extends React.Component {
 
   get rows() {
     return this.state.servicePlans;
+  }
+
+  cost(plan) {
+    const cost = ServicePlanStore.getCost(plan);
+    if (plan.free || cost === 0) return 'Free';
+    return `$${cost.toFixed(2)} monthly`;
   }
 
   render() {
@@ -90,11 +101,10 @@ export default class ServicePlanList extends React.Component {
                 <td label="Name">
                   <span>{ plan.name }</span>
                 </td>
-                <td label="Free">{ (plan.free) ? 'Yes': 'No' }</td>
                 <td label="Description">{ plan.description }</td>
                 <td label="Cost">
                   <span>
-                    ${ ServicePlanStore.getCost(plan).toFixed(2) } monthly
+                    { this.cost(plan) }
                   </span>
                 </td>
                 <td label="Actions">
@@ -122,10 +132,7 @@ export default class ServicePlanList extends React.Component {
 }
 
 ServicePlanList.propTypes = {
-  initialServiceGuid: React.PropTypes.string,
-  initialServicePlans: React.PropTypes.array
+  initialServiceGuid: React.PropTypes.string
 };
 
-ServicePlanList.defaultProps = {
-  initialServicePlans: []
-};
+ServicePlanList.defaultProps = {};
