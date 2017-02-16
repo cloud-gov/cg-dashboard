@@ -3,7 +3,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
-import { FormNumber } from './form';
+import { Form, FormNumber } from './form';
 import Loading from './loading.jsx';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
@@ -257,7 +257,6 @@ export default class UsageAndLimits extends React.Component {
 
     if (this.props.app) {
       content = (
-      <div>
         <PanelGroup>
           <PanelGroup columns={ 6 }>
             { this.memory }
@@ -273,14 +272,26 @@ export default class UsageAndLimits extends React.Component {
             { this.totalDisk }
           </PanelGroup>
         </PanelGroup>
+      );
+    }
+
+    if (this.state.editing) {
+      // Wrap content in a form
+      content = (
+        <Form>
+          { content }
+        </Form>
+      );
+    }
+
+    return (
+      <div>
+        { content }
         <PanelActions align="right">
           { controls }
         </PanelActions>
       </div>
-      );
-    }
-
-    return content;
+    );
   }
 }
 
