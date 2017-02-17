@@ -217,7 +217,8 @@ export default class UsageAndLimits extends React.Component {
     );
   }
 
-  _onSubmit() {
+  _onSubmit(e) {
+    e.preventDefault();
     appActions.updateApp(this.props.app.guid, this.state.partialApp);
     this.setState({ editing: false });
   }

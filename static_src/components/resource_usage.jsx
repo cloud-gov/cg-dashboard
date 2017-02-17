@@ -44,10 +44,9 @@ export default class ResourceUsage extends React.Component {
 
   render() {
     const props = this.props;
-    const title = <h2 className={ this.styler('stat-header')}>{ props.title }</h2>;
 
     let properties = {
-      title,
+      title: props.title,
       primaryStat: props.amountTotal,
       secondaryInfo: props.secondaryInfo,
       editable: props.editable,
