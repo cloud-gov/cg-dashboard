@@ -18,6 +18,11 @@ describe('vaidateNumber', function () {
       expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
     });
 
+    it('fails for 1234asdf', function () {
+      const result = validator('1234asdf');
+      expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
+    });
+
     it('fails for NaN', function () {
       const result = validator('Not a number');
       expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
