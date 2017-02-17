@@ -1,16 +1,16 @@
 import '../../global_setup.js';
 
-import { validateNumber } from '../../../util/validators';
+import { validateInteger } from '../../../util/validators';
 
 describe('vaidateNumber', function () {
   it('returns a function', function () {
-    expect(typeof validateNumber()).toBe('function');
+    expect(typeof validateInteger()).toBe('function');
   });
 
   describe('given no options', function () {
     let validator;
     beforeEach(function () {
-      validator = validateNumber();
+      validator = validateInteger();
     });
 
     it('fails for empty', function () {
@@ -48,7 +48,7 @@ describe('vaidateNumber', function () {
     let validator;
 
     beforeEach(function () {
-      validator = validateNumber({ max: 1024 });
+      validator = validateInteger({ max: 1024 });
     });
 
     it('fails for above max', function () {
@@ -71,7 +71,7 @@ describe('vaidateNumber', function () {
     let validator;
 
     beforeEach(function () {
-      validator = validateNumber({ min: 1 });
+      validator = validateInteger({ min: 1 });
     });
 
     it('fails for below min', function () {
@@ -94,7 +94,7 @@ describe('vaidateNumber', function () {
     let validator;
 
     beforeEach(function () {
-      validator = validateNumber({ min: 1, max: 1024 });
+      validator = validateInteger({ min: 1, max: 1024 });
     });
 
     it('fails invalid', function () {
