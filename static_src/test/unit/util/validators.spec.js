@@ -18,8 +18,18 @@ describe('vaidateNumber', function () {
       expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
     });
 
+    it('fails for 1234asdf', function () {
+      const result = validator('1234asdf');
+      expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
+    });
+
     it('fails for NaN', function () {
       const result = validator('Not a number');
+      expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
+    });
+
+    it('fails for float string', function () {
+      const result = validator('13.37');
       expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
     });
 
@@ -35,11 +45,6 @@ describe('vaidateNumber', function () {
 
     it('passes for zero', function () {
       const result = validator('0');
-      expect(result).toBe(null);
-    });
-
-    it('passes for float string', function () {
-      const result = validator('13.37');
       expect(result).toBe(null);
     });
   });
