@@ -53,13 +53,13 @@ export default class BaseStore extends EventEmitter {
     return this._data;
   }
 
-  get(guid) {
+  get(guid, serialize = true) {
     if (guid && !this.isEmpty()) {
       const item = this._data.find((space) =>
         space.get('guid') === guid
       );
 
-      if (item) return item.toJS();
+      if (item) return serialize ? item.toJS() : item;
     }
     return undefined;
   }
@@ -125,7 +125,15 @@ export default class BaseStore extends EventEmitter {
    *
   */
   merge(mergeKey, dataToMerge, cb = defaultChangedCallback.bind(this)) {
-    const toMerge = Immutable.fromJS(dataToMerge);
+    if (!dataToMerge) {
+      throw new Error('dataToMerge must be an object');
+    }
+
+    // Only deserialize if necessary
+    const toMerge = typeof dataToMerge.toJS === 'function' ?
+      dataToMerge :
+      Immutable.fromJS(dataToMerge);
+
     const oldDataItem = this._data.find((d) =>
       d.get(mergeKey) === toMerge.get(mergeKey)
     );

@@ -3,18 +3,20 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
-import { FormNumber } from './form';
+import { Form, FormNumber } from './form';
 import Loading from './loading.jsx';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
 import PanelBlock from './panel_block.jsx';
 import ResourceUsage from './resource_usage.jsx';
+import FormStore from '../stores/form_store';
 
 import { appHealth } from '../util/health';
 import { entityHealth } from '../constants';
 import appActions from '../actions/app_actions.js';
 import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
+import { validateInteger } from '../util/validators';
 
 // Calculates the running average based on a fixed n number of items To average
 // across instances you can do something like `average.bind(null, // numberOfInstances)`
@@ -51,6 +53,7 @@ function megabytes(value) {
 function stateSetter(props) {
   return {
     editing: !!props.editing,
+    form: props.form,
     partialApp: {
       // Properties are mapped directly to API https://apidocs.cloudfoundry.org/246/apps/updating_an_app.html
       disk_quota: props.app.disk_quota,
@@ -64,8 +67,25 @@ export default class UsageAndLimits extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
+
+    this.formGuid = `app-${props.app.guid}-usage-and-limits`;
+    const form = FormStore.create(this.formGuid, {
+      memory: {
+        value: 1,
+        validator: validateInteger({ min: 1, max: 2048 })
+      },
+      disk_quota: {
+        value: 1,
+        validator: validateInteger({ min: 1, max: 2 * 1024 })
+      },
+      instances: {
+        value: 1,
+        validator: validateInteger({ min: 1 })
+      }
+    });
+
     this.styler = createStyler(style);
-    this.state = stateSetter(props);
+    this.state = stateSetter({ ...props, form });
 
     this.getStat = this.getStat.bind(this);
     this._onSubmit = this._onSubmit.bind(this);
@@ -102,7 +122,6 @@ export default class UsageAndLimits extends React.Component {
 
 
   get disk() {
-    const onChange = this._onChange.bind(this, 'disk_quota');
     const disk = this.state.editing ? this.state.partialApp.disk_quota : this.props.app.disk_quota;
 
     // For instance usage, we average the instances together
@@ -113,11 +132,9 @@ export default class UsageAndLimits extends React.Component {
         amountTotal={ this.getStat('disk_quota') }
       />
       <ResourceUsage title="Instance disk allocation"
+        formGuid = { this.formGuid }
         editable={ this.state.editing }
-        max={ 2 * 1024 }
-        min={ 1 }
-        onChange={ onChange }
-        name="disk"
+        name="disk_quota"
         amountTotal={ disk * 1024 * 1024 }
       />
     </div>
@@ -125,7 +142,9 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get memory() {
+    // Setup a change listener so the maximum adjusts properly with instances
     const onChange = this._onChange.bind(this, 'memory');
+    const maxMemory =  Math.floor(this.props.quota.memory_limit / this.state.partialApp.instances);
     const memory = this.state.editing ? this.state.partialApp.memory : this.props.app.memory;
 
     // For instance usage, we average the instances together
@@ -137,8 +156,9 @@ export default class UsageAndLimits extends React.Component {
       />
       <ResourceUsage title="Instance memory allocation"
         editable={ this.state.editing }
+        formGuid={ this.formGuid }
         min={ 1 }
-        max={ Math.floor(this.props.quota.memory_limit / this.state.partialApp.instances) }
+        max={ maxMemory }
         name="memory"
         onChange={ onChange }
         amountTotal={ memory * 1024 * 1024 }
@@ -198,7 +218,8 @@ export default class UsageAndLimits extends React.Component {
           inline
           min={ 1 }
           max={ 64 }
-          name="scale"
+          name="instances"
+          formGuid={ this.formGuid }
           onValidate={ onValidate }
           value={ instanceCount }
         />
@@ -217,10 +238,9 @@ export default class UsageAndLimits extends React.Component {
     );
   }
 
-  _onSubmit(e) {
-    e.preventDefault();
-    appActions.updateApp(this.props.app.guid, this.state.partialApp);
-    this.setState({ editing: false });
+  _onSubmit(partialApp) {
+   // appActions.updateApp(this.props.app.guid, partialApp);
+    this.setState({ editing: false, partialApp });
   }
 
   render() {
@@ -246,7 +266,7 @@ export default class UsageAndLimits extends React.Component {
     if (this.state.editing) {
       controls = (
         <div>
-          <Action style="finish" type="button" label="OK" clickHandler={ this._onSubmit }>
+          <Action style="finish" type="submit" label="OK">
             <span>OK</span>
           </Action>
           <Action type="outline" label="Cancel" clickHandler={ this._onToggleEdit }>
@@ -279,6 +299,11 @@ export default class UsageAndLimits extends React.Component {
         </PanelActions>
       </div>
       );
+    }
+
+    if (this.props.app && this.state.editing) {
+      // Wrap content in a form element
+      content = <Form guid={ this.formGuid } onValid={ this._onSubmit }>{ content }</Form>;
     }
 
     return content;

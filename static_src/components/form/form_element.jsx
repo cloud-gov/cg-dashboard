@@ -1,5 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
+import formActions from '../../actions/form_actions';
+import FormStore from '../../stores/form_store';
 
 let currid = 0;
 function nextId() {
@@ -7,43 +9,43 @@ function nextId() {
   return currid;
 }
 
+function stateSetter(props) {
+  const model = FormStore.getFormField(props.formGuid, props.name);
+  return {
+    model
+  };
+}
+
+
 export default class FormElement extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      err: null,
-      value: this.props.value || ''
-    };
+    this.state = stateSetter(props);
 
+    // Only use model for the initial value, we don't want to override what the user types
+    this.state.value = this.state.model.value;
     if (!this.props.key) {
       this.state.id = nextId();
     }
 
-    this.componentWillMount = this.componentWillMount.bind(this);
-    this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this.onChange = this.onChange.bind(this);
-  }
-
-  componentWillMount() {
-    if (this.props.attachToForm) {
-      this.props.attachToForm(this);
-    }
+    this.onStoreChange = this.onStoreChange.bind(this);
   }
 
   componentDidMount() {
-    this.validate();
+    FormStore.addChangeListener(this.onStoreChange);
   }
 
   componentWillUnmount() {
-    if (this.props.detatchFromForm) {
-      this.props.detatchFromForm(this);
-    }
+    FormStore.removeChangeListener(this.onStoreChange);
+  }
+
+  onStoreChange() {
+    this.setState(stateSetter(this.props));
   }
 
   onChange(e) {
-    this.setState({ value: e.target.value }, () => {
-      this.validate();
-    });
+    this.setState({ value: e.target.value });
   }
 
   get classes() {
@@ -51,15 +53,6 @@ export default class FormElement extends React.Component {
   }
 
   validate() {
-    const value = this.state.value;
-    const err = this.props.validator(value, this.props.label);
-    if (err) {
-      err.value = value;
-    }
-
-    this.props.onValidate(err, value);
-    this.setState({ err });
-    return err;
   }
 
   get key() {
@@ -68,12 +61,13 @@ export default class FormElement extends React.Component {
 }
 
 FormElement.propTypes = {
-  attachToForm: React.PropTypes.func,
   classes: React.PropTypes.array,
   className: React.PropTypes.string,
-  detatchFromForm: React.PropTypes.func,
+  formGuid: React.PropTypes.string.isRequired,
   key: React.PropTypes.string,
   label: React.PropTypes.string,
+  model: React.PropTypes.object,
+  name: React.PropTypes.string,
   onValidate: React.PropTypes.func,
   validator: React.PropTypes.func,
   value: React.PropTypes.any
@@ -82,6 +76,7 @@ FormElement.propTypes = {
 FormElement.defaultProps = {
   classes: [],
   label: '',
+  value: '',
   onValidate: () => {},
   validator: () => {}
 };

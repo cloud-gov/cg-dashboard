@@ -9,8 +9,10 @@ import formatBytes from '../util/format_bytes';
 import Stat from './stat.jsx';
 
 const propTypes = {
+  formGuid: React.PropTypes.string,
   max: React.PropTypes.number,
   min: React.PropTypes.number,
+  name: React.PropTypes.string,
   onChange: React.PropTypes.func,
   title: React.PropTypes.string.isRequired,
   amountUsed: React.PropTypes.number,
@@ -53,7 +55,8 @@ export default class ResourceUsage extends React.Component {
       max: props.max,
       min: props.min,
       onChange: props.onChange,
-      name: props.name
+      name: props.name,
+      formGuid: props.formGuid
     };
 
     if (props.amountUsed && props.amountTotal) {
