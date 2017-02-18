@@ -58,8 +58,7 @@ module.exports = function api(smocks) {
       const app = appSummaries.find(function(app) {
         return app.guid === guid;
       });
-      reply({ message: 'There is a problem with the server'}).code(503);
-      //reply(SingleResponse(app));
+      reply(SingleResponse(app));
     }
   });
 
@@ -72,7 +71,8 @@ module.exports = function api(smocks) {
       const appStat = appStats.find(function(app) {
         return app.guid === guid;
       });
-      reply(SingleResponse(appStat));
+      //reply(SingleResponse(appStat));
+      reply({ message: 'There is a problem with the server'}).code(503);
     }
   });
 

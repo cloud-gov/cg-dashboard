@@ -6,6 +6,7 @@
 
 import AppDispatcher from '../dispatcher.js';
 import { appActionTypes } from '../constants';
+import errorActions from './error_actions.js';
 import cfApi from '../util/cf_api.js';
 import poll from '../util/poll.js';
 
@@ -16,7 +17,13 @@ const appActions = {
       appGuid
     });
 
-    return cfApi.fetchApp(appGuid).then(appActions.receivedApp);
+    return cfApi.fetchApp(appGuid).then(appActions.receivedApp)
+      .catch((err) => {
+        errorActions.importantDataFetchError(
+          'your app failed to load from the API due to unknown reasons',
+          err)
+        appActions.erro(appGuid, err);
+      });
   },
 
   receivedApp(app) {
@@ -63,9 +70,12 @@ const appActions = {
     });
 
     return cfApi.fetchAppStats(appGuid)
-      .then(app =>
-        appActions.receivedAppStats(appGuid, app)
-      );
+      .then(app => appActions.receivedAppStats(appGuid, app))
+      .catch((err) => {
+        errorActions.importantDataFetchError(
+          'some app data failed to load',
+          err);
+      });
   },
 
   receivedAppStats(appGuid, app) {

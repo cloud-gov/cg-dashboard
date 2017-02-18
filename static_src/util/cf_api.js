@@ -257,10 +257,7 @@ export default {
   },
 
   fetchApp(appGuid) {
-    return this.fetchOne(`/apps/${appGuid}/summary`).catch((err) => {
-      errorActions.importantDataFetchError(
-        'your app failed to load from the API due to unknown reasons', err);
-    });
+    return this.fetchOne(`/apps/${appGuid}/summary`);
   },
 
   fetchAppStatus(appGuid) {

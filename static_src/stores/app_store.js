@@ -22,7 +22,7 @@ export class AppStore extends BaseStore {
   }
 
   get loading() {
-    return this._fetchAll || this._fetchApp || this._fetchAppStats;
+    return this._fetchAll || this._fetchApp;
   }
 
   isStarting(app) {
