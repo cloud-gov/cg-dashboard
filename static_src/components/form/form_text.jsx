@@ -14,11 +14,15 @@ export default class FormText extends FormElement {
   }
 
   get error() {
-    if (!this.state.err) {
+    // Hackery for Immutable.Record. Accessing nested model.error.message does
+    // not work, you have to use model.error.get('message')
+    const model = this.state.model.toJS();
+    if (!model || !model.error) {
       return null;
     }
 
-    return <FormError message={ this.state.err.message } />;
+    const message = this.state.model.get('error');
+    return <FormError message={ message } />;
   }
 
   render() {
@@ -37,8 +41,13 @@ export default class FormText extends FormElement {
     return (
       <div className={ this.styler(classes) }>
         { !this.props.labelAfter && label }
-        <input type="text" id={ this.key } value={ this.state.value }
-          onChange={ this.onChange } className={ this.classes }
+        <input
+          type="text"
+          id={ this.key }
+          value={ this.state.value }
+          name={ this.props.name }
+          onChange={ this.onChange }
+          className={ this.classes }
         />
         { this.props.labelAfter && label }
         { this.error }

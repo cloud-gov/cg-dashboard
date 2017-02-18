@@ -1,7 +1,18 @@
+
+/**
+ * form.jsx
+ *
+ * A controlled Form component. The form listens to DOM events that bubble up
+ * in order to update FormFields in the FormStore and handle form submit
+ * actions.
+ **/
+
 import React from 'react';
 import classNames from 'classnames';
 
 import FormError from './form_error.jsx';
+import formActions from '../../actions/form_actions';
+import FormStore from '../../stores/form_store';
 
 
 export default class Form extends React.Component {
@@ -12,23 +23,20 @@ export default class Form extends React.Component {
       isValid: false,
       fields: {},
       fieldValues: {},
-      errs: []
+      errs: [],
+      model: props.model
     };
     this._handleSubmit = this._handleSubmit.bind(this);
-    this.attachToForm = this.attachToForm.bind(this);
-    this.detatchFromForm = this.detatchFromForm.bind(this);
+    this._onChange = this._onChange.bind(this);
+    this._onStoreChange = this._onStoreChange.bind(this);
   }
 
-  attachToForm(element) {
-    const fields = this.state.fields;
-    fields[element.props.name] = element;
-    this.setState({ fields });
+  componentDidMount() {
+    FormStore.addChangeListener(this._onStoreChange);
   }
 
-  detatchFromForm(element) {
-    const fields = this.state.fields;
-    delete fields[element.props.name];
-    this.setState({ fields });
+  componentWillUnmount() {
+    FormStore.removeChangeListener(this._onStoreChange);
   }
 
   validate() {
@@ -65,7 +73,36 @@ export default class Form extends React.Component {
       values[name] = field.state.value;
     }
     this.setState({ fieldValues: values });
-    this.validate();
+  }
+
+  _onStoreChange() {
+    const model = FormStore.get(this.props.guid);
+    this.setState({ model });
+  }
+
+  _onSubmit(e) {
+    if (!this.props.onSubmit) {
+      // Without an onSubmit, just default to normal form behavior
+      return;
+    }
+
+    e.preventDefault();
+    const errors = this.state.form.validate();
+
+    // Create a simple object of name/value pairs
+    const formData = this.state.form.fields.reduce((form, formField) =>
+      ({ ...form, [formField.name]: formField.value })
+    , {});
+
+    this.props.onSubmit(errors, formData);
+  }
+
+  _onChange(e) {
+    if (!e.target.name) {
+      return;
+    }
+
+    formActions.changeField(this.props.guid, e.target.name, e.target.value);
   }
 
   render() {
@@ -77,30 +114,12 @@ export default class Form extends React.Component {
     }
 
     return (
-      <form action={ this.props.action } method={ this.props.method }
-        onSubmit={ this._handleSubmit } className={ classes }
+      <form id={ this.props.guid } action={ this.props.action } method={ this.props.method }
+        onSubmit={ this._onSumbit } className={ classes } onChange={ this._onChange }
       >
         { errorMsg }
         <fieldset>
-          { React.Children.map(this.props.children, (child) => {
-            if (!child || !child.props || !child.props.name) {
-              return child;
-            }
-
-            let element;
-            if (child.props.name === 'submit') {
-              element = React.cloneElement(child, {
-                onClickHandler: this._handleSubmit
-              });
-            } else {
-              element = React.cloneElement(child, {
-                attachToForm: this.attachToForm,
-                detachFromForm: this.detachFromForm
-              });
-            }
-
-            return element;
-          })}
+          { this.props.children }
         </fieldset>
       </form>
     );
@@ -111,7 +130,10 @@ Form.propTypes = {
   action: React.PropTypes.string,
   children: React.PropTypes.node,
   classes: React.PropTypes.array,
+  guid: React.PropTypes.string,
   method: React.PropTypes.string,
+  model: React.PropTypes.object,
+  onSubmit: React.PropTypes.func,
   onValidate: React.PropTypes.func,
   onValid: React.PropTypes.func
 };
