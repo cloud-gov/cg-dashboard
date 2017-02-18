@@ -9,8 +9,8 @@ function nextId() {
   return currid;
 }
 
-function stateSetter() {
-  const model = FormStore.getFormField(this.props.formGuid, this.props.name);
+function stateSetter(props) {
+  const model = FormStore.getFormField(props.formGuid, props.name);
   return {
     model
   };
@@ -20,7 +20,7 @@ function stateSetter() {
 export default class FormElement extends React.Component {
   constructor(props) {
     super(props);
-    this.state = stateSetter();
+    this.state = stateSetter(props);
 
     // Only use model for the initial value, we don't want to override what the user types
     this.state.value = this.state.model.value;
@@ -41,7 +41,7 @@ export default class FormElement extends React.Component {
   }
 
   onStoreChange() {
-    this.setState(stateSetter());
+    this.setState(stateSetter(this.props));
   }
 
   onChange(e) {
