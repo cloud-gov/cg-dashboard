@@ -21,7 +21,7 @@ export default class FormText extends FormElement {
       return null;
     }
 
-    const message = this.state.model.get('error');
+    const message = this.state.model.error.get('message');
     return <FormError message={ message } />;
   }
 
