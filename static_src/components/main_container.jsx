@@ -6,12 +6,12 @@ import overrideStyle from '../css/overrides.css';
 import createStyler from '../util/create_styler';
 
 import Disclaimer from './disclaimer.jsx';
-import ErrorMessage from './error_message.jsx';
 import ErrorStore from '../stores/error_store.js';
 import Footer from './footer.jsx';
 import Header from './header.jsx';
 import Login from './login.jsx';
 import LoginStore from '../stores/login_store.js';
+import Notification from './notification.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import { Nav } from './navbar.jsx';
@@ -62,7 +62,12 @@ export default class App extends React.Component {
     if (this.state.errs.length) {
       errMessages = [];
       this.state.errs.map((err) => {
-        const errorMessage = <ErrorMessage displayType="global" error={ err } />;
+        const errorMessage = (
+          <Notification
+            message={ err.description }
+            actions={[{ text: 'Refresh' }]}
+          />
+        );
         errMessages.push(errorMessage);
       });
     }
