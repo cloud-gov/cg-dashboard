@@ -29,7 +29,13 @@ export default {
     // throw err;
   },
 
-  importantDataFetchError(msg, err) {
+  importantDataFetchError(err, entityMessage) {
+    let msg = 'Page failed to load, please try again';
+
+    if (entityMessage) {
+      msg = `Page failed to load, ${entityMessage}, please try again`;
+    }
+
     AppDispatcher.handleServerAction({
       type: errorActionTypes.IMPORTANT_FETCH,
       msg,

@@ -20,9 +20,10 @@ const appActions = {
     return cfApi.fetchApp(appGuid).then(appActions.receivedApp)
       .catch((err) => {
         errorActions.importantDataFetchError(
-          'your app failed to load from the API due to unknown reasons',
-          err)
-        appActions.erro(appGuid, err);
+          err,
+          'unable to fetch app'
+          )
+        appActions.error(appGuid, err);
       });
   },
 
@@ -73,8 +74,9 @@ const appActions = {
       .then(app => appActions.receivedAppStats(appGuid, app))
       .catch((err) => {
         errorActions.importantDataFetchError(
-          'some app data failed to load',
-          err);
+          err,
+          'unable to fetch some app information'
+          );
       });
   },
 
