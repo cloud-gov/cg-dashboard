@@ -15,13 +15,15 @@ const STATUSES = Object.assign({}, entityHealth, keymirror({
 const propTypes = {
   message: React.PropTypes.string,
   status: React.PropTypes.oneOf(Object.keys(STATUSES)),
-  actions: React.PropTypes.arrayOf(React.PropTypes.object)
+  actions: React.PropTypes.arrayOf(React.PropTypes.object),
+  onDismiss: React.PropTypes.func
 };
 
 const defaultProps = {
   message: 'There was a problem',
   status: entityHealth.warning,
-  actions: []
+  actions: [],
+  onDismiss: () => {}
 };
 
 export default class Notification extends React.Component {
@@ -31,14 +33,21 @@ export default class Notification extends React.Component {
     this.styler = createStyler(style);
   }
 
+  onCloseClick(ev) {
+    ev.preventDefault();
+    this.props.onDismiss(ev);
+  }
+
   render() {
     const statusClass = `notification-${this.props.status}`;
     let content = <span>{ this.props.message }</span>;
     let actionElements;
 
     if (this.props.actions.length) {
-      actionElements = this.props.actions.map((action) => (
-        <Action type="outline" style="white" classes= {[ 'notification-action' ]}>
+      actionElements = this.props.actions.map((action, i) => (
+        <Action key={ `notificationAction-${i}` } type="outline" style="white"
+          classes= {[ 'notification-action' ]}
+        >
           { action.text }
         </Action>
       ));
@@ -51,7 +60,9 @@ export default class Notification extends React.Component {
           { content }
         </p>
         { actionElements }
-        <a className={ this.styler('notification-dismiss') } title="Dismiss notification">
+        <a className={ this.styler('notification-dismiss') }
+           onClick={ this.onCloseClick }
+           title="Dismiss notification">
           <span className={ this.styler('usa-sr-only') }>Close</span>
         </a>
       </div>

@@ -6,7 +6,7 @@ import overrideStyle from '../css/overrides.css';
 import createStyler from '../util/create_styler';
 
 import Disclaimer from './disclaimer.jsx';
-import ErrorStore from '../stores/error_store.js';
+import GlobalErrorContainer from './global_error_container.jsx';
 import Footer from './footer.jsx';
 import Header from './header.jsx';
 import Login from './login.jsx';
@@ -17,10 +17,8 @@ import SpaceStore from '../stores/space_store.js';
 import { Nav } from './navbar.jsx';
 
 function stateSetter() {
-  const errs = ErrorStore.getAll();
 
   return {
-    errs,
     currentOrgGuid: OrgStore.currentOrgGuid,
     currentSpaceGuid: SpaceStore.currentSpaceGuid,
     isLoggedIn: LoginStore.isLoggedIn()
@@ -36,12 +34,10 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    ErrorStore.addChangeListener(this._onChange);
     LoginStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
-    ErroStore.removeChangeListener(this._onChange);
     LoginStore.removeChangeListener(this._onChange);
   }
 
@@ -59,23 +55,11 @@ export default class App extends React.Component {
       content = <Login />;
     }
 
-    if (this.state.errs.length) {
-      errMessages = [];
-      this.state.errs.map((err) => {
-        const errorMessage = (
-          <Notification
-            message={ err.description }
-            actions={[{ text: 'Refresh' }]}
-          />
-        );
-        errMessages.push(errorMessage);
-      });
-    }
 
     return (
       <div>
         <Disclaimer />
-        { errMessages }
+        <GlobalErrorContainer />
         <Header />
         <div className={ this.styler('main_content', 'content-no_sidebar') }>
           <main className={ this.styler('usa-content') }>

@@ -29,6 +29,15 @@ export default {
     // throw err;
   },
 
+  dismissError(err) {
+    AppDispatcher.handleServerAction({
+      type: errorActionTypes.DISMISS,
+      err
+    });
+
+    return Promise.resolve(err);
+  },
+
   importantDataFetchError(err, entityMessage) {
     let msg = 'Page failed to load, please try again';
 
