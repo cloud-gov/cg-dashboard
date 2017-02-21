@@ -2,7 +2,7 @@
 import React from 'react';
 
 import ErrorStore from '../stores/error_store.js';
-import Notification from './notification.jsx';
+import GlobalError from './global_error.jsx';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
@@ -32,7 +32,7 @@ export default class GlobalErrorContainer extends React.Component {
   }
 
   componentWillUnmount() {
-    ErroStore.removeChangeListener(this._onChange);
+    ErrorStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
@@ -44,12 +44,9 @@ export default class GlobalErrorContainer extends React.Component {
 
     if (this.state.errs.length) {
       errNotifications = [];
-      this.state.errs.forEach((err, i) => {
+      this.state.errs.forEach((err) => {
         const errorMessage = (
-          <Notification key={ `error-${i}` }
-            message={ err.description }
-            actions={[{ text: 'Refresh' }]}
-          />
+          <GlobalError err={ err } />
         );
         errNotifications.push(errorMessage);
       });

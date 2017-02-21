@@ -31,6 +31,8 @@ export default class Notification extends React.Component {
     super(props);
     this.props = props;
     this.styler = createStyler(style);
+
+    this.onCloseClick = this.onCloseClick.bind(this);
   }
 
   onCloseClick(ev) {
@@ -46,7 +48,7 @@ export default class Notification extends React.Component {
     if (this.props.actions.length) {
       actionElements = this.props.actions.map((action, i) => (
         <Action key={ `notificationAction-${i}` } type="outline" style="white"
-          classes= {[ 'notification-action' ]}
+          classes= { ['notification-action'] }
         >
           { action.text }
         </Action>
@@ -61,8 +63,9 @@ export default class Notification extends React.Component {
         </p>
         { actionElements }
         <a className={ this.styler('notification-dismiss') }
-           onClick={ this.onCloseClick }
-           title="Dismiss notification">
+          onClick={ this.onCloseClick }
+          title="Dismiss notification"
+        >
           <span className={ this.styler('usa-sr-only') }>Close</span>
         </a>
       </div>

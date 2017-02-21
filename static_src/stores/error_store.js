@@ -5,7 +5,7 @@
 import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
-import {  errorActionTypes } from '../constants.js';
+import { errorActionTypes } from '../constants.js';
 
 
 export class ErrorStore extends BaseStore {
@@ -17,13 +17,14 @@ export class ErrorStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
-      case errorActionTypes.IMPORTANT_FETCH:
+      case errorActionTypes.IMPORTANT_FETCH: {
         const err = Object.assign({}, { description: action.msg }, action.err);
         this.push(err);
         this.emitChange();
         break;
+      }
 
-      case errorActionTypes.DISMISS:
+      case errorActionTypes.DISMISS: {
         const errIdx = this.getAll().findIndex((err) => err === action.err);
         if (errIdx) {
           // TODO little unsafe to access data here?
@@ -31,6 +32,7 @@ export class ErrorStore extends BaseStore {
           this.emitChange();
         }
         break;
+      }
 
       default:
         break;

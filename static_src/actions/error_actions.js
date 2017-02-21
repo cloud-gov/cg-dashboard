@@ -5,7 +5,6 @@
 
 import AppDispatcher from '../dispatcher.js';
 import { errorActionTypes } from '../constants';
-import cfApi from '../util/cf_api.js';
 
 /* eslint-disable no-alert, no-console */
 export default {
