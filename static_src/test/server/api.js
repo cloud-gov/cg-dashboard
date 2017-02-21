@@ -71,8 +71,11 @@ module.exports = function api(smocks) {
       const appStat = appStats.find(function(app) {
         return app.guid === guid;
       });
-      //reply(SingleResponse(appStat));
-      reply({ message: 'There is a problem with the server'}).code(503);
+      if (guid === '3c37ff32-d954-4f9f-b730-15e22442fd82') {
+        reply({ message: 'There is a problem with the server'}).code(503);
+      } else {
+        reply(SingleResponse(appStat));
+      }
     }
   });
 
