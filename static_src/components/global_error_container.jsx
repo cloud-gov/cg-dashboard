@@ -6,8 +6,12 @@ import GlobalError from './global_error.jsx';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-const propTypes = {};
-const defaultProps = {};
+const propTypes = {
+  maxItems: React.PropTypes.number
+};
+const defaultProps = {
+  maxItems: 2
+};
 
 function stateSetter() {
   const errs = ErrorStore.getAll();
@@ -44,12 +48,14 @@ export default class GlobalErrorContainer extends React.Component {
 
     if (this.state.errs.length) {
       errNotifications = [];
-      this.state.errs.forEach((err, i) => {
-        const errorMessage = (
-          <GlobalError key={ `error-${i}` }err={ err } />
-        );
-        errNotifications.push(errorMessage);
-      });
+      this.state.errs
+        .slice(0, this.props.maxItems)
+        .forEach((err, i) => {
+          const errorMessage = (
+            <GlobalError key={ `error-${i}` }err={ err } />
+          );
+          errNotifications.push(errorMessage);
+        });
     }
 
     return (

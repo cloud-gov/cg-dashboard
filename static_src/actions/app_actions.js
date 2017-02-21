@@ -23,7 +23,6 @@ const appActions = {
           err,
           'unable to fetch app'
           )
-        appActions.error(appGuid, err);
       });
   },
 
@@ -72,12 +71,9 @@ const appActions = {
 
     return cfApi.fetchAppStats(appGuid)
       .then(app => appActions.receivedAppStats(appGuid, app))
-      .catch((err) => {
-        errorActions.importantDataFetchError(
-          err,
-          'unable to fetch some app information'
-          );
-      });
+      .catch((err) =>
+        errorActions.importantDataFetchError(err, 'unable to fetch app usage')
+      );
   },
 
   receivedAppStats(appGuid, app) {

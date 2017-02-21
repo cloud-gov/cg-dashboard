@@ -3,6 +3,7 @@
 import AppDispatcher from '../dispatcher.js';
 import { activityActionTypes } from '../constants';
 import cfApi from '../util/cf_api.js';
+import errorActions from './error_actions.js';
 
 const activityActions = {
   fetchSpaceEvents(spaceGuid, appGuid) {
@@ -11,7 +12,11 @@ const activityActions = {
       spaceGuid
     });
 
-    return cfApi.fetchSpaceEvents(spaceGuid, { appGuid }).then(activityActions.receivedSpaceEvents);
+    return cfApi.fetchSpaceEvents(spaceGuid, { appGuid })
+      .then(activityActions.receivedSpaceEvents)
+      .catch((err) =>
+        errorActions.importantDataFetchError(err, 'unable to fetch app activity')
+      );
   },
 
   receivedSpaceEvents(events) {
@@ -31,7 +36,10 @@ const activityActions = {
 
     return cfApi.fetchAppLogs(appGuid)
       .then(logs => activityActions.receivedAppLogs(appGuid, logs))
-      .catch(err => activityActions.errorAppLogs(appGuid, err));
+      .catch(err => {
+        errorActions.importantDataFetchError(err, 'unable to fetch app activity');
+        return activityActions.errorAppLogs(appGuid, err);
+      });
   },
 
   receivedAppLogs(appGuid, logs) {
