@@ -1,8 +1,7 @@
 
 import '../../global_setup.js';
 
-import AppDispatcher from '../../../dispatcher.js';
-import { assertAction, setupUISpy, setupViewSpy, setupServerSpy } from '../helpers.js';
+import { setupUISpy, setupServerSpy } from '../helpers.js';
 import errorActions from '../../../actions/error_actions.js';
 import { errorActionTypes } from '../../../constants.js';
 
@@ -17,7 +16,7 @@ describe('errorActions', function () {
     sandbox.restore();
   });
 
-  describe('dismissError()', function() {
+  describe('dismissError()', function () {
     it('should dispatch a server dismiss event with error object', () => {
       const err = { description: 'error' };
       const dispatchSpy = setupUISpy(sandbox);

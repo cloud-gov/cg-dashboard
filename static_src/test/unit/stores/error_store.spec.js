@@ -2,10 +2,7 @@
 import '../../global_setup.js';
 
 import errorActions from '../../../actions/error_actions.js';
-import AppDispatcher from '../../../dispatcher.js';
-import cfApi from '../../../util/cf_api.js';
 import { ErrorStore as ErrorStoreClass } from '../../../stores/error_store.js';
-import { errorActionTypes } from '../../../constants';
 
 describe('ErrorStore', function () {
   let ErrorStore, sandbox;
@@ -26,7 +23,7 @@ describe('ErrorStore', function () {
     });
   });
 
-  describe('checkForMaxFetchErrors()', function() {
+  describe('checkForMaxFetchErrors()', () => {
     describe('on more then max errors', () => {
       let spy;
 
@@ -52,7 +49,7 @@ describe('ErrorStore', function () {
     });
 
     describe('on less then max errors', () => {
-      it('should do nothing', function() {
+      it('should do nothing', () => {
         const errorAmount = 3;
         for (let i = 0; i < errorAmount; i++) {
           ErrorStore.push({ description: `error-${i}` });
@@ -84,7 +81,7 @@ describe('ErrorStore', function () {
     });
 
     it('should add the message passed through to the error object and add to store',
-      () => {
+    () => {
       expect(storeErrors[0].description).toEqual(
         `Page failed to load, ${specificMessage}, please try again`);
     });

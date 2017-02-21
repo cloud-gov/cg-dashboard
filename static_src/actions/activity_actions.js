@@ -3,7 +3,6 @@
 import AppDispatcher from '../dispatcher.js';
 import { activityActionTypes } from '../constants';
 import cfApi from '../util/cf_api.js';
-import errorActions from './error_actions.js';
 
 const activityActions = {
   fetchSpaceEvents(spaceGuid, appGuid) {

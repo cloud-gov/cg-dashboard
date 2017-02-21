@@ -22,7 +22,7 @@ const appActions = {
         errorActions.importantDataFetchError(
           err,
           'unable to fetch app'
-          )
+        );
       });
   },
 
