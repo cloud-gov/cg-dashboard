@@ -48,7 +48,8 @@ export default class Notification extends React.Component {
     if (this.props.actions.length) {
       actionElements = this.props.actions.map((action, i) => (
         <Action key={ `notificationAction-${i}` } type="outline" style="white"
-          classes= { ['notification-action'] }
+          clickHandler={ action.clickHandler }
+          classes={ ['notification-action'] }
         >
           { action.text }
         </Action>

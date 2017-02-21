@@ -44,9 +44,9 @@ export default class GlobalErrorContainer extends React.Component {
 
     if (this.state.errs.length) {
       errNotifications = [];
-      this.state.errs.forEach((err) => {
+      this.state.errs.forEach((err, i) => {
         const errorMessage = (
-          <GlobalError err={ err } />
+          <GlobalError key={ `error-${i}` }err={ err } />
         );
         errNotifications.push(errorMessage);
       });

@@ -20,11 +20,17 @@ export default class GlobalError extends React.Component {
     this.styler = createStyler(style);
 
     this.onNotificationDismiss = this.onNotificationDismiss.bind(this);
+    this.onNotificationRefresh = this.onNotificationRefresh.bind(this);
   }
 
   onNotificationDismiss(ev) {
     ev.preventDefault();
     errorActions.dismissError(this.props.err);
+  }
+
+  onNotificationRefresh(ev) {
+    ev.preventDefault();
+    window.location.reload();
   }
 
   render() {
@@ -33,7 +39,7 @@ export default class GlobalError extends React.Component {
     return (
       <Notification
         message={ err.description }
-        actions={[{ text: 'Refresh' }]}
+        actions={[{ text: 'Refresh', clickHandler: this.onNotificationRefresh }]}
         onDismiss={ this.onNotificationDismiss }
       />
     );
