@@ -65,6 +65,7 @@ export default class Notification extends React.Component {
         <a className={ this.styler('notification-dismiss') }
           onClick={ this.onCloseClick }
           title="Dismiss notification"
+          href="#"
         >
           <span className={ this.styler('usa-sr-only') }>Close</span>
         </a>
