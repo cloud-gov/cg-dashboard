@@ -25,7 +25,6 @@ export class ErrorStore extends BaseStore {
         description: 'Page failed to load, please try again'
       };
       this.push(genericFetchError);
-      this.emitChange();
     }
   }
 
@@ -35,7 +34,6 @@ export class ErrorStore extends BaseStore {
         const err = Object.assign({}, { description: action.msg }, action.err);
         this.push(err);
         this.checkForMaxFetchErrors();
-        this.emitChange();
         break;
       }
 
