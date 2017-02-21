@@ -13,10 +13,7 @@ const activityActions = {
     });
 
     return cfApi.fetchSpaceEvents(spaceGuid, { appGuid })
-      .then(activityActions.receivedSpaceEvents)
-      .catch((err) =>
-        errorActions.importantDataFetchError(err, 'unable to fetch app activity')
-      );
+      .then(activityActions.receivedSpaceEvents);
   },
 
   receivedSpaceEvents(events) {
@@ -36,10 +33,7 @@ const activityActions = {
 
     return cfApi.fetchAppLogs(appGuid)
       .then(logs => activityActions.receivedAppLogs(appGuid, logs))
-      .catch(err => {
-        errorActions.importantDataFetchError(err, 'unable to fetch app activity');
-        return activityActions.errorAppLogs(appGuid, err);
-      });
+      .catch(err => activityActions.errorAppLogs(appGuid, err));
   },
 
   receivedAppLogs(appGuid, logs) {

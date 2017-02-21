@@ -29,7 +29,7 @@ export default {
   },
 
   dismissError(err) {
-    AppDispatcher.handleServerAction({
+    AppDispatcher.handleUIAction({
       type: errorActionTypes.DISMISS,
       err
     });
