@@ -12,7 +12,21 @@ export class ErrorStore extends BaseStore {
   constructor() {
     super();
     this._data = new Immutable.List();
+    this.maxErrors = 5;
     this.subscribe(() => this._registerToActions.bind(this));
+  }
+
+  checkForMaxFetchErrors() {
+    const errs = this.getAll();
+    if (errs.length >= this.maxErrors) {
+      // If too many errors, clear them and provide a generic fetch one.
+      this._data = new Immutable.List();
+      const genericFetchError = {
+        description: 'Page failed to load, please try again'
+      };
+      this.push(genericFetchError);
+      this.emitChange();
+    }
   }
 
   _registerToActions(action) {
@@ -20,6 +34,7 @@ export class ErrorStore extends BaseStore {
       case errorActionTypes.IMPORTANT_FETCH: {
         const err = Object.assign({}, { description: action.msg }, action.err);
         this.push(err);
+        this.checkForMaxFetchErrors();
         this.emitChange();
         break;
       }
