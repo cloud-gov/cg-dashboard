@@ -6,7 +6,6 @@ import overrideStyle from '../css/overrides.css';
 import createStyler from '../util/create_styler';
 
 import Disclaimer from './disclaimer.jsx';
-import GlobalErrorContainer from './global_error_container.jsx';
 import Footer from './footer.jsx';
 import Header from './header.jsx';
 import Login from './login.jsx';
@@ -59,7 +58,6 @@ export default class App extends React.Component {
     return (
       <div>
         <Disclaimer />
-        <GlobalErrorContainer />
         <Header />
         <div className={ this.styler('main_content', 'content-no_sidebar') }>
           <main className={ this.styler('usa-content') }>

@@ -2,6 +2,7 @@
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
+import GlobalErrorContainer from './global_error_container.jsx';
 import LoginStore from '../stores/login_store.js';
 import HeaderLink from './header_link.jsx';
 
@@ -36,6 +37,7 @@ export default class Header extends React.Component {
     </HeaderLink>;
     return (
     <header className={ this.styler('header', 'header-no_sidebar') }>
+      <GlobalErrorContainer />
       <div className={ this.styler('header-wrap') }>
         <div className={ this.styler('header-title') }>
           <a href="/" className={ this.styler('logo') } title="Home">
