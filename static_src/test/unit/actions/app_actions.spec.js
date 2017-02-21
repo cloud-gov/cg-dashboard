@@ -38,6 +38,7 @@ describe('appActions', function () {
 
   describe('fetchAll()', function () {
     it('should dispatch a view event of type app all fetch', function (done) {
+      sandbox.stub(cfApi, 'fetchAppAll').returns(Promise.resolve());
       const expectedAppGuid = 'asdflkjzzz1';
       const expectedParams = {
         appGuid: expectedAppGuid
@@ -198,6 +199,7 @@ describe('appActions', function () {
 
     it('should call restarted with guid on success of request', function (done) {
       const spy = sandbox.stub(appActions, 'restarted').returns(Promise.resolve());
+      sandbox.stub(cfApi, 'putApp').returns(Promise.resolve());
       const expectedGuid = 'znxmcv23i4yzxvc';
 
       appActions.start(expectedGuid).then(() => {
