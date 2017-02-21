@@ -190,11 +190,10 @@ describe('cfApi', function() {
       const stub = sandbox.stub(http, 'post');
       stub.returns(createPromise(true, fakeCFErrorRes));
 
-      cfApi.createRoute('a', 'b', 'c', 'd').then(() => {
+      cfApi.createRoute('a', 'b', 'c', 'd').catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         done();
-      }).catch(done.fail);
-
+      });
     });
   });
 
@@ -233,14 +232,14 @@ describe('cfApi', function() {
       stub.returns(createPromise(true, fakeCFErrorRes));
       const routeGuid = 'zxcvasdf24';
 
-      cfApi.deleteRoute(routeGuid).then(() => {
+      cfApi.deleteRoute(routeGuid).catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
         arg = spy.getCall(0).args[1];
         expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      }).catch(done.fail);
+      });
     });
   });
 
@@ -280,10 +279,10 @@ describe('cfApi', function() {
     it('should call the fetch error action on failure', function(done) {
       const spy = fetchErrorSetup();
 
-      cfApi.fetchOne().then(() => {
+      cfApi.fetchOne().catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         done();
-      }).catch(done.fail);
+      });
     });
 
     it('should pass any additional arguments to the action', function(done) {
@@ -1219,14 +1218,14 @@ describe('cfApi', function() {
       stub.returns(createPromise(true, fakeCFErrorRes));
       const routeGuid = 'sdf2dsfzxcv4';
 
-      cfApi.putAppRouteAssociation('adfads', routeGuid).then(() => {
+      cfApi.putAppRouteAssociation('adfads', routeGuid).catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
         arg = spy.getCall(0).args[1];
         expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      }).catch(done.fail);
+      });
     });
   });
 
@@ -1274,14 +1273,14 @@ describe('cfApi', function() {
       stub.returns(createPromise(true, fakeCFErrorRes));
       const routeGuid = 'sdf2dsfzxcv4';
 
-      cfApi.deleteAppRouteAssociation('adfads', routeGuid).then(() => {
+      cfApi.deleteAppRouteAssociation('adfads', routeGuid).catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
         arg = spy.getCall(0).args[1];
         expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      }).catch(done.fail);
+      });
     });
   });
 
@@ -1327,14 +1326,14 @@ describe('cfApi', function() {
         path: 'fake-path'
       };
 
-      cfApi.putRouteUpdate(routeGuid, 'a', 'b', route).then(() => {
+      cfApi.putRouteUpdate(routeGuid, 'a', 'b', route).catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
         arg = spy.getCall(0).args[1];
         expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      }).catch(done.fail);
+      });
     });
   });
 
