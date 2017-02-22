@@ -34,6 +34,14 @@ export default class FormElement extends React.Component {
     this.validate();
   }
 
+  componentWillReceiveProps(props) {
+    // If our validator changed, we want to update the error state.
+    // TODO we probably also want to notify others about the validation result,
+    // but this is a poor place to do it.
+    const err = props.validator(this.state.value, props.label);
+    this.setState({ err });
+  }
+
   componentWillUnmount() {
     if (this.props.detatchFromForm) {
       this.props.detatchFromForm(this);
