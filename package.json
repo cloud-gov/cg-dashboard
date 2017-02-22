@@ -14,10 +14,11 @@
     "clean": "rm -rf ./static/assets/*",
     "lint": "eslint --ext .js --ext .jsx ./static_src",
     "test": "npm run lint && npm run test-unit && npm run test-functional",
-    "test-functional": "NODE_ENV=test wdio wdio.conf.js",
+    "test-functional": "NODE_ENV=test npm run testing-server-run -- wdio wdio.conf.js",
     "test-unit": "NODE_ENV=test karma start --single-run",
     "test-selenium-install": "selenium-standalone install",
-    "testing-server": "node ./static_src/test/server/server.js",
+    "testing-server": "PORT=8001 npm run testing-server-run",
+    "testing-server-run": "node ./static_src/test/server/server.js",
     "watch-server": "npm run testing-server & npm run watch",
     "watch-test": "NODE_ENV=test karma start --browsers Chrome",
     "watch": "webpack --watch"

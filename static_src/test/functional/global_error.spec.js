@@ -1,7 +1,6 @@
 
 import dedent from 'dedent';
 
-import './global_setup';
 import GlobalErrorsElement from './pageobjects/global_errors.element';
 
 
