@@ -49,7 +49,7 @@ export default class Notification extends React.Component {
       actionElements = this.props.actions.map((action, i) => (
         <Action key={ `notificationAction-${i}` } type="outline" style="white"
           clickHandler={ action.clickHandler }
-          classes={ ['notification-action'] }
+          classes={ ['notification-action', 'test-notification-action'] }
         >
           { action.text }
         </Action>
@@ -57,13 +57,13 @@ export default class Notification extends React.Component {
     }
 
     return (
-    <div className={ this.styler('notification', statusClass) }>
+    <div className={ this.styler('notification', statusClass, 'test-notification') }>
       <div className={ this.styler('notification-wrap') }>
-        <p className={ this.styler('notification-message') }>
+        <p className={ this.styler('notification-message', 'test-notification-message') }>
           { content }
         </p>
         { actionElements }
-        <a className={ this.styler('notification-dismiss') }
+        <a className={ this.styler('notification-dismiss', 'test-notification-dismiss') }
           onClick={ this.onCloseClick }
           title="Dismiss notification"
           href="#"

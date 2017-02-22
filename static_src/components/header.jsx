@@ -36,7 +36,7 @@ export default class Header extends React.Component {
       </Action>
     </HeaderLink>;
     return (
-    <header className={ this.styler('header', 'header-no_sidebar') }>
+    <header className={ this.styler('header', 'header-no_sidebar', 'test-header') }>
       <GlobalErrorContainer />
       <div className={ this.styler('header-wrap') }>
         <div className={ this.styler('header-title') }>

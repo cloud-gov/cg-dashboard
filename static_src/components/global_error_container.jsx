@@ -59,7 +59,7 @@ export default class GlobalErrorContainer extends React.Component {
     }
 
     return (
-      <div>
+      <div className="test-global-errors">
         { errNotifications }
       </div>
     );
