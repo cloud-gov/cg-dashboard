@@ -172,6 +172,11 @@ export default class UsageAndLimits extends React.Component {
 
   get scale() {
     const onValidate = (err, value) => {
+      if (err) {
+        // No need to update model on error
+        return;
+      }
+
       this._onChange('instances', value);
     };
 
@@ -201,7 +206,7 @@ export default class UsageAndLimits extends React.Component {
     }
 
     return (
-      <div className={ this.styler('stat-single_box') }>
+      <div className={ this.styler('stat', 'stat-single_box') }>
         <h2 className={ this.styler('stat-header')}>Instances</h2>
 	{ instances }
         <br />
@@ -212,7 +217,8 @@ export default class UsageAndLimits extends React.Component {
     );
   }
 
-  _onSubmit() {
+  _onSubmit(e) {
+    e.preventDefault();
     appActions.updateApp(this.props.app.guid, this.state.partialApp);
     this.setState({ editing: false });
   }

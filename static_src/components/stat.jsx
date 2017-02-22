@@ -3,7 +3,7 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-import { FormNumber, FormText } from './form';
+import { FormNumber } from './form';
 import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
 
@@ -61,6 +61,11 @@ export default class Stat extends React.Component {
   }
 
   onValidate(err, value) {
+    if (err) {
+      // No need to update model on error
+      return;
+    }
+
     // TODO the max/min limits don't match this unit, the validators work on
     // raw input rather than the converted value.
     const unit = this.state.unit;
@@ -98,12 +103,13 @@ export default class Stat extends React.Component {
     if (this.props.editable) {
       primaryStat = (
         <div className={ this.styler('stat-primary')}>
-          <StatFormNumber
+          <FormNumber
             className={ this.styler('stat-input', 'stat-input-text') }
             type="text"
             id={ `${this.props.name}-value` }
             inline
             label="MB"
+            labelAfter
             name={ `${this.props.name}-value` }
             value={ this.fromBytes(this.state.primaryStat) }
             min={ this.props.min }
@@ -128,37 +134,3 @@ export default class Stat extends React.Component {
 
 Stat.propTypes = propTypes;
 Stat.defaultProps = defaultProps;
-
-class StatFormNumber extends FormNumber {
-  render() {
-    const props = Object.assign({}, this.props, { validator: this.validateNumber });
-    return <StatFormText { ...props } />;
-  }
-}
-
-
-// Extend FormText for control over layout
-class StatFormText extends FormText {
-  constructor(props) {
-    super(props);
-    this.styler = createStyler(style);
-  }
-
-  render() {
-    const errorClass = !!this.error && 'error';
-    return (
-      <span className={ this.styler(errorClass) }>
-        <input type="text" id={ this.key } value={ this.state.value }
-          onChange={ this.onChange } className={ this.classes }
-        />
-        <label
-          className={ this.styler('stat-input', 'stat-input-label') }
-          htmlFor={ `${this.props.name}-value` }
-        >{ this.props.label }</label>
-        <div>
-          { this.error }
-        </div>
-      </span>
-    );
-  }
-}

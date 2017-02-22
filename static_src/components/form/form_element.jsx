@@ -10,12 +10,15 @@ function nextId() {
 export default class FormElement extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { err: null };
+    this.state = {
+      err: null,
+      value: this.props.value || ''
+    };
+
     if (!this.props.key) {
       this.state.id = nextId();
     }
 
-    Object.assign(this.state, this.checkValidationFromProps(props));
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -27,8 +30,16 @@ export default class FormElement extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this.validate();
+  }
+
   componentWillReceiveProps(props) {
-    this.setState(this.checkValidationFromProps(props));
+    // If our validator changed, we want to update the error state.
+    // TODO we probably also want to notify others about the validation result,
+    // but this is a poor place to do it.
+    const err = props.validator(this.state.value, props.label);
+    this.setState({ err });
   }
 
   componentWillUnmount() {
@@ -45,17 +56,6 @@ export default class FormElement extends React.Component {
 
   get classes() {
     return this.props.classes.length ? classNames(...this.props.classes) : this.props.className;
-  }
-
-  checkValidationFromProps(props) {
-    if (props.value === undefined) {
-      return {};
-    }
-
-    // Only if an initial value is set, validate it
-    const value = props.value;
-    const err = props.validator && props.validator(value);
-    return { value, err };
   }
 
   validate() {

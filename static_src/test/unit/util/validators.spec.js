@@ -1,16 +1,16 @@
 import '../../global_setup.js';
 
-import { validateNumber } from '../../../util/validators';
+import { validateInteger } from '../../../util/validators';
 
 describe('vaidateNumber', function () {
   it('returns a function', function () {
-    expect(typeof validateNumber()).toBe('function');
+    expect(typeof validateInteger()).toBe('function');
   });
 
   describe('given no options', function () {
     let validator;
     beforeEach(function () {
-      validator = validateNumber();
+      validator = validateInteger();
     });
 
     it('fails for empty', function () {
@@ -18,8 +18,18 @@ describe('vaidateNumber', function () {
       expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
     });
 
+    it('fails for 1234asdf', function () {
+      const result = validator('1234asdf');
+      expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
+    });
+
     it('fails for NaN', function () {
       const result = validator('Not a number');
+      expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
+    });
+
+    it('fails for float string', function () {
+      const result = validator('13.37');
       expect(result).toEqual({ message: 'Invalid number', type: 'NUMBER_INVALID' });
     });
 
@@ -37,18 +47,13 @@ describe('vaidateNumber', function () {
       const result = validator('0');
       expect(result).toBe(null);
     });
-
-    it('passes for float string', function () {
-      const result = validator('13.37');
-      expect(result).toBe(null);
-    });
   });
 
   describe('given max', function () {
     let validator;
 
     beforeEach(function () {
-      validator = validateNumber({ max: 1024 });
+      validator = validateInteger({ max: 1024 });
     });
 
     it('fails for above max', function () {
@@ -71,7 +76,7 @@ describe('vaidateNumber', function () {
     let validator;
 
     beforeEach(function () {
-      validator = validateNumber({ min: 1 });
+      validator = validateInteger({ min: 1 });
     });
 
     it('fails for below min', function () {
@@ -94,7 +99,7 @@ describe('vaidateNumber', function () {
     let validator;
 
     beforeEach(function () {
-      validator = validateNumber({ min: 1, max: 1024 });
+      validator = validateInteger({ min: 1, max: 1024 });
     });
 
     it('fails invalid', function () {

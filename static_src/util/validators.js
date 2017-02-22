@@ -1,7 +1,12 @@
-export function validateNumber(options) {
+export function validateInteger(options) {
   const { max, min } = options || {};
-  return function _validateNumber(text) {
-    const value = parseInt(text, 10);
+  return function _validateInteger(text) {
+    let value = text || '';
+    if (!/^-?\d+$/.test(String(value).trim())) {
+      return { message: 'Invalid number', type: 'NUMBER_INVALID' };
+    }
+
+    value = parseInt(text, 10);
     if (typeof value !== 'number') {
       return { message: 'Invalid number', type: 'NUMBER_INVALID' };
     }
