@@ -1,6 +1,6 @@
 
 import BaseElement from './base.element';
-import NotificationElement from './notification.element'
+import NotificationElement from './notification.element';
 
 // https://www.martinfowler.com/bliki/PageObject.html
 //
