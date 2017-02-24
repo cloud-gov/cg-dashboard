@@ -221,3 +221,25 @@ beforeEach(function() {
 jasmine.jasmineSinon = {
   messageFactories: messageFactories
 };
+
+beforeEach(() => {
+  // Any call to console.warn or console.error should fail the test. If
+  // console.warn or console.error is expected, they should be stubbed
+  // appropriately.
+  sinon.stub(console, 'warn').throws(
+    new Error(
+      `Unexpected call to console.warn during a test. Please add an expectation or fix the test.`
+    )
+  );
+  // TODO enable the same for console.error
+  //sinon.stub(console, 'error').throws(
+  //  new Error(
+  //    `Unexpected call to console.error during a test. Please add an expectation or fix the test.`
+  //  )
+  //);
+});
+
+afterEach(function () {
+  console.warn.restore();
+  //console.error.restore();
+});
