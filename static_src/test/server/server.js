@@ -5,9 +5,6 @@
 // Sidecar pattern comes from Netflix's Prana[1] but instead of providing
 // platform services, we just provide access to the testing server.
 //
-// TODO the testing server does not require any cleanup nothing is done to stop
-// the server. Connections are cleaned up as part of the process.exit
-//
 // [1] http://techblog.netflix.com/2014/11/prana-sidecar-for-your-netflix-paas.html
 
 var child_process = require('child_process');
@@ -17,6 +14,15 @@ require('babel-register');
 var start = require( './index').start;
 
 var port = process.env.PORT;
+
+function stopServer(cb) {
+  if (!server) {
+    setImmediate(cb);
+    return;
+  }
+
+  server.stop(cb);
+}
 
 function spawnChildCb(command, args) {
   function __cb(err) {
@@ -28,6 +34,14 @@ function spawnChildCb(command, args) {
 
     if (!command) {
       // No arguments passed, just leave the test server running for manual testing
+      function cleanup() {
+        stopServer(function (error) {
+          process.exit(!!error);
+        });
+      }
+
+      process.on('SIGINT', cleanup);
+      process.on('SIGTERM', cleanup);
       return;
     }
 
@@ -39,9 +53,15 @@ function spawnChildCb(command, args) {
       })
     });
 
-    // Make sure to exit with the main's code
     main.on('close', function (exitCode) {
-      process.exit(exitCode);
+      stopServer(function (error) {
+        if (error) {
+          console.error(error);
+        }
+
+        // Make sure to exit with the main's code or error if main was OK
+        process.exit(exitCode || !!error);
+      });
     });
 
     function connectSignal(signal) {
