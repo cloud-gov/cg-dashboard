@@ -3,6 +3,7 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
+import PanelHeader from './panel_header.jsx';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
@@ -21,10 +22,14 @@ export default class Panel extends React.Component {
   }
 
   render() {
+    let panelHed;
 
-    let panelHed = null;
     if (this.props.title != '') {
-      panelHed = <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>;
+      panelHed = (
+        <PanelHeader>
+          <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>
+        </PanelHeader>
+      );
     }
 
     return (
