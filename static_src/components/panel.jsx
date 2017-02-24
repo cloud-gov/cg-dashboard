@@ -30,7 +30,7 @@ export default class Panel extends React.Component {
     return (
       <div className={ this.styler('panel') }>
         {panelHed}
-        <div className={ this.styler('panel-rows') }>
+        <div>
           { this.props.children }
         </div>
       </div>
