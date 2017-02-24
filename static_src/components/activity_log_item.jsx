@@ -7,54 +7,16 @@ import createStyler from '../util/create_styler';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import formatRoute from '../util/format_route';
-import RouteStore from '../stores/route_store';
-import DomainStore from '../stores/domain_store';
-
-function stateSetter(props) {
-  const { item, service } = props;
-  const route = RouteStore.get(item.metadata.route_guid);
-
-  let domain;
-  if (route) {
-    domain = DomainStore.get(route.domain_guid);
-  }
-
-  return {
-    domain,
-    route,
-    service
-  };
-}
-
 
 export default class ActivityLogItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { ...stateSetter(props),
+    this.state = {
       showRawJson: false
     };
 
     this.styler = createStyler(style);
-    this._onChange = this._onChange.bind(this);
     this.toggleRawJson = this.toggleRawJson.bind(this);
-  }
-
-  componentDidMount() {
-    DomainStore.addChangeListener(this._onChange);
-    RouteStore.addChangeListener(this._onChange);
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState(stateSetter(props));
-  }
-
-  componentWillUnmount() {
-    DomainStore.removeChangeListener(this._onChange);
-    RouteStore.removeChangeListener(this._onChange);
-  }
-
-  _onChange() {
-    this.setState(stateSetter(this.props));
   }
 
   formatTimestamp(timestamp) {
@@ -119,10 +81,8 @@ export default class ActivityLogItem extends React.Component {
   get eventContent() {
     let content = `${this.props.item.type} isn't handled`;
     let url = 'a url';
-    const item = this.props.item;
+    const { domain, item, route } = this.props;
     const metadata = item.metadata;
-    const route = this.state.route;
-    const domain = this.state.domain;
     if (route && domain) {
       url = formatRoute(domain.name, route.host, route.path);
     }
@@ -165,7 +125,7 @@ export default class ActivityLogItem extends React.Component {
         );
       }
     } else if (item.type === 'audit.service_binding.create') {
-      const service = this.state.service;
+      const service = this.props.service;
       const serviceText = (service) ? service.guid : 'a service';
       content = (
         <span>{ item.actor_name} bound { serviceText } to the app.</span>
@@ -234,5 +194,8 @@ export default class ActivityLogItem extends React.Component {
 }
 
 ActivityLogItem.propTypes = {
-  item: React.PropTypes.object.isRequired
+  domain: React.PropTypes.object,
+  item: React.PropTypes.object.isRequired,
+  route: React.PropTypes.object,
+  service: React.PropTypes.object
 };

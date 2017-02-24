@@ -4,7 +4,9 @@ import React from 'react';
 import Action from './action.jsx';
 import ActivityLogItem from './activity_log_item.jsx';
 import ActivityStore from '../stores/activity_store';
+import DomainStore from '../stores/domain_store';
 import PanelActions from './panel_actions.jsx';
+import RouteStore from '../stores/route_store';
 import createStyler from '../util/create_styler';
 import { config } from 'skin';
 import ServiceInstanceStore from '../stores/service_instance_store';
@@ -59,11 +61,15 @@ export default class ActivityLog extends React.Component {
 
   componentDidMount() {
     ActivityStore.addChangeListener(this._onChange);
+    DomainStore.addChangeListener(this._onChange);
+    RouteStore.addChangeListener(this._onChange);
     ServiceInstanceStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     ActivityStore.removeChangeListener(this._onChange);
+    DomainStore.removeChangeListener(this._onChange);
+    RouteStore.removeChangeListener(this._onChange);
     ServiceInstanceStore.removeChangeListener(this._onChange);
   }
 
@@ -120,7 +126,21 @@ export default class ActivityLog extends React.Component {
                     );
                   }
 
-                  return <ActivityLogItem key={ item.guid } item={ item } service={ service } />;
+                  let domain;
+                  const route = RouteStore.get(item.metadata.route_guid);
+                  if (route) {
+                    domain = DomainStore.get(route.domain_guid);
+                  }
+
+                  return (
+                    <ActivityLogItem
+                      key={ item.guid }
+                      item={ item }
+                      service={ service }
+                      route={ route }
+                      domain={ domain }
+                    />
+                  );
                 })
             }
             { showMore }
