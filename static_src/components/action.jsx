@@ -48,7 +48,6 @@ export default class Action extends React.Component {
   }
 
   render() {
-    const styleClass = `usa-button-${this.props.style}`;
     let classes = this.styler(...this.props.classes);
     let content = <div></div>;
     const classList = [...this.props.classes];
@@ -58,11 +57,9 @@ export default class Action extends React.Component {
 
     if (this.props.type !== 'link') {
       if (this.props.disabled) {
-        classList.push('usa-button-disabled');
+        classList.push('action-cautious');
       } else {
-        classList.push('usa-button');
-        classList.push(styleClass);
-        if (this.props.type === 'outline') classList.push('usa-button-outline');
+        if (this.props.type === 'outline') classList.push('action-outline');
       }
       classes = this.styler(...classList);
     }
