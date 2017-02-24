@@ -94,6 +94,7 @@ export default class AppContainer extends React.Component {
   }
 
   get statusUI() {
+    let label;
     let worstState = this.state.app.state;
     if (this.state.app.state === appStates.started) {
       // If the app is started, use the instance state
@@ -102,9 +103,11 @@ export default class AppContainer extends React.Component {
       );
     }
 
-    return (
-      <span className={ this.styler('usa-label') }>{ worstState }</span>
-    );
+    if (worstState) {
+      label = <span className={ this.styler('usa-label') }>{ worstState }</span>;
+    }
+
+    return label;
   }
 
   get openApp() {
