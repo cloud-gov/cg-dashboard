@@ -104,7 +104,7 @@ export default class AppContainer extends React.Component {
     }
 
     if (worstState) {
-      label = <span className={ this.styler('usa-label') }>{ worstState }</span>
+      label = <span className={ this.styler('usa-label') }>{ worstState }</span>;
     }
 
     return label;
