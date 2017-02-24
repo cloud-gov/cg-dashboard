@@ -19,3 +19,7 @@ export default class PanelHeader extends React.Component {
     );
   }
 }
+
+PanelHeader.propTypes = {
+  children: React.PropTypes.any
+};

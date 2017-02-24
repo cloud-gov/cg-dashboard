@@ -7,7 +7,8 @@ import PanelHeader from './panel_header.jsx';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  title: React.PropTypes.string
+  title: React.PropTypes.string,
+  children: React.PropTypes.any
 };
 
 const defaultProps = {
@@ -24,7 +25,7 @@ export default class Panel extends React.Component {
   render() {
     let panelHed;
 
-    if (this.props.title != '') {
+    if (this.props.title !== '') {
       panelHed = (
         <PanelHeader>
           <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>
