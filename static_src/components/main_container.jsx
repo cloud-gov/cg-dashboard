@@ -10,13 +10,11 @@ import Footer from './footer.jsx';
 import Header from './header.jsx';
 import Login from './login.jsx';
 import LoginStore from '../stores/login_store.js';
-import Notification from './notification.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import { Nav } from './navbar.jsx';
 
 function stateSetter() {
-
   return {
     currentOrgGuid: OrgStore.currentOrgGuid,
     currentSpaceGuid: SpaceStore.currentSpaceGuid,
@@ -46,7 +44,6 @@ export default class App extends React.Component {
 
   render() {
     let content;
-    let errMessages;
 
     if (this.state.isLoggedIn) {
       content = this.props.children;
