@@ -11,7 +11,8 @@ const activityActions = {
       spaceGuid
     });
 
-    return cfApi.fetchSpaceEvents(spaceGuid, { appGuid }).then(activityActions.receivedSpaceEvents);
+    return cfApi.fetchSpaceEvents(spaceGuid, { appGuid })
+      .then(activityActions.receivedSpaceEvents);
   },
 
   receivedSpaceEvents(events) {

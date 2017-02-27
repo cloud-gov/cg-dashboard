@@ -23,6 +23,7 @@ function handleError(err, errHandler = errorActions.errorFetch) {
         errHandler(errRes);
       }
       noticeError(err);
+      throw err;
     } else {
       throw err;
     }

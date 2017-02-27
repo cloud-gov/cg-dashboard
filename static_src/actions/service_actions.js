@@ -9,6 +9,7 @@
 
 import AppDispatcher from '../dispatcher.js';
 import cfApi from '../util/cf_api.js';
+import errorActions from './error_actions.js';
 import { serviceActionTypes } from '../constants';
 import ServiceInstanceStore from '../stores/service_instance_store';
 
@@ -25,7 +26,10 @@ const serviceActions = {
         Promise.all(services.map(service => serviceActions.fetchAllPlans(service.guid)))
           .then(() => services)
       )
-      .then(serviceActions.receivedServices);
+      .then(serviceActions.receivedServices)
+      .catch((err) =>
+        errorActions.importantDataFetchError(err, 'unable to fetch services')
+      );
   },
 
   receivedServices(services) {
@@ -63,7 +67,10 @@ const serviceActions = {
     });
 
     return cfApi.fetchAllServicePlans(serviceGuid)
-      .then(serviceActions.receivedPlans);
+      .then(serviceActions.receivedPlans)
+      .catch((err) =>
+        errorActions.importantDataFetchError(err, 'unable to fetch service plans')
+      );
   },
 
   receivedPlans(servicePlans) {
@@ -88,7 +95,10 @@ const serviceActions = {
          ))
          .then(() => serviceInstances)
       )
-      .then(serviceActions.receivedInstances);
+      .then(serviceActions.receivedInstances)
+      .catch((err) =>
+        errorActions.importantDataFetchError(err, 'unable to fetch service instances')
+      );
   },
 
   createInstanceForm(serviceGuid, planGuid) {
@@ -237,7 +247,10 @@ const serviceActions = {
     });
 
     return cfApi.fetchServiceBindings(appGuid)
-      .then(serviceActions.receivedServiceBindings);
+      .then(serviceActions.receivedServiceBindings)
+      .catch((err) =>
+        errorActions.importantDataFetchError(err, 'unable to fetch services')
+      );
   },
 
   receivedServiceBindings(serviceBindings) {

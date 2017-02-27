@@ -31,7 +31,9 @@ const entityHealth = keymirror({
 
 // All global error action types
 const errorActionTypes = keymirror({
-  FETCH: null
+  FETCH: null,
+  IMPORTANT_FETCH: null,
+  DISMISS: null
 });
 
 const loginActionTypes = keymirror({

@@ -3,6 +3,9 @@
  * Actions for global errors across the whole application.
  */
 
+import AppDispatcher from '../dispatcher.js';
+import { errorActionTypes } from '../constants';
+
 /* eslint-disable no-alert, no-console */
 export default {
   errorDelete(err) {
@@ -23,6 +26,29 @@ export default {
   errorPut(err) {
     console.error('put failure', err);
     // throw err;
+  },
+
+  dismissError(err) {
+    AppDispatcher.handleUIAction({
+      type: errorActionTypes.DISMISS,
+      err
+    });
+
+    return Promise.resolve(err);
+  },
+
+  importantDataFetchError(err, entityMessage) {
+    let msg = 'Page failed to load, please try again';
+
+    if (entityMessage) {
+      msg = `Page failed to load, ${entityMessage}, please try again`;
+    }
+
+    AppDispatcher.handleServerAction({
+      type: errorActionTypes.IMPORTANT_FETCH,
+      msg,
+      err
+    });
   }
 };
 /* eslint-enable no-alert, no-console */

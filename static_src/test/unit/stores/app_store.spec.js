@@ -52,7 +52,6 @@ describe('AppStore', function () {
       });
 
       expect(AppStore._fetchAppStats).toBe(true);
-      expect(AppStore.loading).toBe(true);
     });
   });
 
@@ -164,14 +163,12 @@ describe('AppStore', function () {
   describe('on app stats received', function () {
     it('should update the fetch state to not loading', function () {
       AppStore._fetchAppStats = true;
-      expect(AppStore.loading).toBe(true);
       AppDispatcher.handleViewAction({
         type: appActionTypes.APP_STATS_RECEIVED,
         app: { guid: 'asdf' }
       });
 
       expect(AppStore._fetchAppStats).toBe(false);
-      expect(AppStore.loading).toBe(false);
     });
 
     it('should emit a change event if data was updated', function () {

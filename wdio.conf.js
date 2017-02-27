@@ -1,3 +1,6 @@
+/* eslint-disable */
+var PORT = process.env.PORT || 8001;
+
 exports.config = {
   specs: [
     './static_src/test/functional/**/*.spec.js'
@@ -20,7 +23,7 @@ exports.config = {
 
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
-  baseUrl: 'http://localhost:8001',
+  baseUrl: 'http://localhost:' + PORT,
 
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
