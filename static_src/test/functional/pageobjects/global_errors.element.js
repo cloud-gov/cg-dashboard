@@ -4,7 +4,7 @@ import NotificationElement from './notification.element';
 
 // https://www.martinfowler.com/bliki/PageObject.html
 //
-// Represents a OrgQuicklookElement for making assertions against. This makes it
+// Represents a DOM element for making assertions against. This makes it
 // easier to abstract some of the webdriver details from the UI component.
 
 // TODO attach to class as static property

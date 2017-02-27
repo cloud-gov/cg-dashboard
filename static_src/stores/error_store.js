@@ -11,7 +11,6 @@ import { errorActionTypes } from '../constants.js';
 export class ErrorStore extends BaseStore {
   constructor() {
     super();
-    this._data = new Immutable.List();
     this.maxErrors = 5;
     this.subscribe(() => this._registerToActions.bind(this));
   }
