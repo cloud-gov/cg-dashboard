@@ -8,6 +8,7 @@ import { appStates } from '../constants';
 import { config } from 'skin';
 import AppStore from '../stores/app_store.js';
 import Breadcrumbs from './breadcrumbs.jsx';
+import DomainStore from '../stores/domain_store.js';
 import RouteStore from '../stores/route_store.js';
 import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
@@ -34,6 +35,8 @@ function stateSetter() {
   const app = AppStore.get(currentAppGuid);
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
+  // This depends on DomainStore
+  const route = RouteStore.getRouteURLForApp(app);
 
   const quotaGuid = (space && space.space_quota_definition_guid) ||
     (org && org.quota_definition_guid) || null;
@@ -48,6 +51,7 @@ function stateSetter() {
     empty: !AppStore.loading && !appReady(app) && !QuotaStore.loading,
     loading: AppStore.loading || QuotaStore.loading,
     org,
+    route,
     quota,
     space
   };
@@ -67,6 +71,7 @@ export default class AppContainer extends React.Component {
 
   componentDidMount() {
     AppStore.addChangeListener(this._onChange);
+    DomainStore.addChangeListener(this._onChange);
     OrgStore.addChangeListener(this._onChange);
     QuotaStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
@@ -75,6 +80,7 @@ export default class AppContainer extends React.Component {
 
   componentWillUnmount() {
     AppStore.removeChangeListener(this._onChange);
+    DomainStore.removeChangeListener(this._onChange);
     OrgStore.removeChangeListener(this._onChange);
     QuotaStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
@@ -111,7 +117,7 @@ export default class AppContainer extends React.Component {
   }
 
   get openApp() {
-    const route = RouteStore.getRouteURLForApp(this.state.app);
+    const route = this.state.route;
     if (!route) return null;
     return (
       <Action
