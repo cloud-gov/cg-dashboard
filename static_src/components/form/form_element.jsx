@@ -11,9 +11,8 @@ function nextId() {
 export default class FormElement extends React.Component {
   constructor(props) {
     super(props);
-    const err = props.validator(this.props.value, props.label);
     this.state = {
-      err,
+      err: null, // Forms should all be initialized without errors
       value: this.props.value || ''
     };
 
@@ -36,7 +35,7 @@ export default class FormElement extends React.Component {
 
   onChange(e) {
     const value = e.target.value;
-    const err = this.props.validator(value, this.props.label);
+    const err = this.props.validator(value, this.props.name);
     this.setState({ err, value }, () => {
       formActions.changeField(this.props.formGuid, this.props.name, value)
         .then(() => {

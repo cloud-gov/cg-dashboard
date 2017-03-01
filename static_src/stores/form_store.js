@@ -19,7 +19,7 @@ export class FormStore extends BaseStore {
   }
 
   create(formGuid, initialData) {
-    const formFields = Object.keys(initialData)
+    const formFields = Object.keys(initialData || {})
       .reduce((fields, fieldName) => {
         const formField = {
           name: fieldName,

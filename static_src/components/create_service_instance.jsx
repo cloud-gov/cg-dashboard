@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom';
 import Box from './box.jsx';
 import Action from './action.jsx';
 import { Form, FormText, FormSelect, FormElement, FormError } from './form';
+import FormStore from '../stores/form_store';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
@@ -36,9 +37,11 @@ export default class CreateServiceInstance extends React.Component {
       createError: ServiceInstanceStore.createError
     };
 
+    // Create the form in the store
+    FormStore.create('create-service-form');
+
     this.validateString = validateString().bind(this);
     this._onChange = this._onChange.bind(this);
-    this._onValidateForm = this._onValidateForm.bind(this);
     this._onValidForm = this._onValidForm.bind(this);
     this._onCancelForm = this._onCancelForm.bind(this);
     this.styler = createStyler(style);
@@ -64,16 +67,14 @@ export default class CreateServiceInstance extends React.Component {
     this.scrollIntoView();
   }
 
-  _onValidateForm(errs) {
-    this.setState({ errs });
-  }
-
-  _onValidForm(values) {
-    serviceActions.createInstance(
-      values.name,
-      values.space,
-      this.props.servicePlan.guid
-    );
+  _onValidForm(errs, values) {
+    this.setState({ errs }, () => {
+      serviceActions.createInstance(
+        values.name.value,
+        values.space.value,
+        this.props.servicePlan.guid
+      );
+    });
   }
 
   _onCancelForm(ev) {
@@ -113,12 +114,11 @@ export default class CreateServiceInstance extends React.Component {
     return (
       <div className = { this.styler('actions-large') }>
         { createError }
-        <Form action="/service_instances"
+        <Form
+          guid="create-service-form"
           classes={ ['test-create_service_instance_form'] }
-          method="post"
           ref="form"
-          onValidate={ this._onValidateForm }
-          onValid={ this._onValidForm }
+          onSubmit={ this._onValidForm }
         >
           <legend>
             Create a service instance for <strong
@@ -128,12 +128,14 @@ export default class CreateServiceInstance extends React.Component {
             { this.servicePlanName }</strong> plan.
           </legend>
           <FormText
+            formGuid="create-service-form"
             classes={ ['test-create_service_instance_name'] }
             label="Choose a name for the service instance"
             name="name"
             validator={ this.validateString }
           />
           <FormSelect
+            formGuid="create-service-form"
             classes={ ['test-create_service_instance_space'] }
             label="Select the space for the service instance"
             name="space"
