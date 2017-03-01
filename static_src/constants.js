@@ -36,6 +36,16 @@ const errorActionTypes = keymirror({
   DISMISS: null
 });
 
+const formActionTypes = keymirror({
+  // User has changed a form field
+  FORM_FIELD_CHANGE: null,
+  // The form field change was valid
+  FORM_FIELD_CHANGE_SUCCESS: null,
+  // The form field change is not a valid input
+  FORM_FIELD_CHANGE_ERROR: null
+});
+
+
 const loginActionTypes = keymirror({
   // Action of fetching a login status, whether the user is logged in or not.
   FETCH_STATUS: null,
@@ -296,6 +306,7 @@ export {
   appStates,
   domainActionTypes,
   errorActionTypes,
+  formActionTypes,
   loginActionTypes,
   orgActionTypes,
   pageActionTypes,
