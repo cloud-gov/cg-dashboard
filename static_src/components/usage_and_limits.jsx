@@ -3,7 +3,8 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import Action from './action.jsx';
-import { FormNumber } from './form';
+import { Form, FormNumber } from './form';
+import FormStore from '../stores/form_store';
 import Loading from './loading.jsx';
 import PanelActions from './panel_actions.jsx';
 import PanelGroup from './panel_group.jsx';
@@ -44,20 +45,8 @@ function getStat(statName, props, accumulator) {
     .reduce((cumulative, value) => _accumulator(cumulative, value || 0), 0);
 }
 
-function megabytes(value) {
-  return Math.floor(value / 1024 / 1024);
-}
-
-function stateSetter(props) {
-  return {
-    editing: !!props.editing,
-    partialApp: {
-      // Properties are mapped directly to API https://apidocs.cloudfoundry.org/246/apps/updating_an_app.html
-      disk_quota: props.app.disk_quota,
-      instances: props.app.instances,
-      memory: props.app.memory
-    }
-  };
+function formGuid(app) {
+  return `app-${app.guid}-usage-and-limits`;
 }
 
 export default class UsageAndLimits extends React.Component {
@@ -65,45 +54,50 @@ export default class UsageAndLimits extends React.Component {
     super(props);
     this.props = props;
     this.styler = createStyler(style);
-    this.state = stateSetter(props);
 
+    // Create the form instance in the store
+    const { instances, memory, disk_quota } = this.props.app;
+    const form = FormStore.create(formGuid(props.app), {
+      memory,
+      disk_quota,
+      instances
+    });
+
+    this.state = {
+      editing: !!props.editing,
+      form
+    };
     this.getStat = this.getStat.bind(this);
+    this._onChange = this._onChange.bind(this);
     this._onSubmit = this._onSubmit.bind(this);
     this._onToggleEdit = this._onToggleEdit.bind(this);
+  }
+
+  componentDidMount() {
+    FormStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    FormStore.removeChangeListener(this._onChange);
   }
 
   getStat(statName, accumulator) {
     return getStat(statName, this.props, accumulator);
   }
 
+  _onChange() {
+    const form = FormStore.get(formGuid(this.props.app));
+    this.setState({ form });
+  }
+
   _onToggleEdit() {
-    this.setState(stateSetter(Object.assign({}, this.props, { editing: !this.state.editing })));
+    this.setState({ editing: !this.state.editing });
   }
-
-  _onChange(property, value) {
-    let parsedValue = value;
-    switch (property) {
-      case 'disk_quota':
-      case 'memory':
-        parsedValue = megabytes(value);
-        break;
-      default:
-        parsedValue = parseInt(value, 10);
-        break;
-    }
-
-    const partialApp = Object.assign(
-      {},
-      this.state.partialApp,
-      { [property]: parsedValue }
-    );
-    this.setState({ partialApp });
-  }
-
 
   get disk() {
-    const onChange = this._onChange.bind(this, 'disk_quota');
-    const disk = this.state.editing ? this.state.partialApp.disk_quota : this.props.app.disk_quota;
+    const disk = this.state.editing ?
+      this.state.form.fields.disk_quota.value :
+      this.props.app.disk_quota;
 
     // For instance usage, we average the instances together
     return (
@@ -114,10 +108,10 @@ export default class UsageAndLimits extends React.Component {
       />
       <ResourceUsage title="Instance disk allocation"
         editable={ this.state.editing }
+        formGuid={ formGuid(this.props.app) }
         max={ 2 * 1024 }
         min={ 1 }
-        onChange={ onChange }
-        name="disk"
+        name="disk_quota"
         amountTotal={ disk * 1024 * 1024 }
       />
     </div>
@@ -125,8 +119,10 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get memory() {
-    const onChange = this._onChange.bind(this, 'memory');
-    const memory = this.state.editing ? this.state.partialApp.memory : this.props.app.memory;
+    const memory = this.state.editing ? this.state.form.fields.memory.value : this.props.app.memory;
+    const maxMemory = Math.floor(
+      this.props.quota.memory_limit / this.state.form.fields.instances.value
+    );
 
     // For instance usage, we average the instances together
     return (
@@ -137,10 +133,10 @@ export default class UsageAndLimits extends React.Component {
       />
       <ResourceUsage title="Instance memory allocation"
         editable={ this.state.editing }
+        formGuid={ formGuid(this.props.app) }
         min={ 1 }
-        max={ Math.floor(this.props.quota.memory_limit / this.state.partialApp.instances) }
+        max={ maxMemory }
         name="memory"
-        onChange={ onChange }
         amountTotal={ memory * 1024 * 1024 }
       />
     </div>
@@ -171,17 +167,8 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get scale() {
-    const onValidate = (err, value) => {
-      if (err) {
-        // No need to update model on error
-        return;
-      }
-
-      this._onChange('instances', value);
-    };
-
     const instanceCount = this.state.editing ?
-      this.state.partialApp.instances : this.props.app.instances;
+      this.state.form.fields.instances.value : this.props.app.instances;
 
 
     let instances = (
@@ -194,12 +181,12 @@ export default class UsageAndLimits extends React.Component {
       instances = (
         <FormNumber
           className={ this.styler('stat-input', 'stat-input-text', 'stat-input-text-scale') }
+          formGuid={ formGuid(this.props.app) }
           id="scale"
           inline
           min={ 1 }
-          max={ 64 }
-          name="scale"
-          onValidate={ onValidate }
+          max={ 256 }
+          name="instances"
           value={ instanceCount }
         />
       );
@@ -217,9 +204,21 @@ export default class UsageAndLimits extends React.Component {
     );
   }
 
-  _onSubmit(e) {
-    e.preventDefault();
-    appActions.updateApp(this.props.app.guid, this.state.partialApp);
+  _onSubmit(errors, form) {
+    if (errors.length) {
+      console.warn({ errors }); // eslint-disable-line no-console
+      return;
+    }
+
+    // Parse the form properties are mapped directly to API
+    // https://apidocs.cloudfoundry.org/246/apps/updating_an_app.html
+    const partialApp = {
+      disk_quota: parseInt(form.disk_quota.value, 10),
+      instances: parseInt(form.instances.value, 10),
+      memory: parseInt(form.memory.value, 10)
+    };
+
+    appActions.updateApp(this.props.app.guid, partialApp);
     this.setState({ editing: false });
   }
 
@@ -246,7 +245,7 @@ export default class UsageAndLimits extends React.Component {
     if (this.state.editing) {
       controls = (
         <div>
-          <Action style="finish" type="button" label="OK" clickHandler={ this._onSubmit }>
+          <Action style="finish" type="button" label="OK">
             <span>OK</span>
           </Action>
           <Action type="outline" label="Cancel" clickHandler={ this._onToggleEdit }>
@@ -278,6 +277,18 @@ export default class UsageAndLimits extends React.Component {
           { controls }
         </PanelActions>
       </div>
+      );
+    }
+
+    if (this.props.app && this.state.editing) {
+      // Wrap content in a form element
+      content = (
+        <Form
+          guid={ formGuid(this.props.app) }
+          onSubmit={ this._onSubmit }
+        >
+          { content }
+        </Form>
       );
     }
 
