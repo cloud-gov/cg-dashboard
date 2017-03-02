@@ -206,7 +206,6 @@ export default class UsageAndLimits extends React.Component {
 
   _onSubmit(errors, form) {
     if (errors.length) {
-      console.warn({ errors }); // eslint-disable-line no-console
       return;
     }
 
