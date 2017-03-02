@@ -6,3 +6,5 @@ applications:
   host: console
   domain: fr.cloud.gov
   path: .
+  env:
+    TARGET_DOMAIN: dashboard.fr.cloud.gov
