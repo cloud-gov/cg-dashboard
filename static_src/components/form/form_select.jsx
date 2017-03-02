@@ -11,11 +11,6 @@ export default class FormSelect extends FormElement {
     this.state = this.state || {};
     this.state.value = '';
     this.state.err = null;
-    this._handleChange = this._handleChange.bind(this);
-  }
-
-  _handleChange(ev) {
-    this.setState({ value: ev.target.value });
   }
 
   render() {
@@ -32,7 +27,7 @@ export default class FormSelect extends FormElement {
           className={ this.classes }
           name={ this.key }
           id={ this.key }
-          onChange={ this._handleChange }
+          onChange={ this.onChange }
           value={ this.state.value }
         >
           <option value="" key={ `${this.key}-null` }>
