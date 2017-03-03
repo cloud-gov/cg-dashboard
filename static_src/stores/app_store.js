@@ -133,6 +133,14 @@ export class AppStore extends BaseStore {
         break;
       }
 
+      case appActionTypes.APP_FETCH_ERROR: {
+        this._fetchAll = false;
+        this._fetchApp = false;
+        this._fetchAppStats = false;
+        this.emitChange();
+        break;
+      }
+
       case appActionTypes.APP_ERROR: {
         const app = this.get(action.appGuid);
         if (app) {

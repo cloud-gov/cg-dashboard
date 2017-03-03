@@ -184,7 +184,7 @@ const appSummaries = [
         }
       }
     ],
-    running_instances: 0,
+    running_instances: 1,
     services: [],
     available_domains: [
       {
@@ -219,7 +219,7 @@ const appSummaries = [
     memory: 24,
     instances: 1,
     disk_quota: 1024,
-    state: "RUNNING",
+    state: "STARTED",
     version: "630aa1f3-f6e8-4cba-aebb-f63252f31cc1",
     command: null,
     console: false,

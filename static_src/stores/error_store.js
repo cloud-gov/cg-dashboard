@@ -21,7 +21,7 @@ export class ErrorStore extends BaseStore {
       // If too many errors, clear them and provide a generic fetch one.
       this._data = new Immutable.List();
       const genericFetchError = {
-        description: 'Page failed to load, please try again'
+        description: 'Connection issue, please try again'
       };
       this.push(genericFetchError);
     }

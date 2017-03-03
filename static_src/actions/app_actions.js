@@ -71,9 +71,11 @@ const appActions = {
 
     return cfApi.fetchAppStats(appGuid)
       .then(app => appActions.receivedAppStats(appGuid, app))
-      .catch((err) =>
-        errorActions.importantDataFetchError(err, 'unable to fetch app usage')
-      );
+      .catch((err) => {
+        appActions.fetchError(appGuid);
+        return errorActions.importantDataFetchError(err,
+          'app usage data may be incomplete');
+      });
   },
 
   receivedAppStats(appGuid, app) {
@@ -162,6 +164,15 @@ const appActions = {
 
     // TODO Not sure if this should return null or reject
     return Promise.reject(err);
+  },
+
+  fetchError(appGuid) {
+    AppDispatcher.handleServerAction({
+      type: appActionTypes.APP_FETCH_ERROR,
+      appGuid
+    });
+
+    return Promise.resolve(appGuid);
   }
 };
 

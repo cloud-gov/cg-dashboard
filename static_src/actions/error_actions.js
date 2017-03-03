@@ -38,10 +38,10 @@ export default {
   },
 
   importantDataFetchError(err, entityMessage) {
-    let msg = 'Page failed to load, please try again';
+    let msg = 'Connection issue, please try again';
 
     if (entityMessage) {
-      msg = `Page failed to load, ${entityMessage}, please try again`;
+      msg = `Connection issue, ${entityMessage}`;
     }
 
     AppDispatcher.handleServerAction({
