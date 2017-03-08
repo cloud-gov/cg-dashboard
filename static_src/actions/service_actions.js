@@ -28,7 +28,7 @@ const serviceActions = {
       )
       .then(serviceActions.receivedServices)
       .catch((err) =>
-        errorActions.importantDataFetchError(err, 'unable to fetch services')
+        errorActions.importantDataFetchError(err, 'unable to fetch marketplace')
       );
   },
 
