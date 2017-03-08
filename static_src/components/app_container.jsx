@@ -31,12 +31,16 @@ function appReady(app) {
 }
 
 function stateSetter() {
+  let route;
   const currentAppGuid = AppStore.currentAppGuid;
   const app = AppStore.get(currentAppGuid);
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
+
+  if (app) {
   // This depends on DomainStore
-  const route = RouteStore.getRouteURLForApp(app);
+    route = RouteStore.getRouteURLForApp(app);
+  }
 
   const quotaGuid = (space && space.space_quota_definition_guid) ||
     (org && org.quota_definition_guid) || null;
