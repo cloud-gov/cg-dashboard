@@ -101,6 +101,7 @@ export const config = {
   github: {
     url: 'https://github.com/18F/cg-dashboard'
   },
+  platform_name: 'cloud.gov',
   home: {
     tiles: [InfoActivities, InfoStructure, InfoSandbox, InfoEnvironments]
   }
