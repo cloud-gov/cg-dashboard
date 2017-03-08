@@ -51,7 +51,7 @@ describe('errorActions', function () {
 
     it('should wrap the supplied error message with generic messaging', () => {
       expect(dispatch.msg).toEqual(
-        `Connection issue, ${message}`);
+        `There was an issue connecting to dashboard.cloud.gov, ${message}`);
     });
   });
 });
