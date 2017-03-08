@@ -208,7 +208,9 @@ const appActionTypes = keymirror({
   // Action when app restarted on server.
   APP_RESTARTED: null,
   // Action when some error happens when manipulating an app
-  APP_ERROR: null
+  APP_ERROR: null,
+  // Action when the fetching of app fails
+  APP_FETCH_ERROR: null
 });
 
 const userActionTypes = keymirror({

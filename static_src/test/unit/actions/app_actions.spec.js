@@ -281,4 +281,19 @@ describe('appActions', function () {
       assertAction(spy, appActionTypes.APP_ERROR, expectedParams);
     });
   });
+
+  describe('fetchError()', function () {
+    it('should dispatch server event of type app fetch error with guid',
+    function () {
+      const appGuid = '230894dzcxv234';
+      const expectedParams = {
+        appGuid
+      };
+      const spy = setupServerSpy(sandbox);
+
+      appActions.fetchError(appGuid);
+
+      assertAction(spy, appActionTypes.APP_FETCH_ERROR, expectedParams);
+    });
+  });
 });

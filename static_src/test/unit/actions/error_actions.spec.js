@@ -51,7 +51,7 @@ describe('errorActions', function () {
 
     it('should wrap the supplied error message with generic messaging', () => {
       expect(dispatch.msg).toEqual(
-        `Page failed to load, ${message}, please try again`);
+        `There was an issue connecting to dashboard.cloud.gov, ${message}`);
     });
   });
 });

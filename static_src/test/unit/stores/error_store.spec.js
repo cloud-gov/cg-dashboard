@@ -40,7 +40,7 @@ describe('ErrorStore', function () {
       it('should clear all the data and add one generic error object', () => {
         expect(ErrorStore.getAll().length).toEqual(1);
         expect(ErrorStore.getAll()[0].description).toEqual(
-          'Page failed to load, please try again');
+          'Connection issue, please try again');
       });
 
       it('should emit a change', () => {
@@ -83,7 +83,7 @@ describe('ErrorStore', function () {
     it('should add the message passed through to the error object and add to store',
     () => {
       expect(storeErrors[0].description).toEqual(
-        `Page failed to load, ${specificMessage}, please try again`);
+        `There was an issue connecting to dashboard.cloud.gov, ${specificMessage}`);
     });
 
     it('should emit a change', () => {

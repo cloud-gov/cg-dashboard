@@ -13,7 +13,7 @@ const STATUSES = Object.assign({}, entityHealth, keymirror({
 
 
 const propTypes = {
-  message: React.PropTypes.string,
+  message: React.PropTypes.node,
   status: React.PropTypes.oneOf(Object.keys(STATUSES)),
   actions: React.PropTypes.arrayOf(React.PropTypes.object),
   onDismiss: React.PropTypes.func

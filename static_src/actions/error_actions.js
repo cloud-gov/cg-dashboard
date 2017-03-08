@@ -38,10 +38,10 @@ export default {
   },
 
   importantDataFetchError(err, entityMessage) {
-    let msg = 'Page failed to load, please try again';
+    let msg = 'There was an issue connecting to dashboard.cloud.gov, please try again later.';
 
     if (entityMessage) {
-      msg = `Page failed to load, ${entityMessage}, please try again`;
+      msg = `There was an issue connecting to dashboard.cloud.gov, ${entityMessage}`;
     }
 
     AppDispatcher.handleServerAction({

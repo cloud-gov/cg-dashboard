@@ -191,7 +191,7 @@ export default class AppContainer extends React.Component {
     );
 
     if (this.state.empty) {
-      content = <h4 className="test-none_message">No app</h4>;
+      content = <h4 className="test-none_message">App not available</h4>;
     } else if (!this.state.loading && appReady(this.state.app)) {
       content = (
         <div>
@@ -206,7 +206,6 @@ export default class AppContainer extends React.Component {
             </div>
           </div>
           <Panel title="Usage and allocation">
-            { this.logsDocumentation }
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 
@@ -219,6 +218,7 @@ export default class AppContainer extends React.Component {
           </Panel>
 
           <Panel title="Recent activity">
+            { this.logsDocumentation }
             <ActivityLog initialAppGuid={ this.state.app.guid } />
           </Panel>
         </div>

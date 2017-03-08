@@ -92,7 +92,8 @@ export const config = {
     deploying_apps: 'https://cloud.gov/docs/getting-started/your-first-deploy/',
     use: 'https://cloud.gov/docs/intro/overview/using-cloudgov-paas/',
     invite_user: 'https://cloud.gov/docs/apps/managing-teammates',
-    managed_services: 'https://docs.cloud.gov/apps/managed-services/'
+    managed_services: 'https://docs.cloud.gov/apps/managed-services/',
+    status: 'https://cloudgov.statuspage.io/'
   },
   snippets: {
     logs: InfoLogs
@@ -100,6 +101,7 @@ export const config = {
   github: {
     url: 'https://github.com/18F/cg-dashboard'
   },
+  platform_name: 'cloud.gov',
   home: {
     tiles: [InfoActivities, InfoStructure, InfoSandbox, InfoEnvironments]
   }

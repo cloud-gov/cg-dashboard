@@ -3,6 +3,7 @@ import React from 'react';
 
 import Notification from './notification.jsx';
 import createStyler from '../util/create_styler';
+import { config } from 'skin';
 import errorActions from '../actions/error_actions.js';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
@@ -35,10 +36,22 @@ export default class GlobalError extends React.Component {
 
   render() {
     const err = this.props.err;
+    const link = (config.docs.status) && (
+      <span> check <a target="_blank" href={ config.docs.status }>
+        { config.platform_name }'s status</a> or
+      </span>
+    );
+
+    const wrappedDescription = (
+      <span>
+        { err.description }. { (err.description.length > 80) && <br /> }
+        Please { link } try again.
+      </span>
+    );
 
     return (
       <Notification
-        message={ err.description }
+        message={ wrappedDescription }
         actions={[{ text: 'Refresh', clickHandler: this.onNotificationRefresh }]}
         onDismiss={ this.onNotificationDismiss }
       />
