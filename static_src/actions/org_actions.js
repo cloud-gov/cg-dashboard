@@ -6,6 +6,7 @@
 
 import AppDispatcher from '../dispatcher.js';
 import cfApi from '../util/cf_api.js';
+import errorActions from './error_actions.js';
 import { orgActionTypes } from '../constants';
 import spaceActions from './space_actions';
 
@@ -26,7 +27,14 @@ const orgActions = {
       orgGuid
     });
 
-    return cfApi.fetchOrg(orgGuid).then(orgActions.receivedOrg);
+    return cfApi.fetchOrg(orgGuid)
+      .then(orgActions.receivedOrg)
+      .catch((err) =>
+        errorActions.importantDataFetchError(
+          err,
+          'organization data may be incomplete'
+        )
+      );
   },
 
   fetchAll() {
@@ -43,7 +51,13 @@ const orgActions = {
           )
         )
       )
-      .then(orgActions.receivedOrgs);
+      .then(orgActions.receivedOrgs)
+      .catch((err) =>
+        errorActions.importantDataFetchError(
+          err,
+          'unable to fetch organizations'
+        )
+      );
   },
 
   receivedOrg(org) {
