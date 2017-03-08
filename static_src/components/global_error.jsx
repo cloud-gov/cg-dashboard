@@ -42,9 +42,10 @@ export default class GlobalError extends React.Component {
       </span>
     );
 
-    // TODO replace with skin config
     const wrappedDescription = (
-      <span>{ err.description }. Please { link } try again.
+      <span>
+        { err.description }. { (err.description.length > 80) && <br /> }
+        Please { link } try again.
       </span>
     );
 
