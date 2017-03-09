@@ -16,17 +16,13 @@ function handleError(err, errHandler = errorActions.errorFetch) {
   // When an error has a `reponse` object, it's likely from ajax.
   if (err.response) {
     const errRes = err.response;
-    if (errRes.status && errRes.status >= 400) {
-      if (errRes.data) {
-        errHandler(errRes.data);
-      } else {
-        errHandler(errRes);
-      }
-      noticeError(err);
-      throw err;
+    if (errRes.data) {
+      errHandler(errRes.data);
     } else {
-      throw err;
+      errHandler(errRes);
     }
+    noticeError(err);
+    throw err;
     // Other exceptions should be thrown so they surface.
   } else {
     throw err;
