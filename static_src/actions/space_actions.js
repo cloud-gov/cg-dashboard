@@ -6,6 +6,7 @@
 
 import AppDispatcher from '../dispatcher.js';
 import cfApi from '../util/cf_api';
+import errorActions from './error_actions.js';
 import { spaceActionTypes } from '../constants.js';
 import SpaceStore from '../stores/space_store';
 
@@ -16,8 +17,11 @@ export default {
       spaceGuid
     });
 
-    // TODO error action should also be specified here
-    return cfApi.fetchSpace(spaceGuid).then(this.receivedSpace);
+    return cfApi.fetchSpace(spaceGuid)
+      .then(this.receivedSpace)
+      .catch((err) =>
+        errorActions.importantDataFetchError(err, 'unable to fetch space')
+      );
   },
 
   fetchAll() {
@@ -25,8 +29,11 @@ export default {
       type: spaceActionTypes.SPACES_FETCH
     });
 
-    // TODO error action should also be specified here
-    return cfApi.fetchSpaces().then(this.receivedSpaces);
+    return cfApi.fetchSpaces()
+      .then(this.receivedSpaces)
+      .catch((err) =>
+        errorActions.importantDataFetchError(err, 'space data may be incomplete')
+      );
   },
 
   fetchAllForOrg(orgGuid) {
@@ -35,10 +42,12 @@ export default {
       orgGuid
     });
 
-    // TODO error action should also be specified here
     return Promise.all(SpaceStore.getAll()
       .filter(space => space.organization_guid === orgGuid)
       .map(space => this.fetch(space.guid))
+    )
+    .catch((err) =>
+      errorActions.importantDataFetchError(err, 'space data may be incomplete')
     );
   },
 
