@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"fmt"
-	"os"
 	"html/template"
 	"net/http"
+	"os"
 
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/gocraft/web"
@@ -33,8 +33,10 @@ func StaticMiddleware(path string) func(web.ResponseWriter, *web.Request, web.Ne
 // Index serves index.html
 func (c *Context) Index(w web.ResponseWriter, r *web.Request) {
 	c.templates.ExecuteTemplate(w, "index.html", map[string]interface{}{
-		"csrfToken": csrf.Token(r.Request),
-		"NODE_ENV": os.Getenv("NODE_ENV"),
+		"csrfToken":                     csrf.Token(r.Request),
+		"PRODUCTION":                    os.Getenv("PRODUCTION"),
+		"NEW_RELIC_ID":                  os.Getenv("NEW_RELIC_ID"),
+		"NEW_RELIC_BROWSER_LICENSE_KEY": os.Getenv("NEW_RELIC_BROWSER_LICENSE_KEY"),
 	})
 }
 
