@@ -11,9 +11,7 @@
     <meta name="gorilla.csrf.Token" content="{{.csrfToken}}">
 
     <script>
-      if (window.location.host === 'dashboard.cloud.gov') {
-        window.PRODUCTION = true;
-      }
+      window.PRODUCTION = "{{.NODE_ENV}}" === "production";
     </script>
 
     <script type="text/javascript">

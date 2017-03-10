@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"os"
 	"html/template"
 	"net/http"
 
@@ -33,6 +34,7 @@ func StaticMiddleware(path string) func(web.ResponseWriter, *web.Request, web.Ne
 func (c *Context) Index(w web.ResponseWriter, r *web.Request) {
 	c.templates.ExecuteTemplate(w, "index.html", map[string]interface{}{
 		"csrfToken": csrf.Token(r.Request),
+		"NODE_ENV": os.Getenv("NODE_ENV"),
 	})
 }
 
