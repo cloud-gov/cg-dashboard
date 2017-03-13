@@ -8,7 +8,6 @@ import DomainStore from '../stores/domain_store';
 import PanelActions from './panel_actions.jsx';
 import RouteStore from '../stores/route_store';
 import createStyler from '../util/create_styler';
-import { config } from 'skin';
 import ServiceInstanceStore from '../stores/service_instance_store';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
@@ -84,10 +83,6 @@ export default class ActivityLog extends React.Component {
     this.setState(currentState);
   }
 
-  get documentation() {
-    return <config.snippets.logs />;
-  }
-
   showMoreActivity() {
     if (this.state.activity.length > this.props.maxItems &&
         this.state.activity.length >= this.state.maxItems) {
@@ -114,7 +109,6 @@ export default class ActivityLog extends React.Component {
         );
       content = (
         <div>
-          { this.documentation }
           <ul className={ this.styler('activity_log') }>
             { this.state.activity
                 .slice(0, this.state.maxItems)
