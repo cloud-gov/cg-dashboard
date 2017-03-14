@@ -5,6 +5,7 @@ import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
 import Breadcrumbs from './breadcrumbs.jsx';
 import EntityIcon from './entity_icon.jsx';
+import InfoAppCreate from './info_app_create.jsx';
 import Loading from './loading.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
@@ -15,7 +16,6 @@ import ServiceCountStatus from './service_count_status.jsx';
 import ServiceInstanceTable from './service_instance_table.jsx';
 import SpaceStore from '../stores/space_store.js';
 import Users from './users.jsx';
-import { config } from 'skin';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
@@ -101,8 +101,7 @@ export default class SpaceContainer extends React.Component {
 
           <AppList />
           <PanelActions>
-            <span>Learn how to <a href={ config.docs.deploying_apps }>deploy a
-            new app</a>.</span>
+            <InfoAppCreate space={ space } org={ this.state.currentOrg } />
           </PanelActions>
         </Panel>
         <Panel title="Service instances">
