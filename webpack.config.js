@@ -70,7 +70,7 @@ const config = {
   resolve: {
     alias: {
       'cloudgov-style': 'cloudgov-style',
-      'skin' : path.resolve(__dirname, `static_src/skins/${CF_SKIN}`)
+      'skin': path.resolve(__dirname, `static_src/skins/${CF_SKIN}`)
     },
 
     modulesDirectories: ['node_modules']
