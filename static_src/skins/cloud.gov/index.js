@@ -101,7 +101,14 @@ export const config = {
   github: {
     url: 'https://github.com/18F/cg-dashboard'
   },
-  platform_name: 'cloud.gov',
+  platform: {
+    name: 'cloud.gov',
+    api_host: 'api.cloud.gov',
+    logs: {
+      name: 'logs.cloud.gov',
+      url: 'https://logs.cloud.gov'
+    }
+  },
   home: {
     tiles: [InfoActivities, InfoStructure, InfoSandbox, InfoEnvironments]
   }

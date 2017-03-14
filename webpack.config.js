@@ -8,7 +8,7 @@ const WebpackKarmaWarningsPlugin = require(
 const PRODUCTION = (process.env.NODE_ENV === 'prod');
 const TEST = (process.env.NODE_ENV === 'test');
 const CG_STYLE_PATH = process.env.CG_STYLE_PATH;
-const CF_SKIN = process.env.CF_SKIN || 'cg';
+const CF_SKIN = process.env.CF_SKIN || 'cloud.gov';
 
 const srcDir = './static_src';
 const compiledDir = './static/assets';
