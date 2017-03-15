@@ -9,7 +9,6 @@
 
 set -e
 set -o pipefail
-set -o nounset
 
 manifest_env=${1:-eastwest}
 
