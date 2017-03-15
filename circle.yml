@@ -22,12 +22,14 @@ dependencies:
     - go get github.com/Masterminds/glide
     - rm -rf $WS
     - mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
-    - cd $WS && glide install
-    - cd $WS && npm install
-    - cd $WS && npm run test-selenium-install
+    - glide install
+        pwd: $WS
+    - npm install
+    - npm run test-selenium-install
   override:
-    - cd $WS && go build
-    - cd $WS && npm run build
+    - go build
+        pwd: $WS
+    - npm run build
 test:
   pre:
     - go get github.com/axw/gocov/gocov
@@ -38,14 +40,25 @@ test:
     - cd $WS && npm test
 
 deployment:
-  deploy:
+  deploy-ew:
     branch: [master, demo, deprecated]
     owner: 18F
     commands:
-      - cd $WS && NODE_ENV="prod" npm run build
-      - cd $WS && pip install --user ruamel.yaml
-      - cd $WS && export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
-      - cd $WS && chmod a+x deploy/circle_deploy.sh && deploy/circle_deploy.sh
+      - CF_SKIN=cloud.gov NODE_ENV=prod npm run build
+      - pip install --user ruamel.yaml
+      - export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
+      - deploy/circle_deploy.sh eastwest
+          pwd: $WS
+  deploy-govcloud:
+    branch: [master, demo, deprecated]
+    owner: 18F
+    commands:
+      - CF_SKIN=fr.cloud.gov NODE_ENV=prod npm run build
+      - pip install --user ruamel.yaml
+      - export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
+      - deploy/circle_deploy.sh govcloud
+          pwd: $WS
+
   production:
     tag: /[0-9]+(\.[0-9]+)*/
     owner: 18F
