@@ -66,7 +66,7 @@ function deploy () {
   local app=${4}
 
   # Log in
-  cf api $api
+  cf api $CF_API
   cf auth $CF_USERNAME $CF_PASSWORD
   cf target -o $org -s $space
 
