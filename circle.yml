@@ -38,18 +38,16 @@ test:
     - cd $WS && npm test
 
 deployment:
-  deploy-ew:
+  deploy:
     branch: [master, demo, deprecated]
     owner: 18F
     commands:
+      - npm run clean
       - CF_SKIN=cloud.gov NODE_ENV=prod npm run build
       - pip install --user ruamel.yaml
       - export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
       - cd $WS && deploy/circle_deploy.sh eastwest
-  deploy-govcloud:
-    branch: [master, demo, deprecated]
-    owner: 18F
-    commands:
+      - npm run clean
       - CF_SKIN=fr.cloud.gov NODE_ENV=prod npm run build
       - pip install --user ruamel.yaml
       - export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
