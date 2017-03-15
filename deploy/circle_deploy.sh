@@ -50,8 +50,9 @@ else
   exit
 fi
 
-echo $CF_MANIFEST
-echo $CF_SPACE
+echo env:      $manifest_env
+echo manifest: $CF_MANIFEST
+echo space:    $CF_SPACE
 
 if [ $manifest_env == govcloud ]; then
   CF_API=$CF_API_GC
