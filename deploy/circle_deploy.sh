@@ -12,15 +12,7 @@ set -o pipefail
 
 manifest_env=${1:-eastwest}
 
-curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
-sudo dpkg -i cf-cli_amd64.deb
 cf -v
-
-# Install autopilot
-go get github.com/contraband/autopilot
-cf install-plugin -f /home/ubuntu/.go_workspace/bin/autopilot
-
-
 
 # Note: Spaces and deployer account username are the same in different environments.
 # Only the organization, api, deployer account password differ.

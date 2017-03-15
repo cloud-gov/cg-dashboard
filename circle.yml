@@ -42,6 +42,10 @@ deployment:
     branch: [master, demo, deprecated]
     owner: 18F
     commands:
+      - curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
+      - sudo dpkg -i cf-cli_amd64.deb
+      - go get github.com/contraband/autopilot
+      - cf install-plugin -f /home/ubuntu/.go_workspace/bin/autopilot
       - npm run clean
       - CF_SKIN=cloud.gov NODE_ENV=prod npm run build
       - pip install --user ruamel.yaml
