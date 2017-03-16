@@ -3,8 +3,7 @@
 ## Running
 
 1. `docker-compose build`
-1. `docker-compose run app npm install --no-shrinkwrap`
-  because the shrinkwrap has darwin-specific packages listed
+1. `docker-compose run app npm install`
 
 ## Other stuff:
 
