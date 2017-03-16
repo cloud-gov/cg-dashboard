@@ -141,16 +141,20 @@ export class ServiceInstanceStore extends BaseStore {
       case serviceActionTypes.SERVICE_INSTANCE_RECEIVED: {
         this._fetching = false;
         const instance = action.serviceInstance;
-        this.merge('guid', instance, () => { });
-        this.emitChange();
+        this.merge('guid', instance, () => {
+          // Always emitchange as fetch state was changed.
+          this.emitChange();
+        });
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
         this._fetchAll = false;
         const services = action.serviceInstances;
-        this.mergeMany('guid', services, () => { });
-        this.emitChange();
+        this.mergeMany('guid', services, () => {
+          // Always emitchange as fetch state was changed.
+          this.emitChange();
+        });
         break;
       }
 

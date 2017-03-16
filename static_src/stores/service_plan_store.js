@@ -54,8 +54,7 @@ export class ServicePlanStore extends BaseStore {
       case serviceActionTypes.SERVICE_PLAN_RECEIVED: {
         const servicePlan = action.servicePlan;
         const servicePlanReceived = Object.assign({}, servicePlan, { fetching: false });
-        this.merge('guid', servicePlanReceived, () => { });
-        this.emitChange();
+        this.merge('guid', servicePlanReceived);
         break;
       }
 
