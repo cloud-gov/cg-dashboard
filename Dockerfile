@@ -5,7 +5,6 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Based on guidance at http://jdlm.info/articles/2016/03/06/lessons-building-node-app-docker.html
 WORKDIR /cg-dashboard
-COPY package.json /cg-dashboard/
 
 # Install packages necessary for installing nvm
 RUN apt-get update && apt-get install -y -q --no-install-recommends \
@@ -13,6 +12,8 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
         curl \
         libssl-dev \
         ca-certificates \
+        python \
+        python-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ENV NVM_DIR /cg-dashboard/.nvm
