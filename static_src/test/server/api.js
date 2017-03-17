@@ -39,6 +39,25 @@ function MultiResponse(responses) {
 module.exports = function api(smocks) {
 
   smocks.route({
+    id: 'uaa-userinfo',
+    label: 'UAA user info',
+    path: '/uaa/userinfo',
+    handler: function(req, reply) {
+      reply({
+        user_id: "bba7537f-601d-48c4-9705-4583ba54ea4b",
+        sub: "bba7537f-601d-48c4-9705-4583ba54ea4b",
+        user_name: "fake-personb@gsa.gov",
+        given_name: "fake-personb",
+        family_name: "gsa.gov",
+        email: "fake-personb@gsa.gov",
+        phone_number: null,
+        previous_logon_time: 1489612053883,
+        name: "fake-personb@gsa.gov"
+      });
+    }
+  });
+
+  smocks.route({
     id: 'app-routes',
     label: 'App routes',
     path: `${BASE_URL}/apps/{guid}/routes`,
@@ -161,25 +180,6 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/organizations/{guid}/user_roles`,
     handler: function (req, reply) {
       reply(MultiResponse(organizationUserRoles));
-    }
-  });
-
-  smocks.route({
-    id: 'uaa-userinfo',
-    label: 'UAA user info',
-    path: '/uaa/userinfo',
-    handler: function(req, reply) {
-      // TODO move to fixtures
-      const firstUser = organizationUsers[0];
-      const currentUser = {
-        email: firstUser.username,
-        family_name: firstUser.username,
-        given_name: firstUser.username,
-        name: firstUser.username,
-        user_id: firstUser.metadata.guid,
-        user_name:firstUser.username
-      };
-      reply(currentUser);
     }
   });
 
