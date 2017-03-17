@@ -84,7 +84,8 @@ module.exports = function api(smocks) {
     label: 'Organizations',
     path: `${BASE_URL}/organizations`,
     handler: function (req, reply) {
-      reply(MultiResponse(organizations));
+      reply(MultiResponse([]));
+      // reply(MultiResponse(organizations));
     }
   });
 

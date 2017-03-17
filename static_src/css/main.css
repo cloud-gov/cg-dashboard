@@ -36,3 +36,12 @@ input[type="checkbox"] + label::before,
 input[type="radio"] + label::before {
   display: none;
 }
+
+/* TEMPORARY */
+.empty {
+  text-align: center;
+}
+
+.empty p {
+  margin: 1rem auto;
+}

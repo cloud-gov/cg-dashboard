@@ -93,7 +93,8 @@ export const config = {
     use: 'https://cloud.gov/docs/intro/overview/using-cloudgov-paas/',
     invite_user: 'https://cloud.gov/docs/apps/managing-teammates',
     managed_services: 'https://docs.cloud.gov/apps/managed-services/',
-    status: 'https://cloudgov.statuspage.io/'
+    status: 'https://cloudgov.statuspage.io/',
+    contact: 'https://cloud.gov/docs/help/'
   },
   snippets: {
     logs: InfoLogs

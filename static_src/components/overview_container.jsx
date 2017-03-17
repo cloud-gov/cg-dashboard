@@ -5,6 +5,7 @@ import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import { config } from 'skin';
+import EntityEmpty from './entity_empty.jsx'
 import Icon from './icon.jsx';
 import Loading from './loading.jsx';
 import OrgQuicklook from './org_quicklook.jsx';
@@ -62,6 +63,25 @@ export default class OverviewContainer extends React.Component {
       false);
   }
 
+  get emptyState() {
+    const contactMsg = config.docs.contact && (
+      <span>
+        <br />
+        If this isn’t the case, <a href={ config.docs.contact }>contact us</a>.
+      </span>
+    );
+
+    return (
+      <EntityEmpty callout="We can’t find any of your organizations.">
+        <p>
+          If you just joined, your organization may not yet be ready. Sometimes
+          organizations can take up to 20 minutes to appear on your first login.
+          { contactMsg }
+        </p>
+      </EntityEmpty>
+    );
+  }
+
   render() {
     const state = this.state;
     let loading = <Loading text="Loading orgs" />;
@@ -73,20 +93,27 @@ export default class OverviewContainer extends React.Component {
     );
 
     if (state.empty) {
-      content = <h4 className="test-none_message">No organizations</h4>;
+      content = this.emptyState;
     } else if (!state.loading && this.state.orgs.length > 0 || this.anyOrgsOpen()) {
       content = (
+        <div>
+        { state.orgs.map((org) =>
+          <div key={ org.guid } className="test-panel-row-organizations">
+            <OrgQuicklook
+              org={ org }
+              spaces={ this.orgSpaces(org.guid) }
+            />
+          </div>
+        )}
+        </div>
+      );
+    }
+
+    return (
       <div className={ this.styler('grid') }>
         <PageHeader title={ title } />
         <Panel title="Your organizations">
-          { state.orgs.map((org) =>
-            <div key={ org.guid } className="test-panel-row-organizations">
-              <OrgQuicklook
-                org={ org }
-                spaces={ this.orgSpaces(org.guid) }
-              />
-            </div>
-          )}
+          { content }
         </Panel>
         <Panel title="Cheatsheet">
           { config.home.tiles.map((Tile, i) => {
@@ -110,9 +137,6 @@ export default class OverviewContainer extends React.Component {
           })}
         </Panel>
       </div>
-      );
-    }
-
-    return content;
+    );
   }
 }
