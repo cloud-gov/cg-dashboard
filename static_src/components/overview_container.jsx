@@ -5,7 +5,7 @@ import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import { config } from 'skin';
-import EntityEmpty from './entity_empty.jsx'
+import EntityEmpty from './entity_empty.jsx';
 import Icon from './icon.jsx';
 import Loading from './loading.jsx';
 import OrgQuicklook from './org_quicklook.jsx';

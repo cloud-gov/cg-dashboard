@@ -22,6 +22,9 @@ var spaceUserRoles = require('./fixtures/space_user_roles.js');
 
 var BASE_URL = '/v2';
 
+const ENV_NO_ORGS = process.env.NO_ORGS || false;
+const ENV_NO_SPACES = process.env.NO_SPACES || false;
+
 function SingleResponse(response) {
   return response;
 }
@@ -103,8 +106,11 @@ module.exports = function api(smocks) {
     label: 'Organizations',
     path: `${BASE_URL}/organizations`,
     handler: function (req, reply) {
-      reply(MultiResponse([]));
-      // reply(MultiResponse(organizations));
+      if (ENV_NO_ORGS) {
+        reply(MultiResponse([]));
+      } else {
+        reply(MultiResponse(organizations));
+      }
     }
   });
 
@@ -188,7 +194,11 @@ module.exports = function api(smocks) {
     label: 'Spaces',
     path: `${BASE_URL}/spaces`,
     handler: function (req, reply) {
-      reply(MultiResponse(spaces));
+      if (ENV_NO_SPACES) {
+        reply(MultiResponse([]));
+      } else {
+        reply(MultiResponse(spaces));
+      }
     }
   });
 
