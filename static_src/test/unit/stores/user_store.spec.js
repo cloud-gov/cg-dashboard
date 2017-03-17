@@ -445,35 +445,43 @@ describe('UserStore', function() {
     });
   });
 
-  describe('currentUserHasSpaceRole()', function() {
-    it('should call _hasRole() with role and userType of space', function() {
-      const spy = sandbox.spy(UserStore, '_hasRole');
-      const testRole = 'space';
+  describe('currentUserhasSpaceRoles()', function() {
+    it('should call _hasRoles() with role and userType of space', function() {
+      const spy = sandbox.spy(UserStore, '_hasRoles');
+      const testRoles = ['space'];
 
-      UserStore.currentUserHasSpaceRole(testRole);
+      UserStore.currentUserHasSpaceRoles(testRoles);
 
       expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(testRole, 'space_roles');
+      expect(spy).toHaveBeenCalledWith(testRoles, 'space_roles');
     });
   });
 
-  describe('currentUserHasOrgRole()', function() {
-    it('should call _hasRole() with role and userType of org', function() {
-      const spy = sandbox.spy(UserStore, '_hasRole');
-      const testRole = 'person';
+  describe('currentUserHasOrgRoles()', function() {
+    it('should call _hasRoles() with role and userType of org', function() {
+      const spy = sandbox.spy(UserStore, '_hasRoles');
+      const testRoles = ['person'];
 
-      UserStore.currentUserHasOrgRole(testRole);
+      UserStore.currentUserHasOrgRoles(testRoles);
 
       expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(testRole, 'organization_roles');
+      expect(spy).toHaveBeenCalledWith(testRoles, 'organization_roles');
     });
   });
 
-  describe('_hasRole()', function() {
+  describe('_hasRoles()', function() {
     it('should return false if user not found', function() {
-      const role = 'test';
+      const roles = ['test'];
       UserStore._currentUserGuid = 'alkdsjf';
-      const actual = UserStore._hasRole(role, 'organization_roles');
+      const actual = UserStore._hasRoles(roles, 'organization_roles');
+
+      expect(actual).toBeFalsy();
+    });
+
+    it('should still work when passed one role', function() {
+      const roles = 'test';
+      UserStore._currentUserGuid = 'alkdsjf';
+      const actual = UserStore._hasRoles(roles, 'organization_roles');
 
       expect(actual).toBeFalsy();
     });
@@ -487,7 +495,7 @@ describe('UserStore', function() {
       UserStore._currentUserGuid = userGuid;
       UserStore.push(user);
 
-      const actual = UserStore._hasRole(role, 'organization_roles');
+      const actual = UserStore._hasRoles(role, 'organization_roles');
 
       expect(actual).toBeFalsy();
     });
@@ -500,7 +508,7 @@ describe('UserStore', function() {
       UserStore._currentUserGuid = userGuid;
       UserStore.push(user);
 
-      const actual = UserStore._hasRole(role, 'organization_roles');
+      const actual = UserStore._hasRoles(role, 'organization_roles');
 
       expect(actual).toBeFalsy();
     });
@@ -514,7 +522,7 @@ describe('UserStore', function() {
       UserStore._currentUserGuid = userGuid;
       UserStore.push(user);
 
-      const actual = UserStore._hasRole(role, 'organization_roles');
+      const actual = UserStore._hasRoles(role, 'organization_roles');
 
       expect(actual).toBeTruthy();
 
