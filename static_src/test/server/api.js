@@ -24,6 +24,9 @@ var BASE_URL = '/v2';
 
 const ENV_NO_ORGS = process.env.NO_ORGS || false;
 const ENV_NO_SPACES = process.env.NO_SPACES || false;
+const ENV_NO_APPS = process.env.NO_APPS || false;
+const ENV_NO_ORG_USERS = process.env.NO_ORG_USERS || false;
+const ENV_NO_SPACE_USERS = process.env.NO_SPACE_USERS || false;
 
 function SingleResponse(response) {
   return response;
@@ -176,7 +179,11 @@ module.exports = function api(smocks) {
     label: 'Organization users',
     path: `${BASE_URL}/organizations/{guid}/users`,
     handler: function (req, reply) {
-      reply(MultiResponse(organizationUsers));
+      if (ENV_NO_ORG_USERS) {
+        reply(MultiResponse([organizationUsers[0]]));
+      } else {
+        reply(MultiResponse(organizationUsers));
+      }
     }
   });
 
@@ -268,7 +275,11 @@ module.exports = function api(smocks) {
     label: 'Space user roles',
     path: `${BASE_URL}/spaces/{guid}/user_roles`,
     handler: function (req, reply) {
-      reply(MultiResponse(spaceUserRoles));
+      if (ENV_NO_SPACE_USERS) {
+        reply(MultiResponse([spaceUserRoles[0]]));
+      } else {
+        reply(MultiResponse(spaceUserRoles));
+      }
     }
   });
 
