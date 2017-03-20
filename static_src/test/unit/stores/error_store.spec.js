@@ -83,7 +83,7 @@ describe('ErrorStore', function () {
     it('should add the message passed through to the error object and add to store',
     () => {
       expect(storeErrors[0].description).toEqual(
-        `There was an issue connecting to dashboard.cloud.gov, ${specificMessage}`);
+        `There was an issue connecting to the dashboard, ${specificMessage}`);
     });
 
     it('should emit a change', () => {
