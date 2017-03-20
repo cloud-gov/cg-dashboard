@@ -23,7 +23,6 @@ RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh
 
 # Add nvm.sh to .bashrc for startup
 RUN echo "source ${NVM_DIR}/nvm.sh" > /root/.bashrc
-COPY .nvmrc /cg-dashboard/
 
 COPY ./docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
