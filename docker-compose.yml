@@ -1,21 +1,25 @@
 version: '2'
 services:
   app:
-    build: .
-    volumes:
-    - nvm:/cg-dashboard/.nvm
-    - node-modules:/cg-dashboard/node_modules
-    - .:/cg-dashboard
+    extends:
+      file: docker-services.yml
+      service: base_app
     command: npm run testing-server
     ports:
     - 8001:8001
   watch:
-    build: .
-    volumes:
-    - nvm:/cg-dashboard/.nvm
-    - node-modules:/cg-dashboard/node_modules
-    - .:/cg-dashboard
+    extends:
+      file: docker-services.yml
+      service: base_app
+    command: npm run watch
+  watch_cg_style:
+    extends:
+      file: docker-services.yml
+      service: base_app
+    working_dir: /cg-style
     command: npm run watch
 volumes:
   node-modules:
-  nvm:
+  cg-style-node-modules:
+  npm-cache:
+  global-node-modules:
