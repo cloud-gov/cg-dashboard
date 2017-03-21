@@ -1,4 +1,6 @@
 
+const env = require('./envvars.js');
+
 var anyEvents = require('./fixtures/events');
 var appRoutes = require('./fixtures/app_routes.js');
 var appSummaries = require('./fixtures/app_summaries');
