@@ -15,7 +15,7 @@ const defaultProps = {
 };
 
 
-export default class SpaceContainer extends React.Component {
+export default class InfoAppCreate extends React.Component {
   constructor(props) {
     super(props);
     this.styler = createStyler(style);
@@ -61,5 +61,5 @@ export default class SpaceContainer extends React.Component {
   }
 }
 
-SpaceContainer.propTypes = propTypes;
-SpaceContainer.defaultProps = defaultProps;
+InfoAppCreate.propTypes = propTypes;
+InfoAppCreate.defaultProps = defaultProps;
