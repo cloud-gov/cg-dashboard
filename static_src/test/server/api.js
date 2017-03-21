@@ -22,7 +22,7 @@ var spaceUserRoles = require('./fixtures/space_user_roles.js');
 
 var BASE_URL = '/v2';
 
-const ENV_NO_ORGS = process.env.NO_ORGS || true;
+const ENV_NO_ORGS = process.env.NO_ORGS || false;
 const ENV_NO_SPACES = process.env.NO_SPACES || false;
 const ENV_NO_APPS = process.env.NO_APPS || false;
 const ENV_NO_ORG_USERS = process.env.NO_ORG_USERS || false;
