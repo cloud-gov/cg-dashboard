@@ -47,9 +47,10 @@ export default class SpaceQuicklook extends React.Component {
 
   render() {
     const space = this.props.space;
-    const appsContent = (space.apps && space.apps.length > 0) ?
-      space.apps && space.apps.map((app) =>
-        <ComplexList>
+    console.log('asd;lfasfd;lfasdjl', space.apps);
+    const appsContent = (space.apps && space.apps.length > 0) ? (
+      <ComplexList>
+        { space.apps && space.apps.map((app) =>
            <AppQuicklook
              key={ app.guid }
              app={ app }
@@ -59,9 +60,9 @@ export default class SpaceQuicklook extends React.Component {
              extraInfo={ this.props.showAppDetail ?
                ['state', 'memory', 'diskQuota'] : ['state'] }
            />
-        </ComplexList>
-        )
-       : this.emptyState;
+        )}
+      </ComplexList>
+      ) : this.emptyState;
 
     return (
       <ComplexList className="test-space-quicklook">
