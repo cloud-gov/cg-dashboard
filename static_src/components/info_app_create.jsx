@@ -36,7 +36,7 @@ export default class InfoAppCreate extends React.Component {
         <a href={ config.docs.deploying_apps}>Read more about adding apps</a>;
 
       content = (
-      <div>
+      <div className={ this.styler('info', 'info-app_create') }>
         <p>
           Add a new app to this space in the { cliLink }
         </p>
@@ -49,7 +49,7 @@ export default class InfoAppCreate extends React.Component {
       );
     } else {
       content = (
-      <div>
+      <div className={ this.styler('info', 'info-app_create') }>
         <p>
           Learn how to <a href={ config.docs.deploying_apps }>deploy a new app</a>.
         </p>
@@ -83,11 +83,7 @@ export default class InfoAppCreate extends React.Component {
       );
     }
 
-    return (
-      <div className={ this.styler('info', 'info-app_create') }>
-        { content }
-      </div>
-    );
+    return content;
   }
 }
 
