@@ -37,11 +37,3 @@ input[type="radio"] + label::before {
   display: none;
 }
 
-/* TEMPORARY */
-.empty {
-  text-align: center;
-}
-
-.empty p {
-  margin: 1rem auto;
-}
