@@ -1,5 +1,7 @@
 
-const orgUserRoles = [
+const env = require('../envvars.js');
+
+let orgUserRoles = [
   {
     metadata: {
       guid: "2e60959a-a2e6-4d69-ac85-49dbbaab1229",
@@ -46,33 +48,6 @@ const orgUserRoles = [
       audited_organizations_url: "/v2/users/bb60f6e1-b495-45be-8bc4-7db4e8f3ed46/audited_organizations",
       managed_spaces_url: "/v2/users/bb60f6e1-b495-45be-8bc4-7db4e8f3ed46/managed_spaces",
       audited_spaces_url: "/v2/users/bb60f6e1-b495-45be-8bc4-7db4e8f3ed46/audited_spaces"
-    }
-  },
-  {
-    metadata: {
-      guid: "bba7537f-601d-48c4-9705-4583ba54ea4b",
-      url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b",
-      created_at: "2015-03-23T22:13:57Z",
-      updated_at: "2015-03-23T22:13:57Z"
-    },
-    entity: {
-      admin: false,
-      active: false,
-      default_space_guid: null,
-      username: "fake-personb@gsa.gov",
-      organization_roles: [
-        "org_user",
-        "org_manager",
-        "org_auditor",
-        "billing_manager"
-      ],
-      spaces_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/spaces",
-      organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/organizations",
-      managed_organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/managed_organizations",
-      billing_managed_organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/billing_managed_organizations",
-      audited_organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/audited_organizations",
-      managed_spaces_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/managed_spaces",
-      audited_spaces_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/audited_spaces"
     }
   },
   {
@@ -382,5 +357,35 @@ const orgUserRoles = [
     }
   }
 ];
+
+if (env.onlyOrgUserName) {
+  orgUserRoles = [{
+    metadata: {
+      guid: "bba7537f-601d-48c4-9705-4583ba54ea4b",
+      url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b",
+      created_at: "2015-03-23T22:13:57Z",
+      updated_at: "2015-03-23T22:13:57Z"
+    },
+    entity: {
+      admin: false,
+      active: false,
+      default_space_guid: null,
+      username: env.onlyOrgUserName,
+      organization_roles: [
+        "org_user",
+        "org_manager",
+        "org_auditor",
+        "billing_manager"
+      ],
+      spaces_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/spaces",
+      organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/organizations",
+      managed_organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/managed_organizations",
+      billing_managed_organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/billing_managed_organizations",
+      audited_organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/audited_organizations",
+      managed_spaces_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/managed_spaces",
+      audited_spaces_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/audited_spaces"
+    }
+  }];
+}
 
 module.exports = orgUserRoles;

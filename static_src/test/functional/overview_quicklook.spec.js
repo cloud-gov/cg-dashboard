@@ -29,7 +29,7 @@ describe('Overview page', function () {
 
     it('has org name', function () {
       const orgName = quicklookElement.title();
-      expect(orgName).toBe('fake-cf');
+      expect(orgName).toBe('fake');
     });
 
     it('is collapsed', function () {
@@ -45,7 +45,7 @@ describe('Overview page', function () {
     });
 
     it('has 2 rows', function () {
-      expect(quicklookElement.rows().length).toBe(2);
+      expect(quicklookElement.rows().length).toBe(3);
     });
   });
 });
