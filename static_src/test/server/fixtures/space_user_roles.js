@@ -1,5 +1,7 @@
 
-const spaceUserRoles = [
+const env = require('../envvars.js');
+
+let spaceUserRoles = [
   {
     metadata: {
       guid: "bba7537f-601d-48c4-9705-4583ba54ea4b",
@@ -171,4 +173,32 @@ const spaceUserRoles = [
   }
 ];
 
+if (env.noSpaceUsers) {
+  spaceUserRoles = [];
+} else if (env.onlyOrgUserName) {
+  spaceUserRoles = [{
+    metadata: {
+      guid: "bba7537f-601d-48c4-9705-4583ba54ea4b",
+      url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b",
+      created_at: "2015-03-23T22:13:57Z",
+      updated_at: "2015-03-23T22:13:57Z"
+    },
+    entity: {
+      admin: false,
+      active: false,
+      default_space_guid: null,
+      username: env.onlyOrgUserName,
+      space_roles: [
+        "space_developer"
+      ],
+      spaces_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/spaces",
+      organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/organizations",
+      managed_organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/managed_organizations",
+      billing_managed_organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/billing_managed_organizations",
+      audited_organizations_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/audited_organizations",
+      managed_spaces_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/managed_spaces",
+      audited_spaces_url: "/v2/users/bba7537f-601d-48c4-9705-4583ba54ea4b/audited_spaces"
+    }
+  }];
+}
 module.exports = spaceUserRoles;

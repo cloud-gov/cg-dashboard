@@ -18,6 +18,14 @@ class SpaceStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
+  viewPermissionRoles() {
+    return [
+      'space_manager',
+      'space_developer',
+      'space_auditor'
+    ];
+  }
+
   get loading() {
     return !!this._loading.length || this._fetchAll;
   }

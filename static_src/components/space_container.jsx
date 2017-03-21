@@ -10,12 +10,10 @@ import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
-import PanelActions from './panel_actions.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
 import ServiceInstanceTable from './service_instance_table.jsx';
 import SpaceStore from '../stores/space_store.js';
 import Users from './users.jsx';
-import { config } from 'skin';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
@@ -84,7 +82,6 @@ export default class SpaceContainer extends React.Component {
           </div>
         </div>
         <Panel title="">
-
           <div className={ this.styler('grid', 'panel-overview-header') }>
             <div className={ this.styler('grid-width-8') }>
               <h1 className={ this.styler('panel-title') }>Space overview</h1>
@@ -100,10 +97,6 @@ export default class SpaceContainer extends React.Component {
           </div>
 
           <AppList />
-          <PanelActions>
-            <span>Learn how to <a href={ config.docs.deploying_apps }>deploy a
-            new app</a>.</span>
-          </PanelActions>
         </Panel>
         <Panel title="Service instances">
           <ServiceInstanceTable />
