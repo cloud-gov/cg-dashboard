@@ -7,6 +7,6 @@ const noSpaceUsers = process.env.NO_SPACE_USERS || false;
 module.exports = {
   onlyOrgUserName,
   noSpaceUsers,
-  testing: testing,
-  orgName: orgName
+  testing,
+  orgName
 };
