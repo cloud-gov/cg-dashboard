@@ -5,13 +5,11 @@ import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
 import Breadcrumbs from './breadcrumbs.jsx';
 import EntityIcon from './entity_icon.jsx';
-import InfoAppCreate from './info_app_create.jsx';
 import Loading from './loading.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
-import PanelActions from './panel_actions.jsx';
 import ServiceCountStatus from './service_count_status.jsx';
 import ServiceInstanceTable from './service_instance_table.jsx';
 import SpaceStore from '../stores/space_store.js';
@@ -99,9 +97,6 @@ export default class SpaceContainer extends React.Component {
           </div>
 
           <AppList />
-          <PanelActions>
-            <InfoAppCreate space={ space } org={ this.state.currentOrg } />
-          </PanelActions>
         </Panel>
         <Panel title="Service instances">
           <ServiceInstanceTable />

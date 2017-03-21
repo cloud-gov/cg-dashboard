@@ -6,7 +6,9 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 import AppQuicklook from './app_quicklook.jsx';
 import ComplexList from './complex_list.jsx';
+import EntityEmpty from './entity_empty.jsx';
 import EntityIcon from './entity_icon.jsx';
+import InfoAppCreate from './info_app_create.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
@@ -20,6 +22,8 @@ function stateSetter() {
   const apps = (space && space.apps) ? space.apps : [];
 
   return {
+    currentOrg: OrgStore.get(currentOrgGuid),
+    currentSpace: space,
     apps: apps.sort((a, b) => a.name.localeCompare(b.name)),
     currentOrgGuid,
     currentSpaceGuid,
@@ -65,7 +69,11 @@ export default class AppList extends React.Component {
     );
 
     if (this.state.empty) {
-      content = <h4 className="test-none_message">No apps</h4>;
+      content = (
+        <EntityEmpty callout="You have no apps in this space">
+          <InfoAppCreate space={ this.state.currentSpace } org={ this.state.currentOrg } />
+        </EntityEmpty>
+      );
     } else if (!this.state.loading && this.state.apps.length > 0) {
       content = (
         <ComplexList titleElement={ title }>
