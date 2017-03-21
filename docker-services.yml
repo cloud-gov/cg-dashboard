@@ -1,0 +1,11 @@
+version: '2'
+services:
+  base_app:
+    build: .
+    volumes:
+    - global-node-modules:/usr/local/lib/node_modules
+    - npm-cache:/root/.npm
+    - node-modules:/cg-dashboard/node_modules
+    - .:/cg-dashboard
+    - cg-style-node-modules:/cg-style/node_modules
+    - ../cg-style:/cg-style
