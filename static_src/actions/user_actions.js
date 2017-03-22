@@ -5,9 +5,12 @@
  */
 
 import AppDispatcher from '../dispatcher.js';
+import cfApi from '../util/cf_api';
+import uaaApi from '../util/uaa_api';
 import { userActionTypes } from '../constants';
+import UserStore from '../stores/user_store';
 
-export default {
+const userActions = {
   fetchOrgUsers(orgGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.ORG_USERS_FETCH,
@@ -122,11 +125,64 @@ export default {
     });
   },
 
-  receivedCurrentUserInfo(user) {
+  fetchCurrentUserInfo() {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.CURRENT_USER_INFO_FETCH
+    });
+
+    return uaaApi.fetchUserInfo()
+      .then(userInfo => userActions.receivedCurrentUserInfo(userInfo));
+  },
+
+  receivedCurrentUserInfo(userInfo) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.CURRENT_USER_INFO_RECEIVED,
-      currentUser: user
+      currentUser: userInfo
     });
-  }
 
+    return Promise.resolve(userInfo);
+  },
+
+  fetchAuthStatus() {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.AUTH_STATUS_FETCH
+    });
+
+    return cfApi.getAuthStatus()
+      .then(status => userActions.receivedAuthStatus(status));
+  },
+
+  receivedAuthStatus(status) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.AUTH_STATUS_RECEIVED,
+      status
+    });
+
+    return Promise.resolve(status);
+  },
+
+  // Meta action to fetch all the pieces of the current user
+  fetchCurrentUser() {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.CURRENT_USER_FETCH
+    });
+
+    // TODO add error action
+    return userActions.fetchAuthStatus()
+      .then(userActions.fetchCurrentUserInfo)
+      .then(() => UserStore.currentUser)
+      .then(userActions.receivedCurrentUser);
+  },
+
+  // Meta action that the current user is completely loaded
+  receivedCurrentUser(user) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.CURRENT_USER_RECEIVED,
+      user
+    });
+
+    return Promise.resolve(user);
+  }
 };
+
+export default userActions;

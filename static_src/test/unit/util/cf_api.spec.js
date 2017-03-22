@@ -475,50 +475,55 @@ describe('cfApi', function() {
     });
   });
 
-  describe('getAuthStatus()', function() {
-    it('calls http get request for auth status', (done) => {
-      var spy = sandbox.spy(http, 'get');
+  describe('getAuthStatus()', function () {
+    beforeEach(function (done) {
+      sandbox.stub(http, 'get').returns(Promise.resolve({ data: { status: 'authorized' } }));
 
-      cfApi.getAuthStatus().then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        let actual = spy.getCall(0).args[0];
-        expect(actual).toMatch('authstatus');
-        done();
+      cfApi.getAuthStatus().then(done, done.fail);
+    });
+
+    it('calls http get request for auth status', () => {
+      expect(http.get).toHaveBeenCalledOnce();
+      const actual = http.get.getCall(0).args[0];
+      expect(actual).toMatch('authstatus');
+    });
+
+    describe('given success', function () {
+      let expectedStatus, result;
+
+      beforeEach(function (done) {
+        expectedStatus = 'logged_in';
+        http.get.returns(Promise.resolve({ data: { status: expectedStatus } }));
+
+        cfApi.getAuthStatus()
+          .then(_result => {
+            result = _result;
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('calls received status with status on success', () => {
+        expect(result).toBe(expectedStatus);
       });
     });
 
-    it('calls received status with status on success', (done) => {
-      var expectedStatus = 'logged_in',
-          expected = { data: { status: expectedStatus } },
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(loginActions, 'receivedStatus');
+    describe('given failure', function () {
+      let result;
 
-      let testPromise = createPromise(expected);
+      beforeEach(function (done) {
+        http.get.returns(Promise.reject({ data: { status: 'unauthorized' } }));
 
-      stub.returns(testPromise);
+        cfApi.getAuthStatus()
+          .then(_result => {
+            result = _result;
+            done();
+          })
+          .catch(done.fail);
+      });
 
-      cfApi.getAuthStatus().then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        expect(spy).toHaveBeenCalledWith(expected.data.status);
-        done();
-      });;
-    });
-
-    it('calls received status with false on failure', (done) => {
-      // Note: the getAuthStatus call will return 401 when not logged in, so
-      // failure here means the user was likely not logged in. Although there
-      // could be the additional problem that there was a problem with the req.
-      var stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(loginActions, 'receivedStatus'),
-          expected = { status: 'unauthorized' };
-
-      let testPromise = createPromise(true, expected);
-      stub.returns(testPromise);
-
-      let actual = cfApi.getAuthStatus().then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        expect(spy).toHaveBeenCalledWith(false);
-        done();
+      it('calls received status with false on failure', () => {
+        expect(result).toBe(false);
       });
     });
   });

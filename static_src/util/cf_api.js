@@ -3,7 +3,6 @@ import http from 'axios';
 import { noticeError } from '../util/analytics.js';
 import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
-import loginActions from '../actions/login_actions.js';
 import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
 import userActions from '../actions/user_actions.js';
@@ -132,11 +131,12 @@ export default {
   },
 
   getAuthStatus() {
-    return http.get(`${APIV}/authstatus`).then((res) => {
-      loginActions.receivedStatus(res.data.status);
-    }).catch(() => {
-      loginActions.receivedStatus(false);
-    });
+    return http.get(`${APIV}/authstatus`)
+      .then(res => res.data.status)
+      // Note: the getAuthStatus call will return 401 when not logged in, so
+      // failure here means the user was likely not logged in. Although there
+      // could be the additional problem that there was a problem with the req.
+      .catch(() => false);
   },
 
   fetchOrgLinks(guid) {
@@ -510,5 +510,10 @@ export default {
         handleError(err);
         return Promise.reject(err);
       });
+  },
+
+  fetchUser(userGuid) {
+    return http.get(`${APIV}/users/${userGuid}`)
+      .then(res => res.data);
   }
 };

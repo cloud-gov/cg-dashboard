@@ -214,6 +214,10 @@ const appActionTypes = keymirror({
 });
 
 const userActionTypes = keymirror({
+  // Fetch auth status from server
+  AUTH_STATUS_FETCH: null,
+  // Auth status received from server
+  AUTH_STATUS_RECEIVED: null,
   // Action to fetch users belonging to a organization from the server.
   ORG_USERS_FETCH: null,
   // Action to fetch the user roles for an org from the server.
@@ -242,6 +246,14 @@ const userActionTypes = keymirror({
   ERROR_REMOVE_USER: null,
   // Action when the type of users being looked at changes
   USER_CHANGE_VIEWED_TYPE: null,
+  // Meta action that we are fetching the multiple pieces that make up the current user
+  CURRENT_USER_FETCH: null,
+  // Meta action that the current user is loaded
+  CURRENT_USER_RECEIVED: null,
+  // An error occurred while loading the current user
+  CURRENT_USER_ERROR: null,
+  // Current user info fetched from server.
+  CURRENT_USER_INFO_FETCH: null,
   // Action when current user info received from server.
   CURRENT_USER_INFO_RECEIVED: null
 });
