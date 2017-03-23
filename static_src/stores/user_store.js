@@ -195,9 +195,16 @@ class UserStore extends BaseStore {
       }
 
       case userActionTypes.CURRENT_USER_INFO_RECEIVED: {
-        const user = this.get(action.currentUser.user_id);
-        if (user) {
-          this._currentUserGuid = user.guid;
+        const guid = action.currentUser.user_id;
+        const userInfo = Object.assign(
+          {},
+          action.currentUser,
+          { guid }
+        );
+        this.merge('guid', userInfo, () => {
+          this._currentUserGuid = guid;
+
+          // Always emit change
           this.emitChange();
         }
         break;
