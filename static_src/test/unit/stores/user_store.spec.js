@@ -401,33 +401,35 @@ describe('UserStore', function() {
     });
   });
 
-  describe('on current user info received', function() {
-    it('should emit a change event if user found', function() {
+  describe('on current user info received', function () {
+    it('should emit a change event always', function () {
       const userGuid = 'zxsdkfjasdfladsf';
       const user = { user_id: userGuid, user_name: 'mr' };
       const existingUser = { guid: userGuid };
       const spy = sandbox.spy(UserStore, 'emitChange');
-      userActions.receivedCurrentUserInfo(user);
-
-      expect(spy).not.toHaveBeenCalled();
 
       UserStore._data = Immutable.fromJS([existingUser]);
-      userActions.receivedCurrentUserInfo(user);
+      AppDispatcher.handleServerAction({
+        type: userActionTypes.CURRENT_USER_INFO_RECEIVED,
+        currentUser: user
+      });
 
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should set the currentUser to user object if exists', function() {
+    it('should merge the currentUser', function () {
       const userGuid = 'zxsdkfjasdfladsf';
       const currentUserInfo = { user_id: userGuid, user_name: 'mr' };
       const existingUser = { guid: userGuid };
       UserStore._data = Immutable.fromJS([existingUser]);
 
-      userActions.receivedCurrentUserInfo(currentUserInfo);
+      AppDispatcher.handleServerAction({
+        type: userActionTypes.CURRENT_USER_INFO_RECEIVED,
+        currentUser: currentUserInfo
+      });
 
       const actual = UserStore.currentUser;
-
-      expect(actual).toEqual(existingUser);
+      expect(actual).toEqual({ ...currentUserInfo, ...existingUser });
     });
   });
 
