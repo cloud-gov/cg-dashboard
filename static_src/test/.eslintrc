@@ -20,6 +20,7 @@
     "comma-dangle": [2, "never"],
     "func-names": [0, "always"],
     "jasmine/no-spec-dupes": [2, "branch"],
+    "jasmine/no-suite-dupes": [2, "branch"],
     "one-var": 0,
     "one-var-declaration-per-line": 0,
     "prefer-arrow-callback": 0
