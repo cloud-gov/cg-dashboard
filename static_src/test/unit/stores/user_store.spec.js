@@ -535,4 +535,36 @@ describe('UserStore', function() {
       expect(actual[0]).toEqual(testUser);
     });
   });
+
+  describe('USER_FETCH', function () {
+    let user;
+    beforeEach(function () {
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_FETCH,
+        userGuid: '123'
+      });
+
+      user = UserStore.get('123');
+    });
+
+    it('sets user state to fetching', function () {
+      expect(user.fetching).toBe(true);
+    });
+  });
+
+  describe('USER_RECEIVED', function () {
+    let user;
+    beforeEach(function () {
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_RECEIVED,
+        user: { guid: '123' }
+      });
+
+      user = UserStore.get('123');
+    });
+
+    it('sets user state to non-fetching', function () {
+      expect(user.fetching).toBe(false);
+    });
+  });
 });

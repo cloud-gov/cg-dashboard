@@ -161,6 +161,29 @@ const userActions = {
     return Promise.resolve(status);
   },
 
+  fetchUser(userGuid) {
+    if (!userGuid) {
+      return Promise.reject(new Error('userGuid is required'));
+    }
+
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_FETCH,
+      userGuid
+    });
+
+    return cfApi.fetchUser(userGuid)
+      .then(userActions.receivedUser);
+  },
+
+  receivedUser(user) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_RECEIVED,
+      user
+    });
+
+    return Promise.resolve(user);
+  },
+
   // Meta action to fetch all the pieces of the current user
   fetchCurrentUser() {
     AppDispatcher.handleViewAction({
@@ -170,6 +193,8 @@ const userActions = {
     // TODO add error action
     return userActions.fetchAuthStatus()
       .then(userActions.fetchCurrentUserInfo)
+      .then(userInfo => userActions.fetchUser(userInfo.user_id))
+      // Grab user from store with all merged properties
       .then(() => UserStore.currentUser)
       .then(userActions.receivedCurrentUser);
   },

@@ -206,6 +206,19 @@ class UserStore extends BaseStore {
 
           // Always emit change
           this.emitChange();
+        });
+        break;
+      }
+
+      case userActionTypes.USER_FETCH: {
+        this.merge('guid', { guid: action.userGuid, fetching: true });
+        break;
+      }
+
+      case userActionTypes.USER_RECEIVED: {
+        const receivedUser = Object.assign({}, action.user, { fetching: false });
+        if (action.user) {
+          this.merge('guid', receivedUser);
         }
         break;
       }
