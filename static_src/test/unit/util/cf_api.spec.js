@@ -1383,4 +1383,20 @@ describe('cfApi', function() {
       }).catch(done.fail);
     });
   });
+
+  describe('fetchUser()', function () {
+    let userGuid;
+
+    beforeEach(function (done) {
+      userGuid = 'user123';
+      sandbox.stub(http, 'get').returns(Promise.resolve({ data: { entity: { guid: 'user123' } } }));
+
+      cfApi.fetchUser(userGuid).then(done, done.fail);
+    });
+
+    it('calls user endpoint', function () {
+      expect(http.get).toHaveBeenCalledOnce();
+      expect(http.get).toHaveBeenCalledWith(sinon.match(`/users/${userGuid}`));
+    });
+  });
 });

@@ -230,6 +230,10 @@ const userActionTypes = keymirror({
   ORG_USER_ROLES_RECEIVED: null,
   // Action when all space users were received from the server.
   SPACE_USERS_RECEIVED: null,
+  // User is fetched from the server
+  USER_FETCH: null,
+  // User is received from the server
+  USER_RECEIVED: null,
   // Action to add permissions to a user for a space or org on the server.
   USER_ROLES_ADD: null,
   // Action when user roles are added on the server.

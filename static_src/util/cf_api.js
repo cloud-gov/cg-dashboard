@@ -513,7 +513,6 @@ export default {
   },
 
   fetchUser(userGuid) {
-    return http.get(`${APIV}/users/${userGuid}`)
-      .then(res => res.data);
+    return this.fetchOne(`/users/${userGuid}`);
   }
 };

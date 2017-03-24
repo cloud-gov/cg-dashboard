@@ -7,6 +7,7 @@ import { assertAction, setupViewSpy, setupUISpy, setupServerSpy } from
 import cfApi from '../../../util/cf_api.js';
 import userActions from '../../../actions/user_actions.js';
 import { userActionTypes } from '../../../constants.js';
+import UserStore from '../../../stores/user_store';
 
 describe('userActions', function() {
   var sandbox;
@@ -296,6 +297,96 @@ describe('userActions', function() {
 
       assertAction(spy, userActionTypes.CURRENT_USER_INFO_RECEIVED,
         expectedParams);
+    });
+  });
+
+  describe('fetchUser()', function () {
+    let userGuid;
+
+    beforeEach(function () {
+      userGuid = 'user123';
+      sandbox.stub(AppDispatcher, 'handleViewAction');
+      userActions.fetchUser(userGuid);
+    });
+
+    it('dispatches view', function () {
+      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_FETCH,
+        userGuid
+      }));
+    });
+
+    describe('given no userGuid', function () {
+      let result;
+      beforeEach(function (done) {
+        userActions.fetchUser()
+          .catch(_result => {
+            result = _result;
+            done();
+          });
+      });
+
+      it('rejects', function () {
+        expect(result).toEqual(new Error('userGuid is required'));
+      });
+    });
+  });
+
+  describe('receivedUser()', function () {
+    let user;
+    beforeEach(function (done) {
+      user = { guid: 'user123' };
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      userActions.receivedUser(user)
+        .then(done, done.fail);
+    });
+
+    it('dispatches action', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_RECEIVED,
+        user
+      }));
+    });
+  });
+
+  describe('fetchCurrentUser()', function () {
+    beforeEach(function (done) {
+      sandbox.stub(userActions, 'fetchAuthStatus').returns(Promise.resolve());
+      sandbox.stub(userActions, 'fetchCurrentUserInfo')
+        .returns(Promise.resolve({ user_id: 'user123' }));
+      sandbox.stub(userActions, 'fetchUser').returns(Promise.resolve());
+      sandbox.stub(userActions, 'receivedCurrentUser').returns(Promise.resolve());
+      sandbox.stub(AppDispatcher, 'handleViewAction');
+
+      // We really want to stub UserStore.currentUser here but there's no way
+      // to do it. Not sure how to get sinon to stub ES6 properties. Would be
+      // nice if the stores were not global singletons or if there was a way to
+      // register our own store for the test.
+      sandbox.stub(UserStore, 'get').returns({ guid: 'user123' });
+
+      userActions.fetchCurrentUser().then(done, done.fail);
+    });
+
+    it('dispatches the action', function () {
+      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.CURRENT_USER_FETCH
+      }));
+    });
+
+    it('calls fetchAuthStatus', function () {
+      expect(userActions.fetchAuthStatus).toHaveBeenCalledOnce();
+    });
+
+    it('calls fetchCurrentUserInfo', function () {
+      expect(userActions.fetchCurrentUserInfo).toHaveBeenCalledOnce();
+    });
+
+    it('calls fetchUser', function () {
+      expect(userActions.fetchUser).toHaveBeenCalledOnce();
+    });
+
+    it('calls receivedCurrentUser', function () {
+      expect(userActions.receivedCurrentUser).toHaveBeenCalledWith({ guid: 'user123' });
     });
   });
 });
