@@ -14,6 +14,7 @@ import ServiceCountStatus from './service_count_status.jsx';
 import ServiceInstanceTable from './service_instance_table.jsx';
 import SpaceStore from '../stores/space_store.js';
 import Users from './users.jsx';
+import UserStore from '../stores/user_store';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
@@ -23,7 +24,8 @@ function stateSetter() {
     currentOrg: OrgStore.currentOrg(),
     currentOrgGuid: OrgStore.currentOrgGuid,
     currentSpaceGuid: SpaceStore.currentSpaceGuid,
-    loading: SpaceStore.loading || OrgStore.loading
+    currentUser: UserStore.currentUser,
+    loading: SpaceStore.loading || OrgStore.loading || UserStore.isLoadingCurrentUser
   };
 }
 
@@ -39,11 +41,13 @@ export default class SpaceContainer extends React.Component {
   componentDidMount() {
     OrgStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
+    UserStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     OrgStore.removeChangeListener(this._onChange);
     SpaceStore.removeChangeListener(this._onChange);
+    UserStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
@@ -97,6 +101,11 @@ export default class SpaceContainer extends React.Component {
           </div>
 
           <AppList />
+          <InfoAppCreate
+            space={ space }
+            org={ this.state.currentOrg }
+            user={ this.state.currentUser }
+          />
         </Panel>
         <Panel title="Service instances">
           <ServiceInstanceTable />
