@@ -92,6 +92,7 @@ export const config = {
     deploying_apps: 'https://cloud.gov/docs/getting-started/your-first-deploy/',
     use: 'https://cloud.gov/docs/intro/overview/using-cloudgov-paas/',
     invite_user: 'https://cloud.gov/docs/apps/managing-teammates',
+    roles: 'https://cloud.gov/docs/apps/managing-teammates/#give-roles-to-a-teammate',
     managed_services: 'https://docs.cloud.gov/apps/managed-services/',
     status: 'https://cloudgov.statuspage.io/'
   },
