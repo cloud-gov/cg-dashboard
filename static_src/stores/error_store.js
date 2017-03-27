@@ -11,7 +11,7 @@ import { errorActionTypes } from '../constants.js';
 export class ErrorStore extends BaseStore {
   constructor() {
     super();
-    this.maxErrors = 5;
+    this.maxErrors = 2;
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
