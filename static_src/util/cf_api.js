@@ -514,5 +514,14 @@ export default {
 
   fetchUser(userGuid) {
     return this.fetchOne(`/users/${userGuid}`);
+  },
+
+  fetchUserSpaces(userGuid, options = {}) {
+    const data = {};
+    if (options.orgGuid) {
+      data.q = `organization_guid:${options.orgGuid}`;
+    }
+
+    return this.fetchAllPages(`/users/${userGuid}/spaces`, data, results => results);
   }
 };

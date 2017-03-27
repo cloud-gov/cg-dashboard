@@ -1399,4 +1399,49 @@ describe('cfApi', function() {
       expect(http.get).toHaveBeenCalledWith(sinon.match(`/users/${userGuid}`));
     });
   });
+
+  describe('fetchUserSpaces()', function () {
+    let user, space, result;
+    beforeEach(function (done) {
+      user = { guid: 'user123' };
+      space = { guid: 'space123' };
+      sandbox.stub(http, 'get').returns(Promise.resolve({
+        data: {
+          resources: [{ metadata: space, entity: {} }]
+        }
+      }));
+
+      cfApi.fetchUserSpaces(user.guid)
+        .then(_result => {
+          result = _result;
+        })
+        .then(done, done.fail);
+    });
+
+    it('calls user spaces endpoint', function () {
+      expect(http.get).toHaveBeenCalledWith(sinon.match(`/users/${user.guid}/spaces`));
+    });
+
+    it('resolves with list of spaces', function () {
+      expect(result).toEqual([space]);
+    });
+
+    describe('given orgGuid', function () {
+      let orgGuid;
+      beforeEach(function (done) {
+        orgGuid = 'org123';
+
+        cfApi.fetchUserSpaces(user.guid, { orgGuid })
+          .then(done, done.fail);
+      });
+
+      it('includes query parameter for organization_guid', function () {
+        expect(http.get)
+          .toHaveBeenCalledWith(
+            sinon.match.string,
+            sinon.match({ params: { q: `organization_guid:${orgGuid}` } })
+          );
+      });
+    });
+  });
 });

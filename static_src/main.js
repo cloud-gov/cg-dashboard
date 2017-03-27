@@ -132,8 +132,9 @@ function app(orgGuid, spaceGuid, appGuid) {
     </MainContainer>, mainEl);
 }
 
-function checkAuth() {
-  userActions.fetchCurrentUser();
+function checkAuth(...args) {
+  const [orgGuid, spaceGuid] = args;
+  userActions.fetchCurrentUser({ orgGuid, spaceGuid });
   orgActions.fetchAll();
   spaceActions.fetchAll();
 }

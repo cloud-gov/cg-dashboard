@@ -184,8 +184,38 @@ const userActions = {
     return Promise.resolve(user);
   },
 
+  fetchUserSpaces(userGuid, options = {}) {
+    if (!userGuid) {
+      return Promise.reject(new Error('userGuid is required'));
+    }
+
+    // orgGuid s optional for filtering
+    const { orgGuid } = options;
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_SPACES_FETCH,
+      userGuid,
+      orgGuid
+    });
+
+    return cfApi.fetchUserSpaces(userGuid, options)
+      .then(userSpaces => userActions.receivedUserSpaces(userGuid, userSpaces, options));
+  },
+
+  // Optionally specify orgGuid if filtered for spaces belonging to orgGuid
+  receivedUserSpaces(userGuid, userSpaces, options = {}) {
+    const { orgGuid } = options;
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_SPACES_RECEIVED,
+      userGuid,
+      userSpaces,
+      orgGuid
+    });
+
+    return Promise.resolve(userSpaces);
+  },
+
   // Meta action to fetch all the pieces of the current user
-  fetchCurrentUser() {
+  fetchCurrentUser(options = {}) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.CURRENT_USER_FETCH
     });
@@ -193,7 +223,12 @@ const userActions = {
     // TODO add error action
     return userActions.fetchAuthStatus()
       .then(userActions.fetchCurrentUserInfo)
-      .then(userInfo => userActions.fetchUser(userInfo.user_id))
+      .then(userInfo =>
+        Promise.all([
+          userActions.fetchUser(userInfo.user_id),
+          userActions.fetchUserSpaces(userInfo.user_id, options)
+        ])
+      )
       // Grab user from store with all merged properties
       .then(() => UserStore.currentUser)
       .then(userActions.receivedCurrentUser);
