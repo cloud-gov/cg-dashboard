@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/gocraft/web"
 	"golang.org/x/oauth2"
@@ -18,7 +17,7 @@ type SecureContext struct {
 }
 
 // ResponseHandler is a type declaration for the function that will handle the response for the given request.
-type ResponseHandler func(*http.ResponseWriter, *http.Response)
+type ResponseHandler func(http.ResponseWriter, *http.Response)
 
 // OAuth is a middle ware that checks whether or not the user has a valid token.
 // If the token is present and still valid, it just passes it on.
@@ -70,25 +69,25 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	if err != nil {
 		log.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(rw, "unknown error. try again")
+		rw.Write([]byte("unknown error. try again"))
 		return
 	}
 	// Should return the same status.
 	rw.WriteHeader(res.StatusCode)
-	responseHandler(&rw, res)
+	responseHandler(rw, res)
 }
 
 // GenericResponseHandler is a normal handler for responses received from the proxy requests.
-func (c *SecureContext) GenericResponseHandler(rw *http.ResponseWriter, response *http.Response) {
+func (c *SecureContext) GenericResponseHandler(rw http.ResponseWriter, response *http.Response) {
 	// Read the body.
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		log.Println(err)
-		(*rw).WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(*rw, "unknown error. try again")
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("unknown error. try again"))
 		return
 	}
 
 	// Write the body into response that is going back to the frontend.
-	fmt.Fprintf(*rw, string(body))
+        rw.Write(body)
 }

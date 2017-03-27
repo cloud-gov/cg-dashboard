@@ -66,7 +66,7 @@ func TestOAuth(t *testing.T) {
 		apiRouter := secureRouter.Subrouter(controllers.APIContext{}, "/v2")
 		apiRouter.Middleware((*controllers.APIContext).OAuth)
 		apiRouter.Get("/test", func(c *controllers.APIContext, rw web.ResponseWriter, r *web.Request) {
-			fmt.Fprintf(rw, "test")
+			rw.Write([]byte("test"))
 		})
 
 		// Make the request and check.
