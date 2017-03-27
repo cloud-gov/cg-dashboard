@@ -5,20 +5,20 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import UserStore from '../../../stores/user_store.js';
+import { UserStore as _UserStore } from '../../../stores/user_store.js';
 import userActions from '../../../actions/user_actions.js';
 import { userActionTypes } from '../../../constants';
 
-describe('UserStore', function() {
-  var sandbox;
+describe('UserStore', function () {
+  let sandbox, UserStore;
 
   beforeEach(() => {
-    UserStore._data = Immutable.List();
-    UserStore._currentUserGuid = null;
+    UserStore = new _UserStore();
     sandbox = sinon.sandbox.create();
   });
 
   afterEach(() => {
+    UserStore.unsubscribe();
     sandbox.restore();
   });
 
@@ -565,6 +565,115 @@ describe('UserStore', function() {
 
     it('sets user state to non-fetching', function () {
       expect(user.fetching).toBe(false);
+    });
+  });
+
+  describe('USER_SPACES_RECEIVED', function () {
+    let userGuid, userSpaces, user;
+    beforeEach(function () {
+      userGuid = 'user123';
+      userSpaces = [{ guid: 'space123' }, { guid: 'space456' }];
+
+      // User with no roles
+      UserStore.push({ guid: userGuid });
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_SPACES_RECEIVED,
+        userGuid,
+        userSpaces
+      });
+
+      user = UserStore.get(userGuid);
+    });
+
+    it('creates a roles property on user', function () {
+      expect(user.roles).toBeTruthy();
+    });
+
+    it('assigns space_developer role for each space', function () {
+      expect(user.roles).toEqual({
+        space123: ['space_developer'],
+        space456: ['space_developer']
+      });
+    });
+  });
+
+  describe('CURRENT_USER_FETCH', function () {
+    beforeEach(function () {
+      sandbox.spy(UserStore, 'emitChange');
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.CURRENT_USER_FETCH
+      });
+    });
+
+    it('sets loading state true', function () {
+      expect(UserStore.isLoadingCurrentUser).toBe(true);
+    });
+
+    it('sets loading currentUser state true', function () {
+      expect(UserStore._loading.currentUser).toBe(true);
+    });
+
+    it('emits change', function () {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('CURRENT_USER_RECEIVED', function () {
+    beforeEach(function () {
+      const currentUser = { guid: '1234' };
+      sandbox.spy(UserStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.CURRENT_USER_RECEIVED,
+        currentUser
+      });
+    });
+
+    it('sets loading state false', function () {
+      expect(UserStore.isLoadingCurrentUser).toBe(false);
+    });
+
+    it('sets loading currentUser state false', function () {
+      expect(UserStore._loading.currentUser).toBe(false);
+    });
+
+    it('emits change', function () {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('hasRole()', function () {
+    describe('user with space_developer role', function () {
+      let user, space;
+
+      beforeEach(function () {
+        space = { guid: 'space1234' };
+        user = {
+          guid: 'user123',
+          roles: {
+            [space.guid]: ['space_developer']
+          }
+        };
+
+        UserStore.push(user);
+      });
+
+      it('returns true for space_developer', function () {
+        expect(UserStore.hasRole(user.guid, space.guid, 'space_developer')).toBe(true);
+      });
+
+      it('returns false for space_manager', function () {
+        expect(UserStore.hasRole(user.guid, space.guid, 'space_manager')).toBe(false);
+      });
+
+      it('reutrns false for another space', function () {
+        expect(UserStore.hasRole(user.guid, 'otherspace123', 'space_developer')).toBe(false);
+      });
+
+      it('returns false for another user', function () {
+        expect(UserStore.hasRole('otheruser123', space.guid, 'space_developer')).toBe(false);
+      });
     });
   });
 });

@@ -25,7 +25,7 @@ const resourceToRole = {
   }
 };
 
-class UserStore extends BaseStore {
+export class UserStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
@@ -33,6 +33,7 @@ class UserStore extends BaseStore {
     this._currentViewedType = 'space_users';
     this._currentUserGuid = null;
     this._error = null;
+    this._loading = {};
   }
 
   _registerToActions(action) {
@@ -223,6 +224,39 @@ class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_SPACES_RECEIVED: {
+        const user = this.get(action.userGuid);
+        if (!user) {
+          break;
+        }
+
+        const updatedRoles = action.userSpaces.reduce((roles, userSpace) => {
+          const key = userSpace.guid;
+          // TODO this would be nice if it was an immutable Set
+          // We don't check for duplicates, we just continually append.  We're
+          // assuming guids are unique between entity types, so user.roles
+          // could contain roles for orgs too.
+          const spaceRoles = roles[key] || [];
+          roles[key] = spaceRoles.concat(['space_developer']); // eslint-disable-line
+          return roles;
+        }, user.roles || {});
+
+        this.merge('guid', { guid: user.guid, roles: updatedRoles });
+        break;
+      }
+
+      case userActionTypes.CURRENT_USER_FETCH: {
+        this._loading.currentUser = true;
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.CURRENT_USER_RECEIVED: {
+        this._loading.currentUser = false;
+        this.emitChange();
+        break;
+      }
+
       case userActionTypes.USER_CHANGE_VIEWED_TYPE: {
         if (this._currentViewedType !== action.userType) {
           this._currentViewedType = action.userType;
@@ -269,6 +303,10 @@ class UserStore extends BaseStore {
     return this._currentViewedType;
   }
 
+  get isLoadingCurrentUser() {
+    return this._loading.currentUser === true;
+  }
+
   _hasRole(roleToCheck, userType) {
     const user = this.currentUser;
     if (!user) return false;
@@ -282,6 +320,13 @@ class UserStore extends BaseStore {
 
   currentUserHasOrgRole(role) {
     return this._hasRole(role, 'organization_roles');
+  }
+
+  hasRole(userGuid, entityGuid, role) {
+    const key = entityGuid;
+    const user = this.get(userGuid);
+    const roles = user && user.roles && user.roles[key] || [];
+    return roles.includes(role);
   }
 
   get currentUser() {
