@@ -224,20 +224,27 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.USER_SPACES_RECEIVED: {
+      case userActionTypes.USER_SPACES_RECEIVED:
+      case userActionTypes.USER_ORGS_RECEIVED: {
         const user = this.get(action.userGuid);
         if (!user) {
           break;
         }
 
-        const updatedRoles = action.userSpaces.reduce((roles, userSpace) => {
-          const key = userSpace.guid;
+        const rolesByType = action.userOrgs || action.userSpaces;
+
+        const updatedRoles = rolesByType.reduce((roles, roleByType) => {
+          const key = roleByType.guid;
           // TODO this would be nice if it was an immutable Set
           // We don't check for duplicates, we just continually append.  We're
           // assuming guids are unique between entity types, so user.roles
           // could contain roles for orgs too.
-          const spaceRoles = roles[key] || [];
-          roles[key] = spaceRoles.concat(['space_developer']); // eslint-disable-line
+          const certainRoles = roles[key] || [];
+          if (action.type === userActionTypes.USER_ORGS_RECEIVED) {
+            roles[key] = certainRoles.concat(['org_manager']); // eslint-disable-line
+          } else {
+            roles[key] = certainRoles.concat(['space_developer']); // eslint-disable-line
+          }
           return roles;
         }, user.roles || {});
 
