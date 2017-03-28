@@ -4,7 +4,7 @@ import (
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/gocraft/web"
 	"golang.org/x/oauth2"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -44,7 +44,8 @@ func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url str
 	c.submitRequest(rw, req, url, client, responseHandler)
 }
 
-// submitRequest uses a given client and submits the specified request.
+// submitRequest uses a given client and submits the specified request and
+// closes the request and response bodies.
 func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request, url string, client *http.Client, responseHandler ResponseHandler) {
 	// Prevents lingering goroutines from living forever.
 	// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
@@ -79,8 +80,8 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 
 // GenericResponseHandler is a normal handler for responses received from the proxy requests.
 func (c *SecureContext) GenericResponseHandler(rw http.ResponseWriter, response *http.Response) {
-	// Read the body.
-	body, err := ioutil.ReadAll(response.Body)
+	// Write the body into response that is going back to the frontend.
+	_, err := io.Copy(rw, response.Body)
 	if err != nil {
 		log.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)
@@ -88,6 +89,4 @@ func (c *SecureContext) GenericResponseHandler(rw http.ResponseWriter, response 
 		return
 	}
 
-	// Write the body into response that is going back to the frontend.
-        rw.Write(body)
 }
