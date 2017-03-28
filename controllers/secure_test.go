@@ -101,6 +101,23 @@ var proxyTests = []BasicProxyTest{
 		Response:      "test",
 		ResponseCode:  http.StatusOK,
 	},
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "Proxy response containing format string",
+				SessionData: ValidTokenData,
+				EnvVars:     MockCompleteEnvVars,
+			},
+			ExpectedResponse: "hello%world",
+			ExpectedCode:     http.StatusOK,
+		},
+		// What the "external" server will send back to the proxy.
+		RequestMethod: "GET",
+		RequestPath:   "/test",
+		ExpectedPath:  "/test",
+		Response:      "hello%world",
+		ResponseCode:  http.StatusOK,
+	},
 }
 
 func TestProxy(t *testing.T) {
