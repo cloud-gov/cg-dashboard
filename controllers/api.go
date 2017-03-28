@@ -40,5 +40,5 @@ func (c *APIContext) UserProfile(rw web.ResponseWriter, req *web.Request) {
 // AuthStatus simply returns authorized. This endpoint is just a quick endpoint to indicate that if a
 // user can reach here after passing through the OAuth Middleware, they are authorized.
 func (c *APIContext) AuthStatus(rw web.ResponseWriter, req *web.Request) {
-	fmt.Fprintf(rw, "{\"status\": \"authorized\"}")
+	rw.Write([]byte("{\"status\": \"authorized\"}"))
 }

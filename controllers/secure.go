@@ -1,11 +1,10 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/gocraft/web"
 	"golang.org/x/oauth2"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -18,7 +17,7 @@ type SecureContext struct {
 }
 
 // ResponseHandler is a type declaration for the function that will handle the response for the given request.
-type ResponseHandler func(*http.ResponseWriter, *http.Response)
+type ResponseHandler func(http.ResponseWriter, *http.Response)
 
 // OAuth is a middle ware that checks whether or not the user has a valid token.
 // If the token is present and still valid, it just passes it on.
@@ -45,7 +44,8 @@ func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url str
 	c.submitRequest(rw, req, url, client, responseHandler)
 }
 
-// submitRequest uses a given client and submits the specified request.
+// submitRequest uses a given client and submits the specified request and
+// closes the request and response bodies.
 func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request, url string, client *http.Client, responseHandler ResponseHandler) {
 	// Prevents lingering goroutines from living forever.
 	// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
@@ -70,25 +70,23 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	if err != nil {
 		log.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(rw, "unknown error. try again")
+		rw.Write([]byte("unknown error. try again"))
 		return
 	}
 	// Should return the same status.
 	rw.WriteHeader(res.StatusCode)
-	responseHandler(&rw, res)
+	responseHandler(rw, res)
 }
 
 // GenericResponseHandler is a normal handler for responses received from the proxy requests.
-func (c *SecureContext) GenericResponseHandler(rw *http.ResponseWriter, response *http.Response) {
-	// Read the body.
-	body, err := ioutil.ReadAll(response.Body)
+func (c *SecureContext) GenericResponseHandler(rw http.ResponseWriter, response *http.Response) {
+	// Write the body into response that is going back to the frontend.
+	_, err := io.Copy(rw, response.Body)
 	if err != nil {
 		log.Println(err)
-		(*rw).WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(*rw, "unknown error. try again")
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("unknown error. try again"))
 		return
 	}
 
-	// Write the body into response that is going back to the frontend.
-	fmt.Fprintf(*rw, string(body))
 }

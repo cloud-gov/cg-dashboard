@@ -66,7 +66,7 @@ func TestOAuth(t *testing.T) {
 		apiRouter := secureRouter.Subrouter(controllers.APIContext{}, "/v2")
 		apiRouter.Middleware((*controllers.APIContext).OAuth)
 		apiRouter.Get("/test", func(c *controllers.APIContext, rw web.ResponseWriter, r *web.Request) {
-			fmt.Fprintf(rw, "test")
+			rw.Write([]byte("test"))
 		})
 
 		// Make the request and check.
@@ -99,6 +99,23 @@ var proxyTests = []BasicProxyTest{
 		RequestPath:   "/test",
 		ExpectedPath:  "/test",
 		Response:      "test",
+		ResponseCode:  http.StatusOK,
+	},
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "Proxy response containing format string",
+				SessionData: ValidTokenData,
+				EnvVars:     MockCompleteEnvVars,
+			},
+			ExpectedResponse: "hello%world",
+			ExpectedCode:     http.StatusOK,
+		},
+		// What the "external" server will send back to the proxy.
+		RequestMethod: "GET",
+		RequestPath:   "/test",
+		ExpectedPath:  "/test",
+		Response:      "hello%world",
 		ResponseCode:  http.StatusOK,
 	},
 }

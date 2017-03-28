@@ -28,13 +28,13 @@ func (c *LogContext) RecentLogs(rw web.ResponseWriter, req *web.Request) {
 
 // logMessageResponseHandler is a response handler that constructs log messages structs from the response
 // given by the loggregator.
-func (c *LogContext) logMessageResponseHandler(rw *http.ResponseWriter, response *http.Response) {
+func (c *LogContext) logMessageResponseHandler(rw http.ResponseWriter, response *http.Response) {
 	messages, err := c.ParseLogMessages(&(response.Body), response.Header.Get("Content-Type"))
 	if err != nil {
-		fmt.Fprintf(*rw, err.Error())
+		rw.Write([]byte(err.Error()))
 		return
 	}
-	fmt.Fprintf(*rw, messages.String())
+	rw.Write([]byte(messages.String()))
 	return
 
 }
