@@ -8,7 +8,7 @@
   "description": "A web dashboard for managing Cloud Foundry apps",
   "main": "null",
   "scripts": {
-    "build": "npm run clean && npm run check-style && node_modules/webpack/bin/webpack.js",
+    "build": "npm run clean && webpack --config webpack.config.js",
     "build-style": "cd node_modules/cloudgov-style && npm install && npm run build",
     "check-style": "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"git://github.com\" ]] && npm run build-style || exit 0'",
     "clean": "rm -rf ./static/assets/*",
@@ -51,6 +51,7 @@
   ],
   "license": "CC0-1.0",
   "dependencies": {
+    "ajv": "^4.11.5",
     "axios": "^0.15.3",
     "babel-core": "^6.20.0",
     "babel-eslint": "^7.1.1",
@@ -72,7 +73,7 @@
     "eslint-loader": "^1.6.1",
     "eslint-plugin-react": "^4.2.3",
     "events": "^1.0.2",
-    "extract-text-webpack-plugin": "^0.8.1",
+    "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.8.5",
     "flux": "^2.1.1",
     "immutable": "^3.8.1",
@@ -100,7 +101,7 @@
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
     "watch": "^0.16.0",
-    "webpack": "^1.14.0"
+    "webpack": "^2.3.2"
   },
   "devDependencies": {
     "babel-register": "^6.18.0",
