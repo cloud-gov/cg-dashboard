@@ -19,16 +19,19 @@ function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const currentType = UserStore.currentlyViewedType;
+  const currentUser = UserStore.currentUser;
 
   let users = [];
   let currentUserAccess = false;
 
   if (currentType === SPACE_NAME) {
     users = UserStore.getAllInSpace(currentSpaceGuid);
-    currentUserAccess = UserStore.currentUserHasSpaceRoles(['space_manager']);
+    currentUserAccess = UserStore.hasRole(currentUser.guid, currentSpaceGuid,
+                                          'space_manager')
   } else {
     users = UserStore.getAllInOrg(currentOrgGuid);
-    currentUserAccess = UserStore.currentUserHasOrgRoles(['org_manager']);
+    currentUserAccess = UserStore.hasRole(currentUser.guid, currentOrgGuid,
+                                          'org_manager')
   }
 
   return {

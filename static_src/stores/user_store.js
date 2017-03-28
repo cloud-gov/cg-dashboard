@@ -308,25 +308,26 @@ export class UserStore extends BaseStore {
   }
 
   _hasRole(roleToCheck, userType) {
+    let wrappedRoleToCheck = roleToCheck;
+    if (!roleToCheck.length) {
+      wrappedRoleToCheck = [roleToCheck];
+    }
     const user = this.currentUser;
     if (!user) return false;
     if (!user[userType]) return false;
-    return !!(user[userType].find((role) => rolesToCheckWrap.includes(role)));
-  }
-
-  currentUserHasSpaceRoles(roles) {
-    return this._hasRoles(roles, 'space_roles');
-  }
-
-  currentUserHasOrgRoles(roles) {
-    return this._hasRoles(roles, 'organization_roles');
+    return !!(user[userType].find((role) => wrappedRoleToCheck.includes(role)));
   }
 
   hasRole(userGuid, entityGuid, role) {
+    let wrappedRoles = role;
+    if (!role.length) {
+      wrappedRoles = [role];
+    }
+
     const key = entityGuid;
     const user = this.get(userGuid);
     const roles = user && user.roles && user.roles[key] || [];
-    return roles.includes(role);
+    return !!roles.find((role) => wrappedRoles.includes(role));
   }
 
   get currentUser() {

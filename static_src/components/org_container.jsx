@@ -23,9 +23,11 @@ import UserStore from '../stores/user_store.js';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
+  const currentSpaceGuid = SpaceStore.currentSpaceGuid;
+  const currentUser = UserStore.currentUser;
   const currentUserCanViewSpace =
-    UserStore.currentUserHasSpaceRoles(SpaceStore.viewPermissionRoles()) ||
-    UserStore.currentUserHasOrgRoles('org_manager');
+    UserStore.hasRole(currentUser, currentOrgGuid, 'org_manager') ||
+    UserStore.hasRole(currentUser, currentSpaceGuid, SpaceStore.viewPermissionRoles());
 
   const org = OrgStore.get(currentOrgGuid);
   const spaces = SpaceStore.getAll()

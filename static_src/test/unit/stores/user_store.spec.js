@@ -447,90 +447,6 @@ describe('UserStore', function () {
     });
   });
 
-  describe('currentUserhasSpaceRoles()', function() {
-    it('should call _hasRoles() with role and userType of space', function() {
-      const spy = sandbox.spy(UserStore, '_hasRoles');
-      const testRoles = ['space'];
-
-      UserStore.currentUserHasSpaceRoles(testRoles);
-
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(testRoles, 'space_roles');
-    });
-  });
-
-  describe('currentUserHasOrgRoles()', function() {
-    it('should call _hasRoles() with role and userType of org', function() {
-      const spy = sandbox.spy(UserStore, '_hasRoles');
-      const testRoles = ['person'];
-
-      UserStore.currentUserHasOrgRoles(testRoles);
-
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(testRoles, 'organization_roles');
-    });
-  });
-
-  describe('_hasRoles()', function() {
-    it('should return false if user not found', function() {
-      const roles = ['test'];
-      UserStore._currentUserGuid = 'alkdsjf';
-      const actual = UserStore._hasRoles(roles, 'organization_roles');
-
-      expect(actual).toBeFalsy();
-    });
-
-    it('should still work when passed one role', function() {
-      const roles = 'test';
-      UserStore._currentUserGuid = 'alkdsjf';
-      const actual = UserStore._hasRoles(roles, 'organization_roles');
-
-      expect(actual).toBeFalsy();
-    });
-
-    it('should return false if user doesn\'t have role', function() {
-      const userGuid = 'adfadsfa';
-      const user = { guid: userGuid, user_name: 'fakeuser', organization_roles: [
-        'iron_throne_manager']};
-      const role = 'vale_manager';
-
-      UserStore._currentUserGuid = userGuid;
-      UserStore.push(user);
-
-      const actual = UserStore._hasRoles(role, 'organization_roles');
-
-      expect(actual).toBeFalsy();
-    });
-
-    it('should return false if user doesn\'t have the role type', function() {
-      const userGuid = 'adfadsfa';
-      const user = { guid: userGuid, user_name: 'fakeuser' };
-      const role = 'vale_manager';
-
-      UserStore._currentUserGuid = userGuid;
-      UserStore.push(user);
-
-      const actual = UserStore._hasRoles(role, 'organization_roles');
-
-      expect(actual).toBeFalsy();
-    });
-
-    it('should true if it finds the role on the user', function() {
-      const role = 'highgarden_manager';
-      const userGuid = 'adfadsfa';
-      const user = { guid: userGuid, user_name: 'fakeuser', organization_roles: [
-        'iron_throne_manager', role]};
-
-      UserStore._currentUserGuid = userGuid;
-      UserStore.push(user);
-
-      const actual = UserStore._hasRoles(role, 'organization_roles');
-
-      expect(actual).toBeTruthy();
-
-    });
-  });
-
   describe('getAllInOrg()', function() {
     it('should find all users that have the org guid passed in', function() {
       var orgGuid = 'asdfa';
@@ -652,15 +568,17 @@ describe('UserStore', function () {
   });
 
   describe('hasRole()', function () {
-    describe('user with space_developer role', function () {
-      let user, space;
+    describe('user with space_developer and org roles', function () {
+      let user, space, org;
 
       beforeEach(function () {
+        org = { guid: 'org1234' };
         space = { guid: 'space1234' };
         user = {
           guid: 'user123',
           roles: {
-            [space.guid]: ['space_developer']
+            [space.guid]: ['space_developer'],
+            [org.guid]: ['org_manager', 'org_auditor']
           }
         };
 
@@ -675,7 +593,19 @@ describe('UserStore', function () {
         expect(UserStore.hasRole(user.guid, space.guid, 'space_manager')).toBe(false);
       });
 
-      it('reutrns false for another space', function () {
+      it('returns true for org_manager', function() {
+        expect(UserStore.hasRole(user.guid, org.guid, 'org_manager')).toBe(true);
+      });
+
+      it('returns true for org_manager and org_auditor', function() {
+        expect(UserStore.hasRole(user.guid, org.guid, ['org_manager', 'org_auditor'])).toBe(true);
+      });
+
+      it('returns true for org_manager and org_developer', function() {
+        expect(UserStore.hasRole(user.guid, org.guid, ['org_manager', 'org_developer'])).toBe(true);
+      });
+
+      it('returns false for another space', function () {
         expect(UserStore.hasRole(user.guid, 'otherspace123', 'space_developer')).toBe(false);
       });
 

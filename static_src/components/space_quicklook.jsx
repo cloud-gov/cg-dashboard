@@ -47,7 +47,6 @@ export default class SpaceQuicklook extends React.Component {
 
   render() {
     const space = this.props.space;
-    console.log('asd;lfasfd;lfasdjl', space.apps);
     const appsContent = (space.apps && space.apps.length > 0) ? (
       <ComplexList>
         { space.apps && space.apps.map((app) =>

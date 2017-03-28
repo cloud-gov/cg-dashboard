@@ -40,7 +40,6 @@ export default class InfoAppCreate extends React.Component {
     const space = this.props.space || {};
     let content;
 
-<<<<<<< HEAD
     if (this.props.brief) {
       const cliLink = config.docs.cli ?
         <a href={ config.docs.cli }>command line interface (CLI)</a> :
