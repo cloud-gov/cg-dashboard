@@ -19,18 +19,6 @@ function createPromise(res, err) {
 
 describe('uaaApi', function() {
   let sandbox;
-  const errorFetchRes = { message: 'error' };
-
-  function fetchErrorSetup() {
-    var stub = sandbox.stub(http, 'get'),
-        spy = sandbox.spy(errorActions, 'errorFetch'),
-        expected = errorFetchRes;
-
-    let testPromise = createPromise(true, expected);
-    stub.returns(testPromise);
-
-    return spy;
-  };
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
@@ -40,32 +28,16 @@ describe('uaaApi', function() {
     sandbox.restore();
   });
 
-  describe('fetchUserInfo()', function() {
-    it('should call an http get request for uaa user info', function(done) {
-      var spy = sandbox.spy(http, 'get');
+  describe('fetchUserInfo()', function () {
+    beforeEach(function (done) {
+      sandbox.stub(http, 'get').returns(Promise.resolve({ data: { user_id: 'user123' } }));
 
-      uaaApi.fetchUserInfo().then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        let actual = spy.getCall(0).args[0];
-        expect(actual).toMatch('userinfo');
-        done();
-      });
+      uaaApi.fetchUserInfo().then(done, done.fail);
     });
 
-    it('should call a user action current user info received on success',
-        function(done) {
-      const expected = { user_id: 'zcxcvbxcvb', user_name: 'brain' };
-      let stub = sandbox.stub(http, 'get');
-      let spy = sandbox.spy(userActions, 'receivedCurrentUserInfo');
-
-      let testPromise = createPromise({data: expected});
-      stub.returns(testPromise);
-
-      uaaApi.fetchUserInfo().then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        expect(spy).toHaveBeenCalledWith(expected);
-        done();
-      });
+    it('should call an http get request for uaa user info', function () {
+      expect(http.get).toHaveBeenCalledOnce();
+      expect(http.get).toHaveBeenCalledWith(sinon.match(/\/userinfo$/));
     });
   });
 });

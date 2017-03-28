@@ -1,7 +1,8 @@
-
+/* eslint-disable jasmine/no-global-setup,no-console */
 require('babel-polyfill');
 
 import jasmineEnzyme from 'jasmine-enzyme';
+import UserStore from '../stores/user_store';
 
 Function.prototype.bind = Function.prototype.bind || function (thisp) {
   var fn = this;
@@ -243,3 +244,14 @@ afterEach(function () {
   console.warn.restore();
   //console.error.restore();
 });
+
+// TODO Stub out axios.{get,delete,patch,post,put}, all async calls should be
+// stubbed or mocked, otherwise it's an error.
+
+// TODO Stores should have a different singleton strategy so that state can
+// be cleared and managed consistently in tests. Currently, all the singleton
+// stores are listening to dispatch events, which often cause events to be
+// processed twice.
+// UserStore is only an issue because the store calls cfApi. cfApi calls should
+// be moved to the actions.
+UserStore.unsubscribe();

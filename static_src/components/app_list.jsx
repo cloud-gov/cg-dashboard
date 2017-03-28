@@ -65,7 +65,7 @@ export default class AppList extends React.Component {
     );
 
     if (this.state.empty) {
-      content = <h4 className="test-none_message">No apps</h4>;
+      content = <h4 className="test-none_message">You have no apps in this space</h4>;
     } else if (!this.state.loading && this.state.apps.length > 0) {
       content = (
         <ComplexList titleElement={ title }>
