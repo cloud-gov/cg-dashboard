@@ -1444,4 +1444,23 @@ describe('cfApi', function() {
       });
     });
   });
+
+  describe('fetchUserOrgs()', function () {
+    let userGuid;
+    let fetchAllPagesStub;
+
+    beforeEach(function (done) {
+      userGuid = 'user123';
+      fetchAllPagesStub = sandbox.stub(cfApi, 'fetchAllPages').returns(
+        Promise.resolve({ guid: userGuid }));
+
+      cfApi.fetchUserOrgs(userGuid).then(done, done.fail);
+    });
+
+    it('calls user endpoint', function () {
+      expect(fetchAllPagesStub).toHaveBeenCalledOnce();
+      expect(fetchAllPagesStub).toHaveBeenCalledWith(
+        `/users/${userGuid}/organizations`);
+    });
+  });
 });

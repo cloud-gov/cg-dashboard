@@ -238,6 +238,10 @@ const userActionTypes = keymirror({
   USER_SPACES_FETCH: null,
   // Receive spaces this user is a member of (developer of).
   USER_SPACES_RECEIVED: null,
+  // Fetch orgss this user is a member of (manager of).
+  USER_ORGS_FETCH: null,
+  // Receive orgss this user is a member of (manager of).
+  USER_ORGS_RECEIVED: null,
   // Action to add permissions to a user for a space or org on the server.
   USER_ROLES_ADD: null,
   // Action when user roles are added on the server.
