@@ -273,6 +273,7 @@ const userActions = {
       .then(userInfo =>
         Promise.all([
           userActions.fetchUser(userInfo.user_id),
+          userActions.fetchUserOrgs(userInfo.user_id),
           userActions.fetchUserSpaces(userInfo.user_id, options)
         ])
       )
