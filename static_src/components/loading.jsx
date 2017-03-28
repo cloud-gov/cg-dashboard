@@ -66,8 +66,8 @@ class Loading extends React.Component {
       content = (
         <div className={ classes }
           role="alertdialog"
-          ariaLive="assertive"
-          ariaBusy={ this.props.active }
+          aria-live="assertive"
+          aria-busy={ this.props.active }
         >
         {(() => {
           switch (this.props.style) {
