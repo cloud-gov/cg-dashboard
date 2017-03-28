@@ -184,6 +184,29 @@ const userActions = {
     return Promise.resolve(user);
   },
 
+  fetchUserSummary(userGuid) {
+    if (!userGuid) {
+      return Promise.reject(new Error('userGuid is required'));
+    }
+
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_SUMMARY_FETCH,
+      userGuid
+    });
+
+    return cfApi.fetchUser(userGuid)
+      .then(userActions.receivedUserSummary);
+  },
+
+  receivedUserSummary(user) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_SUMMARY_RECEIVED,
+      user
+    });
+
+    return Promise.resolve(user);
+  },
+
   fetchUserSpaces(userGuid, options = {}) {
     if (!userGuid) {
       return Promise.reject(new Error('userGuid is required'));
@@ -212,6 +235,24 @@ const userActions = {
     });
 
     return Promise.resolve(userSpaces);
+  },
+
+  fetchUserOrgs(userGuid, options = {}) {
+    if (!userGuid) {
+      return Promise.reject(new Error('userGuid is required'));
+    }
+
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ORGS_FETCH,
+      userGuid
+    });
+
+    return cfApi.fetchUserOrgs(userGuid, options)
+      .then(userOrgs => userActions.receivedUserOrgs(userGuid, userOrgs, options));
+  },
+
+  receivedUserOrgs(userGuid, userOrgs, options) {
+
   },
 
   // Meta action to fetch all the pieces of the current user

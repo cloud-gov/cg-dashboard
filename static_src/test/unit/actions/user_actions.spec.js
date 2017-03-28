@@ -423,6 +423,31 @@ describe('userActions', function() {
     });
   });
 
+  describe('fetchUserOrgs()', function () {
+    let userGuid;
+
+    beforeEach(function (done) {
+      userGuid = 'user123';
+      sandbox.stub(cfApi, 'fetchUserOrgs').returns(Promise.resolve([]));
+      sandbox.stub(AppDispatcher, 'handleViewAction');
+
+      userActions.fetchUserOrgs(userGuid)
+        .then(done, done.fail);
+    });
+
+    it('dispatches USER_ORGS_FETCH', function () {
+      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_ORGS_FETCH,
+        userGuid
+      }));
+    });
+
+    it('calls cfApi', function () {
+      expect(cfApi.fetchUserOrgs).toHaveBeenCalledOnce();
+      expect(cfApi.fetchUserOrgs).toHaveBeenCalledWith(userGuid);
+    });
+  });
+
   describe('fetchCurrentUser()', function () {
     beforeEach(function (done) {
       sandbox.stub(userActions, 'fetchAuthStatus').returns(Promise.resolve());
