@@ -307,17 +307,6 @@ export class UserStore extends BaseStore {
     return this._loading.currentUser === true;
   }
 
-  _hasRole(roleToCheck, userType) {
-    let wrappedRoleToCheck = roleToCheck;
-    if (!roleToCheck.length) {
-      wrappedRoleToCheck = [roleToCheck];
-    }
-    const user = this.currentUser;
-    if (!user) return false;
-    if (!user[userType]) return false;
-    return !!(user[userType].find((role) => wrappedRoleToCheck.includes(role)));
-  }
-
   hasRole(userGuid, entityGuid, role) {
     let wrappedRoles = role;
     if (!role.length) {
