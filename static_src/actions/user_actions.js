@@ -251,8 +251,14 @@ const userActions = {
       .then(userOrgs => userActions.receivedUserOrgs(userGuid, userOrgs, options));
   },
 
-  receivedUserOrgs(userGuid, userOrgs, options) {
+  receivedUserOrgs(userGuid, userOrgs) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_ORGS_RECEIVED,
+      userGuid,
+      userOrgs
+    });
 
+    return Promise.resolve(userOrgs);
   },
 
   // Meta action to fetch all the pieces of the current user

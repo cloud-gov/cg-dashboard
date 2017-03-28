@@ -448,6 +448,34 @@ describe('userActions', function() {
     });
   });
 
+  describe('receivedUserOrgs()', function () {
+    let userGuid, userOrgs, result;
+
+    beforeEach(function (done) {
+      userGuid = 'user123';
+      userOrgs = [{ guid: 'org123' }, { guid: 'org456' }];
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+
+      userActions.receivedUserOrgs(userGuid, userOrgs)
+        .then(_result => {
+          result = _result;
+        })
+        .then(done, done.fail);
+    });
+
+    it('dispatches USER_ORGS_RECEIVED', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_ORGS_RECEIVED,
+        userGuid,
+        userOrgs
+      }));
+    });
+
+    it('resolves the userOrgs', function () {
+      expect(result).toEqual(userOrgs);
+    });
+  });
+
   describe('fetchCurrentUser()', function () {
     beforeEach(function (done) {
       sandbox.stub(userActions, 'fetchAuthStatus').returns(Promise.resolve());
