@@ -184,7 +184,7 @@ router.configure({
   notfound: notFound,
   on: () => {
     errorActions.clearErrors();
-    trackPageView(window.location.hash)
+    trackPageView(window.location.hash);
   }
 });
 router.init('/');
