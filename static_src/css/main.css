@@ -36,4 +36,3 @@ input[type="checkbox"] + label::before,
 input[type="radio"] + label::before {
   display: none;
 }
-
