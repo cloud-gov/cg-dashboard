@@ -125,6 +125,8 @@ function app(orgGuid, spaceGuid, appGuid) {
   quotaActions.fetchAll();
   appActions.changeCurrentApp(appGuid);
   appActions.fetch(appGuid).then((res) => {
+    // Only fetch app stats when the app is running, otherwise the stats
+    // request will fail.
     if (appHealth(res) === entityHealth.ok) {
       appActions.fetchStats(appGuid);
     }
