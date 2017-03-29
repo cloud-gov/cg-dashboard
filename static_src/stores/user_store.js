@@ -314,10 +314,10 @@ export class UserStore extends BaseStore {
     return this._loading.currentUser === true;
   }
 
-  hasRole(userGuid, entityGuid, role) {
-    let wrappedRoles = role;
-    if (!role.length) {
-      wrappedRoles = [role];
+  hasRole(userGuid, entityGuid, roleToCheck) {
+    let wrappedRoles = roleToCheck;
+    if (!roleToCheck.length) {
+      wrappedRoles = [roleToCheck];
     }
 
     const key = entityGuid;

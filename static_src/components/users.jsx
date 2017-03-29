@@ -27,11 +27,11 @@ function stateSetter() {
   if (currentType === SPACE_NAME) {
     users = UserStore.getAllInSpace(currentSpaceGuid);
     currentUserAccess = UserStore.hasRole(currentUser.guid, currentSpaceGuid,
-                                          'space_manager')
+                                          'space_manager');
   } else {
     users = UserStore.getAllInOrg(currentOrgGuid);
     currentUserAccess = UserStore.hasRole(currentUser.guid, currentOrgGuid,
-                                          'org_manager')
+                                          'org_manager');
   }
 
   return {

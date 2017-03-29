@@ -525,7 +525,7 @@ export default {
     return this.fetchAllPages(`/users/${userGuid}/spaces`, data, results => results);
   },
 
-  fetchUserOrgs(userGuid, options = {}) {
+  fetchUserOrgs(userGuid) {
     return this.fetchAllPages(`/users/${userGuid}/organizations`);
   }
 };
