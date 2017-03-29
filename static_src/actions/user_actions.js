@@ -184,29 +184,6 @@ const userActions = {
     return Promise.resolve(user);
   },
 
-  fetchUserSummary(userGuid) {
-    if (!userGuid) {
-      return Promise.reject(new Error('userGuid is required'));
-    }
-
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_SUMMARY_FETCH,
-      userGuid
-    });
-
-    return cfApi.fetchUser(userGuid)
-      .then(userActions.receivedUserSummary);
-  },
-
-  receivedUserSummary(user) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_SUMMARY_RECEIVED,
-      user
-    });
-
-    return Promise.resolve(user);
-  },
-
   fetchUserSpaces(userGuid, options = {}) {
     if (!userGuid) {
       return Promise.reject(new Error('userGuid is required'));
