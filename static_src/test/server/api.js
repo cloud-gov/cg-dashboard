@@ -19,6 +19,8 @@ var spaceRoutes = require('./fixtures/space_routes');
 var spaceSummaries = require('./fixtures/space_summaries');
 var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
 var spaceUserRoles = require('./fixtures/space_user_roles.js');
+var userOrganizations = require('./fixtures/user_organizations.js');
+var userSpaces = require('./fixtures/user_spaces.js');
 
 var BASE_URL = '/v2';
 
@@ -184,6 +186,37 @@ module.exports = function api(smocks) {
       } else {
         reply(MultiResponse(organizationUsers));
       }
+    }
+  });
+
+  smocks.route({
+    id: 'user',
+    label: 'User',
+    path: `${BASE_URL}/users/{guid}`,
+    handler: function (req, reply) {
+      const guid = req.params.guid;
+      const user = organizationUsers.find((orgUser) =>
+        orgUser.metadata.guid === guid);
+
+      reply(SingleResponse(user));
+    }
+  });
+
+  smocks.route({
+    id: 'user-organizations',
+    label: 'User organizations',
+    path: `${BASE_URL}/users/{guid}/organizations`,
+    handler: function(req, reply) {
+      reply(MultiResponse(userOrganizations));
+    }
+  });
+
+  smocks.route({
+    id: 'user-spaces',
+    label: 'User spaces',
+    path: `${BASE_URL}/users/{guid}/spaces`,
+    handler: function(req, reply) {
+      reply(MultiResponse(userSpaces));
     }
   });
 
