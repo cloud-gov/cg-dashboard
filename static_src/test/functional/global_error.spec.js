@@ -1,25 +1,27 @@
 
 import dedent from 'dedent';
 
+import BreadcrumbsElement from './pageobjects/breadcrumbs.element';
 import GlobalErrorsElement from './pageobjects/global_errors.element';
 
-
 describe('Global error', function () {
-  it('navigates to specific app page', function () {
+  let globalErrorsElement;
+
+  it('navigates to specific app page with broken data', function () {
     browser.url(dedent`/#/org/48b3f8a1-ffe7-4aa8-8e85-94768d6bd250/
       spaces/82af0edb-8540-4064-82f2-d74df612b794/
       apps/3c37ff32-d954-4f9f-b730-15e22442fd82`);
   });
 
   describe('global errors', function () {
-    let globalErrorsElement;
-
-    it('exists', function () {
+    beforeEach(function () {
       globalErrorsElement = new GlobalErrorsElement(
         browser,
         browser.element('.test-global-errors')
       );
+    });
 
+    it('exists', function () {
       expect(globalErrorsElement.exists()).toBe(true);
     });
 
@@ -50,6 +52,25 @@ describe('Global error', function () {
         notificationElement.dismiss();
 
         expect(globalErrorsElement.notifications().length).toEqual(notificationAmount - 1);
+      });
+    });
+
+    describe('on different page', function () {
+      beforeEach(function () {
+        browser.refresh();
+        globalErrorsElement = new GlobalErrorsElement(
+          browser,
+          browser.element('.test-global-errors')
+        );
+      });
+
+      it('dismisses the error when navigating to any other route', function () {
+        const breadcrumbsElement = new BreadcrumbsElement(
+          browser,
+          browser.element(BreadcrumbsElement.primarySelector)
+        );
+        breadcrumbsElement.goToSpace();
+        expect(globalErrorsElement.notifications().length).toEqual(0);
       });
     });
   });

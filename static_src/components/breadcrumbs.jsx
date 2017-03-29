@@ -71,7 +71,7 @@ export default class Breadcrumbs extends React.Component {
     }
 
     return (
-      <ol className={ this.styler('breadcrumbs') }>
+      <ol className={ this.styler('breadcrumbs', 'test-breadcrumbs') }>
         { breadcrumbs }
       </ol>
     );
