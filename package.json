@@ -9,6 +9,7 @@
   "main": "null",
   "scripts": {
     "build": "npm run clean && webpack --config webpack.config.js",
+    "build-prod": "npm run clean && webpack -p --config webpack.config.js",
     "build-style": "cd node_modules/cloudgov-style && npm install && npm run build",
     "check-style": "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"git://github.com\" ]] && npm run build-style || exit 0'",
     "clean": "rm -rf ./static/assets/*",

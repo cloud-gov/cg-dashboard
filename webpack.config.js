@@ -44,7 +44,8 @@ const config = {
         test: /\.css$/,
         include: [
           path.resolve(__dirname, 'static_src/css'),
-          path.resolve(__dirname, 'node_modules/cloudgov-style')
+          path.resolve(__dirname, 'node_modules/cloudgov-style'),
+          CG_STYLE_PATH || ' '
         ],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
@@ -67,7 +68,10 @@ const config = {
       skin: path.resolve(__dirname, `static_src/skins/${CF_SKIN}`)
     },
 
-    modules: ['node_modules']
+    modules: ['node_modules'],
+    // Required for some module configs which use these fields
+    // See https://github.com/flatiron/director/issues/349
+    mainFields: ['browserify', 'browser', 'module', 'main']
   },
 
   plugins: [
@@ -96,7 +100,6 @@ if (TEST) {
 }
 
 if (PRODUCTION) {
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin());
   config.plugins.push(new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify('production')
