@@ -316,7 +316,7 @@ export class UserStore extends BaseStore {
 
   hasRole(userGuid, entityGuid, roleToCheck) {
     let wrappedRoles = roleToCheck;
-    if (!roleToCheck.length) {
+    if (!Array.isArray(roleToCheck)) {
       wrappedRoles = [roleToCheck];
     }
 
