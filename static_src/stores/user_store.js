@@ -314,6 +314,16 @@ export class UserStore extends BaseStore {
     return this._loading.currentUser === true;
   }
 
+  /*
+   * Returns if a user with userGuid has ANY role within the enity of the
+   * entityGuid.
+   * @param {string} userGuid - The guid of the user.
+   * @param {string} entityGuid - The guid of the entity (space or org) to
+   * check roles for.
+   * @param {string|array} roleToCheck - Either a single role as a string or
+   * an array of roles to check if the user has ANY of the roles.
+   * @return {boolean} Whether the user has the role.
+   */
   hasRole(userGuid, entityGuid, roleToCheck) {
     let wrappedRoles = roleToCheck;
     if (!Array.isArray(roleToCheck)) {
