@@ -59,7 +59,7 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	logRouter.Get("/recent", (*LogContext).RecentLogs)
 
 	// Add auth middleware
-	router.Middleware((*Context).LoginRequired)
+	secureRouter.Middleware((*SecureContext).LoginRequired)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.

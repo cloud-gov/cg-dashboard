@@ -35,6 +35,34 @@ func (c *SecureContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.
 	next(rw, req)
 }
 
+// LoginRequired is a middleware that requires a valid token or returns Unauthorized
+func (c *SecureContext) LoginRequired(rw web.ResponseWriter, r *web.Request, next web.NextMiddlewareFunc) {
+
+	// If there is no request just continue
+	if r == nil {
+		next(rw, r)
+		return
+	}
+
+	// Don't cache anything
+	// right now, there's a problem where when you initially logout and then
+	// revisit the server, you will get a bad view due to a caching issue.
+	// for now, we clear the cache for everything.
+	// TODO: revist and cache static assets.
+	rw.Header().Set("cache-control", "no-cache, no-store, must-revalidate, private")
+	rw.Header().Set("pragma", "no-cache")
+	rw.Header().Set("expires", "-1")
+
+	token := helpers.GetValidToken(r.Request, c.Settings)
+	if token != nil {
+		next(rw, r)
+	} else {
+		// Respond with Unauthorized, the client should detect this,
+		// show appropriate messaging or redirect to login
+		rw.WriteHeader(http.StatusUnauthorized)
+	}
+}
+
 // Proxy is an internal function that will construct the client with the token in the headers and
 // then send a request.
 func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url string, responseHandler ResponseHandler) {

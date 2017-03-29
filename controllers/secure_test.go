@@ -30,9 +30,8 @@ var oauthTests = []BasicSecureTest{
 			TestName:    "Basic Invalid OAuth Session",
 			SessionData: InvalidTokenData,
 		},
-		ExpectedResponse: `<a href="http://loginURL.com/oauth/authorize?access_type=online&amp;client_id=ClientID&amp;redirect_uri=http%3A%2F%2Fhostname.com%2Foauth2callback&amp;response_type=code&amp;scope=openid&amp;state=state">Found</a>`,
-		ExpectedCode:     302,
-		ExpectedLocation: "http://loginURL.com/oauth/authorize?access_type=online&client_id=ClientID&redirect_uri=http%3A%2F%2Fhostname.com%2Foauth2callback&response_type=code&scope=openid&state=state",
+		ExpectedResponse: `{"status": "unauthorized"}`,
+		ExpectedCode:     401,
 	},
 }
 
@@ -71,9 +70,6 @@ func TestOAuth(t *testing.T) {
 
 		// Make the request and check.
 		router.ServeHTTP(response, request)
-		if response.Header().Get("Location") != test.ExpectedLocation {
-			t.Errorf("Test %s did not meet expected location header.\nExpected %s.\nFound %s.\n", test.TestName, test.ExpectedLocation, response.Header().Get("Location"))
-		}
 		if !strings.Contains(response.Body.String(), test.ExpectedResponse) {
 			t.Errorf("Test %s did not contain expected value.\nExpected %s.\n Found (%s)\n.", test.TestName, test.ExpectedResponse, response.Body.String())
 		}

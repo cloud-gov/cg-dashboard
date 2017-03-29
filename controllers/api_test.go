@@ -37,7 +37,7 @@ var profileTests = []BasicSecureTest{
 			EnvVars:     MockCompleteEnvVars,
 			SessionData: ValidTokenData,
 		},
-		ExpectedResponse: "/v2/loginurl/profile",
+		ExpectedResponse: "https://loginurl/profile",
 	},
 }
 
