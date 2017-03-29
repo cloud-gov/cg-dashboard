@@ -7,7 +7,7 @@ import GlobalErrorsElement from './pageobjects/global_errors.element';
 const crashedAppUrl = dedent`/#
   /org/48b3f8a1-ffe7-4aa8-8e85-94768d6bd250
   /spaces/82af0edb-8540-4064-82f2-d74df612b794
-  /apps/7fa78964-4d44-4a2a-8d26-7468b7cbf67d`
+  /apps/7fa78964-4d44-4a2a-8d26-7468b7cbf67d`;
 
 const brokenDataAppUrl = dedent`/#
   /org/48b3f8a1-ffe7-4aa8-8e85-94768d6bd250/
@@ -90,7 +90,7 @@ describe('Global error', function () {
         globalErrorsElement = getErrorsComponent();
       });
 
-      it('should not show fetch errors because no stats were fetched', function() {
+      it('should not show fetch errors because no stats were fetched', function () {
         expect(globalErrorsElement.notifications().length).toEqual(0);
       });
     });
