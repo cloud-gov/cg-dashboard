@@ -36,11 +36,12 @@ if (meta) {
 
 const MAX_OVERVIEW_SPACES = 10;
 
-function login() {
+function login(next) {
   ReactDOM.render(<MainContainer><Login /></MainContainer>, mainEl);
+  next();
 }
 
-function overview() {
+function overview(next) {
   pageActions.load();
 
   // Reset the state
@@ -64,9 +65,11 @@ function overview() {
   ReactDOM.render(<MainContainer>
     <Overview />
   </MainContainer>, mainEl);
+
+  next();
 }
 
-function org(orgGuid) {
+function org(orgGuid, next) {
   // Reset the state
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
@@ -81,9 +84,11 @@ function org(orgGuid) {
     <MainContainer>
       <OrgContainer />
     </MainContainer>, mainEl);
+
+  next();
 }
 
-function space(orgGuid, spaceGuid) {
+function space(orgGuid, spaceGuid, next) {
   // Reset the state
   appActions.changeCurrentApp();
 
@@ -96,23 +101,27 @@ function space(orgGuid, spaceGuid) {
   userActions.fetchSpaceUsers(spaceGuid);
   orgActions.fetch(orgGuid);
   serviceActions.fetchAllServices(orgGuid);
+
+  next();
 }
 
-function renderSpaceContainer(page) {
+function renderSpaceContainer(page, next) {
   ReactDOM.render(
     <MainContainer>
       <SpaceContainer
         currentPage={ page }
       />
     </MainContainer>, mainEl);
+  next();
 }
 
-function apps(orgGuid, spaceGuid) {
+function apps(orgGuid, spaceGuid, next) {
   space(orgGuid, spaceGuid);
   renderSpaceContainer('apps');
+  next();
 }
 
-function app(orgGuid, spaceGuid, appGuid) {
+function app(orgGuid, spaceGuid, appGuid, next) {
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
   spaceActions.fetch(spaceGuid);
@@ -130,22 +139,26 @@ function app(orgGuid, spaceGuid, appGuid) {
     <MainContainer>
       <AppContainer />
     </MainContainer>, mainEl);
+  next();
 }
 
 function checkAuth(...args) {
+  const next = args.pop();
   const [orgGuid, spaceGuid] = args;
   userActions.fetchCurrentUser({ orgGuid, spaceGuid });
   orgActions.fetchAll();
   spaceActions.fetchAll();
+  next();
 }
 
-function notFound() {
+function notFound(next) {
   // Reset the state
   orgActions.changeCurrentOrg();
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
 
   ReactDOM.render(<h1>Not Found</h1>, mainEl);
+  next();
 }
 
 const routes = {
@@ -172,6 +185,7 @@ const routes = {
 
 const router = new Router(routes);
 router.configure({
+  async: true,
   before: checkAuth,
   notfound: notFound,
   on: () => trackPageView(window.location.hash)
