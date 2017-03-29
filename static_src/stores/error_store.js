@@ -46,6 +46,11 @@ export class ErrorStore extends BaseStore {
         break;
       }
 
+      case errorActionTypes.CLEAR: {
+        this._data = new Immutable.List();
+        this.emitChange();
+        break;
+      }
       default:
         break;
     }

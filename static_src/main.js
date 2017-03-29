@@ -13,6 +13,7 @@ import activityActions from './actions/activity_actions.js';
 import AppContainer from './components/app_container.jsx';
 import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
+import errorActions from './actions/error_actions.js';
 import Login from './components/login.jsx';
 import MainContainer from './components/main_container.jsx';
 import orgActions from './actions/org_actions.js';
@@ -181,6 +182,9 @@ const router = new Router(routes);
 router.configure({
   before: checkAuth,
   notfound: notFound,
-  on: () => trackPageView(window.location.hash)
+  on: () => {
+    errorActions.clearErrors();
+    trackPageView(window.location.hash)
+  }
 });
 router.init('/');

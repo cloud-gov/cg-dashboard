@@ -48,6 +48,14 @@ export default {
       msg,
       err
     });
+  },
+
+  clearErrors() {
+    AppDispatcher.handleUIAction({
+      type: errorActionTypes.CLEAR
+    });
+
+    return Promise.resolve();
   }
 };
 /* eslint-enable no-alert, no-console */

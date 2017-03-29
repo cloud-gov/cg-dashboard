@@ -33,7 +33,8 @@ const entityHealth = keymirror({
 const errorActionTypes = keymirror({
   FETCH: null,
   IMPORTANT_FETCH: null,
-  DISMISS: null
+  DISMISS: null,
+  CLEAR: null
 });
 
 const formActionTypes = keymirror({
