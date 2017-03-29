@@ -18,7 +18,7 @@
     "test-unit": "NODE_ENV=test karma start --single-run",
     "test-selenium-install": "selenium-standalone install",
     "testing-server": "PORT=8001 npm run testing-server-run",
-    "testing-server-run": "nodemon --watch ./static_src/test/server ./static_src/test/server/server.js",
+    "testing-server-run": "node ./static_src/test/server/server.js",
     "watch-server": "npm run testing-server & npm run watch",
     "watch-test": "NODE_ENV=test karma start --browsers Chrome",
     "watch": "webpack --watch"
