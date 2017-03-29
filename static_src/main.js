@@ -182,11 +182,11 @@ const routes = {
 
 const router = new Router(routes);
 router.configure({
-  before: checkAuth,
-  notfound: notFound,
-  on: () => {
+  before: () => {
+    checkAuth();
     errorActions.clearErrors();
-    trackPageView(window.location.hash);
-  }
+  },
+  notfound: notFound,
+  on: trackPageView(window.location.hash)
 });
 router.init('/');
