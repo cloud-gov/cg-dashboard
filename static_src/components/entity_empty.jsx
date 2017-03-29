@@ -26,8 +26,8 @@ export default class EntityEmpty extends React.Component {
     const props = this.props;
     return (
       <PanelDocumentation>
-        <div className={ this.styler('empty') }>
-          <h4>{ props.callout }</h4>
+        <div className={ this.styler('empty', 'test-empty') }>
+          <h4 className="test-empty-callout">{ props.callout }</h4>
           { props.children }
 
         </div>
