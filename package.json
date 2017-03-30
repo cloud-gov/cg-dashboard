@@ -19,7 +19,7 @@
     "test-selenium-install": "selenium-standalone install",
     "testing-server": "PORT=8001 npm run testing-server-run",
     "testing-server-run": "node ./static_src/test/server/server.js",
-    "track-performance": "npm run testing-server -- lighthouse http://localhost:8001/#/ --output 'json' --output-path '$CIRCLE_ARTIFACTS/perf-$CIRCLE_BUILD_NUM.json' --verbose",
+    "track-performance": "PORT=8002 npm run testing-server-run -- lighthouse http://localhost:8002/#/ --output 'json' --output-path '$CIRCLE_ARTIFACTS/perf-$CIRCLE_BUILD_NUM.json' --verbose",
     "watch-server": "npm run testing-server & npm run watch",
     "watch-test": "NODE_ENV=test karma start --browsers Chrome",
     "watch": "webpack --watch"
