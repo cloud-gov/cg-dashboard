@@ -52,3 +52,41 @@ func TestLoginHandshake(t *testing.T) {
 	}
 
 }
+
+var logoutTests = []BasicSecureTest{
+	{
+		BasicConsoleUnitTest: BasicConsoleUnitTest{
+			TestName:    "Basic Authorized Profile To Logout",
+			EnvVars:     MockCompleteEnvVars,
+			SessionData: ValidTokenData,
+		},
+		ExpectedResponse: "https://loginurl/logout.do",
+	},
+	{
+		BasicConsoleUnitTest: BasicConsoleUnitTest{
+			TestName: "Basic Unauthorized Profile To Logout",
+			EnvVars:  MockCompleteEnvVars,
+		},
+		ExpectedResponse: "https://loginurl/logout.do",
+	},
+}
+
+func TestLogout(t *testing.T) {
+	for _, test := range logoutTests {
+		// Create request
+		response, request := NewTestRequest("GET", "/logout", nil)
+
+		router, store := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
+		router.ServeHTTP(response, request)
+		location := response.Header().Get("location")
+		if location != test.ExpectedResponse {
+			t.Errorf("Logout route does not redirect to logout page (%s:%s)", location, test.ExpectedResponse)
+		}
+		if store.Session.Options.MaxAge != -1 {
+			t.Errorf("Logout does not change MaxAge to -1")
+		}
+		if store.Session.Values["token"] != nil {
+			t.Errorf("Logout does not clear the token stored in the session")
+		}
+	}
+}

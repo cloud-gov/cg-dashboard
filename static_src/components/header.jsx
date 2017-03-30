@@ -30,7 +30,7 @@ export default class Header extends React.Component {
       </Action>
     </HeaderLink>:
     <HeaderLink>
-      <Action href="/v2/logout" label="Log out" type="outline">
+      <Action href="/logout" label="Log out" type="outline">
         Log out
       </Action>
     </HeaderLink>;
