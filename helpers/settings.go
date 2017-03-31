@@ -41,6 +41,8 @@ type Settings struct {
 	BuildInfo string
 	//Set the secure flag on session cookies?
 	SecureCookies bool
+	// URL where this app is hosted
+	AppURL string
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -71,6 +73,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 		return errors.New("Unable to find '" + SessionKeyEnvVar + "' in environment. Exiting.\n")
 	}
 
+	s.AppURL = envVars.Hostname
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
 	s.TokenContext = context.TODO()
@@ -86,7 +89,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	s.OAuthConfig = &oauth2.Config{
 		ClientID:     envVars.ClientID,
 		ClientSecret: envVars.ClientSecret,
-		RedirectURL:  envVars.Hostname + "/oauth2callback",
+		RedirectURL:  s.AppURL + "/oauth2callback",
 		Scopes:       []string{"cloud_controller.read", "cloud_controller.write", "cloud_controller.admin", "scim.read", "openid"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  envVars.LoginURL + "/oauth/authorize",

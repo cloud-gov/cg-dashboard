@@ -25,14 +25,14 @@ var loginHandshakeTests = []BasicConsoleUnitTest{
 		TestName:    "Login Handshake With Already Authenticated User",
 		EnvVars:     MockCompleteEnvVars,
 		Code:        302,
-		Location:    "/#/dashboard",
+		Location:    "https://hostname/#/dashboard",
 		SessionData: ValidTokenData,
 	},
 	{
 		TestName: "Login Handshake With Non Authenticated User",
 		EnvVars:  MockCompleteEnvVars,
 		Code:     302,
-		Location: "/oauth/authorize",
+		Location: "https://loginurl/oauth/authorize",
 	},
 }
 

@@ -151,7 +151,7 @@ type BasicProxyTest struct {
 var MockCompleteEnvVars = helpers.EnvVars{
 	ClientID:     "ID",
 	ClientSecret: "Secret",
-	Hostname:     "hostname",
+	Hostname:     "https://hostname",
 	LoginURL:     "https://loginurl",
 	UAAURL:       "https://uaaurl",
 	APIURL:       "https://apiurl",
