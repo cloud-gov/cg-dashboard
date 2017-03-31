@@ -34,8 +34,8 @@ func (c *Context) Ping(rw web.ResponseWriter, req *web.Request) {
 func (c *Context) LoginHandshake(rw web.ResponseWriter, req *web.Request) {
 	if token := helpers.GetValidToken(req.Request, c.Settings); token != nil {
 		// We should just go to dashboard if the user already has a valid token.
-		dashboardUrl := fmt.Sprintf("%s%s", c.Settings.AppURL, "/#/dashboard")
-		http.Redirect(rw, req.Request, dashboardUrl, http.StatusFound)
+		dashboardURL := fmt.Sprintf("%s%s", c.Settings.AppURL, "/#/dashboard")
+		http.Redirect(rw, req.Request, dashboardURL, http.StatusFound)
 
 	} else {
 		// Redirect to the Cloud Foundry Login place.
@@ -83,8 +83,8 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 	}
 
 	// Redirect to the dashboard.
-	dashboardUrl := fmt.Sprintf("%s%s", c.Settings.AppURL, "/#/dashboard")
-	http.Redirect(rw, req.Request, dashboardUrl, http.StatusFound)
+	dashboardURL := fmt.Sprintf("%s%s", c.Settings.AppURL, "/#/dashboard")
+	http.Redirect(rw, req.Request, dashboardURL, http.StatusFound)
 	// TODO. Redirect to the original route.
 }
 
