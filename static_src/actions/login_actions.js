@@ -5,15 +5,28 @@
  */
 
 import AppDispatcher from '../dispatcher.js';
-import errorActions from './error_actions';
+import cfApi from '../util/cf_api';
 import { loginActionTypes } from '../constants';
 
-export default {
-  receivedStatus(status) {
-    AppDispatcher.handleServerAction({
-      type: loginActionTypes.RECEIVED_STATUS,
+const loginActions = {
+  fetchStatus() {
+    AppDispatcher.handleViewAction({
+      type: loginActionTypes.FETCH_STATUS,
       status
     });
+
+    return cfApi.getAuthStatus()
+      .then(loginActions.receivedStatus)
+      .catch(loginActions.errorStatus);
+  },
+
+  receivedStatus(authStatus) {
+    AppDispatcher.handleServerAction({
+      type: loginActionTypes.RECEIVED_STATUS,
+      authStatus
+    });
+
+    return Promise.resolve(authStatus);
   },
 
   errorStatus(err) {
@@ -22,8 +35,10 @@ export default {
       err
     });
 
-    return errorActions.notifyError(err)
-      // Don't return the error since caller is expecting a login status.
-      .then(() => null);
+    // Don't return the error since caller is expecting a login status.
+    // undefined return is important to indicate an error occurred.
+    return Promise.resolve();
   }
 };
+
+export default loginActions;

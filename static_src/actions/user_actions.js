@@ -143,24 +143,6 @@ const userActions = {
     return Promise.resolve(userInfo);
   },
 
-  fetchAuthStatus() {
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.AUTH_STATUS_FETCH
-    });
-
-    return cfApi.getAuthStatus()
-      .then(status => userActions.receivedAuthStatus(status));
-  },
-
-  receivedAuthStatus(status) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.AUTH_STATUS_RECEIVED,
-      status
-    });
-
-    return Promise.resolve(status);
-  },
-
   fetchUser(userGuid) {
     if (!userGuid) {
       return Promise.reject(new Error('userGuid is required'));
@@ -245,8 +227,8 @@ const userActions = {
     });
 
     // TODO add error action
-    return userActions.fetchAuthStatus()
-      .then(userActions.fetchCurrentUserInfo)
+    return userActions
+      .fetchCurrentUserInfo()
       .then(userInfo =>
         Promise.all([
           userActions.fetchUser(userInfo.user_id),

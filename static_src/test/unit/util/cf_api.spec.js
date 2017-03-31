@@ -488,7 +488,7 @@ describe('cfApi', function() {
       expect(actual).toMatch('authstatus');
     });
 
-    describe('given success', function () {
+    describe('given authorized', function () {
       let expectedStatus, result;
 
       beforeEach(function (done) {
@@ -508,22 +508,23 @@ describe('cfApi', function() {
       });
     });
 
-    describe('given failure', function () {
-      let result;
+    describe('given error', function () {
+      let err, result;
 
       beforeEach(function (done) {
-        http.get.returns(Promise.reject({ data: { status: 'unauthorized' } }));
+        err = new Error('network error');
+        http.get.returns(Promise.reject(err));
 
         cfApi.getAuthStatus()
-          .then(_result => {
+          .then(done.fail)
+          .catch(_result => {
             result = _result;
             done();
-          })
-          .catch(done.fail);
+          });
       });
 
-      it('calls received status with false on failure', () => {
-        expect(result).toBe(false);
+      it('rejects with error', () => {
+        expect(result).toBe(err);
       });
     });
   });

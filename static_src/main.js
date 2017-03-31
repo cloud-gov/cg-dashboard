@@ -147,9 +147,10 @@ function app(orgGuid, spaceGuid, appGuid, next) {
 function checkAuth(...args) {
   const next = args.pop();
   const [orgGuid, spaceGuid] = args;
-  userActions
-    .fetchCurrentUser({ orgGuid, spaceGuid })
+  loginActions
+    .fetchStatus()
     .then(() => {
+      userActions.fetchCurrentUser({ orgGuid, spaceGuid });
       orgActions.fetchAll();
       spaceActions.fetchAll();
       next();

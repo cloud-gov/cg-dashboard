@@ -2,6 +2,7 @@
 require('babel-polyfill');
 
 import jasmineEnzyme from 'jasmine-enzyme';
+import LoginStore from '../stores/login_store';
 import UserStore from '../stores/user_store';
 
 Function.prototype.bind = Function.prototype.bind || function (thisp) {
@@ -254,4 +255,5 @@ afterEach(function () {
 // processed twice.
 // UserStore is only an issue because the store calls cfApi. cfApi calls should
 // be moved to the actions.
+LoginStore.unsubscribe();
 UserStore.unsubscribe();
