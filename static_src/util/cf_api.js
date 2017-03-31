@@ -131,12 +131,11 @@ export default {
   },
 
   getAuthStatus() {
+    // Note: the getAuthStatus call will return 401 when not logged in, so
+    // failure here means the user was likely not logged in. Although there
+    // could be the additional problem that there was a problem with the req.
     return http.get(`${APIV}/authstatus`)
-      .then(res => res.data.status)
-      // Note: the getAuthStatus call will return 401 when not logged in, so
-      // failure here means the user was likely not logged in. Although there
-      // could be the additional problem that there was a problem with the req.
-      .catch(() => false);
+      .then(res => res.data.status);
   },
 
   fetchOrgLinks(guid) {

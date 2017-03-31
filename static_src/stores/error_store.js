@@ -29,6 +29,13 @@ export class ErrorStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
+      case errorActionTypes.NOTIFY: {
+        const err = Object.assign({}, action.err);
+        // Put this error at the top, since it is considered higher priority
+        this._data = this._data.unshift(err);
+        break;
+      }
+
       case errorActionTypes.IMPORTANT_FETCH: {
         const err = Object.assign({}, { description: action.msg }, action.err);
         this.push(err);

@@ -33,7 +33,8 @@ const entityHealth = keymirror({
 const errorActionTypes = keymirror({
   FETCH: null,
   IMPORTANT_FETCH: null,
-  DISMISS: null
+  DISMISS: null,
+  NOTIFY: null
 });
 
 const formActionTypes = keymirror({
@@ -49,6 +50,8 @@ const formActionTypes = keymirror({
 const loginActionTypes = keymirror({
   // Action of fetching a login status, whether the user is logged in or not.
   FETCH_STATUS: null,
+  // Login status is unknown, an error occurred.
+  ERROR_STATUS: null,
   // Action when the login status is received from the server.
   RECEIVED_STATUS: null
 });

@@ -21,6 +21,12 @@ class LoginStore extends BaseStore {
         this.emitChange();
         break;
 
+      case loginActionTypes.ERROR_STATUS:
+        // noop
+        // Login status is unknown. If we have a login status, leave it as is
+        // and hope things go smooth. A notification is handled elsewhere.
+        break;
+
       default:
         break;
     }

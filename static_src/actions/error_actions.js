@@ -37,6 +37,15 @@ export default {
     return Promise.resolve(err);
   },
 
+  notifyError(err) {
+    AppDispatcher.handleUIAction({
+      type: errorActionTypes.NOTIFY,
+      err
+    });
+
+    return Promise.resolve(err);
+  },
+
   importantDataFetchError(err, entityMessage) {
     console.error(err);
 

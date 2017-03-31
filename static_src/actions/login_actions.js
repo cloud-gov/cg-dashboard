@@ -5,6 +5,7 @@
  */
 
 import AppDispatcher from '../dispatcher.js';
+import errorActions from './error_actions';
 import { loginActionTypes } from '../constants';
 
 export default {
@@ -13,5 +14,16 @@ export default {
       type: loginActionTypes.RECEIVED_STATUS,
       status
     });
+  },
+
+  errorStatus(err) {
+    AppDispatcher.handleServerAction({
+      type: loginActionTypes.ERROR_STATUS,
+      err
+    });
+
+    return errorActions.notifyError(err)
+      // Don't return the error since caller is expecting a login status.
+      .then(() => null);
   }
 };
