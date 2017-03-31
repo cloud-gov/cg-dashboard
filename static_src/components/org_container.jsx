@@ -1,14 +1,15 @@
 
 import React from 'react';
 
+import { config } from 'skin';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 
 import AppCountStatus from './app_count_status.jsx';
 import Breadcrumbs from './breadcrumbs.jsx';
-
 import EntityIcon from './entity_icon.jsx';
+import EntityEmpty from './entity_empty.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
@@ -18,9 +19,15 @@ import SpaceCountStatus from './space_count_status.jsx';
 import SpaceStore from '../stores/space_store.js';
 import SpaceQuicklook from './space_quicklook.jsx';
 import Users from './users.jsx';
+import UserStore from '../stores/user_store.js';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
+  const currentSpaceGuid = SpaceStore.currentSpaceGuid;
+  const currentUser = UserStore.currentUser;
+  const currentUserCanViewSpace =
+    UserStore.hasRole(currentUser, currentOrgGuid, 'org_manager') ||
+    UserStore.hasRole(currentUser, currentSpaceGuid, SpaceStore.viewPermissionRoles());
 
   const org = OrgStore.get(currentOrgGuid);
   const spaces = SpaceStore.getAll()
@@ -28,6 +35,7 @@ function stateSetter() {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return {
+    currentUserCanViewSpace,
     empty: !OrgStore.loading && !SpaceStore.loading && !org,
     loading: OrgStore.loading || SpaceStore.loading,
     org: org || {},
@@ -57,6 +65,43 @@ export default class OrgContainer extends React.Component {
     this.setState(stateSetter());
   }
 
+  get emptyState() {
+    let content;
+    let callout;
+
+    if (this.state.currentUserCanViewSpace) {
+      const spaceLink = config.docs.concepts_spaces ?
+        <a href={ config.docs.concepts_spaces }>Spaces</a> :
+        <span>Spaces</span>;
+      const contactLink = config.docs.contact ?
+        <a href={ config.docs.contact }>contact us</a> :
+        <span>contact us</span>;
+
+      callout = 'You have no spaces in this organization';
+      content = (
+        <p>
+          { spaceLink } are environments for development, deployment, and
+          maintenance of  apps and services. If you think you have spaces you
+          don’t see here, { contactLink }.
+        </p>
+      );
+    } else {
+      callout = 'You don’t have permission to see the spaces in this organization.';
+      content = (
+        <p>
+          Organization auditors and billing managers can’t view spaces.
+          Ask your organization’s administrator to give you these permissions..
+        </p>
+      );
+    }
+
+    return (
+      <EntityEmpty callout={ callout }>
+        { content }
+      </EntityEmpty>
+    );
+  }
+
   allServices() {
     return this.state.spaces.reduce((all, space) => {
       if (space.services && space.services.length) {
@@ -84,6 +129,15 @@ export default class OrgContainer extends React.Component {
         <EntityIcon entity="org" iconSize="large" /> { state.org.name }
       </span>
     );
+    const spaces = !state.spaces.length ? this.emptyState :
+      state.spaces.map((space) => (
+        <SpaceQuicklook
+          key={ space.guid }
+          space={ space }
+          orgGuid={ state.org.guid }
+          showAppDetail
+        />
+      ));
 
     if (state.empty) {
       content = <h4 className="test-none_message">No organizations</h4>;
@@ -115,16 +169,7 @@ export default class OrgContainer extends React.Component {
               </div>
             </div>
           </div>
-
-          { state.spaces.map((space) => (
-            <SpaceQuicklook
-              key={ space.guid }
-              space={ space }
-              orgGuid={ state.org.guid }
-              showAppDetail
-            />
-            )
-          )}
+          { spaces }
         </Panel>
 
         <Panel title="Organization users">

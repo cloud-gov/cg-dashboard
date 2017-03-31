@@ -25,7 +25,7 @@ const resourceToRole = {
   }
 };
 
-class UserStore extends BaseStore {
+export class UserStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
@@ -33,6 +33,7 @@ class UserStore extends BaseStore {
     this._currentViewedType = 'space_users';
     this._currentUserGuid = null;
     this._error = null;
+    this._loading = {};
   }
 
   _registerToActions(action) {
@@ -195,11 +196,71 @@ class UserStore extends BaseStore {
       }
 
       case userActionTypes.CURRENT_USER_INFO_RECEIVED: {
-        const user = this.get(action.currentUser.user_id);
-        if (user) {
-          this._currentUserGuid = user.guid;
+        const guid = action.currentUser.user_id;
+        const userInfo = Object.assign(
+          {},
+          action.currentUser,
+          { guid }
+        );
+        this.merge('guid', userInfo, () => {
+          this._currentUserGuid = guid;
+
+          // Always emit change
           this.emitChange();
+        });
+        break;
+      }
+
+      case userActionTypes.USER_FETCH: {
+        this.merge('guid', { guid: action.userGuid, fetching: true });
+        break;
+      }
+
+      case userActionTypes.USER_RECEIVED: {
+        const receivedUser = Object.assign({}, action.user, { fetching: false });
+        if (action.user) {
+          this.merge('guid', receivedUser);
         }
+        break;
+      }
+
+      case userActionTypes.USER_SPACES_RECEIVED:
+      case userActionTypes.USER_ORGS_RECEIVED: {
+        const user = this.get(action.userGuid);
+        if (!user) {
+          break;
+        }
+
+        const rolesByType = action.userOrgs || action.userSpaces;
+
+        const updatedRoles = rolesByType.reduce((roles, roleByType) => {
+          const key = roleByType.guid;
+          // TODO this would be nice if it was an immutable Set
+          // We don't check for duplicates, we just continually append.  We're
+          // assuming guids are unique between entity types, so user.roles
+          // could contain roles for orgs too.
+          const certainRoles = roles[key] || [];
+          if (action.type === userActionTypes.USER_ORGS_RECEIVED) {
+            roles[key] = certainRoles.concat(['org_manager']); // eslint-disable-line
+          } else {
+            roles[key] = certainRoles.concat(['space_developer']); // eslint-disable-line
+          }
+          return roles;
+        }, user.roles || {});
+
+        this.merge('guid', { guid: user.guid, roles: updatedRoles });
+        break;
+      }
+
+      case userActionTypes.CURRENT_USER_FETCH: {
+        this._loading.currentUser = true;
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.CURRENT_USER_RECEIVED: {
+        this._loading.currentUser = false;
+        this.emitChange();
         break;
       }
 
@@ -249,19 +310,30 @@ class UserStore extends BaseStore {
     return this._currentViewedType;
   }
 
-  _hasRole(roleToCheck, userType) {
-    const user = this.currentUser;
-    if (!user) return false;
-    if (!user[userType]) return false;
-    return !!(user[userType].find((role) => role === roleToCheck));
+  get isLoadingCurrentUser() {
+    return this._loading.currentUser === true;
   }
 
-  currentUserHasSpaceRole(role) {
-    return this._hasRole(role, 'space_roles');
-  }
+  /*
+   * Returns if a user with userGuid has ANY role within the enity of the
+   * entityGuid.
+   * @param {string} userGuid - The guid of the user.
+   * @param {string} entityGuid - The guid of the entity (space or org) to
+   * check roles for.
+   * @param {string|array} roleToCheck - Either a single role as a string or
+   * an array of roles to check if the user has ANY of the roles.
+   * @return {boolean} Whether the user has the role.
+   */
+  hasRole(userGuid, entityGuid, roleToCheck) {
+    let wrappedRoles = roleToCheck;
+    if (!Array.isArray(roleToCheck)) {
+      wrappedRoles = [roleToCheck];
+    }
 
-  currentUserHasOrgRole(role) {
-    return this._hasRole(role, 'organization_roles');
+    const key = entityGuid;
+    const user = this.get(userGuid);
+    const roles = user && user.roles && user.roles[key] || [];
+    return !!roles.find((role) => wrappedRoles.includes(role));
   }
 
   get currentUser() {

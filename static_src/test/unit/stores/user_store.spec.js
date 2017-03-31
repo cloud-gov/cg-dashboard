@@ -5,20 +5,20 @@ import Immutable from 'immutable';
 
 import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
-import UserStore from '../../../stores/user_store.js';
+import { UserStore as _UserStore } from '../../../stores/user_store.js';
 import userActions from '../../../actions/user_actions.js';
 import { userActionTypes } from '../../../constants';
 
-describe('UserStore', function() {
-  var sandbox;
+describe('UserStore', function () {
+  let sandbox, UserStore;
 
   beforeEach(() => {
-    UserStore._data = Immutable.List();
-    UserStore._currentUserGuid = null;
+    UserStore = new _UserStore();
     sandbox = sinon.sandbox.create();
   });
 
   afterEach(() => {
+    UserStore.unsubscribe();
     sandbox.restore();
   });
 
@@ -401,33 +401,35 @@ describe('UserStore', function() {
     });
   });
 
-  describe('on current user info received', function() {
-    it('should emit a change event if user found', function() {
+  describe('on current user info received', function () {
+    it('should emit a change event always', function () {
       const userGuid = 'zxsdkfjasdfladsf';
       const user = { user_id: userGuid, user_name: 'mr' };
       const existingUser = { guid: userGuid };
       const spy = sandbox.spy(UserStore, 'emitChange');
-      userActions.receivedCurrentUserInfo(user);
-
-      expect(spy).not.toHaveBeenCalled();
 
       UserStore._data = Immutable.fromJS([existingUser]);
-      userActions.receivedCurrentUserInfo(user);
+      AppDispatcher.handleServerAction({
+        type: userActionTypes.CURRENT_USER_INFO_RECEIVED,
+        currentUser: user
+      });
 
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should set the currentUser to user object if exists', function() {
+    it('should merge the currentUser', function () {
       const userGuid = 'zxsdkfjasdfladsf';
       const currentUserInfo = { user_id: userGuid, user_name: 'mr' };
       const existingUser = { guid: userGuid };
       UserStore._data = Immutable.fromJS([existingUser]);
 
-      userActions.receivedCurrentUserInfo(currentUserInfo);
+      AppDispatcher.handleServerAction({
+        type: userActionTypes.CURRENT_USER_INFO_RECEIVED,
+        currentUser: currentUserInfo
+      });
 
       const actual = UserStore.currentUser;
-
-      expect(actual).toEqual(existingUser);
+      expect(actual).toEqual({ ...currentUserInfo, ...existingUser });
     });
   });
 
@@ -445,82 +447,6 @@ describe('UserStore', function() {
     });
   });
 
-  describe('currentUserHasSpaceRole()', function() {
-    it('should call _hasRole() with role and userType of space', function() {
-      const spy = sandbox.spy(UserStore, '_hasRole');
-      const testRole = 'space';
-
-      UserStore.currentUserHasSpaceRole(testRole);
-
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(testRole, 'space_roles');
-    });
-  });
-
-  describe('currentUserHasOrgRole()', function() {
-    it('should call _hasRole() with role and userType of org', function() {
-      const spy = sandbox.spy(UserStore, '_hasRole');
-      const testRole = 'person';
-
-      UserStore.currentUserHasOrgRole(testRole);
-
-      expect(spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith(testRole, 'organization_roles');
-    });
-  });
-
-  describe('_hasRole()', function() {
-    it('should return false if user not found', function() {
-      const role = 'test';
-      UserStore._currentUserGuid = 'alkdsjf';
-      const actual = UserStore._hasRole(role, 'organization_roles');
-
-      expect(actual).toBeFalsy();
-    });
-
-    it('should return false if user doesn\'t have role', function() {
-      const userGuid = 'adfadsfa';
-      const user = { guid: userGuid, user_name: 'fakeuser', organization_roles: [
-        'iron_throne_manager']};
-      const role = 'vale_manager';
-
-      UserStore._currentUserGuid = userGuid;
-      UserStore.push(user);
-
-      const actual = UserStore._hasRole(role, 'organization_roles');
-
-      expect(actual).toBeFalsy();
-    });
-
-    it('should return false if user doesn\'t have the role type', function() {
-      const userGuid = 'adfadsfa';
-      const user = { guid: userGuid, user_name: 'fakeuser' };
-      const role = 'vale_manager';
-
-      UserStore._currentUserGuid = userGuid;
-      UserStore.push(user);
-
-      const actual = UserStore._hasRole(role, 'organization_roles');
-
-      expect(actual).toBeFalsy();
-    });
-
-    it('should true if it finds the role on the user', function() {
-      const role = 'highgarden_manager';
-      const userGuid = 'adfadsfa';
-      const user = { guid: userGuid, user_name: 'fakeuser', organization_roles: [
-        'iron_throne_manager', role]};
-
-      UserStore._currentUserGuid = userGuid;
-      UserStore.push(user);
-
-      const actual = UserStore._hasRole(role, 'organization_roles');
-
-      expect(actual).toBeTruthy();
-
-    });
-  });
-
   describe('getAllInOrg()', function() {
     it('should find all users that have the org guid passed in', function() {
       var orgGuid = 'asdfa';
@@ -531,6 +457,177 @@ describe('UserStore', function() {
       let actual = UserStore.getAllInOrg(orgGuid);
 
       expect(actual[0]).toEqual(testUser);
+    });
+  });
+
+  describe('USER_FETCH', function () {
+    let user;
+    beforeEach(function () {
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_FETCH,
+        userGuid: '123'
+      });
+
+      user = UserStore.get('123');
+    });
+
+    it('sets user state to fetching', function () {
+      expect(user.fetching).toBe(true);
+    });
+  });
+
+  describe('USER_RECEIVED', function () {
+    let user;
+    beforeEach(function () {
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_RECEIVED,
+        user: { guid: '123' }
+      });
+
+      user = UserStore.get('123');
+    });
+
+    it('sets user state to non-fetching', function () {
+      expect(user.fetching).toBe(false);
+    });
+  });
+
+  describe('USER_SPACES_RECEIVED|USER_ORGS_RECEIVED', function () {
+    let userGuid, userSpaces, userOrgs, user;
+    beforeEach(function () {
+      userGuid = 'user123';
+      userSpaces = [{ guid: 'space123' }, { guid: 'space456' }];
+      userOrgs = [{ guid: 'org123' }];
+
+      // User with no roles
+      UserStore.push({ guid: userGuid });
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_SPACES_RECEIVED,
+        userGuid,
+        userSpaces
+      });
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_ORGS_RECEIVED,
+        userGuid,
+        userOrgs
+      });
+
+      user = UserStore.get(userGuid);
+    });
+
+    it('creates a roles property on user', function () {
+      expect(user.roles).toBeTruthy();
+    });
+
+    it('assigns space_developer role for each space', function () {
+      expect(user.roles).toEqual({
+        space123: ['space_developer'],
+        space456: ['space_developer'],
+        org123: ['org_manager']
+      });
+    });
+
+    it('assigns org_manager role for each org', function () {
+      expect(user.roles).toEqual({
+        space123: ['space_developer'],
+        space456: ['space_developer'],
+        org123: ['org_manager']
+      });
+    });
+  });
+
+  describe('CURRENT_USER_FETCH', function () {
+    beforeEach(function () {
+      sandbox.spy(UserStore, 'emitChange');
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.CURRENT_USER_FETCH
+      });
+    });
+
+    it('sets loading state true', function () {
+      expect(UserStore.isLoadingCurrentUser).toBe(true);
+    });
+
+    it('sets loading currentUser state true', function () {
+      expect(UserStore._loading.currentUser).toBe(true);
+    });
+
+    it('emits change', function () {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('CURRENT_USER_RECEIVED', function () {
+    beforeEach(function () {
+      const currentUser = { guid: '1234' };
+      sandbox.spy(UserStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.CURRENT_USER_RECEIVED,
+        currentUser
+      });
+    });
+
+    it('sets loading state false', function () {
+      expect(UserStore.isLoadingCurrentUser).toBe(false);
+    });
+
+    it('sets loading currentUser state false', function () {
+      expect(UserStore._loading.currentUser).toBe(false);
+    });
+
+    it('emits change', function () {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('hasRole()', function () {
+    describe('user with space_developer and org roles', function () {
+      let user, space, org;
+
+      beforeEach(function () {
+        org = { guid: 'org1234' };
+        space = { guid: 'space1234' };
+        user = {
+          guid: 'user123',
+          roles: {
+            [space.guid]: ['space_developer'],
+            [org.guid]: ['org_manager', 'org_auditor']
+          }
+        };
+
+        UserStore.push(user);
+      });
+
+      it('returns true for space_developer', function () {
+        expect(UserStore.hasRole(user.guid, space.guid, 'space_developer')).toBe(true);
+      });
+
+      it('returns false for space_manager', function () {
+        expect(UserStore.hasRole(user.guid, space.guid, 'space_manager')).toBe(false);
+      });
+
+      it('returns true for org_manager', function() {
+        expect(UserStore.hasRole(user.guid, org.guid, 'org_manager')).toBe(true);
+      });
+
+      it('returns true for org_manager and org_auditor', function() {
+        expect(UserStore.hasRole(user.guid, org.guid, ['org_manager', 'org_auditor'])).toBe(true);
+      });
+
+      it('returns true for org_manager and org_developer', function() {
+        expect(UserStore.hasRole(user.guid, org.guid, ['org_manager', 'org_developer'])).toBe(true);
+      });
+
+      it('returns false for another space', function () {
+        expect(UserStore.hasRole(user.guid, 'otherspace123', 'space_developer')).toBe(false);
+      });
+
+      it('returns false for another user', function () {
+        expect(UserStore.hasRole('otheruser123', space.guid, 'space_developer')).toBe(false);
+      });
     });
   });
 });

@@ -25,7 +25,6 @@ import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
 import SpaceContainer from './components/space_container.jsx';
 import { trackPageView } from './util/analytics.js';
-import uaaApi from './util/uaa_api.js';
 import userActions from './actions/user_actions.js';
 
 const mainEl = document.querySelector('.js-app');
@@ -133,10 +132,9 @@ function app(orgGuid, spaceGuid, appGuid) {
     </MainContainer>, mainEl);
 }
 
-function checkAuth() {
-  cfApi.getAuthStatus().then(() => {
-    uaaApi.fetchUserInfo();
-  });
+function checkAuth(...args) {
+  const [orgGuid, spaceGuid] = args;
+  userActions.fetchCurrentUser({ orgGuid, spaceGuid });
   orgActions.fetchAll();
   spaceActions.fetchAll();
 }

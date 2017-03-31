@@ -214,6 +214,10 @@ const appActionTypes = keymirror({
 });
 
 const userActionTypes = keymirror({
+  // Fetch auth status from server
+  AUTH_STATUS_FETCH: null,
+  // Auth status received from server
+  AUTH_STATUS_RECEIVED: null,
   // Action to fetch users belonging to a organization from the server.
   ORG_USERS_FETCH: null,
   // Action to fetch the user roles for an org from the server.
@@ -226,6 +230,18 @@ const userActionTypes = keymirror({
   ORG_USER_ROLES_RECEIVED: null,
   // Action when all space users were received from the server.
   SPACE_USERS_RECEIVED: null,
+  // User is fetched from the server
+  USER_FETCH: null,
+  // User is received from the server
+  USER_RECEIVED: null,
+  // Fetch spaces this user is a member of (developer of).
+  USER_SPACES_FETCH: null,
+  // Receive spaces this user is a member of (developer of).
+  USER_SPACES_RECEIVED: null,
+  // Fetch orgss this user is a member of (manager of).
+  USER_ORGS_FETCH: null,
+  // Receive orgss this user is a member of (manager of).
+  USER_ORGS_RECEIVED: null,
   // Action to add permissions to a user for a space or org on the server.
   USER_ROLES_ADD: null,
   // Action when user roles are added on the server.
@@ -242,6 +258,14 @@ const userActionTypes = keymirror({
   ERROR_REMOVE_USER: null,
   // Action when the type of users being looked at changes
   USER_CHANGE_VIEWED_TYPE: null,
+  // Meta action that we are fetching the multiple pieces that make up the current user
+  CURRENT_USER_FETCH: null,
+  // Meta action that the current user is loaded
+  CURRENT_USER_RECEIVED: null,
+  // An error occurred while loading the current user
+  CURRENT_USER_ERROR: null,
+  // Current user info fetched from server.
+  CURRENT_USER_INFO_FETCH: null,
   // Action when current user info received from server.
   CURRENT_USER_INFO_RECEIVED: null
 });

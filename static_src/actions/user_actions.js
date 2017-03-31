@@ -5,9 +5,12 @@
  */
 
 import AppDispatcher from '../dispatcher.js';
+import cfApi from '../util/cf_api';
+import uaaApi from '../util/uaa_api';
 import { userActionTypes } from '../constants';
+import UserStore from '../stores/user_store';
 
-export default {
+const userActions = {
   fetchOrgUsers(orgGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.ORG_USERS_FETCH,
@@ -122,11 +125,149 @@ export default {
     });
   },
 
-  receivedCurrentUserInfo(user) {
+  fetchCurrentUserInfo() {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.CURRENT_USER_INFO_FETCH
+    });
+
+    return uaaApi.fetchUserInfo()
+      .then(userInfo => userActions.receivedCurrentUserInfo(userInfo));
+  },
+
+  receivedCurrentUserInfo(userInfo) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.CURRENT_USER_INFO_RECEIVED,
-      currentUser: user
+      currentUser: userInfo
     });
-  }
 
+    return Promise.resolve(userInfo);
+  },
+
+  fetchAuthStatus() {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.AUTH_STATUS_FETCH
+    });
+
+    return cfApi.getAuthStatus()
+      .then(status => userActions.receivedAuthStatus(status));
+  },
+
+  receivedAuthStatus(status) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.AUTH_STATUS_RECEIVED,
+      status
+    });
+
+    return Promise.resolve(status);
+  },
+
+  fetchUser(userGuid) {
+    if (!userGuid) {
+      return Promise.reject(new Error('userGuid is required'));
+    }
+
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_FETCH,
+      userGuid
+    });
+
+    return cfApi.fetchUser(userGuid)
+      .then(userActions.receivedUser);
+  },
+
+  receivedUser(user) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_RECEIVED,
+      user
+    });
+
+    return Promise.resolve(user);
+  },
+
+  fetchUserSpaces(userGuid, options = {}) {
+    if (!userGuid) {
+      return Promise.reject(new Error('userGuid is required'));
+    }
+
+    // orgGuid s optional for filtering
+    const { orgGuid } = options;
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_SPACES_FETCH,
+      userGuid,
+      orgGuid
+    });
+
+    return cfApi.fetchUserSpaces(userGuid, options)
+      .then(userSpaces => userActions.receivedUserSpaces(userGuid, userSpaces, options));
+  },
+
+  // Optionally specify orgGuid if filtered for spaces belonging to orgGuid
+  receivedUserSpaces(userGuid, userSpaces, options = {}) {
+    const { orgGuid } = options;
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_SPACES_RECEIVED,
+      userGuid,
+      userSpaces,
+      orgGuid
+    });
+
+    return Promise.resolve(userSpaces);
+  },
+
+  fetchUserOrgs(userGuid, options = {}) {
+    if (!userGuid) {
+      return Promise.reject(new Error('userGuid is required'));
+    }
+
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ORGS_FETCH,
+      userGuid
+    });
+
+    return cfApi.fetchUserOrgs(userGuid, options)
+      .then(userOrgs => userActions.receivedUserOrgs(userGuid, userOrgs, options));
+  },
+
+  receivedUserOrgs(userGuid, userOrgs) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_ORGS_RECEIVED,
+      userGuid,
+      userOrgs
+    });
+
+    return Promise.resolve(userOrgs);
+  },
+
+  // Meta action to fetch all the pieces of the current user
+  fetchCurrentUser(options = {}) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.CURRENT_USER_FETCH
+    });
+
+    // TODO add error action
+    return userActions.fetchAuthStatus()
+      .then(userActions.fetchCurrentUserInfo)
+      .then(userInfo =>
+        Promise.all([
+          userActions.fetchUser(userInfo.user_id),
+          userActions.fetchUserOrgs(userInfo.user_id),
+          userActions.fetchUserSpaces(userInfo.user_id, options)
+        ])
+      )
+      // Grab user from store with all merged properties
+      .then(() => UserStore.currentUser)
+      .then(userActions.receivedCurrentUser);
+  },
+
+  // Meta action that the current user is completely loaded
+  receivedCurrentUser(user) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.CURRENT_USER_RECEIVED,
+      user
+    });
+
+    return Promise.resolve(user);
+  }
 };
+
+export default userActions;

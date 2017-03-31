@@ -6,6 +6,7 @@
 import React from 'react';
 
 import Action from './action.jsx';
+import EntityEmpty from './entity_empty.jsx';
 import Loading from './loading.jsx';
 import PanelDocumentation from './panel_documentation.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
@@ -74,12 +75,53 @@ export default class UserList extends React.Component {
     );
   }
 
+  get emptyState() {
+    const callout = `There are no users in this ${this.userTypePretty.toLowerCase()}`;
+    const content = config.docs.invite_user &&
+      <a href={ config.docs.invite_user }>Read more about adding users to this space.</a>
+
+    return (
+      <EntityEmpty callout={ callout }>
+        { content }
+      </EntityEmpty>
+    );
+  }
+
+  get onlyOneState() {
+    let content;
+    const callout = `You are the only user in this ${this.userTypePretty.toLowerCase()}`;
+
+    if (this.state.userType === 'org_users') {
+      const readMore = config.docs.invite_user &&
+        <a href={ config.docs.invite_user }>Read more about inviting new users.</a>
+
+      content = (
+        <p>
+          You can invite teammates to get cloud.gov accounts. You can invite
+          anyone you need to work with, including federal employees and
+          federal contractors. { readMore }
+        </p>
+      );
+    } else {
+      const content = config.docs.invite_user &&
+        <a href={ config.docs.invite_user }>Read more about adding users to this space.</a>
+    }
+
+    return (
+      <EntityEmpty callout={ callout }>
+        { content }
+      </EntityEmpty>
+    );
+  }
+
   render() {
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
 
     if (this.state.empty) {
-      content = <h4 className="test-none_message">No users</h4>;
+      content = this.emptyState;
+    } else if (this.state.users.length === 1) {
+      content = this.onlyOneState;
     } else if (!this.state.loading && this.state.users.length) {
       content = (
       <div>

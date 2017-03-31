@@ -19,8 +19,16 @@ var spaceRoutes = require('./fixtures/space_routes');
 var spaceSummaries = require('./fixtures/space_summaries');
 var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
 var spaceUserRoles = require('./fixtures/space_user_roles.js');
+var userOrganizations = require('./fixtures/user_organizations.js');
+var userSpaces = require('./fixtures/user_spaces.js');
 
 var BASE_URL = '/v2';
+
+const ENV_NO_ORGS = process.env.NO_ORGS || false;
+const ENV_NO_SPACES = process.env.NO_SPACES || false;
+const ENV_NO_APPS = process.env.NO_APPS || false;
+const ENV_NO_ORG_USERS = process.env.NO_ORG_USERS || false;
+const ENV_NO_SPACE_USERS = process.env.NO_SPACE_USERS || false;
 
 function SingleResponse(response) {
   return response;
@@ -37,6 +45,25 @@ function MultiResponse(responses) {
 }
 
 module.exports = function api(smocks) {
+
+  smocks.route({
+    id: 'uaa-userinfo',
+    label: 'UAA user info',
+    path: '/uaa/userinfo',
+    handler: function(req, reply) {
+      reply({
+        user_id: "bba7537f-601d-48c4-9705-4583ba54ea4b",
+        sub: "bba7537f-601d-48c4-9705-4583ba54ea4b",
+        user_name: "fake-personb@gsa.gov",
+        given_name: "fake-personb",
+        family_name: "gsa.gov",
+        email: "fake-personb@gsa.gov",
+        phone_number: null,
+        previous_logon_time: 1489612053883,
+        name: "fake-personb@gsa.gov"
+      });
+    }
+  });
 
   smocks.route({
     id: 'app-routes',
@@ -84,7 +111,11 @@ module.exports = function api(smocks) {
     label: 'Organizations',
     path: `${BASE_URL}/organizations`,
     handler: function (req, reply) {
-      reply(MultiResponse(organizations));
+      if (ENV_NO_ORGS) {
+        reply(MultiResponse([]));
+      } else {
+        reply(MultiResponse(organizations));
+      }
     }
   });
 
@@ -150,7 +181,42 @@ module.exports = function api(smocks) {
     label: 'Organization users',
     path: `${BASE_URL}/organizations/{guid}/users`,
     handler: function (req, reply) {
-      reply(MultiResponse(organizationUsers));
+      if (ENV_NO_ORG_USERS) {
+        reply(MultiResponse([organizationUsers[0]]));
+      } else {
+        reply(MultiResponse(organizationUsers));
+      }
+    }
+  });
+
+  smocks.route({
+    id: 'user',
+    label: 'User',
+    path: `${BASE_URL}/users/{guid}`,
+    handler: function (req, reply) {
+      const guid = req.params.guid;
+      const user = organizationUsers.find((orgUser) =>
+        orgUser.metadata.guid === guid);
+
+      reply(SingleResponse(user));
+    }
+  });
+
+  smocks.route({
+    id: 'user-organizations',
+    label: 'User organizations',
+    path: `${BASE_URL}/users/{guid}/organizations`,
+    handler: function(req, reply) {
+      reply(MultiResponse(userOrganizations));
+    }
+  });
+
+  smocks.route({
+    id: 'user-spaces',
+    label: 'User spaces',
+    path: `${BASE_URL}/users/{guid}/spaces`,
+    handler: function(req, reply) {
+      reply(MultiResponse(userSpaces));
     }
   });
 
@@ -164,30 +230,15 @@ module.exports = function api(smocks) {
   });
 
   smocks.route({
-    id: 'uaa-userinfo',
-    label: 'UAA user info',
-    path: '/uaa/userinfo',
-    handler: function(req, reply) {
-      // TODO move to fixtures
-      const firstUser = organizationUsers[0];
-      const currentUser = {
-        email: firstUser.username,
-        family_name: firstUser.username,
-        given_name: firstUser.username,
-        name: firstUser.username,
-        user_id: firstUser.metadata.guid,
-        user_name:firstUser.username
-      };
-      reply(currentUser);
-    }
-  });
-
-  smocks.route({
     id: 'spaces',
     label: 'Spaces',
     path: `${BASE_URL}/spaces`,
     handler: function (req, reply) {
-      reply(MultiResponse(spaces));
+      if (ENV_NO_SPACES) {
+        reply(MultiResponse([]));
+      } else {
+        reply(MultiResponse(spaces));
+      }
     }
   });
 
@@ -239,6 +290,9 @@ module.exports = function api(smocks) {
       const space = spaceSummaries.find(function(spaceSummary) {
         return spaceSummary.guid === guid;
       });
+      if (ENV_NO_APPS) {
+        space.apps = [];
+      }
       reply(SingleResponse(space));
     }
   });
@@ -257,7 +311,11 @@ module.exports = function api(smocks) {
     label: 'Space user roles',
     path: `${BASE_URL}/spaces/{guid}/user_roles`,
     handler: function (req, reply) {
-      reply(MultiResponse(spaceUserRoles));
+      if (ENV_NO_SPACE_USERS) {
+        reply(MultiResponse([spaceUserRoles[0]]));
+      } else {
+        reply(MultiResponse(spaceUserRoles));
+      }
     }
   });
 

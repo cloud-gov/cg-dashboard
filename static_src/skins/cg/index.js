@@ -88,12 +88,15 @@ export const config = {
   },
   docs: {
     cli: 'https://cloud.gov/docs/getting-started/setup/',
+    concepts_roles: 'https://docs.cloudfoundry.org/concepts/roles.html',
     concepts_spaces: 'https://cloud.gov/docs/getting-started/concepts/',
     deploying_apps: 'https://cloud.gov/docs/getting-started/your-first-deploy/',
     use: 'https://cloud.gov/docs/intro/overview/using-cloudgov-paas/',
     invite_user: 'https://cloud.gov/docs/apps/managing-teammates',
+    roles: 'https://cloud.gov/docs/apps/managing-teammates/#give-roles-to-a-teammate',
     managed_services: 'https://docs.cloud.gov/apps/managed-services/',
-    status: 'https://cloudgov.statuspage.io/'
+    status: 'https://cloudgov.statuspage.io/',
+    contact: 'https://cloud.gov/docs/help/'
   },
   snippets: {
     logs: InfoLogs
