@@ -13,9 +13,11 @@ import activityActions from './actions/activity_actions.js';
 import AppContainer from './components/app_container.jsx';
 import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
+import errorActions from './actions/error_actions';
 import Loading from './components/loading.jsx';
 import Login from './components/login.jsx';
 import loginActions from './actions/login_actions';
+import LoginStore from './stores/login_store';
 import MainContainer from './components/main_container.jsx';
 import orgActions from './actions/org_actions.js';
 import Overview from './components/overview_container.jsx';
@@ -146,49 +148,56 @@ function app(orgGuid, spaceGuid, appGuid, next) {
 
 function checkAuth(...args) {
   const next = args.pop();
+
+  // These may or may not be set depending on route
   const [orgGuid, spaceGuid] = args;
+
   loginActions
     .fetchStatus()
+    .then(authStatus => {
+      // We're interested in the most recent fetchStatus, so avoid checking
+      // LoginStore.isLoggedIn which won't be the latest in case of an error.
+      if (authStatus && authStatus.status !== 'authorized') {
+        // The user is Unauthenicated. We could redirect to a home page where
+        // user could click login but since we don't have any such page, just
+        // start the login flow by redirecting to /handshake. This is as if they
+        // had clicked login.
+        window.location = '/handshake';
+
+        // Just in case something goes wrong, don't leave the user hanging. Show
+        // a delayed loading indicator to give them a hint. Hopefully the
+        // redirect is quick and they never see the loader.
+        ReactDOM.render(
+          <Loading text="Redirecting to login" loadingDelayMS={ 3000 } style="inline" />
+        , mainEl);
+
+        // Stop the routing
+        next(false);
+
+        // Hang the promise chain to avoid additional loading and API calls
+        const hang = new Promise();
+        return hang;
+      }
+
+      if (!authStatus) {
+        // An error occurred. At this point we're not sure if the user is
+        // auth'd or not, but if there's some major error where we can't talk
+        // to the API, it's unlikely anything will work. Still, we let the page
+        // load. and kick off an error action so the user is aware that
+        // something is amiss. Definitely avoid sending them through a login
+        // flow which might also be broken.
+        const loginError = LoginStore.error;
+        return errorActions.noticeError(loginError);
+      }
+
+      // Normal page load
+      return Promise.resolve();
+    })
     .then(() => {
       userActions.fetchCurrentUser({ orgGuid, spaceGuid });
       orgActions.fetchAll();
       spaceActions.fetchAll();
       next();
-    })
-    .catch(res => {
-      if (res && res.response && res.response.status === 401) {
-	// The user is Unauthenicated. We could redirect to a home page where
-	// user could click login but since we don't have any such page, just
-	// start the login flow by redirecting to /handshake. This is as if they
-	// had clicked login.
-	window.location = '/handshake';
-
-	// Just in case something goes wrong, don't leave the user hanging. Show
-	// a delayed loading indicator to give them a hint. Hopefully the
-	// redirect is quick and they never see the loader.
-	ReactDOM.render(
-	  <Loading text="Redirecting to login" loadingDelayMS={ 3000 } style="inline" />
-	, mainEl);
-
-	// Stop the routing
-	return next(false);
-      }
-
-      // At this point we're not sure if the user is auth'd or not, but if
-      // there's some major error where we can't talk to the API, it's unlikely
-      // anything will work. Still, we let the page load and kick off an error
-      // action so the user is aware that something is amiss.
-      let err = res;
-      if (res.response && typeof res.response.data === 'object') {
-	err = res.response.data;
-      }
-
-      if (!err.description) {
-	err.description = 'There was an error trying to authenticate';
-      }
-
-      loginActions.errorStatus(err);
-      return next();
     });
 }
 

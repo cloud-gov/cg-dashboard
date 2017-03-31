@@ -489,11 +489,11 @@ describe('cfApi', function() {
     });
 
     describe('given authorized', function () {
-      let expectedStatus, result;
+      let authStatus, result;
 
       beforeEach(function (done) {
-        expectedStatus = 'logged_in';
-        http.get.returns(Promise.resolve({ data: { status: expectedStatus } }));
+        authStatus = { status: 'logged_in' };
+        http.get.returns(Promise.resolve({ data: authStatus }));
 
         cfApi.getAuthStatus()
           .then(_result => {
@@ -504,7 +504,7 @@ describe('cfApi', function() {
       });
 
       it('calls received status with status on success', () => {
-        expect(result).toBe(expectedStatus);
+        expect(result).toBe(authStatus);
       });
     });
 

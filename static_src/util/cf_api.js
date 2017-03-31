@@ -9,6 +9,29 @@ import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
 
+
+// An error from the CF v2 API
+function CfApiV2Error(response) {
+  const { code, title, description } = response && response.data || {};
+
+  if (!code || !title || !description) {
+    throw new Error('CfApiV2Error expected to have code, title, and description.');
+  }
+
+  this.code = code;
+  this.description = description;
+  this.response = response;
+  this.title = title;
+
+  this.message = description;
+}
+
+// Babel doesn't like extending native types with `class`, so use prototype
+// inheritence.
+CfApiV2Error.prototype = Object.create(Error.prototype);
+CfApiV2Error.prototype.constructor = Error;
+
+
 // TODO handleError should probably return a (rejected) Promise
 function handleError(err, errHandler = errorActions.errorFetch) {
   // An http error should be passed to error actions.
@@ -26,6 +49,36 @@ function handleError(err, errHandler = errorActions.errorFetch) {
   } else {
     throw err;
   }
+}
+
+function parseError(resultOrError) {
+  if (resultOrError instanceof Error) {
+    // Leave it alone
+    return resultOrError;
+  }
+
+  if (resultOrError.response) {
+    // The request was successful but the server returned some kind of error.
+    const response = resultOrError.response;
+    if (response.data && typeof response.data === 'object') {
+      if (response.data.description) {
+        // V2 api
+        const error = new CfApiV2Error(response.data);
+        error.response = response;
+        return error;
+      }
+    }
+
+    // If data is not an object, we're not sure what to do with it.
+    const error = new Error(`The API returned an unkown error with status ${response.status}.`);
+    error.response = response;
+    error.data = response.data;
+    return error;
+  }
+
+  const error = new Error('The API returned an unkown error.');
+  error.result = resultOrError;
+  return error;
 }
 
 // Some general error handling for API calls
@@ -131,11 +184,21 @@ export default {
   },
 
   getAuthStatus() {
-    // Note: the getAuthStatus call will return 401 when not logged in, so
-    // failure here means the user was likely not logged in. Although there
-    // could be the additional problem that there was a problem with the req.
     return http.get(`${APIV}/authstatus`)
-      .then(res => res.data.status);
+      .then(res => res.data) // Data looks something like { status: 'authorized' }
+      .catch(res => {
+        if (res && res.response && res.response.status === 401) {
+          // The user is unauthenicated.
+          return Promise.resolve({ status: 'unauthorized' });
+        }
+
+        // At this point we're not sure if the user is auth'd or not. Treat it
+        // as an error condition.
+        const err = parseError(res);
+
+        // Let someone else handle the error
+        return Promise.reject(err);
+      });
   },
 
   fetchOrgLinks(guid) {
