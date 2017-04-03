@@ -58,8 +58,8 @@ describe('ErrorStore', function () {
 
         ErrorStore.checkForMaxFetchErrors();
 
-        expect(ErrorStore.getAll().length).toEqual(3);
-        expect(spy).not.toHaveBeenCalled();
+        expect(ErrorStore.getAll().length).toEqual(1);
+        expect(spy).toHaveBeenCalledOnce();
       });
     });
   });

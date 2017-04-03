@@ -13,6 +13,7 @@ import activityActions from './actions/activity_actions.js';
 import AppContainer from './components/app_container.jsx';
 import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
+import errorActions from './actions/error_actions.js';
 import Login from './components/login.jsx';
 import MainContainer from './components/main_container.jsx';
 import orgActions from './actions/org_actions.js';
@@ -24,6 +25,8 @@ import routeActions from './actions/route_actions.js';
 import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
 import SpaceContainer from './components/space_container.jsx';
+import { appHealth } from './util/health.js';
+import { entityHealth } from './constants.js';
 import { trackPageView } from './util/analytics.js';
 import userActions from './actions/user_actions.js';
 
@@ -120,8 +123,13 @@ function app(orgGuid, spaceGuid, appGuid) {
   activityActions.fetchAppLogs(appGuid);
   quotaActions.fetchAll();
   appActions.changeCurrentApp(appGuid);
-  appActions.fetch(appGuid);
-  appActions.fetchStats(appGuid);
+  appActions.fetch(appGuid).then((res) => {
+    // Only fetch app stats when the app is running, otherwise the stats
+    // request will fail.
+    if (appHealth(res) === entityHealth.ok) {
+      appActions.fetchStats(appGuid);
+    }
+  });
   routeActions.fetchRoutesForSpace(spaceGuid);
   routeActions.fetchRoutesForApp(appGuid);
   serviceActions.fetchAllInstances(spaceGuid);
@@ -172,8 +180,11 @@ const routes = {
 
 const router = new Router(routes);
 router.configure({
-  before: checkAuth,
+  before: () => {
+    checkAuth();
+    errorActions.clearErrors();
+  },
   notfound: notFound,
-  on: () => trackPageView(window.location.hash)
+  on: trackPageView(window.location.hash)
 });
 router.init('/');
