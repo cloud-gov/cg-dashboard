@@ -32,7 +32,8 @@ export class LoginStore extends BaseStore {
 
       case loginActionTypes.ERROR_STATUS:
         // Login status is unknown. If we have a login status, leave it as is
-        // and hope things go smooth. A notification is handled elsewhere.
+        // and hope things go smooth. If necessary, the action caller is
+        // responsible for notifying the user of an error.
         this._error = action.err;
         break;
 

@@ -156,30 +156,6 @@ export function checkAuth(...args) {
   loginActions
     .fetchStatus()
     .then(authStatus => {
-      // We're interested in the most recent fetchStatus, so avoid checking
-      // LoginStore.isLoggedIn which won't be the latest in case of an error.
-      if (authStatus && authStatus.status !== 'authorized') {
-        // The user is Unauthenicated. We could redirect to a home page where
-        // user could click login but since we don't have any such page, just
-        // start the login flow by redirecting to /handshake. This is as if they
-        // had clicked login.
-        windowUtil.redirect('/handshake');
-
-        // Just in case something goes wrong, don't leave the user hanging. Show
-        // a delayed loading indicator to give them a hint. Hopefully the
-        // redirect is quick and they never see the loader.
-        ReactDOM.render(
-          <Loading text="Redirecting to login" loadingDelayMS={ 3000 } style="inline" />
-        , mainEl);
-
-        // Stop the routing
-        next(false);
-
-        // Hang the promise chain to avoid additional loading and API calls
-        const hang = new Promise();
-        return hang;
-      }
-
       if (!authStatus) {
         // An error occurred. At this point we're not sure if the user is
         // auth'd or not, but if there's some major error where we can't talk

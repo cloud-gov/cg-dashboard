@@ -11,8 +11,7 @@ import { loginActionTypes } from '../constants';
 const loginActions = {
   fetchStatus() {
     AppDispatcher.handleViewAction({
-      type: loginActionTypes.FETCH_STATUS,
-      status
+      type: loginActionTypes.FETCH_STATUS
     });
 
     return cfApi.getAuthStatus()
