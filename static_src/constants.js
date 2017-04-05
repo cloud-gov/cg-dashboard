@@ -34,6 +34,7 @@ const errorActionTypes = keymirror({
   FETCH: null,
   IMPORTANT_FETCH: null,
   DISMISS: null,
+  CLEAR: null,
   NOTIFY: null
 });
 

@@ -8,7 +8,7 @@ import axios from 'axios';
 import { Router } from 'director';
 
 import { trackPageView } from './util/analytics.js';
-import routes, { checkAuth, notFound } from './routes';
+import routes, { checkAuth, clearErrors, notFound } from './routes';
 
 const meta = document.querySelector('meta[name="gorilla.csrf.Token"]');
 if (meta) {
@@ -18,8 +18,8 @@ if (meta) {
 const router = new Router(routes);
 router.configure({
   async: true,
-  before: checkAuth,
+  before: [clearErrors, checkAuth],
   notfound: notFound,
-  on: () => trackPageView(window.location.hash)
+  on: trackPageView(window.location.hash)
 });
 router.init('/');

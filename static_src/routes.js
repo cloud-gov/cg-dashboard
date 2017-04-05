@@ -20,6 +20,8 @@ import routeActions from './actions/route_actions.js';
 import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
 import SpaceContainer from './components/space_container.jsx';
+import { appHealth } from './util/health.js';
+import { entityHealth } from './constants.js';
 import windowUtil from './util/window';
 import userActions from './actions/user_actions.js';
 
@@ -122,8 +124,13 @@ export function app(orgGuid, spaceGuid, appGuid, next) {
   activityActions.fetchAppLogs(appGuid);
   quotaActions.fetchAll();
   appActions.changeCurrentApp(appGuid);
-  appActions.fetch(appGuid);
-  appActions.fetchStats(appGuid);
+  appActions.fetch(appGuid).then((res) => {
+    // Only fetch app stats when the app is running, otherwise the stats
+    // request will fail.
+    if (appHealth(res) === entityHealth.ok) {
+      appActions.fetchStats(appGuid);
+    }
+  });
   routeActions.fetchRoutesForSpace(spaceGuid);
   routeActions.fetchRoutesForApp(appGuid);
   serviceActions.fetchAllInstances(spaceGuid);
@@ -188,6 +195,12 @@ export function checkAuth(...args) {
       spaceActions.fetchAll();
       next();
     });
+}
+
+export function clearErrors(...args) {
+  const next = args.pop();
+  errorActions.clearErrors();
+  next();
 }
 
 export function notFound(next) {

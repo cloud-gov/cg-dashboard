@@ -10,7 +10,7 @@ const propTypes = {
   maxItems: React.PropTypes.number
 };
 const defaultProps = {
-  maxItems: 2
+  maxItems: 1
 };
 
 function stateSetter() {
