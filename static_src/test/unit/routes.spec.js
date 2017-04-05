@@ -8,7 +8,7 @@ import orgActions from '../../actions/org_actions';
 import spaceActions from '../../actions/space_actions';
 import userActions from '../../actions/user_actions';
 import windowUtil from '../../util/window';
-import { checkAuth } from '../../main';
+import { checkAuth } from '../../routes';
 
 
 describe('routes', function () {
