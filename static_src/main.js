@@ -20,6 +20,6 @@ router.configure({
   async: true,
   before: [clearErrors, checkAuth],
   notfound: notFound,
-  on: trackPageView(window.location.hash)
+  on: () => trackPageView(window.location.hash)
 });
 router.init('/');
