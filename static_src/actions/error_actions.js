@@ -37,7 +37,7 @@ export default {
     return Promise.resolve(err);
   },
 
-  notifyError(err) {
+  noticeError(err) {
     AppDispatcher.handleUIAction({
       type: errorActionTypes.NOTIFY,
       err

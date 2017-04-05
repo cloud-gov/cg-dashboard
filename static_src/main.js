@@ -29,6 +29,7 @@ import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
 import SpaceContainer from './components/space_container.jsx';
 import { trackPageView } from './util/analytics.js';
+import windowUtil from './util/window';
 import userActions from './actions/user_actions.js';
 
 const mainEl = document.querySelector('.js-app');
@@ -146,7 +147,7 @@ function app(orgGuid, spaceGuid, appGuid, next) {
   next();
 }
 
-function checkAuth(...args) {
+export function checkAuth(...args) {
   const next = args.pop();
 
   // These may or may not be set depending on route
@@ -162,7 +163,7 @@ function checkAuth(...args) {
         // user could click login but since we don't have any such page, just
         // start the login flow by redirecting to /handshake. This is as if they
         // had clicked login.
-        window.location = '/handshake';
+        windowUtil.redirect('/handshake');
 
         // Just in case something goes wrong, don't leave the user hanging. Show
         // a delayed loading indicator to give them a hint. Hopefully the
@@ -190,8 +191,32 @@ function checkAuth(...args) {
         return errorActions.noticeError(loginError);
       }
 
-      // Normal page load
-      return Promise.resolve();
+      // We're interested in the most recent fetchStatus, so avoid checking
+      // LoginStore.isLoggedIn which won't be the latest in case of an error.
+      if (authStatus.status === 'authorized') {
+        // Normal page load
+        return Promise.resolve();
+      }
+
+      // The user is Unauthenicated. We could redirect to a home page where
+      // user could click login but since we don't have any such page, just
+      // start the login flow by redirecting to /handshake. This is as if they
+      // had clicked login.
+      windowUtil.redirect('/handshake');
+
+      // Just in case something goes wrong, don't leave the user hanging. Show
+      // a delayed loading indicator to give them a hint. Hopefully the
+      // redirect is quick and they never see the loader.
+      ReactDOM.render(
+        <Loading text="Redirecting to login" loadingDelayMS={ 3000 } style="inline" />
+      , mainEl);
+
+      // Stop the routing
+      next(false);
+
+      // Hang the promise chain to avoid additional loading and API calls
+      const hang = new Promise();
+      return hang;
     })
     .then(() => {
       userActions.fetchCurrentUser({ orgGuid, spaceGuid });
