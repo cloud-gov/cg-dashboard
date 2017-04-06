@@ -17,7 +17,7 @@ type Context struct {
 	templates *template.Template
 }
 
-// Provides caching middleware for static assets.
+// StaticMiddleware provides simple caching middleware for static assets.
 func StaticMiddleware(path string) func(web.ResponseWriter, *web.Request, web.NextMiddlewareFunc) {
 	staticMiddleware := web.StaticMiddleware(path)
 	return func(rw web.ResponseWriter, r *web.Request, next web.NextMiddlewareFunc) {
