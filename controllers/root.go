@@ -17,6 +17,18 @@ type Context struct {
 	templates *template.Template
 }
 
+// Provides caching middleware for static assets.
+func StaticMiddleware(path string) func(web.ResponseWriter, *web.Request, web.NextMiddlewareFunc) {
+	staticMiddleware := web.StaticMiddleware(path)
+	return func(rw web.ResponseWriter, r *web.Request, next web.NextMiddlewareFunc) {
+		// We want clients to cache these assets but it's important that they are
+		// up to date. If the javascript bundle does not match the server API,
+		// undefined behavior could happen.
+		rw.Header().Set("Cache-Control", "public, must-revalidate")
+		staticMiddleware(rw, r, next)
+	}
+}
+
 // Index serves index.html
 func (c *Context) Index(w web.ResponseWriter, r *web.Request) {
 	c.templates.ExecuteTemplate(w, "index.html", map[string]interface{}{

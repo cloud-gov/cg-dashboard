@@ -63,7 +63,7 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.
-	router.Middleware(web.StaticMiddleware("static"))
+	router.Middleware(StaticMiddleware("static"))
 
 	return router
 }

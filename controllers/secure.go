@@ -45,10 +45,7 @@ func (c *SecureContext) LoginRequired(rw web.ResponseWriter, r *web.Request, nex
 	}
 
 	// Don't cache anything
-	// right now, there's a problem where when you initially logout and then
-	// revisit the server, you will get a bad view due to a caching issue.
-	// for now, we clear the cache for everything.
-	// TODO: revist and cache static assets.
+	// TODO: Come up with a better caching strategy. We should be able to to cache most API responses.
 	rw.Header().Set("cache-control", "no-cache, no-store, must-revalidate, private")
 	rw.Header().Set("pragma", "no-cache")
 	rw.Header().Set("expires", "-1")
