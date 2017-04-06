@@ -97,22 +97,12 @@ export function space(orgGuid, spaceGuid, next) {
   orgActions.fetch(orgGuid);
   serviceActions.fetchAllServices(orgGuid);
 
-  next();
-}
-
-export function renderSpaceContainer(page, next) {
   ReactDOM.render(
     <MainContainer>
       <SpaceContainer
-        currentPage={ page }
+        currentPage="apps"
       />
     </MainContainer>, mainEl);
-  next();
-}
-
-export function apps(orgGuid, spaceGuid, next) {
-  space(orgGuid, spaceGuid);
-  renderSpaceContainer('apps');
   next();
 }
 
@@ -225,9 +215,9 @@ const routes = {
             '/:appGuid': {
               on: app
             },
-            on: apps
+            on: space
           },
-          on: apps
+          on: space
         }
       },
       on: org

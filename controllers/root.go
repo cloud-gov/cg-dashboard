@@ -88,44 +88,6 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 	// TODO. Redirect to the original route.
 }
 
-// LoginRequired is a middleware that requires a valid toker or redirects to the handshake page.
-func (c *Context) LoginRequired(rw web.ResponseWriter, r *web.Request, next web.NextMiddlewareFunc) {
-
-	// If there is no request just continue
-	if r == nil {
-		next(rw, r)
-		return
-	}
-
-	// Don't cache anything
-	// right now, there's a problem where when you initially logout and then
-	// revisit the server, you will get a bad view due to a caching issue.
-	// for now, we clear the cache for everything.
-	// TODO: revist and cache static assets.
-	rw.Header().Set("cache-control", "no-cache, no-store, must-revalidate, private")
-	rw.Header().Set("pragma", "no-cache")
-	rw.Header().Set("expires", "-1")
-
-	token := helpers.GetValidToken(r.Request, c.Settings)
-	tokenPresent := token != nil
-	publicUrls := map[string]struct{}{
-		"/handshake":      {},
-		"/oauth2callback": {},
-		"/ping":           {},
-		"/assets/img/dashboard-uaa-icon.jpg": {},
-	}
-	// Check if URL is public so we skip validation
-	_, public := publicUrls[r.URL.EscapedPath()]
-	if public || tokenPresent {
-		next(rw, r)
-	} else {
-		err := c.redirect(rw, r)
-		if err != nil {
-			fmt.Println("Error on oauth redirect: ", err.Error())
-		}
-	}
-}
-
 // Logout is a handler that will attempt to clear the session information for the current user.
 func (c *Context) Logout(rw web.ResponseWriter, req *web.Request) {
 	session, _ := c.Settings.Sessions.Get(req.Request, "session")

@@ -42,9 +42,10 @@ export default class GlobalError extends React.Component {
       </span>
     );
 
+    const description = err.description || 'An unknown error occurred';
     const wrappedDescription = (
       <span>
-        { err.description }. { (err.description.length > 80) && <br /> }
+        { description }. { (description.length > 80) && <br /> }
         Please { link } try again.
       </span>
     );

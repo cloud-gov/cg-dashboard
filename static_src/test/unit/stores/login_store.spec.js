@@ -3,7 +3,7 @@ import '../../global_setup.js';
 
 import AppDispatcher from '../../../dispatcher.js';
 import { loginActionTypes } from '../../../constants';
-import { LoginStore as _LoginStore } from '../../../stores/login_store';
+import { LoginStore as _LoginStore, LoginError } from '../../../stores/login_store';
 
 describe('LoginStore', () => {
   let sandbox, LoginStore;
@@ -76,7 +76,7 @@ describe('LoginStore', () => {
   describe('ERROR_STATUS', function () {
     let err;
     beforeEach(function () {
-      err = new Error('error');
+      err = new LoginError('error');
       LoginStore._isAuthenticated = 'authorized';
 
       AppDispatcher.handleViewAction({
@@ -93,6 +93,50 @@ describe('LoginStore', () => {
     it('does not affect isLoggedIn', function () {
       expect(LoginStore.isLoggedIn()).toBe(true);
       expect(LoginStore._isAuthenticated).toBe('authorized');
+    });
+  });
+
+  describe('LoginError', function () {
+    let loginError;
+
+    describe('given error with no message', function () {
+      beforeEach(function () {
+        const err = {};
+        loginError = new LoginError(err);
+      });
+
+      it('sets a default description', function () {
+        expect(loginError.description).toMatch(
+          /^An error occurred while trying to check your authorization./
+        );
+      });
+    });
+
+    describe('given error with message', function () {
+      beforeEach(function () {
+        const err = new Error('error message');
+        loginError = new LoginError(err);
+      });
+
+      it('sets uses message in description', function () {
+        expect(loginError.description).toMatch(
+          /error message$/
+        );
+      });
+    });
+
+    describe('given error with description', function () {
+      beforeEach(function () {
+        const err = new Error('error message');
+        err.description = 'error description';
+        loginError = new LoginError(err);
+      });
+
+      it('uses description', function () {
+        expect(loginError.description).toMatch(
+          /error description$/
+        );
+      });
     });
   });
 });
