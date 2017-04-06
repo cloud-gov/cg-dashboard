@@ -9,7 +9,7 @@ import { loginActionTypes } from '../constants.js';
 
 // Babel doesn't like extending native types with `class`, so use prototype
 // inheritence.
-function LoginError(err) {
+export function LoginError(err) {
   this.err = err;
 
   // Figure out description
