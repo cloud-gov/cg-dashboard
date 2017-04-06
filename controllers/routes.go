@@ -32,6 +32,7 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	router.Get("/ping", (*Context).Ping)
 	router.Get("/handshake", (*Context).LoginHandshake)
 	router.Get("/oauth2callback", (*Context).OAuthCallback)
+	router.Get("/logout", (*Context).Logout)
 
 	// Secure all the other routes
 	secureRouter := router.Subrouter(SecureContext{}, "/")
@@ -41,7 +42,6 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	apiRouter.Middleware((*APIContext).OAuth)
 	// All routes accepted
 	apiRouter.Get("/authstatus", (*APIContext).AuthStatus)
-	apiRouter.Get("/logout", (*APIContext).Logout)
 	apiRouter.Get("/profile", (*APIContext).UserProfile)
 	apiRouter.Get("/:*", (*APIContext).APIProxy)
 	apiRouter.Put("/:*", (*APIContext).APIProxy)
@@ -59,7 +59,7 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	logRouter.Get("/recent", (*LogContext).RecentLogs)
 
 	// Add auth middleware
-	router.Middleware((*Context).LoginRequired)
+	secureRouter.Middleware((*SecureContext).LoginRequired)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.

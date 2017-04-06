@@ -28,9 +28,9 @@ export default class Header extends React.Component {
       <Action href="/handshake" label="Login" type="outline">
         Login
       </Action>
-    </HeaderLink>:
+    </HeaderLink> :
     <HeaderLink>
-      <Action href="/v2/logout" label="Log out" type="outline">
+      <Action href="/logout" label="Log out" type="outline">
         Log out
       </Action>
     </HeaderLink>;
@@ -41,7 +41,8 @@ export default class Header extends React.Component {
           <a href="/" className={ this.styler('logo') } title="Home">
             <svg className={ this.styler('logo-img') }>
               <use
-                xlinkHref={ this.getImagePath('logo-dashboard') }>
+                xlinkHref={ this.getImagePath('logo-dashboard') }
+              >
               </use>
             </svg>
           </a>
@@ -49,7 +50,9 @@ export default class Header extends React.Component {
         </div>
         <nav className={ this.styler('header-side') }>
           <ul className={ this.styler('nav') }>
-            { config.header.links.map((link, index) => <HeaderLink url={link.url} text={link.text} key={index} />) }
+            { config.header.links.map((link, index) =>
+                <HeaderLink url={link.url} text={link.text} key={index} />)
+            }
             { loginLink }
           </ul>
         </nav>

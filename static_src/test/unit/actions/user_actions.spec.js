@@ -478,7 +478,6 @@ describe('userActions', function() {
 
   describe('fetchCurrentUser()', function () {
     beforeEach(function (done) {
-      sandbox.stub(userActions, 'fetchAuthStatus').returns(Promise.resolve());
       sandbox.stub(userActions, 'fetchCurrentUserInfo')
         .returns(Promise.resolve({ user_id: 'user123' }));
       sandbox.stub(userActions, 'fetchUser').returns(Promise.resolve());
@@ -500,10 +499,6 @@ describe('userActions', function() {
       expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
         type: userActionTypes.CURRENT_USER_FETCH
       }));
-    });
-
-    it('calls fetchAuthStatus', function () {
-      expect(userActions.fetchAuthStatus).toHaveBeenCalledOnce();
     });
 
     it('calls fetchCurrentUserInfo', function () {

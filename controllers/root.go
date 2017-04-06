@@ -34,7 +34,8 @@ func (c *Context) Ping(rw web.ResponseWriter, req *web.Request) {
 func (c *Context) LoginHandshake(rw web.ResponseWriter, req *web.Request) {
 	if token := helpers.GetValidToken(req.Request, c.Settings); token != nil {
 		// We should just go to dashboard if the user already has a valid token.
-		http.Redirect(rw, req.Request, "/#/dashboard", http.StatusFound)
+		dashboardURL := fmt.Sprintf("%s%s", c.Settings.AppURL, "/#/dashboard")
+		http.Redirect(rw, req.Request, dashboardURL, http.StatusFound)
 
 	} else {
 		// Redirect to the Cloud Foundry Login place.
@@ -82,7 +83,8 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 	}
 
 	// Redirect to the dashboard.
-	http.Redirect(rw, req.Request, "/#/dashboard", http.StatusFound)
+	dashboardURL := fmt.Sprintf("%s%s", c.Settings.AppURL, "/#/dashboard")
+	http.Redirect(rw, req.Request, dashboardURL, http.StatusFound)
 	// TODO. Redirect to the original route.
 }
 
@@ -122,6 +124,18 @@ func (c *Context) LoginRequired(rw web.ResponseWriter, r *web.Request, next web.
 			fmt.Println("Error on oauth redirect: ", err.Error())
 		}
 	}
+}
+
+// Logout is a handler that will attempt to clear the session information for the current user.
+func (c *Context) Logout(rw web.ResponseWriter, req *web.Request) {
+	session, _ := c.Settings.Sessions.Get(req.Request, "session")
+	// Clear the token
+	session.Values["token"] = nil
+	// Force the session to expire
+	session.Options.MaxAge = -1
+	session.Save(req.Request, rw)
+	logoutURL := fmt.Sprintf("%s%s", c.Settings.LoginURL, "/logout.do")
+	http.Redirect(rw, req.Request, logoutURL, http.StatusFound)
 }
 
 func (c *Context) redirect(rw web.ResponseWriter, req *web.Request) error {

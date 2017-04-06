@@ -34,7 +34,8 @@ const errorActionTypes = keymirror({
   FETCH: null,
   IMPORTANT_FETCH: null,
   DISMISS: null,
-  CLEAR: null
+  CLEAR: null,
+  NOTIFY: null
 });
 
 const formActionTypes = keymirror({
@@ -50,6 +51,8 @@ const formActionTypes = keymirror({
 const loginActionTypes = keymirror({
   // Action of fetching a login status, whether the user is logged in or not.
   FETCH_STATUS: null,
+  // Login status is unknown, an error occurred.
+  ERROR_STATUS: null,
   // Action when the login status is received from the server.
   RECEIVED_STATUS: null
 });
@@ -215,10 +218,6 @@ const appActionTypes = keymirror({
 });
 
 const userActionTypes = keymirror({
-  // Fetch auth status from server
-  AUTH_STATUS_FETCH: null,
-  // Auth status received from server
-  AUTH_STATUS_RECEIVED: null,
   // Action to fetch users belonging to a organization from the server.
   ORG_USERS_FETCH: null,
   // Action to fetch the user roles for an org from the server.
