@@ -36,7 +36,7 @@ test:
   override:
     - cd $WS && ./codecheck.sh -u
     - cd $WS && npm test
-    - cd $WS && npm run track-performance
+    - cd $WS && npm run test-performance
 
 deployment:
   deploy:
