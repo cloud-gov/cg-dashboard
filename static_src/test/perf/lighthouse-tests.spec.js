@@ -37,50 +37,50 @@ function pullBudget(name) {
   return budgets[name].expectedValue;
 }
 
-function launchChromeRunLighthouse(url, port, flags, config) {
-  const launcher = new ChromeLauncher({port: 9222, autoSelectChrome: true});
+function launchChromeRunLighthouse(url, flags) {
+  const launcher = new ChromeLauncher({ port: 9222, autoSelectChrome: true });
 
   return launcher.isDebuggerReady()
     .catch(() => {
       if (flags.skipAutolaunch) {
-        return;
+        return Promise.resolve();
       }
       return launcher.run(); // Launch Chrome.
     })
     .then(() => lighthouse(testUrl, lighthouseOptions, auditConfig)) // Run Lighthouse.
     .then(results => launcher.kill().then(() => results)) // Kill Chrome and return results.
-    .catch(err => {
+    .catch(err =>
       // Kill Chrome if there's an error.
-      return launcher.kill().then(() => {
+      launcher.kill().then(() => {
         throw err;
-      }, console.error);
-    });
+      }, console.error)
+    );
 }
 
 
 // We'll process the results and then pass to our tests
 // Based on Paul Irish's PWMetric sample
 // https://github.com/paulirish/pwmetrics/
-//const ourMetrics = require('./metrics');
 
-describe('Lighthouse speed test', function() {
+describe('Lighthouse speed test', function () {
   // We'll run our lighthouse set once and store for compare in this sample
   // you could very easily build a different sort of runner
   let result;
-  let pullResult = function() {};
+  let pullResult = function () {};
   jasmine.getEnv().defaultTimeoutInterval = 150000;
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
 
   beforeAll((done) => {
-    launchChromeRunLighthouse(testUrl, port, {}, lighthouseOptions)
+    launchChromeRunLighthouse(testUrl, {}, lighthouseOptions)
       .then((res) => {
         result = res.audits;
-        pullResult = function(name) {
+        pullResult = function (name) {
           return result[name].rawValue;
-        }
-        res.artifacts = undefined; // Causes problems when writing.
-        const htmlWrite = Printer.write(res, 'html', htmlOut);
-        const jsonWrite = Printer.write(res, 'json', jsonOut);
+        };
+        const toWrite = res;
+        toWrite.artifacts = undefined; // Causes problems when writing.
+        const htmlWrite = Printer.write(toWrite, 'html', htmlOut);
+        const jsonWrite = Printer.write(toWrite, 'json', jsonOut);
         Promise.all([jsonWrite, htmlWrite]).then(done, done.fail);
       })
       .catch((err) => {
@@ -94,7 +94,6 @@ describe('Lighthouse speed test', function() {
     Performance testing complete.
     See detailed results at: ${htmlOut} or ${jsonOut}
     `);
-
   });
 
   it('should successfully run the test and have results', () => {
@@ -102,32 +101,30 @@ describe('Lighthouse speed test', function() {
   });
 
   it(`should have a speed index under ${pullBudget('speed-index-metric')}`,
-      () => {
+  () => {
     expect(pullResult('speed-index-metric'))
       .toBeLessThan(pullBudget('speed-index-metric'));
   });
 
   it(`should have a input latency under ${pullBudget('estimated-input-latency')}`,
-      () => {
+  () => {
     // Disabled as measurement is currently innacurate.
-    //expect(pullResult('estimated-input-latency'))
-    //.toBeLessThan(pullBudget('estimated-input-latency'));
   });
 
   it(`should have a time to interactive under ${pullBudget('time-to-interactive')}`,
-      () => {
+  () => {
     expect(pullResult('time-to-interactive'))
       .toBeLessThan(pullBudget('time-to-interactive'));
   });
 
   it(`should have a page weight under ${pullBudget('total-byte-weight')}`,
-      () => {
+  () => {
     expect(pullResult('total-byte-weight'))
       .toBeLessThan(pullBudget('total-byte-weight'));
   });
 
   it(`should have less then ${pullBudget('dom-size')} dom nodes`,
-      () => {
+  () => {
     expect(pullResult('dom-size'))
       .toBeLessThan(pullBudget('dom-size'));
   });

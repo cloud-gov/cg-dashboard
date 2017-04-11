@@ -15,7 +15,7 @@ module.exports = {
   },
   'total-byte-weight': {
     expectedValue: 2000000,
-    goal: 1600000,
+    goal: 1600000
   },
   'dom-size': {
     expectedValue: 1500,
