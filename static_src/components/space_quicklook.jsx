@@ -15,7 +15,8 @@ import { spaceHref } from '../util/url';
 const propTypes = {
   space: React.PropTypes.object.isRequired,
   orgGuid: React.PropTypes.string.isRequired,
-  showAppDetail: React.PropTypes.bool
+  showAppDetail: React.PropTypes.bool,
+  user: React.PropTypes.object
 };
 
 const defaultProps = {
@@ -38,7 +39,7 @@ export default class SpaceQuicklook extends React.Component {
     const org = OrgStore.get(this.props.orgGuid);
     const content = (
       <EntityEmpty callout="You have no apps in this space">
-        <InfoAppCreate space={ this.props.space } org={ org } brief />
+        <InfoAppCreate space={ this.props.space } org={ org } user={ this.props.user } brief />
       </EntityEmpty>
     );
 
