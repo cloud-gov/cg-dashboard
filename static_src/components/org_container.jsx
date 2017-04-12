@@ -138,7 +138,7 @@ export default class OrgContainer extends React.Component {
         <SpaceQuicklook
           key={ space.guid }
           space={ space }
-          orgGuid={ state.org.guid }
+          orgGuid={ state.currentOrgGuid }
           user={ state.currentUser }
           showAppDetail
         />
