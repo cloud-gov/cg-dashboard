@@ -102,11 +102,6 @@ export default class SpaceContainer extends React.Component {
           </div>
 
           <AppList />
-          <InfoAppCreate
-            space={ space }
-            org={ this.state.currentOrg }
-            user={ this.state.currentUser }
-          />
         </Panel>
         <Panel title="Service instances">
           <ServiceInstanceTable />
