@@ -9,5 +9,4 @@ env:
   GOVERSION: go1.6.3
   GOPACKAGENAME: github.com/18F/cg-dashboard
   GO15VENDOREXPERIMENT: 1
-  PRODUCTION: true
   SESSION_BACKEND: redis
