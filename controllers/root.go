@@ -34,6 +34,7 @@ func StaticMiddleware(path string) func(web.ResponseWriter, *web.Request, web.Ne
 func (c *Context) Index(w web.ResponseWriter, r *web.Request) {
 	c.templates.ExecuteTemplate(w, "index.html", map[string]interface{}{
 		"csrfToken":                     csrf.Token(r.Request),
+		"GA_TRACKING_ID":                os.Getenv("GA_TRACKING_ID"),
 		"PRODUCTION":                    os.Getenv("PRODUCTION"),
 		"NEW_RELIC_ID":                  os.Getenv("NEW_RELIC_ID"),
 		"NEW_RELIC_BROWSER_LICENSE_KEY": os.Getenv("NEW_RELIC_BROWSER_LICENSE_KEY"),

@@ -191,6 +191,18 @@ env:
 ```
 
 
+#### Google Analytics
+
+If you have a GA site configured, specify your tracking ID as `GA_TRACKING_ID`
+in your environment.
+
+```
+# manifest.yml
+env:
+  GA_TRACKING_ID: UA-123456-11
+```
+
+
 ## Functional Tests
 
 Functional tests are our high-level automated UI tests that are run from the
