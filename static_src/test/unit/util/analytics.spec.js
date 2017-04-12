@@ -11,7 +11,6 @@ describe('analytics helpers', function () {
     beforeEach(() => {
       sandbox = sinon.sandbox.create();
       window.ga = function() { return; }
-      window.PRODUCTION = 1;
     });
 
     afterEach(() => {

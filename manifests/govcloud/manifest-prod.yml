@@ -7,3 +7,5 @@ applications:
   instances: 3
   env:
     CONSOLE_HOSTNAME: https://dashboard.fr.cloud.gov
+    NEW_RELIC_ID: "20390582"
+    NEW_RELIC_BROWSER_LICENSE_KEY: "5d4bc714a6"

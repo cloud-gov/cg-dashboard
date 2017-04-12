@@ -5,6 +5,7 @@ services:
 - dashboard-ups
 - dashboard-redis
 env:
+  GA_TRACKING_ID: UA-48605964-34
   GOVERSION: go1.6.3
   GOPACKAGENAME: github.com/18F/cg-dashboard
   GO15VENDOREXPERIMENT: 1

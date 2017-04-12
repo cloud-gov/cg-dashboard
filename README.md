@@ -172,6 +172,37 @@ This project uses CircleCI
 - In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the CircleCI CLI UI to set the variables
 
 
+### Optional features
+
+Some features can be enabled by supplying the right environment configuration.
+
+#### New Relic Browser
+
+If you have New Relic Browser, you can set your New Relic ID and Browser license
+key. These are public and can be set in your manifest file. Note that your
+Browser license key is different than your New Relic License Key (which should
+be treated as confidential).
+
+```
+# manifest.yml
+env:
+  NEW_RELIC_ID: 12345
+  NEW_RELIC_BROWSER_LICENSE_KEY: abcdef
+```
+
+
+#### Google Analytics
+
+If you have a GA site configured, specify your tracking ID as `GA_TRACKING_ID`
+in your environment.
+
+```
+# manifest.yml
+env:
+  GA_TRACKING_ID: UA-123456-11
+```
+
+
 ## Functional Tests
 
 Functional tests are our high-level automated UI tests that are run from the
