@@ -94,7 +94,7 @@ export default class Users extends React.Component {
   }
 
   get resourceGuid() {
-    const resourceGuid = this.state.current === ORG_NAME ?
+    const resourceGuid = this.state.currentType === ORG_NAME ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
     return resourceGuid;
   }
