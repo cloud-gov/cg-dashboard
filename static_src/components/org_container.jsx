@@ -25,9 +25,10 @@ function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const currentUser = UserStore.currentUser;
+  const currentUserGuid = currentUser && currentUser.guid;
   const currentUserCanViewSpace =
-    UserStore.hasRole(currentUser, currentOrgGuid, 'org_manager') ||
-    UserStore.hasRole(currentUser, currentSpaceGuid, SpaceStore.viewPermissionRoles());
+    UserStore.hasRole(currentUserGuid, currentOrgGuid, 'org_manager') ||
+    UserStore.hasRole(currentUserGuid, currentSpaceGuid, SpaceStore.viewPermissionRoles());
 
   const org = OrgStore.get(currentOrgGuid);
   const spaces = SpaceStore.getAll()
@@ -35,9 +36,10 @@ function stateSetter() {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return {
+    currentUser,
     currentUserCanViewSpace,
     empty: !OrgStore.loading && !SpaceStore.loading && !org,
-    loading: OrgStore.loading || SpaceStore.loading,
+    loading: OrgStore.loading || SpaceStore.loading || UserStore.loading,
     org: org || {},
     spaces: spaces || []
   };
@@ -54,11 +56,13 @@ export default class OrgContainer extends React.Component {
   componentDidMount() {
     OrgStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
+    UserStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     OrgStore.removeChangeListener(this._onChange);
     SpaceStore.removeChangeListener(this._onChange);
+    UserStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
@@ -134,7 +138,8 @@ export default class OrgContainer extends React.Component {
         <SpaceQuicklook
           key={ space.guid }
           space={ space }
-          orgGuid={ state.org.guid }
+          orgGuid={ state.currentOrgGuid }
+          user={ state.currentUser }
           showAppDetail
         />
       ));

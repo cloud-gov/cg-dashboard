@@ -17,7 +17,7 @@ Learn more about [cloud.gov](https://cloud.gov).
 ## Tech Stack
 
 ### Backend Server [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-dashboard/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-dashboard?branch=master)
-- `Go` (version 1.6.2)
+- `Go` (version 1.8)
 
 ### Front end application
 - `Node` (version 6.x.x)
@@ -52,6 +52,18 @@ Then edit the file `~/.env/cg-dashboard` and provide the proper values. When you
 - `CONSOLE_API_URL`: The URL of the API service. i.e. `http://api.domain.com`
 - `CONSOLE_LOG_URL`: The URL of the loggregator service. i.e. `http://loggregator.domain.com`
 - `PPROF_ENABLED`: <optional> If set to `true` or `1`, will turn on `/debug/pprof` endpoints as seen [here](https://golang.org/pkg/net/http/pprof/)
+
+
+#### Codecheck
+
+To run the go tests:
+
+    $ ./codecheck.sh
+
+`fmt` can be used to fix any linting errors:
+
+    $ go fmt ./controllers
+
 
 ### Front end
 Front end build commands should be run in the same directory as the `package.json` file. If you've used the cloning command from this README it should be something like `/path/to/cg-dashboard-ws/src/github.com/18F/cg-dashboard`. Node version 6 and above should always be used.
