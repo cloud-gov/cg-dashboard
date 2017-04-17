@@ -32,6 +32,7 @@ export class UserStore extends BaseStore {
     this._data = new Immutable.List();
     this._currentViewedType = 'space_users';
     this._currentUserGuid = null;
+    this._currentUserIsAdmin = false;
     this._error = null;
     this._loading = {};
   }
@@ -211,6 +212,19 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.CURRENT_UAA_INFO_RECEIVED: {
+        const uaaInfo = action.currentUaaInfo;
+        const isUaaAdmin = !!(uaaInfo.groups.find( (group) => {
+          return group.display === 'cloud_controller.admin';
+        }));
+
+        this._currentUserIsAdmin = isUaaAdmin;
+
+        // Always emit change
+        this.emitChange();
+        break;
+      }
+
       case userActionTypes.USER_FETCH: {
         this.merge('guid', { guid: action.userGuid, fetching: true });
         break;
@@ -325,6 +339,10 @@ export class UserStore extends BaseStore {
    * @return {boolean} Whether the user has the role.
    */
   hasRole(userGuid, entityGuid, roleToCheck) {
+    if ( this.isAdmin() ) {
+      return true;
+    }
+
     let wrappedRoles = roleToCheck;
     if (!Array.isArray(roleToCheck)) {
       wrappedRoles = [roleToCheck];
@@ -334,6 +352,10 @@ export class UserStore extends BaseStore {
     const user = this.get(userGuid);
     const roles = user && user.roles && user.roles[key] || [];
     return !!roles.find((role) => wrappedRoles.includes(role));
+  }
+
+  isAdmin() {
+    return this._currentUserIsAdmin;
   }
 
   get currentUser() {
