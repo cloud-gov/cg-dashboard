@@ -21,9 +21,9 @@ Learn more about [cloud.gov](https://cloud.gov).
 
 ### Front end application
 - `Node` (version 6.x.x)
-- `React` (version ^0.14.0)
+- `React` (version ^15.0.0)
 - `Babel` (version ^6.x.x)
-- `Karma` (version ^0.13.x)
+- `Karma` (version ^1.4.x)
 - `Webpack` (version ^1.x.x)
 
 ## Setup
