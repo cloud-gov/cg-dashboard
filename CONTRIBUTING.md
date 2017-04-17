@@ -163,7 +163,7 @@ To update a single package to a specific version
 - CSS in component files should opt to use CSS Modules first, and will use normal CSS class architecture after.
 
 ### Working with React/Flux
-
+The dashboard uses the [Flux architecture](https://facebook.github.io/flux/docs/overview.html) and renders HTML with [React](https://facebook.github.io/react/). The Flux implementation is mostly vanilla JS with a Flux dispatcher, as opposed to using a tool such as Redux.
 
 #### Action creators
 
@@ -176,7 +176,6 @@ To update a single package to a specific version
 - Each async action should have a fetch, success, and error sub-action (e.g.
   `TOGGLE`, `TOGGLE_SUCCESS`, and `TOGGLE_ERROR`).
 
-
 #### Stores
 
 - Stores should avoid doing async work, including making any calls to the API.
@@ -184,6 +183,40 @@ To update a single package to a specific version
   actions to update the store as async event occur.
 - Store specs should not use action creators, instead they should dispatch
   actions directly.
+  
+#### Patterns
+
+<a name="ui-actions"></a>
+##### Ui actions
+
+When a UI is supposed to do something based on something a user did, such as clicking a a dropdown to display what's within, these actions should go through the dispatcher as an action.
+
+<a name="container-component"></a>
+##### Container component
+
+The general pattern for different UIs on the app is to fetch data for Cloud Foundry entities, and then render React components with the data. To organize around this, container components should get and keep the state of the data and pass down this data through various UI based components through props. This means UIs will have one container (which is usually but not always linked to a page, like `org`, `space`, etc) and all other components will just have props and will have all data passed down through them.
+
+There's no perfect guidance on what should be a container component vs a props component, besides that almost all base pages are a container component. A good way to determine is to see what data various UIs require and then separate containers and prop containers based on this.
+  
+#### Anti-patterns
+
+##### Having components with both props and state. 
+
+Most components will use either props or state to control updates. There are some components that currently break this anti-pattern, often having initial data passed in. This can be done with the `handleUIAction` dispatcher, which sets the distinction that the action is just a UI based action rather then from the server or app.
+
+Instead, use the [state container component](#container-component).
+
+##### Setting state in component rather then through actions
+
+Besides pure UI components, no components should set state within themselves without the use of an action. This is due to keeping both UI actions the users take, and server actions when data comes in from the server to move through the app in the same way, through the dispatcher. 
+
+Instead, use [ui actions](#ui-actions).
+
+##### Doing async work in the stores
+
+This pattern is slowly being phased out of multiple stores, so will be seen many places. For new stores, all async work should be done in the action creator functions. For example, for a fetch action, the fetch action should be dispatched and then the API call should be made.
+
+When async code is in stores, it should be migrated to action creators.
 
 ## Performance
 
