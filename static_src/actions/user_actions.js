@@ -73,11 +73,6 @@ const userActions = {
   },
 
   addUserRoles(roles, userGuid, resourceGuid, resourceType) {
-    console.log('****');
-    console.log('userGuid: ', userGuid);
-    console.log('resourceGuid: ', resourceGuid);
-    console.log('****');
-
     AppDispatcher.handleViewAction({
 
       type: userActionTypes.USER_ROLES_ADD,
