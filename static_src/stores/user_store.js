@@ -214,9 +214,9 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.CURRENT_UAA_INFO_RECEIVED: {
         const uaaInfo = action.currentUaaInfo;
-        const isUaaAdmin = !!(uaaInfo.groups.find( (group) => {
-          return group.display === 'cloud_controller.admin';
-        }));
+        const isUaaAdmin = !!(uaaInfo.groups.find((group) => (
+          group.display === 'cloud_controller.admin'
+        )));
 
         this._currentUserIsAdmin = isUaaAdmin;
 
@@ -339,7 +339,7 @@ export class UserStore extends BaseStore {
    * @return {boolean} Whether the user has the role.
    */
   hasRole(userGuid, entityGuid, roleToCheck) {
-    if ( this.isAdmin() ) {
+    if (this.isAdmin()) {
       return true;
     }
 
