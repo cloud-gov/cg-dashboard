@@ -187,7 +187,7 @@ The dashboard uses the [Flux architecture](https://facebook.github.io/flux/docs/
 #### Patterns
 
 <a name="ui-actions"></a>
-##### Ui actions
+##### UI actions
 
 When a UI is supposed to do something based on something a user did, such as clicking a a dropdown to display what's within, these actions should go through the dispatcher as an action.
 
