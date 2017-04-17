@@ -52,6 +52,7 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	uaaRouter := secureRouter.Subrouter(UAAContext{}, "/uaa")
 	uaaRouter.Middleware((*UAAContext).OAuth)
 	uaaRouter.Get("/userinfo", (*UAAContext).UserInfo)
+	uaaRouter.Get("/uaainfo", (*UAAContext).UaaInfo)
 
 	// Setup the /log subrouter.
 	logRouter := secureRouter.Subrouter(LogContext{}, "/log")
