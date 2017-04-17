@@ -12,11 +12,13 @@ import InfoAppCreate from './info_app_create.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
+import UserStore from '../stores/user_store';
 
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
+  const currentUser = UserStore.currentUser;
 
   const space = SpaceStore.get(currentSpaceGuid);
   const apps = (space && space.apps) ? space.apps : [];
@@ -24,6 +26,7 @@ function stateSetter() {
   return {
     currentOrg: OrgStore.get(currentOrgGuid),
     currentSpace: space,
+    currentUser,
     apps: apps.sort((a, b) => a.name.localeCompare(b.name)),
     currentOrgGuid,
     currentSpaceGuid,
@@ -71,7 +74,11 @@ export default class AppList extends React.Component {
     if (this.state.empty) {
       content = (
         <EntityEmpty callout="You have no apps in this space">
-          <InfoAppCreate space={ this.state.currentSpace } org={ this.state.currentOrg } />
+          <InfoAppCreate
+            space={ this.state.currentSpace }
+            org={ this.state.currentOrg }
+            user={ this.state.currentUser }
+          />
         </EntityEmpty>
       );
     } else if (!this.state.loading && this.state.apps.length > 0) {

@@ -5,7 +5,6 @@ import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
 import Breadcrumbs from './breadcrumbs.jsx';
 import EntityIcon from './entity_icon.jsx';
-import InfoAppCreate from './info_app_create.jsx';
 import Loading from './loading.jsx';
 import Marketplace from './marketplace.jsx';
 import OrgStore from '../stores/org_store.js';
@@ -102,11 +101,6 @@ export default class SpaceContainer extends React.Component {
           </div>
 
           <AppList />
-          <InfoAppCreate
-            space={ space }
-            org={ this.state.currentOrg }
-            user={ this.state.currentUser }
-          />
         </Panel>
         <Panel title="Service instances">
           <ServiceInstanceTable />
