@@ -5,31 +5,39 @@ We're so glad you're thinking about contributing to an 18F open source project! 
 Before contributing, we encourage you to read our CONTRIBUTING policy (you are here), our LICENSE, and our README, all of which should be in this repository. If you have any questions, or want to read more about our underlying policies, you can consult the 18F Open Source Policy GitHub repository at https://github.com/18f/open-source-policy, or just shoot us an email/official government letterhead note to [18f@gsa.gov](mailto:18f@gsa.gov).
 
 ## High-level roadmap
+
 The cloud.gov dashboard is a unit-tested React single-page application. Its previous version was an Angular app and is available at the `deprecated` branch.
 
-The work on the cloud.gov front-end fits into a higher-level roadmap for all of cloud.gov. For now, this is in [another tool](https://18f.aha.io/products/CGP/bookmarks/project_timelines/new) only accessible by 18F personnel.
+The work on the cloud.gov front-end fits into a higher-level roadmap for all of cloud.gov. For now, this is defined quarterly in a PI planning, documented in [favro](https://favro.com/organization/1e11108a2da81e3bd7153a7a/9243243f8278f7c7f138efed).
 
 ## Workflow
-We track work and progress through [ZenHub](https://www.zenhub.io/), which adds a browser extension to add additional agile features to GitHub. ZenHub adds a "Boards" page, which is an agile board detailing the state of work for the dashboard.
+
+We track work and progress through [Favro](https://favro.com/organization/1e11108a2da81e3bd7153a7a/e9acfea577acd5bdadf3d6a2) which is an agile board detailing the state of work for the dashboard and other customer facing projects.
 
 ### Board workflow
+
 - Stories or ideas for features can start in backlog or icebox.
 
 #### Criteria for moving through columns
+
 The criteria for moving a card through the columns is in the main cloud.gov product repo: [cloud.gov Delivery Process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md). Some aspects that differ or extend for that process as related to the cloud.gov front end:
 
 ##### Awaiting acceptance
+
   - Have all new files and newly touched files linted (new files can skip linting if under tight deadline)
   - Have all previous unit tests running without error.
   - Non-JSX code covered in units tests.
   - Is deployed on a demo, staging or live site so other team members can see/use it.
 
 ##### Done
+
   - Stakeholders see and approve the work as meeting acceptance criteria.
   - If the work has a visual aspect, post a screenshot attached for later documentation/announcement/demo purposes.
 
 ##### Definition of done for a feature
+
 A feature is a higher-level epic that will encompass multiple smaller units of work. An example would be "Route panel" or "Service panel on app page".
+
 - Stakeholders see and approve the work as meeting acceptance criteria.
 - Is deployed to production, dashboard.cloud.gov site.
 - All appropriate shared global styling is in cg-style rather then cg-dashboard
@@ -38,6 +46,7 @@ A feature is a higher-level epic that will encompass multiple smaller units of w
 - If uses new data from cloud foundry api (new methods added to `cf_api.js`) ensure they are mocked in testing server.
 - Open an issue or PR in [cg-docs](https://github.com/18F/cg-docs) to document the new feature.
 - A product owner or team member will check a story waiting acceptance and put it into "done" if it meets the criteria.
+- The feature has been usability tested with at least two current or potential cloud.gov users.
 
 For more information, see the high-level [cloud.gov respository](https://github.com/18F/cg-product) and [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md).
 
@@ -64,7 +73,6 @@ For more information, see the high-level [cloud.gov respository](https://github.
   - [Director](https://github.com/flatiron/director#api-documentation)
 
 ### Workflow
-- Open branches off main repo due to secure CircleCI env vars.
 - Add the "ready for review" label when the code is ready to be reviewed by another team member.
   - Work-in-progress PRs are allowed. Be sure to tag the review with "ready for review" when it's ready though.
 - As another team member, review the code and ensure it conforms to the coding standards and exit criteria
@@ -86,7 +94,7 @@ For more information, see the high-level [cloud.gov respository](https://github.
 
 ### Branches
 - Open branches off main repo due to Circle CI env var problem. For now, remember to branch off of the `master` branch.
-- Name your branch with your initials first.
+- Name your branch with your initials first. For example, `ms-feature`.
 - Include a short description of the feature that's being developed after your initial.
 
 ### Commit message
@@ -98,7 +106,7 @@ In general, commit messages can be written in whatever way the author decides, b
 ### Coding style
 - [Airbnb styleguide for JS](https://github.com/airbnb/javascript)
   - Re-add deprecation warnings on linter when upgrade react.
-- [18F styleguide for CSS](https://pages.18f.gov/frontend/css-coding-styleguide/)
+- [18F styleguide for CSS](https://pages.18f.gov/frontend/css-coding-styleguide/), through [stylelint](https://github.com/18F/stylelint-rules).
 - Linting will be run before tests run, so will fail the tests if files are not linted.
 - Additionally, linting should always
   - fail on CI
@@ -177,18 +185,12 @@ To update a single package to a specific version
 - Store specs should not use action creators, instead they should dispatch
   actions directly.
 
-
 ## Performance
-Adding performance tracking and metrics is currently a TODO. Here are some items in consideration:
-- What metrics should be tracked? ie: page load, speed index, custom events, number of requests, total request size, etc.
-- When should performance be measured? ie: on staging site, locally during test runs.
-- How should performance be measured? ie: with what tools
-- What should performance budgets for decided metrics be? ie: faster then 1000 for speed index, faster then 1s for certain custom event, total request size below 2mb.
-- How should performance metrics and budgets be incorporated into workflow? Going over a budget requires re-implementation, or issue.
-- Any library added that's total file size is above 25kb should be evaluated for performance affect.
+
+Performance, as in speed of the site as perceived to users, has been briefly researched and tracked. The main web performance metrics tracked are [Speed Index](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index), [input latency](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency), [time to interactive](https://developers.google.com/web/tools/lighthouse/audits/time-to-interactive), total page weight, and number of DOM nodes. These metrics were tracked for five comparison sites for cloud.gov and documented in a [google sheet, GSA only](https://docs.google.com/spreadsheets/d/1SuGQv5o75n6bkZaQNzL-cjkR2WTDvGuQJlFtPuUGNfM/edit#gid=0). These comparison stats were used to determine performance goals (ideal numbers to reach over time) and budgets (limits placed on the team to stop performance from degrading). Performance is tracked as part of the CI build process, and the build fails if performance goes over the budgets. Any library added that's total file size is above 25kb should be evaluated for performance affect.
 
 ## Onboarding checklist
-Complete the [onboarding tasks](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md) for the whole cloud.gov team and for the Navigator theme.
+Complete the [onboarding tasks](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md) for the whole cloud.gov team and for the Customer theme.
 
 ## Public domain
 
