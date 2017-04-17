@@ -483,6 +483,7 @@ describe('userActions', function() {
       sandbox.stub(userActions, 'fetchUser').returns(Promise.resolve());
       sandbox.stub(userActions, 'fetchUserOrgs').returns(Promise.resolve());
       sandbox.stub(userActions, 'fetchUserSpaces').returns(Promise.resolve());
+      sandbox.stub(userActions, 'fetchCurrentUserUaaInfo').returns(Promise.resolve());
       sandbox.stub(userActions, 'receivedCurrentUser').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleViewAction');
 
