@@ -267,7 +267,11 @@ const userActionTypes = keymirror({
   // Current user info fetched from server.
   CURRENT_USER_INFO_FETCH: null,
   // Action when current user info received from server.
-  CURRENT_USER_INFO_RECEIVED: null
+  CURRENT_USER_INFO_RECEIVED: null,
+  // Current UAA info fetched from server.
+  CURRENT_UAA_INFO_FETCH: null,
+  // Action when current UAA info received from server.
+  CURRENT_UAA_INFO_RECEIVED: null
 });
 
 const routeActionTypes = keymirror({
