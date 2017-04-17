@@ -50,7 +50,7 @@ describe('uaaApi', function() {
 
     it('should call an http get request for uaa permission info', function () {
       expect(http.get).toHaveBeenCalledOnce();
-      expect(http.get).toHaveBeenCalledWith(sinon.match(/\/uaainfo$/));
+      expect(http.get).toHaveBeenCalledWith(sinon.match("/uaa/Users/123$/"));
     });
   });
 });
