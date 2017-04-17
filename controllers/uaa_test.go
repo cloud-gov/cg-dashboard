@@ -43,6 +43,55 @@ func TestUserinfo(t *testing.T) {
 	}
 }
 
+var uaainfoTests = []BasicProxyTest{
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "Basic Uaa Info without guid",
+				SessionData: ValidTokenData,
+				EnvVars:     MockCompleteEnvVars,
+			},
+			ExpectedResponse: "{\"status\": \"Bad request\", \"error_description\": \"Missing valid guid.\"}",
+			ExpectedCode:     http.StatusBadRequest,
+		},
+		// What the "external" server will send back to the proxy.
+		RequestMethod: "GET",
+		RequestPath:   "/uaa/uaainfo",
+		ExpectedPath:  "/uaainfo",
+	},
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "Basic Uaa Info with guid",
+				SessionData: ValidTokenData,
+				EnvVars:     MockCompleteEnvVars,
+			},
+			ExpectedResponse: "success",
+			ExpectedCode:     http.StatusOK,
+		},
+		// What the "external" server will send back to the proxy.
+		RequestMethod: "GET",
+		RequestPath:   "/uaa/uaainfo?uaa_guid=test",
+		Response:      "success",
+		ExpectedPath:  "/Users/test",
+		ResponseCode:  http.StatusOK,
+	},
+}
+
+func TestUaainfo(t *testing.T) {
+	for _, test := range uaainfoTests {
+		// Create the external server that the proxy will send the request to.
+		testServer := CreateExternalServer(t, &test)
+		// Construct full url for the proxy.
+		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
+		c := &controllers.UAAContext{SecureContext: &controllers.SecureContext{Context: &controllers.Context{}}}
+		response, request, router := PrepareExternalServerCall(t, c.SecureContext, testServer, fullURL, test)
+		router.ServeHTTP(response, request)
+		VerifyExternalCallResponse(t, response, &test)
+		testServer.Close()
+	}
+}
+
 var queryUsersTests = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
