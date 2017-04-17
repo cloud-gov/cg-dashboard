@@ -40,17 +40,4 @@ describe('uaaApi', function() {
       expect(http.get).toHaveBeenCalledWith(sinon.match(/\/userinfo$/));
     });
   });
-
-  describe('fetchUaaInfo()', function () {
-    beforeEach(function (done) {
-      sandbox.stub(http, 'get').returns(Promise.resolve({ data: { uaa_guid: '123' } }));
-
-      uaaApi.fetchUaaInfo().then(done, done.fail);
-    });
-
-    it('should call an http get request for uaa permission info', function () {
-      expect(http.get).toHaveBeenCalledOnce();
-      expect(http.get).toHaveBeenCalledWith(sinon.match("/uaa/Users/123$/"));
-    });
-  });
 });
