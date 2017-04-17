@@ -518,8 +518,7 @@ const spaceSummaries = [
           CONSOLE_LOG_URL: "https://loggregator.cloud.gov/",
           CONSOLE_UAA_URL: "https://uaa.cloud.gov/",
           GO15VENDOREXPERIMENT: 1,
-          GOPACKAGENAME: "github.com/18F/cg-dashboard",
-          GOVERSION: "go1.6.3"
+          GOPACKAGENAME: "github.com/18F/cg-dashboard"
         },
         memory: 256,
         instances: 1,
@@ -657,8 +656,7 @@ const spaceSummaries = [
           CONSOLE_LOG_URL: "https://loggregator.cloud.gov/",
           CONSOLE_UAA_URL: "https://uaa.cloud.gov/",
           GO15VENDOREXPERIMENT: 1,
-          GOPACKAGENAME: "github.com/18F/cg-dashboard",
-          GOVERSION: "go1.6.3"
+          GOPACKAGENAME: "github.com/18F/cg-dashboard"
         },
         memory: 256,
         instances: 1,
@@ -722,8 +720,7 @@ const spaceSummaries = [
           CONSOLE_LOG_URL: "https://loggregator.cloud.gov/",
           CONSOLE_UAA_URL: "https://uaa.cloud.gov/",
           GO15VENDOREXPERIMENT: 1,
-          GOPACKAGENAME: "github.com/18F/cg-dashboard",
-          GOVERSION: "go1.6.3"
+          GOPACKAGENAME: "github.com/18F/cg-dashboard"
         },
         memory: 256,
         instances: 1,

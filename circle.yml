@@ -1,6 +1,6 @@
 machine:
   environment:
-    GODIST: "go1.6.linux-amd64.tar.gz"
+    GODIST: "go1.8.linux-amd64.tar.gz"
     WS: "/home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard"
     CF_API: "https://api.cloud.gov"
     CF_ORGANIZATION: "cf"
