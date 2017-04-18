@@ -3,10 +3,7 @@ import '../../global_setup.js';
 import React from 'react';
 import { shallow } from 'enzyme';
 import Users from '../../../components/users.jsx';
-import OrgStore from '../../../stores/org_store';
-import SpaceStore from '../../../stores/space_store';
 import UserStore from '../../../stores/user_store';
-
 
 describe('<Users />', function () {
   let users, sandbox;
@@ -17,18 +14,6 @@ describe('<Users />', function () {
 
   afterEach(function () {
     sandbox.restore();
-  });
-
-  describe('smoke test store', function () {
-    it('with UserStore', function () {
-      expect(UserStore).not.toEqual(undefined);
-    });
-    it('with OrgStore', function () {
-      expect(OrgStore).not.toEqual(undefined);
-    });
-    it('with SpaceStore', function () {
-      expect(SpaceStore).not.toEqual(undefined);
-    });
   });
 
   describe('with a user', function () {
