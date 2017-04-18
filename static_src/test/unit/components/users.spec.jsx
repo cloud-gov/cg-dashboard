@@ -37,5 +37,15 @@ describe('<Users />', function () {
         expect(actual).toEqual('org');
       });
     });
+
+    describe('when at space level', function () {
+      beforeEach(function () {
+        users.setState({ currentType: 'space_users' });
+      });
+      it('doesnt have permissions to edit users', function () {
+        const actual = users.instance().resourceType;
+        expect(actual).toEqual('space');
+      });
+    });
   });
 });
