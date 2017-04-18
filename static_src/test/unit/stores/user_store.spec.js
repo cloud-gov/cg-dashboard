@@ -650,12 +650,43 @@ describe('UserStore', function () {
     });
   });
 
+  describe('isAdmin()', function () {
+    describe('user with _currentUserIsAdmin', function () {
+      let user, space, org, actual;
+
+      beforeEach(function () {
+        org = { guid: 'org1234' };
+        space = { guid: 'space1234' };
+        user = {
+          guid: 'user123',
+          roles: {
+            [space.guid]: ['space_developer'],
+            [org.guid]: ['org_manager', 'org_auditor']
+          }
+        };
+
+        UserStore.push(user);
+      });
+
+      it('returns true for _currentUserIsAdmin equals true', function () {
+        UserStore._currentUserIsAdmin = true;
+        actual = UserStore.isAdmin()
+        expect(actual).toBe(true);
+      });
+
+      it('returns true for _currentUserIsAdmin equals false', function () {
+        UserStore._currentUserIsAdmin = false;
+        actual = UserStore.isAdmin()
+        expect(actual).toBe(false);
+      });
+    });
+  });
+
   describe('hasRole()', function () {
     describe('user with space_developer and org roles', function () {
       let user, space, org, isAdmin;
 
       beforeEach(function () {
-        isAdmin = false;
         org = { guid: 'org1234' };
         space = { guid: 'space1234' };
         user = {
