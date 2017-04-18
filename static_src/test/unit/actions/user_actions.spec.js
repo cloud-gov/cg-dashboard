@@ -5,6 +5,7 @@ import AppDispatcher from '../../../dispatcher.js';
 import { assertAction, setupViewSpy, setupUISpy, setupServerSpy } from
   '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
+import uaaApi from '../../../util/uaa_api.js';
 import userActions from '../../../actions/user_actions.js';
 import { userActionTypes } from '../../../constants.js';
 import UserStore from '../../../stores/user_store';
@@ -476,6 +477,30 @@ describe('userActions', function() {
     });
   });
 
+
+  describe('fetchCurrentUserUaaInfo()', function () {
+    let guid;
+
+    beforeEach(function (done) {
+      guid = 'user123';
+      sandbox.stub(uaaApi, 'fetchUaaInfo').returns(Promise.resolve([]));
+      sandbox.stub(AppDispatcher, 'handleViewAction');
+
+      userActions.fetchCurrentUserUaaInfo(guid)
+        .then(done, done.fail);
+    });
+
+    it('dispatches CURRENT_UAA_INFO_FETCH', function () {
+      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.CURRENT_UAA_INFO_FETCH
+      }));
+    });
+
+    it('calls uaaApi', function () {
+      expect(uaaApi.fetchUaaInfo).toHaveBeenCalledWith(guid);
+    });
+  });
+
   describe('fetchCurrentUser()', function () {
     beforeEach(function (done) {
       sandbox.stub(userActions, 'fetchCurrentUserInfo')
@@ -504,6 +529,10 @@ describe('userActions', function() {
 
     it('calls fetchCurrentUserInfo', function () {
       expect(userActions.fetchCurrentUserInfo).toHaveBeenCalledOnce();
+    });
+
+    it('calls fetchCurrentUserUaaInfo', function () {
+      expect(userActions.fetchCurrentUserUaaInfo).toHaveBeenCalledOnce();
     });
 
     it('calls fetchUser', function () {
