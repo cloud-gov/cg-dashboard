@@ -652,9 +652,10 @@ describe('UserStore', function () {
 
   describe('hasRole()', function () {
     describe('user with space_developer and org roles', function () {
-      let user, space, org;
+      let user, space, org, isAdmin;
 
       beforeEach(function () {
+        isAdmin = false;
         org = { guid: 'org1234' };
         space = { guid: 'space1234' };
         user = {
@@ -685,6 +686,31 @@ describe('UserStore', function () {
       });
 
       it('returns true for org_manager and org_developer', function() {
+        expect(UserStore.hasRole(user.guid, org.guid, ['org_manager', 'org_developer'])).toBe(true);
+      });
+
+      it('returns true for space_developer as uaa admin', function () {
+        UserStore._currentUserIsAdmin = true;
+        expect(UserStore.hasRole(user.guid, space.guid, 'space_developer')).toBe(true);
+      });
+
+      it('returns false for space_manager as uaa admin', function () {
+        UserStore._currentUserIsAdmin = true;
+        expect(UserStore.hasRole(user.guid, space.guid, 'space_manager')).toBe(true);
+      });
+
+      it('returns true for org_manager as uaa admin', function() {
+        UserStore._currentUserIsAdmin = true;
+        expect(UserStore.hasRole(user.guid, org.guid, 'org_manager')).toBe(true);
+      });
+
+      it('returns true for org_manager and org_auditor as uaa admin', function() {
+        UserStore._currentUserIsAdmin = true;
+        expect(UserStore.hasRole(user.guid, org.guid, ['org_manager', 'org_auditor'])).toBe(true);
+      });
+
+      it('returns true for org_manager and org_developer as uaa admin', function() {
+        UserStore._currentUserIsAdmin = true;
         expect(UserStore.hasRole(user.guid, org.guid, ['org_manager', 'org_developer'])).toBe(true);
       });
 
