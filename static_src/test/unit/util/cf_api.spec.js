@@ -653,7 +653,7 @@ describe('cfApi', function() {
 
       beforeEach(function (done) {
         appGuid = 'abcd';
-        cfApi.fetchAllPages.reset();
+        cfApi.fetchAllPages.returns(Promise.resolve());
 
         cfApi.fetchSpaceEvents(spaceGuid, { appGuid })
           .then(done, done.fail);

@@ -30,7 +30,6 @@ static_src/test/server/fixtures/
 /static_src/components/user_list.jsx
 /static_src/components/user_role_control.jsx
 /static_src/components/user_role_list_control.jsx
-/static_src/test/global_setup.js
 /static_src/test/server/api.js
 /static_src/test/server/authstatus.js
 /static_src/test/server/fixtures.js

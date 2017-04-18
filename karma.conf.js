@@ -7,7 +7,7 @@ module.exports = function(config) {
   config.set({
     browsers: ['Chrome'],
 
-    frameworks: ['jasmine', 'jasmine-matchers', 'sinon'],
+    frameworks: ['jasmine', 'jasmine-matchers', 'jasmine-sinon'],
 
     files: ['./static_src/tests.bundle.js'],
 
@@ -17,7 +17,7 @@ module.exports = function(config) {
       'karma-chrome-launcher',
       'karma-jasmine',
       'karma-jasmine-matchers',
-      'karma-sinon',
+      'karma-jasmine-sinon',
       'karma-sourcemap-loader',
       'karma-webpack'
     ],
