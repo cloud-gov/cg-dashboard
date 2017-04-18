@@ -33,7 +33,7 @@ describe('<Users />', function () {
 
   describe('with a user', function () {
     beforeEach(function () {
-      const userGuid = 'adskfj';
+      const userGuid = 'a-user-guid';
       const user = {
         guid: userGuid
       };
