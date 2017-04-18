@@ -145,6 +145,10 @@ const userActions = {
   },
 
   fetchCurrentUserUaaInfo(guid) {
+    if (!guid) {
+      return Promise.reject(new Error('guid is required'));
+    }
+
     AppDispatcher.handleViewAction({
       type: userActionTypes.CURRENT_UAA_INFO_FETCH
     });
