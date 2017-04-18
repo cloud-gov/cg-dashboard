@@ -214,11 +214,18 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.CURRENT_UAA_INFO_RECEIVED: {
         const uaaInfo = action.currentUaaInfo;
-        const isUaaAdmin = !!(uaaInfo.groups.find((group) => (
-          group.display === 'cloud_controller.admin'
-        )));
+        this._currentUserIsAdmin = false;
 
-        this._currentUserIsAdmin = isUaaAdmin;
+        if (uaaInfo.groups) {
+          // Check for UAA permissions here.
+          // If the response does not have and object in the groups array
+          // with a display key that equals 'cloud_controller.admin',
+          // then return is false.
+          // If there is a proper response, then the return is true.
+          this._currentUserIsAdmin = !!(uaaInfo.groups.find((group) => (
+            group.display === 'cloud_controller.admin'
+          )));
+        }
 
         // Always emit change
         this.emitChange();
