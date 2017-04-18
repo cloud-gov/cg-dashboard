@@ -18,19 +18,7 @@ describe('<Users />', function () {
   afterEach(function () {
     sandbox.restore();
   });
-
-  describe('smoke test store', function () {
-    it('with UserStore', function () {
-      expect(UserStore).not.toEqual(undefined);
-    });
-    it('with OrgStore', function () {
-      expect(OrgStore).not.toEqual(undefined);
-    });
-    it('with SpaceStore', function () {
-      expect(SpaceStore).not.toEqual(undefined);
-    });
-  });
-
+  
   describe('with a user', function () {
     beforeEach(function () {
       const userGuid = 'a-user-guid';
