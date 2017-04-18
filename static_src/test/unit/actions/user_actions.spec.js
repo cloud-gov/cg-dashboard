@@ -501,6 +501,19 @@ describe('userActions', function() {
     });
   });
 
+  describe('receivedCurrentUserUaaInfo()', function() {
+    it('should call a server action with user object passed in', function() {
+      const uaaStub = { uaaInfo: {} };
+      const expectedParams = {};
+      let spy = setupServerSpy(sandbox);
+
+      userActions.receivedCurrentUserUaaInfo(uaaStub);
+
+      assertAction(spy, userActionTypes.CURRENT_UAA_INFO_RECEIVED,
+        expectedParams);
+    });
+  });
+
   describe('fetchCurrentUser()', function () {
     beforeEach(function (done) {
       sandbox.stub(userActions, 'fetchCurrentUserInfo')
@@ -546,5 +559,6 @@ describe('userActions', function() {
     it('calls receivedCurrentUser', function () {
       expect(userActions.receivedCurrentUser).toHaveBeenCalledWith({ guid: 'user123' });
     });
+
   });
 });
