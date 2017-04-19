@@ -36,6 +36,7 @@ test:
   override:
     - cd $WS && ./codecheck.sh -u
     - cd $WS && npm test
+    - NODE_ENV=prod npm run build
     - cd $WS && npm run test-performance
 
 deployment:
