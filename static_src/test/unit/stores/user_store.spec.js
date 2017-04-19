@@ -434,12 +434,15 @@ describe('UserStore', function () {
   });
 
   describe('on CURRENT_UAA_INFO_RECEIVED', function () {
-    it('should not fail when groups is missing in uaaInfo', function () {
-      const currentUaaInfo = { guid: '1234' };
+    beforeEach(() => {
       const userGuid = 'zxsdkfjasdfladsf';
-      const uaaInfo = {groups: []};
       const existingUser = { guid: userGuid };
       const spy = sandbox.spy(UserStore, 'emitChange');
+    });
+
+    it('should not fail when groups is missing in uaaInfo', function () {
+      const currentUaaInfo = { guid: '1234' };
+      const uaaInfo = {groups: []};
 
       UserStore._data = Immutable.fromJS([existingUser]);
       AppDispatcher.handleViewAction({
@@ -452,9 +455,6 @@ describe('UserStore', function () {
 
     it('should emit a change event always', function () {
       const currentUaaInfo = { groups: [{}], guid: '1234' };
-      const userGuid = 'zxsdkfjasdfladsf';
-      const existingUser = { guid: userGuid };
-      const spy = sandbox.spy(UserStore, 'emitChange');
 
       UserStore._data = Immutable.fromJS([existingUser]);
       AppDispatcher.handleViewAction({
@@ -467,9 +467,6 @@ describe('UserStore', function () {
 
     it('should test when UAA group for is not admin', function () {
       const currentUaaInfo = { groups: [{}], guid: '1234' };
-      const userGuid = 'zxsdkfjasdfladsf';
-      const existingUser = { guid: userGuid };
-      const spy = sandbox.spy(UserStore, 'emitChange');
 
       UserStore._data = Immutable.fromJS([existingUser]);
       AppDispatcher.handleViewAction({
@@ -484,9 +481,6 @@ describe('UserStore', function () {
 
     it('should test when UAA group for admin is there', function () {
       const currentUaaInfo = { groups: [{display: 'cloud_controller.admin'}], guid: '1234' };
-      const userGuid = 'zxsdkfjasdfladsf';
-      const existingUser = { guid: userGuid };
-      const spy = sandbox.spy(UserStore, 'emitChange');
 
       UserStore._data = Immutable.fromJS([existingUser]);
       AppDispatcher.handleViewAction({
