@@ -51,3 +51,5 @@ const userOrganizations = [
     }
   }
 ];
+
+module.exports = userOrganizations;
