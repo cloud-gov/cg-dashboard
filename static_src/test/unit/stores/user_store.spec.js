@@ -433,6 +433,67 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on CURRENT_UAA_INFO_RECEIVED', function () {
+    let userGuid, existingUser, spy, currentUaaInfo;
+
+    beforeEach(() => {
+      userGuid = 'zxsdkfjasdfladsf';
+      existingUser = { guid: userGuid };
+      spy = sandbox.spy(UserStore, 'emitChange');
+      UserStore._data = Immutable.fromJS([existingUser]);
+    });
+
+    it('should not fail when groups is missing in uaaInfo', function () {
+      currentUaaInfo = { guid: '1234' };
+      const uaaInfo = {groups: []};
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.CURRENT_UAA_INFO_RECEIVED,
+        currentUaaInfo
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should emit a change event always', function () {
+      currentUaaInfo = { groups: [{}], guid: '1234' };
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.CURRENT_UAA_INFO_RECEIVED,
+        currentUaaInfo
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should test when UAA group for is not admin', function () {
+      currentUaaInfo = { groups: [{}], guid: '1234' };
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.CURRENT_UAA_INFO_RECEIVED,
+        currentUaaInfo
+      });
+
+      const actual = UserStore;
+      expect(spy).toHaveBeenCalledOnce();
+      expect(actual._currentUserIsAdmin).toEqual(false);
+    });
+
+    it('should test when UAA group for admin is there', function () {
+      currentUaaInfo = { groups: [{display: 'cloud_controller.admin'}], guid: '1234' };
+
+      UserStore._data = Immutable.fromJS([existingUser]);
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.CURRENT_UAA_INFO_RECEIVED,
+        currentUaaInfo
+      });
+
+      const actual = UserStore;
+      expect(spy).toHaveBeenCalledOnce();
+      expect(actual._currentUserIsAdmin).toEqual(true);
+    });
+  });
+
   describe('getAllInSpace()', function() {
     // TODO possibly move this functionality to shared place.
     it('should find all user that have the space guid passed in', function() {
@@ -583,9 +644,41 @@ describe('UserStore', function () {
     });
   });
 
+  describe('isAdmin()', function () {
+    describe('user with _currentUserIsAdmin', function () {
+      let user, space, org, actual;
+
+      beforeEach(function () {
+        org = { guid: 'org1234' };
+        space = { guid: 'space1234' };
+        user = {
+          guid: 'user123',
+          roles: {
+            [space.guid]: ['space_developer'],
+            [org.guid]: ['org_manager', 'org_auditor']
+          }
+        };
+
+        UserStore.push(user);
+      });
+
+      it('returns true for _currentUserIsAdmin equals true', function () {
+        UserStore._currentUserIsAdmin = true;
+        actual = UserStore.isAdmin()
+        expect(actual).toBe(true);
+      });
+
+      it('returns true for _currentUserIsAdmin equals false', function () {
+        UserStore._currentUserIsAdmin = false;
+        actual = UserStore.isAdmin()
+        expect(actual).toBe(false);
+      });
+    });
+  });
+
   describe('hasRole()', function () {
     describe('user with space_developer and org roles', function () {
-      let user, space, org;
+      let user, space, org, isAdmin;
 
       beforeEach(function () {
         org = { guid: 'org1234' };
@@ -618,6 +711,31 @@ describe('UserStore', function () {
       });
 
       it('returns true for org_manager and org_developer', function() {
+        expect(UserStore.hasRole(user.guid, org.guid, ['org_manager', 'org_developer'])).toBe(true);
+      });
+
+      it('returns true for space_developer as uaa admin', function () {
+        UserStore._currentUserIsAdmin = true;
+        expect(UserStore.hasRole(user.guid, space.guid, 'space_developer')).toBe(true);
+      });
+
+      it('returns false for space_manager as uaa admin', function () {
+        UserStore._currentUserIsAdmin = true;
+        expect(UserStore.hasRole(user.guid, space.guid, 'space_manager')).toBe(true);
+      });
+
+      it('returns true for org_manager as uaa admin', function() {
+        UserStore._currentUserIsAdmin = true;
+        expect(UserStore.hasRole(user.guid, org.guid, 'org_manager')).toBe(true);
+      });
+
+      it('returns true for org_manager and org_auditor as uaa admin', function() {
+        UserStore._currentUserIsAdmin = true;
+        expect(UserStore.hasRole(user.guid, org.guid, ['org_manager', 'org_auditor'])).toBe(true);
+      });
+
+      it('returns true for org_manager and org_developer as uaa admin', function() {
+        UserStore._currentUserIsAdmin = true;
         expect(UserStore.hasRole(user.guid, org.guid, ['org_manager', 'org_developer'])).toBe(true);
       });
 

@@ -47,6 +47,94 @@ function MultiResponse(responses) {
 module.exports = function api(smocks) {
 
   smocks.route({
+    id: 'uaa-uaainfo-no-uaa-permissions',
+    label: 'UAA user info fake-personb - no special UAA permissions',
+    path: '/uaa/uaainfo',
+    handler: function(req, reply) {
+
+      // 'cca7537f-601d-48c4-9705-4583ba54ea4c' == "cloud_controller.admin"
+      // 'bba7537f-601d-48c4-9705-4583ba54ea4b' != "cloud_controller.admin"
+      if (req.query.uaa_guid == 'cca7537f-601d-48c4-9705-4583ba54ea4c'){
+        // UAA user with admin permissions
+        // Noted in groups: []
+        reply({
+          "id": "cca7537f-601d-48c4-9705-4583ba54ea4c",
+          "externalId": "fake-person-uaa-admin@gsa.gov",
+          "meta": {
+            "version": 0,
+            "created": "2016-09-16T13:24:31.423Z",
+            "lastModified": "2016-09-16T13:24:31.423Z"
+          },
+          "userName": "fake-person-uaa-admin@gsa.gov",
+          "name": {
+            "familyName": "gsa.gov",
+            "givenName": "fake-person-uaa-admin"
+          },
+          "emails": [
+            {
+              "value": "fake-person-uaa-admin@gsa.gov",
+              "primary": false
+            }
+          ],
+          "groups": [
+            {
+              "value": "88e68451-dc2e-413d-963b-848740512e01c1a23019",
+              "display": "cloud_controller.admin",
+              "type": "DIRECT"
+            }
+          ],
+          "approvals": [],
+          "active": true,
+          "verified": true,
+          "origin": "gsa.gov",
+          "zoneId": "uaa",
+          "passwordLastModified": "2016-09-16T13:24:31.000Z",
+          "previousLogonTime": 1489612053883,
+          "lastLogonTime": 1489612053883,
+          "schemas": [
+            "urn:scim:schemas:core:1.0"
+          ]
+        });
+      } else {
+        // No UAA permissions
+        // Noted in groups: []
+        reply({
+          "id": "bba7537f-601d-48c4-9705-4583ba54ea4b",
+          "externalId": "fake-personb@gsa.gov",
+          "meta": {
+            "version": 0,
+            "created": "2016-09-16T13:24:31.423Z",
+            "lastModified": "2016-09-16T13:24:31.423Z"
+          },
+          "userName": "fake-personb@gsa.gov",
+          "name": {
+            "familyName": "gsa.gov",
+            "givenName": "fake-personb"
+          },
+          "emails": [
+            {
+              "value": "fake-personb@gsa.gov",
+              "primary": false
+            }
+          ],
+          "groups": [],
+          "approvals": [],
+          "active": true,
+          "verified": true,
+          "origin": "gsa.gov",
+          "zoneId": "uaa",
+          "passwordLastModified": "2016-09-16T13:24:31.000Z",
+          "previousLogonTime": 1489612053883,
+          "lastLogonTime": 1489612053883,
+          "schemas": [
+            "urn:scim:schemas:core:1.0"
+          ]
+        });
+      }
+    }
+  });
+
+  smocks.route({
     id: 'uaa-userinfo',
     label: 'UAA user info',
     path: '/uaa/userinfo',

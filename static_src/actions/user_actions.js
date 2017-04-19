@@ -74,6 +74,7 @@ const userActions = {
 
   addUserRoles(roles, userGuid, resourceGuid, resourceType) {
     AppDispatcher.handleViewAction({
+
       type: userActionTypes.USER_ROLES_ADD,
       roles,
       userGuid,
@@ -141,6 +142,28 @@ const userActions = {
     });
 
     return Promise.resolve(userInfo);
+  },
+
+  fetchCurrentUserUaaInfo(guid) {
+    if (!guid) {
+      return Promise.reject(new Error('guid is required'));
+    }
+
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.CURRENT_UAA_INFO_FETCH
+    });
+
+    return uaaApi.fetchUaaInfo(guid)
+      .then(uaaInfo => userActions.receivedCurrentUserUaaInfo(uaaInfo));
+  },
+
+  receivedCurrentUserUaaInfo(uaaInfo) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.CURRENT_UAA_INFO_RECEIVED,
+      currentUaaInfo: uaaInfo
+    });
+
+    return Promise.resolve(uaaInfo);
   },
 
   fetchUser(userGuid) {
@@ -233,7 +256,8 @@ const userActions = {
         Promise.all([
           userActions.fetchUser(userInfo.user_id),
           userActions.fetchUserOrgs(userInfo.user_id),
-          userActions.fetchUserSpaces(userInfo.user_id, options)
+          userActions.fetchUserSpaces(userInfo.user_id, options),
+          userActions.fetchCurrentUserUaaInfo(userInfo.user_id)
         ])
       )
       // Grab user from store with all merged properties

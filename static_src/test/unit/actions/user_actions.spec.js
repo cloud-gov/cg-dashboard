@@ -5,6 +5,7 @@ import AppDispatcher from '../../../dispatcher.js';
 import { assertAction, setupViewSpy, setupUISpy, setupServerSpy } from
   '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
+import uaaApi from '../../../util/uaa_api.js';
 import userActions from '../../../actions/user_actions.js';
 import { userActionTypes } from '../../../constants.js';
 import UserStore from '../../../stores/user_store';
@@ -476,6 +477,43 @@ describe('userActions', function() {
     });
   });
 
+
+  describe('fetchCurrentUserUaaInfo()', function () {
+    let guid;
+
+    beforeEach(function (done) {
+      guid = 'user123';
+      sandbox.stub(uaaApi, 'fetchUaaInfo').returns(Promise.resolve([]));
+      sandbox.stub(AppDispatcher, 'handleViewAction');
+
+      userActions.fetchCurrentUserUaaInfo(guid)
+        .then(done, done.fail);
+    });
+
+    it('dispatches CURRENT_UAA_INFO_FETCH', function () {
+      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.CURRENT_UAA_INFO_FETCH
+      }));
+    });
+
+    it('calls uaaApi', function () {
+      expect(uaaApi.fetchUaaInfo).toHaveBeenCalledWith(guid);
+    });
+  });
+
+  describe('receivedCurrentUserUaaInfo()', function() {
+    it('should call a server action with user object passed in', function() {
+      const uaaStub = { uaaInfo: {} };
+      const expectedParams = {};
+      let spy = setupServerSpy(sandbox);
+
+      userActions.receivedCurrentUserUaaInfo(uaaStub);
+
+      assertAction(spy, userActionTypes.CURRENT_UAA_INFO_RECEIVED,
+        expectedParams);
+    });
+  });
+
   describe('fetchCurrentUser()', function () {
     beforeEach(function (done) {
       sandbox.stub(userActions, 'fetchCurrentUserInfo')
@@ -483,6 +521,7 @@ describe('userActions', function() {
       sandbox.stub(userActions, 'fetchUser').returns(Promise.resolve());
       sandbox.stub(userActions, 'fetchUserOrgs').returns(Promise.resolve());
       sandbox.stub(userActions, 'fetchUserSpaces').returns(Promise.resolve());
+      sandbox.stub(userActions, 'fetchCurrentUserUaaInfo').returns(Promise.resolve());
       sandbox.stub(userActions, 'receivedCurrentUser').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleViewAction');
 
@@ -505,6 +544,10 @@ describe('userActions', function() {
       expect(userActions.fetchCurrentUserInfo).toHaveBeenCalledOnce();
     });
 
+    it('calls fetchCurrentUserUaaInfo', function () {
+      expect(userActions.fetchCurrentUserUaaInfo).toHaveBeenCalledOnce();
+    });
+
     it('calls fetchUser', function () {
       expect(userActions.fetchUser).toHaveBeenCalledOnce();
     });
@@ -516,5 +559,6 @@ describe('userActions', function() {
     it('calls receivedCurrentUser', function () {
       expect(userActions.receivedCurrentUser).toHaveBeenCalledWith({ guid: 'user123' });
     });
+
   });
 });
