@@ -36,6 +36,7 @@ function stateSetter() {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return {
+    currentOrgGuid,
     currentUser,
     currentUserCanViewSpace,
     empty: !OrgStore.loading && !SpaceStore.loading && !org,
