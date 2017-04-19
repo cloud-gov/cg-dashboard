@@ -434,17 +434,19 @@ describe('UserStore', function () {
   });
 
   describe('on CURRENT_UAA_INFO_RECEIVED', function () {
+    let userGuid, existingUser, spy, currentUaaInfo;
+
     beforeEach(() => {
-      const userGuid = 'zxsdkfjasdfladsf';
-      const existingUser = { guid: userGuid };
-      const spy = sandbox.spy(UserStore, 'emitChange');
+      userGuid = 'zxsdkfjasdfladsf';
+      existingUser = { guid: userGuid };
+      spy = sandbox.spy(UserStore, 'emitChange');
+      UserStore._data = Immutable.fromJS([existingUser]);
     });
 
     it('should not fail when groups is missing in uaaInfo', function () {
-      const currentUaaInfo = { guid: '1234' };
+      currentUaaInfo = { guid: '1234' };
       const uaaInfo = {groups: []};
 
-      UserStore._data = Immutable.fromJS([existingUser]);
       AppDispatcher.handleViewAction({
         type: userActionTypes.CURRENT_UAA_INFO_RECEIVED,
         currentUaaInfo
@@ -454,9 +456,8 @@ describe('UserStore', function () {
     });
 
     it('should emit a change event always', function () {
-      const currentUaaInfo = { groups: [{}], guid: '1234' };
+      currentUaaInfo = { groups: [{}], guid: '1234' };
 
-      UserStore._data = Immutable.fromJS([existingUser]);
       AppDispatcher.handleViewAction({
         type: userActionTypes.CURRENT_UAA_INFO_RECEIVED,
         currentUaaInfo
@@ -466,9 +467,8 @@ describe('UserStore', function () {
     });
 
     it('should test when UAA group for is not admin', function () {
-      const currentUaaInfo = { groups: [{}], guid: '1234' };
+      currentUaaInfo = { groups: [{}], guid: '1234' };
 
-      UserStore._data = Immutable.fromJS([existingUser]);
       AppDispatcher.handleViewAction({
         type: userActionTypes.CURRENT_UAA_INFO_RECEIVED,
         currentUaaInfo
@@ -480,7 +480,7 @@ describe('UserStore', function () {
     });
 
     it('should test when UAA group for admin is there', function () {
-      const currentUaaInfo = { groups: [{display: 'cloud_controller.admin'}], guid: '1234' };
+      currentUaaInfo = { groups: [{display: 'cloud_controller.admin'}], guid: '1234' };
 
       UserStore._data = Immutable.fromJS([existingUser]);
       AppDispatcher.handleViewAction({
