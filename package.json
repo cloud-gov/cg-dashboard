@@ -21,6 +21,7 @@
     "testing-server-run": "node ./static_src/test/server/server.js",
     "watch-server": "npm run testing-server & npm run watch",
     "watch-test": "NODE_ENV=test karma start --browsers Chrome",
+    "watch-test-functional": "npm run test-functional -- --watch",
     "watch": "webpack --watch"
   },
   "author": "Marco Segreto (marco.segreto@gsa.gov)",
