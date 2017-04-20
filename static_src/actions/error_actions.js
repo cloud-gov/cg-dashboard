@@ -57,6 +57,8 @@ export default {
       msg,
       err
     });
+
+    return Promise.resolve(err);
   },
 
   clearErrors() {

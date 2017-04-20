@@ -6,6 +6,7 @@ import AppDispatcher from '../../../dispatcher.js';
 import { assertAction, setupViewSpy, setupServerSpy, setupUISpy } from
   '../helpers.js';
 import cfApi from '../../../util/cf_api.js';
+import errorActions from '../../../actions/error_actions.js';
 import serviceActions from '../../../actions/service_actions.js';
 import { serviceActionTypes } from '../../../constants.js';
 import ServiceInstanceStore from '../../../stores/service_instance_store';
@@ -168,37 +169,75 @@ describe('serviceActions', function() {
   });
 
   describe('fetchAllInstances()', function () {
-    let spaceGuid, serviceInstances, result;
-    beforeEach(function (done) {
-      serviceInstances = [
-        { guid: '1234', service_plan_guid: 'plan-1234' },
-        { guid: 'abcd', service_plan_guid: 'plan-abcd' }
-      ];
-      sandbox.stub(cfApi, 'fetchServiceInstances').returns(Promise.resolve(serviceInstances));
-      sandbox.stub(cfApi, 'fetchServicePlan').returns(Promise.resolve());
-      sandbox.spy(serviceActions, 'receivedInstances');
+    describe('on success', function() {
+      let spaceGuid, serviceInstances, result;
 
-      serviceActions.fetchAllInstances(spaceGuid)
-        .then(r => { result = r; })
-        .then(done, done.fail);
+      beforeEach(function (done) {
+        serviceInstances = [
+          { guid: '1234', service_plan_guid: 'plan-1234' },
+          { guid: 'abcd', service_plan_guid: 'plan-abcd' }
+        ];
+        sandbox.stub(cfApi, 'fetchServiceInstances').returns(
+          Promise.resolve(serviceInstances));
+        sandbox.stub(cfApi, 'fetchServicePlan').returns(Promise.resolve());
+        sandbox.spy(serviceActions, 'receivedInstances');
+
+        serviceActions.fetchAllInstances(spaceGuid)
+          .then(r => { result = r; })
+          .then(done);
+      });
+
+      it('resolves to serviceInstances', function () {
+        expect(result).toBe(serviceInstances);
+      });
+
+      it('calls fetchServiceInstances from api', function () {
+        expect(cfApi.fetchServiceInstances).toHaveBeenCalledOnce();
+      });
+
+      it('fetches the service plans associated with these instances', function () {
+        expect(cfApi.fetchServicePlan).toHaveBeenCalledTwice();
+        expect(cfApi.fetchServicePlan).toHaveBeenCalledWith('plan-1234');
+        expect(cfApi.fetchServicePlan).toHaveBeenCalledWith('plan-abcd');
+      });
+
+      it('calls receivedInstances action', function () {
+        expect(serviceActions.receivedInstances).toHaveBeenCalledOnce();
+      });
     });
 
-    it('resolves to serviceInstances', function () {
-      expect(result).toBe(serviceInstances);
-    });
+    describe('on request failures', function() {
+      let spaceGuid, serviceInstances, result = 2;
 
-    it('calls fetchServiceInstances from api', function () {
-      expect(cfApi.fetchServiceInstances).toHaveBeenCalledOnce();
-    });
+      beforeEach(function (done) {
+        serviceInstances = [
+          { guid: '1234', service_plan_guid: 'plan-1234' },
+          { guid: 'abcd', service_plan_guid: 'plan-abcd' }
+        ];
+        const err = { data: null, status: 500 };
+        sandbox.stub(cfApi, 'fetchServiceInstances').returns(
+          Promise.resolve(serviceInstances));
+        sandbox.stub(cfApi, 'fetchServicePlan').returns(Promise.reject(err));
+        sandbox.spy(serviceActions, 'receivedInstances');
+        sandbox.spy(errorActions, 'importantDataFetchError');
 
-    it('fetches the service plans associated with these instances', function () {
-      expect(cfApi.fetchServicePlan).toHaveBeenCalledTwice();
-      expect(cfApi.fetchServicePlan).toHaveBeenCalledWith('plan-1234');
-      expect(cfApi.fetchServicePlan).toHaveBeenCalledWith('plan-abcd');
-    });
+        serviceActions.fetchAllInstances(spaceGuid)
+          .then(r => { result = r; })
+          .then(done)
+          .catch(err => { error = err; });
+      });
 
-    it('calls receivedInstances action', function () {
-      expect(serviceActions.receivedInstances).toHaveBeenCalledOnce();
+      it('should return completed service instances as result', function() {
+        expect(result).toEqual(serviceInstances);
+      });
+
+      it('should call important data fetch error action', function() {
+        expect(errorActions.importantDataFetchError).toHaveBeenCalledOnce();
+      });
+
+      it('should call received instances with completed instances', function() {
+        expect(serviceActions.receivedInstances).toHaveBeenCalledOnce();
+      });
     });
   });
 
