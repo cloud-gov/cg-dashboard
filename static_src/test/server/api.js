@@ -20,6 +20,7 @@ var spaceSummaries = require('./fixtures/space_summaries');
 var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
 var spaceUserRoles = require('./fixtures/space_user_roles.js');
 var userOrganizations = require('./fixtures/user_organizations.js');
+var userRoles = require('./fixtures/user_roles.js');
 var userSpaces = require('./fixtures/user_spaces.js');
 
 var BASE_URL = '/v2';
@@ -51,7 +52,6 @@ module.exports = function api(smocks) {
     label: 'UAA user info fake-personb - no special UAA permissions',
     path: '/uaa/uaainfo',
     handler: function(req, reply) {
-
       // 'cca7537f-601d-48c4-9705-4583ba54ea4c' == "cloud_controller.admin"
       // 'bba7537f-601d-48c4-9705-4583ba54ea4b' != "cloud_controller.admin"
       if (req.query.uaa_guid == 'cca7537f-601d-48c4-9705-4583ba54ea4c'){
@@ -139,17 +139,11 @@ module.exports = function api(smocks) {
     label: 'UAA user info',
     path: '/uaa/userinfo',
     handler: function(req, reply) {
-      reply({
-        user_id: "bba7537f-601d-48c4-9705-4583ba54ea4b",
-        sub: "bba7537f-601d-48c4-9705-4583ba54ea4b",
-        user_name: "fake-personb@gsa.gov",
-        given_name: "fake-personb",
-        family_name: "gsa.gov",
-        email: "fake-personb@gsa.gov",
-        phone_number: null,
-        previous_logon_time: 1489612053883,
-        name: "fake-personb@gsa.gov"
-      });
+      if(req.state['testing_user_role'] && req.state['testing_user_role'] == "space_manager_space_xx"){
+        reply(userRoles['space_manager_space_xx']);
+      } else {
+        reply(userRoles['default']);
+      }
     }
   });
 
