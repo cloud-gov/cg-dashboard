@@ -76,7 +76,7 @@ export default class UserRoleListControl extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="test-user-roles-list-control">
       { this.roleMap.map((role) =>
         <span key={ role.key }>
           <UserRoleControl

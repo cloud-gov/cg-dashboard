@@ -127,7 +127,7 @@ export default class Users extends React.Component {
     }
 
     return (
-      <div>
+      <div className="test-users">
         { errorMessage }
         <div>
           <div>
