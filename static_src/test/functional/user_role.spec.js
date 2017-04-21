@@ -43,10 +43,10 @@ describe('User roles', function () {
 
     describe('org manager for org X then they should', function () {
       it('be able to edit roles for org X', function () {
-        browser.setCookie({ 'name': 'testing_user_role', 'value': 'org_manager_space_x' });
+        browser.setCookie({ 'name': 'testing_user_role', 'value': 'org_manager_org_x' });
         browser.url('/uaa/userinfo');
         cookieResult = browser.getCookie('testing_user_role').value;
-        expect(cookieResult).toBe('org_manager_space_x');
+        expect(cookieResult).toBe('org_manager_org_x');
 
         expect(true).toBe(true);
       });

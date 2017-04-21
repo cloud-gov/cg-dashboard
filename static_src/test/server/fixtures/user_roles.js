@@ -22,7 +22,7 @@ const userRoles = {
     "previous_logon_time": 1489612053883,
     "name": "fake-space-manager-YY@gsa.gov"
   },
-  "org_manager_space_x": {
+  "org_manager_org_x": {
     "user_id": "org-manager-x-uid-601d-48c4-9705",
     "sub": "org-manager-x-uid-601d-48c4-9705",
     "user_name": "fake-org-manager-X@gsa.gov",
@@ -33,7 +33,7 @@ const userRoles = {
     "previous_logon_time": 1489612053883,
     "name": "fake-org-manager-X@gsa.gov"
   },
-  "org_manager_space_y": {
+  "org_manager_org_y": {
     "user_id": "org-manager-y-uid-601d-48c4-9705",
     "sub": "org-manager-y-uid-601d-48c4-9705",
     "user_name": "fake-org-manager-Y@gsa.gov",

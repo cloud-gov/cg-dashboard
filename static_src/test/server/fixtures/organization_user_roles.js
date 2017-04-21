@@ -11,7 +11,7 @@ const orgUserRoles = [
       admin: false,
       active: false,
       default_space_guid: null,
-      username: "fake-personb@gsa.gov",
+      username: "fake-org-manager-x@gsa.gov",
       organization_roles: [
         "org_user",
         "org_manager",
@@ -38,12 +38,8 @@ const orgUserRoles = [
       admin: false,
       active: false,
       default_space_guid: null,
-      username: "fake-personb@gsa.gov",
+      username: "fake-org-manager-y@gsa.gov",
       organization_roles: [
-        "org_user",
-        "org_manager",
-        "org_auditor",
-        "billing_manager"
       ],
       spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/spaces",
       organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/organizations",

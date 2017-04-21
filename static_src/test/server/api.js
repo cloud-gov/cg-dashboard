@@ -142,8 +142,14 @@ module.exports = function api(smocks) {
     handler: function(req, reply) {
       if(req.state['testing_user_role'] && userRoles[req.state['testing_user_role']]){
         reply(userRoles[req.state['testing_user_role']]);
+        if (req.state['show_user_info']) {
+          console.log(userRoles[req.state['testing_user_role']]);
+        }
       } else {
         reply(userRoles['default']);
+        if (req.state['show_user_info']) {
+          console.log(userRoles[req.state['default']]);
+        }
       }
     }
   });
