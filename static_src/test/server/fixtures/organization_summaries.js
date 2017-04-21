@@ -55,17 +55,17 @@ const organizationSummaries = [
       {
         guid: "user_role-space_xx-de67-467b-aebb-150cb097a168",
         name: "org_x-space_xx",
-        service_count: 1,
-        app_count: 1,
-        mem_dev_total: 292,
+        service_count: 0,
+        app_count: 0,
+        mem_dev_total: 0,
         mem_prod_total: 0
       },
       {
         guid: "user_role-space_yy-de67-467b-aebb-150cb097a168",
         name: "org_x-space_yy",
-        service_count: 1,
-        app_count: 1,
-        mem_dev_total: 292,
+        service_count: 0,
+        app_count: 0,
+        mem_dev_total: 0,
         mem_prod_total: 0
       }
     ]
@@ -78,17 +78,17 @@ const organizationSummaries = [
       {
         guid: "user_role-space_xx-de67-467b-aebb-150cb097a168",
         name: "org_y-space_xx",
-        service_count: 1,
-        app_count: 1,
-        mem_dev_total: 292,
+        service_count: 0,
+        app_count: 0,
+        mem_dev_total: 0,
         mem_prod_total: 0
       },
       {
         guid: "user_role-space_yy-de67-467b-aebb-150cb097a168",
         name: "org_y-space_yy",
-        service_count: 1,
-        app_count: 1,
-        mem_dev_total: 292,
+        service_count: 0,
+        app_count: 0,
+        mem_dev_total: 0,
         mem_prod_total: 0
       }
     ]
