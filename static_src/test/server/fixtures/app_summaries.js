@@ -98,6 +98,212 @@ const appSummaries = [
     ports: null
   },
   {
+    guid: "user_role-org_x-space_xx-app_001-4d44-4a2a-8d26-7468b7cbf67d",
+    name: "user_role-org_x-space_xx-app_001",
+    routes: [
+      {
+        guid: "user_role-org_x-space_xx-app_001-ce44-4aeb-9bd8-204d17cdf9ef",
+        host: "user_role-org_x-space_xx-app_001",
+        port: null,
+        path: 0,
+        domain: {
+          guid: "user_role-org_x-space_xx-app_001-d5bb-4c10-8393-55d7d7169932",
+          name: "apps.cloud.gov"
+        }
+      }
+    ],
+    running_instances: 0,
+    services: [],
+    available_domains: [
+    ],
+    production: false,
+    space_guid: "user_role-org_x-space_xx-4064-82f2-d74df612b794",
+    stack_guid: "77590563-6c7c-4ec4-9b4a-01ce9d628190",
+    buildpack: null,
+    detected_buildpack: "node.js 1.5.25",
+    detected_buildpack_guid: "a12a1517-f676-4c7a-aa6c-1b05887190f3",
+    environment_json: {},
+    memory: 64,
+    instances: 2,
+    disk_quota: 1024,
+    state: "STARTED",
+    version: "630aa1f3-f6e8-4cba-aebb-f63252f31cc1",
+    command: null,
+    console: false,
+    debug: null,
+    staging_task_id: "561387da-edcf-49ed-ae3e-ccf57db83a5a",
+    package_state: "STAGED",
+    health_check_type: "port",
+    health_check_timeout: null,
+    health_check_http_endpoint: null,
+    staging_failed_reason: null,
+    staging_failed_description: null,
+    diego: false,
+    docker_image: null,
+    package_updated_at: "2016-12-22T22:06:18Z",
+    detected_start_command: "node web.js",
+    enable_ssh: true,
+    docker_credentials_json: {
+      redacted_message: "[PRIVATE DATA HIDDEN]"
+    },
+    ports: null
+  },
+  {
+    guid: "user_role-org_x-space_yy-app_001-4d44-4a2a-8d26-7468b7cbf67d",
+    name: "user_role-org_x-space_yy-app_001",
+    routes: [
+      {
+        guid: "user_role-org_x-space_yy-app_001-ce44-4aeb-9bd8-204d17cdf9ef",
+        host: "user_role-org_x-space_yy-app_001",
+        port: null,
+        path: 0,
+        domain: {
+          guid: "user_role-org_x-space_yy-app_001-d5bb-4c10-8393-55d7d7169932",
+          name: "apps.cloud.gov"
+        }
+      }
+    ],
+    running_instances: 0,
+    services: [],
+    available_domains: [
+    ],
+    production: false,
+    space_guid: "user_role-org_x-space_yy-4064-82f2-d74df612b794",
+    stack_guid: "77590563-6c7c-4ec4-9b4a-01ce9d628190",
+    buildpack: null,
+    detected_buildpack: "node.js 1.5.25",
+    detected_buildpack_guid: "a12a1517-f676-4c7a-aa6c-1b05887190f3",
+    environment_json: {},
+    memory: 64,
+    instances: 2,
+    disk_quota: 1024,
+    state: "STARTED",
+    version: "630aa1f3-f6e8-4cba-aebb-f63252f31cc1",
+    command: null,
+    console: false,
+    debug: null,
+    staging_task_id: "561387da-edcf-49ed-ae3e-ccf57db83a5a",
+    package_state: "STAGED",
+    health_check_type: "port",
+    health_check_timeout: null,
+    health_check_http_endpoint: null,
+    staging_failed_reason: null,
+    staging_failed_description: null,
+    diego: false,
+    docker_image: null,
+    package_updated_at: "2016-12-22T22:06:18Z",
+    detected_start_command: "node web.js",
+    enable_ssh: true,
+    docker_credentials_json: {
+      redacted_message: "[PRIVATE DATA HIDDEN]"
+    },
+    ports: null
+  },
+
+  {
+    guid: "user_role-org_y-space_yy-app_001-4d44-4a2a-8d26-7468b7cbf67d",
+    name: "user_role-org_y-space_yy-app_001",
+    routes: [
+      {
+        guid: "user_role-org_y-space_yy-app_001-ce44-4aeb-9bd8-204d17cdf9ef",
+        host: "user_role-org_y-space_yy-app_001",
+        port: null,
+        path: 0,
+        domain: {
+          guid: "user_role-org_y-space_yy-app_001-d5bb-4c10-8393-55d7d7169932",
+          name: "apps.cloud.gov"
+        }
+      }
+    ],
+    running_instances: 0,
+    services: [],
+    available_domains: [
+    ],
+    production: false,
+    space_guid: "user_role-org_y-space_yy-4064-82f2-d74df612b794",
+    stack_guid: "77590563-6c7c-4ec4-9b4a-01ce9d628190",
+    buildpack: null,
+    detected_buildpack: "node.js 1.5.25",
+    detected_buildpack_guid: "a12a1517-f676-4c7a-aa6c-1b05887190f3",
+    environment_json: {},
+    memory: 64,
+    instances: 2,
+    disk_quota: 1024,
+    state: "STARTED",
+    version: "630aa1f3-f6e8-4cba-aebb-f63252f31cc1",
+    command: null,
+    console: false,
+    debug: null,
+    staging_task_id: "561387da-edcf-49ed-ae3e-ccf57db83a5a",
+    package_state: "STAGED",
+    health_check_type: "port",
+    health_check_timeout: null,
+    health_check_http_endpoint: null,
+    staging_failed_reason: null,
+    staging_failed_description: null,
+    diego: false,
+    docker_image: null,
+    package_updated_at: "2016-12-22T22:06:18Z",
+    detected_start_command: "node web.js",
+    enable_ssh: true,
+    docker_credentials_json: {
+      redacted_message: "[PRIVATE DATA HIDDEN]"
+    },
+    ports: null
+  },
+
+  {
+    guid: "user_role-org_y-space_xx-app_001-4d44-4a2a-8d26-7468b7cbf67d",
+    name: "user_role-org_y-space_xx-app_001",
+    routes: [
+      {
+        guid: "user_role-org_y-space_xx-app_001-ce44-4aeb-9bd8-204d17cdf9ef",
+        host: "user_role-org_y-space_xx-app_001",
+        port: null,
+        path: 0,
+        domain: {
+          guid: "user_role-org_y-space_xx-app_001-d5bb-4c10-8393-55d7d7169932",
+          name: "apps.cloud.gov"
+        }
+      }
+    ],
+    running_instances: 0,
+    services: [],
+    available_domains: [
+    ],
+    production: false,
+    space_guid: "user_role-org_y-space_xx-4064-82f2-d74df612b794",
+    stack_guid: "77590563-6c7c-4ec4-9b4a-01ce9d628190",
+    buildpack: null,
+    detected_buildpack: "node.js 1.5.25",
+    detected_buildpack_guid: "a12a1517-f676-4c7a-aa6c-1b05887190f3",
+    environment_json: {},
+    memory: 64,
+    instances: 2,
+    disk_quota: 1024,
+    state: "STARTED",
+    version: "630aa1f3-f6e8-4cba-aebb-f63252f31cc1",
+    command: null,
+    console: false,
+    debug: null,
+    staging_task_id: "561387da-edcf-49ed-ae3e-ccf57db83a5a",
+    package_state: "STAGED",
+    health_check_type: "port",
+    health_check_timeout: null,
+    health_check_http_endpoint: null,
+    staging_failed_reason: null,
+    staging_failed_description: null,
+    diego: false,
+    docker_image: null,
+    package_updated_at: "2016-12-22T22:06:18Z",
+    detected_start_command: "node web.js",
+    enable_ssh: true,
+    docker_credentials_json: {
+      redacted_message: "[PRIVATE DATA HIDDEN]"
+    },
+    ports: null
+  },
+  {
     guid: "7fa78964-4d44-4a2a-8d26-7468b7cbf67d",
     name: "fake-node-crashed",
     routes: [
