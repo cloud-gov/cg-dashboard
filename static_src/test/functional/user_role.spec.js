@@ -19,7 +19,6 @@ describe('User roles', function () {
   describe('User role cookie test', function () {
     describe('when cookie is set and deleted', function () {
       it('should reflect the cookie content', function () {
-
         browser.setCookie({ 'name': 'testing_user_role', 'value': 'space_manager_space_xx' });
         browser.url('/uaa/userinfo');
         cookieResult = browser.getCookie('testing_user_role').value;
@@ -42,26 +41,24 @@ describe('User roles', function () {
       expect(pageHeader.getText()).toBe('fake-cf-deck-testing');
     });
 
-    describe('Org page', function () {
-      describe('org manager for org X then they should', function () {
-        it('be able to edit roles for org X', function () {
-          browser.setCookie({ 'name': 'testing_user_role', 'value': 'org_manager_space_x' });
-          browser.url('/uaa/userinfo');
-          cookieResult = browser.getCookie('testing_user_role').value;
-          expect(cookieResult).toBe('org_manager_space_x');
+    describe('org manager for org X then they should', function () {
+      it('be able to edit roles for org X', function () {
+        browser.setCookie({ 'name': 'testing_user_role', 'value': 'org_manager_space_x' });
+        browser.url('/uaa/userinfo');
+        cookieResult = browser.getCookie('testing_user_role').value;
+        expect(cookieResult).toBe('org_manager_space_x');
 
-          expect(true).toBe(true);
-        });
-
-        it('not be able to edit roles for org Y', function () {
-          expect(true).toBe(true);
-        });
+        expect(true).toBe(true);
       });
 
-      describe('space manager for org X space TT then they should', function () {
-        it('not be able to edit roles for org X', function () {
-          expect(true).toBe(true);
-        });
+      it('not be able to edit roles for org Y', function () {
+        expect(true).toBe(true);
+      });
+    });
+
+    describe('space manager for org X space TT then they should', function () {
+      it('not be able to edit roles for org X', function () {
+        expect(true).toBe(true);
       });
     });
 
