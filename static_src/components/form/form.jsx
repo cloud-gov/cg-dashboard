@@ -53,15 +53,14 @@ export default class Form extends React.Component {
     }
 
     e.preventDefault();
+    // Only show error message after form was submitted
     const model = this.state.model;
     const errors = Object.keys(model && model.fields || {})
       .map(fieldName => model.fields[fieldName].error)
       .filter(error => !!error);
 
-    if (errors) {
-      // Only show error message after form was submitted
-      this.setState({ errors });
-    }
+    // Update errors state (clear/set)
+    this.setState({ errors });
 
     this.props.onSubmit(errors, this.state.model.fields);
   }
