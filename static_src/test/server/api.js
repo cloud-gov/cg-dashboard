@@ -21,6 +21,7 @@ var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
 var spaceUserRoles = require('./fixtures/space_user_roles.js');
 var userOrganizations = require('./fixtures/user_organizations.js');
 var userRoles = require('./fixtures/user_roles.js');
+var userRoleOrgAddNewRole = require('./fixtures/user_role_org_add_new_role.js');
 var userSpaces = require('./fixtures/user_spaces.js');
 
 var BASE_URL = '/v2';
@@ -308,6 +309,29 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/organizations/{guid}/user_roles`,
     handler: function (req, reply) {
       reply(MultiResponse(organizationUserRoles));
+    }
+  });
+
+  smocks.route({
+    id: 'user-roles-org-add-new-role',
+    label: 'User roles Org Add New role',
+    method: 'PUT',
+    path: `${BASE_URL}/organizations/{orgGuid}/{role}/{userGuid}`,
+    handler: function (req, reply) {
+      const orgGuid = req.params.orgGuid;
+      const user = userRoleOrgAddNewRole(orgGuid);
+
+      reply(SingleResponse(user));
+    }
+  });
+
+  smocks.route({
+    id: 'user-roles-org-delete-role',
+    label: 'User roles Org Delete role',
+    method: 'DELETE',
+    path: `${BASE_URL}/organizations/{orgGuid}/{role}/{userGuid}`,
+    handler: function (req, reply) {
+      reply(SingleResponse({}));
     }
   });
 
