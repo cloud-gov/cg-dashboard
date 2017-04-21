@@ -4,6 +4,11 @@ import UserRoleElement from './pageobjects/user_role.element';
 describe('User roles', function () {
   let cookieResult;
 
+  beforeEach(function () {
+    cookieResult = browser.getCookie('testing_user_role');
+    expect(cookieResult).toBeFalsy();
+  });
+
   afterEach(function () {
     browser.deleteCookie('testing_user_role');
     cookieResult = browser.getCookie('testing_user_role');
