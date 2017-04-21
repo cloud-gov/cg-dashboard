@@ -48,6 +48,52 @@ const organizationSummaries = [
     ]
   },
   {
+    guid: "user_role-org_x-ffe7-4aa8-8e85-94768d6bd250",
+    name: "fake-cf-user_role-org_x-testing",
+    status: "active",
+    spaces: [
+      {
+        guid: "user_role-space_xx-de67-467b-aebb-150cb097a168",
+        name: "org_x-space_xx",
+        service_count: 1,
+        app_count: 1,
+        mem_dev_total: 292,
+        mem_prod_total: 0
+      },
+      {
+        guid: "user_role-space_yy-de67-467b-aebb-150cb097a168",
+        name: "org_x-space_yy",
+        service_count: 1,
+        app_count: 1,
+        mem_dev_total: 292,
+        mem_prod_total: 0
+      }
+    ]
+  },
+  {
+    guid: "user_role-org_y-ffe7-4aa8-8e85-94768d6bd250",
+    name: "fake-cf-user_role-org_y-testing",
+    status: "active",
+    spaces: [
+      {
+        guid: "user_role-space_xx-de67-467b-aebb-150cb097a168",
+        name: "org_y-space_xx",
+        service_count: 1,
+        app_count: 1,
+        mem_dev_total: 292,
+        mem_prod_total: 0
+      },
+      {
+        guid: "user_role-space_yy-de67-467b-aebb-150cb097a168",
+        name: "org_y-space_yy",
+        service_count: 1,
+        app_count: 1,
+        mem_dev_total: 292,
+        mem_prod_total: 0
+      }
+    ]
+  },
+  {
     guid: "cfeb9be5-a61a-4f68-894e-8808ab008aaa",
     name: "fake-cf",
     status: "active",
