@@ -139,8 +139,8 @@ module.exports = function api(smocks) {
     label: 'UAA user info',
     path: '/uaa/userinfo',
     handler: function(req, reply) {
-      if(req.state['testing_user_role'] && req.state['testing_user_role'] == "space_manager_space_xx"){
-        reply(userRoles['space_manager_space_xx']);
+      if(req.state['testing_user_role'] && userRoles[req.state['testing_user_role']]){
+        reply(userRoles[req.state['testing_user_role']]);
       } else {
         reply(userRoles['default']);
       }
