@@ -2,6 +2,60 @@
 const orgUserRoles = [
   {
     metadata: {
+      guid: "org-manager-x-uid-601d-48c4-9705",
+      url: "/v2/users/org-manager-x-uid-601d-48c4-9705",
+      created_at: "2015-03-23T22:13:57Z",
+      updated_at: "2015-03-23T22:13:57Z"
+    },
+    entity: {
+      admin: false,
+      active: false,
+      default_space_guid: null,
+      username: "fake-personb@gsa.gov",
+      organization_roles: [
+        "org_user",
+        "org_manager",
+        "org_auditor",
+        "billing_manager"
+      ],
+      spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/spaces",
+      organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/organizations",
+      managed_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/managed_organizations",
+      billing_managed_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/billing_managed_organizations",
+      audited_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/audited_organizations",
+      managed_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/managed_spaces",
+      audited_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/audited_spaces"
+    }
+  },
+  {
+    metadata: {
+      guid: "org-manager-y-uid-601d-48c4-9705",
+      url: "/v2/users/org-manager-y-uid-601d-48c4-9705",
+      created_at: "2015-03-23T22:13:57Z",
+      updated_at: "2015-03-23T22:13:57Z"
+    },
+    entity: {
+      admin: false,
+      active: false,
+      default_space_guid: null,
+      username: "fake-personb@gsa.gov",
+      organization_roles: [
+        "org_user",
+        "org_manager",
+        "org_auditor",
+        "billing_manager"
+      ],
+      spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/spaces",
+      organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/organizations",
+      managed_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/managed_organizations",
+      billing_managed_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/billing_managed_organizations",
+      audited_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/audited_organizations",
+      managed_spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/managed_spaces",
+      audited_spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/audited_spaces"
+    }
+  },
+  {
+    metadata: {
       guid: "2e60959a-a2e6-4d69-ac85-49dbbaab1229",
       url: "/v2/users/2e60959a-a2e6-4d69-ac85-49dbbaab1229",
       created_at: "2015-02-25T02:11:46Z",
