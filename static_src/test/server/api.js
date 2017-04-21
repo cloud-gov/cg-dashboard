@@ -246,13 +246,16 @@ module.exports = function api(smocks) {
     label: 'Organization user roles',
     path: `${BASE_URL}/organizations/{guid}/user_roles`,
     handler: function (req, reply) {
-      let organizationUserRolesResponse;
+      let organizationUserRolesResponse, orgResponseName;
       const guid = req.params.guid;
       if ( organizationUserRoles[guid] ) {
         organizationUserRolesResponse = organizationUserRoles[guid];
+        orgResponseName = guid;
       } else {
         organizationUserRolesResponse = organizationUserRoles['default'];
+        orgResponseName = 'default';
       }
+      console.log('Running org for: ', orgResponseName);
 
       reply(MultiResponse(organizationUserRolesResponse));
     }
