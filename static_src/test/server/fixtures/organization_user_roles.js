@@ -40,6 +40,7 @@ const orgUserRoles = [
       default_space_guid: null,
       username: "fake-org-manager-y@gsa.gov",
       organization_roles: [
+        "org_user",
       ],
       spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/spaces",
       organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/organizations",
