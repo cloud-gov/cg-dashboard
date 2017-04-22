@@ -34,12 +34,6 @@ function stateSetter() {
                                           'org_manager');
   }
 
-  console.log("***********");
-  console.log("*** HEY ***");
-  console.log("currentOrgGuid: ", currentOrgGuid);
-  console.log(currentUser);
-  console.log("***********");
-
   return {
     error: UserStore.getError(),
     currentUserAccess,

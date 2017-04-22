@@ -7,8 +7,6 @@ import BaseElement from './base.element';
 // easier to abstract some of the webdriver details from the UI component.
 
 // TODO attach to class as static property
-const selectors = {
-};
 
 export default class UserRoleElement extends BaseElement {
 
