@@ -8,6 +8,11 @@ import BaseElement from './base.element';
 
 // TODO attach to class as static property
 
+const selectors = {
+  tableRows: '.test-users .tableWrapper tbody',
+  userRoleControls: '.test-user-role-control'
+};
+
 export default class UserRoleElement extends BaseElement {
 
 }
