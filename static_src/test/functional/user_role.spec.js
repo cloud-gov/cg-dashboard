@@ -7,11 +7,11 @@ describe('User roles', function () {
   const managerXGuid = 'org-manager-x-uid-601d-48c4-9705',
     managerYGuid = 'org-manager-y-uid-601d-48c4-9705';
 
-  afterEach(function () {
-    browser.deleteCookie('testing_user_role');
-  });
-
   describe('User role cookie test', function () {
+    afterEach(function () {
+      browser.deleteCookie('testing_user_role');
+    });
+
     describe('when cookie is set and deleted', function () {
       it('should reflect the cookie content', function () {
         browser.url('/');
@@ -26,6 +26,8 @@ describe('User roles', function () {
     describe('org manager for org X then they should', function () {
       it('navigates to org Y ', function () {
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
+
+        browser.waitForExist('.test-users');
 
         userRoleElement = new UserRoleElement(
           browser,
@@ -45,6 +47,8 @@ describe('User roles', function () {
       it('navigates to org X ', function () {
         browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
 
+        browser.waitForExist('.test-users');
+
         userRoleElement = new UserRoleElement(
           browser,
           browser.element('.test-users')
@@ -60,59 +64,63 @@ describe('User roles', function () {
     });
   });
 
-  describe('As org manager on page for org x', function () {
-    it('org manager y should not have permission to edit fields', function(){
-      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
-      browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_y' });
-      cookieResult = browser.getCookie('testing_user_role').value;
-      expect(cookieResult).toBe('org_manager_org_y');
-
-      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
-      console.log(browser.getHTML('.test-user-role-control input')[0]);
-      let firstUserRoleControl = $('.test-user-role-control input').getAttribute('disabled');
-
-      expect(firstUserRoleControl).toBe('true');
+  describe('Testing user roles', function () {
+    afterEach(function () {
+      browser.deleteCookie('testing_user_role');
     });
 
-    it('org manager x should have permission to edit fields', function(){
-      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
-      browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
-      cookieResult = browser.getCookie('testing_user_role').value;
-      expect(cookieResult).toBe('org_manager_org_x');
+    describe('On page for org x', function () {
+      it('as org manager y should not have permission to edit fields', function(){
+        browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+        browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_y' });
 
-      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
-      console.log(browser.getHTML('.test-user-role-control input')[0]);
-      let firstUserRoleControl = $('.test-user-role-control input').getAttribute('disabled');
+        browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+        cookieResult = browser.getCookie('testing_user_role').value;
+        expect(cookieResult).toBe('org_manager_org_y');
 
-      expect(firstUserRoleControl).toBe(null);
+        let firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
+
+        expect(firstUserRoleControl).toBe(false);
+      });
+
+      it('as org manager x should have permission to edit fields', function(){
+        browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+        browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
+
+        browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+        cookieResult = browser.getCookie('testing_user_role').value;
+        expect(cookieResult).toBe('org_manager_org_x');
+
+        let firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
+
+        expect(firstUserRoleControl).toBe(true);
+      });
     });
-  });
 
-  describe('As org manager on page for org x', function () {
-    it('org manager x should not have permission to edit fields', function(){
-      browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
-      browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
-      cookieResult = browser.getCookie('testing_user_role').value;
-      expect(cookieResult).toBe('org_manager_org_x');
+    describe('On page for org y', function () {
+      it('as org manager x should not have permission to edit fields', function(){
+        browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
+        browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
+        cookieResult = browser.getCookie('testing_user_role').value;
+        expect(cookieResult).toBe('org_manager_org_x');
 
-      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
-      console.log(browser.getHTML('.test-user-role-control input')[0]);
-      let firstUserRoleControl = $('.test-user-role-control input').getAttribute('disabled');
+        browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
+        let firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
 
-      expect(firstUserRoleControl).toBe('true');
-    });
+        expect(firstUserRoleControl).toBe(false);
+      });
 
-    it('org manager y should have permission to edit fields', function(){
-      browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
-      browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_y' });
-      cookieResult = browser.getCookie('testing_user_role').value;
-      expect(cookieResult).toBe('org_manager_org_y');
+      it('as org manager y should have permission to edit fields', function(){
+        browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
+        browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_y' });
+        cookieResult = browser.getCookie('testing_user_role').value;
+        expect(cookieResult).toBe('org_manager_org_y');
 
-      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
-      console.log(browser.getHTML('.test-user-role-control input')[0]);
-      let firstUserRoleControl = $('.test-user-role-control input').getAttribute('disabled');
+        browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
+        let firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
 
-      expect(firstUserRoleControl).toBe(null);
+        expect(firstUserRoleControl).toBe(true);
+      });
     });
   });
 
