@@ -22,13 +22,15 @@ describe('User roles', function () {
   });
 
   describe('Org page', function () {
-    it('has a title', function () {
+    beforeEach(function () {
       browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+    });
+
+    it('has a title', function () {
       expect(browser.getTitle()).toBe('cloud.gov dashboard');
     });
 
     it('has a page header', function () {
-      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
       const pageHeader = browser.element('.test-page-header-title');
       expect(pageHeader.getText()).toBe('fake-cf-user_role-org_x-testing');
     });
@@ -36,7 +38,6 @@ describe('User roles', function () {
     describe('org manager for org X then they should', function () {
       it('be able to edit roles for org X', function () {
         browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
-        browser.url('/');
         cookieResult = browser.getCookie('testing_user_role').value;
         expect(cookieResult).toBe('org_manager_org_x');
 
@@ -56,20 +57,17 @@ describe('User roles', function () {
   });
 
   describe('Space page', function () {
-    it('navigates to a org\'s space page', function () {
+    beforeEach(function () {
       const orgGuid = 'user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
       const spaceGuid = 'user_role-org_x-space_xx-4064-82f2-d74df612b794';
 
       browser.url(`/#/org/${orgGuid}/spaces/${spaceGuid}`);
+    });
 
+    it('navigates to a org\'s space page', function () {
       const pageHeader = browser.element('.test-page-header-title');
       expect(pageHeader.getText()).toBe('user_role-org_x-space_xx');
     });
-
-  //   it('has a page header', function () {
-  //     const pageHeader = browser.element('.test-page-header-title');
-  //     expect(pageHeader.getText()).toBe('fake-dev');
-  //   });
 
   //   describe('space manager for space XX then they should', function () {
   //     it('be able to edit roles for space XX', function () {
