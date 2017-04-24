@@ -3,8 +3,9 @@ import UserRoleElement from './pageobjects/user_role.element';
 
 describe('User roles', function () {
   let cookieResult,
+      userRoleElement,
       orgXmanagerXGuid = "org-manager-x-uid-581d-48c4-9705",
-      orgXmanagerYGuid = "org-manager-y-uid-581d-48c4-9705";
+      orgXmanagerYGuid = "org-manager-y-uid-601d-48c4-9705";
 
   beforeEach(function () {
     browser.url('/');
@@ -13,11 +14,6 @@ describe('User roles', function () {
   afterEach(function () {
     browser.deleteCookie('testing_user_role');
   });
-
-  userRoleElement = new UserRoleElement(
-    browser,
-    browser.element('.test-users')
-  );
 
   describe('User role cookie test', function () {
     describe('when cookie is set and deleted', function () {
@@ -46,6 +42,7 @@ describe('User roles', function () {
     });
 
     describe('org manager for org X then they should', function () {
+
       beforeEach(function () {
         browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
 
@@ -55,16 +52,15 @@ describe('User roles', function () {
 
       it('not be able to edit roles for org Y', function () {
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
-
-        expect(userRoleElement.isUserOrgManager(orgXmanagerXGuid)).toBe(false);
-        expect(userRoleElement.isUserOrgManager(orgXmanagerYGuid)).toBe(true);
+        expect(!!browser.getAttribute('#org_manager' + orgXmanagerXGuid, 'checked')).toBe(false);
+        expect(!!browser.getAttribute('#org_manager' + orgXmanagerYGuid, 'checked')).toBe(true);
       });
 
       it('be able to edit roles for org X', function () {
         browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
 
-        expect(userRoleElement.isUserOrgManager(orgXmanagerXGuid)).toBe(true);
-        expect(userRoleElement.isUserOrgManager(orgXmanagerYGuid)).toBe(false);
+        expect(!!browser.getAttribute('#org_manager' + orgXmanagerXGuid, 'checked')).toBe(true);
+        expect(!!browser.getAttribute('#org_manager' + orgXmanagerYGuid, 'checked')).toBe(false);
       });
     });
 
