@@ -25,7 +25,7 @@ export default class UserRoleControl extends React.Component {
 
   render() {
     return (
-      <span>
+      <span className="test-user-role-control">
         <label htmlFor={ this.props.roleKey + this.props.userId }>
           <input type="checkbox"
             onChange={ this._handleChange }

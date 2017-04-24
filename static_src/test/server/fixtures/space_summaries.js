@@ -212,6 +212,38 @@ const spaceSummaries = [
     ]
   },
   {
+    guid: "user_role-org_x-space_xx-4064-82f2-d74df612b794",
+    name: "user_role-org_x-space_xx",
+    apps: [
+    ],
+    services: [
+    ]
+  },
+  {
+    guid: "user_role-org_x-space_yy-4064-82f2-d74df612b794",
+    name: "user_role-org_x-space_yy",
+    apps: [
+    ],
+    services: [
+    ]
+  },
+  {
+    guid: "user_role-org_y-space_xx-4064-82f2-d74df612b794",
+    name: "user_role-org_y-space_xx",
+    apps: [
+    ],
+    services: [
+    ]
+  },
+  {
+    guid: "user_role-org_y-space_yy-4064-82f2-d74df612b794",
+    name: "user_role-org_y-space_yy",
+    apps: [
+    ],
+    services: [
+    ]
+  },
+  {
     guid: "48e18795-de67-467b-aebb-150cb097a168",
     name: "fake-prod",
     apps: [],

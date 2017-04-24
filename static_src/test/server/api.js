@@ -19,7 +19,10 @@ var spaceRoutes = require('./fixtures/space_routes');
 var spaceSummaries = require('./fixtures/space_summaries');
 var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
 var spaceUserRoles = require('./fixtures/space_user_roles.js');
+var uaaRoles = require('./fixtures/uaa_roles.js');
 var userOrganizations = require('./fixtures/user_organizations.js');
+var userRoles = require('./fixtures/user_roles.js');
+var userRoleOrgAddNewRole = require('./fixtures/user_role_org_add_new_role.js');
 var userSpaces = require('./fixtures/user_spaces.js');
 
 var BASE_URL = '/v2';
@@ -51,85 +54,16 @@ module.exports = function api(smocks) {
     label: 'UAA user info fake-personb - no special UAA permissions',
     path: '/uaa/uaainfo',
     handler: function(req, reply) {
-
       // 'cca7537f-601d-48c4-9705-4583ba54ea4c' == "cloud_controller.admin"
       // 'bba7537f-601d-48c4-9705-4583ba54ea4b' != "cloud_controller.admin"
       if (req.query.uaa_guid == 'cca7537f-601d-48c4-9705-4583ba54ea4c'){
         // UAA user with admin permissions
         // Noted in groups: []
-        reply({
-          "id": "cca7537f-601d-48c4-9705-4583ba54ea4c",
-          "externalId": "fake-person-uaa-admin@gsa.gov",
-          "meta": {
-            "version": 0,
-            "created": "2016-09-16T13:24:31.423Z",
-            "lastModified": "2016-09-16T13:24:31.423Z"
-          },
-          "userName": "fake-person-uaa-admin@gsa.gov",
-          "name": {
-            "familyName": "gsa.gov",
-            "givenName": "fake-person-uaa-admin"
-          },
-          "emails": [
-            {
-              "value": "fake-person-uaa-admin@gsa.gov",
-              "primary": false
-            }
-          ],
-          "groups": [
-            {
-              "value": "88e68451-dc2e-413d-963b-848740512e01c1a23019",
-              "display": "cloud_controller.admin",
-              "type": "DIRECT"
-            }
-          ],
-          "approvals": [],
-          "active": true,
-          "verified": true,
-          "origin": "gsa.gov",
-          "zoneId": "uaa",
-          "passwordLastModified": "2016-09-16T13:24:31.000Z",
-          "previousLogonTime": 1489612053883,
-          "lastLogonTime": 1489612053883,
-          "schemas": [
-            "urn:scim:schemas:core:1.0"
-          ]
-        });
+        reply(uaaRoles['uaa_admin']);
       } else {
         // No UAA permissions
         // Noted in groups: []
-        reply({
-          "id": "bba7537f-601d-48c4-9705-4583ba54ea4b",
-          "externalId": "fake-personb@gsa.gov",
-          "meta": {
-            "version": 0,
-            "created": "2016-09-16T13:24:31.423Z",
-            "lastModified": "2016-09-16T13:24:31.423Z"
-          },
-          "userName": "fake-personb@gsa.gov",
-          "name": {
-            "familyName": "gsa.gov",
-            "givenName": "fake-personb"
-          },
-          "emails": [
-            {
-              "value": "fake-personb@gsa.gov",
-              "primary": false
-            }
-          ],
-          "groups": [],
-          "approvals": [],
-          "active": true,
-          "verified": true,
-          "origin": "gsa.gov",
-          "zoneId": "uaa",
-          "passwordLastModified": "2016-09-16T13:24:31.000Z",
-          "previousLogonTime": 1489612053883,
-          "lastLogonTime": 1489612053883,
-          "schemas": [
-            "urn:scim:schemas:core:1.0"
-          ]
-        });
+        reply(uaaRoles['default']);
       }
     }
   });
@@ -139,17 +73,15 @@ module.exports = function api(smocks) {
     label: 'UAA user info',
     path: '/uaa/userinfo',
     handler: function(req, reply) {
-      reply({
-        user_id: "bba7537f-601d-48c4-9705-4583ba54ea4b",
-        sub: "bba7537f-601d-48c4-9705-4583ba54ea4b",
-        user_name: "fake-personb@gsa.gov",
-        given_name: "fake-personb",
-        family_name: "gsa.gov",
-        email: "fake-personb@gsa.gov",
-        phone_number: null,
-        previous_logon_time: 1489612053883,
-        name: "fake-personb@gsa.gov"
-      });
+      let userRoleObject;
+      if(req.state['testing_user_role'] && userRoles[req.state['testing_user_role']]){
+        userRoleObject = userRoles[req.state['testing_user_role']];
+      } else {
+        userRoleObject = userRoles['default'];
+      }
+      if (req.state['show_user_info']) {
+      }
+      reply(userRoleObject);
     }
   });
 
@@ -313,7 +245,39 @@ module.exports = function api(smocks) {
     label: 'Organization user roles',
     path: `${BASE_URL}/organizations/{guid}/user_roles`,
     handler: function (req, reply) {
-      reply(MultiResponse(organizationUserRoles));
+      let organizationUserRolesResponse, orgResponseName;
+      const guid = req.params.guid;
+      if ( organizationUserRoles[guid] ) {
+        organizationUserRolesResponse = organizationUserRoles[guid];
+        orgResponseName = guid;
+      } else {
+        organizationUserRolesResponse = organizationUserRoles['default'];
+        orgResponseName = 'default';
+      }
+      reply(MultiResponse(organizationUserRolesResponse));
+    }
+  });
+
+  smocks.route({
+    id: 'user-roles-org-add-new-role',
+    label: 'User roles Org Add New role',
+    method: 'PUT',
+    path: `${BASE_URL}/organizations/{orgGuid}/{role}/{userGuid}`,
+    handler: function (req, reply) {
+      const orgGuid = req.params.orgGuid;
+      const user = userRoleOrgAddNewRole(orgGuid);
+
+      reply(SingleResponse(user));
+    }
+  });
+
+  smocks.route({
+    id: 'user-roles-org-delete-role',
+    label: 'User roles Org Delete role',
+    method: 'DELETE',
+    path: `${BASE_URL}/organizations/{orgGuid}/{role}/{userGuid}`,
+    handler: function (req, reply) {
+      reply(SingleResponse({}));
     }
   });
 

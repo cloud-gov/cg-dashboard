@@ -275,6 +275,48 @@ const organizationUsers = [
   },
   {
     metadata: {
+      guid: "org-manager-x-uid-601d-48c4-9705",
+      url: "/v2/users/org-manager-x-uid-601d-48c4-9705",
+      created_at: "2016-11-07T18:13:49Z",
+      updated_at: "2016-11-07T18:13:49Z"
+    },
+    entity: {
+      admin: false,
+      active: true,
+      default_space_guid: null,
+      username: "fake-org-manager-x@gsa.gov",
+      spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/spaces",
+      organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/organizations",
+      managed_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/managed_organizations",
+      billing_managed_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/billing_managed_organizations",
+      audited_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/audited_organizations",
+      managed_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/managed_spaces",
+      audited_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/audited_spaces"
+    }
+  },
+  {
+    metadata: {
+      guid: "org-manager-y-uid-601d-48c4-9705",
+      url: "/v2/users/org-manager-y-uid-601d-48c4-9705",
+      created_at: "2016-11-07T18:13:49Z",
+      updated_at: "2016-11-07T18:13:49Z"
+    },
+    entity: {
+      admin: false,
+      active: true,
+      default_space_guid: null,
+      username: "fake-org-manager-y@gsa.gov",
+      spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/spaces",
+      organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/organizations",
+      managed_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/managed_organizations",
+      billing_managed_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/billing_managed_organizations",
+      audited_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/audited_organizations",
+      managed_spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/managed_spaces",
+      audited_spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/audited_spaces"
+    }
+  },
+  {
+    metadata: {
       guid: "aa3a9f58-bcd8-4fd2-be05-0e80d9578bba",
       url: "/v2/users/aa3a9f58-bcd8-4fd2-be05-0e80d9578bba",
       created_at: "2016-11-07T18:13:49Z",
