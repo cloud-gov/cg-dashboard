@@ -248,13 +248,11 @@ module.exports = function api(smocks) {
       let organizationUserRolesResponse, orgResponseName;
       const guid = req.params.guid;
       if ( organizationUserRoles[guid] ) {
-        organizationUserRolesResponse = organizationUserRoles[guid];
         orgResponseName = guid;
       } else {
-        organizationUserRolesResponse = organizationUserRoles['default'];
         orgResponseName = 'default';
       }
-      reply(MultiResponse(organizationUserRolesResponse));
+      reply(MultiResponse(organizationUserRoles[orgResponseName]));
     }
   });
 
