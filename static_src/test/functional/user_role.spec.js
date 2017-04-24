@@ -23,18 +23,6 @@ describe('User roles', function () {
   });
 
   describe('Org page as org manager X', function () {
-    it('sets org manager for org X', function () {
-      browser.url('/');
-      browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
-
-      cookieResult = browser.getCookie('testing_user_role').value;
-      expect(cookieResult).toBe('org_manager_org_x');
-    });
-
-    it('has a title', function () {
-      expect(browser.getTitle()).toBe('cloud.gov dashboard');
-    });
-
     describe('org manager for org X then they should', function () {
       it('navigates to org Y ', function () {
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
@@ -68,12 +56,6 @@ describe('User roles', function () {
       it('should be able to edit roles for org X', function () {
         expect(userRoleElement.isUserOrgManager(managerXGuid)).toBe(true);
         expect(userRoleElement.isUserOrgManager(managerYGuid)).toBe(false);
-      });
-    });
-
-    describe('space manager for org X space TT then they should', function () {
-      it('not be able to edit roles for org X', function () {
-        expect(true).toBe(true);
       });
     });
   });
