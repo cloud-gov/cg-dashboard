@@ -3,9 +3,9 @@ import UserRoleElement from './pageobjects/user_role.element';
 
 describe('User roles', function () {
   let cookieResult,
-      userRoleElement,
-      managerXGuid = "org-manager-x-uid-581d-48c4-9705",
-      managerYGuid = "org-manager-y-uid-601d-48c4-9705";
+    userRoleElement;
+  const managerXGuid = 'org-manager-x-uid-581d-48c4-9705',
+    managerYGuid = 'org-manager-y-uid-601d-48c4-9705';
 
   beforeEach(function () {
     browser.url('/');
@@ -42,7 +42,6 @@ describe('User roles', function () {
     });
 
     describe('org manager for org X then they should', function () {
-
       beforeEach(function () {
         browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
 
