@@ -14,15 +14,17 @@ const selectors = {
 };
 
 export default class UserRoleElement extends BaseElement {
+  // TODO: Look into why "this.element('#org_role' + guid).checked
+  // does not work. Currently, it doesn't work that way.
   isUserOrgManager(guid) {
-    return this.element('#org_manager' + guid).checked;
+    return !!this.browser.getAttribute(`#org_manager${guid}`, 'checked');
   }
 
   isUserBillingManager(guid) {
-    return this.element('#billing_manager' + guid).checked;
+    return !!this.browser.getAttribute(`#billing_manager${guid}`, 'checked');
   }
 
   isUserOrgAuditor(guid) {
-    return this.element('#org_auditor' + guid).checked;
+    return !!this.browser.getAttribute(`#org_auditor${guid}`, 'checked');
   }
 }

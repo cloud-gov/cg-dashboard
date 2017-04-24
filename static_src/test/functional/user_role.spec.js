@@ -4,7 +4,7 @@ import UserRoleElement from './pageobjects/user_role.element';
 describe('User roles', function () {
   let cookieResult,
     userRoleElement;
-  const managerXGuid = 'org-manager-x-uid-581d-48c4-9705',
+  const managerXGuid = 'org-manager-x-uid-601d-48c4-9705',
     managerYGuid = 'org-manager-y-uid-601d-48c4-9705';
 
   beforeEach(function () {
