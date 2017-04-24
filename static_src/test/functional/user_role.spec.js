@@ -153,7 +153,6 @@ describe('User roles', function () {
       });
 
       it('not be able to edit roles for space YY', function () {
-        expect(true).toBe(true);
       });
     });
   });
