@@ -56,11 +56,15 @@ describe('User roles', function () {
   });
 
   describe('Space page', function () {
-  //   it('navigates to a org\'s space page', function () {
-  //     const orgGuid = '48b3f8a1-ffe7-4aa8-8e85-94768d6bd250';
-  //     const spaceGuid = '82af0edb-8540-4064-82f2-d74df612b794';
-  //     browser.url(`/#/org/${orgGuid}/spaces/${spaceGuid}`);
-  //   });
+    it('navigates to a org\'s space page', function () {
+      const orgGuid = 'user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
+      const spaceGuid = 'user_role-org_x-space_xx-4064-82f2-d74df612b794';
+
+      browser.url(`/#/org/${orgGuid}/spaces/${spaceGuid}`);
+
+      const pageHeader = browser.element('.test-page-header-title');
+      expect(pageHeader.getText()).toBe('user_role-org_x-space_xx');
+    });
 
   //   it('has a page header', function () {
   //     const pageHeader = browser.element('.test-page-header-title');
