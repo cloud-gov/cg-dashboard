@@ -49,28 +49,26 @@ describe('User roles', function () {
         expect(cookieResult).toBe('org_manager_org_x');
       });
 
-      it('navigates to org Y', function () {
+      it('navigates to org Y navigates to org Y not be able to edit roles for org Y', function () {
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
-      });
 
-      it('has a user role element', function () {
         userRoleElement = new UserRoleElement(
           browser,
           browser.element('.test-users')
         );
         expect(userRoleElement.isVisible()).toBe(true);
-      });
-
-      it('not be able to edit roles for org Y', function () {
         expect(userRoleElement.isUserOrgManager(managerXGuid)).toBe(false);
         expect(userRoleElement.isUserOrgManager(managerYGuid)).toBe(true);
       });
 
-      it('navigates to org X', function () {
+      it('navigates to org X be able to edit roles for org X', function () {
         browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
-      });
 
-      it('be able to edit roles for org X', function () {
+        userRoleElement = new UserRoleElement(
+          browser,
+          browser.element('.test-users')
+        );
+        expect(userRoleElement.isVisible()).toBe(true);
         expect(userRoleElement.isUserOrgManager(managerXGuid)).toBe(true);
         expect(userRoleElement.isUserOrgManager(managerYGuid)).toBe(false);
       });
