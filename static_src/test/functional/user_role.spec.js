@@ -1,6 +1,11 @@
 
 describe('User roles', function () {
   let cookieResult;
+
+  beforeEach(function () {
+    browser.url('/');
+  });
+
   afterEach(function () {
     browser.deleteCookie('testing_user_role');
   });
