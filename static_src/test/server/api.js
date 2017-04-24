@@ -80,7 +80,6 @@ module.exports = function api(smocks) {
         userRoleObject = userRoles['default'];
       }
       if (req.state['show_user_info']) {
-        // console.log(userRoleObject);
       }
       reply(userRoleObject);
     }
@@ -255,8 +254,6 @@ module.exports = function api(smocks) {
         organizationUserRolesResponse = organizationUserRoles['default'];
         orgResponseName = 'default';
       }
-      // console.log('Running org for: ', orgResponseName);
-
       reply(MultiResponse(organizationUserRolesResponse));
     }
   });
