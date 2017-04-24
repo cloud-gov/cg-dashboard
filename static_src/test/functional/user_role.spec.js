@@ -80,7 +80,7 @@ describe('User roles', function () {
 
         const firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
 
-        expect(firstUserR
+        expect(firstUserRoleControl).toBe(false);
       });
 
       it('as org manager x should have permission to edit fields', function() {
