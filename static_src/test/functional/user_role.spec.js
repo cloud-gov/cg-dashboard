@@ -60,6 +60,34 @@ describe('User roles', function () {
     });
   });
 
+  describe('As org manager on page for org x', function () {
+    it('org manager y should not have permission to edit fields', function(){
+      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+      browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_y' });
+      cookieResult = browser.getCookie('testing_user_role').value;
+      expect(cookieResult).toBe('org_manager_org_y');
+
+      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+      console.log(browser.getHTML('.test-user-role-control input')[0]);
+      let firstUserRoleControl = $('.test-user-role-control input').getAttribute('disabled');
+
+      expect(firstUserRoleControl).toBe('true');
+    });
+
+    it('org manager x should have permission to edit fields', function(){
+      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+      browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
+      cookieResult = browser.getCookie('testing_user_role').value;
+      expect(cookieResult).toBe('org_manager_org_x');
+
+      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+      console.log(browser.getHTML('.test-user-role-control input')[0]);
+      let firstUserRoleControl = $('.test-user-role-control input').getAttribute('disabled');
+
+      expect(firstUserRoleControl).toBe(null);
+    });
+  });
+
   describe('Space page', function () {
     beforeEach(function () {
       const orgGuid = 'user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
