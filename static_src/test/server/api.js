@@ -80,7 +80,7 @@ module.exports = function api(smocks) {
         userRoleObject = userRoles['default'];
       }
       if (req.state['show_user_info']) {
-        console.log(userRoleObject);
+        // console.log(userRoleObject);
       }
       reply(userRoleObject);
     }
