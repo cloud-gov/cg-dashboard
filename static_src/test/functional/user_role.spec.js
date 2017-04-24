@@ -7,10 +7,6 @@ describe('User roles', function () {
   const managerXGuid = 'org-manager-x-uid-601d-48c4-9705',
     managerYGuid = 'org-manager-y-uid-601d-48c4-9705';
 
-  beforeEach(function () {
-    browser.url('/');
-  });
-
   afterEach(function () {
     browser.deleteCookie('testing_user_role');
   });
@@ -18,57 +14,58 @@ describe('User roles', function () {
   describe('User role cookie test', function () {
     describe('when cookie is set and deleted', function () {
       it('should reflect the cookie content', function () {
+        browser.url('/');
         browser.setCookie({ name: 'testing_user_role', value: 'space_manager_space_xx' });
-        browser.url('/uaa/userinfo');
         cookieResult = browser.getCookie('testing_user_role').value;
         expect(cookieResult).toBe('space_manager_space_xx');
       });
     });
   });
 
-  describe('Org page', function () {
-    beforeEach(function () {
-      browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+  describe('Org page as org manager X', function () {
+    it('sets org manager for org X', function () {
+      browser.url('/');
+      browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
+
+      cookieResult = browser.getCookie('testing_user_role').value;
+      expect(cookieResult).toBe('org_manager_org_x');
     });
 
     it('has a title', function () {
       expect(browser.getTitle()).toBe('cloud.gov dashboard');
     });
 
-    it('has a page header', function () {
-      browser.waitForExist('.test-page-header-title', 2000);
-      const pageHeader = browser.element('.test-page-header-title');
-      expect(pageHeader.getText()).toBe('fake-cf-user_role-org_x-testing');
-    });
-
     describe('org manager for org X then they should', function () {
-      beforeEach(function () {
-        browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
-
-        cookieResult = browser.getCookie('testing_user_role').value;
-        expect(cookieResult).toBe('org_manager_org_x');
-      });
-
-      it('navigates to org Y navigates to org Y not be able to edit roles for org Y', function () {
+      it('navigates to org Y ', function () {
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
 
         userRoleElement = new UserRoleElement(
           browser,
           browser.element('.test-users')
         );
+
         expect(userRoleElement.isVisible()).toBe(true);
+      });
+
+      it('should not be able to edit roles for org Y', function () {
         expect(userRoleElement.isUserOrgManager(managerXGuid)).toBe(false);
         expect(userRoleElement.isUserOrgManager(managerYGuid)).toBe(true);
       });
+    });
 
-      it('navigates to org X be able to edit roles for org X', function () {
+    describe('org manager for org X then they should', function () {
+      it('navigates to org X ', function () {
         browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
 
         userRoleElement = new UserRoleElement(
           browser,
           browser.element('.test-users')
         );
+
         expect(userRoleElement.isVisible()).toBe(true);
+      });
+
+      it('should be able to edit roles for org X', function () {
         expect(userRoleElement.isUserOrgManager(managerXGuid)).toBe(true);
         expect(userRoleElement.isUserOrgManager(managerYGuid)).toBe(false);
       });
