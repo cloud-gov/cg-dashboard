@@ -14,7 +14,10 @@ describe('User roles', function () {
     browser.deleteCookie('testing_user_role');
   });
 
-  userRoleElement = new UserRoleElement();
+  userRoleElement = new UserRoleElement(
+    browser,
+    browser.element('.test-users')
+  );
 
   describe('User role cookie test', function () {
     describe('when cookie is set and deleted', function () {
