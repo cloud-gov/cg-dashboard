@@ -23,8 +23,8 @@ describe('User roles', function () {
   });
 
   describe('Org page as org manager X', function () {
-    describe('org manager for org X then they should', function () {
-      it('navigates to org Y ', function () {
+    describe('if org manager Y then they', function () {
+      it('should navigates to org Y ', function () {
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
 
         browser.waitForExist('.test-users');
@@ -43,8 +43,8 @@ describe('User roles', function () {
       });
     });
 
-    describe('org manager for org X then they should', function () {
-      it('navigates to org X ', function () {
+    describe('if manager for org X then they', function () {
+      it('should navigates to org X ', function () {
         browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
 
         browser.waitForExist('.test-users');
@@ -70,7 +70,7 @@ describe('User roles', function () {
     });
 
     describe('On page for org x', function () {
-      it('as org manager y should not have permission to edit fields', function(){
+      it('as org manager y should not have permission to edit fields', function() {
         browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
         browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_y' });
 
@@ -78,12 +78,12 @@ describe('User roles', function () {
         cookieResult = browser.getCookie('testing_user_role').value;
         expect(cookieResult).toBe('org_manager_org_y');
 
-        let firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
+        const firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
 
-        expect(firstUserRoleControl).toBe(false);
+        expect(firstUserR
       });
 
-      it('as org manager x should have permission to edit fields', function(){
+      it('as org manager x should have permission to edit fields', function() {
         browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
         browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
 
@@ -91,33 +91,33 @@ describe('User roles', function () {
         cookieResult = browser.getCookie('testing_user_role').value;
         expect(cookieResult).toBe('org_manager_org_x');
 
-        let firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
+        const firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
 
         expect(firstUserRoleControl).toBe(true);
       });
     });
 
     describe('On page for org y', function () {
-      it('as org manager x should not have permission to edit fields', function(){
+      it('as org manager x should not have permission to edit fields', function() {
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
         browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
         cookieResult = browser.getCookie('testing_user_role').value;
         expect(cookieResult).toBe('org_manager_org_x');
 
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
-        let firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
+        const firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
 
         expect(firstUserRoleControl).toBe(false);
       });
 
-      it('as org manager y should have permission to edit fields', function(){
+      it('as org manager y should have permission to edit fields', function() {
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
         browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_y' });
         cookieResult = browser.getCookie('testing_user_role').value;
         expect(cookieResult).toBe('org_manager_org_y');
 
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
-        let firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
+        const firstUserRoleControl = browser.isEnabled('.test-user-role-control input')[0];
 
         expect(firstUserRoleControl).toBe(true);
       });
