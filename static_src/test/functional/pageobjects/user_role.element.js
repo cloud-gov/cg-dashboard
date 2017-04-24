@@ -15,14 +15,14 @@ const selectors = {
 
 export default class UserRoleElement extends BaseElement {
   isUserOrgManager(guid) {
-    return !!this.element('#org_manager' + guid).checked;
+    return this.element('#org_manager' + guid).checked;
   }
 
   isUserBillingManager(guid) {
-    return !!this.element('#billing_manager' + guid).checked;
+    return this.element('#billing_manager' + guid).checked;
   }
 
   isUserOrgAuditor(guid) {
-    return !!this.element('#org_auditor' + guid).checked;
+    return this.element('#org_auditor' + guid).checked;
   }
 }
