@@ -1,6 +1,10 @@
 
+import UserRoleElement from './pageobjects/user_role.element';
+
 describe('User roles', function () {
-  let cookieResult;
+  let cookieResult,
+      orgXmanagerXGuid = "org-manager-x-uid-581d-48c4-9705",
+      orgXmanagerYGuid = "org-manager-y-uid-581d-48c4-9705";
 
   beforeEach(function () {
     browser.url('/');
@@ -9,6 +13,8 @@ describe('User roles', function () {
   afterEach(function () {
     browser.deleteCookie('testing_user_role');
   });
+
+  userRoleElement = new UserRoleElement();
 
   describe('User role cookie test', function () {
     describe('when cookie is set and deleted', function () {
@@ -47,13 +53,15 @@ describe('User roles', function () {
       it('not be able to edit roles for org Y', function () {
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
 
-        expect(true).toBe(true);
+        expect(userRoleElement.isUserOrgManager(orgXmanagerXGuid)).toBe(false);
+        expect(userRoleElement.isUserOrgManager(orgXmanagerYGuid)).toBe(true);
       });
 
       it('be able to edit roles for org X', function () {
         browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
 
-        expect(true).toBe(true);
+        expect(userRoleElement.isUserOrgManager(orgXmanagerXGuid)).toBe(true);
+        expect(userRoleElement.isUserOrgManager(orgXmanagerYGuid)).toBe(false);
       });
     });
 
