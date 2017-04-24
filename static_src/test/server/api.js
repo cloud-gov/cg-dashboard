@@ -227,7 +227,12 @@ module.exports = function api(smocks) {
     label: 'User organizations',
     path: `${BASE_URL}/users/{guid}/organizations`,
     handler: function(req, reply) {
-      reply(MultiResponse(userOrganizations));
+      const guid = req.params.guid;
+      let userOrgFlag = 'default';
+      if(userOrganizations[guid]){
+        userOrgFlag = guid;
+      }
+      reply(MultiResponse(userOrganizations[userOrgFlag]));
     }
   });
 
