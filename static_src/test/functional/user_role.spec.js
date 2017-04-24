@@ -4,8 +4,8 @@ import UserRoleElement from './pageobjects/user_role.element';
 describe('User roles', function () {
   let cookieResult,
       userRoleElement,
-      orgXmanagerXGuid = "org-manager-x-uid-581d-48c4-9705",
-      orgXmanagerYGuid = "org-manager-y-uid-601d-48c4-9705";
+      managerXGuid = "org-manager-x-uid-581d-48c4-9705",
+      managerYGuid = "org-manager-y-uid-601d-48c4-9705";
 
   beforeEach(function () {
     browser.url('/');
@@ -52,15 +52,15 @@ describe('User roles', function () {
 
       it('not be able to edit roles for org Y', function () {
         browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
-        expect(!!browser.getAttribute('#org_manager' + orgXmanagerXGuid, 'checked')).toBe(false);
-        expect(!!browser.getAttribute('#org_manager' + orgXmanagerYGuid, 'checked')).toBe(true);
+        expect(!!browser.getAttribute('#org_manager' + managerXGuid, 'checked')).toBe(false);
+        expect(!!browser.getAttribute('#org_manager' + managerYGuid, 'checked')).toBe(true);
       });
 
       it('be able to edit roles for org X', function () {
         browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
 
-        expect(!!browser.getAttribute('#org_manager' + orgXmanagerXGuid, 'checked')).toBe(true);
-        expect(!!browser.getAttribute('#org_manager' + orgXmanagerYGuid, 'checked')).toBe(false);
+        expect(!!browser.getAttribute('#org_manager' + managerXGuid, 'checked')).toBe(true);
+        expect(!!browser.getAttribute('#org_manager' + managerYGuid, 'checked')).toBe(false);
       });
     });
 
