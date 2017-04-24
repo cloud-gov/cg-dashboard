@@ -255,7 +255,7 @@ module.exports = function api(smocks) {
         organizationUserRolesResponse = organizationUserRoles['default'];
         orgResponseName = 'default';
       }
-      console.log('Running org for: ', orgResponseName);
+      // console.log('Running org for: ', orgResponseName);
 
       reply(MultiResponse(organizationUserRolesResponse));
     }
