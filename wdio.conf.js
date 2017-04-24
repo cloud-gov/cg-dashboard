@@ -36,6 +36,23 @@ exports.config = {
   connectionRetryCount: 3,
 
   services: ['selenium-standalone'],
+  seleniumLogs: './context/selenium-logs',
+  seleniumArgs: {
+      drivers: {
+          chrome: {
+              version: 2.28,
+              baseURL: 'https://chromedriver.storage.googleapis.com'
+          }
+      }
+  },
+  seleniumInstallArgs: {
+      drivers: {
+          chrome: {
+              version: 2.28,
+              baseURL: 'https://chromedriver.storage.googleapis.com'
+          }
+      }
+  },
   framework: 'jasmine',
   jasmineNodeOpts: {
     defaultTimeoutInterval: 10000
