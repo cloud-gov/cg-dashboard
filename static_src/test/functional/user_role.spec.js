@@ -37,15 +37,22 @@ describe('User roles', function () {
     });
 
     describe('org manager for org X then they should', function () {
-      it('be able to edit roles for org X', function () {
+      beforeEach(function () {
         browser.setCookie({ name: 'testing_user_role', value: 'org_manager_org_x' });
+
         cookieResult = browser.getCookie('testing_user_role').value;
         expect(cookieResult).toBe('org_manager_org_x');
+      });
+
+      it('not be able to edit roles for org Y', function () {
+        browser.url('/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250');
 
         expect(true).toBe(true);
       });
 
-      it('not be able to edit roles for org Y', function () {
+      it('be able to edit roles for org X', function () {
+        browser.url('/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250');
+
         expect(true).toBe(true);
       });
     });
