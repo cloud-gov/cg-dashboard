@@ -69,23 +69,23 @@ describe('User roles', function () {
       expect(pageHeader.getText()).toBe('user_role-org_x-space_xx');
     });
 
-  //   describe('space manager for space XX then they should', function () {
-  //     it('be able to edit roles for space XX', function () {
-  //       browser.setCookie({ name: 'testing_user_role', value: 'space_manager_space_xx' });
-  //       browser.url('/uaa/userinfo');
-  //       cookieResult = browser.getCookie('testing_user_role').value;
-  //       expect(cookieResult).toBe('space_manager_space_xx');
+    describe('space manager for space XX then they should', function () {
+      it('be able to edit roles for space XX', function () {
+        browser.setCookie({ name: 'testing_user_role', value: 'space_manager_space_xx' });
+        browser.url('/uaa/userinfo');
+        cookieResult = browser.getCookie('testing_user_role').value;
+        expect(cookieResult).toBe('space_manager_space_xx');
 
-  //       browser.deleteCookie('testing_user_role');
-  //       browser.url('/uaa/userinfo');
-  //       cookieResult = browser.getCookie('testing_user_role');
+        browser.deleteCookie('testing_user_role');
+        browser.url('/uaa/userinfo');
+        cookieResult = browser.getCookie('testing_user_role');
 
-  //       expect(cookieResult).toBeFalsy();
-  //     });
+        expect(cookieResult).toBeFalsy();
+      });
 
-  //     it('not be able to edit roles for space YY', function () {
-  //       expect(true).toBe(true);
-  //     });
-  //   });
+      it('not be able to edit roles for space YY', function () {
+        expect(true).toBe(true);
+      });
+    });
   });
 });
