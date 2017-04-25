@@ -30,25 +30,9 @@ describe('User roles', function () {
     });
   });
 
-  describe('Org page as org manager X', function () {
-    describe('if org manager Y then they', function () {
-      it('should navigates to org Y ', function () {
-        browser.url(urlOrgY);
-
-        browser.waitForExist('.test-users');
-        userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
-
-        expect(userRoleElement.isVisible()).toBe(true);
-      });
-
-      it('should not be able to edit roles for org Y', function () {
-        expect(userRoleElement.isUserOrgManager(guidManagerOrgX)).toBe(false);
-        expect(userRoleElement.isUserOrgManager(guidManagerOrgY)).toBe(true);
-      });
-    });
-
-    describe('if manager for org X then they', function () {
-      it('should navigates to org X ', function () {
+  describe('A user on page for orgs', function () {
+    describe('on page for org X should see only manager X has user permissions', function () {
+      it('should navigates to org Y', function () {
         browser.url(urlOrgX);
 
         browser.waitForExist('.test-users');
@@ -57,9 +41,31 @@ describe('User roles', function () {
         expect(userRoleElement.isVisible()).toBe(true);
       });
 
-      it('should be able to edit roles for org X', function () {
+      it('should see manager X has Org Manager access', function () {
         expect(userRoleElement.isUserOrgManager(guidManagerOrgX)).toBe(true);
+      });
+
+      it('should see manager Y does not have Org Manager access', function () {
         expect(userRoleElement.isUserOrgManager(guidManagerOrgY)).toBe(false);
+      });
+    })
+
+    describe('on page for org Y should see only manager Y has user permissions', function () {
+      it('should navigates to org Y', function () {
+        browser.url(urlOrgY);
+
+        browser.waitForExist('.test-users');
+        userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
+
+        expect(userRoleElement.isVisible()).toBe(true);
+      });
+
+      it('should see manager Y has Org Manager access', function () {
+        expect(userRoleElement.isUserOrgManager(guidManagerOrgY)).toBe(true);
+      });
+
+      it('should see manager X does not have Org Manager access', function () {
+        expect(userRoleElement.isUserOrgManager(guidManagerOrgX)).toBe(false);
       });
     });
   });
