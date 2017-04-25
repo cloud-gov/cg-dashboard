@@ -77,7 +77,8 @@ describe('User roles', function () {
     });
 
     describe('As org manager Y', function () {
-      it('sets cookie to org Y manager', function () {
+      beforeEach(function () {
+        // sets cookie to org Y manager
         cookieValue = cookieManagerOrgY;
       });
 
@@ -113,7 +114,8 @@ describe('User roles', function () {
     });
 
     describe('As org manager X', function () {
-      it('sets cookie to org X manager', function () {
+      beforeEach(function () {
+        // sets cookie to org X manager
         cookieValue = cookieManagerOrgX;
       });
       describe('shouldn\'t have permission to edit fields on org Y pages', function () {
