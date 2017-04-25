@@ -366,18 +366,12 @@ module.exports = function api(smocks) {
     label: 'Space user roles',
     path: `${BASE_URL}/spaces/{guid}/user_roles`,
     handler: function (req, reply) {
-      let spaceResponseName;
+      let spaceResponseName = 'default';
       const guid = req.params.guid;
-      if ( spaceUserRoles[guid] ) {
+      if ( spaceUserRoles[guid] && !ENV_NO_SPACE_USERS ) {
         spaceResponseName = guid;
-      } else {
-        spaceResponseName = 'default';
       }
-      if (ENV_NO_SPACE_USERS) {
-        reply(MultiResponse([spaceUserRoles[0]]));
-      } else {
-        reply(MultiResponse(spaceUserRoles));
-      }
+      reply(MultiResponse(spaceUserRoles[spaceResponseName]));
     }
   });
 
