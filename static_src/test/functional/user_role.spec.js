@@ -102,7 +102,7 @@ describe('User roles', function () {
           browser.url(urlOrgY);
         });
 
-        it('verify cookie', function () {
+        it('verifies that the current user is a user with only permissions to org Y', function () {
           cookieResult = userRoleElement.setAndGetUserRole(cookieValue);
           expect(cookieResult).toBe(cookieManagerOrgY);
         });
