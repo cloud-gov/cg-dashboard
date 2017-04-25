@@ -82,12 +82,12 @@ describe('User roles', function () {
         });
 
         it('verify cookie', function () {
-          cookieResult = userRoleElement.setAndGetUserRole(browser, pageUrl, cookieValue);
+          cookieResult = userRoleElement.setAndGetUserRole(pageUrl, cookieValue);
           expect(cookieResult).toBe(cookieManagerOrgY);
         });
 
         it('verify org Y manager can modify org X page', function () {
-          expect(userRoleElement.isFirstUserRoleEnabled(browser)).toBe(false);
+          expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
         });
       });
 
@@ -97,12 +97,12 @@ describe('User roles', function () {
         });
 
         it('verify cookie', function () {
-          cookieResult = userRoleElement.setAndGetUserRole(browser, pageUrl, cookieValue);
+          cookieResult = userRoleElement.setAndGetUserRole(pageUrl, cookieValue);
           expect(cookieResult).toBe(cookieManagerOrgY);
         });
 
         it('verify org Y manager can modify org Y page', function () {
-          expect(userRoleElement.isFirstUserRoleEnabled(browser)).toBe(true);
+          expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
         });
       });
     });
@@ -118,12 +118,12 @@ describe('User roles', function () {
         });
 
         it('verify cookie', function () {
-          cookieResult = userRoleElement.setAndGetUserRole(browser, pageUrl, cookieValue);
+          cookieResult = userRoleElement.setAndGetUserRole(pageUrl, cookieValue);
           expect(cookieResult).toBe(cookieManagerOrgX);
         });
 
         it('verify org X manager can modify org Y page', function () {
-          expect(userRoleElement.isFirstUserRoleEnabled(browser)).toBe(false);
+          expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
         });
       });
 
@@ -133,12 +133,12 @@ describe('User roles', function () {
         });
 
         it('verify cookie', function () {
-          cookieResult = userRoleElement.setAndGetUserRole(browser, pageUrl, cookieValue);
+          cookieResult = userRoleElement.setAndGetUserRole(pageUrl, cookieValue);
           expect(cookieResult).toBe(cookieManagerOrgX);
         });
 
         it('verify org X manager can modify org X page', function () {
-          expect(userRoleElement.isFirstUserRoleEnabled(browser)).toBe(true);
+          expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
         });
       });
     });
