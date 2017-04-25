@@ -4,7 +4,6 @@ import UserRoleElement from './pageobjects/user_role.element';
 describe('User roles', function () {
   let cookieResult,
     userRoleElement,
-    pageUrl,
     cookieValue;
   const guidManagerOrgX = 'org-manager-x-uid-601d-48c4-9705',
     guidManagerOrgY = 'org-manager-y-uid-601d-48c4-9705',
@@ -48,7 +47,7 @@ describe('User roles', function () {
       it('should see manager Y does not have Org Manager access', function () {
         expect(userRoleElement.isUserOrgManager(guidManagerOrgY)).toBe(false);
       });
-    })
+    });
 
     describe('on page for org Y should see only manager Y has user permissions', function () {
       it('should navigates to org Y', function () {
@@ -84,11 +83,11 @@ describe('User roles', function () {
 
       describe('shouldn\'t have permission to edit fields on org X pages', function () {
         it('should set url to org X', function () {
-          pageUrl = urlOrgX;
+          browser.url(urlOrgX);
         });
 
         it('verifies that the current user is a user with only permissions to org Y', function () {
-          cookieResult = userRoleElement.setAndGetUserRole(pageUrl, cookieValue);
+          cookieResult = userRoleElement.setAndGetUserRole(cookieValue);
           expect(cookieResult).toBe(cookieManagerOrgY);
         });
 
@@ -99,11 +98,11 @@ describe('User roles', function () {
 
       describe('should have permission to edit fields on org Y pages', function () {
         it('should set url to org Y', function () {
-          pageUrl = urlOrgY;
+          browser.url(urlOrgY);
         });
 
         it('verify cookie', function () {
-          cookieResult = userRoleElement.setAndGetUserRole(pageUrl, cookieValue);
+          cookieResult = userRoleElement.setAndGetUserRole(cookieValue);
           expect(cookieResult).toBe(cookieManagerOrgY);
         });
 
@@ -114,17 +113,16 @@ describe('User roles', function () {
     });
 
     describe('As org manager X', function () {
-      it('set cookie to org X manager', function () {
+      it('sets cookie to org X manager', function () {
         cookieValue = cookieManagerOrgX;
       });
-
       describe('shouldn\'t have permission to edit fields on org Y pages', function () {
         it('should set url to org Y', function () {
-          pageUrl = urlOrgY;
+          browser.url(urlOrgY);
         });
 
         it('verifies that the current user is a user with only permissions to org X', function () {
-          cookieResult = userRoleElement.setAndGetUserRole(pageUrl, cookieValue);
+          cookieResult = userRoleElement.setAndGetUserRole(cookieValue);
           expect(cookieResult).toBe(cookieManagerOrgX);
         });
 
@@ -135,11 +133,11 @@ describe('User roles', function () {
 
       describe('should have permission to edit fields on org X pages', function () {
         it('should set url to org X', function () {
-          pageUrl = urlOrgX;
+          browser.url(urlOrgX);
         });
 
         it('verifies that the current user is a user with only permissions to org X', function () {
-          cookieResult = userRoleElement.setAndGetUserRole(pageUrl, cookieValue);
+          cookieResult = userRoleElement.getUserRole(cookieManagerOrgX);
           expect(cookieResult).toBe(cookieManagerOrgX);
         });
 
