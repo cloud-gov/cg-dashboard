@@ -91,6 +91,18 @@ const userGuids = [
     username: "fake-org-manager-y@gsa.gov",
   },
   {
+    guid: "org-x-space-manager-xx-uid-601d-48c4-9705",
+    admin: false,
+    active: true,
+    username: "fake-org-x-space-manager-XX@gsa.gov",
+  },
+  {
+    guid: "org-x-space-manager-yy-uid-601d-48c4-9705",
+    admin: false,
+    active: true,
+    username: "fake-org-x-space-manager-YY@gsa.gov",
+  },
+  {
     guid: "aa3a9f58-bcd8-4fd2-be05-0e80d9578bba",
     admin: false,
     active: true,
