@@ -83,7 +83,7 @@ describe('User roles', function () {
 
       it('as org manager x should have permission to edit fields', function () {
         userRoleElement.setUserRole(browser, url_orgX, cookie_manager_orgX);
-        cookieResult = userRoleElement.getUserRole(browser, url_orgY);
+        cookieResult = userRoleElement.getUserRole(browser, url_orgX);
         expect(cookieResult).toBe(cookie_manager_orgX);
         expect(userRoleElement.isFirstUserRoleEnabled(browser)).toBe(true);
       });
