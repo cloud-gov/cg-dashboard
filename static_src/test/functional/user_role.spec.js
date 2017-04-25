@@ -11,7 +11,7 @@ describe('User roles', function () {
     cookieManagerOrgY = 'org_manager_org_y',
     cookieManagerOrgX = 'org_manager_org_x',
     cookieManagerSpaceXX = 'space_manager_space_xx',
-    cookieManagerSpaceYY = 'space_manager_space_yy',
+    // cookieManagerSpaceYY = 'space_manager_space_yy',
     urlOrgY = '/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250',
     urlOrgX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
 
@@ -36,7 +36,7 @@ describe('User roles', function () {
         browser.url(urlOrgY);
 
         browser.waitForExist('.test-users');
-        userRoleElement = new UserRoleElement(browser, browser.element('.test-users') );
+        userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
 
         expect(userRoleElement.isVisible()).toBe(true);
       });
@@ -52,7 +52,7 @@ describe('User roles', function () {
         browser.url(urlOrgX);
 
         browser.waitForExist('.test-users');
-        userRoleElement = new UserRoleElement(browser, browser.element('.test-users') );
+        userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
 
         expect(userRoleElement.isVisible()).toBe(true);
       });
@@ -68,7 +68,7 @@ describe('User roles', function () {
     it('Setup userRoleElement', function () {
       browser.url(urlOrgX);
       browser.waitForExist('.test-users');
-      userRoleElement = new UserRoleElement(browser, browser.element('.test-users') );
+      userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
     });
 
     describe('As org manager Y', function () {
