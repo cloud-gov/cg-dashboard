@@ -42,7 +42,7 @@ describe('User roles', function () {
       });
 
       it('should not be able to edit roles for org Y', function () {
-        expect(userRoleElement.isUserOrgManager(guid_manager_orgX)).toBe(false);
+        expect(userRoleElement.isUserOrgManager(guidManagerOrgX)).toBe(false);
         expect(userRoleElement.isUserOrgManager(guidManagerOrgY)).toBe(true);
       });
     });
@@ -58,7 +58,7 @@ describe('User roles', function () {
       });
 
       it('should be able to edit roles for org X', function () {
-        expect(userRoleElement.isUserOrgManager(guid_manager_orgX)).toBe(true);
+        expect(userRoleElement.isUserOrgManager(guidManagerOrgX)).toBe(true);
         expect(userRoleElement.isUserOrgManager(guidManagerOrgY)).toBe(false);
       });
     });
