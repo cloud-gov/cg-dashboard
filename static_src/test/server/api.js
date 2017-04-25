@@ -227,7 +227,12 @@ module.exports = function api(smocks) {
     label: 'User organizations',
     path: `${BASE_URL}/users/{guid}/organizations`,
     handler: function(req, reply) {
-      reply(MultiResponse(userOrganizations));
+      const guid = req.params.guid;
+      let userOrgFlag = 'default';
+      if(userOrganizations[guid]){
+        userOrgFlag = guid;
+      }
+      reply(MultiResponse(userOrganizations[userOrgFlag]));
     }
   });
 
@@ -248,13 +253,11 @@ module.exports = function api(smocks) {
       let organizationUserRolesResponse, orgResponseName;
       const guid = req.params.guid;
       if ( organizationUserRoles[guid] ) {
-        organizationUserRolesResponse = organizationUserRoles[guid];
         orgResponseName = guid;
       } else {
-        organizationUserRolesResponse = organizationUserRoles['default'];
         orgResponseName = 'default';
       }
-      reply(MultiResponse(organizationUserRolesResponse));
+      reply(MultiResponse(organizationUserRoles[orgResponseName]));
     }
   });
 
