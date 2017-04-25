@@ -31,6 +31,7 @@ describe('User roles', function () {
     });
 
     it('has a page header', function () {
+      browser.waitForExist('.test-page-header-title', 2000);
       const pageHeader = browser.element('.test-page-header-title');
       expect(pageHeader.getText()).toBe('fake-cf-user_role-org_x-testing');
     });
@@ -65,6 +66,7 @@ describe('User roles', function () {
     });
 
     it('navigates to a org\'s space page', function () {
+      browser.waitForExist('.test-page-header-title', 2000);
       const pageHeader = browser.element('.test-page-header-title');
       expect(pageHeader.getText()).toBe('user_role-org_x-space_xx');
     });
