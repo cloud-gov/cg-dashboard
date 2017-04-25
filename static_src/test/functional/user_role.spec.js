@@ -3,7 +3,9 @@ import UserRoleElement from './pageobjects/user_role.element';
 
 describe('User roles', function () {
   let cookieResult,
-    userRoleElement;
+    userRoleElement,
+    pageUrl,
+    cookieValue;
   const guid_manager_orgX = 'org-manager-x-uid-601d-48c4-9705',
     guid_manager_orgY = 'org-manager-y-uid-601d-48c4-9705',
     cookie_manager_orgY = 'org_manager_org_y',
@@ -73,9 +75,7 @@ describe('User roles', function () {
       browser.deleteCookie('testing_user_role');
     });
 
-    describe('On page for org x', function () {
-      let pageUrl, cookieValue;
-
+    describe('As org manager Y shouldn\'t have permission to edit fields on org X pages', function () {
       it('set page to org x url', function(){
         pageUrl = url_orgX;
       });
@@ -95,11 +95,26 @@ describe('User roles', function () {
       it('verify org Y manager can\'t modify org X page', function(){
         expect(userRoleElement.isFirstUserRoleEnabled(browser)).toBe(false);
       });
+    });
 
-      it('as org manager x should have permission to edit fields', function () {
-        userRoleElement.setUserRole(browser, url_orgX, cookie_manager_orgX);
-        cookieResult = userRoleElement.getUserRole(browser, url_orgX);
+    describe('As org manager X should have permission to edit fields on org X pages', function () {
+      it('set page to org x url', function(){
+        pageUrl = url_orgX;
+      });
+
+      it('set cookie to org X manager', function(){
+        cookieValue = cookie_manager_orgX;
+      });
+
+      it('as org manager X should have permission to edit fields', function () {
+        cookieResult = userRoleElement.setAndGetUserRole(browser, pageUrl, cookieValue);
+      });
+
+      it('verify cookie for org X manager', function(){
         expect(cookieResult).toBe(cookie_manager_orgX);
+      });
+
+      it('verify org X manager can modify org X page', function(){
         expect(userRoleElement.isFirstUserRoleEnabled(browser)).toBe(true);
       });
     });
