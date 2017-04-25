@@ -18,6 +18,7 @@ export default class UserRoleElement extends BaseElement {
 
   setUserRole(cookieValue) {
     this.browser.setCookie({ name: 'testing_user_role', value: cookieValue });
+    this.browser.refresh();
   }
 
   getUserRole() {
