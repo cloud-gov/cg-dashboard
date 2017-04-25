@@ -23,6 +23,11 @@ func (c *UAAContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
 	c.uaaProxy(rw, req, "/userinfo")
 }
 
+// InviteUsers will invite user.
+func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
+	c.uaaProxy(rw, req, "/invite_users")
+}
+
 // UaaInfo returns the UAA_API/Users/:id information for the logged in user.
 func (c *UAAContext) UaaInfo(rw web.ResponseWriter, req *web.Request) {
 	guid := req.URL.Query().Get("uaa_guid")
