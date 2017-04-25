@@ -9,8 +9,8 @@ describe('User roles', function () {
     guidManagerOrgY = 'org-manager-y-uid-601d-48c4-9705',
     cookieManagerOrgY = 'org_manager_org_y',
     cookieManagerOrgX = 'org_manager_org_x',
-    cookieManagerSpaceXX = 'space_manager_space_xx',
-    // cookieManagerSpaceYY = 'space_manager_space_yy',
+    cookieManagerOrgXSpaceXX = 'org_x_space_manager_space_xx',
+    cookieManagerOrgXSpaceYY = 'org_x_space_manager_space_yy',
     urlOrgY = '/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250',
     urlOrgX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
 
