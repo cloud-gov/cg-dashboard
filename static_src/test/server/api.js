@@ -250,7 +250,7 @@ module.exports = function api(smocks) {
     label: 'Organization user roles',
     path: `${BASE_URL}/organizations/{guid}/user_roles`,
     handler: function (req, reply) {
-      let organizationUserRolesResponse, orgResponseName;
+      let orgResponseName;
       const guid = req.params.guid;
       if ( organizationUserRoles[guid] ) {
         orgResponseName = guid;
@@ -366,6 +366,13 @@ module.exports = function api(smocks) {
     label: 'Space user roles',
     path: `${BASE_URL}/spaces/{guid}/user_roles`,
     handler: function (req, reply) {
+      let spaceResponseName;
+      const guid = req.params.guid;
+      if ( spaceUserRoles[guid] ) {
+        spaceResponseName = guid;
+      } else {
+        spaceResponseName = 'default';
+      }
       if (ENV_NO_SPACE_USERS) {
         reply(MultiResponse([spaceUserRoles[0]]));
       } else {
