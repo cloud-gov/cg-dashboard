@@ -14,21 +14,6 @@ describe('User roles', function () {
     urlOrgY = '/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250',
     urlOrgX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
 
-  describe('User role cookie test', function () {
-    afterEach(function () {
-      browser.deleteCookie('testing_user_role');
-    });
-
-    describe('when cookie is set and deleted', function () {
-      it('should reflect the cookie content', function () {
-        browser.url('/');
-        browser.setCookie({ name: 'testing_user_role', value: cookieManagerSpaceXX });
-        cookieResult = browser.getCookie('testing_user_role').value;
-        expect(cookieResult).toBe(cookieManagerSpaceXX);
-      });
-    });
-  });
-
   describe('A user on page for orgs', function () {
     describe('on page for org X should see only manager X has user permissions', function () {
       it('should navigates to org Y', function () {
