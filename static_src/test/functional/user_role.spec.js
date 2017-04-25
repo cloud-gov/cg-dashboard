@@ -8,6 +8,8 @@ describe('User roles', function () {
     guid_manager_orgY = 'org-manager-y-uid-601d-48c4-9705',
     cookie_manager_orgY = 'org_manager_org_y',
     cookie_manager_orgX = 'org_manager_org_x',
+    cookie_manager_spaceXX = 'space_manager_space_xx',
+    cookie_manager_spaceYY = 'space_manager_space_yy',
     url_orgY = '/#/org/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250',
     url_orgX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
 
@@ -19,9 +21,9 @@ describe('User roles', function () {
     describe('when cookie is set and deleted', function () {
       it('should reflect the cookie content', function () {
         browser.url('/');
-        browser.setCookie({ name: 'testing_user_role', value: 'space_manager_space_xx' });
+        browser.setCookie({ name: 'testing_user_role', value: cookie_manager_spaceXX });
         cookieResult = browser.getCookie('testing_user_role').value;
-        expect(cookieResult).toBe('space_manager_space_xx');
+        expect(cookieResult).toBe(cookie_manager_spaceXX);
       });
     });
   });
