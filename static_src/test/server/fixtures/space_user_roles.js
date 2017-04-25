@@ -74,29 +74,6 @@ const spaceUserRoles = {
         managed_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/managed_spaces",
         audited_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/audited_spaces"
       }
-    },
-    {
-      metadata: {
-        guid: "org-manager-y-uid-601d-48c4-9705",
-        url: "/v2/users/org-manager-y-uid-601d-48c4-9705",
-        created_at: "2015-03-23T22:13:57Z",
-        updated_at: "2015-03-23T22:13:57Z"
-      },
-      entity: {
-        admin: false,
-        active: false,
-        default_space_guid: null,
-        username: "fake-org-manager-Y@gsa.gov",
-        space_roles: [
-        ],
-        spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/spaces",
-        organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/organizations",
-        managed_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/managed_organizations",
-        billing_managed_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/billing_managed_organizations",
-        audited_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/audited_organizations",
-        managed_spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/managed_spaces",
-        audited_spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/audited_spaces"
-      }
     }
   ],
   "user_role-org_x-space_yy-4064-82f2-d74df612b794": [
@@ -174,101 +151,9 @@ const spaceUserRoles = {
         managed_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/managed_spaces",
         audited_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/audited_spaces"
       }
-    },
-    {
-      metadata: {
-        guid: "org-manager-y-uid-601d-48c4-9705",
-        url: "/v2/users/org-manager-y-uid-601d-48c4-9705",
-        created_at: "2015-03-23T22:13:57Z",
-        updated_at: "2015-03-23T22:13:57Z"
-      },
-      entity: {
-        admin: false,
-        active: false,
-        default_space_guid: null,
-        username: "fake-org-manager-Y@gsa.gov",
-        space_roles: [
-        ],
-        spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/spaces",
-        organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/organizations",
-        managed_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/managed_organizations",
-        billing_managed_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/billing_managed_organizations",
-        audited_organizations_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/audited_organizations",
-        managed_spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/managed_spaces",
-        audited_spaces_url: "/v2/users/org-manager-y-uid-601d-48c4-9705/audited_spaces"
-      }
     }
   ],
   "user_role-org_y-space_xx-4064-82f2-d74df612b794": [
-    {
-      metadata: {
-        guid: "org-x-space-manager-xx-uid-601d-48c4-9705",
-        url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705",
-        created_at: "2015-03-23T22:13:57Z",
-        updated_at: "2015-03-23T22:13:57Z"
-      },
-      entity: {
-        admin: false,
-        active: false,
-        default_space_guid: null,
-        username: "fake-org-x-space-manager-XX@gsa.gov",
-        space_roles: [
-        ],
-        spaces_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/spaces",
-        organizations_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/organizations",
-        managed_organizations_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/managed_organizations",
-        billing_managed_organizations_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/billing_managed_organizations",
-        audited_organizations_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/audited_organizations",
-        managed_spaces_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/managed_spaces",
-        audited_spaces_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/audited_spaces"
-      }
-    },
-    {
-      metadata: {
-        guid: "org-x-space-manager-yy-uid-601d-48c4-9705",
-        url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705",
-        created_at: "2015-03-23T22:13:57Z",
-        updated_at: "2015-03-23T22:13:57Z"
-      },
-      entity: {
-        admin: false,
-        active: false,
-        default_space_guid: null,
-        username: "fake-org-x-space-manager-YY@gsa.gov",
-        space_roles: [
-        ],
-        spaces_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/spaces",
-        organizations_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/organizations",
-        managed_organizations_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/managed_organizations",
-        billing_managed_organizations_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/billing_managed_organizations",
-        audited_organizations_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/audited_organizations",
-        managed_spaces_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/managed_spaces",
-        audited_spaces_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/audited_spaces"
-      }
-    },
-    {
-      metadata: {
-        guid: "org-manager-x-uid-601d-48c4-9705",
-        url: "/v2/users/org-manager-x-uid-601d-48c4-9705",
-        created_at: "2015-03-23T22:13:57Z",
-        updated_at: "2015-03-23T22:13:57Z"
-      },
-      entity: {
-        admin: false,
-        active: false,
-        default_space_guid: null,
-        username: "fake-org-manager-X@gsa.gov",
-        space_roles: [
-        ],
-        spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/spaces",
-        organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/organizations",
-        managed_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/managed_organizations",
-        billing_managed_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/billing_managed_organizations",
-        audited_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/audited_organizations",
-        managed_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/managed_spaces",
-        audited_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/audited_spaces"
-      }
-    },
     {
       metadata: {
         guid: "org-manager-y-uid-601d-48c4-9705",
@@ -297,75 +182,6 @@ const spaceUserRoles = {
     }
   ],
   "user_role-org_y-space_yy-4064-82f2-d74df612b794": [
-    {
-      metadata: {
-        guid: "org-x-space-manager-xx-uid-601d-48c4-9705",
-        url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705",
-        created_at: "2015-03-23T22:13:57Z",
-        updated_at: "2015-03-23T22:13:57Z"
-      },
-      entity: {
-        admin: false,
-        active: false,
-        default_space_guid: null,
-        username: "fake-org-x-space-manager-XX@gsa.gov",
-        space_roles: [
-        ],
-        spaces_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/spaces",
-        organizations_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/organizations",
-        managed_organizations_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/managed_organizations",
-        billing_managed_organizations_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/billing_managed_organizations",
-        audited_organizations_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/audited_organizations",
-        managed_spaces_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/managed_spaces",
-        audited_spaces_url: "/v2/users/org-x-space-manager-xx-uid-601d-48c4-9705/audited_spaces"
-      }
-    },
-    {
-      metadata: {
-        guid: "org-x-space-manager-yy-uid-601d-48c4-9705",
-        url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705",
-        created_at: "2015-03-23T22:13:57Z",
-        updated_at: "2015-03-23T22:13:57Z"
-      },
-      entity: {
-        admin: false,
-        active: false,
-        default_space_guid: null,
-        username: "fake-org-x-space-manager-YY@gsa.gov",
-        space_roles: [
-        ],
-        spaces_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/spaces",
-        organizations_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/organizations",
-        managed_organizations_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/managed_organizations",
-        billing_managed_organizations_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/billing_managed_organizations",
-        audited_organizations_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/audited_organizations",
-        managed_spaces_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/managed_spaces",
-        audited_spaces_url: "/v2/users/org-x-space-manager-yy-uid-601d-48c4-9705/audited_spaces"
-      }
-    },
-    {
-      metadata: {
-        guid: "org-manager-x-uid-601d-48c4-9705",
-        url: "/v2/users/org-manager-x-uid-601d-48c4-9705",
-        created_at: "2015-03-23T22:13:57Z",
-        updated_at: "2015-03-23T22:13:57Z"
-      },
-      entity: {
-        admin: false,
-        active: false,
-        default_space_guid: null,
-        username: "fake-org-manager-X@gsa.gov",
-        space_roles: [
-        ],
-        spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/spaces",
-        organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/organizations",
-        managed_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/managed_organizations",
-        billing_managed_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/billing_managed_organizations",
-        audited_organizations_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/audited_organizations",
-        managed_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/managed_spaces",
-        audited_spaces_url: "/v2/users/org-manager-x-uid-601d-48c4-9705/audited_spaces"
-      }
-    },
     {
       metadata: {
         guid: "org-manager-y-uid-601d-48c4-9705",
