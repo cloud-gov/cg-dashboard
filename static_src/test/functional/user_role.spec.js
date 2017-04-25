@@ -74,10 +74,25 @@ describe('User roles', function () {
     });
 
     describe('On page for org x', function () {
+      let pageUrl, cookieValue;
+
+      it('set page to org x url', function(){
+        pageUrl = url_orgX;
+      });
+
+      it('set cookie to org Y manager', function(){
+        cookieValue = cookie_manager_orgY;
+      });
+
       it('as org manager y should not have permission to edit fields', function () {
-        userRoleElement.setUserRole(browser, url_orgX, cookie_manager_orgY);
-        cookieResult = userRoleElement.getUserRole(browser, url_orgX);
+        cookieResult = userRoleElement.setAndGetUserRole(browser, pageUrl, cookieValue);
+      });
+
+      it('verify cookie for org Y manager', function(){
         expect(cookieResult).toBe(cookie_manager_orgY);
+      });
+
+      it('verify org Y manager can\'t modify org X page', function(){
         expect(userRoleElement.isFirstUserRoleEnabled(browser)).toBe(false);
       });
 

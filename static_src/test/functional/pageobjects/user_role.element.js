@@ -11,7 +11,12 @@ import BaseElement from './base.element';
 export default class UserRoleElement extends BaseElement {
   // TODO: Look into why "this.element('#org_role' + guid).checked
   // does not work. Currently, it doesn't work that way.
-  setUserRole(browser, testUrl, cookieValue){
+  setAndGetUserRole(browser, testUrl, cookieValue) {
+    this.setUserRole(browser, testUrl, cookieValue);
+    return this.getUserRole(browser, testUrl);
+  }
+
+  setUserRole(browser, testUrl, cookieValue) {
     browser.url(testUrl);
     browser.setCookie({ name: 'testing_user_role', value: cookieValue });
   }
