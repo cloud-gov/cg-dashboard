@@ -146,7 +146,7 @@ export default class UserList extends React.Component {
                 );
               }
               actions = (
-                <ElasticLineItem>
+                <ElasticLineItem align="end">
                   { button }
                 </ElasticLineItem>
               );
@@ -154,7 +154,6 @@ export default class UserList extends React.Component {
             return (
               <ElasticLine key={ user.guid }>
                 <ElasticLineItem>{ user.username }</ElasticLineItem>
-                { actions }
                 <ElasticLineItem key={ `${user.guid}-role` } align="end">
                   <UserRoleListControl
                     initialUserType={ this.state.userType }
@@ -164,6 +163,7 @@ export default class UserList extends React.Component {
                     user={ user }
                   />
                 </ElasticLineItem>
+                { actions }
               </ElasticLine>
               );
           })}

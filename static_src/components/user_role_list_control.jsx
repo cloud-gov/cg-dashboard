@@ -4,6 +4,8 @@
 
 import React from 'react';
 
+import ElasticLine from './elastic_line.jsx';
+import ElasticLineItem from './elastic_line_item.jsx';
 import UserRoleControl from './user_role_control.jsx';
 
 const roleMapping = {
@@ -77,18 +79,20 @@ export default class UserRoleListControl extends React.Component {
   render() {
     return (
       <span className="test-user-roles-list-control">
-      { this.roleMap.map((role) =>
-        <span key={ role.key }>
-          <UserRoleControl
-            roleName={ role.label }
-            roleKey={ role.key }
-            initialValue={ this.checkRole(role.key) }
-            initialEnableControl={ this.state.currentUserAccess }
-            onChange={ this._onChange.bind(this, role.key) }
-            userId={ this.props.user.guid }
-          />
-        </span>
-      )}
+        <ElasticLine>
+        { this.roleMap.map((role) =>
+          <ElasticLineItem key={ role.key }>
+            <UserRoleControl
+              roleName={ role.label }
+              roleKey={ role.key }
+              initialValue={ this.checkRole(role.key) }
+              initialEnableControl={ this.state.currentUserAccess }
+              onChange={ this._onChange.bind(this, role.key) }
+              userId={ this.props.user.guid }
+            />
+          </ElasticLineItem>
+        )}
+        </ElasticLine>
       </span>
     );
   }
