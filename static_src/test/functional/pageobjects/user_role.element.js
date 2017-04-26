@@ -40,4 +40,16 @@ export default class UserRoleElement extends BaseElement {
   isUserOrgAuditor(guid) {
     return !!this.browser.getAttribute(`#org_auditor${guid}`, 'checked');
   }
+
+  isUserSpaceManager(guid) {
+    return !!this.browser.getAttribute(`#space_manager${guid}`, 'checked');
+  }
+
+  isUserSpaceDeveloper(guid) {
+    return !!this.browser.getAttribute(`#space_developer${guid}`, 'checked');
+  }
+
+  isUserSpaceAuditor(guid) {
+    return !!this.browser.getAttribute(`#space_auditor${guid}`, 'checked');
+  }
 }
