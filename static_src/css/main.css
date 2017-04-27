@@ -22,10 +22,12 @@
 input[type="checkbox"]:not(.fancy),
 input[type="radio"]:not(.fancy) {
   -webkit-appearance: checkbox;
+  display: inline;
   left: 0;
   opacity: 1;
   position: static;
-  opacity: 1;
+  margin-right: 0.5rem;
+  width: auto;
 }
 
 input[type="checkbox"]:checked + label::before {
@@ -35,4 +37,8 @@ input[type="checkbox"]:checked + label::before {
 input[type="checkbox"] + label::before,
 input[type="radio"] + label::before {
   display: none;
+}
+
+label {
+  margin-right: 1rem;
 }

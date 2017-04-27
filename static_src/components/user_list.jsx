@@ -6,6 +6,10 @@
 import React from 'react';
 
 import Action from './action.jsx';
+import ComplexList from './complex_list.jsx';
+import ComplexListItem from './complex_list_item.jsx';
+import ElasticLine from './elastic_line.jsx';
+import ElasticLineItem from './elastic_line_item.jsx';
 import EntityEmpty from './entity_empty.jsx';
 import Loading from './loading.jsx';
 import PanelDocumentation from './panel_documentation.jsx';
@@ -126,17 +130,7 @@ export default class UserList extends React.Component {
       content = (
       <div>
         { this.documentation }
-        <table>
-          <thead>
-            <tr>
-            { this.columns.map((column) =>
-              <th className={ column.key }
-                  key={ column.key }>
-                { column.label }</th>
-            )}
-            </tr>
-          </thead>
-          <tbody>
+        <ComplexList>
           { this.state.users.map((user) => {
             let actions;
             if (this.props.onRemove) {
@@ -152,15 +146,15 @@ export default class UserList extends React.Component {
                 );
               }
               actions = (
-                <td style={{ width: '14rem' }}>
+                <ElasticLineItem align="end">
                   { button }
-                </td>
+                </ElasticLineItem>
               );
             }
-            return ([
-              <tr key={ user.guid }>
-                <td><span>{ user.username }</span></td>
-                <td key={ `${user.guid}-role` }>
+            return (
+              <ElasticLine key={ user.guid }>
+                <ElasticLineItem>{ user.username }</ElasticLineItem>
+                <ElasticLineItem key={ `${user.guid}-role` } align="end">
                   <UserRoleListControl
                     initialUserType={ this.state.userType }
                     initialCurrentUserAccess={ this.state.currentUserAccess }
@@ -168,14 +162,12 @@ export default class UserList extends React.Component {
                     onRemovePermissions={ this.props.onRemovePermissions }
                     user={ user }
                   />
-                </td>
-                <td>{ formatDateTime(user.created_at) }</td>
+                </ElasticLineItem>
                 { actions }
-              </tr>
-              ]);
-            })}
-          </tbody>
-        </table>
+              </ElasticLine>
+              );
+          })}
+        </ComplexList>
       </div>
       );
     }
