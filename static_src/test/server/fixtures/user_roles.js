@@ -1,26 +1,26 @@
 
 const userRoles = {
-  "space_manager_space_xx": {
-    "user_id": "space-manager-xx-uid-601d-48c4-9705",
-    "sub": "space-manager-xx-uid-601d-48c4-9705",
-    "user_name": "fake-space-manager-XX@gsa.gov",
-    "given_name": "fake-space-manager-XX",
+  "org_x_space_manager_space_xx": {
+    "user_id": "org-x-space-manager-xx-uid-601d-48c4-9705",
+    "sub": "org-x-space-manager-xx-uid-601d-48c4-9705",
+    "user_name": "fake-org-x-space-manager-XX@gsa.gov",
+    "given_name": "fake-org-x-space-manager-XX",
     "family_name": "gsa.gov",
-    "email": "fake-space-manager-XX@gsa.gov",
+    "email": "fake-org-x-space-manager-XX@gsa.gov",
     "phone_number": null,
     "previous_logon_time": 1489612053883,
-    "name": "fake-space-manager-XX@gsa.gov"
+    "name": "fake-org-x-space-manager-XX@gsa.gov"
   },
-  "space_manager_space_yy": {
-    "user_id": "space-manager-yy-uid-601d-48c4-9705",
-    "sub": "space-manager-yy-uid-601d-48c4-9705",
-    "user_name": "fake-space-manager-YY@gsa.gov",
-    "given_name": "fake-space-manager-YY",
+  "org_x_space_manager_space_yy": {
+    "user_id": "org-x-space-manager-yy-uid-601d-48c4-9705",
+    "sub": "org-x-space-manager-yy-uid-601d-48c4-9705",
+    "user_name": "fake-org-x-space-manager-YY@gsa.gov",
+    "given_name": "fake-org-x-space-manager-YY",
     "family_name": "gsa.gov",
-    "email": "fake-space-manager-YY@gsa.gov",
+    "email": "fake-org-x-space-manager-YY@gsa.gov",
     "phone_number": null,
     "previous_logon_time": 1489612053883,
-    "name": "fake-space-manager-YY@gsa.gov"
+    "name": "fake-org-x-space-manager-YY@gsa.gov"
   },
   "org_manager_org_x": {
     "user_id": "org-manager-x-uid-601d-48c4-9705",

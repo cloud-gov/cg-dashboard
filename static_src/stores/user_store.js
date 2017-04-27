@@ -264,7 +264,7 @@ export class UserStore extends BaseStore {
           if (action.type === userActionTypes.USER_ORGS_RECEIVED) {
             roles[key] = certainRoles.concat(['org_manager']); // eslint-disable-line
           } else {
-            roles[key] = certainRoles.concat(['space_developer']); // eslint-disable-line
+            roles[key] = certainRoles.concat(['space_manager']); // eslint-disable-line
           }
           return roles;
         }, user.roles || {});

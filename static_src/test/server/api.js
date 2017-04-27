@@ -241,7 +241,12 @@ module.exports = function api(smocks) {
     label: 'User spaces',
     path: `${BASE_URL}/users/{guid}/spaces`,
     handler: function(req, reply) {
-      reply(MultiResponse(userSpaces));
+      const guid = req.params.guid;
+      let userSpaceFlag = 'default';
+      if(userSpaces[guid]){
+        userSpaceFlag = guid;
+      }
+      reply(MultiResponse(userSpaces[userSpaceFlag]));
     }
   });
 
@@ -250,7 +255,7 @@ module.exports = function api(smocks) {
     label: 'Organization user roles',
     path: `${BASE_URL}/organizations/{guid}/user_roles`,
     handler: function (req, reply) {
-      let organizationUserRolesResponse, orgResponseName;
+      let orgResponseName;
       const guid = req.params.guid;
       if ( organizationUserRoles[guid] ) {
         orgResponseName = guid;
@@ -366,11 +371,12 @@ module.exports = function api(smocks) {
     label: 'Space user roles',
     path: `${BASE_URL}/spaces/{guid}/user_roles`,
     handler: function (req, reply) {
-      if (ENV_NO_SPACE_USERS) {
-        reply(MultiResponse([spaceUserRoles[0]]));
-      } else {
-        reply(MultiResponse(spaceUserRoles));
+      let spaceResponseName = 'default';
+      const guid = req.params.guid;
+      if ( spaceUserRoles[guid] && !ENV_NO_SPACE_USERS ) {
+        spaceResponseName = guid;
       }
+      reply(MultiResponse(spaceUserRoles[spaceResponseName]));
     }
   });
 
