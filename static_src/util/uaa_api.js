@@ -12,5 +12,12 @@ export default {
   fetchUaaInfo(guid) {
     return http.get(`${URL}/uaainfo?uaa_guid=${guid}`)
       .then(res => res.data);
+  },
+
+  inviteUaaUser(email) {
+    return http.post(`${URL}/invite_users?redirect_uri=https://dashboard.fr.cloud.gov/`, {
+      emails: [email]
+    })
+      .then(res => res.data);
   }
 };

@@ -164,7 +164,7 @@ var MockCompleteEnvVars = helpers.EnvVars{
 // CreateExternalServer creates a test server that should reply with the given parameters assuming that the incoming request matches what we want.
 func CreateExternalServer(t *testing.T, test *BasicProxyTest) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != test.ExpectedPath {
+		if r.URL.RequestURI() != test.ExpectedPath {
 			t.Errorf("Server expected path %s but instead received path %s\n", test.ExpectedPath, r.URL.Path)
 		} else if r.Method != test.RequestMethod {
 			t.Errorf("Server expected method %s but instead received method %s\n", test.RequestMethod, r.Method)
