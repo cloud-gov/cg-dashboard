@@ -25,7 +25,17 @@ func (c *UAAContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
 
 // InviteUsers will invite user.
 func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
-	c.uaaProxy(rw, req, "/invite_users")
+	var reqURL string
+	redirect_uri := req.URL.Query().Get("redirect_uri")
+	if len(redirect_uri) > 0 {
+		reqURL = fmt.Sprintf("%s%s", "/invite_users?redirect_uri=", redirect_uri)
+	} else {
+		reqURL = "/invite_users"
+	}
+	log.Println(reqURL)
+	log.Println("reqURL ^")
+	c.PrivilegedProxy(rw, req.Request, reqURL)
+	// fmt.Fprint(rw, "Hello, ", redirect_uri)
 }
 
 // UaaInfo returns the UAA_API/Users/:id information for the logged in user.

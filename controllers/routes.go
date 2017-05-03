@@ -17,6 +17,8 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 		return nil
 	}
 	router := web.New(Context{})
+	router.Middleware(web.LoggerMiddleware).
+		Middleware(web.ShowErrorsMiddleware)
 
 	// A closure that effectively loads the Settings into every request.
 	router.Middleware(func(c *Context, resp web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
