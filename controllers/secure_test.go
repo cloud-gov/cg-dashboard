@@ -2,18 +2,19 @@ package controllers_test
 
 import (
 	"fmt"
-	"github.com/18F/cg-dashboard/controllers"
-	"github.com/18F/cg-dashboard/helpers"
-	. "github.com/18F/cg-dashboard/helpers/testhelpers"
-	"github.com/gocraft/web"
-	"golang.org/x/net/context"
-	"golang.org/x/oauth2"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/18F/cg-dashboard/controllers"
+	"github.com/18F/cg-dashboard/helpers"
+	. "github.com/18F/cg-dashboard/helpers/testhelpers"
+	"github.com/gocraft/web"
+	"golang.org/x/net/context"
+	"golang.org/x/oauth2"
 )
 
 var oauthTests = []BasicSecureTest{
@@ -117,8 +118,8 @@ func TestPrivilegedProxy(t *testing.T) {
 			if err != nil {
 				t.Errorf("failed reading request body: %s.", err)
 			}
-			if string(body) != "client_id="+MockCompleteEnvVars.ClientID+"&grant_type=client_credentials&scope=scim.read" {
-				t.Errorf("payload = %q; want %q", string(body), "client_id="+MockCompleteEnvVars.ClientID+"&grant_type=client_credentials&scope=scim.read")
+			if string(body) != "client_id="+MockCompleteEnvVars.ClientID+"&grant_type=client_credentials&scope=scim.invite" {
+				t.Errorf("payload = %q; want %q", string(body), "client_id="+MockCompleteEnvVars.ClientID+"&grant_type=client_credentials&scope=scim.invite")
 			}
 			w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 			// Write the privileged token so that it can be used.
