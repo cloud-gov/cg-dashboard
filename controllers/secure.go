@@ -97,6 +97,9 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	if request.Body != nil {
 		defer request.Body.Close()
 	}
+	// We need to transfer over the headers we want manually.
+	// The UAA checks for it and will fail with a 415 Response Code if it is
+	// missing during a POST request. (The CF API does not have this requirement).
 	if contentHeader := req.Header.Get("Content-Type"); len(contentHeader) > 0 {
 		request.Header.Set("Content-Type", contentHeader)
 	}
