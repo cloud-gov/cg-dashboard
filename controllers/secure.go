@@ -1,13 +1,14 @@
 package controllers
 
 import (
-	"github.com/18F/cg-dashboard/helpers"
-	"github.com/gocraft/web"
-	"golang.org/x/oauth2"
 	"io"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/18F/cg-dashboard/helpers"
+	"github.com/gocraft/web"
+	"golang.org/x/oauth2"
 )
 
 // SecureContext stores the session info and access token per user.
@@ -68,7 +69,6 @@ func (c *SecureContext) PrivilegedProxy(rw http.ResponseWriter, req *http.Reques
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
 	client := c.Settings.HighPrivilegedOauthConfig.Client(c.Settings.TokenContext)
 	c.submitRequest(rw, req, url, client, c.GenericResponseHandler)
-
 }
 
 // Proxy is an internal function that will construct the client with the token in the headers and
@@ -96,6 +96,9 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	// In case the body is not of io.Closer.
 	if request.Body != nil {
 		defer request.Body.Close()
+	}
+	if contentHeader := req.Header.Get("Content-Type"); len(contentHeader) > 0 {
+		request.Header.Set("Content-Type", contentHeader)
 	}
 	request.Close = true
 	// Send the request.
