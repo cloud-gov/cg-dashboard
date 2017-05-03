@@ -34,7 +34,7 @@ export default class UsersInvite extends React.Component {
 
   _onValidForm(errs, values) {
     uaaApi.inviteUaaUser(values.email.value).then((res) =>
-    );
+    )
   }
 
   render() {
