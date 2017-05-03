@@ -22,7 +22,7 @@ type initAppTest struct {
 var initAppTests = []initAppTest{
 	{
 		testName:          "Basic Valid EnvVars",
-		envVars:           MockCompleteEnvVars,
+		envVars:           GetMockCompleteEnvVars(),
 		returnRouterNil:   false,
 		returnSettingsNil: false,
 		returnErrorNil:    true,

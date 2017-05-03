@@ -148,18 +148,20 @@ type BasicProxyTest struct {
 	ResponseCode int
 }
 
-// MockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
-var MockCompleteEnvVars = helpers.EnvVars{
-	ClientID:     "ID",
-	ClientSecret: "Secret",
-	Hostname:     "https://hostname",
-	LoginURL:     "https://loginurl",
-	UAAURL:       "https://uaaurl",
-	APIURL:       "https://apiurl",
-	LogURL:       "https://logurl",
-	PProfEnabled: "true",
-	SessionKey:   "lalala",
-	BasePath:     os.Getenv(helpers.BasePathEnvVar),
+// GetMockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
+func GetMockCompleteEnvVars() helpers.EnvVars {
+	return helpers.EnvVars{
+		ClientID:     "ID",
+		ClientSecret: "Secret",
+		Hostname:     "https://hostname",
+		LoginURL:     "https://loginurl",
+		UAAURL:       "https://uaaurl",
+		APIURL:       "https://apiurl",
+		LogURL:       "https://logurl",
+		PProfEnabled: "true",
+		SessionKey:   "lalala",
+		BasePath:     os.Getenv(helpers.BasePathEnvVar),
+	}
 }
 
 // CreateExternalServerForPrivileged creates a test server that should reply
@@ -180,8 +182,8 @@ func CreateExternalServerForPrivileged(t *testing.T, test BasicProxyTest) *httpt
 			if err != nil {
 				t.Errorf("failed reading request body: %s.", err)
 			}
-			if string(body) != "client_id="+MockCompleteEnvVars.ClientID+"&grant_type=client_credentials&scope=scim.invite" {
-				t.Errorf("payload = %q; want %q", string(body), "client_id="+MockCompleteEnvVars.ClientID+"&grant_type=client_credentials&scope=scim.invite")
+			if string(body) != "client_id="+GetMockCompleteEnvVars().ClientID+"&grant_type=client_credentials&scope=scim.invite" {
+				t.Errorf("payload = %q; want %q", string(body), "client_id="+GetMockCompleteEnvVars().ClientID+"&grant_type=client_credentials&scope=scim.invite")
 			}
 			w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 			// Write the privileged token so that it can be used.

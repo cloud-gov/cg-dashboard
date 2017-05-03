@@ -15,7 +15,7 @@ var userinfoTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic User Info",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "test",
 			ExpectedCode:     http.StatusOK,
@@ -49,7 +49,7 @@ var inviteUsersTest = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "UAA Invite User",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "test",
 			ExpectedCode:     http.StatusOK,
@@ -83,7 +83,7 @@ var uaainfoTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Uaa Info without guid",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "{\"status\": \"Bad request\", \"error_description\": \"Missing valid guid.\"}",
 			ExpectedCode:     http.StatusBadRequest,
@@ -98,7 +98,7 @@ var uaainfoTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Uaa Info with guid",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "success",
 			ExpectedCode:     http.StatusOK,
@@ -132,7 +132,7 @@ var queryUsersTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Query Users Empty Body",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "{\"status\": \"error\", \"message\": \"empty request body\"}",
 			ExpectedCode:     http.StatusBadRequest,
@@ -147,7 +147,7 @@ var queryUsersTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Query Users Bad Filters",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "{\"status\": \"error\", \"message\": \"not enough filters\"}",
 			ExpectedCode:     http.StatusBadRequest,
@@ -163,7 +163,7 @@ var queryUsersTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Query Users",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "hello",
 			ExpectedCode:     http.StatusOK,
