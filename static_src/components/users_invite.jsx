@@ -6,10 +6,7 @@
 
 import React from 'react';
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
-import createStyler from '../util/create_styler';
-
-import { Form, FormText, FormSelect, FormElement, FormError } from './form';
+import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
 import Action from './action.jsx';
 
@@ -31,15 +28,13 @@ export default class UsersInvite extends React.Component {
     this._onValidForm = this._onValidForm.bind(this);
   }
 
-  _onChange(ev) {
+  _onChange() {
 
   }
 
   _onValidForm(errs, values) {
     uaaApi.inviteUaaUser(values.email.value).then((res) =>
-      console.log(res)
-      // this.setState(res)
-    )
+    );
   }
 
   render() {
@@ -47,7 +42,7 @@ export default class UsersInvite extends React.Component {
       <div>
         <h2>User invite</h2>
         <PanelDocumentation>
-          <p>Organizational Managers can use the field below add new users to cloud.gov and their team.</p>
+          <p>Organizational Managers can add new users below.</p>
         </PanelDocumentation>
         <Form
           guid={ USERS_INVITE_FORM_GUID }
