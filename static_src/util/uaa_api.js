@@ -14,11 +14,6 @@ export default {
       .then(res => res.data);
   },
 
-  // checkForUaaUser(email) {
-  //   return http.post(`${URL}/check_for_user`)
-  //     .then(res => res.data);
-  // },
-
   inviteUaaUser(email) {
     return http.post(`${URL}/invite_users?redirect_uri=https://dashboard.fr.cloud.gov/`, {
     "emails": [ email ]
