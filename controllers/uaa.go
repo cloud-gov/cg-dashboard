@@ -14,6 +14,8 @@ type UAAContext struct {
 }
 
 // uaaProxy prepares the final URL to pass through the proxy.
+// By setting "escalated" to true, you can use the Dashboard's credentials to
+// make the request instead of the current user's credentials.
 func (c *UAAContext) uaaProxy(rw web.ResponseWriter, req *web.Request,
 	uaaEndpoint string, escalated bool) {
 	reqURL := fmt.Sprintf("%s%s", c.Settings.UaaURL, uaaEndpoint)
