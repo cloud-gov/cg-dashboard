@@ -26,6 +26,7 @@ input[type="radio"]:not(.fancy) {
   left: 0;
   opacity: 1;
   position: static;
+  margin-left: 0.25rem;
   margin-right: 0.5rem;
   width: auto;
 }
@@ -39,6 +40,3 @@ input[type="radio"] + label::before {
   display: none;
 }
 
-label {
-  margin-right: 1rem;
-}
