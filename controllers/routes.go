@@ -53,6 +53,7 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	uaaRouter.Middleware((*UAAContext).OAuth)
 	uaaRouter.Get("/userinfo", (*UAAContext).UserInfo)
 	uaaRouter.Get("/uaainfo", (*UAAContext).UaaInfo)
+	uaaRouter.Get("/invite-send", (*UAAContext).SendInvite)
 
 	// Setup the /log subrouter.
 	logRouter := secureRouter.Subrouter(LogContext{}, "/log")
