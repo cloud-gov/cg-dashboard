@@ -54,15 +54,15 @@ type Settings struct {
 	// Returns whether the backend is up.
 	SessionBackendHealthCheck func() bool
 	// SMTP host for UAA invites
-	SmtpHost string
+	SMTPHost string
 	// SMTP post for UAA invites
-	SmtpPort string
+	SMTPPort string
 	// SMTP user for UAA invites
-	SmtpUser string
+	SMTPUser string
 	// SMTP password for UAA invites
-	SmtpPass string
+	SMTPPass string
 	// SMTP from address for UAA invites
-	SmtpFrom string
+	SMTPFrom string
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
