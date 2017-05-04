@@ -15,7 +15,7 @@ export default {
   },
 
   inviteUaaUser(email) {
-    return http.post(`${URL}/invite_users?redirect_uri=https://dashboard.fr.cloud.gov/`, {
+    return http.post(`${URL}/invite_users`, {
       emails: [email]
     })
       .then(res => res.data);
