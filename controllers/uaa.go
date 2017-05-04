@@ -43,7 +43,7 @@ func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
 	c.uaaProxy(rw, req, reqURL, true)
 }
 
-// UserInfo returns the UAA_API/userinfo information for the logged in user.
+// SendInvite sends users an email with a link to the UAA invite
 func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
 	var InviteUrl string
 	EmailAddress := req.URL.Query().Get("email")
@@ -62,8 +62,8 @@ func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
 		Url: InviteUrl,
 	}
 	emailText := new(bytes.Buffer)
-	emailHtml := new(bytes.Buffer)
-	err = t.Execute(emailHtml, inviteEmailData)
+	emailHTML := new(bytes.Buffer)
+	err = t.Execute(emailHTML, inviteEmailData)
 	if err != nil {
 		fmt.Println("2")
 		fmt.Println(err)
@@ -74,7 +74,7 @@ func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
 		fmt.Println(err)
 	}
 	e.Text = emailText.Bytes()
-	e.HTML = emailHtml.Bytes()
+	e.HTML = emailHTML.Bytes()
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := os.Getenv("SMTP_PORT")
 	smtpUser := os.Getenv("SMTP_USER")
@@ -99,7 +99,7 @@ func (c *UAAContext) UaaInfo(rw web.ResponseWriter, req *web.Request) {
 }
 
 type InviteEmail struct {
-	Url string
+	URL string
 }
 
 const inviteTextTpl = `
@@ -108,7 +108,7 @@ Claim your account below.
 cloud.gov is a service by 18F that helps federal teams create and deliver quality digital services securely hosted in the cloud.
 
 Accept the invitation - Accept your invite to continue the registration process. You can also copy the URL below and paste it into your browser's address bar:
-{{.Url}}
+{{.URL}}
 
 Accept your invitation
 Read the documentation - After you register and log in, review the acceptable uses and rules of behavior.
@@ -405,7 +405,7 @@ table.google-plus:hover td{background:#CC0000 !important}</style></head>
                             <tbody><tr style="padding:0;vertical-align:top;text-align:left">
                               <td align="center" class="center" valign="top" style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;vertical-align:top;color:#222222;font-family:&quot;Helvetica&quot;, &quot;Arial&quot;, sans-serif;font-weight:normal;padding:0;margin:0;text-align:left;line-height:1.3;font-size:16px;line-height:20px;text-align:center;padding:0px 0px 10px;border-collapse:collapse !important">
                                 <div class="button-div" style="display:block;text-align:center;border:2px solid #0744a4;border-radius:500px;-moz-border-radius:500px;-webkit-border-radius:500px;padding:8px 20px;width:auto !important;background:#fff !important;color:#0744a4 !important">
-                                  <a target="_blank" href="{{.Url}}" style="color:#2ba6cb;font-weight:normal;text-decoration:none;font-family:Helvetica, Arial, sans-serif;font-size:19px;display:block;color:#0744a4 !important">Accept your invitation
+                                  <a target="_blank" href="{{.URL}}" style="color:#2ba6cb;font-weight:normal;text-decoration:none;font-family:Helvetica, Arial, sans-serif;font-size:19px;display:block;color:#0744a4 !important">Accept your invitation
                                   </a>
                                 </div>
                               </td>
@@ -450,9 +450,9 @@ table.google-plus:hover td{background:#CC0000 !important}</style></head>
                             <td align="center" class="center no-bottom-padding" valign="top" style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;vertical-align:top;color:#222222;font-family:&quot;Helvetica&quot;, &quot;Arial&quot;, sans-serif;font-weight:normal;padding:0;margin:0;text-align:left;line-height:1.3;font-size:16px;line-height:20px;text-align:left;padding:0px 0px 10px;border-collapse:collapse !important;padding-bottom:0px !important">
                               <center style="width:100%;min-width:580px">
                                 <p class="paragraph-font-style " style="margin:0 0 0 10px;color:#222222;font-family:&quot;Helvetica&quot;, &quot;Arial&quot;, sans-serif;font-weight:normal;padding:0;margin:0;text-align:left;line-height:1.3;font-size:16px;line-height:20px;margin-bottom:10px;margin-top:20px;margin-bottom:0px;font-size:18px;color:#555;max-width:80%;text-align:left;line-height:1.3em">
-                                  <b>Accept the invitation</b> - <a href="{{.Url}}">Accept your invite</a> to continue the registration process. You can also copy the URL below and paste it into your browser's address bar:
+                                  <b>Accept the invitation</b> - <a href="{{.URL}}">Accept your invite</a> to continue the registration process. You can also copy the URL below and paste it into your browser's address bar:
 																	<br>
-																	{{.Url}}
+																	{{.URL}}
                                 </p>
                               </center>
                             </td>
