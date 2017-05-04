@@ -20,6 +20,7 @@ dependencies:
     - sudo apt-get update; sudo apt-get install libicu52
     - go version
     - go get github.com/Masterminds/glide
+    - go get github.com/jordan-wright/email
     - rm -rf $WS
     - mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
     - cd $WS && glide install
@@ -32,6 +33,7 @@ test:
   pre:
     - go get github.com/axw/gocov/gocov
     - go get github.com/mattn/goveralls
+    - go get github.com/jordan-wright/email
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   override:
     - cd $WS && ./codecheck.sh -u
