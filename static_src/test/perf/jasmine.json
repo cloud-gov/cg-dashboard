@@ -1,0 +1,6 @@
+{
+    "spec_dir": "static_src/test/perf",
+    "spec_files": [
+        "**/*.spec.js"
+    ]
+}

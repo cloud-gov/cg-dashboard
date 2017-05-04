@@ -13,7 +13,7 @@ import (
 func TestPing(t *testing.T) {
 	response, request := NewTestRequest("GET", "/ping", nil)
 	env, _ := cfenv.Current()
-	router, _, _ := controllers.InitApp(MockCompleteEnvVars, env)
+	router, _, _ := controllers.InitApp(GetMockCompleteEnvVars(), env)
 	router.ServeHTTP(response, request)
 	if response.Body.String() != "{\"status\": \"alive\", \"build-info\": \"developer-build\"}" {
 		t.Errorf("Expected alive. Found %s\n", response.Body.String())
@@ -23,14 +23,14 @@ func TestPing(t *testing.T) {
 var loginHandshakeTests = []BasicConsoleUnitTest{
 	{
 		TestName:    "Login Handshake With Already Authenticated User",
-		EnvVars:     MockCompleteEnvVars,
+		EnvVars:     GetMockCompleteEnvVars(),
 		Code:        302,
 		Location:    "https://hostname/#/dashboard",
 		SessionData: ValidTokenData,
 	},
 	{
 		TestName: "Login Handshake With Non Authenticated User",
-		EnvVars:  MockCompleteEnvVars,
+		EnvVars:  GetMockCompleteEnvVars(),
 		Code:     302,
 		Location: "https://loginurl/oauth/authorize",
 	},
@@ -57,7 +57,7 @@ var logoutTests = []BasicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Authorized Profile To Logout",
-			EnvVars:     MockCompleteEnvVars,
+			EnvVars:     GetMockCompleteEnvVars(),
 			SessionData: ValidTokenData,
 		},
 		ExpectedResponse: "https://loginurl/logout.do",
@@ -65,7 +65,7 @@ var logoutTests = []BasicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName: "Basic Unauthorized Profile To Logout",
-			EnvVars:  MockCompleteEnvVars,
+			EnvVars:  GetMockCompleteEnvVars(),
 		},
 		ExpectedResponse: "https://loginurl/logout.do",
 	},

@@ -1,18 +1,16 @@
 
-import dedent from 'dedent';
-
 import BreadcrumbsElement from './pageobjects/breadcrumbs.element';
 import GlobalErrorsElement from './pageobjects/global_errors.element';
 
-const crashedAppUrl = dedent`/#
-  /org/48b3f8a1-ffe7-4aa8-8e85-94768d6bd250
-  /spaces/82af0edb-8540-4064-82f2-d74df612b794
-  /apps/7fa78964-4d44-4a2a-8d26-7468b7cbf67d`;
+const crashedAppUrl = '/#' +
+  '/org/48b3f8a1-ffe7-4aa8-8e85-94768d6bd250' +
+  '/spaces/82af0edb-8540-4064-82f2-d74df612b794' +
+  '/apps/7fa78964-4d44-4a2a-8d26-7468b7cbf67d';
 
-const brokenDataAppUrl = dedent`/#
-  /org/48b3f8a1-ffe7-4aa8-8e85-94768d6bd250/
-  spaces/82af0edb-8540-4064-82f2-d74df612b794/
-  apps/3c37ff32-d954-4f9f-b730-15e22442fd82`;
+const brokenDataAppUrl = '/#' +
+  '/org/48b3f8a1-ffe7-4aa8-8e85-94768d6bd250' +
+  '/spaces/82af0edb-8540-4064-82f2-d74df612b794' +
+  '/apps/3c37ff32-d954-4f9f-b730-15e22442fd82';
 
 function getErrorsComponent() {
   return new GlobalErrorsElement(
