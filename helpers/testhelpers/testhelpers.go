@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -147,18 +148,64 @@ type BasicProxyTest struct {
 	ResponseCode int
 }
 
-// MockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
-var MockCompleteEnvVars = helpers.EnvVars{
-	ClientID:     "ID",
-	ClientSecret: "Secret",
-	Hostname:     "https://hostname",
-	LoginURL:     "https://loginurl",
-	UAAURL:       "https://uaaurl",
-	APIURL:       "https://apiurl",
-	LogURL:       "https://logurl",
-	PProfEnabled: "true",
-	SessionKey:   "lalala",
-	BasePath:     os.Getenv(helpers.BasePathEnvVar),
+// GetMockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
+func GetMockCompleteEnvVars() helpers.EnvVars {
+	return helpers.EnvVars{
+		ClientID:     "ID",
+		ClientSecret: "Secret",
+		Hostname:     "https://hostname",
+		LoginURL:     "https://loginurl",
+		UAAURL:       "https://uaaurl",
+		APIURL:       "https://apiurl",
+		LogURL:       "https://logurl",
+		PProfEnabled: "true",
+		SessionKey:   "lalala",
+		BasePath:     os.Getenv(helpers.BasePathEnvVar),
+	}
+}
+
+// CreateExternalServerForPrivileged creates a test server that should reply
+// with the given parameters assuming that the incoming request matches what
+// we want. This call will be with the HighPrivilegedOauthClient.
+func CreateExternalServerForPrivileged(t *testing.T, test BasicProxyTest) *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		privilegedToken := "90d64460d14870c08c81352a05dedd3465940a7c"
+		if r.URL.String() == "/oauth/token" {
+
+			if got, want := r.Header.Get("Content-Type"), "application/x-www-form-urlencoded"; got != want {
+				t.Errorf("Content-Type header = %q; want %q", got, want)
+			}
+			body, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				r.Body.Close()
+			}
+			if err != nil {
+				t.Errorf("failed reading request body: %s.", err)
+			}
+			if string(body) != "client_id="+GetMockCompleteEnvVars().ClientID+"&grant_type=client_credentials&scope=scim.invite" {
+				t.Errorf("payload = %q; want %q", string(body), "client_id="+GetMockCompleteEnvVars().ClientID+"&grant_type=client_credentials&scope=scim.invite")
+			}
+			w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+			// Write the privileged token so that it can be used.
+			w.Write([]byte("access_token=" + privilegedToken + "&token_type=bearer"))
+		} else if r.URL.Path == test.ExpectedPath {
+			if r.Method != test.RequestMethod {
+				t.Errorf("Tests name: (%s) Server expected method %s but instead received method %s\n", test.TestName, "GET", r.Method)
+			} else {
+				w.WriteHeader(test.ResponseCode)
+				fmt.Fprintln(w, test.Response)
+			}
+			// Check that we are using the privileged token
+			// This line here is why we can't use the generic CreateExternalServer.
+			// Could add a token parameter. TODO
+			headerAuth := r.Header.Get("Authorization")
+			if headerAuth == "Basic "+privilegedToken {
+				t.Errorf("Unexpected authorization header, %v is found.", headerAuth)
+			}
+		} else {
+			t.Errorf("Unknown path. Got (%s) wanted (%s)\n", r.URL.Path, test.RequestPath)
+		}
+	}))
 }
 
 // CreateExternalServer creates a test server that should reply with the given parameters assuming that the incoming request matches what we want.

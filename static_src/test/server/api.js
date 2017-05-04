@@ -241,7 +241,12 @@ module.exports = function api(smocks) {
     label: 'User spaces',
     path: `${BASE_URL}/users/{guid}/spaces`,
     handler: function(req, reply) {
-      reply(MultiResponse(userSpaces));
+      const guid = req.params.guid;
+      let userSpaceFlag = 'default';
+      if(userSpaces[guid]){
+        userSpaceFlag = guid;
+      }
+      reply(MultiResponse(userSpaces[userSpaceFlag]));
     }
   });
 

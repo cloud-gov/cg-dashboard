@@ -144,7 +144,7 @@ var proxyTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Ok Proxy call",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "test",
 			ExpectedCode:     http.StatusOK,
@@ -161,7 +161,7 @@ var proxyTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Proxy response containing format string",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "hello%world",
 			ExpectedCode:     http.StatusOK,
