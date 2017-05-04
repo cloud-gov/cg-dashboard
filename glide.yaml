@@ -4,6 +4,7 @@ import:
   subpackages:
   - logmessage
 - package: github.com/gocraft/web
+- package: github.com/jordan-wright/email
 - package: github.com/gogo/protobuf
   subpackages:
   - proto
