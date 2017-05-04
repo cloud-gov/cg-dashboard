@@ -58,7 +58,7 @@ func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
 		fmt.Println(err)
 	}
 	inviteEmailData := InviteEmail{
-		Url: InviteURL,
+		URL: InviteURL,
 	}
 	emailText := new(bytes.Buffer)
 	emailHTML := new(bytes.Buffer)
