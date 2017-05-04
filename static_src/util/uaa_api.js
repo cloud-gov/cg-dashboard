@@ -15,7 +15,7 @@ export default {
   },
 
   inviteUaaUser(email) {
-    return http.post(`${URL}/invite_users`, {
+    return http.post(`${URL}/invite/users/create`, {
       emails: [email]
     })
       .then(res => res.data);

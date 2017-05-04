@@ -90,7 +90,7 @@ var inviteUsersTestRedirect = []BasicProxyTest{
 		},
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "POST",
-		RequestPath:   "/uaa/invite_users?redirect_uri=http://localhost:9999/uaa/userinfo",
+		RequestPath:   "/uaa/invite/users/create?redirect_uri=http://localhost:9999/uaa/userinfo",
 		ExpectedPath:  "/invite_users?redirect_uri=http://localhost:9999/uaa/userinfo",
 		Response:      "test",
 		ResponseCode:  http.StatusOK,
