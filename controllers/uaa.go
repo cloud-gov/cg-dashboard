@@ -45,9 +45,9 @@ func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
 
 // SendInvite sends users an email with a link to the UAA invite
 func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
-	var InviteUrl string
+	var InviteURL string
 	EmailAddress := req.URL.Query().Get("email")
-	InviteUrl = req.URL.Query().Get("InviteUrl")
+	InviteURL = req.URL.Query().Get("invite_url")
 	e := email.NewEmail()
 	e.From = "cloud.gov <no-reply@cloud.gov>"
 	e.To = []string{" <" + EmailAddress + ">"}
@@ -59,7 +59,7 @@ func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
 		fmt.Println(err)
 	}
 	inviteEmailData := InviteEmail{
-		Url: InviteUrl,
+		Url: InviteURL,
 	}
 	emailText := new(bytes.Buffer)
 	emailHTML := new(bytes.Buffer)
@@ -83,7 +83,7 @@ func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	rw.Write([]byte("{\"status\": \"success\", \"email\": " + EmailAddress + ", \"invite\": " + InviteUrl + " }"))
+	rw.Write([]byte("{\"status\": \"success\", \"email\": " + EmailAddress + ", \"invite\": " + InviteURL + " }"))
 }
 
 // UaaInfo returns the UAA_API/Users/:id information for the logged in user.
@@ -98,6 +98,7 @@ func (c *UAAContext) UaaInfo(rw web.ResponseWriter, req *web.Request) {
 	}
 }
 
+// InviteEmail provides inviteTextTpl and inviteEmailTpl the value to access invite_url query
 type InviteEmail struct {
 	URL string
 }
