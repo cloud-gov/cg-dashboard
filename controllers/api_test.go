@@ -10,7 +10,7 @@ var authStatusTests = []BasicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Authorized Status Session",
-			EnvVars:     MockCompleteEnvVars,
+			EnvVars:     GetMockCompleteEnvVars(),
 			SessionData: ValidTokenData,
 		},
 		ExpectedResponse: "{\"status\": \"authorized\"}",
@@ -34,7 +34,7 @@ var profileTests = []BasicSecureTest{
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName:    "Basic Authorized Profile",
-			EnvVars:     MockCompleteEnvVars,
+			EnvVars:     GetMockCompleteEnvVars(),
 			SessionData: ValidTokenData,
 		},
 		ExpectedResponse: "https://loginurl/profile",

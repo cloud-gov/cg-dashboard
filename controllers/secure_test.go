@@ -1,18 +1,18 @@
 package controllers_test
 
 import (
+	"fmt"
+	"html/template"
+	"net/http"
+	"strings"
+	"testing"
+
 	"github.com/18F/cg-dashboard/controllers"
 	"github.com/18F/cg-dashboard/helpers"
 	. "github.com/18F/cg-dashboard/helpers/testhelpers"
 	"github.com/gocraft/web"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
-
-	"fmt"
-	"html/template"
-	"net/http"
-	"strings"
-	"testing"
 )
 
 var oauthTests = []BasicSecureTest{
@@ -79,13 +79,29 @@ func TestOAuth(t *testing.T) {
 	}
 }
 
+func TestPrivilegedProxy(t *testing.T) {
+	for _, test := range proxyTests {
+		// We can only get this after the server has started.
+		testServer := CreateExternalServerForPrivileged(t, test)
+		test.EnvVars.UAAURL = testServer.URL
+		// Construct full url for the proxy.
+		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
+		c := &controllers.SecureContext{Context: &controllers.Context{}}
+		response, request, _ := PrepareExternalServerCall(t, c, testServer, fullURL, test)
+		c.PrivilegedProxy(response, request, fullURL)
+		VerifyExternalCallResponse(t, response, &test)
+
+		testServer.Close()
+	}
+}
+
 var proxyTests = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Ok Proxy call",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "test",
 			ExpectedCode:     http.StatusOK,
@@ -102,7 +118,7 @@ var proxyTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Proxy response containing format string",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "hello%world",
 			ExpectedCode:     http.StatusOK,

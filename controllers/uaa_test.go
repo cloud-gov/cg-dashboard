@@ -15,7 +15,7 @@ var userinfoTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic User Info",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "test",
 			ExpectedCode:     http.StatusOK,
@@ -43,13 +43,47 @@ func TestUserinfo(t *testing.T) {
 	}
 }
 
+var inviteUsersTest = []BasicProxyTest{
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "UAA Invite User",
+				SessionData: ValidTokenData,
+				EnvVars:     GetMockCompleteEnvVars(),
+			},
+			ExpectedResponse: "test",
+			ExpectedCode:     http.StatusOK,
+		},
+		// What the "external" server will send back to the proxy.
+		RequestMethod: "POST",
+		RequestPath:   "/uaa/invite_users",
+		ExpectedPath:  "/invite_users",
+		Response:      "test",
+		ResponseCode:  http.StatusOK,
+	},
+}
+
+func TestInviteUsers(t *testing.T) {
+	for _, test := range inviteUsersTest {
+		// Create the external server that the proxy will send the request to.
+		testServer := CreateExternalServerForPrivileged(t, test)
+		// Construct full url for the proxy.
+		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
+		c := &controllers.UAAContext{SecureContext: &controllers.SecureContext{Context: &controllers.Context{}}}
+		response, request, router := PrepareExternalServerCall(t, c.SecureContext, testServer, fullURL, test)
+		router.ServeHTTP(response, request)
+		VerifyExternalCallResponse(t, response, &test)
+		testServer.Close()
+	}
+}
+
 var uaainfoTests = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Uaa Info without guid",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "{\"status\": \"Bad request\", \"error_description\": \"Missing valid guid.\"}",
 			ExpectedCode:     http.StatusBadRequest,
@@ -64,7 +98,7 @@ var uaainfoTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Uaa Info with guid",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "success",
 			ExpectedCode:     http.StatusOK,
@@ -98,7 +132,7 @@ var queryUsersTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Query Users Empty Body",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "{\"status\": \"error\", \"message\": \"empty request body\"}",
 			ExpectedCode:     http.StatusBadRequest,
@@ -113,7 +147,7 @@ var queryUsersTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Query Users Bad Filters",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "{\"status\": \"error\", \"message\": \"not enough filters\"}",
 			ExpectedCode:     http.StatusBadRequest,
@@ -129,7 +163,7 @@ var queryUsersTests = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Query Users",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "hello",
 			ExpectedCode:     http.StatusOK,
