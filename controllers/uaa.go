@@ -30,13 +30,12 @@ func (c *UAAContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
 
 // UserInfo returns the UAA_API/userinfo information for the logged in user.
 func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
-	var invite_url string
-	email_address := req.URL.Query().Get("email")
-	invite_url = req.URL.Query().Get("invite_url")
-	//invite_message := fmt.Sprintf("%s%s%s%s%s", "<h1>Fancy HTML is <a href='", invite_url, "'>", invite_url, "</a> supported, too!</h1>")
+	var InviteUrl string
+	EmailAddress := req.URL.Query().Get("email")
+	InviteUrl = req.URL.Query().Get("InviteUrl")
 	e := email.NewEmail()
 	e.From = "cloud.gov <no-reply@cloud.gov>"
-	e.To = []string{" <" + email_address + ">"}
+	e.To = []string{" <" + EmailAddress + ">"}
 	e.Subject = "Invitation to join cloud.gov"
 	t, err := template.New("inviteEmail").Parse(inviteEmailTpl)
 	tb, err := template.New("inviteEmail").Parse(inviteTextTpl)
@@ -45,7 +44,7 @@ func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
 		fmt.Println(err)
 	}
 	inviteEmailData := InviteEmail{
-		Url: invite_url,
+		Url: InviteUrl,
 	}
 	emailText := new(bytes.Buffer)
 	emailHtml := new(bytes.Buffer)
@@ -69,7 +68,7 @@ func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	rw.Write([]byte("{\"status\": \"success\", \"email\": " + email_address + ", \"invite\": " + invite_url + " }"))
+	rw.Write([]byte("{\"status\": \"success\", \"email\": " + EmailAddress + ", \"invite\": " + InviteUrl + " }"))
 }
 
 // UaaInfo returns the UAA_API/Users/:id information for the logged in user.
