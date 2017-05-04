@@ -37,6 +37,12 @@ var (
 	SessionKeyEnvVar = "SESSION_KEY"
 	// BasePathEnvVar is the path to the application root
 	BasePathEnvVar = "BASE_PATH"
+	// SMTP parameters
+	SMTPHost = "SMTP_HOST"
+	SMTPPort = "SMTP_PORT"
+	SMTPUser = "SMTP_USER"
+	SMTPPass = "SMTP_PASS"
+	SMTPFrom = "SMTP_FROM"
 )
 
 // EnvVars holds all the environment variable values that a non-test server should have.
@@ -55,4 +61,9 @@ type EnvVars struct {
 	SessionBackend  string
 	SessionKey      string
 	BasePath        string
+	SMTPHost        string
+	SMTPPort        string
+	SMTPUser        string
+	SMTPPass        string
+	SMTPFrom        string
 }
