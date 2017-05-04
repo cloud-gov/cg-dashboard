@@ -2,9 +2,8 @@ package controllers
 
 import (
 	"fmt"
-	"net/http"
-
 	"github.com/gocraft/web"
+	"net/http"
 )
 
 // UAAContext stores the session info and access token per user.
