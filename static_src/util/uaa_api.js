@@ -46,7 +46,7 @@ export default {
       email = response['new_invites'][0]['email']
       invite_url = response['new_invites'][0]['inviteLink']
       if (email && invite_url){
-        return http.get(`${URL}/invite/email?email=${email}&invite_url=${invite_url}`, {
+        return http.post(`${URL}/invite/email?email=${email}&invite_url=${invite_url}`, {
           emails: [email]
         })
           .then(res => res.data);
