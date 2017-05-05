@@ -33,6 +33,8 @@ type Settings struct {
 	UaaURL string
 	// Log API
 	LogURL string
+	// Path to root of project.
+	BasePath string
 	// High Privileged OauthConfig
 	HighPrivilegedOauthConfig *clientcredentials.Config
 	// A flag to indicate whether profiling should be included (debug purposes).
@@ -89,6 +91,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 		return errors.New("Unable to find '" + SMTPHostEnvVar + "' in environment. Exiting.\n")
 	}
 
+	s.BasePath = envVars.BasePath
 	s.AppURL = envVars.Hostname
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
