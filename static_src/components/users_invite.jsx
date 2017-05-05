@@ -10,8 +10,10 @@ import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
 import Action from './action.jsx';
 
+import OrgStore from '../stores/org_store';
 import FormStore from '../stores/form_store';
 
+import cfApi from '../util/cf_api';
 import uaaApi from '../util/uaa_api';
 import { validateString } from '../util/validators';
 
@@ -33,7 +35,14 @@ export default class UsersInvite extends React.Component {
   }
 
   _onValidForm(errs, values) {
-    uaaApi.inviteUaaUser(values.email.value).then(res => res);
+    uaaApi.inviteUaaUser(values.email.value).then(function(data){
+      let userGuid, orgGuid, role;
+      console.log("_onValidForm: ", data);
+      userGuid = data['new_invites'][0]['userId'];
+      orgGuid = OrgStore.currentOrgGuid;
+      role = "audited_organizations";
+      cfApi.putAssociateUserToOrganization(userGuid, orgGuid, role)
+    });
   }
 
   render() {
