@@ -16,7 +16,7 @@ export default {
 
   inviteUaaUser(email) {
     var self = this;
-    return http.post(`${URL}/invite/users/create`, {
+    return http.post(`${URL}/invite/users`, {
       emails: [email]
     })
       .then(function (res){
