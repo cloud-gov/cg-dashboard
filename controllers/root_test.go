@@ -13,7 +13,10 @@ import (
 func TestPing(t *testing.T) {
 	response, request := NewTestRequest("GET", "/ping", nil)
 	env, _ := cfenv.Current()
-	router, _, _ := controllers.InitApp(GetMockCompleteEnvVars(), env)
+	router, _, err := controllers.InitApp(GetMockCompleteEnvVars(), env)
+	if err != nil {
+		t.Fatal(err)
+	}
 	router.ServeHTTP(response, request)
 	if response.Body.String() != "{\"status\": \"alive\", \"build-info\": \"developer-build\"}" {
 		t.Errorf("Expected alive. Found %s\n", response.Body.String())
