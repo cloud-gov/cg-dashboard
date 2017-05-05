@@ -21,6 +21,13 @@ type Mailer interface {
 	SendInviteEmail(emailAddress, URL string) error
 }
 
+func getMailTemplates(settings helpers.Settings) map[string]string {
+	return map[string]string{
+		InviteEmailTemplate: filepath.Join(filepath.Join(settings.BasePath,
+			"templates", "mail", "invite.tmpl")),
+	}
+}
+
 var mailTemplates = map[string]string{
 	InviteEmailTemplate: filepath.Join(filepath.Join(os.Getenv("PATH_PREFIX"),
 		"templates", "mail", "invite.tmpl")),
@@ -29,7 +36,7 @@ var mailTemplates = map[string]string{
 // InitSMTPMailer creates a new SMTP Mailer
 func InitSMTPMailer(settings helpers.Settings) (Mailer, error) {
 	templates := make(map[string]*template.Template)
-	for templateName, templatePath := range mailTemplates {
+	for templateName, templatePath := range getMailTemplates(settings) {
 		tpl, err := template.ParseFiles(templatePath)
 		if err != nil {
 			return nil, err

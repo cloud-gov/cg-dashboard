@@ -86,7 +86,7 @@ func InitApp(envVars helpers.EnvVars, env *cfenv.App) (*web.Router, *helpers.Set
 	}
 
 	// Cache templates
-	templates := template.Must(template.ParseFiles(filepath.Join(envVars.BasePath, "static", "index.html")))
+	templates := template.Must(template.ParseFiles(filepath.Join(settings.BasePath, "static", "index.html")))
 
 	// Initialize the router
 	router := InitRouter(&settings, templates, mailer)
