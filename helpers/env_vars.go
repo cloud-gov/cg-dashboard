@@ -37,15 +37,15 @@ var (
 	SessionKeyEnvVar = "SESSION_KEY"
 	// BasePathEnvVar is the path to the application root
 	BasePathEnvVar = "BASE_PATH"
-	// SMTP host for UAA invites
+	// SMTPHostEnvVar is SMTP host for UAA invites
 	SMTPHostEnvVar = "SMTP_HOST"
-	// SMTP post for UAA invites
+	// SMTPPortEnvVar is SMTP post for UAA invites
 	SMTPPortEnvVar = "SMTP_PORT"
-	// SMTP user for UAA invites
+	// SMTPUserEnvVar is SMTP user for UAA invites
 	SMTPUserEnvVar = "SMTP_USER"
-	// SMTP password for UAA invites
+	// SMTPPassEnvVar is SMTP password for UAA invites
 	SMTPPassEnvVar = "SMTP_PASS"
-	// SMTP from address for UAA invites
+	// SMTPFromEnvVar is SMTP from address for UAA invites
 	SMTPFromEnvVar = "SMTP_FROM"
 )
 
