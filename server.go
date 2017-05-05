@@ -58,6 +58,8 @@ func replaceEnvVar(envVars *helpers.EnvVars, envVar string, value interface{}) {
 			envVars.ClientSecret = stringValue
 		case helpers.NewRelicLicenseEnvVar:
 			envVars.NewRelicLicense = stringValue
+		case helpers.SessionKeyEnvVar:
+			envVars.SessionKey = stringValue
 		case helpers.SMTPHostEnvVar:
 			envVars.SMTPHost = stringValue
 		case helpers.SMTPPortEnvVar:
