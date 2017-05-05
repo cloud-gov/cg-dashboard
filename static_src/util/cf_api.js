@@ -423,6 +423,14 @@ export default {
   },
 
   // TODO refactor with org user permissions
+  putAssociateUserToOrganization(userGuid, orgGuid, role) {
+    return http.put(`${APIV}/users/${userGuid}/${role}/${orgGuid}/`)
+      .then((res) => res.response, () => {
+        // TODO figure out error action
+      });
+  },
+
+  // TODO refactor with org user permissions
   deleteSpaceUserPermissions(userGuid, spaceGuid, role) {
     return http.delete(`${APIV}/spaces/${spaceGuid}/${role}/${userGuid}`)
       .then((res) => res.response, (err) => {
