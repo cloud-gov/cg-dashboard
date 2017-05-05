@@ -20,6 +20,7 @@ import (
 
 	"github.com/18F/cg-dashboard/controllers"
 	"github.com/18F/cg-dashboard/helpers"
+	"github.com/18F/cg-dashboard/helpers/testhelpers/mocks"
 )
 
 // MockSessionStore represents an easily fillable session store that implements
@@ -103,7 +104,7 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars hel
 	settings.Sessions = store
 
 	// Create the router.
-	router := controllers.InitRouter(&settings, &template.Template{})
+	router := controllers.InitRouter(&settings, &template.Template{}, &mocks.Mailer{})
 
 	return router, &store
 }
@@ -161,6 +162,8 @@ func GetMockCompleteEnvVars() helpers.EnvVars {
 		PProfEnabled: "true",
 		SessionKey:   "lalala",
 		BasePath:     os.Getenv(helpers.BasePathEnvVar),
+		SMTPFrom:     "cloud@cloud.gov",
+		SMTPHost:     "localhost",
 	}
 }
 
