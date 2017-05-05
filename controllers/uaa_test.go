@@ -56,7 +56,7 @@ var inviteUsersTest = []BasicProxyTest{
 		},
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "POST",
-		RequestPath:   "/uaa/invite/users/create",
+		RequestPath:   "/uaa/invite/users",
 		ExpectedPath:  "/invite_users",
 		Response:      "test",
 		ResponseCode:  http.StatusOK,
