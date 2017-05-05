@@ -14,7 +14,10 @@ import (
 func TestPing(t *testing.T) {
 	response, request := NewTestRequest("GET", "/ping", nil)
 	env, _ := cfenv.Current()
-	router, _, _ := controllers.InitApp(GetMockCompleteEnvVars(), env)
+	router, _, err := controllers.InitApp(GetMockCompleteEnvVars(), env)
+	if err != nil {
+		t.Fatal(err)
+	}
 	router.ServeHTTP(response, request)
 	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"file","store-up":true}}`
 	if response.Body.String() != expectedResponse {
