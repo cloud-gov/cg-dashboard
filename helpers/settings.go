@@ -33,6 +33,8 @@ type Settings struct {
 	UaaURL string
 	// Log API
 	LogURL string
+	// Path to root of project.
+	BasePath string
 	// High Privileged OauthConfig
 	HighPrivilegedOauthConfig *clientcredentials.Config
 	// A flag to indicate whether profiling should be included (debug purposes).
@@ -82,7 +84,14 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	if len(envVars.SessionKey) == 0 {
 		return errors.New("Unable to find '" + SessionKeyEnvVar + "' in environment. Exiting.\n")
 	}
+	if len(envVars.SMTPFrom) == 0 {
+		return errors.New("Unable to find '" + SMTPFromEnvVar + "' in environment. Exiting.\n")
+	}
+	if len(envVars.SMTPHost) == 0 {
+		return errors.New("Unable to find '" + SMTPHostEnvVar + "' in environment. Exiting.\n")
+	}
 
+	s.BasePath = envVars.BasePath
 	s.AppURL = envVars.Hostname
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
@@ -154,6 +163,11 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 		TokenURL:     envVars.UAAURL + "/oauth/token",
 	}
 
+	s.SMTPFrom = envVars.SMTPFrom
+	s.SMTPHost = envVars.SMTPHost
+	s.SMTPPass = envVars.SMTPPass
+	s.SMTPPort = envVars.SMTPPort
+	s.SMTPUser = envVars.SMTPUser
 	return nil
 }
 

@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/18F/cg-dashboard/helpers"
+	"github.com/18F/cg-dashboard/mailer"
 	"github.com/gocraft/web"
 	"github.com/gorilla/csrf"
 	"golang.org/x/oauth2"
@@ -16,6 +17,7 @@ import (
 type Context struct {
 	Settings  *helpers.Settings
 	templates *template.Template
+	mailer    mailer.Mailer
 }
 
 // StaticMiddleware provides simple caching middleware for static assets.
