@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"html/template"
 	"net/smtp"
-	"os"
 	"path/filepath"
 
 	"github.com/18F/cg-dashboard/helpers"
@@ -26,11 +25,6 @@ func getMailTemplates(settings helpers.Settings) map[string]string {
 		InviteEmailTemplate: filepath.Join(filepath.Join(settings.BasePath,
 			"templates", "mail", "invite.tmpl")),
 	}
-}
-
-var mailTemplates = map[string]string{
-	InviteEmailTemplate: filepath.Join(filepath.Join(os.Getenv("PATH_PREFIX"),
-		"templates", "mail", "invite.tmpl")),
 }
 
 // InitSMTPMailer creates a new SMTP Mailer
