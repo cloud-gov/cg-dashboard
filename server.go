@@ -37,11 +37,11 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.SessionBackend = os.Getenv(helpers.SessionBackendEnvVar)
 	envVars.SessionKey = os.Getenv(helpers.SessionKeyEnvVar)
 	envVars.BasePath = os.Getenv(helpers.BasePathEnvVar)
-	envVars.SmtpHost = os.Getenv(helpers.SmtpHostEnvVar)
-	envVars.SmtpPort = os.Getenv(helpers.SmtpPortEnvVar)
-	envVars.SmtpUser = os.Getenv(helpers.SmtpUserEnvVar)
-	envVars.SmtpPass = os.Getenv(helpers.SmtpPassEnvVar)
-	envVars.SmtpFrom = os.Getenv(helpers.SmtpFromEnvVar)
+	envVars.SMTPHost = os.Getenv(helpers.SMTPHostEnvVar)
+	envVars.SMTPPort = os.Getenv(helpers.SMTPPortEnvVar)
+	envVars.SMTPUser = os.Getenv(helpers.SMTPUserEnvVar)
+	envVars.SMTPPass = os.Getenv(helpers.SMTPPassEnvVar)
+	envVars.SMTPFrom = os.Getenv(helpers.SMTPFromEnvVar)
 	return envVars
 }
 
@@ -58,16 +58,16 @@ func replaceEnvVar(envVars *helpers.EnvVars, envVar string, value interface{}) {
 			envVars.ClientSecret = stringValue
 		case helpers.NewRelicLicenseEnvVar:
 			envVars.NewRelicLicense = stringValue
-		case helpers.SmtpHostEnvVar:
-			envVars.SmtpHost = stringValue
-		case helpers.SmtpPortEnvVar:
-			envVars.SmtpPort = stringValue
-		case helpers.SmtpUserEnvVar:
-			envVars.SmtpUser = stringValue
-		case helpers.SmtpPassEnvVar:
-			envVars.SmtpPass = stringValue
-		case helpers.SmtpFromEnvVar:
-			envVars.SmtpFrom = stringValue
+		case helpers.SMTPHostEnvVar:
+			envVars.SMTPHost = stringValue
+		case helpers.SMTPPortEnvVar:
+			envVars.SMTPPort = stringValue
+		case helpers.SMTPUserEnvVar:
+			envVars.SMTPUser = stringValue
+		case helpers.SMTPPassEnvVar:
+			envVars.SMTPPass = stringValue
+		case helpers.SMTPFromEnvVar:
+			envVars.SMTPFrom = stringValue
 		}
 	}
 }
