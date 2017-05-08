@@ -423,9 +423,19 @@ export default {
   },
 
   // TODO refactor with org user permissions
+  postCreateNewUserWithGuid(userGuid) {
+    // return http.put(`${APIV}/users/${userGuid}/${role}/${orgGuid}/`)
+    return http.post(`${APIV}/users/`, {
+      guid: `${userGuid}`
+    })
+      .then((res) => res.response
+    );
+  },
+
+  // TODO refactor with org user permissions
   putAssociateUserToOrganization(userGuid, orgGuid, role) {
     // return http.put(`${APIV}/users/${userGuid}/${role}/${orgGuid}/`)
-    return http.put(`${APIV}/organizations/${orgGuid}/${role}/${userGuid}/`)
+    return http.put(`${APIV}/users/${userGuid}/organizations/${orgGuid}`)
       .then((res) => res.response, () => {
         // TODO figure out error action
       });
