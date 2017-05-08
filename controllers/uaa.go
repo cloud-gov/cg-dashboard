@@ -43,14 +43,14 @@ func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=utf-8")
 	emailAddress := req.URL.Query().Get("email")
 	if len(emailAddress) == 0 {
-		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"missing 'email' paramater.\" }"))
 		rw.WriteHeader(http.StatusBadRequest)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"missing 'email' parameter.\" }"))
 		return
 	}
 	inviteURL := req.URL.Query().Get("invite_url")
 	if len(inviteURL) == 0 {
-		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"missing 'invite_url' parameter.\" }"))
 		rw.WriteHeader(http.StatusBadRequest)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"missing 'invite_url' parameter.\" }"))
 		return
 	}
 	err := c.mailer.SendInviteEmail(emailAddress, inviteURL)
