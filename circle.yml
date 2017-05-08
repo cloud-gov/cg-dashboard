@@ -44,7 +44,7 @@ deployment:
     branch: [master, demo]
     owner: 18F
     commands:
-      - NODE_ENV=prod npm run build
+      - NODE_ENV=prod npm run build-prod
       - pip install --user ruamel.yaml
       - export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
       - cd $WS && ./deploy/circle_deploy.sh
@@ -53,7 +53,7 @@ deployment:
     tag: /[0-9]+(\.[0-9]+)*/
     owner: 18F
     commands:
-      - NODE_ENV=prod npm run build
+      - NODE_ENV=prod npm run build-prod
       - pip install --user ruamel.yaml
       - export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
       - cd $WS && ./deploy/circle_deploy.sh
