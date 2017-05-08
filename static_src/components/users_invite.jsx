@@ -38,10 +38,10 @@ export default class UsersInvite extends React.Component {
     uaaApi.inviteUaaUser(values.email.value).then(function(data){
       let userGuid, orgGuid, role;
       console.log("_onValidForm: ", data);
-      userGuid = data['new_invites'][0]['userId'];
-      orgGuid = OrgStore.currentOrgGuid;
-      role = "audited_organizations";
-      cfApi.putAssociateUserToOrganization(userGuid, orgGuid, role)
+      // userGuid = data['new_invites'][0]['userId'];
+      // orgGuid = OrgStore.currentOrgGuid;
+      // role = "managers";
+      // cfApi.putAssociateUserToOrganization(userGuid, orgGuid, role)
     });
   }
 
