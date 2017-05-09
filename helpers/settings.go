@@ -131,19 +131,21 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 		}
 		s.Sessions = store
 		s.SessionBackend = envVars.SessionBackend
+		// setup single internal redis client.
+		internalRedisClient, err := redis.Dial("tcp", address)
+		if err != nil {
+			return err
+		}
+		if password != "" {
+			if _, err := internalRedisClient.Do("AUTH", password); err != nil {
+				internalRedisClient.Close()
+				return err
+			}
+		}
+		// Use health check function where we do a PING.
 		s.SessionBackendHealthCheck = func() bool {
-			c, err := redis.Dial("tcp", address)
-			if err != nil {
-				return false
-			}
-			defer c.Close()
-			if password != "" {
-				if _, err := c.Do("AUTH", password); err != nil {
-					c.Close()
-					return false
-				}
-			}
-			return true
+			_, err := internalRedisClient.Do("PING")
+			return err == nil
 		}
 	default:
 		store := sessions.NewFilesystemStore("", []byte(envVars.SessionKey))
