@@ -151,7 +151,8 @@ const userActions = {
 
   receiveUserInCF (user, inviteData) {
     AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_IN_CF_CREATED
+      type: userActionTypes.USER_IN_CF_CREATED,
+      user
     });
 
     if (user.guid){
@@ -175,12 +176,14 @@ const userActions = {
     const orgGuid = OrgStore.currentOrgGuid;
 
     return cfApi.putAssociateUserToOrganization(user.guid, orgGuid)
-      .then(userActions.receivedUserAssociationToOrg(user));
+      .then(userActions.receivedUserAssociationToOrg(user, orgGuid));
   },
 
-  receivedUserAssociationToOrg (user) {
+  receivedUserAssociationToOrg (user, orgGuid) {
     AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED
+      type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
+      user,
+      orgGuid
     });
   },
 
