@@ -36,13 +36,14 @@ export default class UsersInvite extends React.Component {
 
   _onValidForm(errs, values) {
     uaaApi.inviteUaaUser(values.email.value).then(function(data){
-      let userGuid, orgGuid, role;
-      console.log("_onValidForm: ", data);
-      userGuid = data['new_invites'][0]['userId'];
-      orgGuid = OrgStore.currentOrgGuid;
-      cfApi.postCreateNewUserWithGuid(userGuid).then(function(){
-        cfApi.putAssociateUserToOrganization(userGuid, orgGuid);
-      });
+      let userGuid, orgGuid;
+      if (data['new_invites'].length > 0){
+        userGuid = data['new_invites'][0]['userId'];
+        orgGuid = OrgStore.currentOrgGuid;
+        cfApi.postCreateNewUserWithGuid(userGuid).then(function(){
+          cfApi.putAssociateUserToOrganization(userGuid, orgGuid);
+        });
+      }
     });
   }
 
