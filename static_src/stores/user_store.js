@@ -7,6 +7,7 @@
 import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
+import OrgStore from './org_store.js';
 import cfApi from '../util/cf_api.js';
 import userActions from '../actions/user_actions.js';
 import { userActionTypes } from '../constants.js';
@@ -61,6 +62,25 @@ export class UserStore extends BaseStore {
         const updates = action.orgUserRoles;
         if (updates.length) {
           this.mergeMany('guid', updates, () => { });
+        }
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_IN_CF_CREATED: {
+        const user = action.user;
+        if (user.guid) {
+          this.merge('guid', user, () => { });
+        }
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_ORG_ASSOCIATION_RECEIVED: {
+        const user = action.user;
+        const orgGuid = action.orgGuid;
+        if (orgGuid === OrgStore.currentOrgGuid) {
+          this.merge('guid', user, () => { });
         }
         this.emitChange();
         break;
