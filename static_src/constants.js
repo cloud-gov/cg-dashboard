@@ -258,8 +258,6 @@ const userActionTypes = keymirror({
   USER_IN_CF_CREATE: null,
   // Action confirming new user was created in CF.
   USER_IN_CF_CREATED: null,
-  // Action resulting from trying to create a new user, confirming it already exists.
-  USER_IN_CF_EXISTS: null,
   // Action to trigger email sent to user with cloud.gov invite url.
   USER_EMAIL_INVITE: null,
   // Action to associate user to organization to the server.
