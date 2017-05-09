@@ -35,15 +35,29 @@ export default class UsersInvite extends React.Component {
   }
 
   _onValidForm(errs, values) {
-    uaaApi.inviteUaaUser(values.email.value).then(function(data){
+    // Query getInviteUaaUser to get a GUID for a user. Regardless
+    // if the user exists, this will return a GUID and an invite link
+    uaaApi.getInviteUaaUser(values.email.value).then(function(data){
       let userGuid, orgGuid;
+
       if (data['new_invites'].length > 0){
         userGuid = data['new_invites'][0]['userId'];
         orgGuid = OrgStore.currentOrgGuid;
-        cfApi.postCreateNewUserWithGuid(userGuid).then(function(){
-          cfApi.putAssociateUserToOrganization(userGuid, orgGuid);
-        });
+      } else {
+        throw new Error('data["new_invites"] is empty');
       }
+
+      // Use the GUID for the user to add to CF.
+      // If the user exists, return a object that prevents email from
+      // being sent to user.
+      // If the user doesnt exist, send a cloud.gov invite email
+      cfApi.postCreateNewUserWithGuid(userGuid).then(function(res){
+        if (res.guid){
+          uaaApi.sendInviteEmail(data);
+        }
+        // Once the user exists in CF, associate them to the organization.
+        cfApi.putAssociateUserToOrganization(userGuid, orgGuid);
+      })
     });
   }
 
