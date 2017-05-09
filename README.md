@@ -56,6 +56,9 @@ Then edit the file `~/.env/cg-dashboard` and provide the proper values. When you
 
 #### Codecheck
 
+You need to have Docker installed and active within your environment as the
+unit tests use Docker for short term real instances.
+
 To run the go tests:
 
     $ ./codecheck.sh
