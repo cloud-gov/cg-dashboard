@@ -1,4 +1,6 @@
 machine:
+  services:
+    - docker
   environment:
     GODIST: "go1.8.linux-amd64.tar.gz"
     WS: "/home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard"

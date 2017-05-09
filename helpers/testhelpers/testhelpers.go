@@ -5,16 +5,20 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/cloudfoundry-community/go-cfenv"
+	"github.com/garyburd/redigo/redis"
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
+	"github.com/ory/dockertest"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
@@ -22,6 +26,30 @@ import (
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/18F/cg-dashboard/helpers/testhelpers/mocks"
 )
+
+// CreateTestRedis creates a actual redis instance with docker.
+// Useful for unit tests.
+func CreateTestRedis() (string, func()) {
+	pool, err := dockertest.NewPool("")
+	if err != nil {
+		log.Fatalf("Could not connect to docker: %s", err)
+	}
+
+	resource, err := pool.Run("redis", "2.8", nil)
+	if err != nil {
+		log.Fatalf("Could not start resource: %s", err)
+	}
+	u, _ := url.Parse(pool.Client.Endpoint())
+	hostnameAndPort := u.Hostname() + ":" + resource.GetPort("6379/tcp")
+	if err = pool.Retry(func() error {
+		_, dialErr := redis.Dial("tcp", hostnameAndPort)
+
+		return dialErr
+	}); err != nil {
+		log.Fatalf("Could not connect to docker: %s", err)
+	}
+	return "redis://" + hostnameAndPort, func() { pool.Purge(resource) }
+}
 
 // MockSessionStore represents an easily fillable session store that implements
 // gorilla's session store interface.
