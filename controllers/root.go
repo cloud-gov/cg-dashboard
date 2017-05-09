@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
 
@@ -47,39 +48,62 @@ type pingData struct {
 	SessionStoreHealth sessionStoreHealth `json:"session-store-health"`
 }
 
-type sessionStoreHealth struct {
-	StoreType string `json:"store-type"`
-	StoreUp   bool   `json:"store-up"`
+const (
+	pingDataStatusAlive  = "alive"
+	pingDataStatusOutage = "outage"
+)
+
+func (p pingData) isSystemHealthy() bool {
+	return p.Status == pingDataStatusAlive
 }
 
-func createPingData(c *Context) []byte {
-	storeUp := c.Settings.SessionBackendHealthCheck()
-	overallStatus := "alive"
-	// if the session storage is out, we have an outage.
-	if !storeUp {
-		overallStatus = "outage"
-	}
-	p := pingData{Status: overallStatus,
-		BuildInfo: c.Settings.BuildInfo,
-		SessionStoreHealth: sessionStoreHealth{
-			StoreType: c.Settings.SessionBackend,
-			StoreUp:   c.Settings.SessionBackendHealthCheck(),
-		},
-	}
+// toJSON returns a json representation of the pingData.
+// if it fails to return something, it will return an error in JSON.
+// also returns a boolean determining if the call succeeded.
+func (p pingData) toJSON() ([]byte, bool) {
 	pingBody, err := json.Marshal(p)
 	// Would only ever come up when adding new fields to pingData and it
 	// wasn't tested properly. This will only happen when trying to marshal things
 	// that don't result in proper JSON.
 	if err != nil {
-		return []byte("\"status\": \"error\": \"data\": \"" + err.Error() + "\"")
+		return []byte("\"status\": \"error\": \"data\": \"" + err.Error() + "\""),
+			false
 	}
-	return pingBody
+	return pingBody, true
+}
+
+type sessionStoreHealth struct {
+	StoreType string `json:"store-type"`
+	StoreUp   bool   `json:"store-up"`
+}
+
+func createPingData(c *Context) pingData {
+	storeUp := c.Settings.SessionBackendHealthCheck()
+	overallStatus := pingDataStatusAlive
+	// if the session storage is out, we have an outage.
+	if !storeUp {
+		overallStatus = pingDataStatusOutage
+	}
+	return pingData{Status: overallStatus,
+		BuildInfo: c.Settings.BuildInfo,
+		SessionStoreHealth: sessionStoreHealth{
+			StoreType: c.Settings.SessionBackend,
+			StoreUp:   storeUp,
+		},
+	}
 }
 
 // Ping is just a test endpoint to show that indeed the service is alive.
-// TODO. Remove.
 func (c *Context) Ping(rw web.ResponseWriter, req *web.Request) {
-	rw.Write(createPingData(c))
+	data := createPingData(c)
+	dataJSON, conversionSuccess := data.toJSON()
+	if !data.isSystemHealthy() || !conversionSuccess {
+		rw.WriteHeader(http.StatusInternalServerError)
+		// Also, should log out the data in the case of error so we can look at logs
+		// later to see what's wrong.
+		log.Println(string(dataJSON))
+	}
+	rw.Write(dataJSON)
 }
 
 // LoginHandshake is the handler where we authenticate the user and the user authorizes this application access to information.
