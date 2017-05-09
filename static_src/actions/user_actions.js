@@ -9,6 +9,7 @@ import cfApi from '../util/cf_api';
 import uaaApi from '../util/uaa_api';
 import { userActionTypes } from '../constants';
 import UserStore from '../stores/user_store';
+import OrgStore from '../stores/org_store';
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -116,6 +117,70 @@ const userActions = {
       type: userActionTypes.ERROR_REMOVE_USER,
       userGuid,
       error
+    });
+  },
+
+  fetchUserInvite(email) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_INVITE_FETCH,
+      email
+    });
+
+    return uaaApi.getInviteUaaUser(email)
+      .then(data => userActions.receiveUserInvite(data));
+  },
+
+  receiveUserInvite(inviteData) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_INVITE_RECEIVED
+    });
+
+    const userGuid = inviteData['new_invites'][0]['userId'];
+
+    return userActions.createUserInCF(userGuid, inviteData);
+  },
+
+  createUserInCF (userGuid, inviteData) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_IN_CF_CREATE
+    });
+
+    return cfApi.postCreateNewUserWithGuid(userGuid)
+      .then(user => userActions.receiveUserInCF(user, inviteData));
+  },
+
+  receiveUserInCF (user, inviteData) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_IN_CF_CREATED
+    });
+
+    if (user.guid){
+      userActions.sendUserInviteEmail(inviteData);
+    }
+    // Once the user exists in CF, associate them to the organization.
+    return userActions.fetchUserAssociationToOrg(user);
+  },
+
+  sendUserInviteEmail (inviteData) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_EMAIL_INVITE
+    });
+    uaaApi.sendInviteEmail(inviteData);
+  },
+
+  fetchUserAssociationToOrg (user) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
+    });
+    const orgGuid = OrgStore.currentOrgGuid;
+
+    return cfApi.putAssociateUserToOrganization(user.guid, orgGuid)
+      .then(userActions.receivedUserAssociationToOrg(user));
+  },
+
+  receivedUserAssociationToOrg (user) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED
     });
   },
 
