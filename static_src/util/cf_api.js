@@ -428,8 +428,19 @@ export default {
     return http.post(`${APIV}/users`, {
       "guid": `${userGuid}`
     })
-      .then((res) => res.response
-    );
+      .then(res => this.formatSplitResponse(res.data))
+      .catch(res => {
+        if (res && res.response && res.response.status === 400) {
+          // The user is unauthenicated.
+          return Promise.resolve({});
+        }
+        // At this point we're not sure if the user is auth'd or not. Treat it
+        // as an error condition.
+        const err = parseError(res);
+
+        // Let someone else handle the error
+        return Promise.reject(err);
+      });
   },
 
   // TODO refactor with org user permissions

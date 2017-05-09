@@ -14,15 +14,10 @@ export default {
       .then(res => res.data);
   },
 
-  inviteUaaUser(email) {
-    var self = this;
+  getInviteUaaUser(email) {
     return http.post(`${URL}/invite/users`, {
       emails: [email]
-    })
-      .then(function (res){
-        self.initiateInviteEmail(res.data);
-        return res.data;
-      });
+    }).then(res => res.data);
   },
 
   // Example response:
@@ -40,7 +35,7 @@ export default {
   //  ],
   //  "failed_invites":[]
   // }
-  initiateInviteEmail(response) {
+  sendInviteEmail(response) {
     if (response['new_invites'].length > 0){
       let email, invite_url;
       email = response['new_invites'][0]['email']
