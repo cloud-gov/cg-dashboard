@@ -1,6 +1,7 @@
 package controllers_test
 
 import (
+	"os"
 	"strings"
 	"testing"
 
@@ -15,8 +16,35 @@ func TestPing(t *testing.T) {
 	env, _ := cfenv.Current()
 	router, _, _ := controllers.InitApp(GetMockCompleteEnvVars(), env)
 	router.ServeHTTP(response, request)
-	if response.Body.String() != "{\"status\": \"alive\", \"build-info\": \"developer-build\"}" {
-		t.Errorf("Expected alive. Found %s\n", response.Body.String())
+	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"file","store-up":true}}`
+	if response.Body.String() != expectedResponse {
+		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
+	}
+}
+
+func TestPingWithRedis(t *testing.T) {
+	// Create a request
+	response, request := NewTestRequest("GET", "/ping", nil)
+	// Start up redis.
+	redisUri, cleanUpRedis := CreateTestRedis()
+	os.Setenv("REDIS_URI", redisUri)
+	envVars := GetMockCompleteEnvVars()
+	envVars.SessionBackend = "redis"
+	env, _ := cfenv.Current()
+	router, _, _ := controllers.InitApp(envVars, env)
+	router.ServeHTTP(response, request)
+	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":true}}`
+	if response.Body.String() != expectedResponse {
+		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
+	}
+	// Remove redis.
+	cleanUpRedis()
+	// Try ping again.
+	response, request = NewTestRequest("GET", "/ping", nil)
+	router.ServeHTTP(response, request)
+	expectedResponse = `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":false}}`
+	if response.Body.String() != expectedResponse {
+		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
 	}
 }
 
