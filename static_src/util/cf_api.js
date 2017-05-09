@@ -447,9 +447,7 @@ export default {
   putAssociateUserToOrganization(userGuid, orgGuid, role) {
     // return http.put(`${APIV}/users/${userGuid}/${role}/${orgGuid}/`)
     return http.put(`${APIV}/users/${userGuid}/organizations/${orgGuid}`)
-      .then((res) => res.response, () => {
-        // TODO figure out error action
-      });
+      .then((res) => this.formatSplitResponse(res.data));
   },
 
   // TODO refactor with org user permissions

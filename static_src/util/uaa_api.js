@@ -20,21 +20,6 @@ export default {
     }).then(res => res.data);
   },
 
-  // Example response:
-  // {
-  //  "new_invites": [
-  //    {
-  //      "email":"example11@domkain.com",
-  //      "userId":"959f1c8e-e615-4a73-80a6-ce6751c00719",
-  //      "origin":"uaa",
-  //      "success":true,
-  //      "errorCode":null,
-  //      "errorMessage":null,
-  //      "inviteLink":"https://uaa.fr.cloud.gov/invitations/accept?code=dd8ef6b5"
-  //    }
-  //  ],
-  //  "failed_invites":[]
-  // }
   sendInviteEmail(response) {
     if (response['new_invites'].length > 0){
       let email, invite_url;
