@@ -28,9 +28,12 @@ func TestPingWithRedis(t *testing.T) {
 	// Start up redis.
 	redisUri, cleanUpRedis := CreateTestRedis()
 	os.Setenv("REDIS_URI", redisUri)
+	// Override the mock env vars to use redis for session backend.
 	envVars := GetMockCompleteEnvVars()
 	envVars.SessionBackend = "redis"
 	env, _ := cfenv.Current()
+
+	// Submit PING with healthy Redis instance.
 	router, _, _ := controllers.InitApp(envVars, env)
 	router.ServeHTTP(response, request)
 	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":true}}`
@@ -39,10 +42,11 @@ func TestPingWithRedis(t *testing.T) {
 	}
 	// Remove redis.
 	cleanUpRedis()
-	// Try ping again.
+
+	// Try ping again with unhealthy Redis instance.
 	response, request = NewTestRequest("GET", "/ping", nil)
 	router.ServeHTTP(response, request)
-	expectedResponse = `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":false}}`
+	expectedResponse = `{"status":"outage","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":false}}`
 	if response.Body.String() != expectedResponse {
 		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
 	}

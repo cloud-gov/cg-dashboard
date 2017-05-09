@@ -53,7 +53,13 @@ type sessionStoreHealth struct {
 }
 
 func createPingData(c *Context) []byte {
-	p := pingData{Status: "alive",
+	storeUp := c.Settings.SessionBackendHealthCheck()
+	overallStatus := "alive"
+	// if the session storage is out, we have an outage.
+	if !storeUp {
+		overallStatus = "outage"
+	}
+	p := pingData{Status: overallStatus,
 		BuildInfo: c.Settings.BuildInfo,
 		SessionStoreHealth: sessionStoreHealth{
 			StoreType: c.Settings.SessionBackend,
