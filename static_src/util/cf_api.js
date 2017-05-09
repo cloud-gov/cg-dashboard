@@ -425,8 +425,8 @@ export default {
   // TODO refactor with org user permissions
   postCreateNewUserWithGuid(userGuid) {
     // return http.put(`${APIV}/users/${userGuid}/${role}/${orgGuid}/`)
-    return http.post(`${APIV}/users/`, {
-      guid: `${userGuid}`
+    return http.post(`${APIV}/users`, {
+      "guid": `${userGuid}`
     })
       .then((res) => res.response
     );
