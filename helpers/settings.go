@@ -9,10 +9,16 @@ import (
 
 	"github.com/boj/redistore"
 	"github.com/cloudfoundry-community/go-cfenv"
+	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/sessions"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
+)
+
+const (
+	// 7 days at most.
+	expirationConstant = 60 * 60 * 24 * 7
 )
 
 // Settings is the object to hold global values and objects for the service.
@@ -43,6 +49,10 @@ type Settings struct {
 	SecureCookies bool
 	// URL where this app is hosted
 	AppURL string
+	// Type of session backend
+	SessionBackend string
+	// Returns whether the backend is up.
+	SessionBackendHealthCheck func() bool
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -115,11 +125,28 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 		store.SetMaxLength(4096 * 4)
 		store.Options = &sessions.Options{
 			HttpOnly: true,
-			MaxAge:   60 * 60 * 24 * 7,
+			MaxAge:   expirationConstant,
 			Path:     "/",
 			Secure:   s.SecureCookies,
 		}
 		s.Sessions = store
+		s.SessionBackend = envVars.SessionBackend
+		// setup single internal redis client.
+		internalRedisClient, err := redis.Dial("tcp", address)
+		if err != nil {
+			return err
+		}
+		if password != "" {
+			if _, err := internalRedisClient.Do("AUTH", password); err != nil {
+				internalRedisClient.Close()
+				return err
+			}
+		}
+		// Use health check function where we do a PING.
+		s.SessionBackendHealthCheck = func() bool {
+			_, err := internalRedisClient.Do("PING")
+			return err == nil
+		}
 	default:
 		store := sessions.NewFilesystemStore("", []byte(envVars.SessionKey))
 		store.MaxLength(4096 * 4)
@@ -127,11 +154,13 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 			HttpOnly: true,
 			// TODO remove this; work-around for
 			// https://github.com/gorilla/sessions/issues/96
-			MaxAge: 60 * 60 * 24 * 7,
+			MaxAge: expirationConstant,
 			Path:   "/",
 			Secure: s.SecureCookies,
 		}
 		s.Sessions = store
+		s.SessionBackend = "file"
+		s.SessionBackendHealthCheck = func() bool { return true }
 	}
 
 	// Want to save a struct into the session. Have to register it.
