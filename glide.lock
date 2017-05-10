@@ -1,5 +1,5 @@
 hash: e511186108e727b73d92921f2fdba803901a7a8d0b990e3c5e743e4f82a041df
-updated: 2017-05-09T17:23:59.309548884-04:00
+updated: 2017-05-10T15:30:45.84982514-04:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: fa152c58bc15761d0200cb75fe958b89a9d4888e
@@ -17,7 +17,7 @@ imports:
   - logmessage
   - signature
 - name: github.com/davecgh/go-spew
-  version: 04cdfd42973bb9c8589fd6a731800cf222fde1a9
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
   subpackages:
   - spew
 - name: github.com/docker/docker
@@ -107,7 +107,7 @@ imports:
 - name: github.com/stretchr/objx
   version: cbeaeb16a013161a98496fad62933b1d21786672
 - name: github.com/stretchr/testify
-  version: 4d4bfba8f1d1027c4fdbe371823030df51419987
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
   subpackages:
   - assert
   - mock

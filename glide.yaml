@@ -27,3 +27,6 @@ import:
   - mock
 - package: github.com/ory/dockertest
   version: v3.0.7
+- package: github.com/stretchr/testify
+  subpackages:
+  - mock

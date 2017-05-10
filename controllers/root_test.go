@@ -23,6 +23,9 @@ func TestPing(t *testing.T) {
 	if response.Body.String() != expectedResponse {
 		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
 	}
+	if response.Code != 200 {
+		t.Errorf("Expected code %d. Found %d", 200, response.Code)
+	}
 }
 
 func TestPingWithRedis(t *testing.T) {
@@ -43,6 +46,9 @@ func TestPingWithRedis(t *testing.T) {
 	if response.Body.String() != expectedResponse {
 		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
 	}
+	if response.Code != 200 {
+		t.Errorf("Expected code %d. Found %d", 200, response.Code)
+	}
 	// Remove redis.
 	cleanUpRedis()
 
@@ -52,6 +58,9 @@ func TestPingWithRedis(t *testing.T) {
 	expectedResponse = `{"status":"outage","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":false}}`
 	if response.Body.String() != expectedResponse {
 		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
+	}
+	if response.Code != 500 {
+		t.Errorf("Expected code %d. Found %d", 500, response.Code)
 	}
 }
 
