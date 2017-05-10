@@ -7,7 +7,6 @@
 import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
-import OrgStore from './org_store.js';
 import cfApi from '../util/cf_api.js';
 import userActions from '../actions/user_actions.js';
 import { userActionTypes } from '../constants.js';
@@ -69,7 +68,7 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ORG_ASSOCIATION_RECEIVED: {
-        const user = Object.assign({}, { orgGuid:  action.orgGuid }, action.user);
+        const user = Object.assign({}, {orgGuid:  action.orgGuid }, action.user);
         this._inviteInputActive = true;
         if (user.guid) {
           this.merge('guid', user, (changed) => {});

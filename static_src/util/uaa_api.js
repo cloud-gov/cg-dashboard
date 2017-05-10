@@ -21,12 +21,11 @@ export default {
   },
 
   sendInviteEmail(response) {
-    if (response['new_invites'].length > 0){
-      let email, invite_url;
-      email = response['new_invites'][0]['email']
-      invite_url = response['new_invites'][0]['inviteLink']
-      if (email && invite_url){
-        return http.post(`${URL}/invite/email?email=${email}&invite_url=${invite_url}`, {
+    if (response.new_invites.length > 0) {
+      const email = response.new_invites[0].email;
+      const inviteUrl = response.new_invites[0].inviteLink;
+      if (email && inviteUrl) {
+        return http.post(`${URL}/invite/email?email=${email}&invite_url=${inviteUrl}`, {
           emails: [email]
         })
           .then(res => res.data);
