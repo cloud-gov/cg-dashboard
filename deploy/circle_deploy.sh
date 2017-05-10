@@ -44,7 +44,10 @@ else
   exit 1
 fi
 
-# We use the deployer-account broker and setup.
+# We use the deployer-account broker to get the credentials of
+# our deployer accounts.
+# Currently, the deployer accounts are scoped to a single space.
+# As a result, we will filter by space for which credentials to use.
 if [ "$CF_SPACE" == "dashboard-prod" ]
 then
 	CF_USERNAME=$CF_USERNAME_PROD_SPACE
