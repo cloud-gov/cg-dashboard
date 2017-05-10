@@ -23,6 +23,7 @@ cf install-plugin -f /home/ubuntu/.go_workspace/bin/autopilot
 # Only the organization, api, deployer account password differ.
 
 
+
 if [[ "$CIRCLE_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)? ]]
 then
 	CF_MANIFEST="manifest-prod.yml"
@@ -43,14 +44,30 @@ else
   exit 1
 fi
 
+# We use the deployer-account broker and setup.
+if [ "$CF_SPACE" == "dashboard-prod" ]
+then
+	CF_USERNAME=$CF_USERNAME_PROD_SPACE
+	CF_PASSWORD=$CF_PASSWORD_PROD_SPACE
+elif [ "$CF_SPACE" == "dashboard-stage" ]
+then
+	CF_USERNAME=$CF_USERNAME_STAGE_SPACE
+	CF_PASSWORD=$CF_PASSWORD_STAGE_SPACE
+else
+	echo "Unknown space. Do not know how to deploy $CF_SPACE."
+	exit 1
+fi
+
 echo env:      $manifest_env
 echo manifest: $CF_MANIFEST
 echo space:    $CF_SPACE
 
 if [ $manifest_env == govcloud ]; then
   CF_API=$CF_API_GC
-  CF_PASSWORD=$CF_PASSWORD_GC
   CF_ORGANIZATION=$CF_ORGANIZATION_GC
+else
+	echo "We only support deploying to govcloud, quitting." >&2
+	exit 1
 fi
 
 function deploy () {
