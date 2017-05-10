@@ -135,12 +135,12 @@ const userActions = {
       type: userActionTypes.USER_INVITE_RECEIVED
     });
 
-    const userGuid = inviteData['new_invites'][0]['userId'];
+    const userGuid = inviteData.new_invites[0].userId;
 
     return userActions.createUserInCF(userGuid, inviteData);
   },
 
-  createUserInCF (userGuid, inviteData) {
+  createUserInCF(userGuid, inviteData) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_IN_CF_CREATE
     });
@@ -149,27 +149,27 @@ const userActions = {
       .then(user => userActions.receiveUserInCF(user, inviteData));
   },
 
-  receiveUserInCF (user, inviteData) {
+  receiveUserInCF(user, inviteData) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_IN_CF_CREATED,
       user
     });
 
-    if (user.guid){
+    if (user.guid) {
       userActions.sendUserInviteEmail(inviteData);
     }
     // Once the user exists in CF, associate them to the organization.
     return userActions.fetchUserAssociationToOrg(user);
   },
 
-  sendUserInviteEmail (inviteData) {
+  sendUserInviteEmail(inviteData) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_EMAIL_INVITE
     });
     uaaApi.sendInviteEmail(inviteData);
   },
 
-  fetchUserAssociationToOrg (user) {
+  fetchUserAssociationToOrg(user) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
     });
@@ -179,7 +179,7 @@ const userActions = {
       .then(userActions.receivedUserAssociationToOrg(user, orgGuid));
   },
 
-  receivedUserAssociationToOrg (user, orgGuid) {
+  receivedUserAssociationToOrg(user, orgGuid) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
       user,
