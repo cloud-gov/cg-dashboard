@@ -181,9 +181,15 @@ uaac client add <your-client-id> \
 
 
 ### CI
-This project uses CircleCI
-- The following environment variables need to be set in plain text in the global env section:
-  - `CONSOLE_API_URL`, `CONSOLE_UAA_URL`, `CONSOLE_LOG_URL`, `CONSOLE_LOGIN_URL`, `CONSOLE_HOSTNAME="http://localhost:9999"`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, and `CONSOLE_TEST_APP_NAME`
+This project uses CircleCI.
+- You will need to setup the credentials to deploy to the `dashboard-prod` and `dashboard-stage` spaces.
+  - In both spaces run: `cf create-service cloud-gov-service-account space-deployer dashboard-deployer`
+  - You will get the link for that space's credentials by running `cf service dashboard-deployer`
+  - You will need to set these [**secret**](https://circleci.com/docs/1.0/environment-variables/#setting-environment-variables-for-all-commands-without-adding-them-to-git) variables in the [CircleCI UI](https://circleci.com/gh/18F/cg-dashboard/edit#env-vars).
+    - `CF_USERNAME_PROD_SPACE` - The username for the `dashboard-prod` deployer
+    - `CF_PASSWORD_PROD_SPACE` - The password for the `dashboard-prod` deployer
+    - `CF_USERNAME_STAGE_SPACE` - The username for the `dashboard-stage` deployer
+    - `CF_PASSWORD_STAGE_SPACE` - The password for the `dashboard-stage` deployer
 - In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the CircleCI CLI UI to set the variables
 
 
