@@ -67,20 +67,10 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.USER_IN_CF_CREATED: {
-        const user = action.user;
-        if (user.guid) {
-          this.merge('guid', user, () => { });
-        }
-        this.emitChange();
-        break;
-      }
-
       case userActionTypes.USER_ORG_ASSOCIATION_RECEIVED: {
-        const user = action.user;
-        const orgGuid = action.orgGuid;
-        if (orgGuid === OrgStore.currentOrgGuid) {
-          this.merge('guid', user, () => { });
+        const user = Object.assign({}, { orgGuid:  action.orgGuid }, action.user);
+        if (user.guid) {
+          this.merge('guid', user, (changed) => { console.log('changed', changed)});
         }
         this.emitChange();
         break;
