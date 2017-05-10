@@ -37,6 +37,9 @@ test:
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   override:
     - cd $WS && ./codecheck.sh -u
+    # we needed docker for Go tests (dockertest library).
+    # let's stop docker so it doesn't mess up anything else / use too many resources.
+    - sudo service docker stop
     - cd $WS && npm test
     - NODE_ENV=prod npm run build
     - cd $WS && npm run test-performance
