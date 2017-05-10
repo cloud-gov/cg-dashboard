@@ -10,13 +10,10 @@ import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
 import Action from './action.jsx';
 
-import OrgStore from '../stores/org_store';
 import FormStore from '../stores/form_store';
 
 import userActions from '../actions/user_actions';
 
-import cfApi from '../util/cf_api';
-import uaaApi from '../util/uaa_api';
 import { validateString } from '../util/validators';
 
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
