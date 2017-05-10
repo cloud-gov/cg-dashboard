@@ -71,23 +71,21 @@ describe('Lighthouse speed test', function () {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
 
   beforeAll((done) => {
-    setTimeout(() => {
-      launchChromeRunLighthouse(testUrl, {}, lighthouseOptions)
-        .then((res) => {
-          result = res.audits;
-          pullResult = function (name) {
-            return result[name].rawValue;
-          };
-          const toWrite = res;
-          toWrite.artifacts = undefined; // Causes problems when writing.
-          const htmlWrite = Printer.write(toWrite, 'html', htmlOut);
-          const jsonWrite = Printer.write(toWrite, 'json', jsonOut);
-          Promise.all([jsonWrite, htmlWrite]).then(done, done.fail);
-        })
-        .catch((err) => {
-          done.fail(err);
-        });
-    }, 5000);
+    launchChromeRunLighthouse(testUrl, {}, lighthouseOptions)
+      .then((res) => {
+        result = res.audits;
+        pullResult = function (name) {
+          return result[name].rawValue;
+        };
+        const toWrite = res;
+        toWrite.artifacts = undefined; // Causes problems when writing.
+        const htmlWrite = Printer.write(toWrite, 'html', htmlOut);
+        const jsonWrite = Printer.write(toWrite, 'json', jsonOut);
+        Promise.all([jsonWrite, htmlWrite]).then(done, done.fail);
+      })
+      .catch((err) => {
+        done.fail(err);
+      });
   });
 
   afterAll(() => {
