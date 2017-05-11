@@ -8,11 +8,12 @@ import (
 	"github.com/gocraft/web"
 
 	"github.com/18F/cg-dashboard/helpers"
+	"github.com/18F/cg-dashboard/mailer"
 )
 
 // InitRouter sets up the router (and subrouters).
 // It also includes the closure middleware where we load the global Settings reference into each request.
-func InitRouter(settings *helpers.Settings, templates *template.Template) *web.Router {
+func InitRouter(settings *helpers.Settings, templates *template.Template, mailer mailer.Mailer) *web.Router {
 	if settings == nil {
 		return nil
 	}
@@ -22,6 +23,7 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	router.Middleware(func(c *Context, resp web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
 		c.Settings = settings
 		c.templates = templates
+		c.mailer = mailer
 		next(resp, req)
 	})
 
@@ -53,7 +55,8 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	uaaRouter.Middleware((*UAAContext).OAuth)
 	uaaRouter.Get("/userinfo", (*UAAContext).UserInfo)
 	uaaRouter.Get("/uaainfo", (*UAAContext).UaaInfo)
-	uaaRouter.Post("/invite_users", (*UAAContext).InviteUsers)
+	uaaRouter.Post("/invite/email", (*UAAContext).SendInvite)
+	uaaRouter.Post("/invite/users", (*UAAContext).InviteUsers)
 
 	// Setup the /log subrouter.
 	logRouter := secureRouter.Subrouter(LogContext{}, "/log")
@@ -77,12 +80,16 @@ func InitApp(envVars helpers.EnvVars, env *cfenv.App) (*web.Router, *helpers.Set
 	if err := settings.InitSettings(envVars, env); err != nil {
 		return nil, nil, err
 	}
+	mailer, err := mailer.InitSMTPMailer(settings)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	// Cache templates
-	templates := template.Must(template.ParseFiles(filepath.Join(envVars.BasePath, "static", "index.html")))
+	templates := template.Must(template.ParseFiles(filepath.Join(settings.BasePath, "static", "index.html")))
 
 	// Initialize the router
-	router := InitRouter(&settings, templates)
+	router := InitRouter(&settings, templates, mailer)
 
 	return router, &settings, nil
 }

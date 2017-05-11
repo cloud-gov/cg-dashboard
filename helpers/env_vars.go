@@ -37,6 +37,16 @@ var (
 	SessionKeyEnvVar = "SESSION_KEY"
 	// BasePathEnvVar is the path to the application root
 	BasePathEnvVar = "BASE_PATH"
+	// SMTPHostEnvVar is SMTP host for UAA invites
+	SMTPHostEnvVar = "SMTP_HOST"
+	// SMTPPortEnvVar is SMTP post for UAA invites
+	SMTPPortEnvVar = "SMTP_PORT"
+	// SMTPUserEnvVar is SMTP user for UAA invites
+	SMTPUserEnvVar = "SMTP_USER"
+	// SMTPPassEnvVar is SMTP password for UAA invites
+	SMTPPassEnvVar = "SMTP_PASS"
+	// SMTPFromEnvVar is SMTP from address for UAA invites
+	SMTPFromEnvVar = "SMTP_FROM"
 )
 
 // EnvVars holds all the environment variable values that a non-test server should have.
@@ -55,4 +65,9 @@ type EnvVars struct {
 	SessionBackend  string
 	SessionKey      string
 	BasePath        string
+	SMTPHost        string
+	SMTPPort        string
+	SMTPUser        string
+	SMTPPass        string
+	SMTPFrom        string
 }

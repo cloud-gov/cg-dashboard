@@ -19,11 +19,13 @@ import (
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
 	"github.com/ory/dockertest"
+	"github.com/stretchr/testify/mock"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
 	"github.com/18F/cg-dashboard/controllers"
 	"github.com/18F/cg-dashboard/helpers"
+	"github.com/18F/cg-dashboard/helpers/testhelpers/mocks"
 )
 
 // CreateTestRedis creates a actual redis instance with docker.
@@ -131,7 +133,9 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars hel
 	settings.Sessions = store
 
 	// Create the router.
-	router := controllers.InitRouter(&settings, &template.Template{})
+	mockMailer := new(mocks.Mailer)
+	mockMailer.On("SendInviteEmail", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(nil)
+	router := controllers.InitRouter(&settings, &template.Template{}, mockMailer)
 
 	return router, &store
 }
@@ -189,6 +193,8 @@ func GetMockCompleteEnvVars() helpers.EnvVars {
 		PProfEnabled: "true",
 		SessionKey:   "lalala",
 		BasePath:     os.Getenv(helpers.BasePathEnvVar),
+		SMTPFrom:     "cloud@cloud.gov",
+		SMTPHost:     "localhost",
 	}
 }
 

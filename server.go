@@ -37,6 +37,11 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.SessionBackend = os.Getenv(helpers.SessionBackendEnvVar)
 	envVars.SessionKey = os.Getenv(helpers.SessionKeyEnvVar)
 	envVars.BasePath = os.Getenv(helpers.BasePathEnvVar)
+	envVars.SMTPHost = os.Getenv(helpers.SMTPHostEnvVar)
+	envVars.SMTPPort = os.Getenv(helpers.SMTPPortEnvVar)
+	envVars.SMTPUser = os.Getenv(helpers.SMTPUserEnvVar)
+	envVars.SMTPPass = os.Getenv(helpers.SMTPPassEnvVar)
+	envVars.SMTPFrom = os.Getenv(helpers.SMTPFromEnvVar)
 	return envVars
 }
 
@@ -55,6 +60,16 @@ func replaceEnvVar(envVars *helpers.EnvVars, envVar string, value interface{}) {
 			envVars.NewRelicLicense = stringValue
 		case helpers.SessionKeyEnvVar:
 			envVars.SessionKey = stringValue
+		case helpers.SMTPHostEnvVar:
+			envVars.SMTPHost = stringValue
+		case helpers.SMTPPortEnvVar:
+			envVars.SMTPPort = stringValue
+		case helpers.SMTPUserEnvVar:
+			envVars.SMTPUser = stringValue
+		case helpers.SMTPPassEnvVar:
+			envVars.SMTPPass = stringValue
+		case helpers.SMTPFromEnvVar:
+			envVars.SMTPFrom = stringValue
 		}
 	}
 }

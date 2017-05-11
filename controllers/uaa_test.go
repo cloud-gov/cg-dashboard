@@ -56,7 +56,7 @@ var inviteUsersTest = []BasicProxyTest{
 		},
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "POST",
-		RequestPath:   "/uaa/invite_users",
+		RequestPath:   "/uaa/invite/users",
 		ExpectedPath:  "/invite_users",
 		Response:      "test",
 		ResponseCode:  http.StatusOK,
@@ -85,7 +85,7 @@ var uaainfoTests = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "{\"status\": \"Bad request\", \"error_description\": \"Missing valid guid.\"}",
+			ExpectedResponse: fmt.Sprintf(`{"status": "Bad request", "error_description": "Missing valid guid."}`),
 			ExpectedCode:     http.StatusBadRequest,
 		},
 		// What the "external" server will send back to the proxy.
@@ -134,7 +134,7 @@ var queryUsersTests = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "{\"status\": \"error\", \"message\": \"empty request body\"}",
+			ExpectedResponse: fmt.Sprintf(`"{"status": "error", "message": "empty request body"}`),
 			ExpectedCode:     http.StatusBadRequest,
 		},
 		// What the "external" server will send back to the proxy.
@@ -149,7 +149,7 @@ var queryUsersTests = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "{\"status\": \"error\", \"message\": \"not enough filters\"}",
+			ExpectedResponse: fmt.Sprintf(`{"status": "error", "message": "not enough filters"}`),
 			ExpectedCode:     http.StatusBadRequest,
 		},
 		// What the "external" server will send back to the proxy.
@@ -171,9 +171,90 @@ var queryUsersTests = []BasicProxyTest{
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "POST",
 		RequestPath:   "/uaa/Users",
-		RequestBody:   []byte(string("{\"filter1\": \"value1\"}")),
+		RequestBody:   []byte(`{"filter1": "value1"}`),
 		ExpectedPath:  "/Users",
 		Response:      "hello",
 		ResponseCode:  http.StatusOK,
 	},
+}
+
+var emailInvitedUsersTests = []BasicProxyTest{
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "Missing email parameter",
+				SessionData: ValidTokenData,
+				EnvVars:     GetMockCompleteEnvVars(),
+			},
+			ExpectedResponse: fmt.Sprintf(`{"status": "failure", "data": "Missing correct params."}`),
+			ExpectedCode:     http.StatusBadRequest,
+		},
+		// What the "external" server will send back to the proxy.
+		RequestMethod: "POST",
+		RequestPath:   "/uaa/invite/email",
+		RequestBody:   []byte(`{}`),
+		ExpectedPath:  "/Users",
+	},
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "Missing invite_url parameter",
+				SessionData: ValidTokenData,
+				EnvVars:     GetMockCompleteEnvVars(),
+			},
+			ExpectedResponse: fmt.Sprintf(`{"status": "failure", "data": "Missing correct params."}`),
+			ExpectedCode:     http.StatusBadRequest,
+		},
+		// What the "external" server will send back to the proxy.
+		RequestMethod: "POST",
+		RequestPath:   "/uaa/invite/email",
+		RequestBody:   []byte(`{"email": "test@test.com"}`),
+		ExpectedPath:  "/Users",
+	},
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "Missing invite_url parameter",
+				SessionData: ValidTokenData,
+				EnvVars:     GetMockCompleteEnvVars(),
+			},
+			ExpectedResponse: fmt.Sprintf(`{"status": "failure", "data": "Missing correct params."}`),
+			ExpectedCode:     http.StatusBadRequest,
+		},
+		// What the "external" server will send back to the proxy.
+		RequestMethod: "POST",
+		RequestPath:   "/uaa/invite/email",
+		RequestBody:   []byte(`{"invite_url": "http://localhost:9999/invitehere?123"}`),
+		ExpectedPath:  "/Users",
+	},
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "Working request example where email and invite_url are in json request",
+				SessionData: ValidTokenData,
+				EnvVars:     GetMockCompleteEnvVars(),
+			},
+			ExpectedResponse: fmt.Sprintf("{\"status\": \"success\", \"email\": \"name@domain.com\", \"invite\": \"http://localhost:9999/invitehere?123\" }"),
+			ExpectedCode:     http.StatusOK,
+		},
+		// What the "external" server will send back to the proxy.
+		RequestMethod: "POST",
+		RequestPath:   "/uaa/invite/email",
+		RequestBody:   []byte("{\"email\": \"name@domain.com\", \"invite_url\": \"http://localhost:9999/invitehere?123\"}"),
+		ExpectedPath:  "/Users",
+	},
+}
+
+func TestSendInvite(t *testing.T) {
+	for _, test := range emailInvitedUsersTests {
+		// Create the external server that the proxy will send the request to.
+		testServer := CreateExternalServer(t, &test)
+		// Construct full url for the proxy.
+		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
+		c := &controllers.UAAContext{SecureContext: &controllers.SecureContext{Context: &controllers.Context{}}}
+		response, request, router := PrepareExternalServerCall(t, c.SecureContext, testServer, fullURL, test)
+		router.ServeHTTP(response, request)
+		VerifyExternalCallResponse(t, response, &test)
+		testServer.Close()
+	}
 }
