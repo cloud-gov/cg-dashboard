@@ -19,6 +19,7 @@ import (
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
 	"github.com/ory/dockertest"
+	"github.com/stretchr/testify/mock"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
@@ -132,7 +133,9 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars hel
 	settings.Sessions = store
 
 	// Create the router.
-	router := controllers.InitRouter(&settings, &template.Template{}, &mocks.Mailer{})
+	mockMailer := new(mocks.Mailer)
+	mockMailer.On("SendInviteEmail", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(nil)
+	router := controllers.InitRouter(&settings, &template.Template{}, mockMailer)
 
 	return router, &store
 }
