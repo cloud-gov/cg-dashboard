@@ -21,14 +21,15 @@ export default {
   },
 
   sendInviteEmail(response) {
+    const params = {
+      invite_url: false,
+      email: false
+    };
     if (response.new_invites.length > 0) {
-      const email = response.new_invites[0].email;
-      const inviteUrl = response.new_invites[0].inviteLink;
-      if (email && inviteUrl) {
-        return http.post(`${URL}/invite/email`, {
-          email: email,
-          invite_url: inviteUrl
-        })
+      params.email = response.new_invites[0].email;
+      params.inviteUrl = response.new_invites[0].inviteLink;
+      if (params.email && params.inviteUrl) {
+        return http.post(`${URL}/invite/email`, params)
           .then(res => res.data);
       }
     }

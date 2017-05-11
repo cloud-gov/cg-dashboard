@@ -56,17 +56,11 @@ describe('uaaApi', function() {
   });
 
   describe('getInviteUaaUser()', function () {
-    beforeEach(function () {
-    });
-
     it('should work', function () {
     });
   });
 
   describe('sendInviteEmail()', function () {
-    beforeEach(function () {
-    });
-
     it('should work', function () {
     });
   });
