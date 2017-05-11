@@ -42,6 +42,7 @@ test:
     - sudo service docker stop
     - cd $WS && npm test
     - NODE_ENV=prod npm run build
+    - sleep 5
     - cd $WS && npm run test-performance
 
 deployment:
