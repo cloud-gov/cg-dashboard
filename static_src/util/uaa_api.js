@@ -25,8 +25,9 @@ export default {
       const email = response.new_invites[0].email;
       const inviteUrl = response.new_invites[0].inviteLink;
       if (email && inviteUrl) {
-        return http.post(`${URL}/invite/email?email=${email}&invite_url=${inviteUrl}`, {
-          emails: [email]
+        return http.post(`${URL}/invite/email`, {
+          email: email,
+          invite_url: inviteUrl
         })
           .then(res => res.data);
       }
