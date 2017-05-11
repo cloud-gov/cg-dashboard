@@ -2,6 +2,13 @@ package controllers_test
 
 import (
 	"fmt"
+	"html/template"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+
 	"github.com/18F/cg-dashboard/controllers"
 	"github.com/18F/cg-dashboard/helpers"
 	. "github.com/18F/cg-dashboard/helpers/testhelpers"
@@ -9,12 +16,6 @@ import (
 	"github.com/gocraft/web"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
-	"html/template"
-	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
-	"strings"
-	"testing"
 )
 
 var oauthTests = []BasicSecureTest{
