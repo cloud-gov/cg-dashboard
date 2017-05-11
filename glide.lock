@@ -1,12 +1,10 @@
-hash: 8d93c0f2d4bd784a88167eaa25cfe6a724af8981d7d77e1d2d8e1686a21acda7
-updated: 2017-05-11T12:41:38.752014829-04:00
+hash: 4fa33221e0ab33bf3850bee88bd2a41af94bd9cec69df67f2ab72337f68c6908
+updated: 2017-05-11T14:07:41.972759638-04:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: fa152c58bc15761d0200cb75fe958b89a9d4888e
   subpackages:
   - winterm
-- name: github.com/bitly/go-simplejson
-  version: da1a8928f709389522c8023062a3739f3b4af419
 - name: github.com/boj/redistore
   version: fc113767cd6b051980f260d6dbe84b2740c46ab0
 - name: github.com/cenk/backoff

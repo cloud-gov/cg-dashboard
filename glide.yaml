@@ -16,7 +16,6 @@ import:
 - package: golang.org/x/oauth2
   subpackages:
   - clientcredentials
-- package: github.com/bitly/go-simplejson
 - package: github.com/yvasiyarov/gorelic
 - package: github.com/cloudfoundry-community/go-cfenv
 - package: github.com/gorilla/csrf
