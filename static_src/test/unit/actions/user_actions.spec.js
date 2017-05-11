@@ -351,31 +351,45 @@ describe('userActions', function() {
   });
 
   describe('fetchUserInvite', function () {
-    expect(true).toEqual(true);
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
   });
 
   describe('receiveUserInvite', function () {
-    expect(true).toEqual(true);
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
   });
 
   describe('createUserInCF', function () {
-    expect(true).toEqual(true);
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
   });
 
   describe('receiveUserInCF', function () {
-    expect(true).toEqual(true);
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
   });
 
   describe('sendUserInviteEmail', function () {
-    expect(true).toEqual(true);
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
   });
 
   describe('fetchUserAssociationToOrg', function () {
-    expect(true).toEqual(true);
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
   });
 
   describe('receivedUserAssociationToOrg', function () {
-    expect(true).toEqual(true);
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
   });
 
   describe('fetchUserSpaces()', function () {
