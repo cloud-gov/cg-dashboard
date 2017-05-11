@@ -2,10 +2,8 @@ package controllers
 
 import (
 	"fmt"
-	"log"
 
-	"github.com/bitly/go-simplejson"
-	"io/ioutil"
+	"encoding/json"
 	"net/http"
 
 	"github.com/gocraft/web"
@@ -42,34 +40,45 @@ func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
 	c.uaaProxy(rw, req, reqURL, true)
 }
 
+type inviteRequest struct {
+	Email     string `json:"email"`
+	InviteURL string `json:"invite_url"`
+}
+
 // SendInvite sends users an email with a link to the UAA invite
 func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
-	body, err := ioutil.ReadAll(req.Body)
-	js, err := simplejson.NewJson(body)
-	email := js.Get("email").MustString()
-	inviteURL := js.Get("invite_url").MustString()
-	if err != nil {
-		log.Fatalln(err)
+	rw.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if req.Body == nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"No request body found.\"}"))
+		return
 	}
-	if email == "" || inviteURL == "" {
-		rw.Header().Set("Content-Type", "application/json; charset=utf-8")
+	decoder := json.NewDecoder(req.Body)
+	var inviteReq inviteRequest
+	err := decoder.Decode(&inviteReq)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
+		return
+	}
+	defer req.Body.Close()
+	c.TriggerInvite(rw, inviteReq)
+}
+
+// TriggerInvite trigger the email to be send for SendInvite
+func (c *UAAContext) TriggerInvite(rw web.ResponseWriter, inviteReq inviteRequest) {
+	if inviteReq.Email == "" || inviteReq.InviteURL == "" {
 		rw.WriteHeader(http.StatusBadRequest)
 		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"Missing correct params.\"}"))
 		return
 	}
-	c.TriggerInvite(rw, email, inviteURL)
-}
-
-// TriggerInvite trigger the email to be send for SendInvite
-func (c *UAAContext) TriggerInvite(rw web.ResponseWriter, email string, inviteURL string) {
-	errEmail := c.mailer.SendInviteEmail(email, inviteURL)
+	errEmail := c.mailer.SendInviteEmail(inviteReq.Email, inviteReq.InviteURL)
 	if errEmail != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + errEmail.Error() + "\" }"))
 		return
 	}
-	rw.Header().Set("Content-Type", "application/json; charset=utf-8")
-	rw.Write([]byte("{\"status\": \"success\", \"email\": \"" + email + "\", \"invite\": \"" + inviteURL + "\" }"))
+	rw.Write([]byte("{\"status\": \"success\", \"email\": \"" + inviteReq.Email + "\", \"invite\": \"" + inviteReq.InviteURL + "\" }"))
 }
 
 // UaaInfo returns the UAA_API/Users/:id information for the logged in user.
