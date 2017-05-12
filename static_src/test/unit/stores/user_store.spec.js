@@ -173,6 +173,37 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on org user association received', function() {
+    it('should emit a change event if data changed', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange');
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
+        user: { guid: 'blah' },
+        orgGuid: 'adsfa'
+      });
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should merge and update org with new users', function() {
+      const existingUser = { guid: 'wpqoifesadkzcvn', name: 'Michael' };
+      const newUser = { guid: 'dkzcvwpqoifesan' };
+
+      UserStore.push(existingUser);
+      expect(UserStore.get('wpqoifesadkzcvn')).toEqual(existingUser);
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
+        user: { guid: 'blah' },
+        orgGuid: 'adsfa'
+      });
+      let actual = UserStore.get('wpqoifesadkzcvn');
+      let expected = Object.assign({}, existingUser, newUser);
+      expect(actual).not.toEqual(expected);
+    });
+  });
+
   describe('on user roles add', function() {
     it('should call the api for org add if type org to update the role',
         function() {
