@@ -79,6 +79,24 @@ describe('cfApi', function() {
     });
   });
 
+  describe('postCreateNewUserWithGuid()', function() {
+    beforeEach(function() {
+    });
+
+    it('should have tests', function() {
+      expect(true).toEqual(true);
+    });
+  });
+
+  describe('putAssociateUserToOrganization()', function() {
+    beforeEach(function() {
+    });
+
+    it('should have tests', function() {
+      expect(true).toEqual(true);
+    });
+  });
+
   describe('formatSplitResponse()', function() {
     var testRezs;
 
