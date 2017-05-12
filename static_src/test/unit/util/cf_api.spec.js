@@ -80,7 +80,7 @@ describe('cfApi', function() {
   });
 
   describe('postCreateNewUserWithGuid()', function() {
-    it('should have tests', function() {
+    it('test the request on the post request', function() {
       const userGuid = 'fake-user-guid';
       const expectedPayload = {
         guid: userGuid,
@@ -99,11 +99,18 @@ describe('cfApi', function() {
   });
 
   describe('putAssociateUserToOrganization()', function() {
-    beforeEach(function() {
-    });
-
     it('should have tests', function() {
-      expect(true).toEqual(true);
+      const orgGuid = 'fake-org-guid';
+      const userGuid = 'fake-user-guid';
+      const spy = sandbox.stub(http, 'put');
+      spy.returns(createPromise({ data: {}}));
+
+      cfApi.putAssociateUserToOrganization(userGuid, orgGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch(`/users/${userGuid}/organizations/${orgGuid}`);
+        done();
+      });
     });
   });
 
