@@ -49,7 +49,7 @@ var inviteUsersTest = []BasicProxyTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "UAA Invite User",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "test",
 			ExpectedCode:     http.StatusOK,
@@ -66,41 +66,7 @@ var inviteUsersTest = []BasicProxyTest{
 func TestInviteUsers(t *testing.T) {
 	for _, test := range inviteUsersTest {
 		// Create the external server that the proxy will send the request to.
-		testServer := CreateExternalServer(t, &test)
-		// Construct full url for the proxy.
-		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
-		c := &controllers.UAAContext{SecureContext: &controllers.SecureContext{Context: &controllers.Context{}}}
-		response, request, router := PrepareExternalServerCall(t, c.SecureContext, testServer, fullURL, test)
-		router.ServeHTTP(response, request)
-		VerifyExternalCallResponse(t, response, &test)
-		testServer.Close()
-	}
-}
-
-var inviteUsersTestRedirect = []BasicProxyTest{
-	{
-		BasicSecureTest: BasicSecureTest{
-			BasicConsoleUnitTest: BasicConsoleUnitTest{
-				TestName:    "UAA Invite User",
-				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
-			},
-			ExpectedResponse: "test",
-			ExpectedCode:     http.StatusOK,
-		},
-		// What the "external" server will send back to the proxy.
-		RequestMethod: "POST",
-		RequestPath:   "/uaa/invite/users?redirect_uri=http://localhost:9999/uaa/userinfo",
-		ExpectedPath:  "/invite_users?redirect_uri=http://localhost:9999/uaa/userinfo",
-		Response:      "test",
-		ResponseCode:  http.StatusOK,
-	},
-}
-
-func TestInviteUsersRedirect(t *testing.T) {
-	for _, test := range inviteUsersTestRedirect {
-		// Create the external server that the proxy will send the request to.
-		testServer := CreateExternalServer(t, &test)
+		testServer := CreateExternalServerForPrivileged(t, test)
 		// Construct full url for the proxy.
 		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
 		c := &controllers.UAAContext{SecureContext: &controllers.SecureContext{Context: &controllers.Context{}}}
@@ -232,7 +198,7 @@ var emailInvitedUsersTests = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
-				TestName:    "Missing inviteUrl parameter",
+				TestName:    "Missing invite_url parameter",
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
@@ -248,7 +214,7 @@ var emailInvitedUsersTests = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
-				TestName:    "Missing inviteUrl parameter",
+				TestName:    "Missing invite_url parameter",
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
@@ -258,13 +224,13 @@ var emailInvitedUsersTests = []BasicProxyTest{
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "POST",
 		RequestPath:   "/uaa/invite/email",
-		RequestBody:   []byte(`{"inviteUrl": "http://localhost:9999/invitehere?123"}`),
+		RequestBody:   []byte(`{"invite_url": "http://localhost:9999/invitehere?123"}`),
 		ExpectedPath:  "/Users",
 	},
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
-				TestName:    "Working request example where email and inviteUrl are in json request",
+				TestName:    "Working request example where email and invite_url are in json request",
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
@@ -274,7 +240,7 @@ var emailInvitedUsersTests = []BasicProxyTest{
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "POST",
 		RequestPath:   "/uaa/invite/email",
-		RequestBody:   []byte("{\"email\": \"name@domain.com\", \"inviteUrl\": \"http://localhost:9999/invitehere?123\"}"),
+		RequestBody:   []byte("{\"email\": \"name@domain.com\", \"invite_url\": \"http://localhost:9999/invitehere?123\"}"),
 		ExpectedPath:  "/Users",
 	},
 }

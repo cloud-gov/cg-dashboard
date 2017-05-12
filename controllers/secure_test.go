@@ -2,10 +2,7 @@ package controllers_test
 
 import (
 	"fmt"
-	"html/template"
-	"io/ioutil"
 	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
 
@@ -84,50 +81,9 @@ func TestOAuth(t *testing.T) {
 
 func TestPrivilegedProxy(t *testing.T) {
 	for _, test := range proxyTests {
-		privilegedToken := "90d64460d14870c08c81352a05dedd3465940a7c"
-		// Create the external server that the proxy will send the request to.
-		testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path != test.RequestPath {
-				t.Errorf("Server expected path %s but instead received path %s\n", test.RequestPath, r.URL.Path)
-			} else if r.Method != test.RequestMethod {
-				t.Errorf("Server expected method %s but instead received method %s\n", test.RequestMethod, r.Method)
-			} else {
-				w.WriteHeader(test.ResponseCode)
-				fmt.Fprintln(w, test.Response)
-			}
-			// Check that we are using the privileged token
-			// This line here is why we can't use the generic CreateExternalServer.
-			// Could add a token parameter. TODO
-			headerAuth := r.Header.Get("Authorization")
-			if headerAuth == "Basic "+privilegedToken {
-				t.Errorf("Unexpected authorization header, %v is found.", headerAuth)
-			}
-		}))
-		// Create the external server that will act as the UAA server to get the privileged token from.
-		testUAAServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.String() != "/oauth/token" {
-				t.Errorf("authenticate client request URL = %q; want %q", r.URL, "/token")
-			}
-
-			if got, want := r.Header.Get("Content-Type"), "application/x-www-form-urlencoded"; got != want {
-				t.Errorf("Content-Type header = %q; want %q", got, want)
-			}
-			body, err := ioutil.ReadAll(r.Body)
-			if err != nil {
-				r.Body.Close()
-			}
-			if err != nil {
-				t.Errorf("failed reading request body: %s.", err)
-			}
-			if string(body) != "client_id="+MockCompleteEnvVars.ClientID+"&grant_type=client_credentials&scope=scim.read" {
-				t.Errorf("payload = %q; want %q", string(body), "client_id="+MockCompleteEnvVars.ClientID+"&grant_type=client_credentials&scope=scim.read")
-			}
-			w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-			// Write the privileged token so that it can be used.
-			w.Write([]byte("access_token=" + privilegedToken + "&token_type=bearer"))
-		}))
 		// We can only get this after the server has started.
-		test.EnvVars.UAAURL = testUAAServer.URL
+		testServer := CreateExternalServerForPrivileged(t, test)
+		test.EnvVars.UAAURL = testServer.URL
 		// Construct full url for the proxy.
 		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
 		c := &controllers.SecureContext{Context: &controllers.Context{}}
@@ -135,7 +91,6 @@ func TestPrivilegedProxy(t *testing.T) {
 		c.PrivilegedProxy(response, request, fullURL)
 		VerifyExternalCallResponse(t, response, &test)
 
-		testUAAServer.Close()
 		testServer.Close()
 	}
 }
