@@ -80,11 +80,21 @@ describe('cfApi', function() {
   });
 
   describe('postCreateNewUserWithGuid()', function() {
-    beforeEach(function() {
-    });
-
     it('should have tests', function() {
-      expect(true).toEqual(true);
+      const userGuid = 'fake-user-guid';
+      const expectedPayload = {
+        guid: userGuid,
+      };
+      const spy = sandbox.stub(http, 'post');
+      spy.returns(createPromise({ data: {}}));
+
+      cfApi.postCreateNewUserWithGuid(userGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch('/users');
+        expect(args[1]).toEqual(expectedPayload);
+        done();
+      });
     });
   });
 
