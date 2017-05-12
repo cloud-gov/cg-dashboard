@@ -10,6 +10,7 @@ import userActions from '../actions/user_actions.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
+import UsersInvite from './users_invite.jsx';
 import UserStore from '../stores/user_store.js';
 
 const SPACE_NAME = 'space_users';
@@ -134,6 +135,7 @@ export default class Users extends React.Component {
             { content }
           </div>
         </div>
+        <UsersInvite />
       </div>
     );
   }
