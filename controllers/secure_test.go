@@ -63,7 +63,7 @@ func TestOAuth(t *testing.T) {
 
 		// Setup a test route on the API router (which is guarded by OAuth)
 		response, request := NewTestRequest("GET", "/v2/test", nil)
-		router := controllers.InitRouter(&mockSettings, &template.Template{}, &mocks.Mailer{})
+		router := controllers.InitRouter(&mockSettings, &helpers.Templates{}, &mocks.Mailer{})
 		secureRouter := router.Subrouter(controllers.SecureContext{}, "/")
 		apiRouter := secureRouter.Subrouter(controllers.APIContext{}, "/v2")
 		apiRouter.Middleware((*controllers.APIContext).OAuth)

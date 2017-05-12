@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -18,7 +17,7 @@ import (
 // Context represents the context for all requests that do not need authentication.
 type Context struct {
 	Settings  *helpers.Settings
-	templates *template.Template
+	templates *helpers.Templates
 	mailer    mailer.Mailer
 }
 
@@ -36,12 +35,11 @@ func StaticMiddleware(path string) func(web.ResponseWriter, *web.Request, web.Ne
 
 // Index serves index.html
 func (c *Context) Index(w web.ResponseWriter, r *web.Request) {
-	c.templates.ExecuteTemplate(w, "index.html", map[string]interface{}{
-		"csrfToken":                     csrf.Token(r.Request),
-		"GA_TRACKING_ID":                os.Getenv("GA_TRACKING_ID"),
-		"NEW_RELIC_ID":                  os.Getenv("NEW_RELIC_ID"),
-		"NEW_RELIC_BROWSER_LICENSE_KEY": os.Getenv("NEW_RELIC_BROWSER_LICENSE_KEY"),
-	})
+	c.templates.GetIndex(w,
+		csrf.Token(r.Request),
+		os.Getenv("GA_TRACKING_ID"),
+		os.Getenv("NEW_RELIC_ID"),
+		os.Getenv("NEW_RELIC_BROWSER_LICENSE_KEY"))
 }
 
 type pingData struct {
