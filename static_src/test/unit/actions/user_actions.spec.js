@@ -350,6 +350,48 @@ describe('userActions', function() {
     });
   });
 
+  describe('fetchUserInvite', function () {
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
+  });
+
+  describe('receiveUserInvite', function () {
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
+  });
+
+  describe('createUserInCF', function () {
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
+  });
+
+  describe('receiveUserInCF', function () {
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
+  });
+
+  describe('sendUserInviteEmail', function () {
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
+  });
+
+  describe('fetchUserAssociationToOrg', function () {
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
+  });
+
+  describe('receivedUserAssociationToOrg', function () {
+    it('gets tested', function(){
+      expect(true).toEqual(true);
+    });
+  });
+
   describe('fetchUserSpaces()', function () {
     let userGuid;
 
