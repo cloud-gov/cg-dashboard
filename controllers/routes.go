@@ -1,9 +1,6 @@
 package controllers
 
 import (
-	"html/template"
-	"path/filepath"
-
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gocraft/web"
 
@@ -13,7 +10,7 @@ import (
 
 // InitRouter sets up the router (and subrouters).
 // It also includes the closure middleware where we load the global Settings reference into each request.
-func InitRouter(settings *helpers.Settings, templates *template.Template, mailer mailer.Mailer) *web.Router {
+func InitRouter(settings *helpers.Settings, templates *helpers.Templates, mailer mailer.Mailer) *web.Router {
 	if settings == nil {
 		return nil
 	}
@@ -86,7 +83,10 @@ func InitApp(envVars helpers.EnvVars, env *cfenv.App) (*web.Router, *helpers.Set
 	}
 
 	// Cache templates
-	templates := template.Must(template.ParseFiles(filepath.Join(settings.BasePath, "static", "index.html")))
+	templates, err := helpers.InitTemplates(settings.BasePath)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	// Initialize the router
 	router := InitRouter(&settings, templates, mailer)

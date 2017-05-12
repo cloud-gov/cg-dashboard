@@ -9,6 +9,7 @@ import (
 
 	"github.com/18F/cg-dashboard/controllers"
 	. "github.com/18F/cg-dashboard/helpers/testhelpers"
+	. "github.com/18F/cg-dashboard/helpers/testhelpers/docker"
 )
 
 func TestPing(t *testing.T) {

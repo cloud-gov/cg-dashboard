@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"bytes"
 	"fmt"
 
 	"encoding/json"
@@ -73,10 +74,17 @@ func (c *UAAContext) TriggerInvite(rw web.ResponseWriter, inviteReq inviteReques
 		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"Missing correct params.\"}"))
 		return
 	}
-	errEmail := c.mailer.SendInviteEmail(inviteReq.Email, inviteReq.InviteURL)
-	if errEmail != nil {
+	emailHTML := new(bytes.Buffer)
+	err := c.templates.GetInviteEmail(emailHTML, inviteReq.InviteURL)
+	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
-		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + errEmail.Error() + "\" }"))
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\" }"))
+		return
+	}
+	err = c.mailer.SendEmail(inviteReq.Email, "Invitation to join cloud.gov", emailHTML.Bytes())
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\" }"))
 		return
 	}
 	rw.Write([]byte("{\"status\": \"success\", \"email\": \"" + inviteReq.Email + "\", \"invite\": \"" + inviteReq.InviteURL + "\" }"))
