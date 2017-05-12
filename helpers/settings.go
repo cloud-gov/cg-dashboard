@@ -51,16 +51,6 @@ type Settings struct {
 	SecureCookies bool
 	// URL where this app is hosted
 	AppURL string
-	// SMTP host for UAA invites
-	SMTPHost string
-	// SMTP post for UAA invites
-	SMTPPort string
-	// SMTP user for UAA invites
-	SMTPUser string
-	// SMTP password for UAA invites
-	SMTPPass string
-	// SMTP from address for UAA invites
-	SMTPFrom string
 	// Type of session backend
 	SessionBackend string
 	// Returns whether the backend is up.
