@@ -54,4 +54,14 @@ describe('uaaApi', function() {
       expect(http.get).toHaveBeenCalledWith(sinon.match(/\/uaainfo\?uaa_guid=user123$/));
     });
   });
+
+  describe('getInviteUaaUser()', function () {
+    it('should work', function () {
+    });
+  });
+
+  describe('sendInviteEmail()', function () {
+    it('should work', function () {
+    });
+  });
 });
