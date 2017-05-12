@@ -22,7 +22,7 @@ export default {
 
   sendInviteEmail(response) {
     const params = {
-      invite_url: false,
+      inviteUrl: false,
       email: false
     };
     if (response.new_invites.length > 0) {
