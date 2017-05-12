@@ -44,7 +44,7 @@ func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
 
 type inviteRequest struct {
 	Email     string `json:"email"`
-	InviteURL string `json:"invite_url"`
+	InviteURL string `json:"inviteUrl"`
 }
 
 // SendInvite sends users an email with a link to the UAA invite

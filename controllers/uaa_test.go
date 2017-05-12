@@ -198,7 +198,7 @@ var emailInvitedUsersTests = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
-				TestName:    "Missing invite_url parameter",
+				TestName:    "Missing inviteUrl parameter",
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
@@ -214,7 +214,7 @@ var emailInvitedUsersTests = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
-				TestName:    "Missing invite_url parameter",
+				TestName:    "Missing inviteUrl parameter",
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
@@ -224,13 +224,13 @@ var emailInvitedUsersTests = []BasicProxyTest{
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "POST",
 		RequestPath:   "/uaa/invite/email",
-		RequestBody:   []byte(`{"invite_url": "http://localhost:9999/invitehere?123"}`),
+		RequestBody:   []byte(`{"inviteUrl": "http://localhost:9999/invitehere?123"}`),
 		ExpectedPath:  "/Users",
 	},
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
-				TestName:    "Working request example where email and invite_url are in json request",
+				TestName:    "Working request example where email and inviteUrl are in json request",
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
@@ -240,7 +240,7 @@ var emailInvitedUsersTests = []BasicProxyTest{
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "POST",
 		RequestPath:   "/uaa/invite/email",
-		RequestBody:   []byte("{\"email\": \"name@domain.com\", \"invite_url\": \"http://localhost:9999/invitehere?123\"}"),
+		RequestBody:   []byte("{\"email\": \"name@domain.com\", \"inviteUrl\": \"http://localhost:9999/invitehere?123\"}"),
 		ExpectedPath:  "/Users",
 	},
 }
