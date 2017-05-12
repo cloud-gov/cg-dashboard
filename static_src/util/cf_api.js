@@ -423,6 +423,34 @@ export default {
   },
 
   // TODO refactor with org user permissions
+  postCreateNewUserWithGuid(userGuid) {
+    // return http.put(`${APIV}/users/${userGuid}/${role}/${orgGuid}/`)
+    return http.post(`${APIV}/users`, {
+      guid: userGuid
+    })
+      .then(res => this.formatSplitResponse(res.data))
+      .catch(res => {
+        if (res && res.response && res.response.status === 400) {
+          // The user is unauthenicated.
+          return Promise.resolve({ guid: userGuid });
+        }
+        // At this point we're not sure if the user is auth'd or not. Treat it
+        // as an error condition.
+        const err = parseError(res);
+
+        // Let someone else handle the error
+        return Promise.reject(err);
+      });
+  },
+
+  // TODO refactor with org user permissions
+  putAssociateUserToOrganization(userGuid, orgGuid) {
+    // return http.put(`${APIV}/users/${userGuid}/${role}/${orgGuid}/`)
+    return http.put(`${APIV}/users/${userGuid}/organizations/${orgGuid}`)
+      .then((res) => this.formatSplitResponse(res.data));
+  },
+
+  // TODO refactor with org user permissions
   deleteSpaceUserPermissions(userGuid, spaceGuid, role) {
     return http.delete(`${APIV}/spaces/${spaceGuid}/${role}/${userGuid}`)
       .then((res) => res.response, (err) => {
