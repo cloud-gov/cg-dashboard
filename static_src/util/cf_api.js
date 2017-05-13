@@ -430,9 +430,12 @@ export default {
       .then(res => this.formatSplitResponse(res.data))
       .catch(res => {
         if (res && res.response && res.response.status === 400) {
-          // The user is unauthenicated.
-          return Promise.resolve({ guid: userGuid });
+          if (res.data.error_code === 'CF-UaaIdTaken') {
+            return Promise.resolve({ guid: userGuid });
+          }
         }
+        const err = parseError(res);
+        return Promise.reject(err);
       });
   },
 
