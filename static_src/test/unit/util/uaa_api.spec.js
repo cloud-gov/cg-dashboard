@@ -67,7 +67,7 @@ describe('uaaApi', function() {
         expect(args[0]).toMatch('/invite/users');
         expect(args[1]).toMatch(expectedPayload);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
