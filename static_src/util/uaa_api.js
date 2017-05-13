@@ -14,7 +14,7 @@ export default {
       .then(res => res.data);
   },
 
-  getInviteUaaUser(email) {
+  inviteUaaUser(email) {
     return http.post(`${URL}/invite/users`, {
       emails: [email]
     }).then(res => res.data);

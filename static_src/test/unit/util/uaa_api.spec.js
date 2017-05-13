@@ -55,13 +55,13 @@ describe('uaaApi', function() {
     });
   });
 
-  describe('getInviteUaaUser()', function () {
+  describe('inviteUaaUser()', function () {
     it('should make invite uaa request and receive proper payload', function () {
       const email = 'email@domain.com';
       const expectedPayload = { email: ['email@domain.com'] };
       const spy = sandbox.stub(http, 'post');
       spy.returns(createPromise({response: 'success'}));
-      uaaApi.getInviteUaaUser(email).then(() => {
+      uaaApi.inviteUaaUser(email).then(() => {
         const args = spy.getCall(0).args;
         expect(spy).toHaveBeenCalledOnce();
         expect(args[0]).toMatch('/invite/users');
