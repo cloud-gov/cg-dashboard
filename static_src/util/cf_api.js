@@ -433,12 +433,6 @@ export default {
           // The user is unauthenicated.
           return Promise.resolve({ guid: userGuid });
         }
-        // At this point we're not sure if the user is auth'd or not. Treat it
-        // as an error condition.
-        const err = parseError(res);
-
-        // Let someone else handle the error
-        return Promise.reject(err);
       });
   },
 
