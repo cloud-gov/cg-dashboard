@@ -414,7 +414,6 @@ export default {
     );
   },
 
-  // TODO refactor with org user permissions
   putSpaceUserPermissions(userGuid, spaceGuid, role) {
     return http.put(`${APIV}/spaces/${spaceGuid}/${role}/${userGuid}`)
       .then((res) => res.response, () => {
@@ -422,7 +421,6 @@ export default {
       });
   },
 
-  // TODO refactor with org user permissions
   postCreateNewUserWithGuid(userGuid) {
     return http.post(`${APIV}/users`, {
       guid: userGuid
@@ -439,9 +437,7 @@ export default {
       });
   },
 
-  // TODO refactor with org user permissions
   putAssociateUserToOrganization(userGuid, orgGuid) {
-    // return http.put(`${APIV}/users/${userGuid}/${role}/${orgGuid}/`)
     return http.put(`${APIV}/users/${userGuid}/organizations/${orgGuid}`)
       .then((res) => this.formatSplitResponse(res.data));
   },
