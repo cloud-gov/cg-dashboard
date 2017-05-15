@@ -368,8 +368,18 @@ describe('userActions', function() {
   });
 
   describe('receiveUserInvite', function () {
-    it('gets tested', function(){
-      expect(true).toEqual(true);
+    let inviteData;
+    beforeEach(function (done) {
+      inviteData = { new_invites:[{ userId: "fake-udid" }] };
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      userActions.receiveUserInvite(inviteData)
+        .then(done, done.fail);
+    });
+
+    it('dispatches action', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_INVITE_RECEIVED
+      }));
     });
   });
 
