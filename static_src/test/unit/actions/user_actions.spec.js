@@ -417,8 +417,20 @@ describe('userActions', function() {
   });
 
   describe('fetchUserAssociationToOrg', function () {
-    it('gets tested', function(){
-      expect(true).toEqual(true);
+    let user;
+    let OrgStore = {};
+    beforeEach(function (done) {
+      user = { guid: "fake-udid" };
+      OrgStore.currentOrgGuid = "fake-org-guid";
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      userActions.fetchUserAssociationToOrg(user)
+        .then(done, done.fail);
+    });
+
+    it('dispatches action', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
+      }));
     });
   });
 
