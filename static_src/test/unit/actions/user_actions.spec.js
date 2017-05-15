@@ -403,8 +403,16 @@ describe('userActions', function() {
   });
 
   describe('sendUserInviteEmail', function () {
-    it('gets tested', function(){
-      expect(true).toEqual(true);
+    let inviteData;
+    beforeEach(function (done) {
+      inviteData = { new_invites:[{ userId: "fake-udid" }] };
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      userActions.sendUserInviteEmail(inviteData)
+        .then(done, done.fail);
+    });
+
+    it('dispatches action', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match(inviteData));
     });
   });
 
