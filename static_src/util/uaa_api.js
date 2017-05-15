@@ -21,10 +21,7 @@ export default {
   },
 
   sendInviteEmail(response) {
-    const params = {
-      inviteUrl: false,
-      email: false
-    };
+    const params = {};
     if (response.new_invites.length > 0) {
       params.email = response.new_invites[0].email;
       params.inviteUrl = response.new_invites[0].inviteLink;
