@@ -80,7 +80,7 @@ describe('cfApi', function() {
   });
 
   describe('postCreateNewUserWithGuid()', function() {
-    it('test the request on the post request', function(done) {
+    it('create a new user through a post request to cloud foundry', function(done) {
       const userGuid = 'fake-user-guid';
       const expectedPayload = {
         guid: userGuid,
@@ -99,7 +99,7 @@ describe('cfApi', function() {
   });
 
   describe('putAssociateUserToOrganization()', function() {
-    it('test adding a user to an org', function(done) {
+    it('add a user to an org on cloud foundry', function(done) {
       const orgGuid = 'fake-org-guid';
       const userGuid = 'fake-user-guid';
       const spy = sandbox.stub(http, 'put');
