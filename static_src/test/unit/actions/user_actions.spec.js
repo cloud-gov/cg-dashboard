@@ -384,8 +384,21 @@ describe('userActions', function() {
   });
 
   describe('receiveUserInCF', function () {
-    it('gets tested', function(){
-      expect(true).toEqual(true);
+    let user;
+    let inviteData;
+    beforeEach(function (done) {
+      user = {guid: "fake-udid"};
+      inviteData = { new_invites:[{ userId: "fake-udid" }] };
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      userActions.receiveUserInvite(user, inviteData)
+        .then(done, done.fail);
+    });
+
+    it('dispatches action', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_IN_CF_CREATED,
+        user
+      }));
     });
   });
 
