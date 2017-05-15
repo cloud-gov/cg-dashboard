@@ -65,14 +65,25 @@ describe('uaaApi', function() {
         const args = spy.getCall(0).args;
         expect(spy).toHaveBeenCalledOnce();
         expect(args[0]).toMatch('/uaa/invite/users');
-        expect(args[1]).toBe(expectedPayload);
+        expect(args[1]).toEqual(expectedPayload);
         done();
       }).catch(done.fail);
     });
   });
 
   describe('sendInviteEmail()', function () {
-    it('should work', function () {
+    it('should make request to send an email invite', function (done) {
+      const inviteResponse = { new_invites: [ { email: "name@domain.com", inviteLink: "www.place.com" } ] };
+      const expectedPayload = { email: "name@domain.com", inviteUrl: "www.place.com" };
+      const spy = sandbox.stub(http, 'post');
+      spy.returns(createPromise({response: 'success'}));
+      uaaApi.sendInviteEmail(inviteResponse).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch('/uaa/invite/email');
+        expect(args[1]).toEqual(expectedPayload);
+        done();
+      }).catch(done.fail);
     });
   });
 });
