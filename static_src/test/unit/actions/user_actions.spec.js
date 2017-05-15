@@ -362,12 +362,6 @@ describe('userActions', function() {
     });
   });
 
-  describe('createUserInCF', function () {
-    it('gets tested', function(){
-      expect(true).toEqual(true);
-    });
-  });
-
   describe('receiveUserInCF', function () {
     it('gets tested', function(){
       expect(true).toEqual(true);
