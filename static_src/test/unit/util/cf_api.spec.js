@@ -79,6 +79,41 @@ describe('cfApi', function() {
     });
   });
 
+  describe('postCreateNewUserWithGuid()', function() {
+    it('create a new user through a post request to cloud foundry', function(done) {
+      const userGuid = 'fake-user-guid';
+      const expectedPayload = {
+        guid: userGuid,
+      };
+      const spy = sandbox.stub(http, 'post');
+      spy.returns(createPromise({ data: {}}));
+
+      cfApi.postCreateNewUserWithGuid(userGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch('/users');
+        expect(args[1]).toEqual(expectedPayload);
+        done();
+      });
+    });
+  });
+
+  describe('putAssociateUserToOrganization()', function() {
+    it('add a user to an org on cloud foundry', function(done) {
+      const orgGuid = 'fake-org-guid';
+      const userGuid = 'fake-user-guid';
+      const spy = sandbox.stub(http, 'put');
+      spy.returns(createPromise({ data: {}}));
+
+      cfApi.putAssociateUserToOrganization(userGuid, orgGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch(`/users/${userGuid}/organizations/${orgGuid}`);
+        done();
+      });
+    });
+  });
+
   describe('formatSplitResponse()', function() {
     var testRezs;
 
@@ -999,7 +1034,7 @@ describe('cfApi', function() {
     });
   });
 
-  describe('deleteOrgUserPermissions()', function() {
+  describe('putOrgUserPermissions()', function() {
     it('should call an http put request on org user with permissions', function() {
       var spy = sandbox.spy(http, 'put'),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',

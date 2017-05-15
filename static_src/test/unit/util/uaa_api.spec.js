@@ -54,4 +54,36 @@ describe('uaaApi', function() {
       expect(http.get).toHaveBeenCalledWith(sinon.match(/\/uaainfo\?uaa_guid=user123$/));
     });
   });
+
+  describe('inviteUaaUser()', function () {
+    it('should make invite uaa request and receive proper payload', function (done) {
+      const email = 'email@domain.com';
+      const expectedPayload = { emails: ['email@domain.com'] };
+      const spy = sandbox.stub(http, 'post');
+      spy.returns(createPromise({response: 'success'}));
+      uaaApi.inviteUaaUser(email).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch('/uaa/invite/users');
+        expect(args[1]).toEqual(expectedPayload);
+        done();
+      }).catch(done.fail);
+    });
+  });
+
+  describe('sendInviteEmail()', function () {
+    it('should make request to send an email invite', function (done) {
+      const inviteResponse = { new_invites: [ { email: "name@domain.com", inviteLink: "www.place.com" } ] };
+      const expectedPayload = { email: "name@domain.com", inviteUrl: "www.place.com" };
+      const spy = sandbox.stub(http, 'post');
+      spy.returns(createPromise({response: 'success'}));
+      uaaApi.sendInviteEmail(inviteResponse).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch('/uaa/invite/email');
+        expect(args[1]).toEqual(expectedPayload);
+        done();
+      }).catch(done.fail);
+    });
+  });
 });

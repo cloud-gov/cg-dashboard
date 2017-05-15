@@ -414,12 +414,32 @@ export default {
     );
   },
 
-  // TODO refactor with org user permissions
   putSpaceUserPermissions(userGuid, spaceGuid, role) {
     return http.put(`${APIV}/spaces/${spaceGuid}/${role}/${userGuid}`)
       .then((res) => res.response, () => {
         // TODO figure out error action
       });
+  },
+
+  postCreateNewUserWithGuid(userGuid) {
+    return http.post(`${APIV}/users`, {
+      guid: userGuid
+    })
+      .then(res => this.formatSplitResponse(res.data))
+      .catch(res => {
+        if (res && res.response && res.response.status === 400) {
+          if (res.data.error_code === 'CF-UaaIdTaken') {
+            return Promise.resolve({ guid: userGuid });
+          }
+        }
+        const err = parseError(res);
+        return Promise.reject(err);
+      });
+  },
+
+  putAssociateUserToOrganization(userGuid, orgGuid) {
+    return http.put(`${APIV}/users/${userGuid}/organizations/${orgGuid}`)
+      .then((res) => this.formatSplitResponse(res.data));
   },
 
   // TODO refactor with org user permissions
