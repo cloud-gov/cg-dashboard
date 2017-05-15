@@ -357,25 +357,21 @@ describe('userActions', function() {
 
       let spy = setupViewSpy(sandbox)
 
-      userActions.fetchUserInvite("name@domain.com");
+      userActions.fetchUserInvite(email);
 
       assertAction(spy, userActionTypes.USER_INVITE_FETCH, email);
     });
   });
 
   describe('receiveUserInvite', function () {
-    let inviteData;
-    beforeEach(function (done) {
-      inviteData = { new_invites:[{ userId: "fake-udid" }] };
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      userActions.receiveUserInvite(inviteData)
-        .then(done, done.fail);
-    });
+    it('calls action with expected params', function() {
+      var inviteData = { new_invites:[{ userId: "fake-udid" }] };
 
-    it('dispatches action', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_INVITE_RECEIVED
-      }));
+      let spy = setupViewSpy(sandbox)
+
+      userActions.receiveUserInvite(inviteData);
+
+      assertAction(spy, userActionTypes.USER_INVITE_RECEIVED);
     });
   });
 
