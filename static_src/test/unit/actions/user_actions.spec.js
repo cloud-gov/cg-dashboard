@@ -354,6 +354,7 @@ describe('userActions', function() {
     let email;
     beforeEach(function (done) {
       email = "name@place.com";
+      sandbox.stub(uaaApi, 'inviteUaaUser').returns(Promise.resolve([]));
       sandbox.stub(AppDispatcher, 'handleServerAction');
       userActions.fetchUserInvite(email)
         .then(done, done.fail);
@@ -364,6 +365,10 @@ describe('userActions', function() {
         type: userActionTypes.USER_INVITE_FETCH,
         email
       }));
+    });
+
+    it('calls the inviteUaaUser', function () {
+      expect(userActions.inviteUaaUser).toHaveBeenCalledOnce();
     });
   });
 

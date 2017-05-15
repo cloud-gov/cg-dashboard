@@ -126,7 +126,7 @@ const userActions = {
       email
     });
 
-    return uaaApi.getInviteUaaUser(email)
+    return uaaApi.inviteUaaUser(email)
       .then(data => userActions.receiveUserInvite(data));
   },
 
