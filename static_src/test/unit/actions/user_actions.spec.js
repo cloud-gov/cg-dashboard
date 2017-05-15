@@ -435,8 +435,22 @@ describe('userActions', function() {
   });
 
   describe('receivedUserAssociationToOrg', function () {
-    it('gets tested', function(){
-      expect(true).toEqual(true);
+    let user;
+    let orgGuid;
+    beforeEach(function (done) {
+      user = {guid: "fake-udid"};
+      orgGuid = "fake-org-udid";
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      userActions.receiveUserInvite(user, orgGuid)
+        .then(done, done.fail);
+    });
+
+    it('dispatches action', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
+        user,
+        orgGuid
+      }));
     });
   });
 
