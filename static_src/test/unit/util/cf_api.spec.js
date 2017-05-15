@@ -99,7 +99,7 @@ describe('cfApi', function() {
   });
 
   describe('putAssociateUserToOrganization()', function() {
-    it('should have tests', function(done) {
+    it('test adding a user to an org', function(done) {
       const orgGuid = 'fake-org-guid';
       const userGuid = 'fake-user-guid';
       const spy = sandbox.stub(http, 'put');
