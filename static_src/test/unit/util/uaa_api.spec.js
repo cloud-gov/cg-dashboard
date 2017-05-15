@@ -58,14 +58,14 @@ describe('uaaApi', function() {
   describe('inviteUaaUser()', function () {
     it('should make invite uaa request and receive proper payload', function (done) {
       const email = 'email@domain.com';
-      const expectedPayload = { email: ['email@domain.com'] };
+      const expectedPayload = { emails: ['email@domain.com'] };
       const spy = sandbox.stub(http, 'post');
       spy.returns(createPromise({response: 'success'}));
       uaaApi.inviteUaaUser(email).then(() => {
         const args = spy.getCall(0).args;
         expect(spy).toHaveBeenCalledOnce();
-        expect(args[0]).toMatch('/invite/users');
-        expect(args[1]).toMatch(expectedPayload);
+        expect(args[0]).toMatch('/uaa/invite/users');
+        expect(args[1]).toBe(expectedPayload);
         done();
       }).catch(done.fail);
     });
