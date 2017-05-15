@@ -1034,7 +1034,7 @@ describe('cfApi', function() {
     });
   });
 
-  describe('deleteOrgUserPermissions()', function() {
+  describe('putOrgUserPermissions()', function() {
     it('should call an http put request on org user with permissions', function() {
       var spy = sandbox.spy(http, 'put'),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
