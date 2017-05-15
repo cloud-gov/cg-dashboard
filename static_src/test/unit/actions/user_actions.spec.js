@@ -9,6 +9,7 @@ import uaaApi from '../../../util/uaa_api.js';
 import userActions from '../../../actions/user_actions.js';
 import { userActionTypes } from '../../../constants.js';
 import UserStore from '../../../stores/user_store';
+import OrgStore from '../../../stores/org_store';
 
 describe('userActions', function() {
   var sandbox;
@@ -351,24 +352,14 @@ describe('userActions', function() {
   });
 
   describe('fetchUserInvite', function () {
-    let email;
-    beforeEach(function (done) {
-      email = "name@place.com";
-      sandbox.stub(uaaApi, 'inviteUaaUser').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      userActions.fetchUserInvite(email)
-        .then(done, done.fail);
-    });
+    it('calls action with expected params', function() {
+      var email = "name@domain.com"
 
-    it('dispatches action', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_INVITE_FETCH,
-        email
-      }));
-    });
+      let spy = setupViewSpy(sandbox)
 
-    it('calls the inviteUaaUser', function () {
-      expect(userActions.inviteUaaUser).toHaveBeenCalledOnce();
+      userActions.fetchUserInvite("name@domain.com");
+
+      assertAction(spy, userActionTypes.USER_INVITE_FETCH, email);
     });
   });
 
@@ -423,10 +414,9 @@ describe('userActions', function() {
 
   describe('fetchUserAssociationToOrg', function () {
     let user;
-    let OrgStore = {};
     beforeEach(function (done) {
       user = { guid: "fake-udid" };
-      OrgStore.currentOrgGuid = "fake-org-guid";
+      sandbox.stub(OrgStore, 'get').returns("fake-org-guid");
       sandbox.stub(AppDispatcher, 'handleServerAction');
       userActions.fetchUserAssociationToOrg(user)
         .then(done, done.fail);
