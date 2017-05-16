@@ -173,7 +173,7 @@ const userActions = {
 
   associatedUserToOrg(user, orgGuid) {
     AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
+      type: userActionTypes.USER_ORG_ASSOCIATIED,
       user,
       orgGuid
     });

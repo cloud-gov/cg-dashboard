@@ -328,7 +328,7 @@ describe('userActions', function() {
   });
 
   describe('associatedUserToOrg', function () {
-    it('should dispatch USER_ORG_ASSOCIATION_RECEIVED notice with user and org', function() {
+    it('should dispatch USER_ORG_ASSOCIATIED notice with user and org', function() {
       var user = { guid: "fake-udid" },
           orgGuid = "fake-org-udid";
 
@@ -341,7 +341,7 @@ describe('userActions', function() {
 
       userActions.associatedUserToOrg(user, orgGuid);
 
-      assertAction(spy, userActionTypes.USER_ORG_ASSOCIATION_RECEIVED, expectedParams);
+      assertAction(spy, userActionTypes.USER_ORG_ASSOCIATIED, expectedParams);
     });
   });
 
