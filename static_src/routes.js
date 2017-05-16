@@ -64,7 +64,8 @@ export function overview(next) {
   next();
 }
 
-export function org(orgGuid, next) {
+export function org(orgGuid, next)
+{
   // Reset the state
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
