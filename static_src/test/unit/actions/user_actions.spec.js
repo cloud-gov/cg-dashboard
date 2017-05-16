@@ -275,22 +275,17 @@ describe('userActions', function() {
   });
 
   describe('sendUserInviteEmail', function () {
-    let inviteData;
-    beforeEach(function (done) {
-      inviteData = { new_invites:[{ userId: "fake-udid" }] };
-      sandbox.stub(uaaApi, 'sendInviteEmail').returns(Promise.resolve());
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      userActions.sendUserInviteEmail(inviteData)
-        .then(done, done.fail);
-    });
+    it('should trigger request for invite email', function () {
+      var userGuid = "fake-user-udid";
+      var inviteData = { new_invites: [{ userId: userGuid }] };
+      let spy = setupServerSpy(sandbox);
 
-    it('should announce email was sent', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_EMAIL_INVITE
-      }));
-    });
+      sandbox.stub(uaaApi, 'sendInviteEmail');
 
-    it('should trigger uaa api to send off email', function () {
+      userActions.sendUserInviteEmail(inviteData);
+
+      assertAction(spy, userActionTypes.USER_EMAIL_INVITE);
+
       expect(uaaApi.sendInviteEmail).toHaveBeenCalledOnce();
     });
   });
