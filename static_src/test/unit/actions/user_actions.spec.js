@@ -328,7 +328,7 @@ describe('userActions', function() {
   });
 
   describe('associatedUserToOrg', function () {
-    it('should dispatch a view event with user and org associated', function() {
+    it('should dispatch USER_ORG_ASSOCIATION_RECEIVED notice with user and org', function() {
       var user = { guid: "fake-udid" },
           orgGuid = "fake-org-udid";
 
