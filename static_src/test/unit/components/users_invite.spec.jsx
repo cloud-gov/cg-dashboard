@@ -24,11 +24,8 @@ describe('<UsersInvite />', function () {
   afterEach(function () {
     sandbox.restore();
   });
+
   it('renders one <Form /> components', () => {
     expect(userInvite.find(Form)).to.have.length(1);
-  });
-
-  it('renders one <Action /> components', () => {
-    expect(userInvite.find(Action)).to.have.length(1);
   });
 });
