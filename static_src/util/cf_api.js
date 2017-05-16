@@ -428,7 +428,7 @@ export default {
       .then(res => this.formatSplitResponse(res.data))
       .catch(res => {
         if (res && res.response && res.response.status === 400) {
-          if (res.data.error_code === 'CF-UaaIdTaken') {
+          if (res.response.data.error_code === 'CF-UaaIdTaken') {
             return Promise.resolve({ guid: userGuid });
           }
         }
