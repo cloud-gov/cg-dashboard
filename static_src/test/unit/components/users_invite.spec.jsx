@@ -5,7 +5,6 @@ import { shallow } from 'enzyme';
 
 import { Form } from '../../../components/form';
 import UsersInvite from '../../../components/users_invite.jsx';
-import Action from '../../../components/action.jsx';
 
 import FormStore from '../../stores/form_store';
 

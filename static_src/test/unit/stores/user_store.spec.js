@@ -176,12 +176,10 @@ describe('UserStore', function () {
   describe('on org user association received', function() {
     it('should emit a change event if data changed', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
+      const user = { guid: "fake-user-guid" }
+      const orgGuid = "fake-org-guid"
 
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.USER_ORG_ASSOCIATED,
-        user: { guid: 'blah' },
-        orgGuid: 'adsfa'
-      });
+      UserActions.associatedUserToOrg(user, orgGuid)
 
       expect(spy).toHaveBeenCalledOnce();
     });
