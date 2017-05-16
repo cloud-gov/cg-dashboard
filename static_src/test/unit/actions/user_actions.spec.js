@@ -227,7 +227,7 @@ describe('userActions', function() {
       inviteData = { new_invites: [{ userId: userGuid }] };
       sandbox.stub(cfApi, 'postCreateNewUserWithGuid').returns(Promise.resolve([]));
       sandbox.stub(AppDispatcher, 'handleServerAction');
-      sandbox.stub(userActions, 'receiveUserInCF').returns(Promise.resolve());
+      sandbox.stub(userActions, 'receiveUserForCF').returns(Promise.resolve());
       userActions.receiveUserInvite(inviteData)
         .then(done, done.fail);
     });
@@ -243,7 +243,7 @@ describe('userActions', function() {
     });
   });
 
-  describe('receiveUserInCF', function () {
+  describe('receiveUserForCF', function () {
     let userGuid;
     let user;
     let inviteData;
@@ -254,7 +254,7 @@ describe('userActions', function() {
       sandbox.stub(userActions, 'sendUserInviteEmail').returns(Promise.resolve());
       sandbox.stub(userActions, 'associateUserToOrg').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleServerAction');
-      userActions.receiveUserInCF(user, inviteData)
+      userActions.receiveUserForCF(user, inviteData)
         .then(done, done.fail);
     });
 

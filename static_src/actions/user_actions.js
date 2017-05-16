@@ -138,10 +138,10 @@ const userActions = {
     const userGuid = inviteData.new_invites[0].userId;
 
     return cfApi.postCreateNewUserWithGuid(userGuid)
-      .then(user => userActions.receiveUserInCF(user, inviteData));
+      .then(user => userActions.receiveUserForCF(user, inviteData));
   },
 
-  receiveUserInCF(user, inviteData) {
+  receiveUserForCF(user, inviteData) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_IN_CF_CREATED,
       user
