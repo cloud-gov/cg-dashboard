@@ -294,19 +294,29 @@ describe('userActions', function() {
   });
 
   describe('associateUserToOrg', function () {
-    let user;
+    let user,
+        userGuid,
+        orgGuid;
     beforeEach(function (done) {
-      user = { guid: "fake-udid" };
-      sandbox.stub(OrgStore, 'get').returns("fake-org-guid");
+      userGuid = "fake-udid"
+      orgGuid = "fake-org-guid"
+      user = { guid: userGuid };
+      sandbox.stub(OrgStore, 'get').returns(orgGuid);
+      sandbox.stub(uaaApi, 'putAssociateUserToOrganization').returns(Promise.resolve());
+      sandbox.stub(userActions, 'receivedUserAssociationToOrg').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleServerAction');
       userActions.associateUserToOrg(user)
         .then(done, done.fail);
     });
 
-    it('dispatches action', function () {
+    it('completes the association to user and org', function () {
       expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
         type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
       }));
+    });
+
+    it('should trigger uaa api to send off email', function () {
+      expect(cfApi.putAssociateUserToOrganization).toHaveBeenCalledWith(user.guid, orgGuid);
     });
   });
 
