@@ -252,7 +252,7 @@ describe('userActions', function() {
       user = {guid: "fake-udid"};
       inviteData = { new_invites:[{ userId: "fake-udid" }] };
       sandbox.stub(userActions, 'sendUserInviteEmail').returns(Promise.resolve());
-      sandbox.stub(userActions, 'fetchUserAssociationToOrg').returns(Promise.resolve());
+      sandbox.stub(userActions, 'associateUserToOrg').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleServerAction');
       userActions.receiveUserInCF(user, inviteData)
         .then(done, done.fail);
@@ -270,7 +270,7 @@ describe('userActions', function() {
     });
 
     it('should call next request to associate user', function () {
-      expect(userActions.fetchUserAssociationToOrg).toHaveBeenCalledWith(user);
+      expect(userActions.associateUserToOrg).toHaveBeenCalledWith(user);
     });
   });
 
@@ -290,6 +290,23 @@ describe('userActions', function() {
 
     it('should trigger uaa api to send off email', function () {
       expect(uaaApi.sendInviteEmail).toHaveBeenCalledWith(inviteData);
+    });
+  });
+
+  describe('associateUserToOrg', function () {
+    let user;
+    beforeEach(function (done) {
+      user = { guid: "fake-udid" };
+      sandbox.stub(OrgStore, 'get').returns("fake-org-guid");
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      userActions.associateUserToOrg(user)
+        .then(done, done.fail);
+    });
+
+    it('dispatches action', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
+      }));
     });
   });
 
@@ -474,23 +491,6 @@ describe('userActions', function() {
       }));
     });
   });
-
-  // describe('fetchUserAssociationToOrg', function () {
-  //   let user;
-  //   beforeEach(function (done) {
-  //     user = { guid: "fake-udid" };
-  //     sandbox.stub(OrgStore, 'get').returns("fake-org-guid");
-  //     sandbox.stub(AppDispatcher, 'handleServerAction');
-  //     userActions.fetchUserAssociationToOrg(user)
-  //       .then(done, done.fail);
-  //   });
-
-  //   it('dispatches action', function () {
-  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-  //       type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
-  //     }));
-  //   });
-  // });
 
   // describe('receivedUserAssociationToOrg', function () {
   //   let user;

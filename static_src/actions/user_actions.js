@@ -151,7 +151,7 @@ const userActions = {
       userActions.sendUserInviteEmail(inviteData);
     }
     // Once the user exists in CF, associate them to the organization.
-    return userActions.fetchUserAssociationToOrg(user);
+    return userActions.associateUserToOrg(user);
   },
 
   sendUserInviteEmail(inviteData) {
@@ -161,7 +161,7 @@ const userActions = {
     uaaApi.sendInviteEmail(inviteData);
   },
 
-  fetchUserAssociationToOrg(user) {
+  associateUserToOrg(user) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
     });
