@@ -274,6 +274,25 @@ describe('userActions', function() {
     });
   });
 
+  describe('sendUserInviteEmail', function () {
+    let inviteData;
+    beforeEach(function (done) {
+      inviteData = { new_invites:[{ userId: "fake-udid" }] };
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      sandbox.stub(uaaApi, 'sendInviteEmail').returns(Promise.resolve());
+      userActions.sendUserInviteEmail(inviteData)
+        .then(done, done.fail);
+    });
+
+    it('should announce email was sent', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match(inviteData));
+    });
+
+    it('should trigger uaa api to send off email', function () {
+      expect(uaaApi.sendInviteEmail).toHaveBeenCalledWith(inviteData);
+    });
+  });
+
   describe('addUserRoles()', function() {
     it(`should call a view action to add user roles with current roles
         user guid and guid and type`, function() {
