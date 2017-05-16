@@ -12,10 +12,12 @@ const USERS_INVITE_FORM_GUID = 'users-invite-form';
 
 describe('<UsersInvite />', function () {
   let sandbox;
+  let userInvite;
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
     FormStore.create(USERS_INVITE_FORM_GUID);
+    userInvite = shallow(<UsersInvite />);
   });
 
   afterEach(function () {
@@ -23,7 +25,6 @@ describe('<UsersInvite />', function () {
   });
 
   it('renders one <Form /> components', () => {
-    const userInvite = shallow(<UsersInvite />);
     expect(userInvite.find(Form)).to.have.length(1);
   });
 });
