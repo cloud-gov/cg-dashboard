@@ -295,52 +295,51 @@ describe('userActions', function() {
   //   });
   // });
 
-  describe('associateUserToOrg', function () {
-    let user;
-    let userGuid;
-    let orgGuid;
-    beforeEach(function (done) {
-      userGuid = "fake-udid";
-      orgGuid = "fake-org-guid";
-      user = { guid: userGuid };
-      sandbox.stub(OrgStore, 'get').returns(orgGuid);
-      sandbox.stub(cfApi, 'putAssociateUserToOrganization').returns(Promise.resolve());
-      sandbox.stub(userActions, 'associatedUserToOrg').returns(Promise.resolve());
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      userActions.associateUserToOrg(user)
-        .then(done, done.fail);
-    });
-
-    it('completes the association to user and org', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
-      }));
-    });
-
-    it('should trigger cf api to make put request to associate user', function () {
-      expect(cfApi.putAssociateUserToOrganization).toHaveBeenCalledWith(user.guid, orgGuid);
-    });
-  });
-
-  // describe('associatedUserToOrg', function () {
+  // describe('associateUserToOrg', function () {
   //   let user;
+  //   let userGuid;
   //   let orgGuid;
   //   beforeEach(function (done) {
-  //     user = {guid: "fake-udid"};
-  //     orgGuid = "fake-org-udid";
+  //     userGuid = "fake-udid";
+  //     orgGuid = "fake-org-guid";
+  //     user = { guid: userGuid };
+  //     sandbox.stub(OrgStore, 'get').returns(orgGuid);
+  //     sandbox.stub(cfApi, 'putAssociateUserToOrganization').returns(Promise.resolve());
+  //     sandbox.stub(userActions, 'associatedUserToOrg').returns(Promise.resolve());
   //     sandbox.stub(AppDispatcher, 'handleServerAction');
-  //     userActions.receiveUserInvite(user, orgGuid)
+  //     userActions.associateUserToOrg(user)
   //       .then(done, done.fail);
   //   });
 
-  //   it('dispatches action', function () {
+  //   it('completes the association to user and org', function () {
   //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-  //       type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
-  //       user,
-  //       orgGuid
+  //       type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
   //     }));
   //   });
+
+  //   it('should trigger cf api to make put request to associate user', function () {
+  //     expect(cfApi.putAssociateUserToOrganization).toHaveBeenCalledWith(user.guid, orgGuid);
+  //   });
+
+  //   it('should call associatedUser confirmation after', function () {
+  //     expect(userActions.associatedUserToOrg).toHaveBeenCalledWith(user, orgGuid);
+  //   });
   // });
+
+  describe('associatedUserToOrg', function () {
+    it('should dispatch a view event with user and org associated', function() {
+      var user = { guid: "fake-udid" },
+          orgGuid = "fake-org-udid";
+
+      let spy = setupViewSpy(sandbox);
+
+      userActions.associatedUserToOrg(user, orgGuid);
+
+      assertAction(spy, userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
+        user,
+        orgGuid);
+    });
+  });
 
   describe('addUserRoles()', function() {
     it(`should call a view action to add user roles with current roles
