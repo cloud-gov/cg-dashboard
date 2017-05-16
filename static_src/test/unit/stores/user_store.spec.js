@@ -179,7 +179,7 @@ describe('UserStore', function () {
       const user = { guid: "fake-user-guid" }
       const orgGuid = "fake-org-guid"
 
-      UserActions.associatedUserToOrg(user, orgGuid)
+      userActions.associatedUserToOrg(user, orgGuid)
 
       expect(spy).toHaveBeenCalledOnce();
     });
