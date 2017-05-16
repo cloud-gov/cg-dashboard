@@ -226,7 +226,7 @@ describe('userActions', function() {
 
     beforeEach(function (done) {
       userGuid = "fake-udid";
-      inviteData = { new_invites:[{ userId: userGuid }] };
+      inviteData = { new_invites: [{ userId: userGuid }] };
       sandbox.stub(cfApi, 'postCreateNewUserWithGuid').returns(Promise.resolve([]));
       sandbox.stub(AppDispatcher, 'handleServerAction');
       sandbox.stub(userActions, 'receiveUserInCF').returns(Promise.resolve());
@@ -242,6 +242,35 @@ describe('userActions', function() {
 
     it('calls cfApi postCreateNewUserWithGuid', function () {
       expect(cfApi.postCreateNewUserWithGuid).toHaveBeenCalledWith(userGuid);
+    });
+  });
+
+  describe('receiveUserInCF', function () {
+    let user;
+    let inviteData;
+    beforeEach(function (done) {
+      user = {guid: "fake-udid"};
+      inviteData = { new_invites:[{ userId: "fake-udid" }] };
+      sandbox.stub(userActions, 'sendUserInviteEmail').returns(Promise.resolve());
+      sandbox.stub(userActions, 'fetchUserAssociationToOrg').returns(Promise.resolve());
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      userActions.receiveUserInCF(user, inviteData)
+        .then(done, done.fail);
+    });
+
+    it('confirms the user was created and returns a guid', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_IN_CF_CREATED,
+        user
+      }));
+    });
+
+    it('should send off email invite with invite data', function () {
+      expect(userActions.sendUserInviteEmail).toHaveBeenCalledWith(inviteData);
+    });
+
+    it('should call next request to associate user', function () {
+      expect(userActions.fetchUserAssociationToOrg).toHaveBeenCalledWith(user);
     });
   });
 
@@ -426,55 +455,6 @@ describe('userActions', function() {
       }));
     });
   });
-
-  // describe('receiveUserInvite', function () {
-  //   let inviteData;
-  //   beforeEach(function (done) {
-  //     inviteData = { new_invites:[{ userId: "fake-udid" }] };
-  //     sandbox.stub(AppDispatcher, 'handleServerAction');
-  //     userActions.receiveUserInvite(inviteData)
-  //       .then(done, done.fail);
-  //   });
-
-  //   it('dispatches action', function () {
-  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-  //       type: userActionTypes.USER_INVITE_RECEIVED
-  //     }));
-  //   });
-  // });
-
-  // describe('receiveUserInCF', function () {
-  //   let user;
-  //   let inviteData;
-  //   beforeEach(function (done) {
-  //     user = {guid: "fake-udid"};
-  //     inviteData = { new_invites:[{ userId: "fake-udid" }] };
-  //     sandbox.stub(AppDispatcher, 'handleServerAction');
-  //     userActions.receiveUserInvite(user, inviteData)
-  //       .then(done, done.fail);
-  //   });
-
-  //   it('dispatches action', function () {
-  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-  //       type: userActionTypes.USER_IN_CF_CREATED,
-  //       user
-  //     }));
-  //   });
-  // });
-
-  // describe('sendUserInviteEmail', function () {
-  //   let inviteData;
-  //   beforeEach(function (done) {
-  //     inviteData = { new_invites:[{ userId: "fake-udid" }] };
-  //     sandbox.stub(AppDispatcher, 'handleServerAction');
-  //     userActions.sendUserInviteEmail(inviteData)
-  //       .then(done, done.fail);
-  //   });
-
-  //   it('dispatches action', function () {
-  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match(inviteData));
-  //   });
-  // });
 
   // describe('fetchUserAssociationToOrg', function () {
   //   let user;
