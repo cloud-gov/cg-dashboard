@@ -178,7 +178,7 @@ describe('UserStore', function () {
       var spy = sandbox.spy(UserStore, 'emitChange');
 
       AppDispatcher.handleViewAction({
-        type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
+        type: userActionTypes.USER_ORG_ASSOCIATED,
         user: { guid: 'blah' },
         orgGuid: 'adsfa'
       });
@@ -194,7 +194,7 @@ describe('UserStore', function () {
       expect(UserStore.get('wpqoifesadkzcvn')).toEqual(existingUser);
 
       AppDispatcher.handleViewAction({
-        type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
+        type: userActionTypes.USER_ORG_ASSOCIATED,
         user: { guid: 'blah' },
         orgGuid: 'adsfa'
       });
