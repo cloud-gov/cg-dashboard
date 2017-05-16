@@ -9,6 +9,7 @@ import cfApi from '../util/cf_api';
 import uaaApi from '../util/uaa_api';
 import { userActionTypes } from '../constants';
 import UserStore from '../stores/user_store';
+import OrgStore from '../stores/org_store';
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -116,6 +117,65 @@ const userActions = {
       type: userActionTypes.ERROR_REMOVE_USER,
       userGuid,
       error
+    });
+  },
+
+  fetchUserInvite(email) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_INVITE_FETCH,
+      email
+    });
+
+    return uaaApi.inviteUaaUser(email)
+      .then(data => userActions.receiveUserInvite(data));
+  },
+
+  receiveUserInvite(inviteData) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_INVITE_RECEIVED
+    });
+
+    const userGuid = inviteData.new_invites[0].userId;
+
+    return cfApi.postCreateNewUserWithGuid(userGuid)
+      .then(user => userActions.receiveUserForCF(user, inviteData));
+  },
+
+  receiveUserForCF(user, inviteData) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_IN_CF_CREATED,
+      user
+    });
+
+    if (user.guid) {
+      userActions.sendUserInviteEmail(inviteData);
+    }
+    // Once the user exists in CF, associate them to the organization.
+    return userActions.associateUserToOrg(user);
+  },
+
+  sendUserInviteEmail(inviteData) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_EMAIL_INVITE
+    });
+    uaaApi.sendInviteEmail(inviteData);
+  },
+
+  associateUserToOrg(user) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_ORG_ASSOCIATE
+    });
+    const orgGuid = OrgStore.currentOrgGuid;
+
+    return cfApi.putAssociateUserToOrganization(user.guid, orgGuid)
+      .then(userActions.associatedUserToOrg(user, orgGuid));
+  },
+
+  associatedUserToOrg(user, orgGuid) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_ORG_ASSOCIATIED,
+      user,
+      orgGuid
     });
   },
 
