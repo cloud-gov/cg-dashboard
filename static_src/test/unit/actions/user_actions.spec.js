@@ -199,11 +199,9 @@ describe('userActions', function() {
 
   describe('fetchUserInvite', function () {
     let email;
-    let inviteData;
 
     beforeEach(function (done) {
       email = 'name@place.com';
-      inviteData = { new_invites:[{ userId: "fake-udid", inviteUrl: "domain.com" }] };
       sandbox.stub(uaaApi, 'inviteUaaUser').returns(Promise.resolve([]));
       sandbox.stub(AppDispatcher, 'handleViewAction');
       sandbox.stub(userActions, 'receiveUserInvite').returns(Promise.resolve());
@@ -218,7 +216,30 @@ describe('userActions', function() {
       }));
     });
 
-    it('calls uaaApi', function (done) {
+    it('calls uaaApi inviteUaaUser', function (done) {
+      expect(uaaApi.inviteUaaUser).toHaveBeenCalledWith(email);
+    });
+  });
+
+  describe('receiveUserInvite', function () {
+    let inviteData;
+
+    beforeEach(function (done) {
+      inviteData = { new_invites:[{ userId: "fake-udid" }] };
+      sandbox.stub(uaaApi, 'postCreateNewUserWithGuid').returns(Promise.resolve([]));
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      sandbox.stub(userActions, 'receiveUserInCF').returns(Promise.resolve());
+      userActions.receiveUserInvite(inviteData)
+        .then(done, done.fail);
+    });
+
+    it('should send off the email invite', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_INVITE_RECEIVED
+      }));
+    });
+
+    it('calls uaaApi postCreateNewUserWithGuid', function (done) {
       expect(uaaApi.inviteUaaUser).toHaveBeenCalledWith(email);
     });
   });
