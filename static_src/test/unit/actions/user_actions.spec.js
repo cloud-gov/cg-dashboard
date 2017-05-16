@@ -221,28 +221,29 @@ describe('userActions', function() {
     });
   });
 
-  // describe('receiveUserInvite', function () {
-  //   let inviteData;
+  describe('receiveUserInvite', function () {
+    let userGuid, inviteData;
 
-  //   beforeEach(function (done) {
-  //     inviteData = { new_invites:[{ userId: "fake-udid" }] };
-  //     sandbox.stub(uaaApi, 'postCreateNewUserWithGuid').returns(Promise.resolve([]));
-  //     sandbox.stub(AppDispatcher, 'handleServerAction');
-  //     sandbox.stub(userActions, 'receiveUserInCF').returns(Promise.resolve());
-  //     userActions.receiveUserInvite(inviteData)
-  //       .then(done, done.fail);
-  //   });
+    beforeEach(function (done) {
+      userGuid = "fake-udid";
+      inviteData = { new_invites:[{ userId: userGuid }] };
+      sandbox.stub(cfApi, 'postCreateNewUserWithGuid').returns(Promise.resolve([]));
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      sandbox.stub(userActions, 'receiveUserInCF').returns(Promise.resolve());
+      userActions.receiveUserInvite(inviteData)
+        .then(done, done.fail);
+    });
 
-  //   it('should send off the email invite', function () {
-  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-  //       type: userActionTypes.USER_INVITE_RECEIVED
-  //     }));
-  //   });
+    it('should send off the email invite', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_INVITE_RECEIVED
+      }));
+    });
 
-  //   it('calls uaaApi postCreateNewUserWithGuid', function (done) {
-  //     expect(uaaApi.inviteUaaUser).toHaveBeenCalledWith(email);
-  //   });
-  // });
+    it('calls cfApi postCreateNewUserWithGuid', function () {
+      expect(cfApi.postCreateNewUserWithGuid).toHaveBeenCalledWith(userGuid);
+    });
+  });
 
   describe('addUserRoles()', function() {
     it(`should call a view action to add user roles with current roles
