@@ -169,9 +169,6 @@ describe('userActions', function() {
     });
   });
 
-
-
-
   describe('fetchUserOrgs()', function () {
     let userGuid;
 
@@ -222,7 +219,8 @@ describe('userActions', function() {
   });
 
   describe('receiveUserInvite', function () {
-    let userGuid, inviteData;
+    let userGuid;
+    let inviteData;
 
     beforeEach(function (done) {
       userGuid = "fake-udid";
@@ -246,11 +244,13 @@ describe('userActions', function() {
   });
 
   describe('receiveUserInCF', function () {
+    let userGuid;
     let user;
     let inviteData;
     beforeEach(function (done) {
-      user = {guid: "fake-udid"};
-      inviteData = { new_invites:[{ userId: "fake-udid" }] };
+      userGuid = "fake-udid";
+      user = { guid: userGuid };
+      inviteData = { new_invites:[{ userId: userGuid }] };
       sandbox.stub(userActions, 'sendUserInviteEmail').returns(Promise.resolve());
       sandbox.stub(userActions, 'associateUserToOrg').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleServerAction');
@@ -274,37 +274,37 @@ describe('userActions', function() {
     });
   });
 
-  describe('sendUserInviteEmail', function () {
-    let inviteData;
-    beforeEach(function (done) {
-      inviteData = { new_invites:[{ userId: "fake-udid" }] };
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      sandbox.stub(uaaApi, 'sendInviteEmail').returns(Promise.resolve());
-      userActions.sendUserInviteEmail(inviteData)
-        .then(done, done.fail);
-    });
+  // describe('sendUserInviteEmail', function () {
+  //   let inviteData;
+  //   beforeEach(function (done) {
+  //     inviteData = { new_invites:[{ userId: "fake-udid" }] };
+  //     sandbox.stub(uaaApi, 'sendInviteEmail').returns(Promise.resolve());
+  //     sandbox.stub(AppDispatcher, 'handleServerAction');
+  //     userActions.sendUserInviteEmail(inviteData)
+  //       .then(done, done.fail);
+  //   });
 
-    it('should announce email was sent', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_EMAIL_INVITE
-      }));
-    });
+  //   it('should announce email was sent', function () {
+  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+  //       type: userActionTypes.USER_EMAIL_INVITE
+  //     }));
+  //   });
 
-    it('should trigger uaa api to send off email', function () {
-      expect(uaaApi.sendInviteEmail).toHaveBeenCalledWith(inviteData);
-    });
-  });
+  //   it('should trigger uaa api to send off email', function () {
+  //     expect(uaaApi.sendInviteEmail).toHaveBeenCalledWith(inviteData);
+  //   });
+  // });
 
   describe('associateUserToOrg', function () {
-    let user,
-        userGuid,
-        orgGuid;
+    let user;
+    let userGuid;
+    let orgGuid;
     beforeEach(function (done) {
-      userGuid = "fake-udid"
-      orgGuid = "fake-org-guid"
+      userGuid = "fake-udid";
+      orgGuid = "fake-org-guid";
       user = { guid: userGuid };
       sandbox.stub(OrgStore, 'get').returns(orgGuid);
-      sandbox.stub(uaaApi, 'putAssociateUserToOrganization').returns(Promise.resolve());
+      sandbox.stub(cfApi, 'putAssociateUserToOrganization').returns(Promise.resolve());
       sandbox.stub(userActions, 'associatedUserToOrg').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleServerAction');
       userActions.associateUserToOrg(user)
@@ -321,6 +321,26 @@ describe('userActions', function() {
       expect(cfApi.putAssociateUserToOrganization).toHaveBeenCalledWith(user.guid, orgGuid);
     });
   });
+
+  // describe('associatedUserToOrg', function () {
+  //   let user;
+  //   let orgGuid;
+  //   beforeEach(function (done) {
+  //     user = {guid: "fake-udid"};
+  //     orgGuid = "fake-org-udid";
+  //     sandbox.stub(AppDispatcher, 'handleServerAction');
+  //     userActions.receiveUserInvite(user, orgGuid)
+  //       .then(done, done.fail);
+  //   });
+
+  //   it('dispatches action', function () {
+  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+  //       type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
+  //       user,
+  //       orgGuid
+  //     }));
+  //   });
+  // });
 
   describe('addUserRoles()', function() {
     it(`should call a view action to add user roles with current roles
@@ -503,26 +523,6 @@ describe('userActions', function() {
       }));
     });
   });
-
-  // describe('associatedUserToOrg', function () {
-  //   let user;
-  //   let orgGuid;
-  //   beforeEach(function (done) {
-  //     user = {guid: "fake-udid"};
-  //     orgGuid = "fake-org-udid";
-  //     sandbox.stub(AppDispatcher, 'handleServerAction');
-  //     userActions.receiveUserInvite(user, orgGuid)
-  //       .then(done, done.fail);
-  //   });
-
-  //   it('dispatches action', function () {
-  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-  //       type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
-  //       user,
-  //       orgGuid
-  //     }));
-  //   });
-  // });
 
   describe('fetchUserSpaces()', function () {
     let userGuid;
