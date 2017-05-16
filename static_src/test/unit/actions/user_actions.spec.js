@@ -169,24 +169,57 @@ describe('userActions', function() {
     });
   });
 
-  describe('fetchUserInvite', function () {
-    it('should trigger the invite action for new user email', function (done) {
-      var email = "name@place.com",
-          inviteResponse = {
-            new_invites: [{
-              userId: "fake-guid",
-              email: "name@domain.com",
-              inviteLink: "domain.com"
-            }]
-          };
 
-      var spy = sinon.spy(uaaApi, 'inviteUaaUser');
-      spy.withArgs(email);
 
-      userActions.fetchUserInvite(email)
+
+  describe('fetchUserOrgs()', function () {
+    let userGuid;
+
+    beforeEach(function (done) {
+      userGuid = 'user123';
+      sandbox.stub(cfApi, 'fetchUserOrgs').returns(Promise.resolve([]));
+      sandbox.stub(AppDispatcher, 'handleViewAction');
+
+      userActions.fetchUserOrgs(userGuid)
         .then(done, done.fail);
+    });
 
-      expect(spy.withArgs(email).calledOnce).toBe(true);
+    it('dispatches USER_ORGS_FETCH', function () {
+      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_ORGS_FETCH,
+        userGuid
+      }));
+    });
+
+    it('calls cfApi', function () {
+      expect(cfApi.fetchUserOrgs).toHaveBeenCalledOnce();
+      expect(cfApi.fetchUserOrgs).toHaveBeenCalledWith(userGuid);
+    });
+  });
+
+  describe('fetchUserInvite', function () {
+    let email;
+    let inviteData;
+
+    beforeEach(function (done) {
+      email = 'name@place.com';
+      inviteData = { new_invites:[{ userId: "fake-udid", inviteUrl: "domain.com" }] };
+      sandbox.stub(uaaApi, 'inviteUaaUser').returns(Promise.resolve([]));
+      sandbox.stub(AppDispatcher, 'handleViewAction');
+      sandbox.stub(userActions, 'receiveUserInvite').returns(Promise.resolve());
+
+      userActions.fetchUserInvite(email).then(done, done.fail);
+    });
+
+    it('should trigger the invite action for new user email', function () {
+      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_INVITE_FETCH,
+        email
+      }));
+    });
+
+    it('calls uaaApi', function (done) {
+      expect(uaaApi.inviteUaaUser).toHaveBeenCalledWith(email);
     });
   });
 
