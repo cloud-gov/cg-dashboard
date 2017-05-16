@@ -33,8 +33,8 @@ func TestPingWithRedis(t *testing.T) {
 	// Create a request
 	response, request := NewTestRequest("GET", "/ping", nil)
 	// Start up redis.
-	redisUri, cleanUpRedis := CreateTestRedis()
-	os.Setenv("REDIS_URI", redisUri)
+	redisURI, cleanUpRedis := CreateTestRedis()
+	os.Setenv("REDIS_URI", redisURI)
 	// Override the mock env vars to use redis for session backend.
 	envVars := GetMockCompleteEnvVars()
 	envVars.SessionBackend = "redis"
