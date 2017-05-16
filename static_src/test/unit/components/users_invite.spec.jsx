@@ -5,6 +5,7 @@ import { shallow } from 'enzyme';
 
 import { Form } from '../../../components/form';
 import UsersInvite from '../../../components/users_invite.jsx';
+import Action from '../../../components/action.jsx';
 
 import FormStore from '../../stores/form_store';
 
@@ -23,8 +24,11 @@ describe('<UsersInvite />', function () {
   afterEach(function () {
     sandbox.restore();
   });
-
   it('renders one <Form /> components', () => {
     expect(userInvite.find(Form)).to.have.length(1);
+  });
+
+  it('renders one <Action /> components', () => {
+    expect(userInvite.find(Action)).to.have.length(1);
   });
 });
