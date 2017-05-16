@@ -243,36 +243,36 @@ describe('userActions', function() {
     });
   });
 
-  describe('receiveUserInCF', function () {
-    let userGuid;
-    let user;
-    let inviteData;
-    beforeEach(function (done) {
-      userGuid = "fake-udid";
-      user = { guid: userGuid };
-      inviteData = { new_invites:[{ userId: userGuid }] };
-      sandbox.stub(userActions, 'sendUserInviteEmail').returns(Promise.resolve());
-      sandbox.stub(userActions, 'associateUserToOrg').returns(Promise.resolve());
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      userActions.receiveUserInCF(user, inviteData)
-        .then(done, done.fail);
-    });
+  // describe('receiveUserInCF', function () {
+  //   let userGuid;
+  //   let user;
+  //   let inviteData;
+  //   beforeEach(function (done) {
+  //     userGuid = "fake-udid";
+  //     user = { guid: userGuid };
+  //     inviteData = { new_invites:[{ userId: userGuid }] };
+  //     sandbox.stub(userActions, 'sendUserInviteEmail').returns(Promise.resolve());
+  //     sandbox.stub(userActions, 'associateUserToOrg').returns(Promise.resolve());
+  //     sandbox.stub(AppDispatcher, 'handleServerAction');
+  //     userActions.receiveUserInCF(user, inviteData)
+  //       .then(done, done.fail);
+  //   });
 
-    it('confirms the user was created and returns a guid', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_IN_CF_CREATED,
-        user
-      }));
-    });
+  //   it('confirms the user was created and returns a guid', function () {
+  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+  //       type: userActionTypes.USER_IN_CF_CREATED,
+  //       user
+  //     }));
+  //   });
 
-    it('should send off email invite with invite data', function () {
-      expect(userActions.sendUserInviteEmail).toHaveBeenCalledWith(inviteData);
-    });
+  //   it('should send off email invite with invite data', function () {
+  //     expect(userActions.sendUserInviteEmail).toHaveBeenCalledWith(inviteData);
+  //   });
 
-    it('should call next request to associate user', function () {
-      expect(userActions.associateUserToOrg).toHaveBeenCalledWith(user);
-    });
-  });
+  //   it('should call next request to associate user', function () {
+  //     expect(userActions.associateUserToOrg).toHaveBeenCalledWith(user);
+  //   });
+  // });
 
   // describe('sendUserInviteEmail', function () {
   //   let inviteData;
@@ -331,13 +331,16 @@ describe('userActions', function() {
       var user = { guid: "fake-udid" },
           orgGuid = "fake-org-udid";
 
-      let spy = setupViewSpy(sandbox);
+      let expectedParams = {
+        user: user,
+        orgGuid: orgGuid
+      };
+
+      let spy = setupServerSpy(sandbox);
 
       userActions.associatedUserToOrg(user, orgGuid);
 
-      assertAction(spy, userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
-        user,
-        orgGuid);
+      assertAction(spy, userActionTypes.USER_ORG_ASSOCIATION_RECEIVED, expectedParams);
     });
   });
 
