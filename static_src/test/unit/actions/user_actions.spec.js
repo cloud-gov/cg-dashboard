@@ -274,26 +274,26 @@ describe('userActions', function() {
   //   });
   // });
 
-  // describe('sendUserInviteEmail', function () {
-  //   let inviteData;
-  //   beforeEach(function (done) {
-  //     inviteData = { new_invites:[{ userId: "fake-udid" }] };
-  //     sandbox.stub(uaaApi, 'sendInviteEmail').returns(Promise.resolve());
-  //     sandbox.stub(AppDispatcher, 'handleServerAction');
-  //     userActions.sendUserInviteEmail(inviteData)
-  //       .then(done, done.fail);
-  //   });
+  describe('sendUserInviteEmail', function () {
+    let inviteData;
+    beforeEach(function (done) {
+      inviteData = { new_invites:[{ userId: "fake-udid" }] };
+      sandbox.stub(uaaApi, 'sendInviteEmail').returns(Promise.resolve());
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+      userActions.sendUserInviteEmail(inviteData)
+        .then(done, done.fail);
+    });
 
-  //   it('should announce email was sent', function () {
-  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-  //       type: userActionTypes.USER_EMAIL_INVITE
-  //     }));
-  //   });
+    it('should announce email was sent', function () {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_EMAIL_INVITE
+      }));
+    });
 
-  //   it('should trigger uaa api to send off email', function () {
-  //     expect(uaaApi.sendInviteEmail).toHaveBeenCalledWith(inviteData);
-  //   });
-  // });
+    it('should trigger uaa api to send off email', function () {
+      expect(uaaApi.sendInviteEmail).toHaveBeenCalledOnce();
+    });
+  });
 
   describe('associateUserToOrg', function () {
     let user;
