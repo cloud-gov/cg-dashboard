@@ -285,7 +285,9 @@ describe('userActions', function() {
     });
 
     it('should announce email was sent', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match(inviteData));
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_EMAIL_INVITE
+      }));
     });
 
     it('should trigger uaa api to send off email', function () {
@@ -303,7 +305,7 @@ describe('userActions', function() {
       user = { guid: userGuid };
       sandbox.stub(OrgStore, 'get').returns(orgGuid);
       sandbox.stub(uaaApi, 'putAssociateUserToOrganization').returns(Promise.resolve());
-      sandbox.stub(userActions, 'receivedUserAssociationToOrg').returns(Promise.resolve());
+      sandbox.stub(userActions, 'associatedUserToOrg').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleServerAction');
       userActions.associateUserToOrg(user)
         .then(done, done.fail);
@@ -315,7 +317,7 @@ describe('userActions', function() {
       }));
     });
 
-    it('should trigger uaa api to send off email', function () {
+    it('should trigger cf api to make put request to associate user', function () {
       expect(cfApi.putAssociateUserToOrganization).toHaveBeenCalledWith(user.guid, orgGuid);
     });
   });
@@ -502,7 +504,7 @@ describe('userActions', function() {
     });
   });
 
-  // describe('receivedUserAssociationToOrg', function () {
+  // describe('associatedUserToOrg', function () {
   //   let user;
   //   let orgGuid;
   //   beforeEach(function (done) {

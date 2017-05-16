@@ -168,10 +168,10 @@ const userActions = {
     const orgGuid = OrgStore.currentOrgGuid;
 
     return cfApi.putAssociateUserToOrganization(user.guid, orgGuid)
-      .then(userActions.receivedUserAssociationToOrg(user, orgGuid));
+      .then(userActions.associatedUserToOrg(user, orgGuid));
   },
 
-  receivedUserAssociationToOrg(user, orgGuid) {
+  associatedUserToOrg(user, orgGuid) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ORG_ASSOCIATION_RECEIVED,
       user,
