@@ -261,11 +261,9 @@ const userActionTypes = keymirror({
   // Action to trigger email sent to user with cloud.gov invite url.
   USER_EMAIL_INVITE: null,
   // Action to associate user to organization to the server.
-  USER_ORG_ASSOCIATION_FETCH: null,
+  USER_ORG_ASSOCIATE: null,
   // Action to associate user to organization on the server.
   USER_ORG_ASSOCIATION_RECEIVED: null,
-  // Action to updated ui with associated user to organization.
-  USER_ORG_ASSOCIATION_UPDATED: null,
   // Action to delete a user from an org.
   USER_DELETE: null,
   // Action when a user was deleted from an org on the server.

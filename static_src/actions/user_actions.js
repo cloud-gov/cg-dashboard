@@ -163,7 +163,7 @@ const userActions = {
 
   associateUserToOrg(user) {
     AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
+      type: userActionTypes.USER_ORG_ASSOCIATE
     });
     const orgGuid = OrgStore.currentOrgGuid;
 

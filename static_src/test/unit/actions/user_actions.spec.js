@@ -314,7 +314,7 @@ describe('userActions', function() {
 
     it('completes the association to user and org', function () {
       expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_ORG_ASSOCIATION_FETCH
+        type: userActionTypes.USER_ORG_ASSOCIATE
       }));
     });
 
