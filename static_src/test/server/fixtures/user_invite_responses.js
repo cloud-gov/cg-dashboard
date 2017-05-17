@@ -14,7 +14,7 @@ const userInviteResponses =
         "userId": "4541c882-fake-invited-new-user"
       }
     ]
-  }
+  },
   "fakenewuser@domain.com": {
     "failed_invites": [],
     "new_invites": [

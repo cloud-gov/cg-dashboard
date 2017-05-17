@@ -21,7 +21,7 @@ const userCreateResponses =
       "managed_spaces_url": "/v2/users/4541c882-fake-invited-new-user/managed_spaces",
       "audited_spaces_url": "/v2/users/4541c882-fake-invited-new-user/audited_spaces"
     }
-  }
+  },
   "fakenewuser@domain.com": {
     "metadata": {
       "guid": "4541c882-fake-invited-fakenewuser",
