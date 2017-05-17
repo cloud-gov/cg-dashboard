@@ -108,7 +108,7 @@ module.exports = function api(smocks) {
     id: 'cf-users-create',
     method: 'POST',
     label: 'CF user invite create',
-    path: '${BASE_URL}/users',
+    path: `${BASE_URL}/users`,
     handler: function(req, reply) {
       let userCreateResponse;
       const guid = req.payload.guid;
