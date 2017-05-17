@@ -105,14 +105,33 @@ module.exports = function api(smocks) {
   });
 
   smocks.route({
-    id: 'uaa-users-create',
+    id: 'cf-users-create',
     method: 'POST',
-    label: 'UAA user invite create',
+    label: 'CF user invite create',
     path: '${BASE_URL}/users',
     handler: function(req, reply) {
       let userCreateResponse;
-      userCreateResponses
+      const guid = req.params.guid;
+      if ( guid && userCreateResponses[guid] ){
+        userCreateResponse = userCreateResponses[guid];
+      } else {
+        userCreateResponse = userCreateResponses['default'];
+      }
       reply(userCreateResponse);
+    }
+  });
+
+  smocks.route({
+    id: 'uaa-users-invite-send',
+    method: 'POST',
+    label: 'UAA user invite send email',
+    path: '/uaa/invite/email',
+    handler: function(req, reply) {
+      let userInviteResponse;
+      const inviteUrl = req.params.inviteUrl;
+      const email = req.params.email;
+      userInviteResponse = { "status": "success", "email": email, "invite": inviteUrl };
+      reply(userInviteResponse);
     }
   });
 
