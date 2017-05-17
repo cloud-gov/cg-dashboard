@@ -6,7 +6,7 @@ describe('User roles', function () {
   let userInviteElement,
     userRoleElement;
 
-  const email = 'name@domain.com',
+  const email = 'fakenewuser@domain.com',
     cookieManagerOrgX = 'org_manager_org_x',
     urlOrgX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
 
@@ -18,6 +18,7 @@ describe('User roles', function () {
 
       browser.url(urlOrgX);
       browser.waitForExist('.test-users');
+
       expect(browser.isExisting('.test-users')).toBe(true);
     });
 
@@ -30,6 +31,19 @@ describe('User roles', function () {
 
     it('should be able to input content into invite form', function () {
       userInviteElement.inputToInviteForm(email);
+
+      expect(email).toBe(userInviteElement.getInviteFormValue());
+    });
+
+    it('should be able to input content into invite form', function () {
+      userInviteElement.inputToInviteForm(email);
+
+      expect(email).toBe(userInviteElement.getInviteFormValue());
+    });
+
+    it('should be able to submit content and see response', function () {
+      userInviteElement.submitInviteForm();
+
       expect(email).toBe(userInviteElement.getInviteFormValue());
     });
   });
