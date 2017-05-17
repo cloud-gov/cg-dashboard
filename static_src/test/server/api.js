@@ -293,7 +293,7 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/users/{guid}/organizations/{orgGuid}`,
     handler: function(req, reply) {
       let userCreateResponse;
-      const guid = req.payload.guid;
+      const guid = req.params.guid;
       if ( guid && userCreateResponses[guid] ){
         userCreateResponse = userCreateResponses[guid];
       } else {
