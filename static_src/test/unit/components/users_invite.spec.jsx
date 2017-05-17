@@ -7,12 +7,6 @@ import { Form } from '../../../components/form';
 import UsersInvite from '../../../components/users_invite.jsx';
 import Action from '../../../components/action.jsx';
 
-import userActions from '../../../actions/user_actions';
-
-import FormStore from '../../../stores/form_store';
-
-const USERS_INVITE_FORM_GUID = 'users-invite-form';
-
 describe('<UsersInvite />', function () {
   let sandbox;
 
