@@ -21,6 +21,7 @@ var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
 var spaceUserRoles = require('./fixtures/space_user_roles.js');
 var uaaRoles = require('./fixtures/uaa_roles.js');
 var userOrganizations = require('./fixtures/user_organizations.js');
+var userInviteResponse = require('./fixtures/user_invite_response.js');
 var userRoles = require('./fixtures/user_roles.js');
 var userRoleOrgAddNewRole = require('./fixtures/user_role_org_add_new_role.js');
 var userSpaces = require('./fixtures/user_spaces.js');
@@ -82,6 +83,23 @@ module.exports = function api(smocks) {
       if (req.state['show_user_info']) {
       }
       reply(userRoleObject);
+    }
+  });
+
+  smocks.route({
+    id: 'uaa-user-invite',
+    label: 'UAA user invite create',
+    method: 'POST',
+    path: '/uaa/invite/users',
+    handler: function(req, reply) {
+      let userInviteResponse;
+      const email = req.params.emails[0];
+      if (email && userInviteResponses[email]){
+        userInviteResponse = userInviteResponses[email];
+      } else {
+        userInviteResponse = userInviteResponses['default'];
+      }
+      reply(userInviteResponse);
     }
   });
 
