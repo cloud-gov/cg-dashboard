@@ -94,7 +94,7 @@ module.exports = function api(smocks) {
     path: '/uaa/invite/users',
     handler: function(req, reply) {
       let userInviteResponse;
-      const email = req.params.emails[0];
+      const email = req.payload.emails[0];
       if (email && userInviteResponses[email]){
         userInviteResponse = userInviteResponses[email];
       } else {
@@ -111,7 +111,7 @@ module.exports = function api(smocks) {
     path: '${BASE_URL}/users',
     handler: function(req, reply) {
       let userCreateResponse;
-      const guid = req.params.guid;
+      const guid = req.payload.guid;
       if ( guid && userCreateResponses[guid] ){
         userCreateResponse = userCreateResponses[guid];
       } else {
@@ -128,8 +128,8 @@ module.exports = function api(smocks) {
     path: '/uaa/invite/email',
     handler: function(req, reply) {
       let userInviteResponse;
-      const inviteUrl = req.params.inviteUrl;
-      const email = req.params.email;
+      const inviteUrl = req.payload.inviteUrl;
+      const email = req.payload.email;
       userInviteResponse = { "status": "success", "email": email, "invite": inviteUrl };
       reply(userInviteResponse);
     }
@@ -276,6 +276,21 @@ module.exports = function api(smocks) {
     id: 'user-organizations',
     label: 'User organizations',
     path: `${BASE_URL}/users/{guid}/organizations`,
+    handler: function(req, reply) {
+      const guid = req.params.guid;
+      let userOrgFlag = 'default';
+      if(userOrganizations[guid]){
+        userOrgFlag = guid;
+      }
+      reply(MultiResponse(userOrganizations[userOrgFlag]));
+    }
+  });
+
+  smocks.route({
+    id: 'user-associate-to-organizations',
+    label: 'User associate to organization',
+    method: 'PUT',
+    path: `${BASE_URL}/users/{guid}/organizations/{orgGuid}`,
     handler: function(req, reply) {
       const guid = req.params.guid;
       let userOrgFlag = 'default';
