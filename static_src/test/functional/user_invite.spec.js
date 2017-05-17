@@ -17,13 +17,12 @@ describe('User roles', function () {
       userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
       userRoleElement.setUserRole(cookieManagerOrgX);
 
-      browser.url(urlOrgX);
-      browser.waitForExist('.test-users');
-
       expect(browser.isExisting('.test-users')).toBe(true);
     });
 
     it('should have the user invite panel', function () {
+      browser.url(urlOrgX);
+
       userInviteElement = new UserInviteElement(browser, browser.element('.test-users-invite'));
       browser.waitForExist('.test-users-invite');
 
@@ -32,10 +31,11 @@ describe('User roles', function () {
 
     it('should not be able to submit without email', function () {
       userInviteElement.submitInviteForm().then( function(e) {
-      console.log('Submit Search Form');
-    })
-    .waitForVisible("#users-invite-form .error_message", 10000).then(function (e) {
-      expect(errorMessage).toBe($('.error_message').getText());
+        console.log('Submit Search Form');
+      })
+      .waitForVisible(".error_message", 10000).then(function (e) {
+        expect(errorMessage).toBe($('.error_message').getText());
+      });
     });
 
     it('should be able to input content into invite form', function () {
@@ -43,23 +43,16 @@ describe('User roles', function () {
 
       expect(email).toBe(userInviteElement.getInviteFormValue());
     });
-
-    it('should be able to input content into invite form', function () {
-      userInviteElement.inputToInviteForm(email);
-
-      expect(email).toBe(userInviteElement.getInviteFormValue());
-    });
-
 
     it('should be able to submit content and see response', function () {
       userInviteElement.submitInviteForm().then( function(e) {
-      console.log('Submit Search Form');
-    })
-    .waitForVisible("#search-results", 10000).then(function (e) {
-      console.log('Search Results Found');
-    });ch
-
-      expect(email).toBe(userInviteElement.getInviteFormValue());
+        console.log('Submit Search Form');
+      })
+      .waitForVisible("#org_manager4541c882-fake-invited-fakenewuser", 10000).then(function (e) {
+        const userCount = $$('.complex_list-item').length;
+        const lastListUser = $$('.complex_list-item')[userCount].$('.elastic_line-item-start').getText();
+        expect(email).toBe(lastListUser);
+      });
     });
   });
 });
