@@ -22,6 +22,6 @@ export default class UserInviteElement extends BaseElement {
   }
 
   countNumberOfUsers() {
-    return this.elements('.complex_list-item').length
+    return this.elements('.complex_list-item').length;
   }
 }
