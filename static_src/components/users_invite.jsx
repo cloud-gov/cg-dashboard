@@ -6,14 +6,11 @@
 
 import React from 'react';
 
+import Action from './action.jsx';
+import FormStore from '../stores/form_store';
 import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
-import Action from './action.jsx';
-
-import FormStore from '../stores/form_store';
-
 import userActions from '../actions/user_actions';
-
 import { validateString } from '../util/validators';
 
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
