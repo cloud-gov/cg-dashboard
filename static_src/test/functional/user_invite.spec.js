@@ -4,7 +4,6 @@ import UserRoleElement from './pageobjects/user_role.element';
 
 describe('User roles', function () {
   let userInviteElement,
-    numberOfUsers,
     userRoleElement;
 
   const email = 'name@domain.com',
@@ -27,10 +26,6 @@ describe('User roles', function () {
       browser.waitForExist('.test-users-invite');
 
       expect(userInviteElement.isVisible()).toBe(true);
-    });
-
-    it('should get submission response from server', function () {
-      numberOfUsers = userInviteElement.countNumberOfUsers();
     });
 
     it('should be able to input content into invite form', function () {
