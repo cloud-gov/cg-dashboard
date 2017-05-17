@@ -15,7 +15,7 @@ describe('User roles', function () {
       browser.url(urlOrgX);
 
       userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
-      userRoleElement.setAndGetUserRole(cookieManagerOrgX);
+      userRoleElement.setUserRole(cookieManagerOrgX);
 
       browser.waitForExist('.test-users');
       expect(browser.isExisting('.test-users')).toBe(true);

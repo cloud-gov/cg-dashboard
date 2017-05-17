@@ -1,7 +1,7 @@
 
 /**
- * Renders a users pages that allows to switch between all users in a space
- * and all users in the org.
+ * Renders a form that allows org users to invite new users
+ * to cloud.gov
  */
 
 import React from 'react';
