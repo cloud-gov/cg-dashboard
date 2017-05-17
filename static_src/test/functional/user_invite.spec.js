@@ -4,13 +4,12 @@ import UserRoleElement from './pageobjects/user_role.element';
 
 describe('User roles', function () {
   let userInviteElement,
-      numberOfUsers,
-      userRoleElement;
+    numberOfUsers,
+    userRoleElement;
 
-  const guidManagerOrgX = 'org-manager-x-uid-601d-48c4-9705',
-        email = 'name@domain.com',
-        cookieManagerOrgX = 'org_manager_org_x',
-        urlOrgX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
+  const email = 'name@domain.com',
+    cookieManagerOrgX = 'org_manager_org_x',
+    urlOrgX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
 
   describe('A user on page for an org', function () {
     it('should navigates to org X', function () {
