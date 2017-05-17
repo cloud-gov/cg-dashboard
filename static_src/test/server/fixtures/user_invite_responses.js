@@ -15,17 +15,17 @@ const userInviteResponses =
       }
     ]
   },
-  "fakenewuser@domain.com": {
+  "fake-new-user@domain.com": {
     "failed_invites": [],
     "new_invites": [
       {
-        "email": "fakenewuser@domain.com",
+        "email": "fake-new-user@domain.com",
         "errorCode": null,
         "errorMessage": null,
         "inviteLink": "https://uaa.fr.cloud.gov/invitations/accept?code=Gs2c2541",
         "origin": "uaa",
         "success": true,
-        "userId": "4541c882-fake-invited-fakenewuser"
+        "userId": "4541c882-fake-invited-fake-new-user"
       }
     ]
   }
