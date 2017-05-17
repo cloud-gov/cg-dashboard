@@ -8,7 +8,7 @@ describe('User roles', function () {
 
   const email = 'fake-new-user@domain.com',
     cookieManagerOrgX = 'org_manager_org_x',
-    errorMessage = "There were errors submitting the form.",
+    errorMessage = 'There were errors submitting the form.',
     urlOrgX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
 
   describe('A user on page for an org', function () {
@@ -30,11 +30,11 @@ describe('User roles', function () {
     });
 
     it('should not be able to submit without email', function () {
-      userInviteElement.submitInviteForm().then( function(e) {
-        console.log('Submit Search Form');
+      const self = this;
+      userInviteElement.submitInviteForm().then(function () {
       })
-      .waitForVisible(".error_message", 10000).then(function (e) {
-        expect(errorMessage).toBe($('.error_message').getText());
+      .waitForVisible('.error_message', 10000).then(function () {
+        expect(errorMessage).toBe(self.element('.error_message').getText());
       });
     });
 
@@ -45,12 +45,11 @@ describe('User roles', function () {
     });
 
     it('should be able to submit content and see response', function () {
-      userInviteElement.submitInviteForm().then( function(e) {
-        console.log('Submit Search Form');
+      userInviteElement.submitInviteForm().then(function () {
       })
-      .waitForVisible("#org_manager4541c882-fake-invited-fakenewuser", 10000).then(function (e) {
-        const userCount = $$('.complex_list-item').length;
-        const lastListUser = $$('.complex_list-item')[userCount].$('.elastic_line-item-start').getText();
+      .waitForVisible('#org_manager4541c882-fake-invited-fakenewuser', 10000).then(function () {
+        const userCount = this.elements('.complex_list-item').length;
+        const lastListUser = this.elements('.complex_list-item')[userCount];
         expect(email).toBe(lastListUser);
       });
     });

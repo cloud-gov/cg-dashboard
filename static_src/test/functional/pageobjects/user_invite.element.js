@@ -17,7 +17,7 @@ export default class UserInviteElement extends BaseElement {
     return this.element('.test-users_invite_name').getValue();
   }
 
-  submitInviteForm(cb) {
+  submitInviteForm() {
     return this.element('.users_invite_form').submit();
   }
 
