@@ -292,12 +292,14 @@ module.exports = function api(smocks) {
     method: 'PUT',
     path: `${BASE_URL}/users/{guid}/organizations/{orgGuid}`,
     handler: function(req, reply) {
-      const guid = req.params.guid;
-      let userOrgFlag = 'default';
-      if(userOrganizations[guid]){
-        userOrgFlag = guid;
+      let userCreateResponse;
+      const guid = req.payload.guid;
+      if ( guid && userCreateResponses[guid] ){
+        userCreateResponse = userCreateResponses[guid];
+      } else {
+        userCreateResponse = userCreateResponses['default'];
       }
-      reply(MultiResponse(userOrganizations[userOrgFlag]));
+      reply(userCreateResponse);
     }
   });
 
