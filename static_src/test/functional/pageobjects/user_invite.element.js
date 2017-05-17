@@ -18,7 +18,7 @@ export default class UserInviteElement extends BaseElement {
   }
 
   submitInviteForm() {
-    return this.element('.users_invite_form').submit();
+    browser.submitForm('.users_invite_form');
   }
 
   countNumberOfUsers() {

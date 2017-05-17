@@ -6,6 +6,8 @@ describe('User roles', function () {
   let userInviteElement,
     userRoleElement;
 
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+
   const email = 'fake-new-user@domain.com',
     cookieManagerOrgX = 'org_manager_org_x',
     errorMessage = 'There were errors submitting the form.',
@@ -29,15 +31,6 @@ describe('User roles', function () {
       expect(userInviteElement.isVisible()).toBe(true);
     });
 
-    it('should not be able to submit without email', function () {
-      const self = this;
-      userInviteElement.submitInviteForm().then(function () {
-      })
-      .waitForVisible('.error_message', 10000).then(function () {
-        expect(errorMessage).toBe(self.element('.error_message').getText());
-      });
-    });
-
     it('should be able to input content into invite form', function () {
       userInviteElement.inputToInviteForm(email);
 
@@ -45,13 +38,18 @@ describe('User roles', function () {
     });
 
     it('should be able to submit content and see response', function () {
-      userInviteElement.submitInviteForm().then(function () {
-      })
-      .waitForVisible('#org_manager4541c882-fake-invited-fakenewuser', 10000).then(function () {
-        const userCount = this.elements('.complex_list-item').length;
-        const lastListUser = this.elements('.complex_list-item')[userCount];
-        expect(email).toBe(lastListUser);
-      });
+      userInviteElement.inputToInviteForm(email);
+      browser.screenshot();
+      userInviteElement.submitInviteForm();
+      browser.screenshot();
+      let button = $('#users-invite-form button');
+      button.click();
+      browser.screenshot();
+      browser.waitForExist('#org_manager4541c882-fake-invited-fakenewuser');
+      browser.screenshot();
+      const userCount = this.elements('.complex_list-item').length;
+      const lastListUser = this.elements('.complex_list-item')[userCount];
+      expect(email).toBe(lastListUser);
     });
   });
 });
