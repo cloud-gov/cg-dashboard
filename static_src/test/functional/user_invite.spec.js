@@ -13,10 +13,10 @@ describe('User roles', function () {
   describe('A user on page for an org', function () {
     it('should navigates to org X', function () {
       browser.url(urlOrgX);
-
       userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
       userRoleElement.setUserRole(cookieManagerOrgX);
 
+      browser.url(urlOrgX);
       browser.waitForExist('.test-users');
       expect(browser.isExisting('.test-users')).toBe(true);
     });
