@@ -22,7 +22,7 @@ const userCreateResponses =
       "audited_spaces_url": "/v2/users/4541c882-fake-invited-new-user/audited_spaces"
     }
   },
-  "fakenewuser@domain.com": {
+  "4541c882-fake-invited-fakenewuser": {
     "metadata": {
       "guid": "4541c882-fake-invited-fakenewuser",
       "url": "/v2/users/4541c882-fake-invited-fakenewuser",
