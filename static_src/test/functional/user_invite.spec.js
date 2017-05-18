@@ -38,8 +38,7 @@ describe('User roles', function () {
       expect(email).toBe(userInviteElement.getInviteFormValue());
     });
 
-    it('should be able to submit an email address and see the user added to the user list',
-      function () {
+    it('should be able to submit an email address and see on user list', function () {
       const existingUserCount = userInviteElement.countNumberOfUsers();
       userInviteElement.inputToInviteForm(email);
       userInviteElement.submitInviteForm();
@@ -47,7 +46,7 @@ describe('User roles', function () {
       expect(currentUserCount).toEqual(existingUserCount + 1);
     });
 
-    it('should add the user as the last entry in the user list', function() {
+    it('should add the user as the last entry in the user list', function () {
       const currentUserCount = userInviteElement.countNumberOfUsers();
       const user = userInviteElement.getUserByIndex(currentUserCount - 1);
       expect(user.getText()).toMatch(/fake-persona@gsa.gov/);
