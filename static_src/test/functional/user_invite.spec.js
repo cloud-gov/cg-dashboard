@@ -40,6 +40,8 @@ describe('User roles', function () {
 
     it('should be able to submit an email address and see on user list', function () {
       const existingUserCount = userInviteElement.countNumberOfUsers();
+      const user = userInviteElement.getUserByIndex(existingUserCount - 1);
+      expect(user.getText()).not.toMatch(/fake-persona@gsa.gov/);
       userInviteElement.inputToInviteForm(email);
       userInviteElement.submitInviteForm();
       const currentUserCount = userInviteElement.countNumberOfUsers();
