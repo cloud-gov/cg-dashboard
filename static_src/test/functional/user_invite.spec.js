@@ -25,9 +25,9 @@ describe('User roles', function () {
     it('should have the user invite panel', function () {
       browser.url(urlOrgX);
 
+      browser.waitForExist('.test-users-invite');
       userInviteElement = new UserInviteElement(browser,
         browser.element('.test-users-invite'));
-      browser.waitForExist('.test-users-invite');
 
       expect(userInviteElement.isVisible()).toBe(true);
     });
