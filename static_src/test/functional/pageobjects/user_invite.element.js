@@ -29,4 +29,10 @@ export default class UserInviteElement extends BaseElement {
   countNumberOfUsers() {
     return browser.elements('.test-user_list .complex_list-item').value.length;
   }
+
+  // TODO move this to user list element.
+  getUserByIndex(idx) {
+    return browser.elements(`.test-user_list .complex_list-item:nth-child(${idx})`)
+      .value[0];
+  }
 }

@@ -46,5 +46,11 @@ describe('User roles', function () {
       const currentUserCount = userInviteElement.countNumberOfUsers();
       expect(currentUserCount).toEqual(existingUserCount + 1);
     });
+
+    it('should add the user as the last entry in the user list', function() {
+      const currentUserCount = userInviteElement.countNumberOfUsers();
+      const user = userInviteElement.getUserByIndex(currentUserCount - 1);
+      expect(user.getText()).toMatch(/fake-persona@gsa.gov/);
+    });
   });
 });
