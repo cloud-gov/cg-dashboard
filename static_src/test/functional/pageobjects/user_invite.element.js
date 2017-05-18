@@ -20,7 +20,7 @@ export default class UserInviteElement extends BaseElement {
   submitInviteForm() {
     const existingUserCount = this.countNumberOfUsers();
     this.element('[type="submit"]').click();
-    browser.waitUntil(() => {
+    browser.waitUntil(function () {
       return this.countNumberOfUsers() > existingUserCount;
     }, 10000);
   }
