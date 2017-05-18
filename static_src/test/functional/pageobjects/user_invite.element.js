@@ -18,10 +18,15 @@ export default class UserInviteElement extends BaseElement {
   }
 
   submitInviteForm() {
-    browser.submitForm('.users_invite_form');
+    const existingUserCount = this.countNumberOfUsers();
+    this.element('[type="submit"]').click();
+    browser.waitUntil(() => {
+      return this.countNumberOfUsers() > existingUserCount;
+    }, 10000);
   }
 
+  // TODO move this to user list element.
   countNumberOfUsers() {
-    return this.elements('.complex_list-item').length;
+    return browser.elements('.test-user_list .complex_list-item').value.length;
   }
 }
