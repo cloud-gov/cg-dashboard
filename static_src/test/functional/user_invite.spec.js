@@ -8,7 +8,6 @@ describe('User roles', function () {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
 
-  const COUNT_OF_USERS_ON_ORG_X = 18;
   const email = 'fake-new-user@domain.com';
   const cookieManagerOrgX = 'org_manager_org_x';
   const urlOrgX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
@@ -42,11 +41,9 @@ describe('User roles', function () {
     it('should be able to submit an email address and see on user list', function () {
       const existingUserCount = userInviteElement.countNumberOfUsers();
       userInviteElement.inputToInviteForm(email);
-      expect(existingUserCount).toEqual(COUNT_OF_USERS_ON_ORG_X);
       userInviteElement.submitInviteForm();
       const currentUserCount = userInviteElement.countNumberOfUsers();
-      expect(existingUserCount).toEqual(COUNT_OF_USERS_ON_ORG_X);
-      expect(currentUserCount).toEqual(COUNT_OF_USERS_ON_ORG_X + 1);
+      expect(currentUserCount).toEqual(existingUserCount + 1);
     });
 
     it('should add the user as the last entry in the user list', function () {
