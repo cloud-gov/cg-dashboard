@@ -35,6 +35,9 @@ exports.config = {
   // Default request retries count
   connectionRetryCount: 3,
 
+  // Limit to 3 due to resource constraints on CI
+  maxInstances: 3,
+
   services: ['selenium-standalone'],
   seleniumLogs: './context/selenium-logs',
   framework: 'jasmine',
