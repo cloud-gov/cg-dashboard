@@ -10,7 +10,6 @@ describe('User roles', function () {
 
   const email = 'fake-new-user@domain.com';
   const cookieManagerOrgX = 'org_manager_org_x';
-  const errorMessage = 'There were errors submitting the form.';
   const urlOrgX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250';
 
   describe('A user on page for an org', function () {
