@@ -23,12 +23,12 @@ export default class UserInviteElement extends BaseElement {
 
   // TODO move this to user list element.
   countNumberOfUsers() {
-    return browser.elements('.test-user_list .complex_list-item').value.length;
+    return browser.elements('.test-users .complex_list-item').value.length;
   }
 
   // TODO move this to user list element.
   getUserByIndex(idx) {
-    return browser.elements(`.test-user_list .complex_list-item:nth-child(${idx})`)
+    return browser.elements(`.test-users .complex_list-item:nth-child(${idx})`)
       .value[0];
   }
 }
