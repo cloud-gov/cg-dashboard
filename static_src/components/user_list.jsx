@@ -128,7 +128,7 @@ export default class UserList extends React.Component {
       content = this.onlyOneState;
     } else if (!this.state.loading && this.state.users.length) {
       content = (
-      <div>
+      <div className="test-user_list">
         { this.documentation }
         <ComplexList>
           { this.state.users.map((user) => {

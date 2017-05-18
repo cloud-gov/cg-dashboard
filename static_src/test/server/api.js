@@ -21,6 +21,8 @@ var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
 var spaceUserRoles = require('./fixtures/space_user_roles.js');
 var uaaRoles = require('./fixtures/uaa_roles.js');
 var userOrganizations = require('./fixtures/user_organizations.js');
+var userCreateResponses = require('./fixtures/user_create_responses.js');
+var userInviteResponses = require('./fixtures/user_invite_responses.js');
 var userRoles = require('./fixtures/user_roles.js');
 var userRoleOrgAddNewRole = require('./fixtures/user_role_org_add_new_role.js');
 var userSpaces = require('./fixtures/user_spaces.js');
@@ -82,6 +84,54 @@ module.exports = function api(smocks) {
       if (req.state['show_user_info']) {
       }
       reply(userRoleObject);
+    }
+  });
+
+  smocks.route({
+    id: 'uaa-user-invite',
+    label: 'UAA user invite create',
+    method: 'POST',
+    path: '/uaa/invite/users',
+    handler: function(req, reply) {
+      let userInviteResponse;
+      const email = req.payload.emails[0];
+      if (email && userInviteResponses[email]){
+        userInviteResponse = userInviteResponses[email];
+      } else {
+        userInviteResponse = userInviteResponses['default'];
+      }
+      reply(userInviteResponse);
+    }
+  });
+
+  smocks.route({
+    id: 'cf-users-create',
+    method: 'POST',
+    label: 'CF user invite create',
+    path: `${BASE_URL}/users`,
+    handler: function(req, reply) {
+      let userCreateResponse;
+      const guid = req.payload.guid;
+      if ( guid && userCreateResponses[guid] ){
+        userCreateResponse = userCreateResponses[guid];
+      } else {
+        userCreateResponse = userCreateResponses['default'];
+      }
+      reply(userCreateResponse);
+    }
+  });
+
+  smocks.route({
+    id: 'uaa-users-invite-send',
+    method: 'POST',
+    label: 'UAA user invite send email',
+    path: '/uaa/invite/email',
+    handler: function(req, reply) {
+      let userInviteResponse;
+      const inviteUrl = req.payload.inviteUrl;
+      const email = req.payload.email;
+      userInviteResponse = { "status": "success", "email": email, "invite": inviteUrl };
+      reply(userInviteResponse);
     }
   });
 
@@ -233,6 +283,23 @@ module.exports = function api(smocks) {
         userOrgFlag = guid;
       }
       reply(MultiResponse(userOrganizations[userOrgFlag]));
+    }
+  });
+
+  smocks.route({
+    id: 'user-associate-to-organizations',
+    label: 'User associate to organization',
+    method: 'PUT',
+    path: `${BASE_URL}/users/{guid}/organizations/{orgGuid}`,
+    handler: function(req, reply) {
+      let userCreateResponse;
+      const guid = req.params.guid;
+      if ( guid && userCreateResponses[guid] ){
+        userCreateResponse = userCreateResponses[guid];
+      } else {
+        userCreateResponse = userCreateResponses['default'];
+      }
+      reply(userCreateResponse);
     }
   });
 
