@@ -14,20 +14,16 @@ import userActions from '../actions/user_actions';
 import { validateString } from '../util/validators';
 
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
+const propTypes = {};
+const defaultProps = {};
 
 export default class UsersInvite extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
     FormStore.create(USERS_INVITE_FORM_GUID);
 
     this.validateString = validateString().bind(this);
-    this._onChange = this._onChange.bind(this);
     this._onValidForm = this._onValidForm.bind(this);
-  }
-
-  _onChange() {
-
   }
 
   _onValidForm(errs, values) {
@@ -65,6 +61,6 @@ export default class UsersInvite extends React.Component {
 
 }
 
-UsersInvite.propTypes = { };
+UsersInvite.propTypes = propTypes;
 
-UsersInvite.defaultProps = { };
+UsersInvite.defaultProps = defaultProps;
