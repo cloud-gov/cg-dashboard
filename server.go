@@ -97,6 +97,26 @@ func loadUPSVars(envVars *helpers.EnvVars, cfEnv *cfenv.App) {
 			fmt.Println("Replacing " + helpers.SessionKeyEnvVar)
 			replaceEnvVar(envVars, helpers.SessionKeyEnvVar, sessionKey)
 		}
+		if smtpFrom, found := cfUPS.Credentials[helpers.SMTPFromEnvVar]; found {
+			fmt.Println("Replacing " + helpers.SMTPFromEnvVar)
+			replaceEnvVar(envVars, helpers.SMTPFromEnvVar, smtpFrom)
+		}
+		if smtpHost, found := cfUPS.Credentials[helpers.SMTPHostEnvVar]; found {
+			fmt.Println("Replacing " + helpers.SMTPHostEnvVar)
+			replaceEnvVar(envVars, helpers.SMTPHostEnvVar, smtpHost)
+		}
+		if smtpPass, found := cfUPS.Credentials[helpers.SMTPPassEnvVar]; found {
+			fmt.Println("Replacing " + helpers.SMTPPassEnvVar)
+			replaceEnvVar(envVars, helpers.SMTPPassEnvVar, smtpPass)
+		}
+		if smtpPort, found := cfUPS.Credentials[helpers.SMTPPortEnvVar]; found {
+			fmt.Println("Replacing " + helpers.SMTPPortEnvVar)
+			replaceEnvVar(envVars, helpers.SMTPPortEnvVar, smtpPort)
+		}
+		if smtpUser, found := cfUPS.Credentials[helpers.SMTPUserEnvVar]; found {
+			fmt.Println("Replacing " + helpers.SMTPUserEnvVar)
+			replaceEnvVar(envVars, helpers.SMTPUserEnvVar, smtpUser)
+		}
 
 	} else {
 		fmt.Println("CF Env error: " + err.Error())

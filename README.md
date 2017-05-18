@@ -152,10 +152,10 @@ In each space that you plan on deploying, you need to create a `user-provided-se
 Run:
 ```
 # For applications without New Relic monitoring
-cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret", "SESSION_KEY": "a-really-long-secure-value"}'
+cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret", "SESSION_KEY": "a-really-long-secure-value", "SMTP_HOST": "smtp.host.com", "SMTP_PORT": "25", "SMTP_USER": "username", "SMTP_PASS": "password", "SMTP_FROM": "from@address.com"}'
 
 # For applications with New Relic monitoring
-cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret","CONSOLE_NEW_RELIC_LICENSE":"your-new-relic-license", "SESSION_KEY": "a-really-long-secure-value"}'
+cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret","CONSOLE_NEW_RELIC_LICENSE":"your-new-relic-license", "SESSION_KEY": "a-really-long-secure-value", "SMTP_HOST": "smtp.host.com", "SMTP_PORT": "25", "SMTP_USER": "username", "SMTP_PASS": "password", "SMTP_FROM": "from@address.com"}'
 ```
 
 Create a redis service instance:
