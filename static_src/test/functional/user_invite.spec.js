@@ -6,7 +6,7 @@ describe('User roles', function () {
   let userInviteElement;
   let userRoleElement;
 
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 300000;
 
   const email = 'fake-new-user@domain.com';
   const cookieManagerOrgX = 'org_manager_org_x';
