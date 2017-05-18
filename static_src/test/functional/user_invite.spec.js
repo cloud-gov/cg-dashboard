@@ -16,6 +16,7 @@ describe('User roles', function () {
   describe('A user on page for an org', function () {
     it('should navigates to org X', function () {
       browser.url(urlOrgX);
+      browser.waitForExist('.test-users');
       userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
       userRoleElement.setUserRole(cookieManagerOrgX);
 
