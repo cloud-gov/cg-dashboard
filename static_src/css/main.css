@@ -40,3 +40,19 @@ input[type="radio"] + label::before {
   display: none;
 }
 
+.test-user_list .complex_list-item.processing {
+  border-left: 4px solid #8ba6ca;
+  padding-left: 11px;
+}
+
+.test-user_list .complex_list-item {
+  padding-left: 15px;
+}
+
+.test-users.processing:before {
+    content: "Saving";
+    float: right;
+    font-style: italic;
+    background: #fad980;
+    padding: 2px 9px;
+}
