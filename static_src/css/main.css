@@ -49,10 +49,13 @@ input[type="radio"] + label::before {
   padding-left: 15px;
 }
 
-.test-users.processing:before {
-    content: "Saving";
-    float: right;
-    font-style: italic;
-    background: #fad980;
-    padding: 2px 9px;
+.saving.saving-relative {
+  float: right;
+  font-style: italic;
+  background: #fad980;
+  padding: 2px 9px;
+}
+
+.complex_list-item.saving{
+  background: #fad980;
 }
