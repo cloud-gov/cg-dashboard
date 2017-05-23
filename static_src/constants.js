@@ -66,6 +66,15 @@ const pageActionTypes = keymirror({
   PAGE_LOAD_ERROR: null
 });
 
+const networkActionTypes = keymirror({
+  // When browser starts saving a form field
+  NETWORK_SAVE_STARTED: null,
+  // When browser successfully saves a form field
+  NETWORK_SAVE_SUCCESS: null,
+  // An error occurred when saving a form field
+  NETWORK_SAVE_ERROR: null
+});
+
 const quotaActionTypes = keymirror({
   // Action of fetching quotas for all organizations
   ORGS_QUOTAS_FETCH: null,

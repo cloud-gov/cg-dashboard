@@ -34,6 +34,7 @@ export class UserStore extends BaseStore {
     this._currentUserGuid = null;
     this._currentUserIsAdmin = false;
     this._error = null;
+    this._saving = [];
     this._loading = {};
     this._inviteInputActive = true;
   }
@@ -78,6 +79,11 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_ADD: {
+        // Add the roleId from the saving array
+        const roleId = action.userGuid + action.resourceGuid + action.roles;
+        this._saving.push(roleId);
+        this.emitChange();
+
         const apiMethodMap = {
           org: cfApi.putOrgUserPermissions,
           space: cfApi.putSpaceUserPermissions
@@ -101,6 +107,7 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_ADDED: {
         const user = this.get(action.userGuid);
+
         if (user) {
           const role = this.getResourceToRole(action.roles, action.resourceType);
           const userRole = (action.resourceType === 'space') ? user.space_roles :
@@ -112,10 +119,21 @@ export class UserStore extends BaseStore {
             if (changed) this.emitChange();
           });
         }
+
+        // Remove the roleId from the saving array
+        const roleId = action.userGuid + action.resourceGuid + action.roles;
+        const index = this._saving.indexOf(roleId);
+        this._saving.splice(roleId, 1);
+        this.emitChange();
         break;
       }
 
       case userActionTypes.USER_ROLES_DELETE: {
+        // Add the roleId from the saving array
+        const roleId = action.userGuid + action.resourceGuid + action.roles;
+        this._saving.push(roleId);
+        this.emitChange();
+
         const apiMethodMap = {
           org: cfApi.deleteOrgUserPermissions,
           space: cfApi.deleteSpaceUserPermissions
@@ -139,6 +157,7 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_DELETED: {
         const user = this.get(action.userGuid);
+
         if (user) {
           const role = this.getResourceToRole(action.roles, action.resourceType);
           const userRole = (action.resourceType === 'space') ? user.space_roles :
@@ -152,6 +171,12 @@ export class UserStore extends BaseStore {
             if (changed) this.emitChange();
           });
         }
+
+        // Remove the roleId from the saving array
+        const roleId = action.userGuid + action.resourceGuid + action.roles;
+        const index = this._saving.indexOf(roleId);
+        this._saving.splice(roleId, 1);
+        this.emitChange();
         break;
       }
 
@@ -344,6 +369,10 @@ export class UserStore extends BaseStore {
 
   get isLoadingCurrentUser() {
     return this._loading.currentUser === true;
+  }
+
+  get saving() {
+    return this._saving;
   }
 
   /*
