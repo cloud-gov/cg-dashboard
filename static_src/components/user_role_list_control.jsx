@@ -60,7 +60,6 @@ export default class UserRoleListControl extends React.Component {
     const handler = (!checked) ? this.props.onRemovePermissions :
       this.props.onAddPermissions;
     const resource = roleToResource[roleKey];
-
     handler(resource, this.props.user.guid);
   }
 

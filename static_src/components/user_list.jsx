@@ -12,6 +12,7 @@ import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import EntityEmpty from './entity_empty.jsx';
 import Loading from './loading.jsx';
+import Saving from './saving.jsx';
 import PanelDocumentation from './panel_documentation.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 import createStyler from '../util/create_styler';
@@ -25,6 +26,7 @@ function stateSetter(props) {
     userType: props.initialUserType,
     currentUserAccess: props.initialCurrentUserAccess,
     empty: props.initialEmpty,
+    saving: props.initialSaving,
     loading: props.initialLoading
   };
 }
@@ -119,8 +121,19 @@ export default class UserList extends React.Component {
   }
 
   render() {
+    let savingContent;
+    let savingClass = "";
+    let saving = <Saving />;
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
+
+    if (this.state.saving.length > 0) {
+      savingContent = saving;
+      savingClass = "saving";
+    } else {
+      savingContent = "";
+      savingClass = "";
+    }
 
     if (this.state.empty) {
       content = this.emptyState;
@@ -129,6 +142,7 @@ export default class UserList extends React.Component {
     } else if (!this.state.loading && this.state.users.length) {
       content = (
       <div className="test-user_list">
+        { savingContent }
         { this.documentation }
         <ComplexList>
           { this.state.users.map((user) => {
@@ -187,6 +201,7 @@ UserList.propTypes = {
   initialCurrentUserAccess: React.PropTypes.bool,
   initialEmpty: React.PropTypes.bool,
   initialLoading: React.PropTypes.bool,
+  initialSaving: React.PropTypes.array,
   // Set to a function when there should be a remove button.
   onRemove: React.PropTypes.func,
   onRemovePermissions: React.PropTypes.func,
@@ -198,5 +213,6 @@ UserList.defaultProps = {
   initialUserType: 'space_users',
   initialCurrentUserAccess: false,
   initialEmpty: false,
+  initialSaving: [],
   initialLoading: false
 };
