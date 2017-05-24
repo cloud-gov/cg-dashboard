@@ -121,13 +121,12 @@ export class UserStore extends BaseStore {
           // Remove the roleId from the saving array
           const roleId = action.userGuid + action.resourceGuid + action.roles;
           const index = this._saving.indexOf(roleId);
-          if (index){
+          if (index) {
             this._saving.splice(index, 1);
             if (this._saving.length === 0) {
-              const self = this;
-              window.setTimeout(function(){
-                self._saving = null;
-                self.emitChange()
+              window.setTimeout(() => {
+                this._saving = null;
+                this.emitChange();
               }, 1000);
             }
           }
@@ -184,13 +183,12 @@ export class UserStore extends BaseStore {
           // Remove the roleId from the saving array
           const roleId = action.userGuid + action.resourceGuid + action.roles;
           const index = this._saving.indexOf(roleId);
-          if (index){
+          if (index) {
             this._saving.splice(index, 1);
-            const self = this;
             if (this._saving.length === 0) {
-              window.setTimeout(function(){
-                self._saving = null;
-                self.emitChange();
+              window.setTimeout(() => {
+                this._saving = null;
+                this.emitChange();
               }, 1000);
             }
           }
@@ -396,13 +394,12 @@ export class UserStore extends BaseStore {
   get saving() {
     if (this._saving) {
       if (this._saving.length > 0) {
-        return "Saving";
+        return 'Saving';
       } else if (this._saving.length === 0) {
-        return "Saved";
+        return 'Saved';
       }
-    } else {
-      return null;
     }
+    return null;
   }
 
   /*

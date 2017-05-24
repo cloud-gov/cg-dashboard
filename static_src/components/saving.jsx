@@ -8,7 +8,7 @@ import createStyler from '../util/create_styler';
 const propTypes = {
   text: React.PropTypes.string,
   active: React.PropTypes.bool,
-  style: React.PropTypes.string,
+  style: React.PropTypes.string
 };
 
 const defaultProps = {
