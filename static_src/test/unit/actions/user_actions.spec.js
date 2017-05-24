@@ -386,6 +386,26 @@ describe('userActions', function() {
     it('should call associatedUser confirmation after', function () {
       expect(userActions.associatedUserToOrg).toHaveBeenCalledOnce();
     });
+
+    describe('when the request fails', function() {
+      beforeEach(function (done) {
+        cfApi.putAssociateUserToOrganization.returns(Promise.reject({}));
+        sandbox.spy(userActions, 'globalUserError');
+        userActions.associateUserToOrg(user)
+          .then(done, done.fail);
+      });
+
+      it('should call global user error action', function() {
+        expect(userActions.globalUserError).toHaveBeenCalledOnce();
+      });
+
+      it('should provide a message about the user not being added to the org',
+        function() {
+        const arg = userActions.globalUserError.getCall(0).args[1];
+        expect(arg.length).toBeGreaterThan(0);
+        expect(arg).toMatch('associate user');
+      });
+    });
   });
 
   describe('associatedUserToOrg', function () {

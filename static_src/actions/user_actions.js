@@ -183,7 +183,9 @@ const userActions = {
     const orgGuid = OrgStore.currentOrgGuid;
 
     return cfApi.putAssociateUserToOrganization(user.guid, orgGuid)
-      .then(userActions.associatedUserToOrg(user, orgGuid));
+      .then(userActions.associatedUserToOrg(user, orgGuid))
+      .catch(err => userActions.globalUserError(err, `Unable to associate user to
+        organization`));
   },
 
   associatedUserToOrg(user, orgGuid) {
