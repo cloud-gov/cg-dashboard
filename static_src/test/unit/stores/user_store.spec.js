@@ -256,7 +256,7 @@ describe('UserStore', function () {
       UserStore._data = Immutable.fromJS(initialData);
       userActions.addedUserRoles('testrole', testUserGuid, 'org');
 
-      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledTwice();
     });
   });
 
@@ -277,7 +277,7 @@ describe('UserStore', function () {
         'org'
       );
 
-      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledTwice();
       let args = spy.getCall(0).args;
       expect(args[0]).toEqual(expectedUserGuid);
       expect(args[1]).toEqual(expectedOrgGuid);
@@ -316,7 +316,7 @@ describe('UserStore', function () {
       }]);
       userActions.deletedUserRoles(expectedRole, testUserGuid, 'org');
 
-      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledTwice();
     });
   });
 
@@ -329,7 +329,7 @@ describe('UserStore', function () {
 
       userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
 
-      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledTwice();
       let args = spy.getCall(0).args;
       expect(args[0]).toEqual(expectedUserGuid);
       expect(args[1]).toEqual(expectedOrgGuid);
