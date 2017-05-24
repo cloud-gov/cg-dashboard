@@ -73,21 +73,6 @@ describe('User roles', function () {
         cookieValue = cookieManagerOrgY;
       });
 
-      describe('should get a saving notice when changing url roles', function () {
-        it('should set url to org X', function () {
-          browser.url(urlOrgX);
-        });
-
-        it('verifies that the current user is a user with only permissions to org Y', function () {
-          cookieResult = userRoleElement.setAndGetUserRole(cookieValue);
-          expect(cookieResult).toBe(cookieManagerOrgY);
-        });
-
-        it('change the roles of first user', function () {
-          expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
-        });
-      });
-
       describe('shouldn\'t have permission to edit fields on org X pages', function () {
         it('should set url to org X', function () {
           browser.url(urlOrgX);
@@ -124,6 +109,7 @@ describe('User roles', function () {
         // sets cookie to org X manager
         cookieValue = cookieManagerOrgX;
       });
+
       describe('shouldn\'t have permission to edit fields on org Y pages', function () {
         it('should set url to org Y', function () {
           browser.url(urlOrgY);
