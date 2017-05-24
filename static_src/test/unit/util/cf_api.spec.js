@@ -995,7 +995,7 @@ describe('cfApi', function() {
   describe('deleteOrgUserPermissions()', function() {
     it('should call an http delete request on org user with permissions',
         function(done) {
-      var spy = sandbox.spy(http, 'delete'),
+      var spy = sandbox.stub(http, 'delete').returns(Promise.resolve({})),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp',
           expectedPermission = 'manager';
