@@ -139,7 +139,8 @@ const userActions = {
     const userGuid = inviteData.new_invites[0].userId;
 
     return cfApi.postCreateNewUserWithGuid(userGuid)
-      .then(user => userActions.receiveUserForCF(user, inviteData));
+      .then(user => userActions.receiveUserForCF(user, inviteData))
+      .catch(err => userActions.userInviteError(err));
   },
 
   userInviteError(err) {

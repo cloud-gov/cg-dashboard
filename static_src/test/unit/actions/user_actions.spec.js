@@ -254,6 +254,20 @@ describe('userActions', function() {
     it('calls cfApi postCreateNewUserWithGuid', function () {
       expect(cfApi.postCreateNewUserWithGuid).toHaveBeenCalledWith(userGuid);
     });
+
+    describe('when request fails', function() {
+      beforeEach(function (done) {
+        cfApi.postCreateNewUserWithGuid.returns(Promise.reject({}));
+        sandbox.spy(userActions, 'userInviteError');
+
+        userActions.receiveUserInvite(inviteData)
+          .then(done, done.fail);
+      });
+
+      it('should call user invite error action handler', function() {
+        expect(userActions.userInviteError).toHaveBeenCalledOnce();
+      });
+    });
   });
 
   describe('receiveUserForCF', function () {
