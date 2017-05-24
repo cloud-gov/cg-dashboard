@@ -51,7 +51,6 @@ input[type="radio"] + label::before {
 
 .saving.saving-relative {
   float: right;
-  font-style: italic;
   background: #fad980;
   padding: 2px 9px;
 }
