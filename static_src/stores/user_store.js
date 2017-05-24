@@ -120,7 +120,10 @@ export class UserStore extends BaseStore {
           }
           // Remove the roleId from the saving array
           const roleId = action.userGuid + action.resourceGuid + action.roles;
-          const index = this._saving.indexOf(roleId);
+          let index;
+          if (this._saving !== null) {
+            index = this._saving.indexOf(roleId);
+          }
           if (index) {
             this._saving.splice(index, 1);
             if (this._saving.length === 0) {
@@ -182,7 +185,11 @@ export class UserStore extends BaseStore {
 
           // Remove the roleId from the saving array
           const roleId = action.userGuid + action.resourceGuid + action.roles;
-          const index = this._saving.indexOf(roleId);
+          let index;
+          if (this._saving !== null) {
+            index = this._saving.indexOf(roleId);
+          }
+
           if (index) {
             this._saving.splice(index, 1);
             if (this._saving.length === 0) {
