@@ -122,17 +122,14 @@ export default class UserList extends React.Component {
 
   render() {
     let savingContent;
-    let savingClass = "";
     let saving = <Saving />;
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
 
-    if (this.state.saving.length > 0) {
-      savingContent = saving;
-      savingClass = "saving";
+    if (this.state.saving) {
+      savingContent = <Saving text={this.state.saving} />;
     } else {
-      savingContent = "";
-      savingClass = "";
+      savingContent = null;
     }
 
     if (this.state.empty) {
@@ -201,7 +198,7 @@ UserList.propTypes = {
   initialCurrentUserAccess: React.PropTypes.bool,
   initialEmpty: React.PropTypes.bool,
   initialLoading: React.PropTypes.bool,
-  initialSaving: React.PropTypes.array,
+  initialSaving: React.PropTypes.string,
   // Set to a function when there should be a remove button.
   onRemove: React.PropTypes.func,
   onRemovePermissions: React.PropTypes.func,
@@ -213,6 +210,6 @@ UserList.defaultProps = {
   initialUserType: 'space_users',
   initialCurrentUserAccess: false,
   initialEmpty: false,
-  initialSaving: [],
+  initialSaving: null,
   initialLoading: false
 };
