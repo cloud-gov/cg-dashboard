@@ -37,7 +37,7 @@ class Saving extends React.Component {
         switch (this.props.style) {
           case 'global': {
             return (
-              <span>{ this.props.text }</span>
+              <div>{ this.props.text }</div>
             );
           }
           default: return null;
