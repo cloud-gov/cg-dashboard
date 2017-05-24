@@ -44,13 +44,7 @@ const formActionTypes = keymirror({
   // The form field change was valid
   FORM_FIELD_CHANGE_SUCCESS: null,
   // The form field change is not a valid input
-  FORM_FIELD_CHANGE_ERROR: null,
-  // When browser starts saving a form field
-  FORM_SAVE_STARTED: null,
-// When browser successfully saves a form field
-  FORM_SAVE_SUCCESS: null,
-// An error occurred when saving a form field
-  FORM_SAVE_ERROR: null
+  FORM_FIELD_CHANGE_ERROR: null
 });
 
 
