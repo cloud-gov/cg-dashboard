@@ -252,7 +252,7 @@ describe('userActions', function() {
     it('should dispatch server action of type user error with error and optional message',
       function() {
       expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_INVITE_ERROR,
+        type: userActionTypes.USER_GLOBAL_ERROR,
         err,
         contextualMessage: message
       }));

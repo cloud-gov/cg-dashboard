@@ -148,7 +148,7 @@ const userActions = {
 
   globalUserError(err, contextualMessage) {
     AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_INVITE_ERROR,
+      type: userActionTypes.USER_GLOBAL_ERROR,
       err,
       contextualMessage
     });
