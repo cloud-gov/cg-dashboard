@@ -128,7 +128,8 @@ const userActions = {
 
     return uaaApi.inviteUaaUser(email)
       .then(data => userActions.receiveUserInvite(data))
-      .catch(err => userActions.globalUserError(err));
+      .catch(err => userActions.globalUserError(err, `There was a problem
+        inviting the user`));
   },
 
   receiveUserInvite(inviteData) {
@@ -140,13 +141,15 @@ const userActions = {
 
     return cfApi.postCreateNewUserWithGuid(userGuid)
       .then(user => userActions.receiveUserForCF(user, inviteData))
-      .catch(err => userActions.globalUserError(err));
+      .catch(err => userActions.globalUserError(err, `There was a problem
+        inviting the user`));
   },
 
-  globalUserError(err) {
+  globalUserError(err, contextualMessage) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_INVITE_ERROR,
-      err
+      err,
+      contextualMessage
     });
 
     return Promise.resolve(err);

@@ -228,23 +228,33 @@ describe('userActions', function() {
       it('should call user invite error action handler', function() {
         expect(userActions.globalUserError).toHaveBeenCalledOnce();
       });
+
+      it('should provide contextual message about invite', function() {
+        const arg = userActions.globalUserError.getCall(0).args[1];
+        expect(arg.length).toBeGreaterThan(0);
+        expect(arg).toMatch('invit');
+      });
     });
   });
 
   describe('globalUserError()', function() {
     let err;
+    let message;
 
     beforeEach(function(done) {
       err = { status: 502 };
+      message = 'something happened when invititing';
       sandbox.stub(AppDispatcher, 'handleServerAction');
 
-      userActions.globalUserError(err).then(done, done.fail);
+      userActions.globalUserError(err, message).then(done, done.fail);
     });
 
-    it('should dispatch server action of type user error with error object',
+    it('should dispatch server action of type user error with error and optional message',
       function() {
       expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_INVITE_ERROR
+        type: userActionTypes.USER_INVITE_ERROR,
+        err,
+        contextualMessage: message
       }));
     });
   });
@@ -284,6 +294,12 @@ describe('userActions', function() {
 
       it('should call user invite error action handler', function() {
         expect(userActions.globalUserError).toHaveBeenCalledOnce();
+      });
+
+      it('should provide contextual message about invite', function() {
+        const arg = userActions.globalUserError.getCall(0).args[1];
+        expect(arg.length).toBeGreaterThan(0);
+        expect(arg).toMatch('invit');
       });
     });
   });
