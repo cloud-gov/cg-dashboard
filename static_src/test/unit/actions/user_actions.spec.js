@@ -220,25 +220,25 @@ describe('userActions', function() {
     describe('when request fails', function() {
       beforeEach(function (done) {
         uaaApi.inviteUaaUser.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'userInviteError');
+        sandbox.spy(userActions, 'globalUserError');
 
         userActions.fetchUserInvite(email).then(done, done.fail);
       });
 
       it('should call user invite error action handler', function() {
-        expect(userActions.userInviteError).toHaveBeenCalledOnce();
+        expect(userActions.globalUserError).toHaveBeenCalledOnce();
       });
     });
   });
 
-  describe('userInviteError()', function() {
+  describe('globalUserError()', function() {
     let err;
 
     beforeEach(function(done) {
       err = { status: 502 };
       sandbox.stub(AppDispatcher, 'handleServerAction');
 
-      userActions.userInviteError(err).then(done, done.fail);
+      userActions.globalUserError(err).then(done, done.fail);
     });
 
     it('should dispatch server action of type user error with error object',
@@ -276,14 +276,14 @@ describe('userActions', function() {
     describe('when request fails', function() {
       beforeEach(function (done) {
         cfApi.postCreateNewUserWithGuid.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'userInviteError');
+        sandbox.spy(userActions, 'globalUserError');
 
         userActions.receiveUserInvite(inviteData)
           .then(done, done.fail);
       });
 
       it('should call user invite error action handler', function() {
-        expect(userActions.userInviteError).toHaveBeenCalledOnce();
+        expect(userActions.globalUserError).toHaveBeenCalledOnce();
       });
     });
   });
