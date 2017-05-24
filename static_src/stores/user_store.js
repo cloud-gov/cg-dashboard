@@ -82,7 +82,6 @@ export class UserStore extends BaseStore {
         // Add the roleId from the saving array
         const roleId = action.userGuid + action.resourceGuid + action.roles;
         this._saving.push(roleId);
-        this.emitChange();
 
         const apiMethodMap = {
           org: cfApi.putOrgUserPermissions,
@@ -115,16 +114,16 @@ export class UserStore extends BaseStore {
           if (userRole && userRole.indexOf(role) === -1) {
             userRole.push(role);
           }
+          // Remove the roleId from the saving array
+          const roleId = action.userGuid + action.resourceGuid + action.roles;
+          const index = this._saving.indexOf(roleId);
+          this._saving.splice(index, 1);
+
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
         }
 
-        // Remove the roleId from the saving array
-        const roleId = action.userGuid + action.resourceGuid + action.roles;
-        const index = this._saving.indexOf(roleId);
-        this._saving.splice(index, 1);
-        this.emitChange();
         break;
       }
 
@@ -132,7 +131,6 @@ export class UserStore extends BaseStore {
         // Add the roleId from the saving array
         const roleId = action.userGuid + action.resourceGuid + action.roles;
         this._saving.push(roleId);
-        this.emitChange();
 
         const apiMethodMap = {
           org: cfApi.deleteOrgUserPermissions,
@@ -167,16 +165,15 @@ export class UserStore extends BaseStore {
             userRole.splice(idx, 1);
           }
 
+          // Remove the roleId from the saving array
+          const roleId = action.userGuid + action.resourceGuid + action.roles;
+          const index = this._saving.indexOf(roleId);
+          this._saving.splice(index, 1);
+
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
         }
-
-        // Remove the roleId from the saving array
-        const roleId = action.userGuid + action.resourceGuid + action.roles;
-        const index = this._saving.indexOf(roleId);
-        this._saving.splice(index, 1);
-        this.emitChange();
         break;
       }
 
