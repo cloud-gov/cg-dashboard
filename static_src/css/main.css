@@ -53,6 +53,9 @@ input[type="radio"] + label::before {
   float: right;
   background: #fad980;
   padding: 2px 9px;
+  font-family: Georgia, Cambria, Times New Roman, Times, serif;
+  font-size: 1rem;
+  font-style: italic;
 }
 
 .complex_list-item.saving{
