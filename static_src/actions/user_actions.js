@@ -144,7 +144,12 @@ const userActions = {
   },
 
   userInviteError(err) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_INVITE_ERROR,
+      err
+    });
 
+    return Promise.resolve(err);
   },
 
   receiveUserForCF(user, inviteData) {

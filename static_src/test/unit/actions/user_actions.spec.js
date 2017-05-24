@@ -231,6 +231,24 @@ describe('userActions', function() {
     });
   });
 
+  describe('userInviteError()', function() {
+    let err;
+
+    beforeEach(function(done) {
+      err = { status: 502 };
+      sandbox.stub(AppDispatcher, 'handleServerAction');
+
+      userActions.userInviteError(err).then(done, done.fail);
+    });
+
+    it('should dispatch server action of type user error with error object',
+      function() {
+      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
+        type: userActionTypes.USER_INVITE_ERROR
+      }));
+    });
+  });
+
   describe('receiveUserInvite', function () {
     let userGuid;
     let inviteData;
