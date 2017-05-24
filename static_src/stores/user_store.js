@@ -82,6 +82,7 @@ export class UserStore extends BaseStore {
         // Add the roleId from the saving array
         const roleId = action.userGuid + action.resourceGuid + action.roles;
         this._saving.push(roleId);
+        this.emitChange();
 
         const apiMethodMap = {
           org: cfApi.putOrgUserPermissions,
@@ -131,6 +132,7 @@ export class UserStore extends BaseStore {
         // Add the roleId from the saving array
         const roleId = action.userGuid + action.resourceGuid + action.roles;
         this._saving.push(roleId);
+        this.emitChange();
 
         const apiMethodMap = {
           org: cfApi.deleteOrgUserPermissions,
