@@ -123,7 +123,7 @@ export class UserStore extends BaseStore {
         // Remove the roleId from the saving array
         const roleId = action.userGuid + action.resourceGuid + action.roles;
         const index = this._saving.indexOf(roleId);
-        this._saving.splice(roleId, 1);
+        this._saving.splice(index, 1);
         this.emitChange();
         break;
       }
@@ -175,7 +175,7 @@ export class UserStore extends BaseStore {
         // Remove the roleId from the saving array
         const roleId = action.userGuid + action.resourceGuid + action.roles;
         const index = this._saving.indexOf(roleId);
-        this._saving.splice(roleId, 1);
+        this._saving.splice(index, 1);
         this.emitChange();
         break;
       }

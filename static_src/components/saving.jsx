@@ -1,7 +1,6 @@
 
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
-import savingImg from 'cloudgov-style/img/loading.gif';
 
 import createStyler from '../util/create_styler';
 
@@ -35,7 +34,6 @@ class Saving extends React.Component {
   }
 
   render() {
-
     const classes = this.styler('saving', 'saving-relative');
     const content = (
       <div className={ classes }
@@ -43,11 +41,9 @@ class Saving extends React.Component {
         aria-live="assertive"
         aria-busy={ this.props.active }
       >
-      {(() => {
-        return (
+      {return (
           <span>{ this.props.text }</span>
-        );
-      })()}
+      );}
       </div>
     );
 
