@@ -34,7 +34,7 @@ export class UserStore extends BaseStore {
     this._currentUserGuid = null;
     this._currentUserIsAdmin = false;
     this._error = null;
-    this._saving = [];
+    this._saving = null;
     this._loading = {};
     this._inviteInputActive = true;
   }
@@ -80,6 +80,9 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_ADD: {
         // Add the roleId from the saving array
+        if (this._saving === null) {
+          this._saving = [];
+        }
         const roleId = action.userGuid + action.resourceGuid + action.roles;
         this._saving.push(roleId);
         this.emitChange();
@@ -118,8 +121,16 @@ export class UserStore extends BaseStore {
           // Remove the roleId from the saving array
           const roleId = action.userGuid + action.resourceGuid + action.roles;
           const index = this._saving.indexOf(roleId);
-          this._saving.splice(index, 1);
-
+          if (index){
+            this._saving.splice(index, 1);
+            if (this._saving.length === 0) {
+              const self = this;
+              window.setTimeout(function(){
+                self._saving = null;
+                self.emitChange()
+              }, 1000);
+            }
+          }
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
@@ -130,6 +141,9 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_DELETE: {
         // Add the roleId from the saving array
+        if (this._saving === null) {
+          this._saving = [];
+        }
         const roleId = action.userGuid + action.resourceGuid + action.roles;
         this._saving.push(roleId);
         this.emitChange();
@@ -170,7 +184,16 @@ export class UserStore extends BaseStore {
           // Remove the roleId from the saving array
           const roleId = action.userGuid + action.resourceGuid + action.roles;
           const index = this._saving.indexOf(roleId);
-          this._saving.splice(index, 1);
+          if (index){
+            this._saving.splice(index, 1);
+            const self = this;
+            if (this._saving.length === 0) {
+              window.setTimeout(function(){
+                self._saving = null;
+                self.emitChange();
+              }, 1000);
+            }
+          }
 
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
@@ -371,7 +394,15 @@ export class UserStore extends BaseStore {
   }
 
   get saving() {
-    return this._saving;
+    if (this._saving) {
+      if (this._saving.length > 0) {
+        return "Saving";
+      } else if (this._saving.length === 0) {
+        return "Saved";
+      }
+    } else {
+      return null;
+    }
   }
 
   /*
