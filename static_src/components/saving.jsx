@@ -14,13 +14,14 @@ const propTypes = {
 const defaultProps = {
   text: 'Saving',
   active: true,
-  style: 'inline'
+  style: 'global'
 };
 
 class Saving extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
+    this.style = 'global';
     this.styler = createStyler(style);
     this.state = {
       waitTimer: false
@@ -41,9 +42,16 @@ class Saving extends React.Component {
         aria-live="assertive"
         aria-busy={ this.props.active }
       >
-      {return (
-          <span>{ this.props.text }</span>
-      );}
+      {(() => {
+        switch (this.props.style) {
+          case 'global': {
+            return (
+              <span>{ this.props.text }</span>
+            );
+          }
+          default: return null;
+        }
+      })()}
       </div>
     );
 
