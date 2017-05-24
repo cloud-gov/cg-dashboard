@@ -79,13 +79,8 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_ADD: {
-        // Add the roleId from the saving array
-        if (this._saving === null) {
-          this._saving = [];
-        }
         const roleId = action.userGuid + action.resourceGuid + action.roles;
-        this._saving.push(roleId);
-        this.emitChange();
+        this.addRoleToSavingArray(roleId);
 
         const apiMethodMap = {
           org: cfApi.putOrgUserPermissions,
@@ -118,21 +113,10 @@ export class UserStore extends BaseStore {
           if (userRole && userRole.indexOf(role) === -1) {
             userRole.push(role);
           }
-          // Remove the roleId from the saving array
+
           const roleId = action.userGuid + action.resourceGuid + action.roles;
-          let index;
-          if (this._saving !== null) {
-            index = this._saving.indexOf(roleId);
-          }
-          if (index) {
-            this._saving.splice(index, 1);
-            if (this._saving.length === 0) {
-              window.setTimeout(() => {
-                this._saving = null;
-                this.emitChange();
-              }, 1000);
-            }
-          }
+          this.removeRoleFromSavingArray(roleId);
+
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
@@ -142,13 +126,8 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_DELETE: {
-        // Add the roleId from the saving array
-        if (this._saving === null) {
-          this._saving = [];
-        }
         const roleId = action.userGuid + action.resourceGuid + action.roles;
-        this._saving.push(roleId);
-        this.emitChange();
+        this.addRoleToSavingArray(roleId);
 
         const apiMethodMap = {
           org: cfApi.deleteOrgUserPermissions,
@@ -183,22 +162,8 @@ export class UserStore extends BaseStore {
             userRole.splice(idx, 1);
           }
 
-          // Remove the roleId from the saving array
           const roleId = action.userGuid + action.resourceGuid + action.roles;
-          let index;
-          if (this._saving !== null) {
-            index = this._saving.indexOf(roleId);
-          }
-
-          if (index) {
-            this._saving.splice(index, 1);
-            if (this._saving.length === 0) {
-              window.setTimeout(() => {
-                this._saving = null;
-                this.emitChange();
-              }, 1000);
-            }
-          }
+          this.removeRoleFromSavingArray(roleId);
 
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
@@ -388,6 +353,36 @@ export class UserStore extends BaseStore {
     }
     const role = resourceToRole[resourceType][resource] || resource;
     return role;
+  }
+
+  addRoleToSavingArray(roleId) {
+    if (this._saving === null) {
+      this._saving = [];
+    }
+    this._saving.push(roleId);
+    this.emitChange();
+  }
+
+  removeRoleFromSavingArray(roleId) {
+    // These timeouts prevent a flashed text change, respective to state.
+    const minTimeForSaving = 500;
+    const minTimeForSaved = 2000;
+    let index;
+    window.setTimeout(() => {
+      if (this._saving !== null) {
+        index = this._saving.indexOf(roleId);
+      }
+      if (index) {
+        this._saving.splice(index, 1);
+        this.emitChange();
+      }
+      window.setTimeout(() => {
+        if (this._saving !== null && this._saving.length === 0) {
+          this._saving = null;
+          this.emitChange();
+        }
+      }, minTimeForSaved);
+    }, minTimeForSaving);
   }
 
   get currentlyViewedType() {
