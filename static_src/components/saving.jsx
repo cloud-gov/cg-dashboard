@@ -8,7 +8,7 @@ import createStyler from '../util/create_styler';
 const propTypes = {
   text: React.PropTypes.string,
   active: React.PropTypes.bool,
-  style: React.PropTypes.string
+  style: React.PropTypes.string,
 };
 
 const defaultProps = {
@@ -23,15 +23,6 @@ class Saving extends React.Component {
     this.props = props;
     this.style = 'global';
     this.styler = createStyler(style);
-    this.state = {
-      waitTimer: false
-    };
-  }
-
-  componentWillMount() {
-  }
-
-  componentWillUnmount() {
   }
 
   render() {
