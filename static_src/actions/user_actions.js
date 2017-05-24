@@ -127,7 +127,8 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(data => userActions.receiveUserInvite(data));
+      .then(data => userActions.receiveUserInvite(data))
+      .catch(err => userActions.userInviteError(err));
   },
 
   receiveUserInvite(inviteData) {
@@ -139,6 +140,10 @@ const userActions = {
 
     return cfApi.postCreateNewUserWithGuid(userGuid)
       .then(user => userActions.receiveUserForCF(user, inviteData));
+  },
+
+  userInviteError(err) {
+
   },
 
   receiveUserForCF(user, inviteData) {
