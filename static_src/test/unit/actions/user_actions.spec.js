@@ -220,24 +220,24 @@ describe('userActions', function() {
     describe('when request fails', function() {
       beforeEach(function (done) {
         uaaApi.inviteUaaUser.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'globalUserError');
+        sandbox.spy(userActions, 'userInviteError');
 
         userActions.fetchUserInvite(email).then(done, done.fail);
       });
 
       it('should call user invite error action handler', function() {
-        expect(userActions.globalUserError).toHaveBeenCalledOnce();
+        expect(userActions.userInviteError).toHaveBeenCalledOnce();
       });
 
       it('should provide contextual message about invite', function() {
-        const arg = userActions.globalUserError.getCall(0).args[1];
+        const arg = userActions.userInviteError.getCall(0).args[1];
         expect(arg.length).toBeGreaterThan(0);
         expect(arg).toMatch('invit');
       });
     });
   });
 
-  describe('globalUserError()', function() {
+  describe('userInviteError()', function() {
     let err;
     let message;
 
@@ -246,13 +246,13 @@ describe('userActions', function() {
       message = 'something happened when invititing';
       sandbox.stub(AppDispatcher, 'handleServerAction');
 
-      userActions.globalUserError(err, message).then(done, done.fail);
+      userActions.userInviteError(err, message).then(done, done.fail);
     });
 
     it('should dispatch server action of type user error with error and optional message',
       function() {
       expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_GLOBAL_ERROR,
+        type: userActionTypes.USER_INVITE_ERROR,
         err,
         contextualMessage: message
       }));
@@ -286,18 +286,18 @@ describe('userActions', function() {
     describe('when request fails', function() {
       beforeEach(function (done) {
         cfApi.postCreateNewUserWithGuid.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'globalUserError');
+        sandbox.spy(userActions, 'userInviteError');
 
         userActions.receiveUserInvite(inviteData)
           .then(done, done.fail);
       });
 
       it('should call user invite error action handler', function() {
-        expect(userActions.globalUserError).toHaveBeenCalledOnce();
+        expect(userActions.userInviteError).toHaveBeenCalledOnce();
       });
 
       it('should provide contextual message about invite', function() {
-        const arg = userActions.globalUserError.getCall(0).args[1];
+        const arg = userActions.userInviteError.getCall(0).args[1];
         expect(arg.length).toBeGreaterThan(0);
         expect(arg).toMatch('invit');
       });
@@ -390,18 +390,18 @@ describe('userActions', function() {
     describe('when the request fails', function() {
       beforeEach(function (done) {
         cfApi.putAssociateUserToOrganization.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'globalUserError');
+        sandbox.spy(userActions, 'userInviteError');
         userActions.associateUserToOrg(user)
           .then(done, done.fail);
       });
 
       it('should call global user error action', function() {
-        expect(userActions.globalUserError).toHaveBeenCalledOnce();
+        expect(userActions.userInviteError).toHaveBeenCalledOnce();
       });
 
       it('should provide a message about the user not being added to the org',
         function() {
-        const arg = userActions.globalUserError.getCall(0).args[1];
+        const arg = userActions.userInviteError.getCall(0).args[1];
         expect(arg.length).toBeGreaterThan(0);
         expect(arg).toMatch('associate user');
       });

@@ -128,7 +128,7 @@ const userActions = {
 
     return uaaApi.inviteUaaUser(email)
       .then(data => userActions.receiveUserInvite(data))
-      .catch(err => userActions.globalUserError(err, `There was a problem
+      .catch(err => userActions.userInviteError(err, `There was a problem
         inviting ${email}`));
   },
 
@@ -142,13 +142,13 @@ const userActions = {
 
     return cfApi.postCreateNewUserWithGuid(userGuid)
       .then(user => userActions.receiveUserForCF(user, inviteData))
-      .catch(err => userActions.globalUserError(err, `There was a problem
+      .catch(err => userActions.userInviteError(err, `There was a problem
         inviting ${userEmail}`));
   },
 
-  globalUserError(err, contextualMessage) {
+  userInviteError(err, contextualMessage) {
     AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_GLOBAL_ERROR,
+      type: userActionTypes.USER_INVITE_ERROR,
       err,
       contextualMessage
     });
@@ -184,7 +184,7 @@ const userActions = {
 
     return cfApi.putAssociateUserToOrganization(user.guid, orgGuid)
       .then(userActions.associatedUserToOrg(user, orgGuid))
-      .catch(err => userActions.globalUserError(err, `Unable to associate user to
+      .catch(err => userActions.userInviteError(err, `Unable to associate user to
         organization`));
   },
 
