@@ -81,7 +81,8 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_ROLES_ADD: {
         const user = this.get(action.userGuid);
         if (user) {
-          user._saving = true;
+          this._saving = true;
+          this.emitChange();
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
@@ -118,7 +119,7 @@ export class UserStore extends BaseStore {
           if (userRole && userRole.indexOf(role) === -1) {
             userRole.push(role);
           }
-          user._saving = false;
+          this._saving = false;
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
@@ -130,7 +131,8 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_ROLES_DELETE: {
         const user = this.get(action.userGuid);
         if (user) {
-          user._saving = true;
+          this._saving = true;
+          this.emitChange();
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
@@ -167,7 +169,7 @@ export class UserStore extends BaseStore {
           if (idx > -1) {
             userRole.splice(idx, 1);
           }
-          user._saving = false;
+          this._saving = false;
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
