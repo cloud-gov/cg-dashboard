@@ -194,7 +194,7 @@ UserList.propTypes = {
   initialCurrentUserAccess: React.PropTypes.bool,
   initialEmpty: React.PropTypes.bool,
   initialLoading: React.PropTypes.bool,
-  initialSaving: React.PropTypes.string,
+  initialSaving: React.PropTypes.bool,
   // Set to a function when there should be a remove button.
   onRemove: React.PropTypes.func,
   onRemovePermissions: React.PropTypes.func,
@@ -206,6 +206,6 @@ UserList.defaultProps = {
   initialUserType: 'space_users',
   initialCurrentUserAccess: false,
   initialEmpty: false,
-  initialSaving: null,
+  initialSaving: false,
   initialLoading: false
 };
