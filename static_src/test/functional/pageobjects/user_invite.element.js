@@ -21,7 +21,8 @@ export default class UserInviteElement extends BaseElement {
     const existingUserCount = this.countNumberOfUsers();
     this.element('[type="submit"]').click();
     browser.waitUntil(() =>
-      this.countNumberOfUsers() > existingUserCount
+      this.countNumberOfUsers() > existingUserCount ||
+      browser.isExisting('.test-users-invite .error_message')
     , 10000);
   }
 
@@ -34,5 +35,13 @@ export default class UserInviteElement extends BaseElement {
   getUserByIndex(idx) {
     return browser.elements(`.test-users .complex_list-item:nth-child(${idx})`)
       .value[0];
+  }
+
+  getErrorMessage() {
+    const errorEl = this.element('.error_message');
+    if (errorEl) {
+      return errorEl.getText();
+    }
+    return null;
   }
 }

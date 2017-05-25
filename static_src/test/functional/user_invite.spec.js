@@ -53,5 +53,13 @@ describe('User roles', function () {
       const user = userInviteElement.getUserByIndex(currentUserCount - 1);
       expect(user.getText()).toMatch(/fake-persona@gsa.gov/);
     });
+
+    it('should display an error message if the email address is invalid',
+    function () {
+      const invalidEmail = '123';
+      userInviteElement.inputToInviteForm(invalidEmail);
+      userInviteElement.submitInviteForm();
+      expect(userInviteElement.getErrorMessage()).toMatch(invalidEmail);
+    });
   });
 });
