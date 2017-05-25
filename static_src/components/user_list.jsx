@@ -12,7 +12,6 @@ import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import EntityEmpty from './entity_empty.jsx';
 import Loading from './loading.jsx';
-import Saving from './saving.jsx';
 import PanelDocumentation from './panel_documentation.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 import createStyler from '../util/create_styler';
