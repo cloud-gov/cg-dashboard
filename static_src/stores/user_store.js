@@ -67,6 +67,12 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_INVITE_FETCH: {
+        this._inviteError = null;
+        this.emitChange();
+        break;
+      }
+
       case userActionTypes.USER_ORG_ASSOCIATED: {
         const user = Object.assign({}, { orgGuid: action.orgGuid }, action.user);
         this._inviteInputActive = true;

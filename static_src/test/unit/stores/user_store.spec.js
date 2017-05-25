@@ -673,6 +673,23 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on USER_INVITE_FETCH', function() {
+    beforeEach(function() {
+      UserStore._inviteError = { message: 'something wrong' };
+      sandbox.spy(UserStore, 'emitChange');
+
+      userActions.fetchUserInvite();
+    });
+
+    it('should unset the user invite error', function() {
+      expect(UserStore.getInviteError()).toBeNull();
+    });
+
+    it('should emit a change event', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('on USER_INVITE_ERROR', function() {
     let error;
     let message;
