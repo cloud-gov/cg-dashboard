@@ -207,6 +207,14 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_INVITE_ERROR: {
+        this._inviteError = Object.assign({}, action.err, {
+          contextualMessage: action.contextualMessage
+        });
+        this.emitChange();
+        break;
+      }
+
       case userActionTypes.CURRENT_USER_INFO_RECEIVED: {
         const guid = action.currentUser.user_id;
         const userInfo = Object.assign(
@@ -374,6 +382,10 @@ export class UserStore extends BaseStore {
 
   isAdmin() {
     return this._currentUserIsAdmin;
+  }
+
+  getInviteError() {
+    return this._inviteError;
   }
 
   get currentUser() {

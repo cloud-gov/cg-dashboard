@@ -673,8 +673,28 @@ describe('UserStore', function () {
     });
   });
 
-  describe('USER_GLOBAL_ERROR', function() {
+  describe('on USER_INVITE_ERROR', function() {
+    let error;
+    let message;
 
+    beforeEach(function() {
+      UserStore._inviteError = null;
+      message = 'Inviting user did not work';
+      error = { status: 500, message: 'CF said this' };
+      sandbox.spy(UserStore, 'emitChange');
+
+      userActions.userInviteError(error, message);
+    });
+
+    it('should add a error message to the user invite error field', function() {
+      expect(UserStore.getInviteError()).toBeDefined();
+      expect(UserStore.getInviteError().contextualMessage).toEqual(message);
+      expect(UserStore.getInviteError().message).toEqual(error.message);
+    });
+
+    it('should emit a change event', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
   });
 
   describe('isAdmin()', function () {
