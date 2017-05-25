@@ -61,26 +61,25 @@ class Loading extends React.Component {
     let content = <div></div>;
 
     if (this.props.active && !this.state.waitTimer) {
-      switch (this.props.style) {
-        case 'globalSaving': {
-          return (
-          this.styler('saving', 'saving-relative');
-          );
-        }
-        case 'cover': {
-          return (
-          this.styler('loading', 'loading-relative')
-          );
-        }
-        default: {
-          return (
-          this.styler('loading-inline');
-          );
+      const classes = () => {
+        switch (this.props.style) {
+          case 'globalSaving': {
+            return (
+            this.styler('saving', 'saving-relative')
+            );
+          }
+          case 'cover': {
+            return (
+            this.styler('loading', 'loading-relative')
+            );
+          }
+          default: {
+            return (
+            this.styler('loading-inline')
+            );
+          }
         }
       }
-      const classes = this.props.style === 'cover' ?
-        this.styler('loading', 'loading-relative') :
-        this.styler('loading-inline');
       content = (
         <div className={ classes }
           role="alertdialog"
