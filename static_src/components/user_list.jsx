@@ -123,9 +123,10 @@ export default class UserList extends React.Component {
     let saving;
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
-
+    console.log('this.state.saving: ', this.state.saving);
     if (this.state.saving) {
-      saving = <Saving text={this.state.saving} />;
+      console.log('Loading this.state.saving');
+      saving = <Loading text="Saving" style="globalSaving" loadingDelayMS={1} />;
     }
 
     if (this.state.empty) {
@@ -133,6 +134,7 @@ export default class UserList extends React.Component {
     } else if (this.state.users.length === 1) {
       content = this.onlyOneState;
     } else if (!this.state.loading && this.state.users.length) {
+      console.log('Rendering this.state.saving');
       content = (
       <div className="test-user_list">
         { saving }
