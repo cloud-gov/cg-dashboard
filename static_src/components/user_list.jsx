@@ -26,6 +26,7 @@ function stateSetter(props) {
     currentUserAccess: props.initialCurrentUserAccess,
     empty: props.initialEmpty,
     saving: props.initialSaving,
+    savingText: props.initialSavingText,
     loading: props.initialLoading
   };
 }
@@ -123,10 +124,15 @@ export default class UserList extends React.Component {
     let saving;
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
-    console.log('this.state.saving: ', this.state.saving);
-    if (this.state.saving) {
-      console.log('Loading this.state.saving');
-      saving = <Loading text="Saving" style="globalSaving" loadingDelayMS={1} />;
+
+    if (this.state.saving === true) {
+      this.state.savingText = "Saving";
+    } else if (this.state.saving === false) {
+      this.state.savingText = "";
+    }
+
+    if (this.state.savingText) {
+      saving = <Loading text={this.state.savingText} style="globalSaving" loadingDelayMS={1} />;
     }
 
     if (this.state.empty) {
@@ -134,7 +140,6 @@ export default class UserList extends React.Component {
     } else if (this.state.users.length === 1) {
       content = this.onlyOneState;
     } else if (!this.state.loading && this.state.users.length) {
-      console.log('Rendering this.state.saving');
       content = (
       <div className="test-user_list">
         { saving }
@@ -196,6 +201,7 @@ UserList.propTypes = {
   initialCurrentUserAccess: React.PropTypes.bool,
   initialEmpty: React.PropTypes.bool,
   initialLoading: React.PropTypes.bool,
+  initialSavingText: React.PropTypes.string,
   initialSaving: React.PropTypes.bool,
   // Set to a function when there should be a remove button.
   onRemove: React.PropTypes.func,
@@ -209,5 +215,6 @@ UserList.defaultProps = {
   initialCurrentUserAccess: false,
   initialEmpty: false,
   initialSaving: false,
+  initialSavingText: "",
   initialLoading: false
 };
