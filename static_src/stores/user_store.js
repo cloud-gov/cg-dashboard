@@ -79,8 +79,13 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_ADD: {
-        // const roleId = action.userGuid + action.resourceGuid + action.roles;
-        // this.addRoleToSavingArray(roleId);
+        const user = this.get(action.userGuid);
+        if (user) {
+          user._saving = true;
+          this.merge('guid', user, (changed) => {
+            if (changed) this.emitChange();
+          });
+        }
 
         const apiMethodMap = {
           org: cfApi.putOrgUserPermissions,
@@ -113,10 +118,7 @@ export class UserStore extends BaseStore {
           if (userRole && userRole.indexOf(role) === -1) {
             userRole.push(role);
           }
-
-          // const roleId = action.userGuid + action.resourceGuid + action.roles;
-          // this.removeRoleFromSavingArray(roleId);
-
+          user._saving = false;
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
