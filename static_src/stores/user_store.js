@@ -34,7 +34,7 @@ export class UserStore extends BaseStore {
     this._currentUserGuid = null;
     this._currentUserIsAdmin = false;
     this._error = null;
-    this._saving = null;
+    this._saving = false;
     this._loading = {};
     this._inviteInputActive = true;
   }
@@ -79,8 +79,8 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_ADD: {
-        const roleId = action.userGuid + action.resourceGuid + action.roles;
-        this.addRoleToSavingArray(roleId);
+        // const roleId = action.userGuid + action.resourceGuid + action.roles;
+        // this.addRoleToSavingArray(roleId);
 
         const apiMethodMap = {
           org: cfApi.putOrgUserPermissions,
@@ -114,8 +114,8 @@ export class UserStore extends BaseStore {
             userRole.push(role);
           }
 
-          const roleId = action.userGuid + action.resourceGuid + action.roles;
-          this.removeRoleFromSavingArray(roleId);
+          // const roleId = action.userGuid + action.resourceGuid + action.roles;
+          // this.removeRoleFromSavingArray(roleId);
 
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
@@ -126,8 +126,8 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_DELETE: {
-        const roleId = action.userGuid + action.resourceGuid + action.roles;
-        this.addRoleToSavingArray(roleId);
+        // const roleId = action.userGuid + action.resourceGuid + action.roles;
+        // this.addRoleToSavingArray(roleId);
 
         const apiMethodMap = {
           org: cfApi.deleteOrgUserPermissions,
@@ -162,8 +162,8 @@ export class UserStore extends BaseStore {
             userRole.splice(idx, 1);
           }
 
-          const roleId = action.userGuid + action.resourceGuid + action.roles;
-          this.removeRoleFromSavingArray(roleId);
+          // const roleId = action.userGuid + action.resourceGuid + action.roles;
+          // this.removeRoleFromSavingArray(roleId);
 
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
@@ -355,35 +355,35 @@ export class UserStore extends BaseStore {
     return role;
   }
 
-  addRoleToSavingArray(roleId) {
-    if (this._saving === null) {
-      this._saving = [];
-    }
-    this._saving.push(roleId);
-    this.emitChange();
-  }
+  // addRoleToSavingArray(roleId) {
+  //   if (this._saving === null) {
+  //     this._saving = [];
+  //   }
+  //   this._saving.push(roleId);
+  //   this.emitChange();
+  // }
 
-  removeRoleFromSavingArray(roleId) {
-    // These timeouts prevent a flashed text change, respective to state.
-    const minTimeForSaving = 500;
-    const minTimeForSaved = 2000;
-    let index;
-    window.setTimeout(() => {
-      if (this._saving !== null) {
-        index = this._saving.indexOf(roleId);
-      }
-      if (index) {
-        this._saving.splice(index, 1);
-        this.emitChange();
-      }
-      window.setTimeout(() => {
-        if (this._saving !== null && this._saving.length === 0) {
-          this._saving = null;
-          this.emitChange();
-        }
-      }, minTimeForSaved);
-    }, minTimeForSaving);
-  }
+  // removeRoleFromSavingArray(roleId) {
+  //   // These timeouts prevent a flashed text change, respective to state.
+  //   const minTimeForSaving = 500;
+  //   const minTimeForSaved = 2000;
+  //   let index;
+  //   window.setTimeout(() => {
+  //     if (this._saving !== null) {
+  //       index = this._saving.indexOf(roleId);
+  //     }
+  //     if (index) {
+  //       this._saving.splice(index, 1);
+  //       this.emitChange();
+  //     }
+  //     window.setTimeout(() => {
+  //       if (this._saving !== null && this._saving.length === 0) {
+  //         this._saving = null;
+  //         this.emitChange();
+  //       }
+  //     }, minTimeForSaved);
+  //   }, minTimeForSaving);
+  // }
 
   get currentlyViewedType() {
     return this._currentViewedType;
@@ -394,14 +394,7 @@ export class UserStore extends BaseStore {
   }
 
   get saving() {
-    if (this._saving) {
-      if (this._saving.length > 0) {
-        return 'Saving';
-      } else if (this._saving.length === 0) {
-        return 'Saved';
-      }
-    }
-    return null;
+    return this._saving;
   }
 
   /*
