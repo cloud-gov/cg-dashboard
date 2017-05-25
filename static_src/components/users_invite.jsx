@@ -7,7 +7,6 @@
 import React from 'react';
 
 import Action from './action.jsx';
-import ErrorMessage from './error_message.jsx';
 import FormStore from '../stores/form_store';
 import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
