@@ -59,9 +59,8 @@ class Loading extends React.Component {
 
   render() {
     let content = <div></div>;
-
     if (this.props.active && !this.state.waitTimer) {
-      const classes = () => {
+      const classes = (() => {
         switch (this.props.style) {
           case 'globalSaving': {
             return (
@@ -78,8 +77,8 @@ class Loading extends React.Component {
             this.styler('loading-inline')
             );
           }
-        }
-      }
+        };
+      })();
       content = (
         <div className={ classes }
           role="alertdialog"
