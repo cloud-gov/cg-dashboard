@@ -128,9 +128,13 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_DELETE: {
-        // const roleId = action.userGuid + action.resourceGuid + action.roles;
-        // this.addRoleToSavingArray(roleId);
-
+        const user = this.get(action.userGuid);
+        if (user) {
+          user._saving = true;
+          this.merge('guid', user, (changed) => {
+            if (changed) this.emitChange();
+          });
+        }
         const apiMethodMap = {
           org: cfApi.deleteOrgUserPermissions,
           space: cfApi.deleteSpaceUserPermissions
@@ -163,10 +167,7 @@ export class UserStore extends BaseStore {
           if (idx > -1) {
             userRole.splice(idx, 1);
           }
-
-          // const roleId = action.userGuid + action.resourceGuid + action.roles;
-          // this.removeRoleFromSavingArray(roleId);
-
+          user._saving = false;
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
@@ -396,6 +397,8 @@ export class UserStore extends BaseStore {
   }
 
   get saving() {
+    // debugger;
+    console.log(this._saving);
     return this._saving;
   }
 
