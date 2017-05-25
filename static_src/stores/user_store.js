@@ -360,36 +360,6 @@ export class UserStore extends BaseStore {
     return role;
   }
 
-  // addRoleToSavingArray(roleId) {
-  //   if (this._saving === null) {
-  //     this._saving = [];
-  //   }
-  //   this._saving.push(roleId);
-  //   this.emitChange();
-  // }
-
-  // removeRoleFromSavingArray(roleId) {
-  //   // These timeouts prevent a flashed text change, respective to state.
-  //   const minTimeForSaving = 500;
-  //   const minTimeForSaved = 2000;
-  //   let index;
-  //   window.setTimeout(() => {
-  //     if (this._saving !== null) {
-  //       index = this._saving.indexOf(roleId);
-  //     }
-  //     if (index) {
-  //       this._saving.splice(index, 1);
-  //       this.emitChange();
-  //     }
-  //     window.setTimeout(() => {
-  //       if (this._saving !== null && this._saving.length === 0) {
-  //         this._saving = null;
-  //         this.emitChange();
-  //       }
-  //     }, minTimeForSaved);
-  //   }, minTimeForSaving);
-  // }
-
   get currentlyViewedType() {
     return this._currentViewedType;
   }
@@ -399,8 +369,6 @@ export class UserStore extends BaseStore {
   }
 
   get saving() {
-    // debugger;
-    console.log(this._saving);
     return this._saving;
   }
 
