@@ -7,6 +7,7 @@
 import React from 'react';
 
 import Action from './action.jsx';
+import ErrorMessage from './error_message.jsx';
 import FormStore from '../stores/form_store';
 import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
@@ -14,7 +15,10 @@ import userActions from '../actions/user_actions';
 import { validateString } from '../util/validators';
 
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
-const propTypes = {};
+
+const propTypes = {
+  error: React.PropTypes.object
+};
 const defaultProps = {};
 
 export default class UsersInvite extends React.Component {
@@ -30,11 +34,21 @@ export default class UsersInvite extends React.Component {
     userActions.fetchUserInvite(values.email.value);
   }
 
+  get errorMessage() {
+    const err = this.props.error;
+    if (!err) return undefined;
+    const message = err.contextualMessage;
+    if (err.message) {
+      return `${message}: ${err.message}.`;
+    }
+    return message;
+  }
+
   render() {
     return (
       <div className="test-users-invite">
         <h2>User invite</h2>
-        <PanelDocumentation>
+        <PanelDocumentation description>
           <p>Organizational Managers can add new users below.</p>
         </PanelDocumentation>
         <Form
@@ -42,10 +56,8 @@ export default class UsersInvite extends React.Component {
           classes={ ['users_invite_form'] }
           ref="form"
           onSubmit={ this._onValidForm }
+          errorOverride={ this.errorMessage }
         >
-          <legend>
-            Invite a new user
-          </legend>
           <FormText
             formGuid={ USERS_INVITE_FORM_GUID }
             classes={ ['test-users_invite_name'] }
