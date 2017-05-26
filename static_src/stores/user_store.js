@@ -81,11 +81,8 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_ROLES_ADD: {
         const user = this.get(action.userGuid);
         if (user) {
-          this._saving = true;
-          this.emitChange();
-          this.merge('guid', user, (changed) => {
-            if (changed) this.emitChange();
-          });
+          const savingUser = Object.assign({}, user, { saving: true });
+          this.merge('guid', savingUser);
         }
 
         const apiMethodMap = {
@@ -119,7 +116,7 @@ export class UserStore extends BaseStore {
           if (userRole && userRole.indexOf(role) === -1) {
             userRole.push(role);
           }
-          this._saving = false;
+          user.saving = false;
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
@@ -131,12 +128,10 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_ROLES_DELETE: {
         const user = this.get(action.userGuid);
         if (user) {
-          this._saving = true;
-          this.emitChange();
-          this.merge('guid', user, (changed) => {
-            if (changed) this.emitChange();
-          });
+          const savingUser = Object.assign({}, user, { saving: true });
+          this.merge('guid', savingUser);
         }
+
         const apiMethodMap = {
           org: cfApi.deleteOrgUserPermissions,
           space: cfApi.deleteSpaceUserPermissions
@@ -169,7 +164,7 @@ export class UserStore extends BaseStore {
           if (idx > -1) {
             userRole.splice(idx, 1);
           }
-          this._saving = false;
+          user.saving = false;
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
