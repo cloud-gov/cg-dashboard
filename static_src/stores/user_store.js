@@ -367,6 +367,12 @@ export class UserStore extends BaseStore {
     return this._saving;
   }
 
+  get anySaving() {
+    // TODO does this need to filter by org guid?
+    const users = this.getAll();
+    return (users.find(user => !!user.saving).length > 0);
+  }
+
   /*
    * Returns if a user with userGuid has ANY role within the enity of the
    * entityGuid.
