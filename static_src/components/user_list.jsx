@@ -125,14 +125,8 @@ export default class UserList extends React.Component {
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
 
-    if (this.state.saving === true) {
-      this.state.savingText = "Saving";
-    } else if (this.state.saving === false) {
-      this.state.savingText = "";
-    }
-
-    if (this.state.savingText) {
-      saving = <Loading text={this.state.savingText} style="globalSaving" loadingDelayMS={1} />;
+    if (this.state.saving) {
+      saving = <Loading text="Saving" style="globalSaving" />;
     }
 
     if (this.state.empty) {
