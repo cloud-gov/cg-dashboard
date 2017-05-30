@@ -127,71 +127,71 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(data => userActions.receiveUserInvite(data))
-      .catch(err => userActions.userInviteError(err, `There was a problem
-        inviting ${email}`));
+      .then(data => userActions.associateUserToOrg(data.guid))
+      // .catch(err => userActions.userInviteError(err, `There was a problem
+      //   inviting ${email}`));
   },
 
-  receiveUserInvite(inviteData) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_INVITE_RECEIVED
-    });
+  // receiveUserInvite(inviteData) {
+  //   AppDispatcher.handleServerAction({
+  //     type: userActionTypes.USER_INVITE_RECEIVED
+  //   });
 
-    const userGuid = inviteData.new_invites[0].userId;
-    const userEmail = inviteData.new_invites[0].email;
+    // const userGuid = inviteData.new_invites[0].userId;
+    // const userEmail = inviteData.new_invites[0].email;
 
-    return cfApi.postCreateNewUserWithGuid(userGuid)
-      .then(user => userActions.receiveUserForCF(user, inviteData))
-      .catch(err => userActions.userInviteError(err, `There was a problem
-        inviting ${userEmail}`));
-  },
+    // return cfApi.postCreateNewUserWithGuid(userGuid)
+    //   .then(user => userActions.receiveUserForCF(user, inviteData))
+    //   .catch(err => userActions.userInviteError(err, `There was a problem
+    //     inviting ${userEmail}`));
+  // },
 
-  userInviteError(err, contextualMessage) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_INVITE_ERROR,
-      err,
-      contextualMessage
-    });
+  // userInviteError(err, contextualMessage) {
+  //   AppDispatcher.handleServerAction({
+  //     type: userActionTypes.USER_INVITE_ERROR,
+  //     err,
+  //     contextualMessage
+  //   });
 
-    return Promise.resolve(err);
-  },
+  //   return Promise.resolve(err);
+  // },
 
-  receiveUserForCF(user, inviteData) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_IN_CF_CREATED,
-      user
-    });
+  // receiveUserForCF(user, inviteData) {
+  //   AppDispatcher.handleServerAction({
+  //     type: userActionTypes.USER_IN_CF_CREATED,
+  //     user
+  //   });
 
-    if (user.guid) {
-      userActions.sendUserInviteEmail(inviteData);
-    }
-    // Once the user exists in CF, associate them to the organization.
-    return userActions.associateUserToOrg(user);
-  },
+  //   if (user.guid) {
+  //     userActions.sendUserInviteEmail(inviteData);
+  //   }
+  //   // Once the user exists in CF, associate them to the organization.
+  //   return userActions.associateUserToOrg(user);
+  // },
 
-  sendUserInviteEmail(inviteData) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_EMAIL_INVITE
-    });
-    uaaApi.sendInviteEmail(inviteData);
-  },
+  // sendUserInviteEmail(inviteData) {
+  //   AppDispatcher.handleServerAction({
+  //     type: userActionTypes.USER_EMAIL_INVITE
+  //   });
+  //   uaaApi.sendInviteEmail(inviteData);
+  // },
 
-  associateUserToOrg(user) {
+  associateUserToOrg(userGuid) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ORG_ASSOCIATE
     });
     const orgGuid = OrgStore.currentOrgGuid;
 
-    return cfApi.putAssociateUserToOrganization(user.guid, orgGuid)
-      .then(userActions.associatedUserToOrg(user, orgGuid))
-      .catch(err => userActions.userInviteError(err, `Unable to associate user to
-        organization`));
+    return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
+      .then(userActions.associatedUserToOrg(userGuid, orgGuid))
+      // .catch(err => userActions.userInviteError(err, `Unable to associate user to
+      //   organization`));
   },
 
-  associatedUserToOrg(user, orgGuid) {
+  associatedUserToOrg(userGuid, orgGuid) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ORG_ASSOCIATED,
-      user,
+      userGuid,
       orgGuid
     });
   },
