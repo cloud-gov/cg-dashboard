@@ -52,7 +52,6 @@ func InitRouter(settings *helpers.Settings, templates *helpers.Templates, mailer
 	uaaRouter.Middleware((*UAAContext).OAuth)
 	uaaRouter.Get("/userinfo", (*UAAContext).UserInfo)
 	uaaRouter.Get("/uaainfo", (*UAAContext).UaaInfo)
-	uaaRouter.Post("/invite/email", (*UAAContext).SendInvite)
 	uaaRouter.Post("/invite/users", (*UAAContext).InviteUsers)
 
 	// Setup the /log subrouter.

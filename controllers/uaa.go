@@ -33,7 +33,7 @@ func (c *UAAContext) uaaProxy(rw http.ResponseWriter, req *web.Request,
 }
 
 // cfProxy is an esclated proxy that we want to use only with certain UAA calls.
-func (c *UAAContext) cfProxy(rw web.ResponseWriter, req *http.Request,
+func (c *UAAContext) cfProxy(rw http.ResponseWriter, req *http.Request,
 	endpoint string) {
 	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, endpoint)
 	c.PrivilegedProxy(rw, req, reqURL)
@@ -44,7 +44,7 @@ func (c *UAAContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
 	c.uaaProxy(rw, req, "/userinfo", false)
 }
 
-type inviteUAAUser struct {
+type inviteUAAUserResponse struct {
 	NewInvites []newInvite `json:"new_invites"`
 }
 type newInvite struct {
@@ -56,13 +56,21 @@ type createCFUser struct {
 	GUID string `json:"guid"`
 }
 
-// InviteUsers will invite user.
+// InviteUsers will invite user and creating.
 func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
+	// Make request to UAA to invite user (which will create the user in the
+	// UAA database)
 	reqURL := fmt.Sprintf("%s%s",
 		"/invite_users?redirect_uri=", c.Settings.AppURL)
 	// TODO should look into using reverseproxy in httputil.
 	w := httptest.NewRecorder()
 	c.uaaProxy(w, req, reqURL, true)
+	if w.Code != http.StatusOK {
+		resp := w.Result()
+		body, _ := ioutil.ReadAll(resp.Body)
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"unable to create user in UAA database.\", \"proxy-data\": \"" + string(body) + "\"}"))
+	}
 	resp := w.Result()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -70,24 +78,33 @@ func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
 		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
 		return
 	}
-	var newInvites inviteUAAUser
-	err = json.Unmarshal(body, &newInvites)
+
+	// Read the response from inviting the user.
+	var inviteResponse inviteUAAUserResponse
+	err = json.Unmarshal(body, &inviteResponse)
 	if err != nil {
 		rw.WriteHeader(w.Code)
 		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
 		return
 	}
-	if len(newInvites.NewInvites) < 1 {
+
+	// If we don't have a successful invite, we return an error.
+	if len(inviteResponse.NewInvites) < 1 {
 		rw.WriteHeader(w.Code)
 		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"no successful invites created.\"}"))
 		return
 	}
-	cfCreateUserBody, err := json.Marshal(createCFUser{GUID: newInvites.NewInvites[0].Email})
+
+	// Creating the JSON for the CF API request which will create the user in
+	// CF database.
+	cfCreateUserBody, err := json.Marshal(createCFUser{GUID: inviteResponse.NewInvites[0].Email})
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
 		return
 	}
+
+	// Send the request to the CF API to create the user in the CF database.
 	cfReq, err := http.NewRequest("POST", "/v2/users",
 		bytes.NewBuffer(cfCreateUserBody))
 	if err != nil {
@@ -95,32 +112,24 @@ func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
 		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
 		return
 	}
-	c.cfProxy(rw, cfReq, "/v2/users")
+	w = httptest.NewRecorder()
+	c.cfProxy(w, cfReq, "/v2/users")
+	if w.Code != http.StatusCreated {
+		resp := w.Result()
+		body, _ := ioutil.ReadAll(resp.Body)
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"unable to create user in CF database.\", \"proxy-data\": \"" + string(body) + "\"}"))
+	}
+
+	// Trigger the e-mail invite.
+	newInvite := inviteResponse.NewInvites[0]
+	c.TriggerInvite(rw, inviteRequest{Email: newInvite.Email,
+		InviteURL: newInvite.InviteLink})
 }
 
 type inviteRequest struct {
 	Email     string `json:"email"`
 	InviteURL string `json:"inviteUrl"`
-}
-
-// SendInvite sends users an email with a link to the UAA invite
-func (c *UAAContext) SendInvite(rw web.ResponseWriter, req *web.Request) {
-	rw.Header().Set("Content-Type", "application/json; charset=utf-8")
-	if req.Body == nil {
-		rw.WriteHeader(http.StatusBadRequest)
-		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"No request body found.\"}"))
-		return
-	}
-	decoder := json.NewDecoder(req.Body)
-	var inviteReq inviteRequest
-	err := decoder.Decode(&inviteReq)
-	if err != nil {
-		rw.WriteHeader(http.StatusBadRequest)
-		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
-		return
-	}
-	defer req.Body.Close()
-	c.TriggerInvite(rw, inviteReq)
 }
 
 // TriggerInvite trigger the email to be send for SendInvite
