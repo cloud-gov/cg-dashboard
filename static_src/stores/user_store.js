@@ -67,6 +67,12 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_INVITE_FETCH: {
+        this._inviteError = null;
+        this.emitChange();
+        break;
+      }
+
       case userActionTypes.USER_ORG_ASSOCIATED: {
         const user = Object.assign({}, { orgGuid: action.orgGuid }, action.user);
         this._inviteInputActive = true;
@@ -203,6 +209,14 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.ERROR_REMOVE_USER: {
         this._error = action.error;
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_INVITE_ERROR: {
+        this._inviteError = Object.assign({}, action.err, {
+          contextualMessage: action.contextualMessage
+        });
         this.emitChange();
         break;
       }
@@ -374,6 +388,10 @@ export class UserStore extends BaseStore {
 
   isAdmin() {
     return this._currentUserIsAdmin;
+  }
+
+  getInviteError() {
+    return this._inviteError;
   }
 
   get currentUser() {

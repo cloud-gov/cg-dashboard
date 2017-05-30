@@ -394,9 +394,7 @@ export default {
   // TODO deprecate possibly in favor of deleteOrgUserPermissions.
   deleteOrgUserCategory(userGuid, orgGuid, category) {
     return http.delete(`${APIV}/organizations/${orgGuid}/${category}
-      /${userGuid}`).catch(() => {
-        // TODO create correct error action.
-      });
+      /${userGuid}`);
   },
 
   deleteOrgUserPermissions(userGuid, orgGuid, permissions) {

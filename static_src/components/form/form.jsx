@@ -69,7 +69,9 @@ export default class Form extends React.Component {
     let errorMsg;
     const classes = classNames(...this.props.classes);
 
-    if (this.state.errors.length) {
+    if (this.props.errorOverride) {
+      errorMsg = <FormError message={ this.props.errorOverride } />;
+    } else if (this.state.errors.length) {
       errorMsg = <FormError message="There were errors submitting the form." />;
     }
 
@@ -92,7 +94,8 @@ Form.propTypes = {
   classes: React.PropTypes.array,
   guid: React.PropTypes.string.isRequired,
   method: React.PropTypes.string,
-  onSubmit: React.PropTypes.func
+  onSubmit: React.PropTypes.func,
+  errorOverride: React.PropTypes.string
 };
 
 Form.defaultProps = {

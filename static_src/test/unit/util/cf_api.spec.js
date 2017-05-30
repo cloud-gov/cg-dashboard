@@ -233,7 +233,8 @@ describe('cfApi', function() {
   });
 
   describe('deleteRoute()', function() {
-    it('should DELETE to the versioned /routes/:routeGuid endpoint with data', function(done) {
+    it('should DELETE to the versioned /routes/:routeGuid endpoint with data',
+        function(done) {
       const routeGuid = 'fake-route-guid';
       const spy = sandbox.stub(http, 'delete');
       spy.returns(Promise.resolve());
@@ -274,7 +275,7 @@ describe('cfApi', function() {
         arg = spy.getCall(0).args[1];
         expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -775,16 +776,17 @@ describe('cfApi', function() {
 
   describe('deleteUnboundServiceInstance()', function() {
     it('should call http delete request on service route with service guid',
-        function() {
-      var spy = sandbox.spy(http, 'delete'),
+        function(done) {
+      var spy = sandbox.stub(http, 'delete').returns(Promise.resolve()),
           expectedGuid = 'yyasdflkjayybbaal1',
           expected = { guid: expectedGuid, url: '/'+ expectedGuid}
 
-      cfApi.deleteUnboundServiceInstance(expected);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp(expectedGuid));
+      cfApi.deleteUnboundServiceInstance(expected).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let actual = spy.getCall(0).args[0];
+        expect(actual).toMatch(new RegExp(expectedGuid));
+        done();
+      }).catch(done.fail);
     });
   });
 
@@ -935,17 +937,18 @@ describe('cfApi', function() {
   });
 
   describe('deleteUser()', function() {
-    it('should call a http delete request on the org and user', function() {
-      var spy = sandbox.spy(http, 'delete'),
+    it('should call a http delete request on the org and user', function(done) {
+      var spy = sandbox.stub(http, 'delete').returns(Promise.resolve({ status: 500 })),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp';
 
-      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp(expectedUserGuid));
-      expect(actual).toMatch(new RegExp(expectedOrgGuid));
+      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let actual = spy.getCall(0).args[0];
+        expect(actual).toMatch(new RegExp(expectedUserGuid));
+        expect(actual).toMatch(new RegExp(expectedOrgGuid));
+        done();
+      }).catch(done.fail);
     });
 
     it('should call org deleted action with guid', function(done) {
@@ -969,8 +972,8 @@ describe('cfApi', function() {
 
   describe('deleteOrgUserCategory()', function() {
     it('should call a http delete request on the org user with category ',
-        function() {
-      var spy = sandbox.spy(http, 'delete'),
+        function(done) {
+      var spy = sandbox.stub(http, 'delete').returns(Promise.resolve({})),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp',
           expectedCategory = 'some_role';
@@ -978,20 +981,21 @@ describe('cfApi', function() {
       cfApi.deleteOrgUserCategory(
         expectedUserGuid,
         expectedOrgGuid,
-        expectedCategory);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp(expectedUserGuid));
-      expect(actual).toMatch(new RegExp(expectedOrgGuid));
-      expect(actual).toMatch(new RegExp(expectedCategory));
+        expectedCategory).then(() => {
+          expect(spy).toHaveBeenCalledOnce();
+          let actual = spy.getCall(0).args[0];
+          expect(actual).toMatch(new RegExp(expectedUserGuid));
+          expect(actual).toMatch(new RegExp(expectedOrgGuid));
+          expect(actual).toMatch(new RegExp(expectedCategory));
+          done();
+      }).catch(done.fail);
     });
   });
 
   describe('deleteOrgUserPermissions()', function() {
     it('should call an http delete request on org user with permissions',
         function(done) {
-      var spy = sandbox.spy(http, 'delete'),
+      var spy = sandbox.stub(http, 'delete').returns(Promise.resolve({})),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp',
           expectedPermission = 'manager';
@@ -1321,7 +1325,7 @@ describe('cfApi', function() {
         arg = spy.getCall(0).args[1];
         expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 

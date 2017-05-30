@@ -673,6 +673,47 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on USER_INVITE_FETCH', function() {
+    beforeEach(function() {
+      UserStore._inviteError = { message: 'something wrong' };
+      sandbox.spy(UserStore, 'emitChange');
+
+      userActions.fetchUserInvite();
+    });
+
+    it('should unset the user invite error', function() {
+      expect(UserStore.getInviteError()).toBeNull();
+    });
+
+    it('should emit a change event', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on USER_INVITE_ERROR', function() {
+    let error;
+    let message;
+
+    beforeEach(function() {
+      UserStore._inviteError = null;
+      message = 'Inviting user did not work';
+      error = { status: 500, message: 'CF said this' };
+      sandbox.spy(UserStore, 'emitChange');
+
+      userActions.userInviteError(error, message);
+    });
+
+    it('should add a error message to the user invite error field', function() {
+      expect(UserStore.getInviteError()).toBeDefined();
+      expect(UserStore.getInviteError().contextualMessage).toEqual(message);
+      expect(UserStore.getInviteError().message).toEqual(error.message);
+    });
+
+    it('should emit a change event', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('isAdmin()', function () {
     describe('user with _currentUserIsAdmin', function () {
       let user, space, org, actual;

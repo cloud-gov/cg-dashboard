@@ -15,9 +15,9 @@ export default {
   },
 
   inviteUaaUser(email) {
-    return http.post(`${URL}/invite/users`, {
-      emails: [email]
-    }).then(res => res.data);
+    return http.post(`${URL}/invite/users`, { emails: [email] })
+      .then(res => res.data)
+      .catch(err => Promise.reject(err.response.data));
   },
 
   sendInviteEmail(response) {
