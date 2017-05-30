@@ -3,10 +3,12 @@ package controllers
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 
 	"encoding/json"
 
 	"net/http"
+	"net/http/httptest"
 
 	"github.com/gocraft/web"
 )
@@ -20,7 +22,7 @@ type UAAContext struct {
 // uaaProxy prepares the final URL to pass through the proxy.
 // By setting "escalated" to true, you can use the Dashboard's credentials to
 // make the request instead of the current user's credentials.
-func (c *UAAContext) uaaProxy(rw web.ResponseWriter, req *web.Request,
+func (c *UAAContext) uaaProxy(rw http.ResponseWriter, req *web.Request,
 	uaaEndpoint string, escalated bool) {
 	reqURL := fmt.Sprintf("%s%s", c.Settings.UaaURL, uaaEndpoint)
 	if escalated {
@@ -30,16 +32,70 @@ func (c *UAAContext) uaaProxy(rw web.ResponseWriter, req *web.Request,
 	}
 }
 
+// cfProxy is an esclated proxy that we want to use only with certain UAA calls.
+func (c *UAAContext) cfProxy(rw web.ResponseWriter, req *http.Request,
+	endpoint string) {
+	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, endpoint)
+	c.PrivilegedProxy(rw, req, reqURL)
+}
+
 // UserInfo returns the UAA_API/userinfo information for the logged in user.
 func (c *UAAContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
 	c.uaaProxy(rw, req, "/userinfo", false)
+}
+
+type inviteUAAUser struct {
+	NewInvites []newInvite `json:"new_invites"`
+}
+type newInvite struct {
+	UserID     string `json:"userId"`
+	Email      string `json:"email"`
+	InviteLink string `json:"inviteLink"`
+}
+type createCFUser struct {
+	GUID string `json:"guid"`
 }
 
 // InviteUsers will invite user.
 func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
 	reqURL := fmt.Sprintf("%s%s",
 		"/invite_users?redirect_uri=", c.Settings.AppURL)
-	c.uaaProxy(rw, req, reqURL, true)
+	// TODO should look into using reverseproxy in httputil.
+	w := httptest.NewRecorder()
+	c.uaaProxy(w, req, reqURL, true)
+	resp := w.Result()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
+		return
+	}
+	var newInvites inviteUAAUser
+	err = json.Unmarshal(body, &newInvites)
+	if err != nil {
+		rw.WriteHeader(w.Code)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
+		return
+	}
+	if len(newInvites.NewInvites) < 1 {
+		rw.WriteHeader(w.Code)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"no successful invites created.\"}"))
+		return
+	}
+	cfCreateUserBody, err := json.Marshal(createCFUser{GUID: newInvites.NewInvites[0].Email})
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
+		return
+	}
+	cfReq, err := http.NewRequest("POST", "/v2/users",
+		bytes.NewBuffer(cfCreateUserBody))
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
+		return
+	}
+	c.cfProxy(rw, cfReq, "/v2/users")
 }
 
 type inviteRequest struct {
