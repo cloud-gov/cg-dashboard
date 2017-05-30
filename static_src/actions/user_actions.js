@@ -127,7 +127,9 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(data => userActions.receiveUserInvite(data));
+      .then(data => userActions.receiveUserInvite(data))
+      .catch(err => userActions.userInviteError(err, `There was a problem
+        inviting ${email}`));
   },
 
   receiveUserInvite(inviteData) {
@@ -136,9 +138,22 @@ const userActions = {
     });
 
     const userGuid = inviteData.new_invites[0].userId;
+    const userEmail = inviteData.new_invites[0].email;
 
     return cfApi.postCreateNewUserWithGuid(userGuid)
-      .then(user => userActions.receiveUserForCF(user, inviteData));
+      .then(user => userActions.receiveUserForCF(user, inviteData))
+      .catch(err => userActions.userInviteError(err, `There was a problem
+        inviting ${userEmail}`));
+  },
+
+  userInviteError(err, contextualMessage) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_INVITE_ERROR,
+      err,
+      contextualMessage
+    });
+
+    return Promise.resolve(err);
   },
 
   receiveUserForCF(user, inviteData) {
@@ -168,7 +183,9 @@ const userActions = {
     const orgGuid = OrgStore.currentOrgGuid;
 
     return cfApi.putAssociateUserToOrganization(user.guid, orgGuid)
-      .then(userActions.associatedUserToOrg(user, orgGuid));
+      .then(userActions.associatedUserToOrg(user, orgGuid))
+      .catch(err => userActions.userInviteError(err, `Unable to associate user to
+        organization`));
   },
 
   associatedUserToOrg(user, orgGuid) {

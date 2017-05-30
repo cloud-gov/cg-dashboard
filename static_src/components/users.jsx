@@ -44,7 +44,8 @@ function stateSetter() {
     saving: UserStore.saving,
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
-    users
+    users,
+    userInviteError: UserStore.getInviteError()
   };
 }
 
@@ -137,7 +138,7 @@ export default class Users extends React.Component {
             { content }
           </div>
         </div>
-        <UsersInvite />
+        <UsersInvite error={ this.state.userInviteError } />
       </div>
     );
   }

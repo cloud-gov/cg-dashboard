@@ -97,10 +97,13 @@ module.exports = function api(smocks) {
       const email = req.payload.emails[0];
       if (email && userInviteResponses[email]){
         userInviteResponse = userInviteResponses[email];
+        reply(userInviteResponse);
+      } else if (!email.length || !/(.+)@(.+){2,}\.(.+){2,}/.test(email)) {
+        reply({ message: 'Invalid email'}).code(500);
       } else {
         userInviteResponse = userInviteResponses['default'];
+        reply(userInviteResponse);
       }
-      reply(userInviteResponse);
     }
   });
 

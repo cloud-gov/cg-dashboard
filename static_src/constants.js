@@ -264,6 +264,8 @@ const userActionTypes = keymirror({
   USER_ORG_ASSOCIATE: null,
   // Action to associate user to organization on the server.
   USER_ORG_ASSOCIATED: null,
+  // Action when something goes wrong in user invite and email process.
+  USER_INVITE_ERROR: null,
   // Action to delete a user from an org.
   USER_DELETE: null,
   // Action when a user was deleted from an org on the server.
