@@ -124,12 +124,15 @@ func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
 	// Trigger the e-mail invite.
 	newInvite := inviteResponse.NewInvites[0]
 	c.TriggerInvite(rw, inviteRequest{Email: newInvite.Email,
-		InviteURL: newInvite.InviteLink})
+		InviteURL: newInvite.InviteLink,
+		GUID:      newInvite.UserID,
+	})
 }
 
 type inviteRequest struct {
 	Email     string `json:"email"`
 	InviteURL string `json:"inviteUrl"`
+	GUID      string `json:"guid"`
 }
 
 // TriggerInvite trigger the email to be send for SendInvite
@@ -152,7 +155,9 @@ func (c *UAAContext) TriggerInvite(rw web.ResponseWriter, inviteReq inviteReques
 		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\" }"))
 		return
 	}
-	rw.Write([]byte("{\"status\": \"success\", \"email\": \"" + inviteReq.Email + "\", \"invite\": \"" + inviteReq.InviteURL + "\" }"))
+	rw.Write([]byte("{\"status\": \"success\", \"email\": \"" + inviteReq.Email +
+		"\", \"invite\": \"" + inviteReq.InviteURL +
+		"\", \"guid\": \"" + inviteReq.GUID + "\"}"))
 }
 
 // UaaInfo returns the UAA_API/Users/:id information for the logged in user.
