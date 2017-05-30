@@ -97,7 +97,7 @@ func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
 
 	// Creating the JSON for the CF API request which will create the user in
 	// CF database.
-	cfCreateUserBody, err := json.Marshal(createCFUser{GUID: inviteResponse.NewInvites[0].Email})
+	cfCreateUserBody, err := json.Marshal(createCFUser{GUID: inviteResponse.NewInvites[0].UserID})
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"" + err.Error() + "\"}"))
@@ -114,12 +114,13 @@ func (c *UAAContext) InviteUsers(rw web.ResponseWriter, req *web.Request) {
 	}
 	w = httptest.NewRecorder()
 	c.cfProxy(w, cfReq, "/v2/users")
-	if w.Code != http.StatusCreated {
-		resp := w.Result()
-		body, _ := ioutil.ReadAll(resp.Body)
-		rw.WriteHeader(http.StatusInternalServerError)
-		rw.Write([]byte("{\"status\": \"failure\", \"data\": \"unable to create user in CF database.\", \"proxy-data\": \"" + string(body) + "\"}"))
-	}
+	// if w.Code != http.StatusCreated {
+	// 	resp := w.Result()
+	// 	body, _ := ioutil.ReadAll(resp.Body)
+	// 	rw.WriteHeader(http.StatusInternalServerError)
+	// 	rw.Write([]byte("{\"status\": \"failure\", \"data\": \"unable to create user in CF database.\", \"proxy-data\": \"" + string(body) + "\"}"))
+	// 	return
+	// }
 
 	// Trigger the e-mail invite.
 	newInvite := inviteResponse.NewInvites[0]
