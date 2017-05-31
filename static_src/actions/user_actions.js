@@ -125,9 +125,10 @@ const userActions = {
       type: userActionTypes.USER_INVITE_FETCH,
       email
     });
+    const orgGuid = OrgStore.currentOrgGuid;
 
-    return uaaApi.inviteUaaUser(email)
-      .then(data => userActions.associateUserToOrg(data.guid))
+    return uaaApi.inviteUaaUser(email, orgGuid)
+      // .then(data => userActions.associateUserToOrg(data.guid))
       // .catch(err => userActions.userInviteError(err, `There was a problem
       //   inviting ${email}`));
   },
@@ -176,25 +177,25 @@ const userActions = {
   //   uaaApi.sendInviteEmail(inviteData);
   // },
 
-  associateUserToOrg(userGuid) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORG_ASSOCIATE
-    });
-    const orgGuid = OrgStore.currentOrgGuid;
+  // associateUserToOrg(userGuid) {
+  //   AppDispatcher.handleServerAction({
+  //     type: userActionTypes.USER_ORG_ASSOCIATE
+  //   });
+  //   const orgGuid = OrgStore.currentOrgGuid;
 
-    return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
-      .then(userActions.associatedUserToOrg(userGuid, orgGuid))
-      // .catch(err => userActions.userInviteError(err, `Unable to associate user to
-      //   organization`));
-  },
+  //   return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
+  //     .then(userActions.associatedUserToOrg(userGuid, orgGuid))
+  //     // .catch(err => userActions.userInviteError(err, `Unable to associate user to
+  //     //   organization`));
+  // },
 
-  associatedUserToOrg(userGuid, orgGuid) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORG_ASSOCIATED,
-      userGuid,
-      orgGuid
-    });
-  },
+  // associatedUserToOrg(userGuid, orgGuid) {
+  //   AppDispatcher.handleServerAction({
+  //     type: userActionTypes.USER_ORG_ASSOCIATED,
+  //     userGuid,
+  //     orgGuid
+  //   });
+  // },
 
   changeCurrentlyViewedType(userType) {
     AppDispatcher.handleUIAction({
