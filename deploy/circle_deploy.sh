@@ -2,9 +2,6 @@
 
 # This script will install the autopilot plugin, login, pick the right manifest and deploy the app with 0 downtime.
 
-# Command line arguments
-# $1 = specified environment
-
 set -e
 set -o pipefail
 
