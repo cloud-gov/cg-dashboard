@@ -30,7 +30,7 @@ export default class UsersInvite extends React.Component {
   }
 
   _onValidForm(errs, values) {
-    userActions.fetchUserInvite(values.email.value);
+    userActions.createUserInvite(values.email.value);
   }
 
   get errorMessage() {
