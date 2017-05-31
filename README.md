@@ -182,15 +182,15 @@ uaac client add <your-client-id> \
 
 ### CI
 This project uses CircleCI.
-- You will need to setup the credentials to deploy to the `dashboard-prod` and `dashboard-stage` spaces.
-  - In both spaces run: `cf create-service cloud-gov-service-account space-deployer dashboard-deployer`
-  - You will get the link for that space's credentials by running `cf service dashboard-deployer`
+- You will need to set up the credentials to deploy to the `dashboard-prod` and `dashboard-stage` spaces.
+  - In both spaces run: `cf create-service cloud-gov-service-account space-deployer dashboard-deployer`.
+  - You will get the link for that space's credentials by running `cf service dashboard-deployer`.
   - You will need to set these [**secret**](https://circleci.com/docs/1.0/environment-variables/#setting-environment-variables-for-all-commands-without-adding-them-to-git) variables in the [CircleCI UI](https://circleci.com/gh/18F/cg-dashboard/edit#env-vars).
     - `CF_USERNAME_PROD_SPACE` - The username for the `dashboard-prod` deployer
     - `CF_PASSWORD_PROD_SPACE` - The password for the `dashboard-prod` deployer
     - `CF_USERNAME_STAGE_SPACE` - The username for the `dashboard-stage` deployer
     - `CF_PASSWORD_STAGE_SPACE` - The password for the `dashboard-stage` deployer
-- In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the CircleCI CLI UI to set the variables
+- If you fork this project for your own use, you will need to use the CircleCI CLI UI to set the variables. (If you're forking just to make a pull request, there's no need to do this.)
 
 
 ### Optional features
