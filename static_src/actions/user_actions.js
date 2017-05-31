@@ -127,30 +127,30 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(data => userActions.createUserAndAssociate(data))
+      .then(data => userActions.createUserAndAssociate(data, email))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
   },
 
-  createUserAndAssociate(data) {
+  createUserAndAssociate(data, email) {
+    const orgGuid = OrgStore.currentOrgGuid;
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATE,
-      data
+      data,
+      orgGuid
     });
-    const userGuid = data.userGuid;
-    const orgGuid = OrgStore.currentOrgGuid;
-
-    return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
-      .then(data => userActions.createdUserAndAssociated(data, orgGuid))
+    return cfApi.putAssociateUserToOrganization(data.userGuid, orgGuid)
+      .then(user => userActions.createdUserAndAssociated(user, orgGuid, email))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         associating ${userGuid} to ${orgGuid}`));
   },
 
-  createdUserAndAssociated(data, orgGuid) {
+  createdUserAndAssociated(user, orgGuid, email) {
+    user.username = email;
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATED,
-      user: data,
-      orgGuid: orgGuid
+      user,
+      orgGuid
     });
   },
 
@@ -163,26 +163,6 @@ const userActions = {
 
     return Promise.resolve(err);
   },
-
-  // associateUserToOrg(userGuid) {
-  //   AppDispatcher.handleServerAction({
-  //     type: userActionTypes.USER_ORG_ASSOCIATE
-  //   });
-  //   const orgGuid = OrgStore.currentOrgGuid;
-
-  //   return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
-  //     .then(userActions.associatedUserToOrg(userGuid, orgGuid))
-  //     // .catch(err => userActions.userInviteError(err, `Unable to associate user to
-  //     //   organization`));
-  // },
-
-  // associatedUserToOrg(userGuid, orgGuid) {
-  //   AppDispatcher.handleServerAction({
-  //     type: userActionTypes.USER_ORG_ASSOCIATED,
-  //     userGuid,
-  //     orgGuid
-  //   });
-  // },
 
   changeCurrentlyViewedType(userType) {
     AppDispatcher.handleUIAction({
