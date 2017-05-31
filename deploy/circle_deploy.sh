@@ -65,14 +65,6 @@ echo env:      $manifest_env
 echo manifest: $CF_MANIFEST
 echo space:    $CF_SPACE
 
-if [ $manifest_env == govcloud ]; then
-  CF_API=$CF_API_GC
-  CF_ORGANIZATION=$CF_ORGANIZATION_GC
-else
-	echo "We only support deploying to govcloud, quitting." >&2
-	exit 1
-fi
-
 function deploy () {
   local manifest=${1}
   local org=${2}
