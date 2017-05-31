@@ -134,12 +134,14 @@ const userActions = {
 
   createUserAndAssociate(data, email) {
     const orgGuid = OrgStore.currentOrgGuid;
+    const userGuid = data.userGuid;
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATE,
-      data,
+      userGuid,
       orgGuid
     });
-    return cfApi.putAssociateUserToOrganization(data.userGuid, orgGuid)
+    return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
+      .then(() => userActions.fetchUser(userGuid))
       .then(user => userActions.createdUserAndAssociated(user, orgGuid, email))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         associating ${userGuid} to ${orgGuid}`));
