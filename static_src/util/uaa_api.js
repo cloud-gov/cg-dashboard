@@ -14,10 +14,9 @@ export default {
       .then(res => res.data);
   },
 
-  inviteUaaUser(email, orgGuid) {
+  inviteUaaUser(email) {
     const params = {};
     params.email = email;
-    params.org_guid = orgGuid;
     return http.post(`${URL}/invite/users`, params)
       .then(res => res.data)
       .catch(err => Promise.reject(err.response.data));
