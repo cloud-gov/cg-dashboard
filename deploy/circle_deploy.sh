@@ -8,8 +8,6 @@
 set -e
 set -o pipefail
 
-manifest_env=${1:-govcloud}
-
 # Install cf cli
 curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
 sudo dpkg -i cf-cli_amd64.deb
@@ -61,7 +59,6 @@ else
 	exit 1
 fi
 
-echo env:      $manifest_env
 echo manifest: $CF_MANIFEST
 echo space:    $CF_SPACE
 
@@ -80,6 +77,6 @@ function deploy () {
   cf zero-downtime-push $app -f $manifest
 }
 
-# Set manifest path for environment
-MANIFEST_PATH=manifests/$manifest_env/$CF_MANIFEST
+# Set manifest path
+MANIFEST_PATH=manifests/$CF_MANIFEST
 deploy "$MANIFEST_PATH" "$CF_ORGANIZATION" "$CF_SPACE" "$CF_APP"
