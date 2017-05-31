@@ -185,8 +185,7 @@ func (c *UAAContext) CreateCFuser(userInvite NewInvite) (
 // InviteUserToOrgRequest contains the JSON structure for the invite users
 // request data.
 type InviteUserToOrgRequest struct {
-	Email   string `json:"email"`
-	OrgGUID string `json:"org_guid"`
+	Email string `json:"email"`
 }
 
 // ParseInviteUserToOrgReq will return InviteUserToOrgRequest based on the data
@@ -196,29 +195,6 @@ func (c *UAAContext) ParseInviteUserToOrgReq(req *http.Request) (
 	err = readBodyToStruct(req.Body, &inviteUserToOrgRequest)
 	log.Println(inviteUserToOrgRequest)
 	log.Println("showme")
-	return
-}
-
-// AddUserToOrg will invite user in both UAA and CF, send an e-mail and
-// associate then to the org.
-func (c *UAAContext) AddUserToOrg(
-	inviteUserToOrgRequest InviteUserToOrgRequest,
-	newInvite NewInvite) (err *UaaError) {
-	reqURL := fmt.Sprintf(
-		"/v2/organizations/%s/users/%s", inviteUserToOrgRequest.OrgGUID,
-		newInvite.UserID)
-	cfReq, _ := http.NewRequest("PUT", reqURL, nil)
-	w := httptest.NewRecorder()
-	c.cfProxy(w, cfReq, reqURL)
-	if w.Code != http.StatusCreated && w.Code != http.StatusBadRequest {
-		resp := w.Result()
-		body, _ := ioutil.ReadAll(resp.Body)
-		err = &UaaError{http.StatusInternalServerError,
-			[]byte("{\"status\": \"failure\", " +
-				"\"data\": \"unable to create user in CF database.\", " +
-				"\"proxy-data\": \"" + string(body) + "\"}"),
-		}
-	}
 	return
 }
 
@@ -264,13 +240,8 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 		err.writeTo(rw)
 		return
 	}
-	err = c.AddUserToOrg(inviteUserToOrgRequest, userInvite)
-	if err != nil {
-		err.writeTo(rw)
-		return
-	}
 	rw.WriteHeader(http.StatusOK)
-	rw.Write([]byte("{\"status\": \"success\"}"))
+	rw.Write([]byte("{\"status\": \"success\", \"userGuid\": \"" + userInvite.UserID + "\"}"))
 }
 
 type inviteEmailRequest struct {
