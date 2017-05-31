@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 
 	"encoding/json"
 
@@ -58,6 +59,7 @@ func readBodyToStruct(rawBody io.ReadCloser, obj interface{}) (err *UaaError) {
 				readErr.Error() + "\"}")}
 		return
 	}
+	fmt.Println(string(body))
 
 	// Read the response from inviting the user.
 	jsonErr := json.Unmarshal(body, obj)
@@ -108,8 +110,8 @@ func (c *UAAContext) InviteUAAuser(
 	// UAA database)
 	reqURL := fmt.Sprintf("%s%s",
 		"/invite_users?redirect_uri=", c.Settings.AppURL)
-	inviteUAAUserBody, jsonErr := json.Marshal(
-		inviteUAAUserRequest{[]string{inviteUserToOrgRequest.Email}})
+	requestObj := inviteUAAUserRequest{[]string{inviteUserToOrgRequest.Email}}
+	inviteUAAUserBody, jsonErr := json.Marshal(requestObj)
 	if jsonErr != nil {
 		err = &UaaError{http.StatusInternalServerError,
 			[]byte("{\"status\": \"failure\", \"data\": \"" +
@@ -117,8 +119,15 @@ func (c *UAAContext) InviteUAAuser(
 		}
 		return
 	}
+	log.Println("hmm")
+	log.Println(inviteUserToOrgRequest.Email)
+	log.Println(requestObj)
+	log.Println("here")
+	log.Println(string(inviteUAAUserBody))
+	log.Println("2here")
 	req, _ := http.NewRequest("POST", reqURL,
 		bytes.NewBuffer(inviteUAAUserBody))
+	req.Header.Set("Content-Type", "application/json")
 	// TODO should look into using reverseproxy in httputil.
 	w := httptest.NewRecorder()
 	c.uaaProxy(w, req, reqURL, true)
@@ -185,6 +194,8 @@ type InviteUserToOrgRequest struct {
 func (c *UAAContext) ParseInviteUserToOrgReq(req *http.Request) (
 	inviteUserToOrgRequest InviteUserToOrgRequest, err *UaaError) {
 	err = readBodyToStruct(req.Body, &inviteUserToOrgRequest)
+	log.Println(inviteUserToOrgRequest)
+	log.Println("showme")
 	return
 }
 
