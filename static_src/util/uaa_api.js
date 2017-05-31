@@ -14,8 +14,11 @@ export default {
       .then(res => res.data);
   },
 
-  inviteUaaUser(email) {
-    return http.post(`${URL}/invite/users`, { emails: [email] })
+  inviteUaaUser(email, orgGuid) {
+    const params = {};
+    params.email = email;
+    params.org_guid = orgGuid;
+    return http.post(`${URL}/invite/users`, params)
       .then(res => res.data)
       .catch(err => Promise.reject(err.response.data));
   },
@@ -24,6 +27,7 @@ export default {
     const params = {};
     if (response.new_invites.length > 0) {
       params.email = response.new_invites[0].email;
+      params.inviteUrl = response.new_invites[0].inviteLink;
       params.inviteUrl = response.new_invites[0].inviteLink;
       if (params.email && params.inviteUrl) {
         return http.post(`${URL}/invite/email`, params)
