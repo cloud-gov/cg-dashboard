@@ -253,6 +253,13 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 		err.writeTo(rw)
 		return
 	}
+	err = c.AddUserToOrg(inviteUserToOrgRequest, userInvite)
+	if err != nil {
+		err.writeTo(rw)
+		return
+	}
+	rw.WriteHeader(http.StatusOK)
+	rw.Write([]byte("{\"status\": \"success\"}"))
 }
 
 type inviteEmailRequest struct {
