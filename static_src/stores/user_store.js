@@ -36,7 +36,6 @@ export class UserStore extends BaseStore {
     this._error = null;
     this._saving = false;
     this._loading = {};
-    this._inviteInputActive = true;
   }
 
   _registerToActions(action) {
@@ -76,7 +75,6 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ORG_ASSOCIATED: {
         const user = Object.assign({}, { orgGuid: action.orgGuid }, action.user);
-        this._inviteInputActive = true;
         if (user.guid) {
           this.merge('guid', user, () => {});
         }
