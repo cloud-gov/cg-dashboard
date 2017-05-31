@@ -208,7 +208,7 @@ describe('userActions', function() {
 
     it('should trigger the invite action for new user email', function () {
       expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_INVITE_FETCH,
+        type: userActionTypes.USER_INVITE_TRIGGER,
         email
       }));
     });

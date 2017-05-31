@@ -67,7 +67,7 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.USER_INVITE_FETCH: {
+      case userActionTypes.USER_INVITE_TRIGGER: {
         this._inviteError = null;
         this.emitChange();
         break;
