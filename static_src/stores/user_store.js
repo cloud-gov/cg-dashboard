@@ -74,7 +74,9 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ORG_ASSOCIATED: {
-        const user = Object.assign({}, { orgGuid: action.orgGuid }, action.user);
+        const user = Object.assign({},
+          { orgGuid: action.orgGuid, organization_roles: [] },
+          action.user);
         if (user.guid) {
           this.merge('guid', user, () => {});
         }
@@ -112,7 +114,6 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_ADDED: {
         const user = this.get(action.userGuid);
-
         if (user) {
           const role = this.getResourceToRole(action.roles, action.resourceType);
           const userRole = (action.resourceType === 'space') ? user.space_roles :
