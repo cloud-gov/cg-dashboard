@@ -259,105 +259,7 @@ describe('userActions', function() {
     });
   });
 
-  describe('receiveUserInvite', function () {
-    let userGuid;
-    let inviteData;
-
-    beforeEach(function (done) {
-      userGuid = "fake-udid";
-      inviteData = { new_invites: [{ userId: userGuid }] };
-      sandbox.stub(cfApi, 'postCreateNewUserWithGuid').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      sandbox.stub(userActions, 'receiveUserForCF').returns(Promise.resolve());
-      userActions.receiveUserInvite(inviteData)
-        .then(done, done.fail);
-    });
-
-    it('should send off the email invite', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_INVITE_RECEIVED
-      }));
-    });
-
-    it('calls cfApi postCreateNewUserWithGuid', function () {
-      expect(cfApi.postCreateNewUserWithGuid).toHaveBeenCalledWith(userGuid);
-    });
-
-    describe('when request fails', function() {
-      beforeEach(function (done) {
-        cfApi.postCreateNewUserWithGuid.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'userInviteError');
-
-        userActions.receiveUserInvite(inviteData)
-          .then(done, done.fail);
-      });
-
-      it('should call user invite error action handler', function() {
-        expect(userActions.userInviteError).toHaveBeenCalledOnce();
-      });
-
-      it('should provide contextual message about invite', function() {
-        const arg = userActions.userInviteError.getCall(0).args[1];
-        expect(arg.length).toBeGreaterThan(0);
-        expect(arg).toMatch('invit');
-      });
-    });
-  });
-
-  describe('receiveUserForCF', function () {
-    let userGuid;
-    let user;
-    let inviteData;
-    beforeEach(function (done) {
-      userGuid = "fake-udid";
-      user = { guid: userGuid };
-      inviteData = { new_invites:[{ userId: userGuid }] };
-      sandbox.stub(userActions, 'sendUserInviteEmail').returns(Promise.resolve());
-      sandbox.stub(userActions, 'associateUserToOrg').returns(Promise.resolve());
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      userActions.receiveUserForCF(user, inviteData)
-        .then(done, done.fail);
-    });
-
-    it('confirms the user was created and returns a guid', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_IN_CF_CREATED,
-        user
-      }));
-    });
-
-    it('should send off email invite with invite data', function () {
-      expect(userActions.sendUserInviteEmail).toHaveBeenCalledOnce();
-    });
-
-    it('should call next request to associate user', function () {
-      expect(userActions.associateUserToOrg).toHaveBeenCalledOnce();
-    });
-  });
-
-  describe('sendUserInviteEmail', function () {
-    let userGuid;
-    let inviteData;
-    let spy;
-    beforeEach(function () {
-      userGuid = "fake-user-udid";
-      inviteData = { new_invites: [{ userId: userGuid }] };
-      spy = setupServerSpy(sandbox);
-
-      sandbox.stub(uaaApi, 'sendInviteEmail');
-      userActions.sendUserInviteEmail(inviteData);
-    });
-
-    it('should announce email invite to actions', function () {
-      assertAction(spy, userActionTypes.USER_EMAIL_INVITE);
-    });
-
-    it('should trigger request for invite email', function () {
-      expect(uaaApi.sendInviteEmail).toHaveBeenCalledOnce();
-    });
-  });
-
-  describe('associateUserToOrg', function () {
+  describe('createUserAndAssociate', function () {
     let user;
     let userGuid;
     let orgGuid;
@@ -367,9 +269,9 @@ describe('userActions', function() {
       user = { guid: userGuid };
       sandbox.stub(OrgStore, 'get').returns(orgGuid);
       sandbox.stub(cfApi, 'putAssociateUserToOrganization').returns(Promise.resolve());
-      sandbox.stub(userActions, 'associatedUserToOrg').returns(Promise.resolve());
+      sandbox.stub(userActions, 'createdUserAndAssociated').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleServerAction');
-      userActions.associateUserToOrg(user)
+      userActions.createdUserAndAssociated(user, orgGuid)
         .then(done, done.fail);
     });
 
@@ -408,7 +310,7 @@ describe('userActions', function() {
     });
   });
 
-  describe('associatedUserToOrg', function () {
+  describe('createdUserAndAssociated', function () {
     it('should dispatch USER_ORG_ASSOCIATED notice with user and org', function() {
       var user = { guid: "fake-udid" },
           orgGuid = "fake-org-udid";

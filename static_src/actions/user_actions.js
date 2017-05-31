@@ -122,7 +122,7 @@ const userActions = {
 
   createUserInvite(email) {
     AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_ORG_ASSOCIATE,
+      type: userActionTypes.USER_INVITE_TRIGGER,
       email
     });
 
@@ -163,40 +163,6 @@ const userActions = {
 
     return Promise.resolve(err);
   },
-
-  // receiveUserInvite(inviteData) {
-  //   AppDispatcher.handleServerAction({
-  //     type: userActionTypes.USER_INVITE_RECEIVED
-  //   });
-
-    // const userGuid = inviteData.new_invites[0].userId;
-    // const userEmail = inviteData.new_invites[0].email;
-
-    // return cfApi.postCreateNewUserWithGuid(userGuid)
-    //   .then(user => userActions.receiveUserForCF(user, inviteData))
-    //   .catch(err => userActions.userInviteError(err, `There was a problem
-    //     inviting ${userEmail}`));
-  // },
-
-  // receiveUserForCF(user, inviteData) {
-  //   AppDispatcher.handleServerAction({
-  //     type: userActionTypes.USER_IN_CF_CREATED,
-  //     user
-  //   });
-
-  //   if (user.guid) {
-  //     userActions.sendUserInviteEmail(inviteData);
-  //   }
-  //   // Once the user exists in CF, associate them to the organization.
-  //   return userActions.associateUserToOrg(user);
-  // },
-
-  // sendUserInviteEmail(inviteData) {
-  //   AppDispatcher.handleServerAction({
-  //     type: userActionTypes.USER_EMAIL_INVITE
-  //   });
-  //   uaaApi.sendInviteEmail(inviteData);
-  // },
 
   // associateUserToOrg(userGuid) {
   //   AppDispatcher.handleServerAction({
