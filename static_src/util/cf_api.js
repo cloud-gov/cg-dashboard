@@ -436,7 +436,7 @@ export default {
   },
 
   putAssociateUserToOrganization(userGuid, orgGuid) {
-    return http.put(`${APIV}/users/${userGuid}/organizations/${orgGuid}`)
+    return http.put(`${APIV}/organizations/${orgGuid}/users/${userGuid}`)
       .then((res) => this.formatSplitResponse(res.data));
   },
 
