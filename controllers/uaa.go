@@ -172,7 +172,10 @@ func (c *UAAContext) CreateCFuser(userInvite NewInvite) (
 	c.cfProxy(w, cfReq, "/v2/users")
 	if w.Code != http.StatusCreated && w.Code != http.StatusBadRequest {
 		resp := w.Result()
-		body, _ := ioutil.ReadAll(resp.Body)
+		var body []byte
+		if resp.Body != nil {
+			body, _ = ioutil.ReadAll(resp.Body)
+		}
 		err = &UaaError{http.StatusInternalServerError,
 			[]byte("{\"status\": \"failure\", " +
 				"\"data\": \"unable to create user in CF database.\", " +
