@@ -120,17 +120,48 @@ const userActions = {
     });
   },
 
-  fetchUserInvite(email) {
+  createUserInvite(email) {
     AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_INVITE_FETCH,
+      type: userActionTypes.USER_ORG_ASSOCIATE,
       email
     });
+
+    return uaaApi.inviteUaaUser(email)
+      .then(data => userActions.createUserAndAssociate(data))
+      .catch(err => userActions.userInviteCreateError(err, `There was a problem
+        inviting ${email}`));
+  },
+
+  createUserAndAssociate(data) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ORG_ASSOCIATE,
+      data
+    });
+    const userGuid = data.userGuid;
     const orgGuid = OrgStore.currentOrgGuid;
 
-    return uaaApi.inviteUaaUser(email, orgGuid)
-      // .then(data => userActions.associateUserToOrg(data.guid))
-      // .catch(err => userActions.userInviteError(err, `There was a problem
-      //   inviting ${email}`));
+    return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
+      .then(data => userActions.createdUserAndAssociated(data, orgGuid))
+      .catch(err => userActions.userInviteCreateError(err, `There was a problem
+        associating ${userGuid} to ${orgGuid}`));
+  },
+
+  createdUserAndAssociated(data, orgGuid) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ORG_ASSOCIATED,
+      user: data,
+      orgGuid: orgGuid
+    });
+  },
+
+  userInviteCreateError(err, contextualMessage) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_INVITE_ERROR,
+      err,
+      contextualMessage
+    });
+
+    return Promise.resolve(err);
   },
 
   // receiveUserInvite(inviteData) {
@@ -145,16 +176,6 @@ const userActions = {
     //   .then(user => userActions.receiveUserForCF(user, inviteData))
     //   .catch(err => userActions.userInviteError(err, `There was a problem
     //     inviting ${userEmail}`));
-  // },
-
-  // userInviteError(err, contextualMessage) {
-  //   AppDispatcher.handleServerAction({
-  //     type: userActionTypes.USER_INVITE_ERROR,
-  //     err,
-  //     contextualMessage
-  //   });
-
-  //   return Promise.resolve(err);
   // },
 
   // receiveUserForCF(user, inviteData) {
