@@ -4,7 +4,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	//"net/http/httputil"
 	"time"
 
 	"github.com/18F/cg-dashboard/helpers"
@@ -110,8 +109,6 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	if res != nil {
 		defer res.Body.Close()
 	}
-	//b, _ := httputil.DumpRequest(request, true)
-	//log.Println(string(b))
 	if err != nil {
 		log.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)
