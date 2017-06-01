@@ -46,7 +46,6 @@ export default class UsersInvite extends React.Component {
   render() {
     return (
       <div className="test-users-invite">
-        <h2>User invite</h2>
         <PanelDocumentation description>
           <p>Organizational Managers can add new users below.</p>
         </PanelDocumentation>
