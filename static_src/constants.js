@@ -251,16 +251,8 @@ const userActionTypes = keymirror({
   // Action when user roles are deleted on the server.
   USER_ROLES_DELETED: null,
   // Action to request an invite link from UAA, with user GUID.
-  USER_INVITE_FETCH: null,
-  // Action when an invite link from UAA, with user GUID is received from server.
-  USER_INVITE_RECEIVED: null,
-  // Action creating new user in CF.
-  USER_IN_CF_CREATE: null,
-  // Action confirming new user was created in CF.
-  USER_IN_CF_CREATED: null,
+  USER_INVITE_TRIGGER: null,
   // Action to trigger email sent to user with cloud.gov invite url.
-  USER_EMAIL_INVITE: null,
-  // Action to associate user to organization to the server.
   USER_ORG_ASSOCIATE: null,
   // Action to associate user to organization on the server.
   USER_ORG_ASSOCIATED: null,
