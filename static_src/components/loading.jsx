@@ -8,6 +8,7 @@ import createStyler from '../util/create_styler';
 const LOADING_TIME = 300;
 
 const STYLES = [
+  'globalSaving',
   'inline',
   'cover'
 ];
@@ -58,11 +59,26 @@ class Loading extends React.Component {
 
   render() {
     let content = <div></div>;
-
     if (this.props.active && !this.state.waitTimer) {
-      const classes = this.props.style === 'cover' ?
-        this.styler('loading', 'loading-relative') :
-        this.styler('loading-inline');
+      const classes = (() => {
+        switch (this.props.style) {
+          case 'globalSaving': {
+            return (
+            this.styler('saving', 'saving-relative')
+            );
+          }
+          case 'cover': {
+            return (
+            this.styler('loading', 'loading-relative')
+            );
+          }
+          default: {
+            return (
+            this.styler('loading-inline')
+            );
+          }
+        };
+      })();
       content = (
         <div className={ classes }
           role="alertdialog"
@@ -71,6 +87,11 @@ class Loading extends React.Component {
         >
         {(() => {
           switch (this.props.style) {
+            case 'globalSaving': {
+              return (
+              <div>{ this.props.text }</div>
+              );
+            }
             case 'cover': {
               return (
               <img className={ this.styler('loading-indicator') }
