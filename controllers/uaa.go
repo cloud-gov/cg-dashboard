@@ -192,8 +192,7 @@ func (c *UAAContext) ParseInviteUserToOrgReq(req *http.Request) (
 	return
 }
 
-// InviteUserToOrg will invite user in both UAA and CF, send an e-mail and
-// associate then to the org.
+// InviteUserToOrg will invite user in both UAA and CF, send an e-mail.
 func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 	// parse the request
 	inviteUserToOrgRequest, err := c.ParseInviteUserToOrgReq(req.Request)
