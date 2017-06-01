@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 
 	"encoding/json"
 
@@ -119,12 +118,6 @@ func (c *UAAContext) InviteUAAuser(
 		}
 		return
 	}
-	log.Println("hmm")
-	log.Println(inviteUserToOrgRequest.Email)
-	log.Println(requestObj)
-	log.Println("here")
-	log.Println(string(inviteUAAUserBody))
-	log.Println("2here")
 	req, _ := http.NewRequest("POST", reqURL,
 		bytes.NewBuffer(inviteUAAUserBody))
 	req.Header.Set("Content-Type", "application/json")
@@ -196,8 +189,6 @@ type InviteUserToOrgRequest struct {
 func (c *UAAContext) ParseInviteUserToOrgReq(req *http.Request) (
 	inviteUserToOrgRequest InviteUserToOrgRequest, err *UaaError) {
 	err = readBodyToStruct(req.Body, &inviteUserToOrgRequest)
-	log.Println(inviteUserToOrgRequest)
-	log.Println("showme")
 	return
 }
 
