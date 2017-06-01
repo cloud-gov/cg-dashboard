@@ -33,15 +33,22 @@ func TestPingWithRedis(t *testing.T) {
 	// Create a request
 	response, request := NewTestRequest("GET", "/ping", nil)
 	// Start up redis.
-	redisURI, cleanUpRedis := CreateTestRedis()
+	redisURI, cleanUpRedis, pauseRedis, unapuaseRedis := CreateTestRedis()
 	os.Setenv("REDIS_URI", redisURI)
+	// Remove redis when finished.
+	defer cleanUpRedis()
 	// Override the mock env vars to use redis for session backend.
 	envVars := GetMockCompleteEnvVars()
 	envVars.SessionBackend = "redis"
 	env, _ := cfenv.Current()
 
+	// Setup router.
+	router, _, err := controllers.InitApp(envVars, env)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	// Submit PING with healthy Redis instance.
-	router, _, _ := controllers.InitApp(envVars, env)
 	router.ServeHTTP(response, request)
 	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":true}}`
 	if response.Body.String() != expectedResponse {
@@ -50,8 +57,9 @@ func TestPingWithRedis(t *testing.T) {
 	if response.Code != 200 {
 		t.Errorf("Expected code %d. Found %d", 200, response.Code)
 	}
-	// Remove redis.
-	cleanUpRedis()
+
+	// pause the instance from responding.
+	pauseRedis()
 
 	// Try ping again with unhealthy Redis instance.
 	response, request = NewTestRequest("GET", "/ping", nil)
@@ -62,6 +70,20 @@ func TestPingWithRedis(t *testing.T) {
 	}
 	if response.Code != 500 {
 		t.Errorf("Expected code %d. Found %d", 500, response.Code)
+	}
+
+	// we unpause the instance.
+	unapuaseRedis()
+
+	// Retry to ping with a new healthy Redis instance.
+	response, request = NewTestRequest("GET", "/ping", nil)
+	router.ServeHTTP(response, request)
+	expectedResponse = `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":true}}`
+	if response.Body.String() != expectedResponse {
+		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
+	}
+	if response.Code != 200 {
+		t.Errorf("Expected code %d. Found %d", 200, response.Code)
 	}
 }
 
