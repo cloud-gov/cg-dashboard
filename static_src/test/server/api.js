@@ -93,7 +93,7 @@ module.exports = function api(smocks) {
     path: '/uaa/invite/users',
     handler: function(req, reply) {
       let userInviteResponse;
-      const email = req.payload.emails[0];
+      const email = req.payload.email;
       if (email && userInviteResponses[email]){
         userInviteResponse = userInviteResponses[email];
         reply(userInviteResponse);
