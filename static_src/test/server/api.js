@@ -21,6 +21,7 @@ var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
 var spaceUserRoles = require('./fixtures/space_user_roles.js');
 var uaaRoles = require('./fixtures/uaa_roles.js');
 var userOrganizations = require('./fixtures/user_organizations.js');
+var userAssociationResponses = require('./fixtures/user_association_responses.js');
 var userInviteResponses = require('./fixtures/user_invite_responses.js');
 var userRoles = require('./fixtures/user_roles.js');
 var userRoleOrgAddNewRole = require('./fixtures/user_role_org_add_new_role.js');
@@ -265,10 +266,10 @@ module.exports = function api(smocks) {
     handler: function(req, reply) {
       let userCreateResponse;
       const guid = req.params.guid;
-      if ( guid && userCreateResponses[guid] ){
-        userCreateResponse = userCreateResponses[guid];
+      if ( guid && userAssociationResponses[guid] ){
+        userCreateResponse = userAssociationResponses[guid];
       } else {
-        userCreateResponse = userCreateResponses['default'];
+        userCreateResponse = userAssociationResponses['default'];
       }
       reply(userCreateResponse);
     }
