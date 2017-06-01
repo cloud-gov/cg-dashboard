@@ -135,6 +135,7 @@ describe('User roles', function () {
         });
 
         it('verify org X manager can modify org X page', function () {
+          browser.waitForExist('.test-user-role-control input');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
         });
       });
