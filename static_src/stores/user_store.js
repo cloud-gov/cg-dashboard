@@ -34,8 +34,8 @@ export class UserStore extends BaseStore {
     this._currentUserGuid = null;
     this._currentUserIsAdmin = false;
     this._error = null;
+    this._saving = false;
     this._loading = {};
-    this._inviteInputActive = true;
   }
 
   _registerToActions(action) {
@@ -67,15 +67,16 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.USER_INVITE_FETCH: {
+      case userActionTypes.USER_INVITE_TRIGGER: {
         this._inviteError = null;
         this.emitChange();
         break;
       }
 
       case userActionTypes.USER_ORG_ASSOCIATED: {
-        const user = Object.assign({}, { orgGuid: action.orgGuid }, action.user);
-        this._inviteInputActive = true;
+        const user = Object.assign({},
+          { orgGuid: action.orgGuid, organization_roles: [] },
+          action.user);
         if (user.guid) {
           this.merge('guid', user, () => {});
         }
@@ -84,6 +85,12 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_ADD: {
+        const user = this.get(action.userGuid);
+        if (user) {
+          const savingUser = Object.assign({}, user, { saving: true });
+          this.merge('guid', savingUser);
+        }
+
         const apiMethodMap = {
           org: cfApi.putOrgUserPermissions,
           space: cfApi.putSpaceUserPermissions
@@ -114,14 +121,22 @@ export class UserStore extends BaseStore {
           if (userRole && userRole.indexOf(role) === -1) {
             userRole.push(role);
           }
+          user.saving = false;
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
         }
+
         break;
       }
 
       case userActionTypes.USER_ROLES_DELETE: {
+        const user = this.get(action.userGuid);
+        if (user) {
+          const savingUser = Object.assign({}, user, { saving: true });
+          this.merge('guid', savingUser);
+        }
+
         const apiMethodMap = {
           org: cfApi.deleteOrgUserPermissions,
           space: cfApi.deleteSpaceUserPermissions
@@ -145,6 +160,7 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_DELETED: {
         const user = this.get(action.userGuid);
+
         if (user) {
           const role = this.getResourceToRole(action.roles, action.resourceType);
           const userRole = (action.resourceType === 'space') ? user.space_roles :
@@ -153,7 +169,7 @@ export class UserStore extends BaseStore {
           if (idx > -1) {
             userRole.splice(idx, 1);
           }
-
+          user.saving = false;
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
@@ -358,6 +374,16 @@ export class UserStore extends BaseStore {
 
   get isLoadingCurrentUser() {
     return this._loading.currentUser === true;
+  }
+
+  get saving() {
+    return this._saving;
+  }
+
+  get anySaving() {
+    // TODO does this need to filter by org guid?
+    const users = this.getAll();
+    return (users.find(user => !!user.saving).length > 0);
   }
 
   /*
