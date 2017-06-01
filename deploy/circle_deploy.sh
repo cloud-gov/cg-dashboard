@@ -2,13 +2,8 @@
 
 # This script will install the autopilot plugin, login, pick the right manifest and deploy the app with 0 downtime.
 
-# Command line arguments
-# $1 = specified environment
-
 set -e
 set -o pipefail
-
-manifest_env=${1:-govcloud}
 
 # Install cf cli
 curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
@@ -61,17 +56,8 @@ else
 	exit 1
 fi
 
-echo env:      $manifest_env
 echo manifest: $CF_MANIFEST
 echo space:    $CF_SPACE
-
-if [ $manifest_env == govcloud ]; then
-  CF_API=$CF_API_GC
-  CF_ORGANIZATION=$CF_ORGANIZATION_GC
-else
-	echo "We only support deploying to govcloud, quitting." >&2
-	exit 1
-fi
 
 function deploy () {
   local manifest=${1}
@@ -88,6 +74,6 @@ function deploy () {
   cf zero-downtime-push $app -f $manifest
 }
 
-# Set manifest path for environment
-MANIFEST_PATH=manifests/$manifest_env/$CF_MANIFEST
+# Set manifest path
+MANIFEST_PATH=manifests/$CF_MANIFEST
 deploy "$MANIFEST_PATH" "$CF_ORGANIZATION" "$CF_SPACE" "$CF_APP"
