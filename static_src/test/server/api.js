@@ -261,7 +261,7 @@ module.exports = function api(smocks) {
     id: 'user-associate-to-organizations',
     label: 'User associate to organization',
     method: 'PUT',
-    path: `${BASE_URL}/users/{guid}/organizations/{orgGuid}`,
+    path: `${BASE_URL}/organizations/{orgGuid}/users/{guid}`,
     handler: function(req, reply) {
       let userCreateResponse;
       const guid = req.params.guid;
