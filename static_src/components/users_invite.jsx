@@ -20,10 +20,19 @@ const propTypes = {
 };
 const defaultProps = {};
 
+function stateSetter(props) {
+  return {
+    error: props.error,
+    currentUserAccess: props.initialCurrentUserAccess
+  };
+}
+
 export default class UsersInvite extends React.Component {
   constructor(props) {
     super(props);
     FormStore.create(USERS_INVITE_FORM_GUID);
+    this.props = props;
+    this.state = stateSetter(props);
 
     this.validateString = validateString().bind(this);
     this._onValidForm = this._onValidForm.bind(this);
@@ -44,8 +53,9 @@ export default class UsersInvite extends React.Component {
   }
 
   render() {
-    return (
-      <div className="test-users-invite">
+    let content;
+    if (this.state.currentUserAccess) {
+      content = (
         <PanelDocumentation description>
           <p>Organizational Managers can add new users below.</p>
         </PanelDocumentation>
@@ -65,12 +75,25 @@ export default class UsersInvite extends React.Component {
           />
           <Action label="submit" type="submit">Invite new user</Action>
         </Form>
+        );
+    } else {
+      content = "";
+    }
+    return (
+      <div className="test-users-invite">
+        {content}
       </div>
     );
   }
 
 }
 
-UsersInvite.propTypes = propTypes;
+UsersInvite.propTypes = {
+  initialCurrentUserAccess: React.PropTypes.bool,
+  error: React.PropTypes.object
+};
 
-UsersInvite.defaultProps = defaultProps;
+UsersInvite.defaultProps = {
+  initialCurrentUserAccess: false,
+  error: {}
+};
