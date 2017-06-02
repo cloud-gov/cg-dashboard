@@ -35,6 +35,7 @@ export class UserStore extends BaseStore {
     this._currentUserIsAdmin = false;
     this._error = null;
     this._saving = false;
+    this._inviteDisabled = false;
     this._loading = {};
   }
 
@@ -68,6 +69,7 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_INVITE_TRIGGER: {
+        this._inviteDisabled = true;
         this._inviteError = null;
         this.emitChange();
         break;
@@ -86,6 +88,7 @@ export class UserStore extends BaseStore {
         if (user.guid) {
           this.merge('guid', user, () => {});
         }
+        this._inviteDisabled = false;
         this.emitChange();
         break;
       }
@@ -398,6 +401,10 @@ export class UserStore extends BaseStore {
     const user = this.get(userGuid);
     const roles = user && user.roles && user.roles[key] || [];
     return !!roles.find((role) => wrappedRoles.includes(role));
+  }
+
+  inviteDisabled() {
+    return this._inviteDisabled;
   }
 
   isAdmin() {
