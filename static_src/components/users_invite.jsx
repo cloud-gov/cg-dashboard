@@ -56,26 +56,28 @@ export default class UsersInvite extends React.Component {
     let content;
     if (this.state.currentUserAccess) {
       content = (
-        <PanelDocumentation description>
-          <p>Organizational Managers can add new users below.</p>
-        </PanelDocumentation>
-        <Form
-          guid={ USERS_INVITE_FORM_GUID }
-          classes={ ['users_invite_form'] }
-          ref="form"
-          onSubmit={ this._onValidForm }
-          errorOverride={ this.errorMessage }
-        >
-          <FormText
-            formGuid={ USERS_INVITE_FORM_GUID }
-            classes={ ['test-users_invite_name'] }
-            label="User's email"
-            name="email"
-            validator={ this.validateString }
-          />
-          <Action label="submit" type="submit">Invite new user</Action>
-        </Form>
-        );
+        <div>
+          <PanelDocumentation description>
+            <p>Organizational Managers can add new users below.</p>
+          </PanelDocumentation>
+          <Form
+            guid={ USERS_INVITE_FORM_GUID }
+            classes={ ['users_invite_form'] }
+            ref="form"
+            onSubmit={ this._onValidForm }
+            errorOverride={ this.errorMessage }
+          >
+            <FormText
+              formGuid={ USERS_INVITE_FORM_GUID }
+              classes={ ['test-users_invite_name'] }
+              label="User's email"
+              name="email"
+              validator={ this.validateString }
+            />
+            <Action label="submit" type="submit">Invite new user</Action>
+          </Form>
+        </div>
+      );
     } else {
       content = "";
     }
