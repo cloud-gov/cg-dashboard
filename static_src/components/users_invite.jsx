@@ -20,7 +20,11 @@ const propTypes = {
   currentUserAccess: React.PropTypes.bool,
   error: React.PropTypes.object
 };
-const defaultProps = {};
+const defaultProps = {
+  inviteDisabled: false,
+  currentUserAccess: false,
+  error: {}
+};
 
 function stateSetter(props) {
   return {
@@ -75,12 +79,18 @@ export default class UsersInvite extends React.Component {
               name="email"
               validator={ this.validateString }
             />
-            <Action label="submit" type="submit" disabled={ this.props.inviteDisabled }>Invite new user</Action>
+            <Action
+              label="submit"
+              type="submit"
+              disabled={ this.props.inviteDisabled }
+            >
+              Invite new user
+            </Action>
           </Form>
         </div>
       );
     } else {
-      content = "";
+      content = '';
     }
     return (
       <div className="test-users-invite">
@@ -91,14 +101,6 @@ export default class UsersInvite extends React.Component {
 
 }
 
-UsersInvite.propTypes = {
-  inviteDisabled: React.PropTypes.bool,
-  currentUserAccess: React.PropTypes.bool,
-  error: React.PropTypes.object
-};
+UsersInvite.propTypes = propTypes;
 
-UsersInvite.defaultProps = {
-  inviteDisabled: false,
-  currentUserAccess: false,
-  error: {}
-};
+UsersInvite.defaultProps = defaultProps;
