@@ -201,7 +201,6 @@ describe('userActions', function() {
       email = 'name@place.com';
       sandbox.stub(uaaApi, 'inviteUaaUser').returns(Promise.resolve([]));
       sandbox.stub(AppDispatcher, 'handleViewAction');
-      sandbox.stub(userActions, 'receiveUserInvite').returns(Promise.resolve());
 
       userActions.fetchUserInvite(email).then(done, done.fail);
     });
@@ -256,51 +255,6 @@ describe('userActions', function() {
         err,
         contextualMessage: message
       }));
-    });
-  });
-
-  describe('receiveUserInvite', function () {
-    let userGuid;
-    let inviteData;
-
-    beforeEach(function (done) {
-      userGuid = "fake-udid";
-      inviteData = { new_invites: [{ userId: userGuid }] };
-      sandbox.stub(cfApi, 'postCreateNewUserWithGuid').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      sandbox.stub(userActions, 'receiveUserForCF').returns(Promise.resolve());
-      userActions.receiveUserInvite(inviteData)
-        .then(done, done.fail);
-    });
-
-    it('should send off the email invite', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_INVITE_RECEIVED
-      }));
-    });
-
-    it('calls cfApi postCreateNewUserWithGuid', function () {
-      expect(cfApi.postCreateNewUserWithGuid).toHaveBeenCalledWith(userGuid);
-    });
-
-    describe('when request fails', function() {
-      beforeEach(function (done) {
-        cfApi.postCreateNewUserWithGuid.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'userInviteError');
-
-        userActions.receiveUserInvite(inviteData)
-          .then(done, done.fail);
-      });
-
-      it('should call user invite error action handler', function() {
-        expect(userActions.userInviteError).toHaveBeenCalledOnce();
-      });
-
-      it('should provide contextual message about invite', function() {
-        const arg = userActions.userInviteError.getCall(0).args[1];
-        expect(arg.length).toBeGreaterThan(0);
-        expect(arg).toMatch('invit');
-      });
     });
   });
 
