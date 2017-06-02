@@ -16,14 +16,15 @@ import { validateString } from '../util/validators';
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
 
 const propTypes = {
+  inviteDisabled: React.PropTypes.bool,
+  currentUserAccess: React.PropTypes.bool,
   error: React.PropTypes.object
 };
 const defaultProps = {};
 
 function stateSetter(props) {
   return {
-    error: props.error,
-    currentUserAccess: props.initialCurrentUserAccess
+    error: props.error
   };
 }
 
@@ -54,7 +55,7 @@ export default class UsersInvite extends React.Component {
 
   render() {
     let content;
-    if (this.state.currentUserAccess) {
+    if (this.props.currentUserAccess) {
       content = (
         <div>
           <PanelDocumentation description>
@@ -74,7 +75,7 @@ export default class UsersInvite extends React.Component {
               name="email"
               validator={ this.validateString }
             />
-            <Action label="submit" type="submit">Invite new user</Action>
+            <Action label="submit" type="submit" disabled={ this.props.inviteDisabled }>Invite new user</Action>
           </Form>
         </div>
       );
@@ -91,11 +92,13 @@ export default class UsersInvite extends React.Component {
 }
 
 UsersInvite.propTypes = {
-  initialCurrentUserAccess: React.PropTypes.bool,
+  inviteDisabled: React.PropTypes.bool,
+  currentUserAccess: React.PropTypes.bool,
   error: React.PropTypes.object
 };
 
 UsersInvite.defaultProps = {
-  initialCurrentUserAccess: false,
+  inviteDisabled: false,
+  currentUserAccess: false,
   error: {}
 };
