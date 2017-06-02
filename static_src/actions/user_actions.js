@@ -141,16 +141,25 @@ const userActions = {
       orgGuid
     });
     return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
-      .then(() => userActions.fetchUser(userGuid))
-      .then(user => userActions.createdUserAndAssociated(user, orgGuid))
-      .catch(err => userActions.userInviteCreateError(err, `There was a problem
-        associating ${userGuid} to ${orgGuid}`));
+      .then(() => cfApi.fetchOrgUsers(orgGuid))
+      .then(orgUsers => userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers));
   },
 
-  createdUserAndAssociated(user, orgGuid) {
+  createdUserAndAssociated(userGuid, orgGuid, orgUsers) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATED,
-      user,
+      userGuid,
+      orgGuid,
+      orgUsers
+    });
+    return userActions.createdUserDisplayed(userGuid, orgUsers, orgGuid);
+  },
+
+  createdUserDisplayed(userGuid, orgUsers, orgGuid) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ASSOCIATED_ORG_DISPLAYED,
+      userGuid,
+      orgUsers,
       orgGuid
     });
   },
