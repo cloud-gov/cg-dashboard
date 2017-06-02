@@ -7,6 +7,12 @@ const userGuids = [
     username: "fake-persona@gsa.gov",
   },
   {
+    guid: "4541c882-fake-invited-fake-new-user",
+    admin: false,
+    active: false,
+    username: "fake-new-user@domain.com",
+  },
+  {
     guid: "bba7537f-601d-48c4-9705-4583ba54ea4b",
     admin: false,
     active: false,
