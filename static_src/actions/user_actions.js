@@ -127,12 +127,12 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(data => userActions.createUserAndAssociate(data, email))
+      .then(data => userActions.createUserAndAssociate(data))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
   },
 
-  createUserAndAssociate(data, email) {
+  createUserAndAssociate(data) {
     const orgGuid = OrgStore.currentOrgGuid;
     const userGuid = data.userGuid;
     AppDispatcher.handleViewAction({
@@ -142,13 +142,12 @@ const userActions = {
     });
     return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
       .then(() => userActions.fetchUser(userGuid))
-      .then(user => userActions.createdUserAndAssociated(user, orgGuid, email))
+      .then(user => userActions.createdUserAndAssociated(user, orgGuid))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         associating ${userGuid} to ${orgGuid}`));
   },
 
-  createdUserAndAssociated(user, orgGuid, email) {
-    user.username = email;
+  createdUserAndAssociated(user, orgGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATED,
       user,
