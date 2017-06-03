@@ -132,6 +132,16 @@ const userActions = {
         inviting ${email}`));
   },
 
+  userInviteError(err, contextualMessage) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_INVITE_ERROR,
+      err,
+      contextualMessage
+    });
+
+    return Promise.resolve(err);
+  },
+
   createUserAndAssociate(data) {
     const orgGuid = OrgStore.currentOrgGuid;
     const userGuid = data.userGuid;
