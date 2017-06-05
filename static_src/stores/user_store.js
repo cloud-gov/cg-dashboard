@@ -305,9 +305,9 @@ export class UserStore extends BaseStore {
           // could contain roles for orgs too.
           const certainRoles = roles[key] || [];
           if (action.type === userActionTypes.USER_ORGS_RECEIVED) {
-            roles[key] = certainRoles.concat(['org_manager']); // eslint-disable-line
+            roles[key] = certainRoles.concat(['org_user']); // eslint-disable-line
           } else {
-            roles[key] = certainRoles.concat(['space_manager']); // eslint-disable-line
+            roles[key] = certainRoles.concat(['space_auditor']); // eslint-disable-line
           }
           return roles;
         }, user.roles || {});
