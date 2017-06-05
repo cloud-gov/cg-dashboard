@@ -4,8 +4,10 @@ import (
 	"encoding/gob"
 	"errors"
 	"fmt"
+	"log"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/boj/redistore"
 	"github.com/cloudfoundry-community/go-cfenv"
@@ -137,7 +139,37 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 		if err != nil {
 			return err
 		}
-		store, err := redistore.NewRediStore(10, "tcp", address, password, []byte(envVars.SessionKey))
+		// Create a common redis pool of connections.
+		redisPool := &redis.Pool{
+			MaxIdle:     10,
+			IdleTimeout: 240 * time.Second,
+			TestOnBorrow: func(c redis.Conn, t time.Time) error {
+				_, pingErr := c.Do("PING")
+				return pingErr
+			},
+			Dial: func() (redis.Conn, error) {
+				// We need to control how long connections are attempted.
+				// Currently will limit how long redis should respond back to
+				// 10 seconds. Any time less than the overall connection timeout of 60
+				// seconds is good.
+				c, dialErr := redis.Dial("tcp", address,
+					redis.DialConnectTimeout(10*time.Second),
+					redis.DialWriteTimeout(10*time.Second),
+					redis.DialReadTimeout(10*time.Second))
+				if dialErr != nil {
+					return nil, dialErr
+				}
+				if password != "" {
+					if _, authErr := c.Do("AUTH", password); err != nil {
+						c.Close()
+						return nil, authErr
+					}
+				}
+				return c, nil
+			},
+		}
+		// create our redis pool.
+		store, err := redistore.NewRediStoreWithPool(redisPool, []byte(envVars.SessionKey))
 		if err != nil {
 			return err
 		}
@@ -150,21 +182,17 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 		}
 		s.Sessions = store
 		s.SessionBackend = envVars.SessionBackend
-		// setup single internal redis client.
-		internalRedisClient, err := redis.Dial("tcp", address)
-		if err != nil {
-			return err
-		}
-		if password != "" {
-			if _, err := internalRedisClient.Do("AUTH", password); err != nil {
-				internalRedisClient.Close()
-				return err
-			}
-		}
+
 		// Use health check function where we do a PING.
 		s.SessionBackendHealthCheck = func() bool {
-			_, err := internalRedisClient.Do("PING")
-			return err == nil
+			c := redisPool.Get()
+			defer c.Close()
+			_, err := c.Do("PING")
+			if err != nil {
+				log.Printf("{\"health-check-error\": \"%s\"}", err)
+				return false
+			}
+			return true
 		}
 	default:
 		store := sessions.NewFilesystemStore("", []byte(envVars.SessionKey))
