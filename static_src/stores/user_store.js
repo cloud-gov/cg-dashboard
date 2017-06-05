@@ -61,6 +61,7 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
         const updates = action.orgUserRoles;
+        console.log(updates);
         if (updates.length) {
           this.mergeMany('guid', updates, () => { });
         }
@@ -422,5 +423,7 @@ export class UserStore extends BaseStore {
 }
 
 const _UserStore = new UserStore();
+
+window.userstore = _UserStore;
 
 export default _UserStore;
