@@ -78,6 +78,26 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.SPACE_USER_ROLES_RECEIVED: {
+        const spaceGuid = action.spaceGuid;
+        const spaceUserRoles = action.users;
+        const updatedUsers = spaceUserRoles.map((spaceUserRole) => {
+          let user = Object.assign({}, this.get(spaceUserRole.guid) || {}, spaceUserRole);
+          user.roles = spaceUserRoles.space_roles;
+          if (!user.roles) user.roles = {};
+          const updatingRoles = spaceUserRole.space_roles || [];
+
+          user.roles[spaceGuid] = updatingRoles;
+          // Remove Cloud Foundry's data structure for roles, as we use our own
+          // roles property hashed by guid.
+          delete user.space_roles;
+          return user;
+        });
+        this.mergeMany('guid', updatedUsers, () => { });
+        this.emitChange();
+        break;
+      }
+
       case userActionTypes.USER_INVITE_FETCH: {
         this._inviteError = null;
         this.emitChange();

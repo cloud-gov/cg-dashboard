@@ -108,6 +108,64 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on space user roles received', function() {
+    let expectedUsers;
+    const userGuidA = 'user-a';
+    const userGuidB = 'user-b';
+    const spaceGuid = 'space-123';
+
+    beforeEach(function() {
+      const spaceUserRoles = [
+        {
+          guid: userGuidA,
+          space_roles: [ 'space_developer' ]
+        },
+        {
+          guid: userGuidB,
+          space_roles: [ 'space_developer', 'space_manager' ]
+        }
+      ]
+      const currentUsers = [
+        {
+          guid: userGuidB,
+          roles: { [spaceGuid]: ['space_developer'] }
+        }
+      ];
+      expectedUsers = [
+        {
+          guid: userGuidA,
+          roles: { [spaceGuid]: ['space_developer'] }
+        },
+        {
+          guid: userGuidB,
+          roles: { [spaceGuid]: ['space_developer', 'space_manager'] }
+        }
+      ]
+
+      UserStore.push(currentUsers[0]);
+      sandbox.spy(UserStore, 'emitChange');
+
+      userActions.receivedSpaceUserRoles(spaceUserRoles, spaceGuid);
+    });
+
+    afterEach(function() {
+      UserStore._data = [];
+    });
+
+    it('should emit a change event', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+
+    it('should add any new users', function() {
+      expect(UserStore.get(userGuidA)).toEqual(expectedUsers[0]);
+    });
+
+    it('should create a roles hash with space guid and all space roles', () => {
+      expect(UserStore.get(userGuidA)).toEqual(expectedUsers[0]);
+      expect(UserStore.get(userGuidB)).toEqual(expectedUsers[1]);
+    });
+  });
+
   describe('on org user roles received', function() {
     it('should emit a change event if data changed', function() {
       const spy = sandbox.spy(UserStore, 'emitChange');
