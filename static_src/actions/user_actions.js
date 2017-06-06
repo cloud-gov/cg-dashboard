@@ -24,6 +24,8 @@ const userActions = {
       type: userActionTypes.ORG_USER_ROLES_FETCH,
       orgGuid
     });
+
+    return cfApi.fetchOrgUserRoles(orgGuid);
   },
 
   receivedOrgUserRoles(roles, orgGuid) {
@@ -222,7 +224,7 @@ const userActions = {
       orgGuid
     });
 
-    return cfApi.fetchOrgUserRoles(orgGuid)
+    return userActions.fetchOrgUserRoles(orgGuid)
       .then(orgRoles => userActions.receivedCurrentUserRole(orgRoles, userGuid, orgGuid));
   },
 
