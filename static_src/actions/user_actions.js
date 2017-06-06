@@ -227,9 +227,7 @@ const userActions = {
   },
 
   receivedCurrentUserRole(orgRoles, userGuid, orgGuid) {
-    let currentUserRoles = orgRoles.filter(() => (item) (
-      item.guid === userGuid
-    ));
+    let currentUserRoles = orgRoles.filter(item => item.guid === userGuid);
     currentUserRoles = currentUserRoles[0];
 
     AppDispatcher.handleServerAction({
