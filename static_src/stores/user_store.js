@@ -59,40 +59,17 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
-        const orgGuid = action.orgGuid;
-        const orgUserRoles = action.orgUserRoles;
-        const updatedUsers = orgUserRoles.map((orgUserRole) => {
-          let user = Object.assign({}, this.get(orgUserRole.guid));
-          if (!user) user = { guid: orgUserRole.guid };
-          if (!user.roles) user.roles = {};
-          if (!user.roles[orgGuid]) user.roles[orgGuid] = [];
-          const updatingRoles = orgUserRole.organization_roles.reduce(
-            (roles, role) => roles.add(role)
-          , new Set(user.roles[orgGuid] || []));
-
-          user.roles[orgGuid] = Array.from(updatingRoles);
-          return user;
-        });
+        const updatedUsers = this.mergeRoles(action.orgUserRoles, action.orgGuid,
+          'organization_roles');
         this.mergeMany('guid', updatedUsers, () => { });
         this.emitChange();
         break;
       }
 
       case userActionTypes.SPACE_USER_ROLES_RECEIVED: {
-        const spaceGuid = action.spaceGuid;
-        const spaceUserRoles = action.users;
-        const updatedUsers = spaceUserRoles.map((spaceUserRole) => {
-          let user = Object.assign({}, this.get(spaceUserRole.guid) || {}, spaceUserRole);
-          user.roles = spaceUserRoles.space_roles;
-          if (!user.roles) user.roles = {};
-          const updatingRoles = spaceUserRole.space_roles || [];
+        const updatedUsers = this.mergeRoles(action.users, action.spaceGuid,
+          'space_roles');
 
-          user.roles[spaceGuid] = updatingRoles;
-          // Remove Cloud Foundry's data structure for roles, as we use our own
-          // roles property hashed by guid.
-          delete user.space_roles;
-          return user;
-        });
         this.mergeMany('guid', updatedUsers, () => { });
         this.emitChange();
         break;
@@ -352,6 +329,17 @@ export class UserStore extends BaseStore {
 
   get isLoadingCurrentUser() {
     return this._loading.currentUser === true;
+  }
+
+  mergeRoles(roles, entityGuid, entityType) {
+    return roles.map((role) => {
+      let user = Object.assign({}, this.get(role.guid) || { guid: role.guid });
+      if (!user.roles) user.roles = {};
+      const updatingRoles = role[entityType] || [];
+
+      user.roles[entityGuid] = updatingRoles;
+      return user;
+    });
   }
 
   /*

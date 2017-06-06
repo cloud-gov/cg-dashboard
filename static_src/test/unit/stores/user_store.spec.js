@@ -167,6 +167,10 @@ describe('UserStore', function () {
   });
 
   describe('on org user roles received', function() {
+    beforeEach(function() {
+      UserStore._data = Immutable.List();
+    });
+
     it('should emit a change event if data changed', function() {
       const spy = sandbox.spy(UserStore, 'emitChange');
 
@@ -207,7 +211,7 @@ describe('UserStore', function () {
         {
           guid: 'asdf',
           roles: { 'adjf': ['org_manager'],
-                   [orgGuid]: ['org_manager', 'org_auditor'] }
+                   [orgGuid]: ['org_manager'] }
         }
       ];
 
@@ -215,7 +219,8 @@ describe('UserStore', function () {
       UserStore.push(expectedUsers[1]);
       userActions.receivedOrgUserRoles(roles, orgGuid);
 
-      expect(UserStore.getAll()).toEqual(expectedUsers);
+      expect(UserStore.get(userGuid)).toEqual(expectedUsers[0]);
+      expect(UserStore.get('asdf')).toEqual(expectedUsers[1]);
     });
   });
 
