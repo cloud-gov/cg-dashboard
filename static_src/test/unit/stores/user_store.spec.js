@@ -144,32 +144,52 @@ describe('UserStore', function () {
 
   describe('on org user roles received', function() {
     it('should emit a change event if data changed', function() {
-      var spy = sandbox.spy(UserStore, 'emitChange');
+      const spy = sandbox.spy(UserStore, 'emitChange');
 
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-        orgUserRoles: [{ guid: 'adsfa' }]
-      });
+      userActions.receivedOrgUserRoles([{ guid: 'adsfa', organization_roles: [] }],
+        'asdf');
 
       expect(spy).toHaveBeenCalledOnce();
     });
 
     it('should merge and update new users with existing users in data',
         function() {
-      const sharedGuid = 'wpqoifesadkzcvn';
-      const existingUser = { guid: sharedGuid, name: 'Michael' };
-      const newUser = { guid: sharedGuid, organization_roles: ['role'] };
+      const userGuid = 'user-75384';
+      const orgGuid = 'org-534789';
+      const currentUsers = [
+        { guid: userGuid },
+        { guid: 'asdf', roles: { 'adjf': [ 'org_manager' ] } }
+      ];
+      const roles = [
+        {
+          guid: userGuid,
+          organization_roles: [ 'org_manager', 'org_auditor' ]
+        },
+        {
+          guid: 'asdf',
+          organization_roles: ['org_manager']
+        }
+      ];
+      const expectedUsers = [
+        {
+          guid: userGuid,
+          roles: {
+            [orgGuid]: ['org_manager', 'org_auditor']
+          }
+        },
+        {
+          guid: 'asdf',
+          roles: {
+            'adjf': ['org_manager']
+          }
+        }
+      ];
 
-      UserStore.push(existingUser);
-      expect(UserStore.get(sharedGuid)).toEqual(existingUser);
+      UserStore.push(expectedUsers[0]);
+      UserStore.push(expectedUsers[1]);
+      userActions.receivedOrgUserRoles(roles, orgGuid);
 
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-        orgUserRoles: [newUser]
-      });
-      let actual = UserStore.get(sharedGuid);
-      let expected = Object.assign({}, existingUser, newUser);
-      expect(actual).toEqual(expected);
+      expect(UserStore.getAll(userGuid)).toEqual(expectedUsers);
     });
   });
 

@@ -59,10 +59,23 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
-        const updates = action.orgUserRoles;
-        if (updates.length) {
-          this.mergeMany('guid', updates, () => { });
-        }
+        const orgGuid = action.orgGuid;
+        const orgUserRoles = action.orgUserRoles;
+        console.log('fasldjkfasdlkjfasdl;kfj', orgUserRoles);
+        debugger;
+        const updatedUsers = orgUserRoles.map((orgUserRole) => {
+          let user = Object.assign({}, this.get(orgUserRole.guid));
+          if (!user) user = { guid: orgUserRole.guid };
+          if (!user.roles) user.roles = {};
+          if (!user.roles[orgGuid]) user.roles[orgGuid] = [];
+          const updatingRoles = orgUserRole.organization_roles.reduce(
+            (roles, role) => roles.add(role)
+          , new Set(user.roles[orgGuid] || []));
+
+          user.roles[orgGuid] = Array.from(updatingRoles);
+          return user;
+        });
+        this.mergeMany('guid', updatedUsers, () => { });
         this.emitChange();
         break;
       }
