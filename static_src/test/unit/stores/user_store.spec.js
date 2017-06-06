@@ -604,52 +604,6 @@ describe('UserStore', function () {
     });
   });
 
-  describe('USER_SPACES_RECEIVED|USER_ORGS_RECEIVED', function () {
-    let userGuid, userSpaces, userOrgs, user;
-    beforeEach(function () {
-      userGuid = 'user123';
-      userSpaces = [{ guid: 'space123' }, { guid: 'space456' }];
-      userOrgs = [{ guid: 'org123' }];
-
-      // User with no roles
-      UserStore.push({ guid: userGuid });
-
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.USER_SPACES_RECEIVED,
-        userGuid,
-        userSpaces
-      });
-
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.USER_ORGS_RECEIVED,
-        userGuid,
-        userOrgs
-      });
-
-      user = UserStore.get(userGuid);
-    });
-
-    it('creates a roles property on user', function () {
-      expect(user.roles).toBeTruthy();
-    });
-
-    it('assigns space_developer role for each space', function () {
-      expect(user.roles).toEqual({
-        space123: ['space_manager'],
-        space456: ['space_manager'],
-        org123: ['org_manager']
-      });
-    });
-
-    it('assigns org_manager role for each org', function () {
-      expect(user.roles).toEqual({
-        space123: ['space_manager'],
-        space456: ['space_manager'],
-        org123: ['org_manager']
-      });
-    });
-  });
-
   describe('CURRENT_USER_FETCH', function () {
     beforeEach(function () {
       sandbox.spy(UserStore, 'emitChange');

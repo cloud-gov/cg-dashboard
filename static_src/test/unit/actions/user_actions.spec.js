@@ -169,31 +169,6 @@ describe('userActions', function() {
     });
   });
 
-  describe('fetchUserOrgs()', function () {
-    let userGuid;
-
-    beforeEach(function (done) {
-      userGuid = 'user123';
-      sandbox.stub(cfApi, 'fetchUserOrgs').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleViewAction');
-
-      userActions.fetchUserOrgs(userGuid)
-        .then(done, done.fail);
-    });
-
-    it('dispatches USER_ORGS_FETCH', function () {
-      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_ORGS_FETCH,
-        userGuid
-      }));
-    });
-
-    it('calls cfApi', function () {
-      expect(cfApi.fetchUserOrgs).toHaveBeenCalledOnce();
-      expect(cfApi.fetchUserOrgs).toHaveBeenCalledWith(userGuid);
-    });
-  });
-
   describe('fetchUserInvite', function () {
     let email;
 
@@ -608,134 +583,6 @@ describe('userActions', function() {
     });
   });
 
-  describe('fetchUserSpaces()', function () {
-    let userGuid;
-
-    beforeEach(function (done) {
-      userGuid = 'user123';
-      sandbox.stub(cfApi, 'fetchUserSpaces').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleViewAction');
-
-      userActions.fetchUserSpaces(userGuid)
-        .then(done, done.fail);
-    });
-
-    it('dispatches USER_SPACES_FETCH', function () {
-      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_SPACES_FETCH,
-        userGuid
-      }));
-    });
-
-    it('calls cfApi', function () {
-      expect(cfApi.fetchUserSpaces).toHaveBeenCalledWith(userGuid);
-    });
-
-    describe('given orgGuid', function () {
-      let orgGuid;
-      beforeEach(function (done) {
-        orgGuid = 'org123';
-
-        userActions.fetchUserSpaces(userGuid, { orgGuid })
-          .then(done, done.fail);
-      });
-
-      it('dispatches USER_SPACES_FETCH with orgGuid', function () {
-        expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith({
-          type: userActionTypes.USER_SPACES_FETCH,
-          userGuid,
-          orgGuid
-        });
-      });
-
-      it('calls api with orgGuid', function () {
-        expect(cfApi.fetchUserSpaces).toHaveBeenCalledWith(userGuid, sinon.match({ orgGuid }));
-      });
-    });
-  });
-
-  describe('receivedUserSpaces()', function () {
-    let userGuid, userSpaces, result;
-
-    beforeEach(function (done) {
-      userGuid = 'user123';
-      userSpaces = [{ guid: 'space123' }, { guid: 'space456' }];
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-
-      userActions.receivedUserSpaces(userGuid, userSpaces)
-        .then(_result => {
-          result = _result;
-        })
-        .then(done, done.fail);
-    });
-
-    it('dispatches USER_SPACES_RECEIVED', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_SPACES_RECEIVED,
-        userGuid,
-        userSpaces
-      }));
-    });
-
-    it('resolves the userSpaces', function () {
-      expect(result).toEqual(userSpaces);
-    });
-  });
-
-  describe('fetchUserOrgs()', function () {
-    let userGuid;
-
-    beforeEach(function (done) {
-      userGuid = 'user123';
-      sandbox.stub(cfApi, 'fetchUserOrgs').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleViewAction');
-
-      userActions.fetchUserOrgs(userGuid)
-        .then(done, done.fail);
-    });
-
-    it('dispatches USER_ORGS_FETCH', function () {
-      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_ORGS_FETCH,
-        userGuid
-      }));
-    });
-
-    it('calls cfApi', function () {
-      expect(cfApi.fetchUserOrgs).toHaveBeenCalledOnce();
-      expect(cfApi.fetchUserOrgs).toHaveBeenCalledWith(userGuid);
-    });
-  });
-
-  describe('receivedUserOrgs()', function () {
-    let userGuid, userOrgs, result;
-
-    beforeEach(function (done) {
-      userGuid = 'user123';
-      userOrgs = [{ guid: 'org123' }, { guid: 'org456' }];
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-
-      userActions.receivedUserOrgs(userGuid, userOrgs)
-        .then(_result => {
-          result = _result;
-        })
-        .then(done, done.fail);
-    });
-
-    it('dispatches USER_ORGS_RECEIVED', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_ORGS_RECEIVED,
-        userGuid,
-        userOrgs
-      }));
-    });
-
-    it('resolves the userOrgs', function () {
-      expect(result).toEqual(userOrgs);
-    });
-  });
-
-
   describe('fetchCurrentUserUaaInfo()', function () {
     let guid;
 
@@ -777,8 +624,6 @@ describe('userActions', function() {
       sandbox.stub(userActions, 'fetchCurrentUserInfo')
         .returns(Promise.resolve({ user_id: 'user123' }));
       sandbox.stub(userActions, 'fetchUser').returns(Promise.resolve());
-      sandbox.stub(userActions, 'fetchUserOrgs').returns(Promise.resolve());
-      sandbox.stub(userActions, 'fetchUserSpaces').returns(Promise.resolve());
       sandbox.stub(userActions, 'fetchCurrentUserUaaInfo').returns(Promise.resolve());
       sandbox.stub(userActions, 'receivedCurrentUser').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleViewAction');
@@ -808,10 +653,6 @@ describe('userActions', function() {
 
     it('calls fetchUser', function () {
       expect(userActions.fetchUser).toHaveBeenCalledOnce();
-    });
-
-    it('calls fetchUserSpaces', function () {
-      expect(userActions.fetchUserSpaces).toHaveBeenCalledOnce();
     });
 
     it('calls receivedCurrentUser', function () {

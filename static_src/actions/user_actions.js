@@ -266,61 +266,6 @@ const userActions = {
     return Promise.resolve(user);
   },
 
-  fetchUserSpaces(userGuid, options = {}) {
-    if (!userGuid) {
-      return Promise.reject(new Error('userGuid is required'));
-    }
-
-    // orgGuid s optional for filtering
-    const { orgGuid } = options;
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_SPACES_FETCH,
-      userGuid,
-      orgGuid
-    });
-
-    return cfApi.fetchUserSpaces(userGuid, options)
-      .then(userSpaces => userActions.receivedUserSpaces(userGuid, userSpaces, options));
-  },
-
-  // Optionally specify orgGuid if filtered for spaces belonging to orgGuid
-  receivedUserSpaces(userGuid, userSpaces, options = {}) {
-    const { orgGuid } = options;
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_SPACES_RECEIVED,
-      userGuid,
-      userSpaces,
-      orgGuid
-    });
-
-    return Promise.resolve(userSpaces);
-  },
-
-  fetchUserOrgs(userGuid, options = {}) {
-    if (!userGuid) {
-      return Promise.reject(new Error('userGuid is required'));
-    }
-
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_ORGS_FETCH,
-      userGuid
-    });
-
-    return cfApi.fetchUserOrgs(userGuid, options)
-      .then(userOrgs => userActions.receivedUserOrgs(userGuid, userOrgs, options));
-  },
-
-  receivedUserOrgs(userGuid, userOrgs) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORGS_RECEIVED,
-      userGuid,
-      userOrgs
-    });
-
-    return Promise.resolve(userOrgs);
-  },
-
-  // Meta action to fetch all the pieces of the current user
   fetchCurrentUser(options = {}) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.CURRENT_USER_FETCH
@@ -332,8 +277,6 @@ const userActions = {
       .then(userInfo =>
         Promise.all([
           userActions.fetchUser(userInfo.user_id),
-          userActions.fetchUserOrgs(userInfo.user_id),
-          userActions.fetchUserSpaces(userInfo.user_id, options),
           userActions.fetchCurrentUserUaaInfo(userInfo.user_id)
         ])
       )
