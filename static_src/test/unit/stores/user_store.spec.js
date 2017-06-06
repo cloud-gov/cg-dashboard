@@ -36,11 +36,11 @@ describe('UserStore', function () {
 
   describe('on space users fetch', function() {
     it('should fetch space users through api', function() {
-      var spy = sandbox.spy(cfApi, 'fetchSpaceUsers'),
+      var spy = sandbox.spy(cfApi, 'fetchSpaceUserRoles'),
           expectedGuid = 'axckzvjxcov';
 
       AppDispatcher.handleViewAction({
-        type: userActionTypes.SPACE_USERS_FETCH,
+        type: userActionTypes.SPACE_USER_ROLES_FETCH,
         spaceGuid: expectedGuid
       });
 
@@ -53,7 +53,7 @@ describe('UserStore', function () {
       const expectedGuid = 'axckzvjxcov';
 
       AppDispatcher.handleViewAction({
-        type: userActionTypes.SPACE_USERS_FETCH,
+        type: userActionTypes.SPACE_USER_ROLES_FETCH,
         spaceGuid: expectedGuid
       });
 
@@ -102,43 +102,9 @@ describe('UserStore', function () {
     });
   });
 
-  describe('on space or org users received', function() {
+  describe('on org users received', function() {
     it('should merge and update new users with existing users in data',
         function() {
-      var sharedGuid = 'wpqoifesadkzcvn';
-
-      let existingUser = { guid: sharedGuid, name: 'Michael' };
-      let newUser = { guid: sharedGuid, email: 'michael@gsa.gov' };
-
-      UserStore.push(existingUser);
-      expect(UserStore.get(sharedGuid)).toEqual(existingUser);
-
-      AppDispatcher.handleServerAction({
-        type: userActionTypes.SPACE_USERS_RECEIVED,
-        users: [newUser]
-      });
-
-      let actual = UserStore.get(sharedGuid);
-      expect(actual).toEqual({
-        guid: sharedGuid,
-        name: 'Michael',
-        email: 'michael@gsa.gov'
-      });
-    });
-
-    it('should add org and/or space guid to user', function() {
-      var user = { guid: 'adzxcv', name: 'Seymor' },
-          expectedGuid = 'a09dsfuva';
-
-      AppDispatcher.handleServerAction({
-        type: userActionTypes.SPACE_USERS_RECEIVED,
-        users: [user],
-        orgGuid: expectedGuid
-      });
-
-      let actual = UserStore.get(user.guid);
-
-      expect(actual.orgGuid).toEqual(expectedGuid);
     });
   });
 

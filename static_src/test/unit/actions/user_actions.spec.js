@@ -52,7 +52,7 @@ describe('userActions', function() {
     });
   });
 
-  describe('fetchSpaceUsers()', function() {
+  describe('fetchSpaceUserRoles()', function() {
     it('should dispatch a view event of type space users fetch', function() {
       var expectedSpaceGuid = 'asdflkjz',
           expectedParams = {
@@ -61,9 +61,9 @@ describe('userActions', function() {
 
       let spy = setupViewSpy(sandbox);
 
-      userActions.fetchSpaceUsers(expectedSpaceGuid);
+      userActions.fetchSpaceUserRoles(expectedSpaceGuid);
 
-      assertAction(spy, userActionTypes.SPACE_USERS_FETCH, expectedParams);
+      assertAction(spy, userActionTypes.SPACE_USER_ROLES_FETCH, expectedParams);
     });
   });
 
@@ -100,7 +100,7 @@ describe('userActions', function() {
     });
   });
 
-  describe('receivedSpaceUsers()', function() {
+  describe('receivedSpaceUserRoles()', function() {
     it(`should dispatch a server event of type space users received with received
         data`, function() {
       var expected = [{ entity: { }, metadata: { guid: 'adf' }}],
@@ -110,9 +110,9 @@ describe('userActions', function() {
 
       let spy = setupServerSpy(sandbox)
 
-      userActions.receivedSpaceUsers(expected);
+      userActions.receivedSpaceUserRoles(expected);
 
-      assertAction(spy, userActionTypes.SPACE_USERS_RECEIVED, expectedParams);
+      assertAction(spy, userActionTypes.SPACE_USER_ROLES_RECEIVED, expectedParams);
     });
   });
 

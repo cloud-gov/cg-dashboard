@@ -52,8 +52,8 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.SPACE_USERS_FETCH: {
-        this.load([cfApi.fetchSpaceUsers(action.spaceGuid)]);
+      case userActionTypes.SPACE_USER_ROLES_FETCH: {
+        this.load([cfApi.fetchSpaceUserRoles(action.spaceGuid)]);
         this.emitChange();
         break;
       }
@@ -172,29 +172,20 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.SPACE_USERS_RECEIVED:
       case userActionTypes.ORG_USERS_RECEIVED: {
-        let updates = action.users;
-        updates = updates.map((update) => {
-          const updateCopy = Object.assign({}, update);
-          if (action.orgGuid) {
-            updateCopy.orgGuid = action.orgGuid;
+        const orgGuid = action.orgGuid;
+        const orgUsers = action.users;
+
+        const updatedUsers = orgUsers.map((orgUser) =>
+          Object.assign({}, orgUser, { orgGuid })
+        );
+
+        this.mergeMany('guid', updatedUsers, (changed) => {
+          if (changed) {
+            this._error = null;
           }
-          if (action.spaceGuid) {
-            updateCopy.spaceGuid = action.spaceGuid;
-          }
-          return updateCopy;
-        });
-        if (updates.length) {
-          this.mergeMany('guid', updates, (changed) => {
-            if (changed) {
-              this._error = null;
-            }
-            this.emitChange();
-          });
-        } else {
           this.emitChange();
-        }
+        });
         break;
       }
 

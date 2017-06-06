@@ -26,9 +26,9 @@ const userActions = {
     });
   },
 
-  fetchSpaceUsers(spaceGuid) {
+  fetchSpaceUserRoles(spaceGuid) {
     AppDispatcher.handleViewAction({
-      type: userActionTypes.SPACE_USERS_FETCH,
+      type: userActionTypes.SPACE_USER_ROLES_FETCH,
       spaceGuid
     });
   },
@@ -49,9 +49,9 @@ const userActions = {
     });
   },
 
-  receivedSpaceUsers(users, spaceGuid) {
+  receivedSpaceUserRoles(users, spaceGuid) {
     AppDispatcher.handleServerAction({
-      type: userActionTypes.SPACE_USERS_RECEIVED,
+      type: userActionTypes.SPACE_USER_ROLES_RECEIVED,
       users,
       spaceGuid
     });
