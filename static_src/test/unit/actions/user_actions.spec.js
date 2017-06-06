@@ -672,6 +672,7 @@ describe('userActions', function() {
       sandbox.stub(userActions, 'fetchUserSpaces').returns(Promise.resolve());
       sandbox.stub(userActions, 'fetchCurrentUserUaaInfo').returns(Promise.resolve());
       sandbox.stub(userActions, 'receivedCurrentUser').returns(Promise.resolve());
+      sandbox.stub(userActions, 'fetchCurrentUserRole').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleViewAction');
 
       // We really want to stub UserStore.currentUser here but there's no way
@@ -695,6 +696,10 @@ describe('userActions', function() {
 
     it('calls fetchCurrentUserUaaInfo', function () {
       expect(userActions.fetchCurrentUserUaaInfo).toHaveBeenCalledOnce();
+    });
+
+    it('calls fetchCurrentUserRole', function () {
+      expect(userActions.fetchCurrentUserRole).toHaveBeenCalledOnce();
     });
 
     it('calls fetchUser', function () {
