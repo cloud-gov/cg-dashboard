@@ -295,6 +295,7 @@ export class UserStore extends BaseStore {
         }
 
         const updatedRoles = {};
+
         updatedRoles[orgGuid] = action.currentUserRoles.organization_roles;
 
         this.merge('guid', { guid: user.guid, roles: updatedRoles });

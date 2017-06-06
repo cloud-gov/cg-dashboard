@@ -38,6 +38,22 @@ describe('User roles', function () {
       expect(email).toBe(userInviteElement.getInviteFormValue());
     });
 
+    it('should be able to submit an email address and see on user list', function () {
+      const existingUserCount = userInviteElement.countNumberOfUsers();
+      const user = userInviteElement.getUserByIndex(existingUserCount - 1);
+      expect(user.getText()).not.toMatch(/fake-persona@gsa.gov/);
+      userInviteElement.inputToInviteForm(email);
+      userInviteElement.submitInviteForm();
+      const currentUserCount = userInviteElement.countNumberOfUsers();
+      expect(currentUserCount).toEqual(existingUserCount + 1);
+    });
+
+    it('should add the user as the last entry in the user list', function () {
+      const currentUserCount = userInviteElement.countNumberOfUsers();
+      const user = userInviteElement.getUserByIndex(currentUserCount - 1);
+      expect(user.getText()).toMatch(/fake-persona@gsa.gov/);
+    });
+
     it('should display an error message if the email address is invalid',
     function () {
       const invalidEmail = '123';
