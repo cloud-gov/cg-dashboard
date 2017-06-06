@@ -158,7 +158,12 @@ describe('UserStore', function () {
       const orgGuid = 'org-534789';
       const currentUsers = [
         { guid: userGuid },
-        { guid: 'asdf', roles: { 'adjf': [ 'org_manager' ] } }
+        { guid: 'asdf',
+          roles: {
+            [ orgGuid ]: [ 'org_manager' ] ,
+            'adjf': [ 'org_manager' ]
+          }
+        }
       ];
       const roles = [
         {
@@ -173,15 +178,12 @@ describe('UserStore', function () {
       const expectedUsers = [
         {
           guid: userGuid,
-          roles: {
-            [orgGuid]: ['org_manager', 'org_auditor']
-          }
+          roles: { [orgGuid]: ['org_manager', 'org_auditor'] }
         },
         {
           guid: 'asdf',
-          roles: {
-            'adjf': ['org_manager']
-          }
+          roles: { 'adjf': ['org_manager'],
+                   [orgGuid]: ['org_manager', 'org_auditor'] }
         }
       ];
 
@@ -189,7 +191,7 @@ describe('UserStore', function () {
       UserStore.push(expectedUsers[1]);
       userActions.receivedOrgUserRoles(roles, orgGuid);
 
-      expect(UserStore.getAll(userGuid)).toEqual(expectedUsers);
+      expect(UserStore.getAll()).toEqual(expectedUsers);
     });
   });
 

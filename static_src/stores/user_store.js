@@ -61,8 +61,6 @@ export class UserStore extends BaseStore {
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
         const orgGuid = action.orgGuid;
         const orgUserRoles = action.orgUserRoles;
-        console.log('fasldjkfasdlkjfasdl;kfj', orgUserRoles);
-        debugger;
         const updatedUsers = orgUserRoles.map((orgUserRole) => {
           let user = Object.assign({}, this.get(orgUserRole.guid));
           if (!user) user = { guid: orgUserRole.guid };
