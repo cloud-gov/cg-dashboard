@@ -294,8 +294,8 @@ export class UserStore extends BaseStore {
           break;
         }
 
-        let updatedRoles = {};
-        updatedRoles[orgGuid] = action.currentUserRoles['organization_roles'];
+        const updatedRoles = {};
+        updatedRoles[orgGuid] = action.currentUserRoles.organization_roles;
 
         this.merge('guid', { guid: user.guid, roles: updatedRoles });
         break;
@@ -336,14 +336,6 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.CURRENT_USER_RECEIVED: {
-        console.log('');
-        console.log('********');
-        console.log('');
-        console.log('current user');
-        console.log(action.user);
-        console.log('********');
-        console.log('');
-
         this._loading.currentUser = false;
         this.emitChange();
         break;
