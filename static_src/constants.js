@@ -281,7 +281,11 @@ const userActionTypes = keymirror({
   // Current UAA info fetched from server.
   CURRENT_UAA_INFO_FETCH: null,
   // Action when current UAA info received from server.
-  CURRENT_UAA_INFO_RECEIVED: null
+  CURRENT_UAA_INFO_RECEIVED: null,
+  // Action to fetch roles of current user.
+  CURRENT_USER_ROLES_FETCH: null,
+  // Action when roles for current user are received.
+  CURRENT_USER_ROLES_RECEIVED: null
 });
 
 const routeActionTypes = keymirror({
