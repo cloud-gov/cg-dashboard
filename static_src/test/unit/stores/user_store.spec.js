@@ -616,19 +616,19 @@ describe('UserStore', function () {
       expect(user.roles).toBeTruthy();
     });
 
-    it('assigns space_developer role for each space', function () {
+    it('assigns   role for each space', function () {
       expect(user.roles).toEqual({
-        space123: ['space_manager'],
-        space456: ['space_manager'],
-        org123: ['org_manager']
+        space123: ['space_developer'],
+        space456: ['space_developer'],
+        org123: ['org_user']
       });
     });
 
     it('assigns org_manager role for each org', function () {
       expect(user.roles).toEqual({
-        space123: ['space_manager'],
-        space456: ['space_manager'],
-        org123: ['org_manager']
+        space123: ['space_developer'],
+        space456: ['space_developer'],
+        org123: ['org_user']
       });
     });
   });
