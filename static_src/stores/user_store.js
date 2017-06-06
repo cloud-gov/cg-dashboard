@@ -61,7 +61,6 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
         const updates = action.orgUserRoles;
-        console.log(updates);
         if (updates.length) {
           this.mergeMany('guid', updates, () => { });
         }
@@ -288,6 +287,20 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.CURRENT_USER_ROLES_RECEIVED: {
+        const orgGuid = action.orgGuid;
+        const user = this.get(action.userGuid);
+        if (!user) {
+          break;
+        }
+
+        let updatedRoles = {};
+        updatedRoles[orgGuid] = action.currentUserRoles['organization_roles'];
+
+        this.merge('guid', { guid: user.guid, roles: updatedRoles });
+        break;
+      }
+
       case userActionTypes.USER_SPACES_RECEIVED:
       case userActionTypes.USER_ORGS_RECEIVED: {
         const user = this.get(action.userGuid);
@@ -323,6 +336,14 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.CURRENT_USER_RECEIVED: {
+        console.log('');
+        console.log('********');
+        console.log('');
+        console.log('current user');
+        console.log(action.user);
+        console.log('********');
+        console.log('');
+
         this._loading.currentUser = false;
         this.emitChange();
         break;

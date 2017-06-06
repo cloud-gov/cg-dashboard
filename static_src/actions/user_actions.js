@@ -26,6 +26,14 @@ const userActions = {
     });
   },
 
+  receivedOrgUserRoles(roles, orgGuid) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.ORG_USER_ROLES_RECEIVED,
+      orgUserRoles: roles,
+      orgGuid
+    });
+  },
+
   fetchSpaceUsers(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.SPACE_USERS_FETCH,
@@ -37,14 +45,6 @@ const userActions = {
     AppDispatcher.handleServerAction({
       type: userActionTypes.ORG_USERS_RECEIVED,
       users,
-      orgGuid
-    });
-  },
-
-  receivedOrgUserRoles(roles, orgGuid) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-      orgUserRoles: roles,
       orgGuid
     });
   },
@@ -209,6 +209,40 @@ const userActions = {
     return Promise.resolve(userInfo);
   },
 
+  fetchCurrentUserRole(userGuid) {
+    if (!userGuid) {
+      return Promise.reject(new Error('guid is required'));
+    }
+
+    const orgGuid = OrgStore.currentOrgGuid;
+
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.CURRENT_USER_ROLES_FETCH,
+      userGuid,
+      orgGuid
+    });
+
+    return cfApi.fetchOrgUserRoles(orgGuid)
+      .then(orgRoles => userActions.receivedCurrentUserRole(orgRoles, userGuid, orgGuid));
+  },
+
+  receivedCurrentUserRole(orgRoles, userGuid, orgGuid) {
+
+    let currentUserRoles = orgRoles.filter(function(item){
+      return item.guid == userGuid;
+    });
+    currentUserRoles = currentUserRoles[0];
+
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.CURRENT_USER_ROLES_RECEIVED,
+      userGuid,
+      orgGuid,
+      currentUserRoles
+    });
+
+    return Promise.resolve(currentUserRoles);
+  },
+
   fetchCurrentUserUaaInfo(guid) {
     if (!guid) {
       return Promise.reject(new Error('guid is required'));
@@ -320,6 +354,7 @@ const userActions = {
       .then(userInfo =>
         Promise.all([
           userActions.fetchUser(userInfo.user_id),
+          userActions.fetchCurrentUserRole(userInfo.user_id),
           userActions.fetchUserOrgs(userInfo.user_id),
           userActions.fetchUserSpaces(userInfo.user_id, options),
           userActions.fetchCurrentUserUaaInfo(userInfo.user_id)
