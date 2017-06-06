@@ -216,56 +216,6 @@ describe('userActions', function() {
     });
   });
 
-  // describe('createUserAndAssociate', function () {
-  //   let user;
-  //   let userGuid;
-  //   let orgGuid;
-  //   beforeEach(function (done) {
-  //     userGuid = "fake-udid";
-  //     orgGuid = "fake-org-guid";
-  //     user = { guid: userGuid };
-  //     sandbox.stub(OrgStore, 'get').returns(orgGuid);
-  //     sandbox.stub(cfApi, 'putAssociateUserToOrganization').returns(Promise.resolve());
-  //     sandbox.stub(userActions, 'createUserAndAssociate').returns(Promise.resolve());
-  //     sandbox.stub(AppDispatcher, 'handleViewAction');
-  //     userActions.createUserAndAssociate(user)
-  //       .then(done, done.fail);
-  //   });
-
-  //   it('completes the association to user and org', function () {
-  //     expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-  //       type: userActionTypes.USER_ORG_ASSOCIATE
-  //     }));
-  //   });
-
-  //   it('should trigger cf api to make put request to associate user', function () {
-  //     expect(cfApi.putAssociateUserToOrganization).toHaveBeenCalledOnce();
-  //   });
-
-  //   it('should call associatedUser confirmation after', function () {
-  //     expect(userActions.associatedUserToOrg).toHaveBeenCalledOnce();
-  //   });
-
-  //   describe('when the request fails', function() {
-  //     beforeEach(function (done) {
-  //       sandbox.spy(userActions, 'userInviteError');
-  //       cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
-  //         .then(done, done.fail);
-  //     });
-
-  //     it('should call global user error action', function() {
-  //       expect(userActions.userInviteError).toHaveBeenCalledOnce();
-  //     });
-
-  //     it('should provide a message about the user not being added to the org',
-  //       function() {
-  //       const arg = userActions.userInviteError.getCall(0).args[1];
-  //       expect(arg.length).toBeGreaterThan(0);
-  //       expect(arg).toMatch('associate user');
-  //     });
-  //   });
-  // });
-
   describe('createdUserAndAssociated', function () {
     let userGuid;
     let orgUsers;
@@ -285,10 +235,8 @@ describe('userActions', function() {
         orgGuid,
         orgUsers
       };
-
-      sandbox.stub(userActions, 'createdUserDisplayed').returns(Promise.resolve());
       spy = setupViewSpy(sandbox)
-
+      sandbox.stub(userActions, 'createdUserDisplayed').returns(Promise.resolve());
       userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers).then(done, done.fail);
     });
 
