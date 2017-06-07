@@ -143,11 +143,12 @@ const userActions = {
     });
   },
 
-  deletedUserRoles(roles, userGuid, entityType) {
+  deletedUserRoles(roles, userGuid, entityGuid, entityType) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ROLES_DELETED,
       roles,
       userGuid,
+      entityGuid,
       entityType
     });
   },

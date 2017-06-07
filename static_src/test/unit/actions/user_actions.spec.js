@@ -627,11 +627,13 @@ describe('userActions', function() {
         resource type`, function() {
       var expectedRole = 'org_manager',
           expectedUserGuid = 'azxcvoiuzxcvzxcvzxvzx',
+          expectedGuid = 'org-asdf',
           expectedType = 'organization';
 
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
+        entityGuid: expectedGuid,
         entityType: expectedType
       };
 
@@ -640,6 +642,7 @@ describe('userActions', function() {
       userActions.deletedUserRoles(
         expectedRole,
         expectedUserGuid,
+        expectedGuid,
         expectedType);
 
       assertAction(spy, userActionTypes.USER_ROLES_DELETED, expectedParams);

@@ -280,37 +280,38 @@ describe('UserStore', function () {
   });
 
   describe('on user roles deleted', function() {
-    it('should update the resource type roles array if it exists with new roles',
-        function() {
-      var testGuid = 'zxcvzxc',
-          expectedRole = 'org_dark_lord';
+    const testGuid = 'zxcvzxc';
+    const expectedRole = 'org_dark_lord';
+    const otherRole = 'wizard';
+    const orgGuid = 'org-123';
+    const otherOrgGuid = 'org-987';
 
-      var existingUser = {
+    beforeEach(function() {
+      const existingUser = {
         guid: testGuid,
-        organization_roles: ['org_manager', expectedRole]
+        roles: {
+          [orgGuid]: [expectedRole, otherRole],
+          [otherOrgGuid]: ['org_manager']
+        }
       };
 
       UserStore._data = Immutable.fromJS([existingUser]);
+      sandbox.spy(UserStore, 'emitChange'),
 
-      userActions.deletedUserRoles(expectedRole, testGuid, 'org');
+      userActions.deletedUserRoles(expectedRole, testGuid, orgGuid, 'org');
+    });
 
+    it('should update the resource type roles array if it exists with new roles',
+        function() {
       let actual = UserStore.get(testGuid);
       expect(actual).toBeTruthy();
-      expect(actual.organization_roles).not.toContain(expectedRole);
+      expect(actual.roles[orgGuid]).not.toContain(expectedRole);
+      expect(actual.roles[orgGuid]).toContain(otherRole);
+      expect(actual.roles[otherOrgGuid]).toContain('org_manager');
     });
 
     it('should emit a change event if it finds the user and no role', function() {
-      var spy = sandbox.spy(UserStore, 'emitChange'),
-          expectedRole = 'org_dark_lord',
-          testUserGuid = '234xcvbqwn';
-
-      UserStore._data = Immutable.fromJS([{
-        guid: testUserGuid,
-        organization_roles: [expectedRole]
-      }]);
-      userActions.deletedUserRoles(expectedRole, testUserGuid, 'org');
-
-      expect(spy).toHaveBeenCalledOnce();
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
     });
   });
 

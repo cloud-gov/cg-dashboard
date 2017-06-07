@@ -117,13 +117,14 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_DELETED: {
         const user = this.get(action.userGuid);
+        const deletedRole = action.roles;
         if (user) {
-          const role = this.getResourceToRole(action.roles, action.entityType);
-          const userRole = (action.entityType === 'space') ? user.space_roles :
-            user.organization_roles;
-          const idx = userRole && userRole.indexOf(role);
-          if (idx > -1) {
-            userRole.splice(idx, 1);
+          const roles = user.roles && user.roles[action.entityGuid];
+          if (roles) {
+            const idx = deletedRole && roles.indexOf(deletedRole);
+            if (idx > -1) {
+              roles.splice(idx, 1);
+            }
           }
 
           this.merge('guid', user, (changed) => {
