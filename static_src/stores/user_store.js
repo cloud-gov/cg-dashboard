@@ -76,15 +76,11 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ASSOCIATED_ORG_DISPLAYED: {
-        const orgUser = action.orgUsers.map((item) => {
-          if (item.guid === action.userGuid) {
-            return item;
-          }
-          return false;
-        });
+        const orgUser = action.orgUsers.filter(item => item.guid === action.userGuid);
         const user = Object.assign({},
-          { orgGuid: action.orgGuid, organization_roles: [] },
-          orgUser);
+          { orgGuid: action.orgGuid, organization_roles: [], roles: [] },
+          orgUser[0]);
+
         if (user.guid) {
           this.merge('guid', user, () => {});
         }
