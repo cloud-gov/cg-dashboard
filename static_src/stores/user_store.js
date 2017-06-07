@@ -8,7 +8,6 @@ import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import userActions from '../actions/user_actions.js';
 import { userActionTypes } from '../constants.js';
 
 // TODO why is this role mapping needed?

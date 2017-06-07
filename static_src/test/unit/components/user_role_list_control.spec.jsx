@@ -4,7 +4,6 @@ import '../../global_setup.js';
 import React from 'react';
 import { shallow } from 'enzyme';
 import UserRoleListControl from '../../../components/user_role_list_control.jsx';
-import UserStore from '../../../stores/user_store';
 
 describe('<UserRoleListControl />', function () {
   let userRoleListControl, sandbox;
@@ -30,8 +29,8 @@ describe('<UserRoleListControl />', function () {
       userRoleListControl = shallow(
         <UserRoleListControl
           user={ user }
-          userType='org_users'
-          currentUserAccess={ true }
+          userType="org_users"
+          currentUserAccess
           entityGuid={ orgGuid }
         />
       );
@@ -49,16 +48,16 @@ describe('<UserRoleListControl />', function () {
       });
     });
 
-    describe('that has org_manager role, checkRole', function() {
-      beforeEach(function() {
+    describe('that has org_manager role, checkRole', function () {
+      beforeEach(function () {
         const user = {
           guid: 'user-123',
           entityGuid: orgGuid,
           roles: {
             [orgGuid]: ['org_manager']
           }
-        }
-        userRoleListControl.setProps({user: user});
+        };
+        userRoleListControl.setProps({ user });
       });
 
       it('returns true for org manager', function () {
@@ -88,8 +87,8 @@ describe('<UserRoleListControl />', function () {
       userRoleListControl = shallow(
         <UserRoleListControl
           user={ user }
-          userType='space_users'
-          currentUserAccess={ true }
+          userType="space_users"
+          currentUserAccess
           entityGuid={ spaceGuid }
         />
       );
@@ -107,16 +106,16 @@ describe('<UserRoleListControl />', function () {
       });
     });
 
-    describe('that has space_manager role, checkRole', function() {
-      beforeEach(function() {
+    describe('that has space_manager role, checkRole', function () {
+      beforeEach(function () {
         const user = {
           guid: 'user-123',
           entityGuid: spaceGuid,
           roles: {
             [spaceGuid]: ['space_manager']
           }
-        }
-        userRoleListControl.setProps({user: user});
+        };
+        userRoleListControl.setProps({ user });
       });
 
       it('returns true for space manager', function () {
