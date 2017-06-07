@@ -18,8 +18,6 @@ describe('User roles', function () {
       browser.waitForExist('.test-users');
       userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
       userRoleElement.setUserRole(cookieManagerOrgX);
-
-      expect(browser.isExisting('.test-users')).toBe(true);
     });
 
     it('should have the user invite panel', function () {
