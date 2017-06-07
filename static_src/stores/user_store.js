@@ -120,7 +120,7 @@ export class UserStore extends BaseStore {
 
         api(
           action.userGuid,
-          action.resourceGuid,
+          action.entityGuid,
           action.roles
         ).then(() => {
           userActions.deletedUserRoles(

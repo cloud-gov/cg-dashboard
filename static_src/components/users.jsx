@@ -84,14 +84,14 @@ export default class Users extends React.Component {
   handleAddPermissions(roleKey, userGuid) {
     userActions.addUserRoles(roleKey,
                                 userGuid,
-                                this.resourceGuid,
+                                this.entityGuid,
                                 this.resourceType);
   }
 
   handleRemovePermissions(roleKey, userGuid) {
     userActions.deleteUserRoles(roleKey,
                                 userGuid,
-                                this.resourceGuid,
+                                this.entityGuid,
                                 this.resourceType);
   }
 
@@ -99,10 +99,10 @@ export default class Users extends React.Component {
     return this.state.currentType === ORG_NAME ? 'org' : 'space';
   }
 
-  get resourceGuid() {
-    const resourceGuid = this.state.currentType === ORG_NAME ?
+  get entityGuid() {
+    const entityGuid = this.state.currentType === ORG_NAME ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
-    return resourceGuid;
+    return entityGuid;
   }
 
   render() {

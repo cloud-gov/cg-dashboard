@@ -412,7 +412,7 @@ describe('userActions', function() {
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
-        resourceGuid: expectedGuid,
+        entityGuid: expectedGuid,
         resourceType: expectedType
       };
 
@@ -439,7 +439,7 @@ describe('userActions', function() {
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
-        resourceGuid: expectedGuid,
+        entityGuid: expectedGuid,
         resourceType: expectedType
       };
 
@@ -466,7 +466,7 @@ describe('userActions', function() {
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
-        resourceGuid: expectedGuid,
+        entityGuid: expectedGuid,
         resourceType: expectedType
       };
 

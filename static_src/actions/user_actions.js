@@ -73,7 +73,7 @@ const userActions = {
     });
   },
 
-  addUserRoles(roles, userGuid, resourceGuid, resourceType) {
+  addUserRoles(roles, userGuid, entityGuid, resourceType) {
     const apiMethodMap = {
       org: cfApi.putOrgUserPermissions,
       space: cfApi.putSpaceUserPermissions
@@ -84,41 +84,41 @@ const userActions = {
       type: userActionTypes.USER_ROLES_ADD,
       roles,
       userGuid,
-      resourceGuid,
+      entityGuid,
       resourceType
     });
 
     api(
       userGuid,
-      resourceGuid,
+      entityGuid,
       roles
     ).then(() => {
       userActions.addedUserRoles(
         roles,
         userGuid,
-        resourceGuid,
+        entityGuid,
         resourceType);
     }).catch((err) => {
       window.console.error(err);
     });
   },
 
-  addedUserRoles(roles, userGuid, resourceGuid, resourceType) {
+  addedUserRoles(roles, userGuid, entityGuid, resourceType) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ROLES_ADDED,
       roles,
       userGuid,
-      resourceGuid,
+      entityGuid,
       resourceType
     });
   },
 
-  deleteUserRoles(roles, userGuid, resourceGuid, resourceType) {
+  deleteUserRoles(roles, userGuid, entityGuid, resourceType) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLES_DELETE,
       roles,
       userGuid,
-      resourceGuid,
+      entityGuid,
       resourceType
     });
   },
