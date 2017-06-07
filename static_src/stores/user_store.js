@@ -97,13 +97,13 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_ADDED: {
         const user = this.get(action.userGuid);
+        const addedRole = action.roles;
         if (user) {
-          const role = this.getResourceToRole(action.roles, action.entityType);
-          const userRole = (action.entityType === 'space') ? user.space_roles :
-            user.organization_roles;
-          if (userRole && userRole.indexOf(role) === -1) {
-            userRole.push(role);
-          }
+          if (!user.roles) user.roles = {};
+          const updatedRoles = new Set(user.roles[action.entityGuid] || []);
+          updatedRoles.add(addedRole);
+          user.roles[action.entityGuid] = Array.from(updatedRoles);
+
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });

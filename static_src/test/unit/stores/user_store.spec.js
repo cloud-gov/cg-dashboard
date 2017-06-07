@@ -279,6 +279,66 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on user roles added', function() {
+    let user;
+    const userGuid = 'user-123';
+    const spaceGuid = 'space-123';
+    const addedRole = 'space_lord';
+    const existingRole = 'space_manager';
+    const otherOrgGuid = 'org-123';
+
+    describe('for new role', function() {
+      beforeEach(function() {
+        const existingUser = {
+          guid: userGuid,
+          roles: {
+            [spaceGuid]: [existingRole],
+            [otherOrgGuid]: ['org_manager']
+          }
+        };
+
+        UserStore._data = Immutable.fromJS([existingUser]);
+        sandbox.spy(UserStore, 'emitChange'),
+
+        userActions.addedUserRoles(addedRole, userGuid, spaceGuid, 'space');
+        user = UserStore.get(userGuid);
+      });
+
+      it('should emit a change event', function() {
+        expect(UserStore.emitChange).toHaveBeenCalledOnce();
+      });
+
+      it('should add the role for that org', function() {
+        expect(user.roles[spaceGuid]).toContain(addedRole);
+      });
+
+      it('should not change any other roles', function() {
+        expect(user.roles[spaceGuid]).toContain(existingRole);
+        expect(user.roles[otherOrgGuid]).toContain('org_manager');
+      });
+    });
+
+    describe('for a user with no existing space roles, somehow', function() {
+      beforeEach(function() {
+        const existingUser = {
+          guid: userGuid
+        }
+        UserStore._data = Immutable.fromJS([existingUser]);
+        sandbox.spy(UserStore, 'emitChange'),
+        userActions.addedUserRoles(addedRole, userGuid, spaceGuid, 'space');
+        user = UserStore.get(userGuid);
+      });
+
+      it('should emit a change event', function() {
+        expect(UserStore.emitChange).toHaveBeenCalledOnce();
+      });
+
+      it('should add the role for that org', function() {
+        expect(user.roles[spaceGuid]).toContain(addedRole);
+      });
+    });
+  });
+
   describe('on user roles deleted', function() {
     const testGuid = 'zxcvzxc';
     const expectedRole = 'org_dark_lord';
