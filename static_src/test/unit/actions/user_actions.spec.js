@@ -433,11 +433,13 @@ describe('userActions', function() {
         resource type`, function() {
       var expectedRole = 'org_manager',
           expectedUserGuid = 'azxcvoiuzxcvzxcvzxvzx',
+          expectedGuid = 'org-guid-asdf',
           expectedType = 'organization';
 
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
+        resourceGuid: expectedGuid,
         resourceType: expectedType
       };
 
@@ -446,6 +448,7 @@ describe('userActions', function() {
       userActions.addedUserRoles(
         expectedRole,
         expectedUserGuid,
+        expectedGuid,
         expectedType);
 
       assertAction(spy, userActionTypes.USER_ROLES_ADDED, expectedParams);

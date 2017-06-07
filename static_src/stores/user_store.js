@@ -92,24 +92,6 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_ADD: {
-        const apiMethodMap = {
-          org: cfApi.putOrgUserPermissions,
-          space: cfApi.putSpaceUserPermissions
-        };
-        const api = apiMethodMap[action.resourceType];
-
-        api(
-          action.userGuid,
-          action.resourceGuid,
-          action.roles
-        ).then(() => {
-          userActions.addedUserRoles(
-            action.roles,
-            action.userGuid,
-            action.resourceType);
-        }).catch((err) => {
-          window.console.error(err);
-        });
         break;
       }
 

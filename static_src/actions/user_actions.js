@@ -74,21 +74,41 @@ const userActions = {
   },
 
   addUserRoles(roles, userGuid, resourceGuid, resourceType) {
-    AppDispatcher.handleViewAction({
+    const apiMethodMap = {
+      org: cfApi.putOrgUserPermissions,
+      space: cfApi.putSpaceUserPermissions
+    };
+    const api = apiMethodMap[resourceType];
 
+    AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLES_ADD,
       roles,
       userGuid,
       resourceGuid,
       resourceType
     });
+
+    api(
+      userGuid,
+      resourceGuid,
+      roles
+    ).then(() => {
+      userActions.addedUserRoles(
+        roles,
+        userGuid,
+        resourceGuid,
+        resourceType);
+    }).catch((err) => {
+      window.console.error(err);
+    });
   },
 
-  addedUserRoles(roles, userGuid, resourceType) {
+  addedUserRoles(roles, userGuid, resourceGuid, resourceType) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ROLES_ADDED,
       roles,
       userGuid,
+      resourceGuid,
       resourceType
     });
   },

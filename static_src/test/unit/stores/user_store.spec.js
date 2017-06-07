@@ -279,38 +279,6 @@ describe('UserStore', function () {
     });
   });
 
-  describe('on user roles added', function() {
-    it('should update the resource type roles array if it exists with new roles',
-        function() {
-      var testGuid = 'zxcvzxc',
-          expectedRole = 'org_dark_lord';
-
-      var existingUser = {
-        guid: testGuid,
-        organization_roles: ['org_manager']
-      };
-
-      UserStore.push(existingUser);
-
-      userActions.addedUserRoles(expectedRole, testGuid, 'org');
-
-      let actual = UserStore.get(testGuid);
-      expect(actual).toBeTruthy();
-      expect(actual.organization_roles).toContain(expectedRole);
-    });
-
-    it('should emit a change event if it finds the user', function() {
-      const spy = sandbox.spy(UserStore, 'emitChange');
-      const testUserGuid = '234xcvbqwn';
-      const initialData = [{guid: testUserGuid, organization_roles: []}]
-
-      UserStore._data = Immutable.fromJS(initialData);
-      userActions.addedUserRoles('testrole', testUserGuid, 'org');
-
-      expect(spy).toHaveBeenCalledOnce();
-    });
-  });
-
   describe('on user roles delete', function() {
     it('should call the api to delete the role', function() {
       var spy = sandbox.stub(cfApi, 'deleteOrgUserPermissions'),
