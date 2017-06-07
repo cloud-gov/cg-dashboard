@@ -25,6 +25,8 @@ function stateSetter(props) {
     userType: props.initialUserType,
     currentUserAccess: props.initialCurrentUserAccess,
     empty: props.initialEmpty,
+    saving: props.initialSaving,
+    savingText: props.initialSavingText,
     loading: props.initialLoading
   };
 }
@@ -119,8 +121,13 @@ export default class UserList extends React.Component {
   }
 
   render() {
+    let saving;
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
+
+    if (this.state.saving) {
+      saving = <Loading text="Saving" style="globalSaving" />;
+    }
 
     if (this.state.empty) {
       content = this.emptyState;
@@ -129,6 +136,7 @@ export default class UserList extends React.Component {
     } else if (!this.state.loading && this.state.users.length) {
       content = (
       <div className="test-user_list">
+        { saving }
         { this.documentation }
         <ComplexList>
           { this.state.users.map((user) => {
@@ -187,6 +195,8 @@ UserList.propTypes = {
   initialCurrentUserAccess: React.PropTypes.bool,
   initialEmpty: React.PropTypes.bool,
   initialLoading: React.PropTypes.bool,
+  initialSavingText: React.PropTypes.string,
+  initialSaving: React.PropTypes.bool,
   // Set to a function when there should be a remove button.
   onRemove: React.PropTypes.func,
   onRemovePermissions: React.PropTypes.func,
@@ -198,5 +208,7 @@ UserList.defaultProps = {
   initialUserType: 'space_users',
   initialCurrentUserAccess: false,
   initialEmpty: false,
+  initialSaving: false,
+  initialSavingText: "",
   initialLoading: false
 };

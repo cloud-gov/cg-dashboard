@@ -120,33 +120,43 @@ const userActions = {
     });
   },
 
-  fetchUserInvite(email) {
+  createUserInvite(email) {
     AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_INVITE_FETCH,
+      type: userActionTypes.USER_INVITE_TRIGGER,
       email
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(data => userActions.receiveUserInvite(data))
-      .catch(err => userActions.userInviteError(err, `There was a problem
+      .then(data => userActions.createUserAndAssociate(data, email))
+      .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
   },
 
-  receiveUserInvite(inviteData) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_INVITE_RECEIVED
+  createUserAndAssociate(data, email) {
+    const orgGuid = OrgStore.currentOrgGuid;
+    const userGuid = data.userGuid;
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ORG_ASSOCIATE,
+      userGuid,
+      orgGuid
     });
-
-    const userGuid = inviteData.new_invites[0].userId;
-    const userEmail = inviteData.new_invites[0].email;
-
-    return cfApi.postCreateNewUserWithGuid(userGuid)
-      .then(user => userActions.receiveUserForCF(user, inviteData))
-      .catch(err => userActions.userInviteError(err, `There was a problem
-        inviting ${userEmail}`));
+    return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
+      .then(() => userActions.fetchUser(userGuid))
+      .then(user => userActions.createdUserAndAssociated(user, orgGuid, email))
+      .catch(err => userActions.userInviteCreateError(err, `There was a problem
+        associating ${userGuid} to ${orgGuid}`));
   },
 
-  userInviteError(err, contextualMessage) {
+  createdUserAndAssociated(user, orgGuid, email) {
+    user.username = email;
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ORG_ASSOCIATED,
+      user,
+      orgGuid
+    });
+  },
+
+  userInviteCreateError(err, contextualMessage) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_INVITE_ERROR,
       err,
@@ -154,46 +164,6 @@ const userActions = {
     });
 
     return Promise.resolve(err);
-  },
-
-  receiveUserForCF(user, inviteData) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_IN_CF_CREATED,
-      user
-    });
-
-    if (user.guid) {
-      userActions.sendUserInviteEmail(inviteData);
-    }
-    // Once the user exists in CF, associate them to the organization.
-    return userActions.associateUserToOrg(user);
-  },
-
-  sendUserInviteEmail(inviteData) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_EMAIL_INVITE
-    });
-    uaaApi.sendInviteEmail(inviteData);
-  },
-
-  associateUserToOrg(user) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORG_ASSOCIATE
-    });
-    const orgGuid = OrgStore.currentOrgGuid;
-
-    return cfApi.putAssociateUserToOrganization(user.guid, orgGuid)
-      .then(userActions.associatedUserToOrg(user, orgGuid))
-      .catch(err => userActions.userInviteError(err, `Unable to associate user to
-        organization`));
-  },
-
-  associatedUserToOrg(user, orgGuid) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORG_ASSOCIATED,
-      user,
-      orgGuid
-    });
   },
 
   changeCurrentlyViewedType(userType) {

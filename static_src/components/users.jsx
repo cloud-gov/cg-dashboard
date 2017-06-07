@@ -41,6 +41,7 @@ function stateSetter() {
     currentOrgGuid,
     currentSpaceGuid,
     currentType,
+    saving: UserStore.saving,
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users,
@@ -115,6 +116,7 @@ export default class Users extends React.Component {
       initialCurrentUserAccess={ this.state.currentUserAccess }
       initialEmpty={ this.state.empty }
       initialLoading={ this.state.loading }
+      initialSaving={ this.state.saving }
       onRemove={ removeHandler }
       onAddPermissions={ this.handleAddPermissions }
       onRemovePermissions={ this.handleRemovePermissions }

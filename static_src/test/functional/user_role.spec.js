@@ -111,6 +111,7 @@ describe('User roles', function () {
         // sets cookie to org X manager
         cookieValue = cookieManagerOrgX;
       });
+
       describe('shouldn\'t have permission to edit fields on org Y pages', function () {
         it('should set url to org Y', function () {
           browser.url(urlOrgY);
