@@ -5,7 +5,6 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
 
 describe('User roles', function () {
   let cookieResult;
-  let userRoleElement;
   let cookieValue;
   let userInviteElement;
   let userRoleElement;
