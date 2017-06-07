@@ -108,7 +108,7 @@ describe('cfApi', function() {
       cfApi.putAssociateUserToOrganization(userGuid, orgGuid).then(() => {
         const args = spy.getCall(0).args;
         expect(spy).toHaveBeenCalledOnce();
-        expect(args[0]).toMatch(`/users/${userGuid}/organizations/${orgGuid}`);
+        expect(args[0]).toMatch(`/organizations/${orgGuid}/users/${userGuid}`);
         done();
       });
     });
