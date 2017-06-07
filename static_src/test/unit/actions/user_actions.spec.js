@@ -466,6 +466,36 @@ describe('userActions', function() {
         ));
       });
     });
+
+    describe('for space user', function() {
+      let roles;
+      let userGuid;
+      let spaceGuid;
+
+      beforeEach(function(done) {
+        sandbox.stub(cfApi, 'putSpaceUserPermissions').returns(Promise.resolve());
+        sandbox.stub(userActions, 'addedUserRoles').returns(Promise.resolve());
+        roles = ['space_manager'];
+        userGuid = 'user-123';
+        spaceGuid = 'space-123';
+
+        userActions.addUserRoles(
+          roles,
+          userGuid,
+          spaceGuid,
+          'space'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for space put user permision with guids and roles', () => {
+        expect(cfApi.putSpaceUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.putSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          spaceGuid,
+          roles
+        ));
+      });
+    });
   });
 
   describe('addedUserRoles()', function() {
