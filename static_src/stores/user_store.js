@@ -98,8 +98,8 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_ROLES_ADDED: {
         const user = this.get(action.userGuid);
         if (user) {
-          const role = this.getResourceToRole(action.roles, action.resourceType);
-          const userRole = (action.resourceType === 'space') ? user.space_roles :
+          const role = this.getResourceToRole(action.roles, action.entityType);
+          const userRole = (action.entityType === 'space') ? user.space_roles :
             user.organization_roles;
           if (userRole && userRole.indexOf(role) === -1) {
             userRole.push(role);
@@ -116,7 +116,7 @@ export class UserStore extends BaseStore {
           org: cfApi.deleteOrgUserPermissions,
           space: cfApi.deleteSpaceUserPermissions
         };
-        const api = apiMethodMap[action.resourceType];
+        const api = apiMethodMap[action.entityType];
 
         api(
           action.userGuid,
@@ -126,7 +126,7 @@ export class UserStore extends BaseStore {
           userActions.deletedUserRoles(
             action.roles,
             action.userGuid,
-            action.resourceType);
+            action.entityType);
         }).catch((err) => {
           window.console.error(err);
         });
@@ -136,8 +136,8 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_ROLES_DELETED: {
         const user = this.get(action.userGuid);
         if (user) {
-          const role = this.getResourceToRole(action.roles, action.resourceType);
-          const userRole = (action.resourceType === 'space') ? user.space_roles :
+          const role = this.getResourceToRole(action.roles, action.entityType);
+          const userRole = (action.entityType === 'space') ? user.space_roles :
             user.organization_roles;
           const idx = userRole && userRole.indexOf(role);
           if (idx > -1) {
@@ -297,11 +297,11 @@ export class UserStore extends BaseStore {
     return this._error;
   }
 
-  getResourceToRole(resource, resourceType) {
-    if (resourceType !== 'space' && resourceType !== 'org') {
-      throw new Error(`unknown resource type ${resourceType}`);
+  getResourceToRole(resource, entityType) {
+    if (entityType !== 'space' && entityType !== 'org') {
+      throw new Error(`unknown resource type ${entityType}`);
     }
-    const role = resourceToRole[resourceType][resource] || resource;
+    const role = resourceToRole[entityType][resource] || resource;
     return role;
   }
 

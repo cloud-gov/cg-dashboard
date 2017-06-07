@@ -85,17 +85,17 @@ export default class Users extends React.Component {
     userActions.addUserRoles(roleKey,
                                 userGuid,
                                 this.entityGuid,
-                                this.resourceType);
+                                this.entityType);
   }
 
   handleRemovePermissions(roleKey, userGuid) {
     userActions.deleteUserRoles(roleKey,
                                 userGuid,
                                 this.entityGuid,
-                                this.resourceType);
+                                this.entityType);
   }
 
-  get resourceType() {
+  get entityType() {
     return this.state.currentType === ORG_NAME ? 'org' : 'space';
   }
 

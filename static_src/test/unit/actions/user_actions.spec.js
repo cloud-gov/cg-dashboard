@@ -413,7 +413,7 @@ describe('userActions', function() {
         roles: expectedRole,
         userGuid: expectedUserGuid,
         entityGuid: expectedGuid,
-        resourceType: expectedType
+        entityType: expectedType
       };
 
       let spy = setupViewSpy(sandbox)
@@ -440,7 +440,7 @@ describe('userActions', function() {
         roles: expectedRole,
         userGuid: expectedUserGuid,
         entityGuid: expectedGuid,
-        resourceType: expectedType
+        entityType: expectedType
       };
 
       let spy = setupServerSpy(sandbox)
@@ -467,7 +467,7 @@ describe('userActions', function() {
         roles: expectedRole,
         userGuid: expectedUserGuid,
         entityGuid: expectedGuid,
-        resourceType: expectedType
+        entityType: expectedType
       };
 
       let spy = setupViewSpy(sandbox)
@@ -492,7 +492,7 @@ describe('userActions', function() {
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
-        resourceType: expectedType
+        entityType: expectedType
       };
 
       let spy = setupServerSpy(sandbox)

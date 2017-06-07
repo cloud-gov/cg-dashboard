@@ -73,19 +73,19 @@ const userActions = {
     });
   },
 
-  addUserRoles(roles, userGuid, entityGuid, resourceType) {
+  addUserRoles(roles, userGuid, entityGuid, entityType) {
     const apiMethodMap = {
       org: cfApi.putOrgUserPermissions,
       space: cfApi.putSpaceUserPermissions
     };
-    const api = apiMethodMap[resourceType];
+    const api = apiMethodMap[entityType];
 
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLES_ADD,
       roles,
       userGuid,
       entityGuid,
-      resourceType
+      entityType
     });
 
     api(
@@ -97,38 +97,38 @@ const userActions = {
         roles,
         userGuid,
         entityGuid,
-        resourceType);
+        entityType);
     }).catch((err) => {
       window.console.error(err);
     });
   },
 
-  addedUserRoles(roles, userGuid, entityGuid, resourceType) {
+  addedUserRoles(roles, userGuid, entityGuid, entityType) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ROLES_ADDED,
       roles,
       userGuid,
       entityGuid,
-      resourceType
+      entityType
     });
   },
 
-  deleteUserRoles(roles, userGuid, entityGuid, resourceType) {
+  deleteUserRoles(roles, userGuid, entityGuid, entityType) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLES_DELETE,
       roles,
       userGuid,
       entityGuid,
-      resourceType
+      entityType
     });
   },
 
-  deletedUserRoles(roles, userGuid, resourceType) {
+  deletedUserRoles(roles, userGuid, entityType) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ROLES_DELETED,
       roles,
       userGuid,
-      resourceType
+      entityType
     });
   },
 
