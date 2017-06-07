@@ -333,7 +333,7 @@ export class UserStore extends BaseStore {
 
   mergeRoles(roles, entityGuid, entityType) {
     return roles.map((role) => {
-      let user = Object.assign({}, this.get(role.guid) || { guid: role.guid });
+      const user = Object.assign({}, this.get(role.guid) || { guid: role.guid });
       if (!user.roles) user.roles = {};
       const updatingRoles = role[entityType] || [];
 

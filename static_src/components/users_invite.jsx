@@ -46,10 +46,6 @@ export default class UsersInvite extends React.Component {
   render() {
     return (
       <div className="test-users-invite">
-        <h2>User invite</h2>
-        <PanelDocumentation description>
-          <p>Organizational Managers can add new users below.</p>
-        </PanelDocumentation>
         <Form
           guid={ USERS_INVITE_FORM_GUID }
           classes={ ['users_invite_form'] }
@@ -57,10 +53,14 @@ export default class UsersInvite extends React.Component {
           onSubmit={ this._onValidForm }
           errorOverride={ this.errorMessage }
         >
+          <h3>User invite</h3>
+          <PanelDocumentation description>
+            <p>Organizational Managers can add new users below.</p>
+          </PanelDocumentation>
           <FormText
             formGuid={ USERS_INVITE_FORM_GUID }
             classes={ ['test-users_invite_name'] }
-            label="User's email"
+            label="Email address"
             name="email"
             validator={ this.validateString }
           />

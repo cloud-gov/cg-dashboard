@@ -266,7 +266,7 @@ const userActions = {
     return Promise.resolve(user);
   },
 
-  fetchCurrentUser(options = {}) {
+  fetchCurrentUser() {
     AppDispatcher.handleViewAction({
       type: userActionTypes.CURRENT_USER_FETCH
     });

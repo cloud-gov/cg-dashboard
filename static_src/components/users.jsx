@@ -131,12 +131,12 @@ export default class Users extends React.Component {
     return (
       <div className="test-users">
         { errorMessage }
+        <UsersInvite error={ this.state.userInviteError } />
         <div>
           <div>
             { content }
           </div>
         </div>
-        <UsersInvite error={ this.state.userInviteError } />
       </div>
     );
   }
