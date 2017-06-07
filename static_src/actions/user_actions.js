@@ -114,12 +114,32 @@ const userActions = {
   },
 
   deleteUserRoles(roles, userGuid, entityGuid, entityType) {
+    const apiMethodMap = {
+      org: cfApi.deleteOrgUserPermissions,
+      space: cfApi.deleteSpaceUserPermissions
+    };
+    const api = apiMethodMap[entityType];
+
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLES_DELETE,
       roles,
       userGuid,
       entityGuid,
       entityType
+    });
+
+    return api(
+      userGuid,
+      entityGuid,
+      roles
+    ).then(() => {
+      userActions.deletedUserRoles(
+        roles,
+        userGuid,
+        entityGuid,
+        entityType);
+    }).catch((err) => {
+      window.console.error(err);
     });
   },
 

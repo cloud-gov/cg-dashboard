@@ -550,6 +550,76 @@ describe('userActions', function() {
 
       assertAction(spy, userActionTypes.USER_ROLES_DELETE, expectedParams);
     });
+
+    describe('for org user', function() {
+      let roles;
+      let userGuid;
+      let orgGuid;
+
+      beforeEach(function(done) {
+        sandbox.stub(cfApi, 'deleteOrgUserPermissions').returns(Promise.resolve());
+        sandbox.stub(userActions, 'deletedUserRoles').returns(Promise.resolve());
+        roles = ['org_manager'];
+        userGuid = 'user-123';
+        orgGuid = 'org-123';
+
+        userActions.deleteUserRoles(
+          roles,
+          userGuid,
+          orgGuid,
+          'org'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for org delete user permision with guids and roles', () => {
+        expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          orgGuid,
+          roles
+        ));
+      });
+
+      it('should call deletedUserRoles action with all information', function() {
+        expect(userActions.deletedUserRoles).toHaveBeenCalledOnce();
+        expect(userActions.deletedUserRoles).toHaveBeenCalledWith(sinon.match(
+          roles,
+          userGuid,
+          orgGuid,
+          'org'
+        ));
+      });
+    });
+
+    describe('for space user', function() {
+      let roles;
+      let userGuid;
+      let spaceGuid;
+
+      beforeEach(function(done) {
+        sandbox.stub(cfApi, 'deleteSpaceUserPermissions').returns(Promise.resolve());
+        sandbox.stub(userActions, 'deletedUserRoles').returns(Promise.resolve());
+        roles = ['space_manager'];
+        userGuid = 'user-123';
+        spaceGuid = 'space-123';
+
+        userActions.deleteUserRoles(
+          roles,
+          userGuid,
+          spaceGuid,
+          'space'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for space delete user permision with guids and roles', () => {
+        expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          spaceGuid,
+          roles
+        ));
+      });
+    });
   });
 
   describe('deletedUserRoles()', function() {

@@ -112,24 +112,6 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_DELETE: {
-        const apiMethodMap = {
-          org: cfApi.deleteOrgUserPermissions,
-          space: cfApi.deleteSpaceUserPermissions
-        };
-        const api = apiMethodMap[action.entityType];
-
-        api(
-          action.userGuid,
-          action.entityGuid,
-          action.roles
-        ).then(() => {
-          userActions.deletedUserRoles(
-            action.roles,
-            action.userGuid,
-            action.entityType);
-        }).catch((err) => {
-          window.console.error(err);
-        });
         break;
       }
 

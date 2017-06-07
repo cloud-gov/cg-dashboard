@@ -279,31 +279,6 @@ describe('UserStore', function () {
     });
   });
 
-  describe('on user roles delete', function() {
-    it('should call the api to delete the role', function() {
-      var spy = sandbox.stub(cfApi, 'deleteOrgUserPermissions'),
-          expectedRoles = 'org_manager',
-          expectedUserGuid = 'zjkxcvz234asdf',
-          expectedOrgGuid = 'zxcvzcxvzxroiter';
-
-      let testPromise = Promise.resolve()
-      spy.returns(testPromise);
-
-      userActions.deleteUserRoles(
-        expectedRoles,
-        expectedUserGuid,
-        expectedOrgGuid,
-        'org'
-      );
-
-      expect(spy).toHaveBeenCalledOnce();
-      let args = spy.getCall(0).args;
-      expect(args[0]).toEqual(expectedUserGuid);
-      expect(args[1]).toEqual(expectedOrgGuid);
-      expect(args[2]).toEqual(expectedRoles);
-    });
-  });
-
   describe('on user roles deleted', function() {
     it('should update the resource type roles array if it exists with new roles',
         function() {
