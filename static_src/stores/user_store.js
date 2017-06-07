@@ -81,7 +81,9 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ORG_ASSOCIATED: {
-        const user = Object.assign({}, { orgGuid: action.orgGuid }, action.user);
+        const user = Object.assign({},
+          { roles: { [action.orgGuid]: [] } },
+          action.user);
         this._inviteInputActive = true;
         if (user.guid) {
           this.merge('guid', user, () => {});
@@ -263,14 +265,14 @@ export class UserStore extends BaseStore {
    */
   getAllInSpace(spaceGuid) {
     const usersInSpace = this._data.filter((user) =>
-      !!user.get('roles') && !!user.get('roles').get(spaceGuid).size
+      !!user.get('roles') && !!user.get('roles').get(spaceGuid)
     );
     return usersInSpace.toJS();
   }
 
   getAllInOrg(orgGuid) {
     const usersInOrg = this._data.filter((user) =>
-      !!user.get('roles') && !!user.get('roles').get(orgGuid).size
+      !!user.get('roles') && !!user.get('roles').get(orgGuid)
     );
     return usersInOrg.toJS();
   }
