@@ -34,8 +34,9 @@ export class UserStore extends BaseStore {
     this._currentUserGuid = null;
     this._currentUserIsAdmin = false;
     this._error = null;
+    this._saving = false;
+    this._inviteDisabled = false;
     this._loading = {};
-    this._inviteInputActive = true;
   }
 
   _registerToActions(action) {
@@ -67,18 +68,27 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.USER_INVITE_FETCH: {
+      case userActionTypes.USER_INVITE_TRIGGER: {
+        this._inviteDisabled = true;
         this._inviteError = null;
         this.emitChange();
         break;
       }
 
-      case userActionTypes.USER_ORG_ASSOCIATED: {
-        const user = Object.assign({}, { orgGuid: action.orgGuid }, action.user);
-        this._inviteInputActive = true;
+      case userActionTypes.USER_ASSOCIATED_ORG_DISPLAYED: {
+        const orgUser = action.orgUsers.map((item) => {
+          if (item.guid === action.userGuid) {
+            return item;
+          }
+          return false;
+        });
+        const user = Object.assign({},
+          { orgGuid: action.orgGuid, organization_roles: [] },
+          orgUser);
         if (user.guid) {
           this.merge('guid', user, () => {});
         }
+        this._inviteDisabled = false;
         this.emitChange();
         break;
       }
@@ -118,10 +128,17 @@ export class UserStore extends BaseStore {
             if (changed) this.emitChange();
           });
         }
+
         break;
       }
 
       case userActionTypes.USER_ROLES_DELETE: {
+        const user = this.get(action.userGuid);
+        if (user) {
+          const savingUser = Object.assign({}, user, { saving: true });
+          this.merge('guid', savingUser);
+        }
+
         const apiMethodMap = {
           org: cfApi.deleteOrgUserPermissions,
           space: cfApi.deleteSpaceUserPermissions
@@ -145,6 +162,7 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ROLES_DELETED: {
         const user = this.get(action.userGuid);
+
         if (user) {
           const role = this.getResourceToRole(action.roles, action.resourceType);
           const userRole = (action.resourceType === 'space') ? user.space_roles :
@@ -153,7 +171,6 @@ export class UserStore extends BaseStore {
           if (idx > -1) {
             userRole.splice(idx, 1);
           }
-
           this.merge('guid', user, (changed) => {
             if (changed) this.emitChange();
           });
@@ -270,6 +287,21 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.CURRENT_USER_ROLES_RECEIVED: {
+        const orgGuid = action.orgGuid;
+        const user = this.get(action.userGuid);
+        if (!user) {
+          break;
+        }
+
+        const updatedRoles = {};
+
+        updatedRoles[orgGuid] = action.currentUserRoles.organization_roles;
+
+        this.merge('guid', { guid: user.guid, roles: updatedRoles });
+        break;
+      }
+
       case userActionTypes.USER_SPACES_RECEIVED:
       case userActionTypes.USER_ORGS_RECEIVED: {
         const user = this.get(action.userGuid);
@@ -287,9 +319,9 @@ export class UserStore extends BaseStore {
           // could contain roles for orgs too.
           const certainRoles = roles[key] || [];
           if (action.type === userActionTypes.USER_ORGS_RECEIVED) {
-            roles[key] = certainRoles.concat(['org_manager']); // eslint-disable-line
+            roles[key] = certainRoles.concat(['org_user']); // eslint-disable-line
           } else {
-            roles[key] = certainRoles.concat(['space_manager']); // eslint-disable-line
+            roles[key] = certainRoles.concat(['space_developer']); // eslint-disable-line
           }
           return roles;
         }, user.roles || {});
@@ -386,6 +418,10 @@ export class UserStore extends BaseStore {
     return !!roles.find((role) => wrappedRoles.includes(role));
   }
 
+  inviteDisabled() {
+    return this._inviteDisabled;
+  }
+
   isAdmin() {
     return this._currentUserIsAdmin;
   }
@@ -401,5 +437,7 @@ export class UserStore extends BaseStore {
 }
 
 const _UserStore = new UserStore();
+
+window.userstore = _UserStore;
 
 export default _UserStore;

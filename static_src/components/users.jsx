@@ -24,6 +24,7 @@ function stateSetter() {
 
   let users = [];
   let currentUserAccess = false;
+  const inviteDisabled = UserStore.inviteDisabled();
 
   if (currentType === SPACE_NAME) {
     users = UserStore.getAllInSpace(currentSpaceGuid);
@@ -37,6 +38,7 @@ function stateSetter() {
 
   return {
     error: UserStore.getError(),
+    inviteDisabled,
     currentUserAccess,
     currentOrgGuid,
     currentSpaceGuid,
@@ -131,12 +133,16 @@ export default class Users extends React.Component {
     return (
       <div className="test-users">
         { errorMessage }
+        <UsersInvite
+          inviteDisabled={ this.state.inviteDisabled }
+          currentUserAccess={ this.state.currentUserAccess }
+          error={ this.state.userInviteError }
+        />
         <div>
           <div>
             { content }
           </div>
         </div>
-        <UsersInvite error={ this.state.userInviteError } />
       </div>
     );
   }
