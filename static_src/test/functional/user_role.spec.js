@@ -310,7 +310,7 @@ describe('User roles', function () {
     });
   });
 
-  describe('A user on page for an org', function () {
+  describe('A user on page for an org again', function () {
     it('should navigates to org X', function () {
       browser.url(urlOrgX);
       browser.waitForExist('.test-users');
