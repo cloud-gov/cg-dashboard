@@ -176,10 +176,15 @@ describe('UserStore', function () {
   describe('on org user association received', function() {
     it('should emit a change event if data changed', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
-      const user = { guid: "fake-user-guid" }
-      const orgGuid = "fake-org-guid"
+      const userGuid = "fake-user-guid";
+      const orgGuid = "fake-org-guid";
+      const orgUsers = [
+        {userGuid: "fake-user-guid-1"},
+        {userGuid: "fake-user-guid-2"},
+        {userGuid: "fake-user-guid-3"}
+      ];
 
-      userActions.associatedUserToOrg(user, orgGuid)
+      userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers);
 
       expect(spy).toHaveBeenCalledOnce();
     });
@@ -611,19 +616,19 @@ describe('UserStore', function () {
       expect(user.roles).toBeTruthy();
     });
 
-    it('assigns space_developer role for each space', function () {
+    it('assigns   role for each space', function () {
       expect(user.roles).toEqual({
-        space123: ['space_manager'],
-        space456: ['space_manager'],
-        org123: ['org_manager']
+        space123: ['space_developer'],
+        space456: ['space_developer'],
+        org123: ['org_user']
       });
     });
 
     it('assigns org_manager role for each org', function () {
       expect(user.roles).toEqual({
-        space123: ['space_manager'],
-        space456: ['space_manager'],
-        org123: ['org_manager']
+        space123: ['space_developer'],
+        space456: ['space_developer'],
+        org123: ['org_user']
       });
     });
   });
@@ -669,23 +674,6 @@ describe('UserStore', function () {
     });
 
     it('emits change', function () {
-      expect(UserStore.emitChange).toHaveBeenCalledOnce();
-    });
-  });
-
-  describe('on USER_INVITE_FETCH', function() {
-    beforeEach(function() {
-      UserStore._inviteError = { message: 'something wrong' };
-      sandbox.spy(UserStore, 'emitChange');
-
-      userActions.fetchUserInvite();
-    });
-
-    it('should unset the user invite error', function() {
-      expect(UserStore.getInviteError()).toBeNull();
-    });
-
-    it('should emit a change event', function() {
       expect(UserStore.emitChange).toHaveBeenCalledOnce();
     });
   });

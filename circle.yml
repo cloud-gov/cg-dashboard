@@ -34,14 +34,14 @@ test:
     - go get github.com/mattn/goveralls
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   override:
-    - cd $WS && ./codecheck.sh -u
-    # we needed docker for Go tests (dockertest library).
-    # let's stop docker so it doesn't mess up anything else / use too many resources.
-    - sudo service docker stop
+    - export DISPLAY=:99.0 # taken from https://github.com/siddharthkp/lighthouse-ci/issues/1
+    - sh -e /etc/init.d/xvfb start || echo \"Unable to start virtual display.\"
+    - sleep 5 # give xvfb some time to start
     - cd $WS && npm test
     - NODE_ENV=prod npm run build
     - sleep 5
     - cd $WS && npm run test-performance
+    - cd $WS && ./codecheck.sh -u
 
 deployment:
   deploy:

@@ -24,6 +24,16 @@ const userActions = {
       type: userActionTypes.ORG_USER_ROLES_FETCH,
       orgGuid
     });
+
+    return cfApi.fetchOrgUserRoles(orgGuid);
+  },
+
+  receivedOrgUserRoles(roles, orgGuid) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.ORG_USER_ROLES_RECEIVED,
+      orgUserRoles: roles,
+      orgGuid
+    });
   },
 
   fetchSpaceUsers(spaceGuid) {
@@ -37,14 +47,6 @@ const userActions = {
     AppDispatcher.handleServerAction({
       type: userActionTypes.ORG_USERS_RECEIVED,
       users,
-      orgGuid
-    });
-  },
-
-  receivedOrgUserRoles(roles, orgGuid) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-      orgUserRoles: roles,
       orgGuid
     });
   },
@@ -120,30 +122,16 @@ const userActions = {
     });
   },
 
-  fetchUserInvite(email) {
+  createUserInvite(email) {
     AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_INVITE_FETCH,
+      type: userActionTypes.USER_INVITE_TRIGGER,
       email
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(data => userActions.receiveUserInvite(data))
-      .catch(err => userActions.userInviteError(err, `There was a problem
+      .then(data => userActions.createUserAndAssociate(data))
+      .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
-  },
-
-  receiveUserInvite(inviteData) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_INVITE_RECEIVED
-    });
-
-    const userGuid = inviteData.new_invites[0].userId;
-    const userEmail = inviteData.new_invites[0].email;
-
-    return cfApi.postCreateNewUserWithGuid(userGuid)
-      .then(user => userActions.receiveUserForCF(user, inviteData))
-      .catch(err => userActions.userInviteError(err, `There was a problem
-        inviting ${userEmail}`));
   },
 
   userInviteError(err, contextualMessage) {
@@ -156,44 +144,46 @@ const userActions = {
     return Promise.resolve(err);
   },
 
-  receiveUserForCF(user, inviteData) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_IN_CF_CREATED,
-      user
-    });
-
-    if (user.guid) {
-      userActions.sendUserInviteEmail(inviteData);
-    }
-    // Once the user exists in CF, associate them to the organization.
-    return userActions.associateUserToOrg(user);
-  },
-
-  sendUserInviteEmail(inviteData) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_EMAIL_INVITE
-    });
-    uaaApi.sendInviteEmail(inviteData);
-  },
-
-  associateUserToOrg(user) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORG_ASSOCIATE
-    });
+  createUserAndAssociate(data) {
     const orgGuid = OrgStore.currentOrgGuid;
-
-    return cfApi.putAssociateUserToOrganization(user.guid, orgGuid)
-      .then(userActions.associatedUserToOrg(user, orgGuid))
-      .catch(err => userActions.userInviteError(err, `Unable to associate user to
-        organization`));
-  },
-
-  associatedUserToOrg(user, orgGuid) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORG_ASSOCIATED,
-      user,
+    const userGuid = data.userGuid;
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ORG_ASSOCIATE,
+      userGuid,
       orgGuid
     });
+    return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
+      .then(() => cfApi.fetchOrgUsers(orgGuid))
+      .then(orgUsers => userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers));
+  },
+
+  createdUserAndAssociated(userGuid, orgGuid, orgUsers) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ORG_ASSOCIATED,
+      userGuid,
+      orgGuid,
+      orgUsers
+    });
+    return userActions.createdUserDisplayed(userGuid, orgUsers, orgGuid);
+  },
+
+  createdUserDisplayed(userGuid, orgUsers, orgGuid) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ASSOCIATED_ORG_DISPLAYED,
+      userGuid,
+      orgUsers,
+      orgGuid
+    });
+  },
+
+  userInviteCreateError(err, contextualMessage) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_INVITE_ERROR,
+      err,
+      contextualMessage
+    });
+
+    return Promise.resolve(err);
   },
 
   changeCurrentlyViewedType(userType) {
@@ -219,6 +209,37 @@ const userActions = {
     });
 
     return Promise.resolve(userInfo);
+  },
+
+  fetchCurrentUserRole(userGuid) {
+    if (!userGuid) {
+      return Promise.reject(new Error('guid is required'));
+    }
+
+    const orgGuid = OrgStore.currentOrgGuid;
+
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.CURRENT_USER_ROLES_FETCH,
+      userGuid,
+      orgGuid
+    });
+
+    return userActions.fetchOrgUserRoles(orgGuid)
+      .then(orgRoles => userActions.receivedCurrentUserRole(orgRoles, userGuid, orgGuid));
+  },
+
+  receivedCurrentUserRole(orgRoles, userGuid, orgGuid) {
+    let currentUserRoles = orgRoles.filter(item => item.guid === userGuid);
+    currentUserRoles = currentUserRoles[0];
+
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.CURRENT_USER_ROLES_RECEIVED,
+      userGuid,
+      orgGuid,
+      currentUserRoles
+    });
+
+    return Promise.resolve(currentUserRoles);
   },
 
   fetchCurrentUserUaaInfo(guid) {
@@ -332,6 +353,7 @@ const userActions = {
       .then(userInfo =>
         Promise.all([
           userActions.fetchUser(userInfo.user_id),
+          userActions.fetchCurrentUserRole(userInfo.user_id),
           userActions.fetchUserOrgs(userInfo.user_id),
           userActions.fetchUserSpaces(userInfo.user_id, options),
           userActions.fetchCurrentUserUaaInfo(userInfo.user_id)
@@ -352,5 +374,8 @@ const userActions = {
     return Promise.resolve(user);
   }
 };
+
+const _userActions = userActions;
+window.useraction = _userActions;
 
 export default userActions;
