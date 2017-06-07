@@ -426,6 +426,46 @@ describe('userActions', function() {
 
       assertAction(spy, userActionTypes.USER_ROLES_ADD, expectedParams);
     });
+
+    describe('for org user', function() {
+      let roles;
+      let userGuid;
+      let orgGuid;
+
+      beforeEach(function(done) {
+        sandbox.stub(cfApi, 'putOrgUserPermissions').returns(Promise.resolve());
+        sandbox.stub(userActions, 'addedUserRoles').returns(Promise.resolve());
+        roles = ['org_manager'];
+        userGuid = 'user-123';
+        orgGuid = 'org-123';
+
+        userActions.addUserRoles(
+          roles,
+          userGuid,
+          orgGuid,
+          'org'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for org put user permision with guids and roles', () => {
+        expect(cfApi.putOrgUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.putOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          orgGuid,
+          roles
+        ));
+      });
+
+      it('should call addedUserRoles action with all information', function() {
+        expect(userActions.addedUserRoles).toHaveBeenCalledOnce();
+        expect(userActions.addedUserRoles).toHaveBeenCalledWith(sinon.match(
+          roles,
+          userGuid,
+          orgGuid,
+          'org'
+        ));
+      });
+    });
   });
 
   describe('addedUserRoles()', function() {

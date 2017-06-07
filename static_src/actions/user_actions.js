@@ -88,7 +88,7 @@ const userActions = {
       entityType
     });
 
-    api(
+    return api(
       userGuid,
       entityGuid,
       roles
