@@ -348,6 +348,5 @@ export class UserStore extends BaseStore {
 }
 
 const _UserStore = new UserStore();
-console.log(_UserStore);
 
 export default _UserStore;
