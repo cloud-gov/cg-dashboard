@@ -18,6 +18,7 @@ export default class BaseElement {
 
     let webElement = webElementOrSelector;
     if (typeof webElementOrSelector === 'string') {
+      browser.waitForExist(webElementOrSelector);
       webElement = browser.element(webElementOrSelector);
     }
 
