@@ -1,5 +1,5 @@
 ---
-inherit: manifest-region-base.yml
+inherit: manifest-base.yml
 applications:
 - name: cg-dashboard-demo
   host: dashboard-demo

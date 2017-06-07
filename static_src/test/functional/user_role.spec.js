@@ -84,6 +84,7 @@ describe('User roles', function () {
         });
 
         it('verify org Y manager cannot modify org X page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
         });
       });
@@ -99,6 +100,7 @@ describe('User roles', function () {
         });
 
         it('verify org Y manager can modify org Y page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
         });
       });
@@ -120,6 +122,7 @@ describe('User roles', function () {
         });
 
         it('verify org X manager cannot modify org Y page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
         });
       });
@@ -135,6 +138,7 @@ describe('User roles', function () {
         });
 
         it('verify org X manager can modify org X page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
         });
       });
@@ -210,6 +214,7 @@ describe('User roles', function () {
         });
 
         it('verify space manager org X space XX cannot modify space YY org X page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
         });
       });
@@ -225,6 +230,7 @@ describe('User roles', function () {
         });
 
         it('verify space manager org X space XX can modify space XX org X page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
         });
       });
@@ -246,6 +252,7 @@ describe('User roles', function () {
         });
 
         it('verify org X manager cannot modify org Y page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
         });
       });
@@ -262,6 +269,7 @@ describe('User roles', function () {
         });
 
         it('verify space manager org X space YY can modify space YY org X page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
         });
       });

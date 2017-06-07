@@ -70,6 +70,7 @@ describe('Global error', function () {
         browser.refresh();
         globalErrorsElement = getErrorsComponent();
 
+        browser.waitForExist(BreadcrumbsElement.primarySelector);
         const breadcrumbsElement = new BreadcrumbsElement(
           browser,
           browser.element(BreadcrumbsElement.primarySelector)
