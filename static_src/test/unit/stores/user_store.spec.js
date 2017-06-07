@@ -578,7 +578,7 @@ describe('UserStore', function () {
     // TODO possibly move this functionality to shared place.
     it('should find all user that have the space guid passed in', function() {
       var spaceGuid = 'asdfa';
-      var testUser = { guid: 'adfzxcv', spaceGuid: spaceGuid };
+      var testUser = { guid: 'adfzxcv', roles: { [spaceGuid]: [ 'space_user'] } };
 
       UserStore.push(testUser);
 
@@ -591,7 +591,7 @@ describe('UserStore', function () {
   describe('getAllInOrg()', function() {
     it('should find all users that have the org guid passed in', function() {
       var orgGuid = 'asdfa';
-      var testUser = { guid: 'adfzxcv', orgGuid: orgGuid };
+      var testUser = { guid: 'adfzxcv', roles: { [orgGuid]: ['org_user'] } };
 
       UserStore.push(testUser);
 

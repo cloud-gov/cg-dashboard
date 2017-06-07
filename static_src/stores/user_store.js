@@ -298,17 +298,17 @@ export class UserStore extends BaseStore {
    * Get all users in a certain space
    */
   getAllInSpace(spaceGuid) {
-    const inSpace = this._data.filter((user) =>
-      user.get('spaceGuid') === spaceGuid
+    const usersInSpace = this._data.filter((user) =>
+      !!user.get('roles') && !!user.get('roles').get(spaceGuid).size
     );
-    return inSpace.toJS();
+    return usersInSpace.toJS();
   }
 
   getAllInOrg(orgGuid) {
-    const inOrg = this._data.filter((user) =>
-      user.get('orgGuid') === orgGuid
+    const usersInOrg = this._data.filter((user) =>
+      !!user.get('roles') && !!user.get('roles').get(orgGuid).size
     );
-    return inOrg.toJS();
+    return usersInOrg.toJS();
   }
 
   getError() {
@@ -383,5 +383,6 @@ export class UserStore extends BaseStore {
 }
 
 const _UserStore = new UserStore();
+console.log(_UserStore);
 
 export default _UserStore;

@@ -93,6 +93,7 @@ export function space(orgGuid, spaceGuid, next) {
   spaceActions.fetch(spaceGuid);
   serviceActions.fetchAllInstances(spaceGuid);
   userActions.changeCurrentlyViewedType('space_users');
+  userActions.fetchOrgUsers(orgGuid);
   userActions.fetchSpaceUsers(spaceGuid);
   orgActions.fetch(orgGuid);
   serviceActions.fetchAllServices(orgGuid);
