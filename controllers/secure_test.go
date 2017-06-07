@@ -109,9 +109,14 @@ var proxyTests = []BasicProxyTest{
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "GET",
 		RequestPath:   "/test",
-		ExpectedPath:  "/test",
-		Response:      "test",
-		ResponseCode:  http.StatusOK,
+		Handlers: []Handler{
+			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/test",
+				Response:      "test",
+				ResponseCode:  http.StatusOK,
+			},
+		},
 	},
 	{
 		BasicSecureTest: BasicSecureTest{
@@ -126,9 +131,14 @@ var proxyTests = []BasicProxyTest{
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "GET",
 		RequestPath:   "/test",
-		ExpectedPath:  "/test",
-		Response:      "hello%world",
-		ResponseCode:  http.StatusOK,
+		Handlers: []Handler{
+			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/test",
+				Response:      "hello%world",
+				ResponseCode:  http.StatusOK,
+			},
+		},
 	},
 }
 
