@@ -84,7 +84,7 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_ORG_ASSOCIATED: {
         const user = Object.assign({},
-          { roles: { [action.orgGuid]: [] } },
+          { guid: action.userGuid, roles: { [action.orgGuid]: [] } },
           action.user);
         this._inviteInputActive = true;
         if (user.guid) {

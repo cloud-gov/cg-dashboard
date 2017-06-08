@@ -224,6 +224,32 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on org user associated', function() {
+    const userGuid = 'user-543';
+    const orgGuid = 'org-abc';
+
+    beforeEach(function() {
+      UserStore._data = Immutable.List();
+      sandbox.spy(UserStore, 'emitChange');
+      const user = {
+        guid: userGuid,
+        username: 'person@person.com'
+      };
+      userActions.createdUserAndAssociated(userGuid, orgGuid, user);
+    });
+
+    it('should emit a change', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+
+    it('should add the user to the org through an empty role list', function() {
+      const actualUser = UserStore.get(userGuid);
+      expect(actualUser).toBeDefined();
+      expect(actualUser.roles).toBeDefined();
+      expect(actualUser.roles[orgGuid]).toBeDefined();
+    });
+  });
+
   describe('on org user association received', function() {
     it('should emit a change event if data changed', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
