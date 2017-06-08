@@ -10,8 +10,6 @@ import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import { userActionTypes } from '../constants.js';
 
-const SPACE_NAME = 'space_users';
-
 // TODO why is this role mapping needed?
 const resourceToRole = {
   space: {
@@ -124,25 +122,6 @@ export class UserStore extends BaseStore {
           const savingUser = Object.assign({}, user, { saving: true });
           this.merge('guid', savingUser);
         }
-
-        const apiMethodMap = {
-          org: cfApi.deleteOrgUserPermissions,
-          space: cfApi.deleteSpaceUserPermissions
-        };
-        const api = apiMethodMap[action.resourceType];
-
-        api(
-          action.userGuid,
-          action.resourceGuid,
-          action.roles
-        ).then(() => {
-          userActions.deletedUserRoles(
-            action.roles,
-            action.userGuid,
-            action.resourceType);
-        }).catch((err) => {
-          window.console.error(err);
-        });
         break;
       }
 
