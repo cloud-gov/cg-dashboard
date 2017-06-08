@@ -13,7 +13,6 @@ import OrgStore from '../stores/org_store';
 import SpaceStore from '../stores/space_store.js';
 
 const SPACE_NAME = 'space_users';
-const ORG_NAME = 'org_users';
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -228,7 +227,7 @@ const userActions = {
       return Promise.reject(new Error('guid is required'));
     }
 
-    if (currentViewType == SPACE_NAME){
+    if (currentViewType === SPACE_NAME) {
       entityGuid = currentSpaceGuid;
     } else {
       entityGuid = currentOrgGuid;
@@ -240,18 +239,28 @@ const userActions = {
       entityGuid
     });
 
-    if (currentViewType == SPACE_NAME){
+    if (currentViewType === SPACE_NAME) {
       return userActions.fetchSpaceUsers(entityGuid)
-        .then(entityRoles => userActions.receivedCurrentUserRole(entityRoles, userGuid, entityGuid, currentViewType));
+        .then(entityRoles => userActions.receivedCurrentUserRole(
+          entityRoles,
+          userGuid,
+          entityGuid,
+          currentViewType
+        ));
     } else {
       return userActions.fetchOrgUserRoles(entityGuid)
-        .then(entityRoles => userActions.receivedCurrentUserRole(entityRoles, userGuid, entityGuid, currentViewType));
+        .then(entityRoles => userActions.receivedCurrentUserRole(
+          entityRoles,
+          userGuid,
+          entityGuid,
+          currentViewType
+        ));
     }
   },
 
   receivedCurrentUserRole(entityRoles, userGuid, entityGuid, currentViewType) {
     let currentUserRoles = entityRoles.filter(item => item.guid === userGuid);
-    debugger;
+
     currentUserRoles = currentUserRoles[0];
 
     AppDispatcher.handleServerAction({

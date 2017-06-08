@@ -12,7 +12,6 @@ import userActions from '../actions/user_actions.js';
 import { userActionTypes } from '../constants.js';
 
 const SPACE_NAME = 'space_users';
-const ORG_NAME = 'org_users';
 
 // TODO why is this role mapping needed?
 const resourceToRole = {
@@ -296,7 +295,7 @@ export class UserStore extends BaseStore {
 
         const updatedRoles = {};
 
-        if (currentViewType == SPACE_NAME) {
+        if (currentViewType === SPACE_NAME) {
           if (action.entityRoles) {
             updatedRoles[entityGuid] = action.entityRoles.space_roles;
           } else {
