@@ -31,14 +31,6 @@ const userActions = {
     return cfApi.fetchOrgUserRoles(orgGuid);
   },
 
-  receivedOrgUserRoles(roles, orgGuid) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-      orgUserRoles: roles,
-      orgGuid
-    });
-  },
-
   fetchSpaceUserRoles(spaceGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.SPACE_USER_ROLES_FETCH,
