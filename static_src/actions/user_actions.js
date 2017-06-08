@@ -218,6 +218,7 @@ const userActions = {
 
   fetchCurrentUserRole(userGuid) {
     let entityGuid;
+    let entityRoles;
 
     const currentViewType = UserStore.currentlyViewedType;
     const currentSpaceGuid = SpaceStore.currentSpaceGuid;
@@ -229,8 +230,10 @@ const userActions = {
 
     if (currentViewType === SPACE_NAME) {
       entityGuid = currentSpaceGuid;
+      entityRoles = Promise.resolve(userActions.fetchSpaceUsers(entityGuid));
     } else {
       entityGuid = currentOrgGuid;
+      entityRoles = Promise.resolve(userActions.fetchOrgUserRoles(entityGuid));
     }
 
     AppDispatcher.handleViewAction({
@@ -239,13 +242,8 @@ const userActions = {
       entityGuid
     });
 
-    return Promise.resolve(() => {
-      if (currentViewType === SPACE_NAME) {
-        userActions.fetchSpaceUsers(entityGuid);
-      } else {
-        userActions.fetchOrgUserRoles(entityGuid);
-      }
-    }).then(entityRoles => userActions.receivedCurrentUserRole(
+    Promise.resolve(entityRoles)
+      .then(entityRoles => userActions.receivedCurrentUserRole(
         entityRoles,
         userGuid,
         entityGuid,
