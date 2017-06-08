@@ -10,9 +10,6 @@ import uaaApi from '../util/uaa_api';
 import { userActionTypes } from '../constants';
 import UserStore from '../stores/user_store';
 import OrgStore from '../stores/org_store';
-import SpaceStore from '../stores/space_store.js';
-
-const SPACE_NAME = 'space_users';
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -251,57 +248,6 @@ const userActions = {
     });
 
     return Promise.resolve(userInfo);
-  },
-
-  fetchCurrentUserRole(userGuid) {
-    let entityGuid;
-    let entityRoles;
-
-    const currentViewType = UserStore.currentlyViewedType;
-    const currentSpaceGuid = SpaceStore.currentSpaceGuid;
-    const currentOrgGuid = OrgStore.currentOrgGuid;
-
-    if (!userGuid) {
-      return Promise.reject(new Error('guid is required'));
-    }
-
-    if (currentViewType === SPACE_NAME) {
-      entityGuid = currentSpaceGuid;
-      entityRoles = userActions.fetchSpaceUsers(entityGuid);
-    } else {
-      entityGuid = currentOrgGuid;
-      entityRoles = userActions.fetchOrgUserRoles(entityGuid);
-    }
-
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.CURRENT_USER_ROLES_FETCH,
-      userGuid,
-      entityGuid
-    });
-
-    return Promise.resolve(entityRoles)
-      .then((newEntityRoles) => userActions.receivedCurrentUserRole(
-        newEntityRoles,
-        userGuid,
-        entityGuid,
-        currentViewType
-      ));
-  },
-
-  receivedCurrentUserRole(entityRoles, userGuid, entityGuid, currentViewType) {
-    let currentUserRoles = entityRoles.filter(item => item.guid === userGuid);
-
-    currentUserRoles = currentUserRoles[0];
-
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.CURRENT_USER_ROLES_RECEIVED,
-      userGuid,
-      entityGuid,
-      currentViewType,
-      currentUserRoles
-    });
-
-    return Promise.resolve(currentUserRoles);
   },
 
   fetchCurrentUserUaaInfo(guid) {

@@ -169,49 +169,6 @@ describe('userActions', function() {
     });
   });
 
-  describe('fetchUserInvite', function () {
-    let email;
-
-    beforeEach(function (done) {
-      email = 'name@place.com';
-      sandbox.stub(uaaApi, 'inviteUaaUser').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleViewAction');
-      sandbox.stub(userActions, 'receiveUserInvite').returns(Promise.resolve());
-
-      userActions.fetchUserInvite(email).then(done, done.fail);
-    });
-
-    it('should trigger the invite action for new user email', function () {
-      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_INVITE_FETCH,
-        email
-      }));
-    });
-
-    it('calls uaaApi inviteUaaUser', function () {
-      expect(uaaApi.inviteUaaUser).toHaveBeenCalledWith(email);
-    });
-
-    describe('when request fails', function() {
-      beforeEach(function (done) {
-        uaaApi.inviteUaaUser.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'userInviteError');
-
-        userActions.fetchUserInvite(email).then(done, done.fail);
-      });
-
-      it('should call user invite error action handler', function() {
-        expect(userActions.userInviteError).toHaveBeenCalledOnce();
-      });
-
-      it('should provide contextual message about invite', function() {
-        const arg = userActions.userInviteError.getCall(0).args[1];
-        expect(arg.length).toBeGreaterThan(0);
-        expect(arg).toMatch('invit');
-      });
-    });
-  });
-
   describe('userInviteError()', function() {
     let err;
     let message;
@@ -657,7 +614,6 @@ describe('userActions', function() {
       sandbox.stub(userActions, 'fetchUser').returns(Promise.resolve());
       sandbox.stub(userActions, 'fetchCurrentUserUaaInfo').returns(Promise.resolve());
       sandbox.stub(userActions, 'receivedCurrentUser').returns(Promise.resolve());
-      sandbox.stub(userActions, 'fetchCurrentUserRole').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleViewAction');
 
       // We really want to stub UserStore.currentUser here but there's no way
@@ -681,10 +637,6 @@ describe('userActions', function() {
 
     it('calls fetchCurrentUserUaaInfo', function () {
       expect(userActions.fetchCurrentUserUaaInfo).toHaveBeenCalledOnce();
-    });
-
-    it('calls fetchCurrentUserRole', function () {
-      expect(userActions.fetchCurrentUserRole).toHaveBeenCalledOnce();
     });
 
     it('calls fetchUser', function () {
