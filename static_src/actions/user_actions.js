@@ -27,8 +27,6 @@ const userActions = {
       type: userActionTypes.ORG_USER_ROLES_FETCH,
       orgGuid
     });
-
-    return cfApi.fetchOrgUserRoles(orgGuid);
   },
 
   receivedOrgUserRoles(roles, orgGuid) {
@@ -44,8 +42,6 @@ const userActions = {
       type: userActionTypes.SPACE_USER_ROLES_FETCH,
       spaceGuid
     });
-
-    return cfApi.fetchSpaceUserRoles(spaceGuid);
   },
 
   receivedOrgUsers(users, orgGuid) {

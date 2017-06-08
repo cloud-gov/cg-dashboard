@@ -1,4 +1,5 @@
 
+import UserInviteElement from './pageobjects/user_invite.element';
 import UserRoleElement from './pageobjects/user_role.element';
 
 describe('User roles', function () {
