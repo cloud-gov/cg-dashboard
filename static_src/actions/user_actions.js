@@ -168,7 +168,8 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(data => userActions.createUserAndAssociate(data))
+      .then(invite => cfApi.fetchUser(invite.userGuid))
+      .then(user => userActions.createUserAndAssociate(user))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
   },
@@ -183,36 +184,26 @@ const userActions = {
     return Promise.resolve(err);
   },
 
-  createUserAndAssociate(data) {
+  createUserAndAssociate(user) {
     const orgGuid = OrgStore.currentOrgGuid;
-    const userGuid = data.userGuid;
+    const userGuid = user.guid;
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATE,
       userGuid,
       orgGuid
     });
     return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
-      .then(() => cfApi.fetchOrgUsers(orgGuid))
-      .then(orgUsers => userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers));
+      .then(userActions.createdUserAndAssociated(userGuid, orgGuid, user));
   },
 
-  createdUserAndAssociated(userGuid, orgGuid, orgUsers) {
+  createdUserAndAssociated(userGuid, orgGuid, user) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATED,
       userGuid,
       orgGuid,
-      orgUsers
+      user
     });
-    return userActions.createdUserDisplayed(userGuid, orgUsers, orgGuid);
-  },
-
-  createdUserDisplayed(userGuid, orgUsers, orgGuid) {
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_ASSOCIATED_ORG_DISPLAYED,
-      userGuid,
-      orgUsers,
-      orgGuid
-    });
+    return Promise.resolve(user);
   },
 
   userInviteCreateError(err, contextualMessage) {

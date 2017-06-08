@@ -237,10 +237,29 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/users/{guid}`,
     handler: function (req, reply) {
       const guid = req.params.guid;
-      const user = organizationUsers.find((orgUser) =>
+      let user = organizationUsers.find((orgUser) =>
         orgUser.metadata.guid === guid);
+      if (!user) {
+        for (const userName in userInviteResponses) {
+          const invite = userInviteResponses[userName];
+          if (invite.userGuid === guid) {
+            user = {
+              metadata: {
+                guid: invite.userGuid
+              },
+              entity: {
+                username: userName
+              }
+            }
+          }
+        }
+      }
 
-      reply(SingleResponse(user));
+      if (user) {
+        reply(SingleResponse(user));
+      } else {
+        reply({ message: 'User not found'}).code(400);
+      }
     }
   });
 
