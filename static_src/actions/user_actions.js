@@ -242,7 +242,8 @@ const userActions = {
       entityGuid
     });
 
-    return Promise.resolve(entityRoles).then((newEntityRoles) => userActions.receivedCurrentUserRole(
+    return Promise.resolve(entityRoles)
+      .then((newEntityRoles) => userActions.receivedCurrentUserRole(
         newEntityRoles,
         userGuid,
         entityGuid,
