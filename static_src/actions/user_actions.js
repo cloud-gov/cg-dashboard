@@ -10,6 +10,10 @@ import uaaApi from '../util/uaa_api';
 import { userActionTypes } from '../constants';
 import UserStore from '../stores/user_store';
 import OrgStore from '../stores/org_store';
+import SpaceStore from '../stores/space_store.js';
+
+const SPACE_NAME = 'space_users';
+const ORG_NAME = 'org_users';
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -41,6 +45,8 @@ const userActions = {
       type: userActionTypes.SPACE_USERS_FETCH,
       spaceGuid
     });
+
+    return cfApi.fetchSpaceUsers(spaceGuid);
   },
 
   receivedOrgUsers(users, orgGuid) {
@@ -212,30 +218,47 @@ const userActions = {
   },
 
   fetchCurrentUserRole(userGuid) {
+    let entityGuid;
+
+    const currentViewType = UserStore.currentlyViewedType;
+    const currentSpaceGuid = SpaceStore.currentSpaceGuid;
+    const currentOrgGuid = OrgStore.currentOrgGuid;
+
     if (!userGuid) {
       return Promise.reject(new Error('guid is required'));
     }
 
-    const orgGuid = OrgStore.currentOrgGuid;
+    if (currentViewType == SPACE_NAME){
+      entityGuid = currentSpaceGuid;
+    } else {
+      entityGuid = currentOrgGuid;
+    }
 
     AppDispatcher.handleViewAction({
       type: userActionTypes.CURRENT_USER_ROLES_FETCH,
       userGuid,
-      orgGuid
+      entityGuid
     });
 
-    return userActions.fetchOrgUserRoles(orgGuid)
-      .then(orgRoles => userActions.receivedCurrentUserRole(orgRoles, userGuid, orgGuid));
+    if (currentViewType == SPACE_NAME){
+      return userActions.fetchSpaceUsers(entityGuid)
+        .then(entityRoles => userActions.receivedCurrentUserRole(entityRoles, userGuid, entityGuid, currentViewType));
+    } else {
+      return userActions.fetchOrgUserRoles(entityGuid)
+        .then(entityRoles => userActions.receivedCurrentUserRole(entityRoles, userGuid, entityGuid, currentViewType));
+    }
   },
 
-  receivedCurrentUserRole(orgRoles, userGuid, orgGuid) {
-    let currentUserRoles = orgRoles.filter(item => item.guid === userGuid);
+  receivedCurrentUserRole(entityRoles, userGuid, entityGuid, currentViewType) {
+    let currentUserRoles = entityRoles.filter(item => item.guid === userGuid);
+    debugger;
     currentUserRoles = currentUserRoles[0];
 
     AppDispatcher.handleServerAction({
       type: userActionTypes.CURRENT_USER_ROLES_RECEIVED,
       userGuid,
-      orgGuid,
+      entityGuid,
+      currentViewType,
       currentUserRoles
     });
 

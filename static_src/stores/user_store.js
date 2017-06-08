@@ -11,6 +11,9 @@ import cfApi from '../util/cf_api.js';
 import userActions from '../actions/user_actions.js';
 import { userActionTypes } from '../constants.js';
 
+const SPACE_NAME = 'space_users';
+const ORG_NAME = 'org_users';
+
 // TODO why is this role mapping needed?
 const resourceToRole = {
   space: {
@@ -284,7 +287,8 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.CURRENT_USER_ROLES_RECEIVED: {
-        const orgGuid = action.orgGuid;
+        const currentViewType = action.currentViewType;
+        const entityGuid = action.entityGuid;
         const user = this.get(action.userGuid);
         if (!user) {
           break;
@@ -292,7 +296,16 @@ export class UserStore extends BaseStore {
 
         const updatedRoles = {};
 
-        updatedRoles[orgGuid] = action.currentUserRoles.organization_roles;
+        if (currentViewType == SPACE_NAME) {
+          if (action.entityRoles) {
+            updatedRoles[entityGuid] = action.entityRoles.space_roles;
+          } else {
+            updatedRoles[entityGuid] = ['space_auditor'];
+          }
+        } else {
+          updatedRoles[entityGuid] = action.entityRoles.organization_roles;
+        }
+
 
         this.merge('guid', { guid: user.guid, roles: updatedRoles });
         break;
