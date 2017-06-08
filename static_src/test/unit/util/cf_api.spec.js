@@ -877,13 +877,13 @@ describe('cfApi', function() {
     });
   })
 
-  describe('fetchSpaceUsers()', function() {
+  describe('fetchSpaceUserRoles()', function() {
     it('should call fetch with spaces user roles url with space guid and the' +
        ' received space users action', function() {
       var expected = 'yyyybba1',
           spy = sandbox.stub(cfApi, 'fetchMany');
 
-      cfApi.fetchSpaceUsers(expected);
+      cfApi.fetchSpaceUserRoles(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
@@ -891,7 +891,7 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('spaces'));
       expect(actual).toMatch(new RegExp('user_roles'));
       actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(userActions.receivedSpaceUsers);
+      expect(actual).toEqual(userActions.receivedSpaceUserRoles);
       actual = spy.getCall(0).args[2];
       expect(actual).toEqual(expected);
     });

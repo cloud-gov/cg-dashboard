@@ -31,29 +31,32 @@ const roleToResource = {
   space_auditor: 'auditors'
 };
 
+const propTypes = {
+  user: React.PropTypes.object.isRequired,
+  userType: React.PropTypes.string,
+  currentUserAccess: React.PropTypes.bool,
+  entityGuid: React.PropTypes.string,
+  onRemovePermissions: React.PropTypes.func,
+  onAddPermissions: React.PropTypes.func,
+};
+
+const defaultProps = {
+  userType: 'space_users',
+  currentUserAccess: false,
+  onRemovePermissions: function defaultRemove() { },
+  onAddPermissions: function defaultAdd() { }
+};
+
 export default class UserRoleListControl extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      user: props.user,
-      userType: props.initialUserType,
-      currentUserAccess: props.initialCurrentUserAccess
-    };
     this._onChange = this._onChange.bind(this);
     this.checkRole = this.checkRole.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      user: nextProps.user,
-      userType: nextProps.initialUserType,
-      currentUserAccess: nextProps.initialCurrentUserAccess
-    });
-  }
-
   checkRole(roleKey) {
-    return (this.roles.indexOf(roleKey) > -1);
+    return (this.roles().indexOf(roleKey) > -1);
   }
 
   _onChange(roleKey, checked) {
@@ -64,15 +67,16 @@ export default class UserRoleListControl extends React.Component {
     handler(resource, this.props.user.guid);
   }
 
-  get roles() {
-    const rolesOnType = (this.state.userType === 'space_users') ?
-      this.props.user.space_roles :
-      this.props.user.organization_roles;
-    return rolesOnType || [];
+  roles() {
+    const roles = this.props.user.roles;
+    if (!roles) return [];
+    return roles ?
+      (roles[this.props.entityGuid] || []) :
+      []
   }
 
   get roleMap() {
-    return roleMapping[this.state.userType];
+    return roleMapping[this.props.userType];
   }
 
 
@@ -86,7 +90,7 @@ export default class UserRoleListControl extends React.Component {
               roleName={ role.label }
               roleKey={ role.key }
               initialValue={ this.checkRole(role.key) }
-              initialEnableControl={ this.state.currentUserAccess }
+              initialEnableControl={ this.props.currentUserAccess }
               onChange={ this._onChange.bind(this, role.key) }
               userId={ this.props.user.guid }
             />
@@ -97,16 +101,5 @@ export default class UserRoleListControl extends React.Component {
     );
   }
 }
-UserRoleListControl.propTypes = {
-  user: React.PropTypes.object.isRequired,
-  initialUserType: React.PropTypes.string,
-  initialCurrentUserAccess: React.PropTypes.bool,
-  onRemovePermissions: React.PropTypes.func,
-  onAddPermissions: React.PropTypes.func,
-};
-UserRoleListControl.defaultProps = {
-  initialUserType: 'space_users',
-  initialCurrentUserAccess: false,
-  onRemovePermissions: function defaultRemove() { },
-  onAddPermissions: function defaultAdd() { }
-};
+UserRoleListControl.propTypes = propTypes;
+UserRoleListControl.defaultProps = defaultProps;

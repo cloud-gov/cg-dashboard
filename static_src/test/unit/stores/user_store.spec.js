@@ -36,11 +36,11 @@ describe('UserStore', function () {
 
   describe('on space users fetch', function() {
     it('should fetch space users through api', function() {
-      var spy = sandbox.spy(cfApi, 'fetchSpaceUsers'),
+      var spy = sandbox.spy(cfApi, 'fetchSpaceUserRoles'),
           expectedGuid = 'axckzvjxcov';
 
       AppDispatcher.handleViewAction({
-        type: userActionTypes.SPACE_USERS_FETCH,
+        type: userActionTypes.SPACE_USER_ROLES_FETCH,
         spaceGuid: expectedGuid
       });
 
@@ -53,7 +53,7 @@ describe('UserStore', function () {
       const expectedGuid = 'axckzvjxcov';
 
       AppDispatcher.handleViewAction({
-        type: userActionTypes.SPACE_USERS_FETCH,
+        type: userActionTypes.SPACE_USER_ROLES_FETCH,
         spaceGuid: expectedGuid
       });
 
@@ -102,74 +102,125 @@ describe('UserStore', function () {
     });
   });
 
-  describe('on space or org users received', function() {
+  describe('on org users received', function() {
     it('should merge and update new users with existing users in data',
         function() {
-      var sharedGuid = 'wpqoifesadkzcvn';
+    });
+  });
 
-      let existingUser = { guid: sharedGuid, name: 'Michael' };
-      let newUser = { guid: sharedGuid, email: 'michael@gsa.gov' };
+  describe('on space user roles received', function() {
+    let expectedUsers;
+    const userGuidA = 'user-a';
+    const userGuidB = 'user-b';
+    const spaceGuid = 'space-123';
 
-      UserStore.push(existingUser);
-      expect(UserStore.get(sharedGuid)).toEqual(existingUser);
+    beforeEach(function() {
+      const spaceUserRoles = [
+        {
+          guid: userGuidA,
+          space_roles: [ 'space_developer' ]
+        },
+        {
+          guid: userGuidB,
+          space_roles: [ 'space_developer', 'space_manager' ]
+        }
+      ]
+      const currentUsers = [
+        {
+          guid: userGuidB,
+          roles: { [spaceGuid]: ['space_developer'] }
+        }
+      ];
+      expectedUsers = [
+        {
+          guid: userGuidA,
+          roles: { [spaceGuid]: ['space_developer'] }
+        },
+        {
+          guid: userGuidB,
+          roles: { [spaceGuid]: ['space_developer', 'space_manager'] }
+        }
+      ]
 
-      AppDispatcher.handleServerAction({
-        type: userActionTypes.SPACE_USERS_RECEIVED,
-        users: [newUser]
-      });
+      UserStore.push(currentUsers[0]);
+      sandbox.spy(UserStore, 'emitChange');
 
-      let actual = UserStore.get(sharedGuid);
-      expect(actual).toEqual({
-        guid: sharedGuid,
-        name: 'Michael',
-        email: 'michael@gsa.gov'
-      });
+      userActions.receivedSpaceUserRoles(spaceUserRoles, spaceGuid);
     });
 
-    it('should add org and/or space guid to user', function() {
-      var user = { guid: 'adzxcv', name: 'Seymor' },
-          expectedGuid = 'a09dsfuva';
+    afterEach(function() {
+      UserStore._data = [];
+    });
 
-      AppDispatcher.handleServerAction({
-        type: userActionTypes.SPACE_USERS_RECEIVED,
-        users: [user],
-        orgGuid: expectedGuid
-      });
+    it('should emit a change event', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
 
-      let actual = UserStore.get(user.guid);
+    it('should add any new users', function() {
+      expect(UserStore.get(userGuidA)).toEqual(expectedUsers[0]);
+    });
 
-      expect(actual.orgGuid).toEqual(expectedGuid);
+    it('should create a roles hash with space guid and all space roles', () => {
+      expect(UserStore.get(userGuidA)).toEqual(expectedUsers[0]);
+      expect(UserStore.get(userGuidB)).toEqual(expectedUsers[1]);
     });
   });
 
   describe('on org user roles received', function() {
-    it('should emit a change event if data changed', function() {
-      var spy = sandbox.spy(UserStore, 'emitChange');
+    beforeEach(function() {
+      UserStore._data = Immutable.List();
+    });
 
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-        orgUserRoles: [{ guid: 'adsfa' }]
-      });
+    it('should emit a change event if data changed', function() {
+      const spy = sandbox.spy(UserStore, 'emitChange');
+
+      userActions.receivedOrgUserRoles([{ guid: 'adsfa', organization_roles: [] }],
+        'asdf');
 
       expect(spy).toHaveBeenCalledOnce();
     });
 
     it('should merge and update new users with existing users in data',
         function() {
-      const sharedGuid = 'wpqoifesadkzcvn';
-      const existingUser = { guid: sharedGuid, name: 'Michael' };
-      const newUser = { guid: sharedGuid, organization_roles: ['role'] };
+      const userGuid = 'user-75384';
+      const orgGuid = 'org-534789';
+      const currentUsers = [
+        { guid: userGuid },
+        { guid: 'asdf',
+          roles: {
+            [ orgGuid ]: [ 'org_manager' ] ,
+            'adjf': [ 'org_manager' ]
+          }
+        }
+      ];
+      const roles = [
+        {
+          guid: userGuid,
+          organization_roles: [ 'org_manager', 'org_auditor' ]
+        },
+        {
+          guid: 'asdf',
+          organization_roles: ['org_manager']
+        }
+      ];
+      const expectedUsers = [
+        {
+          guid: userGuid,
+          roles: { [orgGuid]: ['org_manager', 'org_auditor'] }
+        },
+        {
+          guid: 'asdf',
+          roles: { 'adjf': ['org_manager'],
+                   [orgGuid]: ['org_manager'] }
+        }
+      ];
 
-      UserStore.push(existingUser);
-      expect(UserStore.get(sharedGuid)).toEqual(existingUser);
+      UserStore.push(expectedUsers[0]);
+      UserStore.push(expectedUsers[1]);
+      userActions.receivedOrgUserRoles(roles, orgGuid);
 
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
-        orgUserRoles: [newUser]
-      });
-      let actual = UserStore.get(sharedGuid);
-      let expected = Object.assign({}, existingUser, newUser);
-      expect(actual).toEqual(expected);
+      expect(UserStore.get(userGuid)).toEqual(expectedUsers[0]);
+      expect(UserStore.get('asdf')).toEqual(expectedUsers[1]);
     });
   });
 
@@ -234,94 +285,98 @@ describe('UserStore', function () {
   });
 
   describe('on user roles added', function() {
-    it('should update the resource type roles array if it exists with new roles',
-        function() {
-      var testGuid = 'zxcvzxc',
-          expectedRole = 'org_dark_lord';
+    let user;
+    const userGuid = 'user-123';
+    const spaceGuid = 'space-123';
+    const addedRole = 'space_lord';
+    const existingRole = 'space_manager';
+    const otherOrgGuid = 'org-123';
 
-      var existingUser = {
-        guid: testGuid,
-        organization_roles: ['org_manager']
-      };
+    describe('for new role', function() {
+      beforeEach(function() {
+        const existingUser = {
+          guid: userGuid,
+          roles: {
+            [spaceGuid]: [existingRole],
+            [otherOrgGuid]: ['org_manager']
+          }
+        };
 
-      UserStore.push(existingUser);
+        UserStore._data = Immutable.fromJS([existingUser]);
+        sandbox.spy(UserStore, 'emitChange'),
 
-      userActions.addedUserRoles(expectedRole, testGuid, 'org');
+        userActions.addedUserRoles(addedRole, userGuid, spaceGuid, 'space');
+        user = UserStore.get(userGuid);
+      });
 
-      let actual = UserStore.get(testGuid);
-      expect(actual).toBeTruthy();
-      expect(actual.organization_roles).toContain(expectedRole);
+      it('should emit a change event', function() {
+        expect(UserStore.emitChange).toHaveBeenCalledOnce();
+      });
+
+      it('should add the role for that org', function() {
+        expect(user.roles[spaceGuid]).toContain(addedRole);
+      });
+
+      it('should not change any other roles', function() {
+        expect(user.roles[spaceGuid]).toContain(existingRole);
+        expect(user.roles[otherOrgGuid]).toContain('org_manager');
+      });
     });
 
-    it('should emit a change event if it finds the user', function() {
-      const spy = sandbox.spy(UserStore, 'emitChange');
-      const testUserGuid = '234xcvbqwn';
-      const initialData = [{guid: testUserGuid, organization_roles: []}]
+    describe('for a user with no existing space roles, somehow', function() {
+      beforeEach(function() {
+        const existingUser = {
+          guid: userGuid
+        }
+        UserStore._data = Immutable.fromJS([existingUser]);
+        sandbox.spy(UserStore, 'emitChange'),
+        userActions.addedUserRoles(addedRole, userGuid, spaceGuid, 'space');
+        user = UserStore.get(userGuid);
+      });
 
-      UserStore._data = Immutable.fromJS(initialData);
-      userActions.addedUserRoles('testrole', testUserGuid, 'org');
+      it('should emit a change event', function() {
+        expect(UserStore.emitChange).toHaveBeenCalledOnce();
+      });
 
-      expect(spy).toHaveBeenCalledOnce();
-    });
-  });
-
-  describe('on user roles delete', function() {
-    it('should call the api to delete the role', function() {
-      var spy = sandbox.stub(cfApi, 'deleteOrgUserPermissions'),
-          expectedRoles = 'org_manager',
-          expectedUserGuid = 'zjkxcvz234asdf',
-          expectedOrgGuid = 'zxcvzcxvzxroiter';
-
-      let testPromise = Promise.resolve()
-      spy.returns(testPromise);
-
-      userActions.deleteUserRoles(
-        expectedRoles,
-        expectedUserGuid,
-        expectedOrgGuid,
-        'org'
-      );
-
-      expect(spy).toHaveBeenCalledOnce();
-      let args = spy.getCall(0).args;
-      expect(args[0]).toEqual(expectedUserGuid);
-      expect(args[1]).toEqual(expectedOrgGuid);
-      expect(args[2]).toEqual(expectedRoles);
+      it('should add the role for that org', function() {
+        expect(user.roles[spaceGuid]).toContain(addedRole);
+      });
     });
   });
 
   describe('on user roles deleted', function() {
-    it('should update the resource type roles array if it exists with new roles',
-        function() {
-      var testGuid = 'zxcvzxc',
-          expectedRole = 'org_dark_lord';
+    const testGuid = 'zxcvzxc';
+    const expectedRole = 'org_dark_lord';
+    const otherRole = 'wizard';
+    const orgGuid = 'org-123';
+    const otherOrgGuid = 'org-987';
 
-      var existingUser = {
+    beforeEach(function() {
+      const existingUser = {
         guid: testGuid,
-        organization_roles: ['org_manager', expectedRole]
+        roles: {
+          [orgGuid]: [expectedRole, otherRole],
+          [otherOrgGuid]: ['org_manager']
+        }
       };
 
       UserStore._data = Immutable.fromJS([existingUser]);
+      sandbox.spy(UserStore, 'emitChange'),
 
-      userActions.deletedUserRoles(expectedRole, testGuid, 'org');
+      userActions.deletedUserRoles(expectedRole, testGuid, orgGuid, 'org');
+    });
 
+    it('should update the resource type roles array if it exists with new roles',
+        function() {
       let actual = UserStore.get(testGuid);
       expect(actual).toBeTruthy();
-      expect(actual.organization_roles).not.toContain(expectedRole);
+      expect(actual.roles[orgGuid]).not.toContain(expectedRole);
+      expect(actual.roles[orgGuid]).toContain(otherRole);
+      expect(actual.roles[otherOrgGuid]).toContain('org_manager');
     });
 
     it('should emit a change event if it finds the user and no role', function() {
-      var spy = sandbox.spy(UserStore, 'emitChange'),
-          expectedRole = 'org_dark_lord',
-          testUserGuid = '234xcvbqwn';
-
-      UserStore._data = Immutable.fromJS([{
-        guid: testUserGuid,
-        organization_roles: [expectedRole]
-      }]);
-      userActions.deletedUserRoles(expectedRole, testUserGuid, 'org');
-
-      expect(spy).toHaveBeenCalledOnce();
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
     });
   });
 
@@ -532,7 +587,7 @@ describe('UserStore', function () {
     // TODO possibly move this functionality to shared place.
     it('should find all user that have the space guid passed in', function() {
       var spaceGuid = 'asdfa';
-      var testUser = { guid: 'adfzxcv', spaceGuid: spaceGuid };
+      var testUser = { guid: 'adfzxcv', roles: { [spaceGuid]: [ 'space_user'] } };
 
       UserStore.push(testUser);
 
@@ -545,7 +600,7 @@ describe('UserStore', function () {
   describe('getAllInOrg()', function() {
     it('should find all users that have the org guid passed in', function() {
       var orgGuid = 'asdfa';
-      var testUser = { guid: 'adfzxcv', orgGuid: orgGuid };
+      var testUser = { guid: 'adfzxcv', roles: { [orgGuid]: ['org_user'] } };
 
       UserStore.push(testUser);
 
@@ -584,52 +639,6 @@ describe('UserStore', function () {
 
     it('sets user state to non-fetching', function () {
       expect(user.fetching).toBe(false);
-    });
-  });
-
-  describe('USER_SPACES_RECEIVED|USER_ORGS_RECEIVED', function () {
-    let userGuid, userSpaces, userOrgs, user;
-    beforeEach(function () {
-      userGuid = 'user123';
-      userSpaces = [{ guid: 'space123' }, { guid: 'space456' }];
-      userOrgs = [{ guid: 'org123' }];
-
-      // User with no roles
-      UserStore.push({ guid: userGuid });
-
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.USER_SPACES_RECEIVED,
-        userGuid,
-        userSpaces
-      });
-
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.USER_ORGS_RECEIVED,
-        userGuid,
-        userOrgs
-      });
-
-      user = UserStore.get(userGuid);
-    });
-
-    it('creates a roles property on user', function () {
-      expect(user.roles).toBeTruthy();
-    });
-
-    it('assigns   role for each space', function () {
-      expect(user.roles).toEqual({
-        space123: ['space_developer'],
-        space456: ['space_developer'],
-        org123: ['org_user']
-      });
-    });
-
-    it('assigns org_manager role for each org', function () {
-      expect(user.roles).toEqual({
-        space123: ['space_developer'],
-        space456: ['space_developer'],
-        org123: ['org_user']
-      });
     });
   });
 

@@ -355,9 +355,9 @@ export default {
    *
    * @param {Number} spaceGuid - The guid of the space that the users belong to.
    */
-  fetchSpaceUsers(spaceGuid) {
+  fetchSpaceUserRoles(spaceGuid) {
     return this.fetchMany(`/spaces/${spaceGuid}/user_roles`,
-                          userActions.receivedSpaceUsers,
+                          userActions.receivedSpaceUserRoles,
                           spaceGuid);
   },
 
