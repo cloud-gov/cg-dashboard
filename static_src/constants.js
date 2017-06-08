@@ -223,13 +223,13 @@ const userActionTypes = keymirror({
   // Action to fetch the user roles for an org from the server.
   ORG_USER_ROLES_FETCH: null,
   // Action to fetch users belonging to a space from the server.
-  SPACE_USERS_FETCH: null,
+  SPACE_USER_ROLES_FETCH: null,
   // Action when all organization users were received from the server.
   ORG_USERS_RECEIVED: null,
   // Action when all org user roles were received from the server.
   ORG_USER_ROLES_RECEIVED: null,
   // Action when all space users were received from the server.
-  SPACE_USERS_RECEIVED: null,
+  SPACE_USER_ROLES_RECEIVED: null,
   // User is fetched from the server
   USER_FETCH: null,
   // User is received from the server

@@ -24,13 +24,16 @@ function stateSetter() {
 
   let users = [];
   let currentUserAccess = false;
+  let entityGuid;
 
   if (currentType === SPACE_NAME) {
     users = UserStore.getAllInSpace(currentSpaceGuid);
+    entityGuid = currentSpaceGuid;
     currentUserAccess = UserStore.hasRole(currentUser.guid, currentSpaceGuid,
                                           'space_manager');
   } else {
     users = UserStore.getAllInOrg(currentOrgGuid);
+    entityGuid = currentOrgGuid;
     currentUserAccess = UserStore.hasRole(currentUser.guid, currentOrgGuid,
                                           'org_manager');
   }
@@ -40,6 +43,7 @@ function stateSetter() {
     currentUserAccess,
     currentOrgGuid,
     currentSpaceGuid,
+    entityGuid,
     currentType,
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
@@ -80,25 +84,25 @@ export default class Users extends React.Component {
   handleAddPermissions(roleKey, userGuid) {
     userActions.addUserRoles(roleKey,
                                 userGuid,
-                                this.resourceGuid,
-                                this.resourceType);
+                                this.entityGuid,
+                                this.entityType);
   }
 
   handleRemovePermissions(roleKey, userGuid) {
     userActions.deleteUserRoles(roleKey,
                                 userGuid,
-                                this.resourceGuid,
-                                this.resourceType);
+                                this.entityGuid,
+                                this.entityType);
   }
 
-  get resourceType() {
+  get entityType() {
     return this.state.currentType === ORG_NAME ? 'org' : 'space';
   }
 
-  get resourceGuid() {
-    const resourceGuid = this.state.currentType === ORG_NAME ?
+  get entityGuid() {
+    const entityGuid = this.state.currentType === ORG_NAME ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
-    return resourceGuid;
+    return entityGuid;
   }
 
   render() {
@@ -110,11 +114,12 @@ export default class Users extends React.Component {
     }
 
     let content = (<UserList
-      initialUsers={ this.state.users }
-      initialUserType= { this.state.currentType }
-      initialCurrentUserAccess={ this.state.currentUserAccess }
-      initialEmpty={ this.state.empty }
-      initialLoading={ this.state.loading }
+      users={ this.state.users }
+      userType= { this.state.currentType }
+      entityGuid={ this.state.entityGuid }
+      currentUserAccess={ this.state.currentUserAccess }
+      empty={ this.state.empty }
+      loading={ this.state.loading }
       onRemove={ removeHandler }
       onAddPermissions={ this.handleAddPermissions }
       onRemovePermissions={ this.handleRemovePermissions }
@@ -131,12 +136,12 @@ export default class Users extends React.Component {
     return (
       <div className="test-users">
         { errorMessage }
+        <UsersInvite error={ this.state.userInviteError } />
         <div>
           <div>
             { content }
           </div>
         </div>
-        <UsersInvite error={ this.state.userInviteError } />
       </div>
     );
   }

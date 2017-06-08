@@ -26,9 +26,9 @@ const userActions = {
     });
   },
 
-  fetchSpaceUsers(spaceGuid) {
+  fetchSpaceUserRoles(spaceGuid) {
     AppDispatcher.handleViewAction({
-      type: userActionTypes.SPACE_USERS_FETCH,
+      type: userActionTypes.SPACE_USER_ROLES_FETCH,
       spaceGuid
     });
   },
@@ -49,9 +49,9 @@ const userActions = {
     });
   },
 
-  receivedSpaceUsers(users, spaceGuid) {
+  receivedSpaceUserRoles(users, spaceGuid) {
     AppDispatcher.handleServerAction({
-      type: userActionTypes.SPACE_USERS_RECEIVED,
+      type: userActionTypes.SPACE_USER_ROLES_RECEIVED,
       users,
       spaceGuid
     });
@@ -73,42 +73,83 @@ const userActions = {
     });
   },
 
-  addUserRoles(roles, userGuid, resourceGuid, resourceType) {
-    AppDispatcher.handleViewAction({
+  addUserRoles(roles, userGuid, entityGuid, entityType) {
+    const apiMethodMap = {
+      org: cfApi.putOrgUserPermissions,
+      space: cfApi.putSpaceUserPermissions
+    };
+    const api = apiMethodMap[entityType];
 
+    AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLES_ADD,
       roles,
       userGuid,
-      resourceGuid,
-      resourceType
+      entityGuid,
+      entityType
+    });
+
+    return api(
+      userGuid,
+      entityGuid,
+      roles
+    ).then(() => {
+      userActions.addedUserRoles(
+        roles,
+        userGuid,
+        entityGuid,
+        entityType);
+    }).catch((err) => {
+      window.console.error(err);
     });
   },
 
-  addedUserRoles(roles, userGuid, resourceType) {
+  addedUserRoles(roles, userGuid, entityGuid, entityType) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ROLES_ADDED,
       roles,
       userGuid,
-      resourceType
+      entityGuid,
+      entityType
     });
   },
 
-  deleteUserRoles(roles, userGuid, resourceGuid, resourceType) {
+  deleteUserRoles(roles, userGuid, entityGuid, entityType) {
+    const apiMethodMap = {
+      org: cfApi.deleteOrgUserPermissions,
+      space: cfApi.deleteSpaceUserPermissions
+    };
+    const api = apiMethodMap[entityType];
+
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLES_DELETE,
       roles,
       userGuid,
-      resourceGuid,
-      resourceType
+      entityGuid,
+      entityType
+    });
+
+    return api(
+      userGuid,
+      entityGuid,
+      roles
+    ).then(() => {
+      userActions.deletedUserRoles(
+        roles,
+        userGuid,
+        entityGuid,
+        entityType);
+    }).catch((err) => {
+      window.console.error(err);
     });
   },
 
-  deletedUserRoles(roles, userGuid, resourceType) {
+  deletedUserRoles(roles, userGuid, entityGuid, entityType) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_ROLES_DELETED,
       roles,
       userGuid,
-      resourceType
+      entityGuid,
+      entityType
     });
   },
 
@@ -266,62 +307,7 @@ const userActions = {
     return Promise.resolve(user);
   },
 
-  fetchUserSpaces(userGuid, options = {}) {
-    if (!userGuid) {
-      return Promise.reject(new Error('userGuid is required'));
-    }
-
-    // orgGuid s optional for filtering
-    const { orgGuid } = options;
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_SPACES_FETCH,
-      userGuid,
-      orgGuid
-    });
-
-    return cfApi.fetchUserSpaces(userGuid, options)
-      .then(userSpaces => userActions.receivedUserSpaces(userGuid, userSpaces, options));
-  },
-
-  // Optionally specify orgGuid if filtered for spaces belonging to orgGuid
-  receivedUserSpaces(userGuid, userSpaces, options = {}) {
-    const { orgGuid } = options;
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_SPACES_RECEIVED,
-      userGuid,
-      userSpaces,
-      orgGuid
-    });
-
-    return Promise.resolve(userSpaces);
-  },
-
-  fetchUserOrgs(userGuid, options = {}) {
-    if (!userGuid) {
-      return Promise.reject(new Error('userGuid is required'));
-    }
-
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_ORGS_FETCH,
-      userGuid
-    });
-
-    return cfApi.fetchUserOrgs(userGuid, options)
-      .then(userOrgs => userActions.receivedUserOrgs(userGuid, userOrgs, options));
-  },
-
-  receivedUserOrgs(userGuid, userOrgs) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ORGS_RECEIVED,
-      userGuid,
-      userOrgs
-    });
-
-    return Promise.resolve(userOrgs);
-  },
-
-  // Meta action to fetch all the pieces of the current user
-  fetchCurrentUser(options = {}) {
+  fetchCurrentUser() {
     AppDispatcher.handleViewAction({
       type: userActionTypes.CURRENT_USER_FETCH
     });
@@ -332,8 +318,6 @@ const userActions = {
       .then(userInfo =>
         Promise.all([
           userActions.fetchUser(userInfo.user_id),
-          userActions.fetchUserOrgs(userInfo.user_id),
-          userActions.fetchUserSpaces(userInfo.user_id, options),
           userActions.fetchCurrentUserUaaInfo(userInfo.user_id)
         ])
       )
