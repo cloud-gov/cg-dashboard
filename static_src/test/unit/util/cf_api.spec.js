@@ -891,7 +891,7 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('spaces'));
       expect(actual).toMatch(new RegExp('user_roles'));
       actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(userActions.receivedSpaceUsers);
+      expect(actual).toEqual(userActions.receivedSpaceUserRoles);
       actual = spy.getCall(0).args[2];
       expect(actual).toEqual(expected);
     });

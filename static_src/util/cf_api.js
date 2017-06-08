@@ -357,7 +357,7 @@ export default {
    */
   fetchSpaceUserRoles(spaceGuid) {
     return this.fetchMany(`/spaces/${spaceGuid}/user_roles`,
-                          userActions.receivedSpaceUsers,
+                          userActions.receivedSpaceUserRoles,
                           spaceGuid);
   },
 
