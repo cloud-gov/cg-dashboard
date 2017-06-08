@@ -296,11 +296,7 @@ export class UserStore extends BaseStore {
         const updatedRoles = {};
 
         if (currentViewType === SPACE_NAME) {
-          if (action.entityRoles) {
-            updatedRoles[entityGuid] = action.currentUserRoles.space_roles;
-          } else {
-            updatedRoles[entityGuid] = ['space_auditor'];
-          }
+          updatedRoles[entityGuid] = action.currentUserRoles.space_roles;
         } else {
           updatedRoles[entityGuid] = action.currentUserRoles.organization_roles;
         }
