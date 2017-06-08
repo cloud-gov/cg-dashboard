@@ -239,23 +239,18 @@ const userActions = {
       entityGuid
     });
 
-    if (currentViewType === SPACE_NAME) {
-      return userActions.fetchSpaceUsers(entityGuid)
-        .then(entityRoles => userActions.receivedCurrentUserRole(
-          entityRoles,
-          userGuid,
-          entityGuid,
-          currentViewType
-        ));
-    } else {
-      return userActions.fetchOrgUserRoles(entityGuid)
-        .then(entityRoles => userActions.receivedCurrentUserRole(
-          entityRoles,
-          userGuid,
-          entityGuid,
-          currentViewType
-        ));
-    }
+    return Promise.resolve(() => {
+      if (currentViewType === SPACE_NAME) {
+        userActions.fetchSpaceUsers(entityGuid);
+      } else {
+        userActions.fetchOrgUserRoles(entityGuid);
+      }
+    }).then(entityRoles => userActions.receivedCurrentUserRole(
+        entityRoles,
+        userGuid,
+        entityGuid,
+        currentViewType
+      ));
   },
 
   receivedCurrentUserRole(entityRoles, userGuid, entityGuid, currentViewType) {
