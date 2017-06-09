@@ -87,7 +87,9 @@ export class UserStore extends BaseStore {
           { guid: action.userGuid, roles: { [action.orgGuid]: [] } },
           action.user);
         this._inviteInputActive = true;
-        if (user.guid) {
+        if (!this.get(user.guid)) {
+          this.push(user);
+        } else {
           this.merge('guid', user, () => {});
         }
         this._inviteDisabled = false;
