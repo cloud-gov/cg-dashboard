@@ -39,7 +39,7 @@ describe('User roles', function () {
       expect(currentUserCount).toEqual(existingUserCount + 1);
       user = userInviteElement.getUserByIndex(currentUserCount - 1);
       // TODO disabling test due to changing functionality
-      //expect(user.getText()).toMatch(/fake-new-user@domain.com/);
+      // expect(user.getText()).toMatch(/fake-new-user@domain.com/);
     });
 
     it('should display an error message if the email address is invalid',
