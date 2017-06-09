@@ -1,10 +1,8 @@
 
 import UserInviteElement from './pageobjects/user_invite.element';
-import UserRoleElement from './pageobjects/user_role.element';
 
 describe('User roles', function () {
   let userInviteElement;
-  let userRoleElement;
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
 
@@ -15,7 +13,6 @@ describe('User roles', function () {
     it('should navigates to org X', function () {
       browser.url(urlOrgX);
       browser.waitForExist('.test-users');
-      userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
     });
 
     it('should have the user invite panel', function () {
