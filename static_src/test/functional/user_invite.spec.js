@@ -31,18 +31,6 @@ describe('User roles', function () {
       expect(email).toBe(userInviteElement.getInviteFormValue());
     });
 
-    it('should be able to submit an email address and see on user list', function () {
-      const existingUserCount = userInviteElement.countNumberOfUsers();
-      let user = userInviteElement.getUserByIndex(existingUserCount - 1);
-      expect(user.getText()).not.toMatch(/fake-new-user@domain.com/);
-      userInviteElement.inputToInviteForm(email);
-      userInviteElement.submitInviteForm();
-      const currentUserCount = userInviteElement.countNumberOfUsers();
-      expect(currentUserCount).toEqual(existingUserCount + 1);
-      user = userInviteElement.getUserByIndex(currentUserCount - 1);
-      expect(user.getText()).toMatch(/fake-new-user@domain.com/);
-    });
-
     it('should display an error message if the email address is invalid',
     function () {
       const invalidEmail = '123';

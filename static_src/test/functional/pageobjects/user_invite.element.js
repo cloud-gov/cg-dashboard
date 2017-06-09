@@ -10,14 +10,17 @@ import BaseElement from './base.element';
 
 export default class UserInviteElement extends BaseElement {
   inputToInviteForm(input) {
+    browser.waitForExist('.test-users_invite_name');
     return this.element('.test-users_invite_name').setValue(input);
   }
 
   getInviteFormValue() {
+    browser.waitForExist('.test-users_invite_name');
     return this.element('.test-users_invite_name').getValue();
   }
 
   submitInviteForm() {
+    browser.waitForExist('[type="submit"]');
     const existingUserCount = this.countNumberOfUsers();
     this.element('[type="submit"]').click();
     browser.waitUntil(() =>
@@ -28,6 +31,7 @@ export default class UserInviteElement extends BaseElement {
 
   // TODO move this to user list element.
   countNumberOfUsers() {
+    browser.waitForExist('.test-users .complex_list-item');
     return browser.elements('.test-users .complex_list-item').value.length;
   }
 
