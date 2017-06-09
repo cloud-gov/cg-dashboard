@@ -200,46 +200,23 @@ describe('userActions', function() {
 
     beforeEach(function (done) {
       userGuid = "fake-udid";
-      orgUsers = [
-        { guid: "fake-udid" },
-        { guid: "fake-udid-2" }
-      ];
       orgGuid = "fake-org-udid";
+      const user = {
+        guid: userGuid,
+        username: 'asdf'
+      };
       expectedParams = {
         userGuid,
         orgGuid,
-        orgUsers
+        user
       };
       spy = setupViewSpy(sandbox)
-      sandbox.stub(userActions, 'createdUserDisplayed').returns(Promise.resolve());
-      userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers).then(done, done.fail);
+      userActions.createdUserAndAssociated(userGuid, orgGuid, user)
+        .then(done, done.fail);
     });
 
     it('should dispatch USER_ORG_ASSOCIATED notice with user and org', function() {
       assertAction(spy, userActionTypes.USER_ORG_ASSOCIATED, expectedParams);
-    });
-  });
-
-  describe('createdUserDisplayed', function () {
-    it('should dispatch USER_ASSOCIATED_ORG_DISPLAYED notice with user and org', function() {
-      var userGuid = "fake-udid",
-          orgUsers = [
-            { guid: "fake-udid" },
-            { guid: "fake-udid-2" }
-          ],
-          orgGuid = "fake-org-udid";
-
-      let expectedParams = {
-        userGuid: userGuid,
-        orgGuid: orgGuid,
-        orgUsers: orgUsers
-      };
-
-      let spy = setupViewSpy(sandbox);
-
-      userActions.createdUserDisplayed(userGuid, orgUsers, orgGuid);
-
-      assertAction(spy, userActionTypes.USER_ASSOCIATED_ORG_DISPLAYED, expectedParams);
     });
   });
 
