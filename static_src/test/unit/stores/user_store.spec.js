@@ -239,7 +239,7 @@ describe('UserStore', function () {
     });
 
     it('should emit a change', function() {
-      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+      expect(UserStore.emitChange).toHaveBeenCalledTwice();
     });
 
     it('should add the user to the org through an empty role list', function() {
@@ -263,7 +263,7 @@ describe('UserStore', function () {
 
       userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers);
 
-      expect(spy).toHaveBeenCalledOnce();
+      expect(spy).toHaveBeenCalledTwice();
     });
 
     it('should merge and update org with new users', function() {
