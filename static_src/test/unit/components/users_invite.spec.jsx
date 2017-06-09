@@ -18,13 +18,18 @@ describe('<UsersInvite />', function () {
     sandbox.restore();
   });
 
+  it('doesnt renders <Form /> components if currentUser doesnt have access', () => {
+    const userInvite = shallow(<UsersInvite currentUserAccess="false" />);
+    expect(userInvite.find(Form).length).toEqual(1);
+  });
+
   it('renders one <Form /> components', () => {
-    const userInvite = shallow(<UsersInvite />);
+    const userInvite = shallow(<UsersInvite currentUserAccess="true" />);
     expect(userInvite.find(Form).length).toEqual(1);
   });
 
   it('renders one <Action /> components', () => {
-    const userInvite = shallow(<UsersInvite />);
+    const userInvite = shallow(<UsersInvite currentUserAccess="true" />);
     expect(userInvite.find(Action).length).toEqual(1);
   });
 });

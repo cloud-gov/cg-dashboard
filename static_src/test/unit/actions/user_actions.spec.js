@@ -52,7 +52,7 @@ describe('userActions', function() {
     });
   });
 
-  describe('fetchSpaceUsers()', function() {
+  describe('fetchSpaceUserRoles()', function() {
     it('should dispatch a view event of type space users fetch', function() {
       var expectedSpaceGuid = 'asdflkjz',
           expectedParams = {
@@ -61,9 +61,9 @@ describe('userActions', function() {
 
       let spy = setupViewSpy(sandbox);
 
-      userActions.fetchSpaceUsers(expectedSpaceGuid);
+      userActions.fetchSpaceUserRoles(expectedSpaceGuid);
 
-      assertAction(spy, userActionTypes.SPACE_USERS_FETCH, expectedParams);
+      assertAction(spy, userActionTypes.SPACE_USER_ROLES_FETCH, expectedParams);
     });
   });
 
@@ -100,7 +100,7 @@ describe('userActions', function() {
     });
   });
 
-  describe('receivedSpaceUsers()', function() {
+  describe('receivedSpaceUserRoles()', function() {
     it(`should dispatch a server event of type space users received with received
         data`, function() {
       var expected = [{ entity: { }, metadata: { guid: 'adf' }}],
@@ -110,9 +110,9 @@ describe('userActions', function() {
 
       let spy = setupServerSpy(sandbox)
 
-      userActions.receivedSpaceUsers(expected);
+      userActions.receivedSpaceUserRoles(expected);
 
-      assertAction(spy, userActionTypes.SPACE_USERS_RECEIVED, expectedParams);
+      assertAction(spy, userActionTypes.SPACE_USER_ROLES_RECEIVED, expectedParams);
     });
   });
 
@@ -169,74 +169,6 @@ describe('userActions', function() {
     });
   });
 
-  describe('fetchUserOrgs()', function () {
-    let userGuid;
-
-    beforeEach(function (done) {
-      userGuid = 'user123';
-      sandbox.stub(cfApi, 'fetchUserOrgs').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleViewAction');
-
-      userActions.fetchUserOrgs(userGuid)
-        .then(done, done.fail);
-    });
-
-    it('dispatches USER_ORGS_FETCH', function () {
-      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_ORGS_FETCH,
-        userGuid
-      }));
-    });
-
-    it('calls cfApi', function () {
-      expect(cfApi.fetchUserOrgs).toHaveBeenCalledOnce();
-      expect(cfApi.fetchUserOrgs).toHaveBeenCalledWith(userGuid);
-    });
-  });
-
-  describe('fetchUserInvite', function () {
-    let email;
-
-    beforeEach(function (done) {
-      email = 'name@place.com';
-      sandbox.stub(uaaApi, 'inviteUaaUser').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleViewAction');
-      sandbox.stub(userActions, 'receiveUserInvite').returns(Promise.resolve());
-
-      userActions.fetchUserInvite(email).then(done, done.fail);
-    });
-
-    it('should trigger the invite action for new user email', function () {
-      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_INVITE_FETCH,
-        email
-      }));
-    });
-
-    it('calls uaaApi inviteUaaUser', function () {
-      expect(uaaApi.inviteUaaUser).toHaveBeenCalledWith(email);
-    });
-
-    describe('when request fails', function() {
-      beforeEach(function (done) {
-        uaaApi.inviteUaaUser.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'userInviteError');
-
-        userActions.fetchUserInvite(email).then(done, done.fail);
-      });
-
-      it('should call user invite error action handler', function() {
-        expect(userActions.userInviteError).toHaveBeenCalledOnce();
-      });
-
-      it('should provide contextual message about invite', function() {
-        const arg = userActions.userInviteError.getCall(0).args[1];
-        expect(arg.length).toBeGreaterThan(0);
-        expect(arg).toMatch('invit');
-      });
-    });
-  });
-
   describe('userInviteError()', function() {
     let err;
     let message;
@@ -259,169 +191,31 @@ describe('userActions', function() {
     });
   });
 
-  describe('receiveUserInvite', function () {
+  describe('createdUserAndAssociated', function () {
     let userGuid;
-    let inviteData;
-
-    beforeEach(function (done) {
-      userGuid = "fake-udid";
-      inviteData = { new_invites: [{ userId: userGuid }] };
-      sandbox.stub(cfApi, 'postCreateNewUserWithGuid').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      sandbox.stub(userActions, 'receiveUserForCF').returns(Promise.resolve());
-      userActions.receiveUserInvite(inviteData)
-        .then(done, done.fail);
-    });
-
-    it('should send off the email invite', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_INVITE_RECEIVED
-      }));
-    });
-
-    it('calls cfApi postCreateNewUserWithGuid', function () {
-      expect(cfApi.postCreateNewUserWithGuid).toHaveBeenCalledWith(userGuid);
-    });
-
-    describe('when request fails', function() {
-      beforeEach(function (done) {
-        cfApi.postCreateNewUserWithGuid.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'userInviteError');
-
-        userActions.receiveUserInvite(inviteData)
-          .then(done, done.fail);
-      });
-
-      it('should call user invite error action handler', function() {
-        expect(userActions.userInviteError).toHaveBeenCalledOnce();
-      });
-
-      it('should provide contextual message about invite', function() {
-        const arg = userActions.userInviteError.getCall(0).args[1];
-        expect(arg.length).toBeGreaterThan(0);
-        expect(arg).toMatch('invit');
-      });
-    });
-  });
-
-  describe('receiveUserForCF', function () {
-    let userGuid;
-    let user;
-    let inviteData;
-    beforeEach(function (done) {
-      userGuid = "fake-udid";
-      user = { guid: userGuid };
-      inviteData = { new_invites:[{ userId: userGuid }] };
-      sandbox.stub(userActions, 'sendUserInviteEmail').returns(Promise.resolve());
-      sandbox.stub(userActions, 'associateUserToOrg').returns(Promise.resolve());
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      userActions.receiveUserForCF(user, inviteData)
-        .then(done, done.fail);
-    });
-
-    it('confirms the user was created and returns a guid', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_IN_CF_CREATED,
-        user
-      }));
-    });
-
-    it('should send off email invite with invite data', function () {
-      expect(userActions.sendUserInviteEmail).toHaveBeenCalledOnce();
-    });
-
-    it('should call next request to associate user', function () {
-      expect(userActions.associateUserToOrg).toHaveBeenCalledOnce();
-    });
-  });
-
-  describe('sendUserInviteEmail', function () {
-    let userGuid;
-    let inviteData;
-    let spy;
-    beforeEach(function () {
-      userGuid = "fake-user-udid";
-      inviteData = { new_invites: [{ userId: userGuid }] };
-      spy = setupServerSpy(sandbox);
-
-      sandbox.stub(uaaApi, 'sendInviteEmail');
-      userActions.sendUserInviteEmail(inviteData);
-    });
-
-    it('should announce email invite to actions', function () {
-      assertAction(spy, userActionTypes.USER_EMAIL_INVITE);
-    });
-
-    it('should trigger request for invite email', function () {
-      expect(uaaApi.sendInviteEmail).toHaveBeenCalledOnce();
-    });
-  });
-
-  describe('associateUserToOrg', function () {
-    let user;
-    let userGuid;
+    let orgUsers;
     let orgGuid;
+    let expectedParams;
+    let spy;
+
     beforeEach(function (done) {
       userGuid = "fake-udid";
-      orgGuid = "fake-org-guid";
-      user = { guid: userGuid };
-      sandbox.stub(OrgStore, 'get').returns(orgGuid);
-      sandbox.stub(cfApi, 'putAssociateUserToOrganization').returns(Promise.resolve());
-      sandbox.stub(userActions, 'associatedUserToOrg').returns(Promise.resolve());
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-      userActions.associateUserToOrg(user)
+      orgGuid = "fake-org-udid";
+      const user = {
+        guid: userGuid,
+        username: 'asdf'
+      };
+      expectedParams = {
+        userGuid,
+        orgGuid,
+        user
+      };
+      spy = setupViewSpy(sandbox)
+      userActions.createdUserAndAssociated(userGuid, orgGuid, user)
         .then(done, done.fail);
     });
 
-    it('completes the association to user and org', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_ORG_ASSOCIATE
-      }));
-    });
-
-    it('should trigger cf api to make put request to associate user', function () {
-      expect(cfApi.putAssociateUserToOrganization).toHaveBeenCalledOnce();
-    });
-
-    it('should call associatedUser confirmation after', function () {
-      expect(userActions.associatedUserToOrg).toHaveBeenCalledOnce();
-    });
-
-    describe('when the request fails', function() {
-      beforeEach(function (done) {
-        cfApi.putAssociateUserToOrganization.returns(Promise.reject({}));
-        sandbox.spy(userActions, 'userInviteError');
-        userActions.associateUserToOrg(user)
-          .then(done, done.fail);
-      });
-
-      it('should call global user error action', function() {
-        expect(userActions.userInviteError).toHaveBeenCalledOnce();
-      });
-
-      it('should provide a message about the user not being added to the org',
-        function() {
-        const arg = userActions.userInviteError.getCall(0).args[1];
-        expect(arg.length).toBeGreaterThan(0);
-        expect(arg).toMatch('associate user');
-      });
-    });
-  });
-
-  describe('associatedUserToOrg', function () {
     it('should dispatch USER_ORG_ASSOCIATED notice with user and org', function() {
-      var user = { guid: "fake-udid" },
-          orgGuid = "fake-org-udid";
-
-      let expectedParams = {
-        user: user,
-        orgGuid: orgGuid
-      };
-
-      let spy = setupServerSpy(sandbox);
-
-      userActions.associatedUserToOrg(user, orgGuid);
-
       assertAction(spy, userActionTypes.USER_ORG_ASSOCIATED, expectedParams);
     });
   });
@@ -437,8 +231,8 @@ describe('userActions', function() {
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
-        resourceGuid: expectedGuid,
-        resourceType: expectedType
+        entityGuid: expectedGuid,
+        entityType: expectedType
       };
 
       let spy = setupViewSpy(sandbox)
@@ -451,6 +245,76 @@ describe('userActions', function() {
 
       assertAction(spy, userActionTypes.USER_ROLES_ADD, expectedParams);
     });
+
+    describe('for org user', function() {
+      let roles;
+      let userGuid;
+      let orgGuid;
+
+      beforeEach(function(done) {
+        sandbox.stub(cfApi, 'putOrgUserPermissions').returns(Promise.resolve());
+        sandbox.stub(userActions, 'addedUserRoles').returns(Promise.resolve());
+        roles = ['org_manager'];
+        userGuid = 'user-123';
+        orgGuid = 'org-123';
+
+        userActions.addUserRoles(
+          roles,
+          userGuid,
+          orgGuid,
+          'org'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for org put user permision with guids and roles', () => {
+        expect(cfApi.putOrgUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.putOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          orgGuid,
+          roles
+        ));
+      });
+
+      it('should call addedUserRoles action with all information', function() {
+        expect(userActions.addedUserRoles).toHaveBeenCalledOnce();
+        expect(userActions.addedUserRoles).toHaveBeenCalledWith(sinon.match(
+          roles,
+          userGuid,
+          orgGuid,
+          'org'
+        ));
+      });
+    });
+
+    describe('for space user', function() {
+      let roles;
+      let userGuid;
+      let spaceGuid;
+
+      beforeEach(function(done) {
+        sandbox.stub(cfApi, 'putSpaceUserPermissions').returns(Promise.resolve());
+        sandbox.stub(userActions, 'addedUserRoles').returns(Promise.resolve());
+        roles = ['space_manager'];
+        userGuid = 'user-123';
+        spaceGuid = 'space-123';
+
+        userActions.addUserRoles(
+          roles,
+          userGuid,
+          spaceGuid,
+          'space'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for space put user permision with guids and roles', () => {
+        expect(cfApi.putSpaceUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.putSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          spaceGuid,
+          roles
+        ));
+      });
+    });
   });
 
   describe('addedUserRoles()', function() {
@@ -458,12 +322,14 @@ describe('userActions', function() {
         resource type`, function() {
       var expectedRole = 'org_manager',
           expectedUserGuid = 'azxcvoiuzxcvzxcvzxvzx',
+          expectedGuid = 'org-guid-asdf',
           expectedType = 'organization';
 
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
-        resourceType: expectedType
+        entityGuid: expectedGuid,
+        entityType: expectedType
       };
 
       let spy = setupServerSpy(sandbox)
@@ -471,6 +337,7 @@ describe('userActions', function() {
       userActions.addedUserRoles(
         expectedRole,
         expectedUserGuid,
+        expectedGuid,
         expectedType);
 
       assertAction(spy, userActionTypes.USER_ROLES_ADDED, expectedParams);
@@ -488,8 +355,8 @@ describe('userActions', function() {
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
-        resourceGuid: expectedGuid,
-        resourceType: expectedType
+        entityGuid: expectedGuid,
+        entityType: expectedType
       };
 
       let spy = setupViewSpy(sandbox)
@@ -502,6 +369,76 @@ describe('userActions', function() {
 
       assertAction(spy, userActionTypes.USER_ROLES_DELETE, expectedParams);
     });
+
+    describe('for org user', function() {
+      let roles;
+      let userGuid;
+      let orgGuid;
+
+      beforeEach(function(done) {
+        sandbox.stub(cfApi, 'deleteOrgUserPermissions').returns(Promise.resolve());
+        sandbox.stub(userActions, 'deletedUserRoles').returns(Promise.resolve());
+        roles = ['org_manager'];
+        userGuid = 'user-123';
+        orgGuid = 'org-123';
+
+        userActions.deleteUserRoles(
+          roles,
+          userGuid,
+          orgGuid,
+          'org'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for org delete user permision with guids and roles', () => {
+        expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          orgGuid,
+          roles
+        ));
+      });
+
+      it('should call deletedUserRoles action with all information', function() {
+        expect(userActions.deletedUserRoles).toHaveBeenCalledOnce();
+        expect(userActions.deletedUserRoles).toHaveBeenCalledWith(sinon.match(
+          roles,
+          userGuid,
+          orgGuid,
+          'org'
+        ));
+      });
+    });
+
+    describe('for space user', function() {
+      let roles;
+      let userGuid;
+      let spaceGuid;
+
+      beforeEach(function(done) {
+        sandbox.stub(cfApi, 'deleteSpaceUserPermissions').returns(Promise.resolve());
+        sandbox.stub(userActions, 'deletedUserRoles').returns(Promise.resolve());
+        roles = ['space_manager'];
+        userGuid = 'user-123';
+        spaceGuid = 'space-123';
+
+        userActions.deleteUserRoles(
+          roles,
+          userGuid,
+          spaceGuid,
+          'space'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for space delete user permision with guids and roles', () => {
+        expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          spaceGuid,
+          roles
+        ));
+      });
+    });
   });
 
   describe('deletedUserRoles()', function() {
@@ -509,12 +446,14 @@ describe('userActions', function() {
         resource type`, function() {
       var expectedRole = 'org_manager',
           expectedUserGuid = 'azxcvoiuzxcvzxcvzxvzx',
+          expectedGuid = 'org-asdf',
           expectedType = 'organization';
 
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
-        resourceType: expectedType
+        entityGuid: expectedGuid,
+        entityType: expectedType
       };
 
       let spy = setupServerSpy(sandbox)
@@ -522,6 +461,7 @@ describe('userActions', function() {
       userActions.deletedUserRoles(
         expectedRole,
         expectedUserGuid,
+        expectedGuid,
         expectedType);
 
       assertAction(spy, userActionTypes.USER_ROLES_DELETED, expectedParams);
@@ -608,134 +548,6 @@ describe('userActions', function() {
     });
   });
 
-  describe('fetchUserSpaces()', function () {
-    let userGuid;
-
-    beforeEach(function (done) {
-      userGuid = 'user123';
-      sandbox.stub(cfApi, 'fetchUserSpaces').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleViewAction');
-
-      userActions.fetchUserSpaces(userGuid)
-        .then(done, done.fail);
-    });
-
-    it('dispatches USER_SPACES_FETCH', function () {
-      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_SPACES_FETCH,
-        userGuid
-      }));
-    });
-
-    it('calls cfApi', function () {
-      expect(cfApi.fetchUserSpaces).toHaveBeenCalledWith(userGuid);
-    });
-
-    describe('given orgGuid', function () {
-      let orgGuid;
-      beforeEach(function (done) {
-        orgGuid = 'org123';
-
-        userActions.fetchUserSpaces(userGuid, { orgGuid })
-          .then(done, done.fail);
-      });
-
-      it('dispatches USER_SPACES_FETCH with orgGuid', function () {
-        expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith({
-          type: userActionTypes.USER_SPACES_FETCH,
-          userGuid,
-          orgGuid
-        });
-      });
-
-      it('calls api with orgGuid', function () {
-        expect(cfApi.fetchUserSpaces).toHaveBeenCalledWith(userGuid, sinon.match({ orgGuid }));
-      });
-    });
-  });
-
-  describe('receivedUserSpaces()', function () {
-    let userGuid, userSpaces, result;
-
-    beforeEach(function (done) {
-      userGuid = 'user123';
-      userSpaces = [{ guid: 'space123' }, { guid: 'space456' }];
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-
-      userActions.receivedUserSpaces(userGuid, userSpaces)
-        .then(_result => {
-          result = _result;
-        })
-        .then(done, done.fail);
-    });
-
-    it('dispatches USER_SPACES_RECEIVED', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_SPACES_RECEIVED,
-        userGuid,
-        userSpaces
-      }));
-    });
-
-    it('resolves the userSpaces', function () {
-      expect(result).toEqual(userSpaces);
-    });
-  });
-
-  describe('fetchUserOrgs()', function () {
-    let userGuid;
-
-    beforeEach(function (done) {
-      userGuid = 'user123';
-      sandbox.stub(cfApi, 'fetchUserOrgs').returns(Promise.resolve([]));
-      sandbox.stub(AppDispatcher, 'handleViewAction');
-
-      userActions.fetchUserOrgs(userGuid)
-        .then(done, done.fail);
-    });
-
-    it('dispatches USER_ORGS_FETCH', function () {
-      expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_ORGS_FETCH,
-        userGuid
-      }));
-    });
-
-    it('calls cfApi', function () {
-      expect(cfApi.fetchUserOrgs).toHaveBeenCalledOnce();
-      expect(cfApi.fetchUserOrgs).toHaveBeenCalledWith(userGuid);
-    });
-  });
-
-  describe('receivedUserOrgs()', function () {
-    let userGuid, userOrgs, result;
-
-    beforeEach(function (done) {
-      userGuid = 'user123';
-      userOrgs = [{ guid: 'org123' }, { guid: 'org456' }];
-      sandbox.stub(AppDispatcher, 'handleServerAction');
-
-      userActions.receivedUserOrgs(userGuid, userOrgs)
-        .then(_result => {
-          result = _result;
-        })
-        .then(done, done.fail);
-    });
-
-    it('dispatches USER_ORGS_RECEIVED', function () {
-      expect(AppDispatcher.handleServerAction).toHaveBeenCalledWith(sinon.match({
-        type: userActionTypes.USER_ORGS_RECEIVED,
-        userGuid,
-        userOrgs
-      }));
-    });
-
-    it('resolves the userOrgs', function () {
-      expect(result).toEqual(userOrgs);
-    });
-  });
-
-
   describe('fetchCurrentUserUaaInfo()', function () {
     let guid;
 
@@ -777,8 +589,6 @@ describe('userActions', function() {
       sandbox.stub(userActions, 'fetchCurrentUserInfo')
         .returns(Promise.resolve({ user_id: 'user123' }));
       sandbox.stub(userActions, 'fetchUser').returns(Promise.resolve());
-      sandbox.stub(userActions, 'fetchUserOrgs').returns(Promise.resolve());
-      sandbox.stub(userActions, 'fetchUserSpaces').returns(Promise.resolve());
       sandbox.stub(userActions, 'fetchCurrentUserUaaInfo').returns(Promise.resolve());
       sandbox.stub(userActions, 'receivedCurrentUser').returns(Promise.resolve());
       sandbox.stub(AppDispatcher, 'handleViewAction');
@@ -808,10 +618,6 @@ describe('userActions', function() {
 
     it('calls fetchUser', function () {
       expect(userActions.fetchUser).toHaveBeenCalledOnce();
-    });
-
-    it('calls fetchUserSpaces', function () {
-      expect(userActions.fetchUserSpaces).toHaveBeenCalledOnce();
     });
 
     it('calls receivedCurrentUser', function () {

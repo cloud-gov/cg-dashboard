@@ -355,9 +355,9 @@ export default {
    *
    * @param {Number} spaceGuid - The guid of the space that the users belong to.
    */
-  fetchSpaceUsers(spaceGuid) {
+  fetchSpaceUserRoles(spaceGuid) {
     return this.fetchMany(`/spaces/${spaceGuid}/user_roles`,
-                          userActions.receivedSpaceUsers,
+                          userActions.receivedSpaceUserRoles,
                           spaceGuid);
   },
 
@@ -436,7 +436,7 @@ export default {
   },
 
   putAssociateUserToOrganization(userGuid, orgGuid) {
-    return http.put(`${APIV}/users/${userGuid}/organizations/${orgGuid}`)
+    return http.put(`${APIV}/organizations/${orgGuid}/users/${userGuid}`)
       .then((res) => this.formatSplitResponse(res.data));
   },
 
