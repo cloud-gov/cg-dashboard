@@ -6,26 +6,33 @@ import BaseElement from './base.element';
 // Represents a UserInviteElement for making assertions against. This makes it
 // easier to abstract some of the webdriver details from the UI component.
 
-// TODO attach to class as static property
+const userInvite = '.test-users-invite';
+
+const selectors = {
+  primary: userInvite,
+  name: '.test-users_invite_name',
+  submit: '[type="submit"]',
+  error: '.error_message'
+};
 
 export default class UserInviteElement extends BaseElement {
   inputToInviteForm(input) {
-    browser.waitForExist('.test-users_invite_name');
-    return this.element('.test-users_invite_name').setValue(input);
+    browser.waitForExist(`${selectors.primary} ${selectors.name}`);
+    return this.element(selectors.name).setValue(input);
   }
 
   getInviteFormValue() {
-    browser.waitForExist('.test-users_invite_name');
-    return this.element('.test-users_invite_name').getValue();
+    browser.waitForExist(`${selectors.primary} ${selectors.name}`);
+    return this.element(selectors.name).getValue();
   }
 
   submitInviteForm() {
-    browser.waitForExist('[type="submit"]');
+    browser.waitForExist(`${selectors.primary} ${selectors.submit}`);
     const existingUserCount = this.countNumberOfUsers();
-    this.element('[type="submit"]').click();
+    this.element(selectors.submit).click();
     browser.waitUntil(() =>
       this.countNumberOfUsers() > existingUserCount ||
-      browser.isExisting('.test-users-invite .error_message')
+      browser.isExisting(`${selectors.primary} ${selectors.error}`)
     , 10000);
   }
 
@@ -43,10 +50,12 @@ export default class UserInviteElement extends BaseElement {
   }
 
   getErrorMessage() {
-    const errorEl = this.element('.error_message');
+    const errorEl = this.element(selectors.error);
     if (errorEl) {
       return errorEl.getText();
     }
     return null;
   }
 }
+
+UserInviteElement.primarySelector = userInvite;
