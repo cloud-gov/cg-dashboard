@@ -439,6 +439,26 @@ module.exports = function api(smocks) {
   });
 
   smocks.route({
+    id: 'user-roles-space-add-new-role',
+    label: 'User roles Space Add New role',
+    method: 'PUT',
+    path: `${BASE_URL}/spaces/{spaceGuid}/{role}/{userGuid}`,
+    handler: function (req, reply) {
+      reply(SingleResponse({}));
+    }
+  });
+
+  smocks.route({
+    id: 'user-roles-space-delete-role',
+    label: 'User roles Space Delete role',
+    method: 'DELETE',
+    path: `${BASE_URL}/spaces/{spaceGuid}/{role}/{userGuid}`,
+    handler: function (req, reply) {
+      reply(SingleResponse({}));
+    }
+  });
+
+  smocks.route({
     id: 'service-bindings',
     label: 'Service bindings',
     path: `${BASE_URL}/service_bindings`,
