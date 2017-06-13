@@ -62,9 +62,6 @@ export default class UsersInvite extends React.Component {
     if (this.props.currentUserAccess) {
       content = (
         <div>
-          <PanelDocumentation description>
-            <p>Organizational Managers can add new users below.</p>
-          </PanelDocumentation>
           <Form
             guid={ USERS_INVITE_FORM_GUID }
             classes={ ['users_invite_form'] }
