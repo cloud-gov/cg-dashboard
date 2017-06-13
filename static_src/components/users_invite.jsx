@@ -84,7 +84,7 @@ export default class UsersInvite extends React.Component {
               type="submit"
               disabled={ this.props.inviteDisabled }
             >
-              Invite new user
+              Add user to this organization
             </Action>
           </Form>
         </div>
