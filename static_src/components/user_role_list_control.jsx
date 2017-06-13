@@ -22,15 +22,6 @@ const roleMapping = {
 
 };
 
-const roleToResource = {
-  org_manager: 'managers',
-  billing_manager: 'billing_managers',
-  org_auditor: 'auditors',
-  space_developer: 'developers',
-  space_manager: 'managers',
-  space_auditor: 'auditors'
-};
-
 const propTypes = {
   user: React.PropTypes.object.isRequired,
   userType: React.PropTypes.string,
