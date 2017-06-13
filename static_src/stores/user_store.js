@@ -110,9 +110,8 @@ export class UserStore extends BaseStore {
           updatedRoles.add(addedRole);
           user.roles[action.entityGuid] = Array.from(updatedRoles);
 
-          this.merge('guid', user, (changed) => {
-            if (changed) this.emitChange();
-          });
+          this.merge('guid', user, (changed) => {});
+          this.emitChange();
         }
 
         break;
@@ -138,9 +137,8 @@ export class UserStore extends BaseStore {
               roles.splice(idx, 1);
             }
           }
-          this.merge('guid', user, (changed) => {
-            if (changed) this.emitChange();
-          });
+          this.merge('guid', user, (changed) => {});
+          this.emitChange();
         }
         break;
       }
