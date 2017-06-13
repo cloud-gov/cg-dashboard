@@ -22,15 +22,6 @@ const roleMapping = {
 
 };
 
-const roleToResource = {
-  org_manager: 'managers',
-  billing_manager: 'billing_managers',
-  org_auditor: 'auditors',
-  space_developer: 'developers',
-  space_manager: 'managers',
-  space_auditor: 'auditors'
-};
-
 const propTypes = {
   user: React.PropTypes.object.isRequired,
   userType: React.PropTypes.string,
@@ -62,9 +53,8 @@ export default class UserRoleListControl extends React.Component {
   _onChange(roleKey, checked) {
     const handler = (!checked) ? this.props.onRemovePermissions :
       this.props.onAddPermissions;
-    const resource = roleToResource[roleKey];
 
-    handler(resource, this.props.user.guid);
+    handler(roleKey, this.props.user.guid);
   }
 
   roles() {
