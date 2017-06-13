@@ -132,13 +132,7 @@ const userActions = {
       userGuid,
       entityGuid,
       roles
-    ).then(() => {
-      userActions.deletedUserRoles(
-        roles,
-        userGuid,
-        entityGuid,
-        entityType);
-    }).catch((err) => {
+    ).catch((err) => {
       window.console.error(err);
     });
   },

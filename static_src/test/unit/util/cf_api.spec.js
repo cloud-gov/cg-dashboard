@@ -3,6 +3,7 @@ import '../../global_setup.js';
 
 import http from 'axios';
 import Immutable from 'immutable';
+import moxios from 'moxios';
 
 import cfApi, { tryParseJson } from '../../../util/cf_api.js';
 import domainActions from '../../../actions/domain_actions.js';
@@ -41,9 +42,11 @@ describe('cfApi', function() {
   beforeEach(() => {
     OrgStore._data = new Immutable.List();
     sandbox = sinon.sandbox.create();
+    moxios.install();
   });
 
   afterEach(() => {
+    moxios.uninstall();
     sandbox.restore();
   });
 
@@ -1015,24 +1018,24 @@ describe('cfApi', function() {
 
     it(`should call user action on a 400 response that has code 10006 with
         message about the error from cf`, function(done) {
-      var stub = sandbox.stub(http, 'delete'),
-          spy = sandbox.spy(userActions, 'errorRemoveUser'),
+      var spy = sandbox.spy(userActions, 'errorRemoveUser'),
           expectedUserGuid = 'zcvmzxncbvpafd',
-          expected = {
+          expectedRespone = {
             code: 10006,
             description: 'Please delete the user associations for your spaces',
             error_code: 'CF-AssociationNotEmpty'
           };
-
-      let testPromise = createPromise(true, { data: expected });
-      stub.returns(testPromise);
+      moxios.stubOnce('DELETE', `/v2/organizations/asdf/role/${expectedUserGuid}`, {
+        status: 400,
+        response: expectedRespone
+      });
 
       cfApi.deleteOrgUserPermissions(expectedUserGuid, 'asdf', 'role').then(
         () => {
         expect(spy).toHaveBeenCalledOnce();
         let args = spy.getCall(0).args;
         expect(args[0]).toEqual(expectedUserGuid);
-        expect(args[1]).toEqual(expected);
+        expect(args[1]).toEqual(expectedRespone);
         done();
       }).catch(done.fail);
     });

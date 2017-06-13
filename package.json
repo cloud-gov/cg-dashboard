@@ -113,6 +113,7 @@
     "jasmine-sinon": "^0.4.0",
     "karma-jasmine-sinon": "^1.0.4",
     "lighthouse": "^1.6.3",
+    "moxios": "^0.4.0",
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "^15.4.2",
     "selenium-standalone": "^5.11.0",

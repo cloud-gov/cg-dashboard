@@ -4,6 +4,7 @@ import '../../global_setup.js';
 import AppDispatcher from '../../../dispatcher.js';
 import { assertAction, setupViewSpy, setupUISpy, setupServerSpy } from
   '../helpers.js';
+import moxios from 'moxios';
 import cfApi from '../../../util/cf_api.js';
 import uaaApi from '../../../util/uaa_api.js';
 import userActions from '../../../actions/user_actions.js';
@@ -14,11 +15,14 @@ import OrgStore from '../../../stores/org_store';
 describe('userActions', function() {
   var sandbox;
 
+
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
+    moxios.install();
   });
 
   afterEach(() => {
+    moxios.uninstall();
     sandbox.restore();
   });
 
@@ -246,17 +250,25 @@ describe('userActions', function() {
       assertAction(spy, userActionTypes.USER_ROLES_ADD, expectedParams);
     });
 
-    describe('for org user', function() {
+    describe('for org user that successfully adds a user permission', function() {
       let roles;
       let userGuid;
       let orgGuid;
 
       beforeEach(function(done) {
-        sandbox.stub(cfApi, 'putOrgUserPermissions').returns(Promise.resolve());
+        sandbox.spy(cfApi, 'putOrgUserPermissions');
         sandbox.stub(userActions, 'addedUserRoles').returns(Promise.resolve());
         roles = ['org_manager'];
         userGuid = 'user-123';
         orgGuid = 'org-123';
+        moxios.wait(function() {
+          let request = moxios.requests.mostRecent();
+          request.respondWith({
+            status: 200
+          }).then(function () {
+            done();
+          });
+        });
 
         userActions.addUserRoles(
           roles,
@@ -266,7 +278,7 @@ describe('userActions', function() {
         ).then(done, done.fail);
       });
 
-      it('should call api for org put user permision with guids and roles', () => {
+      it('should call api for org put user permission with guids and roles', () => {
         expect(cfApi.putOrgUserPermissions).toHaveBeenCalledOnce();
         expect(cfApi.putOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
@@ -286,17 +298,68 @@ describe('userActions', function() {
       });
     });
 
-    describe('for space user', function() {
+    describe('for org user that unsuccessfully adds a user permission', function() {
+      let roles;
+      let userGuid;
+      let orgGuid;
+
+      beforeEach(function(done) {
+        sandbox.spy(cfApi, 'putOrgUserPermissions');
+        sandbox.spy(userActions, 'addedUserRoles');
+        roles = ['org_manager'];
+        userGuid = 'user-123';
+        orgGuid = 'org-123';
+        moxios.wait(function() {
+          let request = moxios.requests.mostRecent();
+          request.respondWith({
+            status: 400,
+            response: {}
+          }).then(function () {
+            done();
+          });
+        });
+
+        userActions.addUserRoles(
+          roles,
+          userGuid,
+          orgGuid,
+          'org'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for org put user permission with guids and roles', () => {
+        expect(cfApi.putOrgUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.putOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          orgGuid,
+          roles
+        ));
+      });
+
+      it('should not call addedUserRoles action', function() {
+        expect(userActions.addedUserRoles.called).toEqual(false);
+      });
+    });
+
+    describe('for space user that successfully adds a user permission', function() {
       let roles;
       let userGuid;
       let spaceGuid;
 
       beforeEach(function(done) {
-        sandbox.stub(cfApi, 'putSpaceUserPermissions').returns(Promise.resolve());
+        sandbox.spy(cfApi, 'putSpaceUserPermissions');
         sandbox.stub(userActions, 'addedUserRoles').returns(Promise.resolve());
         roles = ['space_manager'];
         userGuid = 'user-123';
         spaceGuid = 'space-123';
+        moxios.wait(function() {
+          let request = moxios.requests.mostRecent();
+          request.respondWith({
+            status: 200
+          }).then(function () {
+            done();
+          });
+        });
 
         userActions.addUserRoles(
           roles,
@@ -306,7 +369,7 @@ describe('userActions', function() {
         ).then(done, done.fail);
       });
 
-      it('should call api for space put user permision with guids and roles', () => {
+      it('should call api for space put user permission with guids and roles', () => {
         expect(cfApi.putSpaceUserPermissions).toHaveBeenCalledOnce();
         expect(cfApi.putSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
@@ -314,6 +377,40 @@ describe('userActions', function() {
           roles
         ));
       });
+    });
+  });
+
+  describe('for space user that unsuccessfully adds a user permission', function() {
+    let roles;
+    let userGuid;
+    let spaceGuid;
+
+    beforeEach(function(done) {
+      sandbox.spy(cfApi, 'putSpaceUserPermissions');
+      sandbox.spy(userActions, 'addedUserRoles');
+      roles = ['space_manager'];
+      userGuid = 'user-123';
+      spaceGuid = 'space-123';
+      moxios.wait(function() {
+        let request = moxios.requests.mostRecent();
+        request.respondWith({
+          status: 400,
+          response: {}
+        }).then(function () {
+          done();
+        });
+      });
+
+      userActions.addUserRoles(
+        roles,
+        userGuid,
+        spaceGuid,
+        'space'
+      ).then(done, done.fail);
+    });
+
+    it('should not call addedUserRoles action', function() {
+      expect(userActions.addedUserRoles.called).toEqual(false);
     });
   });
 
@@ -370,17 +467,26 @@ describe('userActions', function() {
       assertAction(spy, userActionTypes.USER_ROLES_DELETE, expectedParams);
     });
 
-    describe('for org user', function() {
+    describe('for org user that successfully deletes a user permission', function() {
       let roles;
       let userGuid;
       let orgGuid;
 
       beforeEach(function(done) {
-        sandbox.stub(cfApi, 'deleteOrgUserPermissions').returns(Promise.resolve());
+        sandbox.spy(cfApi, 'deleteOrgUserPermissions');
+        sandbox.spy(userActions, 'errorRemoveUser');
         sandbox.stub(userActions, 'deletedUserRoles').returns(Promise.resolve());
         roles = ['org_manager'];
         userGuid = 'user-123';
         orgGuid = 'org-123';
+        moxios.wait(function() {
+          let request = moxios.requests.mostRecent();
+          request.respondWith({
+            status: 200
+          }).then(function () {
+            done();
+          });
+        });
 
         userActions.deleteUserRoles(
           roles,
@@ -390,7 +496,7 @@ describe('userActions', function() {
         ).then(done, done.fail);
       });
 
-      it('should call api for org delete user permision with guids and roles', () => {
+      it('should call api for org delete user permission with guids and roles', () => {
         expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledOnce();
         expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
@@ -408,19 +514,84 @@ describe('userActions', function() {
           'org'
         ));
       });
+
+      it('should not call errorRemoveUser', function() {
+        expect(userActions.errorRemoveUser.called).toEqual(false);
+      });
     });
 
-    describe('for space user', function() {
+    describe('for org user that unsuccessfully deletes a user permission', function() {
+      let roles;
+      let userGuid;
+      let orgGuid;
+
+      beforeEach(function(done) {
+        sandbox.spy(cfApi, 'deleteOrgUserPermissions');
+        sandbox.spy(userActions, 'deletedUserRoles');
+        sandbox.stub(userActions, 'errorRemoveUser').returns(Promise.resolve());
+        roles = ['org_manager'];
+        userGuid = 'user-123';
+        orgGuid = 'org-123';
+        moxios.wait(function() {
+          let request = moxios.requests.mostRecent();
+          request.respondWith({
+            status: 400,
+            response: {}
+          }).then(function () {
+            done();
+          });
+        });
+
+        userActions.deleteUserRoles(
+          roles,
+          userGuid,
+          orgGuid,
+          'org'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for org delete user permission with guids and roles', () => {
+        expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          orgGuid,
+          roles
+        ));
+      });
+
+      it('should call errorRemoveUser with the userGuid and the error response', function() {
+        expect(userActions.errorRemoveUser).toHaveBeenCalledOnce();
+        expect(userActions.errorRemoveUser).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          {}
+        ));
+      });
+
+      it('should not call deletedUserRoles', function() {
+        expect(userActions.deletedUserRoles.called).toEqual(false);
+      });
+    });
+
+    describe('for space user that successfully deletes a user permission', function() {
       let roles;
       let userGuid;
       let spaceGuid;
 
       beforeEach(function(done) {
-        sandbox.stub(cfApi, 'deleteSpaceUserPermissions').returns(Promise.resolve());
+        sandbox.spy(cfApi, 'deleteSpaceUserPermissions');
+        sandbox.spy(userActions, 'errorRemoveUser');
         sandbox.stub(userActions, 'deletedUserRoles').returns(Promise.resolve());
         roles = ['space_manager'];
         userGuid = 'user-123';
         spaceGuid = 'space-123';
+        moxios.wait(function() {
+          let request = moxios.requests.mostRecent();
+          request.respondWith({
+            status: 200
+          }).then(function () {
+            done();
+          });
+        });
 
         userActions.deleteUserRoles(
           roles,
@@ -430,7 +601,7 @@ describe('userActions', function() {
         ).then(done, done.fail);
       });
 
-      it('should call api for space delete user permision with guids and roles', () => {
+      it('should call api for space delete user permission with guids and roles', () => {
         expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledOnce();
         expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
@@ -438,6 +609,72 @@ describe('userActions', function() {
           roles
         ));
       });
+
+      it('should call deletedUserRoles action with all information', function() {
+        expect(userActions.deletedUserRoles).toHaveBeenCalledOnce();
+        expect(userActions.deletedUserRoles).toHaveBeenCalledWith(sinon.match(
+          roles,
+          userGuid,
+          spaceGuid,
+          'space'
+        ));
+      });
+
+      it('should not call errorRemoveUser', function() {
+        expect(userActions.errorRemoveUser.called).toEqual(false);
+      });
+    });
+  });
+
+  describe('for space user that unsuccessfully deletes a user permission', function() {
+    let roles;
+    let userGuid;
+    let spaceGuid;
+
+    beforeEach(function(done) {
+      sandbox.spy(cfApi, 'deleteSpaceUserPermissions');
+      sandbox.spy(userActions, 'deletedUserRoles');
+      sandbox.stub(userActions, 'errorRemoveUser').returns(Promise.resolve());
+      roles = ['space_manager'];
+      userGuid = 'user-123';
+      spaceGuid = 'space-123';
+      moxios.wait(function() {
+        let request = moxios.requests.mostRecent();
+        request.respondWith({
+          status: 400,
+          response: {}
+        }).then(function () {
+          done();
+        });
+      });
+
+      userActions.deleteUserRoles(
+        roles,
+        userGuid,
+        spaceGuid,
+        'space'
+      ).then(done, done.fail);
+    });
+
+    it('should call api for space delete user permission with guids and roles', () => {
+      expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledOnce();
+      expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
+        userGuid,
+        spaceGuid,
+        roles
+      ));
+    });
+
+    it('should call errorRemoveUser action with all information', function() {
+      expect(userActions.errorRemoveUser).toHaveBeenCalledOnce();
+      expect(userActions.errorRemoveUser).toHaveBeenCalledWith(sinon.match(
+        userGuid,
+        {}
+      ));
+    });
+
+    it('should not call deletedUserRoles', function() {
+      expect(userActions.deletedUserRoles.called).toEqual(false);
     });
   });
 
