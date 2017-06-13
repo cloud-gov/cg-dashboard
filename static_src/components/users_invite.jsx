@@ -62,6 +62,9 @@ export default class UsersInvite extends React.Component {
     if (this.props.currentUserAccess) {
       content = (
         <div>
+          <PanelDocumentation description>
+            <p>Invite new user to cloud.gov and this organization, or add an existing user to this organization.</p>
+          </PanelDocumentation>
           <Form
             guid={ USERS_INVITE_FORM_GUID }
             classes={ ['users_invite_form'] }
