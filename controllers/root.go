@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
-	"html/template"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/18F/cg-dashboard/helpers"
+	"github.com/18F/cg-dashboard/mailer"
 	"github.com/gocraft/web"
 	"github.com/gorilla/csrf"
 	"golang.org/x/oauth2"
@@ -14,27 +17,101 @@ import (
 // Context represents the context for all requests that do not need authentication.
 type Context struct {
 	Settings  *helpers.Settings
-	templates *template.Template
+	templates *helpers.Templates
+	mailer    mailer.Mailer
+}
+
+// StaticMiddleware provides simple caching middleware for static assets.
+func StaticMiddleware(path string) func(web.ResponseWriter, *web.Request, web.NextMiddlewareFunc) {
+	staticMiddleware := web.StaticMiddleware(path)
+	return func(rw web.ResponseWriter, r *web.Request, next web.NextMiddlewareFunc) {
+		// We want clients to cache these assets but it's important that they are
+		// up to date. If the javascript bundle does not match the server API,
+		// undefined behavior could happen.
+		rw.Header().Set("Cache-Control", "public, must-revalidate")
+		staticMiddleware(rw, r, next)
+	}
 }
 
 // Index serves index.html
 func (c *Context) Index(w web.ResponseWriter, r *web.Request) {
-	c.templates.ExecuteTemplate(w, "index.html", map[string]interface{}{
-		"csrfToken": csrf.Token(r.Request),
-	})
+	c.templates.GetIndex(w,
+		csrf.Token(r.Request),
+		os.Getenv("GA_TRACKING_ID"),
+		os.Getenv("NEW_RELIC_ID"),
+		os.Getenv("NEW_RELIC_BROWSER_LICENSE_KEY"))
+}
+
+type pingData struct {
+	Status             string             `json:"status"`
+	BuildInfo          string             `json:"build-info"`
+	SessionStoreHealth sessionStoreHealth `json:"session-store-health"`
+}
+
+const (
+	pingDataStatusAlive  = "alive"
+	pingDataStatusOutage = "outage"
+)
+
+func (p pingData) isSystemHealthy() bool {
+	return p.Status == pingDataStatusAlive
+}
+
+// toJSON returns a json representation of the pingData.
+// if it fails to return something, it will return an error in JSON.
+// also returns a boolean determining if the call succeeded.
+func (p pingData) toJSON() ([]byte, bool) {
+	pingBody, err := json.Marshal(p)
+	// Would only ever come up when adding new fields to pingData and it
+	// wasn't tested properly. This will only happen when trying to marshal things
+	// that don't result in proper JSON.
+	if err != nil {
+		return []byte("\"status\": \"error\": \"data\": \"" + err.Error() + "\""),
+			false
+	}
+	return pingBody, true
+}
+
+type sessionStoreHealth struct {
+	StoreType string `json:"store-type"`
+	StoreUp   bool   `json:"store-up"`
+}
+
+func createPingData(c *Context) pingData {
+	storeUp := c.Settings.SessionBackendHealthCheck()
+	overallStatus := pingDataStatusAlive
+	// if the session storage is out, we have an outage.
+	if !storeUp {
+		overallStatus = pingDataStatusOutage
+	}
+	return pingData{Status: overallStatus,
+		BuildInfo: c.Settings.BuildInfo,
+		SessionStoreHealth: sessionStoreHealth{
+			StoreType: c.Settings.SessionBackend,
+			StoreUp:   storeUp,
+		},
+	}
 }
 
 // Ping is just a test endpoint to show that indeed the service is alive.
-// TODO. Remove.
 func (c *Context) Ping(rw web.ResponseWriter, req *web.Request) {
-	fmt.Fprintf(rw, "{\"status\": \"alive\", \"build-info\": \""+c.Settings.BuildInfo+"\"}")
+	data := createPingData(c)
+	dataJSON, conversionSuccess := data.toJSON()
+	if !data.isSystemHealthy() || !conversionSuccess {
+		rw.WriteHeader(http.StatusInternalServerError)
+		// Also, should log out the data in the case of error so we can look at logs
+		// later to see what's wrong.
+		log.Println(string(dataJSON))
+	}
+	rw.Write(dataJSON)
 }
 
 // LoginHandshake is the handler where we authenticate the user and the user authorizes this application access to information.
 func (c *Context) LoginHandshake(rw web.ResponseWriter, req *web.Request) {
 	if token := helpers.GetValidToken(req.Request, c.Settings); token != nil {
 		// We should just go to dashboard if the user already has a valid token.
-		http.Redirect(rw, req.Request, "/#/dashboard", http.StatusFound)
+		dashboardURL := fmt.Sprintf("%s%s", c.Settings.AppURL, "/#/dashboard")
+		http.Redirect(rw, req.Request, dashboardURL, http.StatusFound)
 
 	} else {
 		// Redirect to the Cloud Foundry Login place.
@@ -82,46 +159,21 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 	}
 
 	// Redirect to the dashboard.
-	http.Redirect(rw, req.Request, "/#/dashboard", http.StatusFound)
+	dashboardURL := fmt.Sprintf("%s%s", c.Settings.AppURL, "/#/dashboard")
+	http.Redirect(rw, req.Request, dashboardURL, http.StatusFound)
 	// TODO. Redirect to the original route.
 }
 
-// LoginRequired is a middleware that requires a valid toker or redirects to the handshake page.
-func (c *Context) LoginRequired(rw web.ResponseWriter, r *web.Request, next web.NextMiddlewareFunc) {
-
-	// If there is no request just continue
-	if r == nil {
-		next(rw, r)
-		return
-	}
-
-	// Don't cache anything
-	// right now, there's a problem where when you initially logout and then
-	// revisit the server, you will get a bad view due to a caching issue.
-	// for now, we clear the cache for everything.
-	// TODO: revist and cache static assets.
-	rw.Header().Set("cache-control", "no-cache, no-store, must-revalidate, private")
-	rw.Header().Set("pragma", "no-cache")
-	rw.Header().Set("expires", "-1")
-
-	token := helpers.GetValidToken(r.Request, c.Settings)
-	tokenPresent := token != nil
-	publicUrls := map[string]struct{}{
-		"/handshake":      {},
-		"/oauth2callback": {},
-		"/ping":           {},
-		"/assets/img/dashboard-uaa-icon.jpg": {},
-	}
-	// Check if URL is public so we skip validation
-	_, public := publicUrls[r.URL.EscapedPath()]
-	if public || tokenPresent {
-		next(rw, r)
-	} else {
-		err := c.redirect(rw, r)
-		if err != nil {
-			fmt.Println("Error on oauth redirect: ", err.Error())
-		}
-	}
+// Logout is a handler that will attempt to clear the session information for the current user.
+func (c *Context) Logout(rw web.ResponseWriter, req *web.Request) {
+	session, _ := c.Settings.Sessions.Get(req.Request, "session")
+	// Clear the token
+	session.Values["token"] = nil
+	// Force the session to expire
+	session.Options.MaxAge = -1
+	session.Save(req.Request, rw)
+	logoutURL := fmt.Sprintf("%s%s", c.Settings.LoginURL, "/logout.do")
+	http.Redirect(rw, req.Request, logoutURL, http.StatusFound)
 }
 
 func (c *Context) redirect(rw web.ResponseWriter, req *web.Request) error {

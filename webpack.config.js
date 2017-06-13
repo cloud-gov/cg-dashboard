@@ -2,8 +2,6 @@ const path = require('path');
 const webpack = require('webpack');
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const WebpackKarmaWarningsPlugin = require(
-  './static_src/test/webpack-karma-warnings-plugin.js');
 
 const PRODUCTION = (process.env.NODE_ENV === 'prod');
 const TEST = (process.env.NODE_ENV === 'test');
@@ -30,28 +28,29 @@ const config = {
   devtool: PRODUCTION ? 'cheap-source-map' : 'eval-source-map',
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
-        loader: 'babel',
-        exclude: [
-          path.resolve(__dirname, 'node_modules')
-        ],
-        query: {
+        loader: 'babel-loader',
+        options: {
           presets: ['es2015', 'react'],
           plugins: ['transform-object-rest-spread', 'transform-runtime']
-        }
+        },
+        exclude: [
+          path.resolve(__dirname, 'node_modules')
+        ]
       },
       {
-        name: 'css',
         test: /\.css$/,
         include: [
           path.resolve(__dirname, 'static_src/css'),
           path.resolve(__dirname, 'node_modules/cloudgov-style'),
-          CG_STYLE_PATH || ''
+          CG_STYLE_PATH || ' '
         ],
-        loader: ExtractTextPlugin.extract('style-loader',
-          'css-loader')
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
       },
       {
         test: /\.(svg|ico|png|gif|jpe?g)$/,
@@ -59,10 +58,6 @@ const config = {
       },
       { test: /\.(ttf|woff2?|eot)$/,
         loader: 'url-loader?limit=1024&name=font/[name].[ext]'
-      },
-      {
-        test: /\.json$/,
-        loaders: ['json-loader']
       }
     ]
   },
@@ -70,27 +65,34 @@ const config = {
   resolve: {
     alias: {
       'cloudgov-style': 'cloudgov-style',
-      'skin' : path.resolve(__dirname, `static_src/skins/${CF_SKIN}`)
+      skin: path.resolve(__dirname, `static_src/skins/${CF_SKIN}`)
     },
 
-    modulesDirectories: ['node_modules']
-  },
-
-  resolveLoader: {
-    fallback: path.resolve(__dirname, 'node_modules')
+    modules: ['node_modules'],
+    // Required for some module configs which use these fields
+    // See https://github.com/flatiron/director/issues/349
+    mainFields: ['browserify', 'browser', 'module', 'main']
   },
 
   plugins: [
-    new ExtractTextPlugin('style.css', { allChunks: true })
-  ],
-
-  publicPath: './static'
+    new ExtractTextPlugin({
+      filename: 'style.css',
+      disable: false,
+      allChunks: true
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+      options: {
+        context: __dirname
+      }
+    })
+  ]
 };
 
 if (TEST) {
-  config.plugins.push(new WebpackKarmaWarningsPlugin());
   config.externals = {
-    'cheerio': 'window',
+    cheerio: 'window',
     'react/addons': true,
     'react/lib/ExecutionEnvironment': true,
     'react/lib/ReactContext': true
@@ -98,19 +100,11 @@ if (TEST) {
 }
 
 if (PRODUCTION) {
-  config.plugins.push(new webpack.optimize.DedupePlugin());
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin());
-  config.plugins.push(new WebpackKarmaWarningsPlugin());
   config.plugins.push(new webpack.DefinePlugin({
     'process.env': {
-      'NODE_ENV': JSON.stringify('production')
+      NODE_ENV: JSON.stringify('production')
     }
   }));
-  const idx = config.module.loaders.findIndex((loader) => loader.name === 'css');
-  config.module.loaders[idx].loader = (
-    ExtractTextPlugin.extract('style-loader',
-      'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]')
-  );
 }
 
 module.exports = config;

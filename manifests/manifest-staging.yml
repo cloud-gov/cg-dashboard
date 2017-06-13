@@ -1,0 +1,7 @@
+---
+inherit: manifest-base.yml
+applications:
+- name: cg-dashboard-staging
+  host: dashboard-staging
+  env:
+    CONSOLE_HOSTNAME: https://dashboard-staging.app.cloud.gov

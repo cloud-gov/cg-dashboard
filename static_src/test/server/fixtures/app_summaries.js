@@ -168,6 +168,78 @@ const appSummaries = [
       redacted_message: "[PRIVATE DATA HIDDEN]"
     },
     ports: null
+  },
+  {
+    guid: "3c37ff32-d954-4f9f-b730-15e22442fd82",
+    name: "fake-data-problem",
+    routes: [
+      {
+        guid: "b0a7fd97-ce44-4aeb-9bd8-204d17cdf9ef",
+        host: "fake-node-crashed",
+        port: null,
+        path: 0,
+        domain: {
+          guid: "97435c2f-d5bb-4c10-8393-55d7d7169932",
+          name: "apps.cloud.gov"
+        }
+      }
+    ],
+    running_instances: 1,
+    services: [],
+    available_domains: [
+      {
+        guid: "646d73b7-eda3-49e6-9959-848062d3c694",
+        name: "18f.us",
+        owning_organization_guid: "533d8476-f3e9-4362-ba2a-a3fdde21bde2"
+      },
+      {
+        guid: "3750eb89-86c6-4882-96bf-66b8c6363290",
+        name: "18f.gov",
+        owning_organization_guid: "393f8197-8f0d-444a-a3f7-0a04a5059fd1"
+      },
+      {
+        guid: "a0948d28-abe2-4a2f-b8c5-738e3fb60c24",
+        name: "cf.18f.us",
+        owning_organization_guid: "533d8476-f3e9-4362-ba2a-a3fdde21bde2"
+      },
+      {
+        guid: "97435c2f-d5bb-4c10-8393-55d7d7169932",
+        name: "apps.cloud.gov",
+        router_group_guid: null,
+        router_group_type: null
+      }
+    ],
+    production: false,
+    space_guid: "82af0edb-8540-4064-82f2-d74df612b794",
+    stack_guid: "77590563-6c7c-4ec4-9b4a-01ce9d628190",
+    buildpack: null,
+    detected_buildpack: "node.js 1.5.25",
+    detected_buildpack_guid: "a12a1517-f676-4c7a-aa6c-1b05887190f3",
+    environment_json: {},
+    memory: 24,
+    instances: 1,
+    disk_quota: 1024,
+    state: "STARTED",
+    version: "630aa1f3-f6e8-4cba-aebb-f63252f31cc1",
+    command: null,
+    console: false,
+    debug: null,
+    staging_task_id: "561387da-edcf-49ed-ae3e-ccf57db83a5a",
+    package_state: "STAGED",
+    health_check_type: "port",
+    health_check_timeout: null,
+    health_check_http_endpoint: null,
+    staging_failed_reason: null,
+    staging_failed_description: null,
+    diego: false,
+    docker_image: null,
+    package_updated_at: "2016-12-22T22:06:18Z",
+    detected_start_command: "node web.js",
+    enable_ssh: true,
+    docker_credentials_json: {
+      redacted_message: "[PRIVATE DATA HIDDEN]"
+    },
+    ports: null
   }
 ];
 

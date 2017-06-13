@@ -31,12 +31,28 @@ const entityHealth = keymirror({
 
 // All global error action types
 const errorActionTypes = keymirror({
-  FETCH: null
+  FETCH: null,
+  IMPORTANT_FETCH: null,
+  DISMISS: null,
+  CLEAR: null,
+  NOTIFY: null
 });
+
+const formActionTypes = keymirror({
+  // User has changed a form field
+  FORM_FIELD_CHANGE: null,
+  // The form field change was valid
+  FORM_FIELD_CHANGE_SUCCESS: null,
+  // The form field change is not a valid input
+  FORM_FIELD_CHANGE_ERROR: null
+});
+
 
 const loginActionTypes = keymirror({
   // Action of fetching a login status, whether the user is logged in or not.
   FETCH_STATUS: null,
+  // Login status is unknown, an error occurred.
+  ERROR_STATUS: null,
   // Action when the login status is received from the server.
   RECEIVED_STATUS: null
 });
@@ -196,7 +212,9 @@ const appActionTypes = keymirror({
   // Action when app restarted on server.
   APP_RESTARTED: null,
   // Action when some error happens when manipulating an app
-  APP_ERROR: null
+  APP_ERROR: null,
+  // Action when the fetching of app fails
+  APP_FETCH_ERROR: null
 });
 
 const userActionTypes = keymirror({
@@ -205,13 +223,25 @@ const userActionTypes = keymirror({
   // Action to fetch the user roles for an org from the server.
   ORG_USER_ROLES_FETCH: null,
   // Action to fetch users belonging to a space from the server.
-  SPACE_USERS_FETCH: null,
+  SPACE_USER_ROLES_FETCH: null,
   // Action when all organization users were received from the server.
   ORG_USERS_RECEIVED: null,
   // Action when all org user roles were received from the server.
   ORG_USER_ROLES_RECEIVED: null,
   // Action when all space users were received from the server.
-  SPACE_USERS_RECEIVED: null,
+  SPACE_USER_ROLES_RECEIVED: null,
+  // User is fetched from the server
+  USER_FETCH: null,
+  // User is received from the server
+  USER_RECEIVED: null,
+  // Fetch spaces this user is a member of (developer of).
+  USER_SPACES_FETCH: null,
+  // Receive spaces this user is a member of (developer of).
+  USER_SPACES_RECEIVED: null,
+  // Fetch orgss this user is a member of (manager of).
+  USER_ORGS_FETCH: null,
+  // Receive orgss this user is a member of (manager of).
+  USER_ORGS_RECEIVED: null,
   // Action to add permissions to a user for a space or org on the server.
   USER_ROLES_ADD: null,
   // Action when user roles are added on the server.
@@ -220,6 +250,16 @@ const userActionTypes = keymirror({
   USER_ROLES_DELETE: null,
   // Action when user roles are deleted on the server.
   USER_ROLES_DELETED: null,
+  // Action to request an invite link from UAA, with user GUID.
+  USER_INVITE_TRIGGER: null,
+  // Action to trigger email sent to user with cloud.gov invite url.
+  USER_ORG_ASSOCIATE: null,
+  // Action to associate user to organization on the server.
+  USER_ORG_ASSOCIATED: null,
+  // Display the user associated to org.
+  USER_ASSOCIATED_ORG_DISPLAYED: null,
+  // Action when something goes wrong in user invite and email process.
+  USER_INVITE_ERROR: null,
   // Action to delete a user from an org.
   USER_DELETE: null,
   // Action when a user was deleted from an org on the server.
@@ -228,8 +268,24 @@ const userActionTypes = keymirror({
   ERROR_REMOVE_USER: null,
   // Action when the type of users being looked at changes
   USER_CHANGE_VIEWED_TYPE: null,
+  // Meta action that we are fetching the multiple pieces that make up the current user
+  CURRENT_USER_FETCH: null,
+  // Meta action that the current user is loaded
+  CURRENT_USER_RECEIVED: null,
+  // An error occurred while loading the current user
+  CURRENT_USER_ERROR: null,
+  // Current user info fetched from server.
+  CURRENT_USER_INFO_FETCH: null,
   // Action when current user info received from server.
-  CURRENT_USER_INFO_RECEIVED: null
+  CURRENT_USER_INFO_RECEIVED: null,
+  // Current UAA info fetched from server.
+  CURRENT_UAA_INFO_FETCH: null,
+  // Action when current UAA info received from server.
+  CURRENT_UAA_INFO_RECEIVED: null,
+  // Action to fetch roles of current user.
+  CURRENT_USER_ROLES_FETCH: null,
+  // Action when roles for current user are received.
+  CURRENT_USER_ROLES_RECEIVED: null
 });
 
 const routeActionTypes = keymirror({
@@ -294,6 +350,7 @@ export {
   appStates,
   domainActionTypes,
   errorActionTypes,
+  formActionTypes,
   loginActionTypes,
   orgActionTypes,
   pageActionTypes,

@@ -10,9 +10,19 @@
  * to deal with a single component.
  **/
 
+import assert from 'assert';
+
 export default class BaseElement {
-  constructor(browser, webElement) {
+  constructor(browser, webElementOrSelector) {
     this.browser = browser;
+
+    let webElement = webElementOrSelector;
+    if (typeof webElementOrSelector === 'string') {
+      browser.waitForExist(webElementOrSelector);
+      webElement = browser.element(webElementOrSelector);
+    }
+
+    assert(webElement.value, `Element '${webElement.selector}' does not exist in the DOM.`);
     this.webElementId = webElement.value.ELEMENT;
   }
 

@@ -3,6 +3,9 @@
  * Actions for global errors across the whole application.
  */
 
+import AppDispatcher from '../dispatcher.js';
+import { errorActionTypes } from '../constants';
+
 /* eslint-disable no-alert, no-console */
 export default {
   errorDelete(err) {
@@ -23,6 +26,47 @@ export default {
   errorPut(err) {
     console.error('put failure', err);
     // throw err;
+  },
+
+  dismissError(err) {
+    AppDispatcher.handleUIAction({
+      type: errorActionTypes.DISMISS,
+      err
+    });
+
+    return Promise.resolve(err);
+  },
+
+  noticeError(err) {
+    AppDispatcher.handleUIAction({
+      type: errorActionTypes.NOTIFY,
+      err
+    });
+
+    return Promise.resolve(err);
+  },
+
+  importantDataFetchError(err, entityMessage) {
+    console.error(err);
+
+    const msg = 'There was an issue connecting to the dashboard, ' +
+      `${entityMessage || 'please try again later.'}`;
+
+    AppDispatcher.handleServerAction({
+      type: errorActionTypes.IMPORTANT_FETCH,
+      msg,
+      err
+    });
+
+    return Promise.resolve(err);
+  },
+
+  clearErrors() {
+    AppDispatcher.handleUIAction({
+      type: errorActionTypes.CLEAR
+    });
+
+    return Promise.resolve();
   }
 };
 /* eslint-enable no-alert, no-console */

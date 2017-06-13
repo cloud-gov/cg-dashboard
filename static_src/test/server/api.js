@@ -19,8 +19,21 @@ var spaceRoutes = require('./fixtures/space_routes');
 var spaceSummaries = require('./fixtures/space_summaries');
 var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
 var spaceUserRoles = require('./fixtures/space_user_roles.js');
+var uaaRoles = require('./fixtures/uaa_roles.js');
+var userOrganizations = require('./fixtures/user_organizations.js');
+var userAssociationResponses = require('./fixtures/user_association_responses.js');
+var userInviteResponses = require('./fixtures/user_invite_responses.js');
+var userRoles = require('./fixtures/user_roles.js');
+var userRoleOrgAddNewRole = require('./fixtures/user_role_org_add_new_role.js');
+var userSpaces = require('./fixtures/user_spaces.js');
 
 var BASE_URL = '/v2';
+
+const ENV_NO_ORGS = process.env.NO_ORGS || false;
+const ENV_NO_SPACES = process.env.NO_SPACES || false;
+const ENV_NO_APPS = process.env.NO_APPS || false;
+const ENV_NO_ORG_USERS = process.env.NO_ORG_USERS || false;
+const ENV_NO_SPACE_USERS = process.env.NO_SPACE_USERS || false;
 
 function SingleResponse(response) {
   return response;
@@ -37,6 +50,62 @@ function MultiResponse(responses) {
 }
 
 module.exports = function api(smocks) {
+
+  smocks.route({
+    id: 'uaa-uaainfo-no-uaa-permissions',
+    label: 'UAA user info fake-personb - no special UAA permissions',
+    path: '/uaa/uaainfo',
+    handler: function(req, reply) {
+      // 'cca7537f-601d-48c4-9705-4583ba54ea4c' == "cloud_controller.admin"
+      // 'bba7537f-601d-48c4-9705-4583ba54ea4b' != "cloud_controller.admin"
+      if (req.query.uaa_guid == 'cca7537f-601d-48c4-9705-4583ba54ea4c'){
+        // UAA user with admin permissions
+        // Noted in groups: []
+        reply(uaaRoles['uaa_admin']);
+      } else {
+        // No UAA permissions
+        // Noted in groups: []
+        reply(uaaRoles['default']);
+      }
+    }
+  });
+
+  smocks.route({
+    id: 'uaa-userinfo',
+    label: 'UAA user info',
+    path: '/uaa/userinfo',
+    handler: function(req, reply) {
+      let userRoleObject;
+      if(req.state['testing_user_role'] && userRoles[req.state['testing_user_role']]){
+        userRoleObject = userRoles[req.state['testing_user_role']];
+      } else {
+        userRoleObject = userRoles['default'];
+      }
+      if (req.state['show_user_info']) {
+      }
+      reply(userRoleObject);
+    }
+  });
+
+  smocks.route({
+    id: 'uaa-user-invite',
+    label: 'UAA user invite create',
+    method: 'POST',
+    path: '/uaa/invite/users',
+    handler: function(req, reply) {
+      let userInviteResponse;
+      const email = req.payload.email;
+      if (email && userInviteResponses[email]){
+        userInviteResponse = userInviteResponses[email];
+        reply(userInviteResponse);
+      } else if (!email.length || !/(.+)@(.+){2,}\.(.+){2,}/.test(email)) {
+        reply({ message: 'Invalid email'}).code(500);
+      } else {
+        userInviteResponse = userInviteResponses['default'];
+        reply(userInviteResponse);
+      }
+    }
+  });
 
   smocks.route({
     id: 'app-routes',
@@ -71,7 +140,11 @@ module.exports = function api(smocks) {
       const appStat = appStats.find(function(app) {
         return app.guid === guid;
       });
-      reply(SingleResponse(appStat));
+      if (guid === '3c37ff32-d954-4f9f-b730-15e22442fd82') {
+        reply({ message: 'There is a problem with the server'}).code(503);
+      } else {
+        reply(SingleResponse(appStat));
+      }
     }
   });
 
@@ -80,7 +153,11 @@ module.exports = function api(smocks) {
     label: 'Organizations',
     path: `${BASE_URL}/organizations`,
     handler: function (req, reply) {
-      reply(MultiResponse(organizations));
+      if (ENV_NO_ORGS) {
+        reply(MultiResponse([]));
+      } else {
+        reply(MultiResponse(organizations));
+      }
     }
   });
 
@@ -146,7 +223,88 @@ module.exports = function api(smocks) {
     label: 'Organization users',
     path: `${BASE_URL}/organizations/{guid}/users`,
     handler: function (req, reply) {
-      reply(MultiResponse(organizationUsers));
+      if (ENV_NO_ORG_USERS) {
+        reply(MultiResponse([organizationUsers[0]]));
+      } else {
+        reply(MultiResponse(organizationUsers));
+      }
+    }
+  });
+
+  smocks.route({
+    id: 'user',
+    label: 'User',
+    path: `${BASE_URL}/users/{guid}`,
+    handler: function (req, reply) {
+      const guid = req.params.guid;
+      let user = organizationUsers.find((orgUser) =>
+        orgUser.metadata.guid === guid);
+      if (!user) {
+        for (const userName in userInviteResponses) {
+          const invite = userInviteResponses[userName];
+          if (invite.userGuid === guid) {
+            user = {
+              metadata: {
+                guid: invite.userGuid
+              },
+              entity: {
+                username: userName
+              }
+            }
+          }
+        }
+      }
+
+      if (user) {
+        reply(SingleResponse(user));
+      } else {
+        reply({ message: 'User not found'}).code(400);
+      }
+    }
+  });
+
+  smocks.route({
+    id: 'user-organizations',
+    label: 'User organizations',
+    path: `${BASE_URL}/users/{guid}/organizations`,
+    handler: function(req, reply) {
+      const guid = req.params.guid;
+      let userOrgFlag = 'default';
+      if(userOrganizations[guid]){
+        userOrgFlag = guid;
+      }
+      reply(MultiResponse(userOrganizations[userOrgFlag]));
+    }
+  });
+
+  smocks.route({
+    id: 'user-associate-to-organizations',
+    label: 'User associate to organization',
+    method: 'PUT',
+    path: `${BASE_URL}/organizations/{orgGuid}/users/{guid}`,
+    handler: function(req, reply) {
+      let userCreateResponse;
+      const guid = req.params.guid;
+      if ( guid && userAssociationResponses[guid] ){
+        userCreateResponse = userAssociationResponses[guid];
+      } else {
+        userCreateResponse = userAssociationResponses['default'];
+      }
+      reply(userCreateResponse);
+    }
+  });
+
+  smocks.route({
+    id: 'user-spaces',
+    label: 'User spaces',
+    path: `${BASE_URL}/users/{guid}/spaces`,
+    handler: function(req, reply) {
+      const guid = req.params.guid;
+      let userSpaceFlag = 'default';
+      if(userSpaces[guid]){
+        userSpaceFlag = guid;
+      }
+      reply(MultiResponse(userSpaces[userSpaceFlag]));
     }
   });
 
@@ -155,26 +313,37 @@ module.exports = function api(smocks) {
     label: 'Organization user roles',
     path: `${BASE_URL}/organizations/{guid}/user_roles`,
     handler: function (req, reply) {
-      reply(MultiResponse(organizationUserRoles));
+      let orgResponseName;
+      const guid = req.params.guid;
+      if ( organizationUserRoles[guid] ) {
+        orgResponseName = guid;
+      } else {
+        orgResponseName = 'default';
+      }
+      reply(MultiResponse(organizationUserRoles[orgResponseName]));
     }
   });
 
   smocks.route({
-    id: 'uaa-userinfo',
-    label: 'UAA user info',
-    path: '/uaa/userinfo',
-    handler: function(req, reply) {
-      // TODO move to fixtures
-      const firstUser = organizationUsers[0];
-      const currentUser = {
-        email: firstUser.username,
-        family_name: firstUser.username,
-        given_name: firstUser.username,
-        name: firstUser.username,
-        user_id: firstUser.metadata.guid,
-        user_name:firstUser.username
-      };
-      reply(currentUser);
+    id: 'user-roles-org-add-new-role',
+    label: 'User roles Org Add New role',
+    method: 'PUT',
+    path: `${BASE_URL}/organizations/{orgGuid}/{role}/{userGuid}`,
+    handler: function (req, reply) {
+      const orgGuid = req.params.orgGuid;
+      const user = userRoleOrgAddNewRole(orgGuid);
+
+      reply(SingleResponse(user));
+    }
+  });
+
+  smocks.route({
+    id: 'user-roles-org-delete-role',
+    label: 'User roles Org Delete role',
+    method: 'DELETE',
+    path: `${BASE_URL}/organizations/{orgGuid}/{role}/{userGuid}`,
+    handler: function (req, reply) {
+      reply(SingleResponse({}));
     }
   });
 
@@ -183,7 +352,11 @@ module.exports = function api(smocks) {
     label: 'Spaces',
     path: `${BASE_URL}/spaces`,
     handler: function (req, reply) {
-      reply(MultiResponse(spaces));
+      if (ENV_NO_SPACES) {
+        reply(MultiResponse([]));
+      } else {
+        reply(MultiResponse(spaces));
+      }
     }
   });
 
@@ -235,6 +408,9 @@ module.exports = function api(smocks) {
       const space = spaceSummaries.find(function(spaceSummary) {
         return spaceSummary.guid === guid;
       });
+      if (ENV_NO_APPS) {
+        space.apps = [];
+      }
       reply(SingleResponse(space));
     }
   });
@@ -253,7 +429,12 @@ module.exports = function api(smocks) {
     label: 'Space user roles',
     path: `${BASE_URL}/spaces/{guid}/user_roles`,
     handler: function (req, reply) {
-      reply(MultiResponse(spaceUserRoles));
+      let spaceResponseName = 'default';
+      const guid = req.params.guid;
+      if ( spaceUserRoles[guid] && !ENV_NO_SPACE_USERS ) {
+        spaceResponseName = guid;
+      }
+      reply(MultiResponse(spaceUserRoles[spaceResponseName]));
     }
   });
 

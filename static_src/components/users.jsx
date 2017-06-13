@@ -10,6 +10,7 @@ import userActions from '../actions/user_actions.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
+import UsersInvite from './users_invite.jsx';
 import UserStore from '../stores/user_store.js';
 
 const SPACE_NAME = 'space_users';
@@ -19,27 +20,37 @@ function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const currentType = UserStore.currentlyViewedType;
+  const currentUser = UserStore.currentUser;
 
   let users = [];
   let currentUserAccess = false;
+  const inviteDisabled = UserStore.inviteDisabled();
+  let entityGuid;
 
   if (currentType === SPACE_NAME) {
     users = UserStore.getAllInSpace(currentSpaceGuid);
-    currentUserAccess = UserStore.currentUserHasSpaceRole('space_manager');
+    entityGuid = currentSpaceGuid;
+    currentUserAccess = UserStore.hasRole(currentUser.guid, currentSpaceGuid,
+                                          'space_manager');
   } else {
     users = UserStore.getAllInOrg(currentOrgGuid);
-    currentUserAccess = UserStore.currentUserHasOrgRole('org_manager');
+    entityGuid = currentOrgGuid;
+    currentUserAccess = UserStore.hasRole(currentUser.guid, currentOrgGuid,
+                                          'org_manager');
   }
 
   return {
     error: UserStore.getError(),
+    inviteDisabled,
     currentUserAccess,
     currentOrgGuid,
     currentSpaceGuid,
+    entityGuid,
     currentType,
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
-    users
+    users,
+    userInviteError: UserStore.getInviteError()
   };
 }
 
@@ -75,25 +86,25 @@ export default class Users extends React.Component {
   handleAddPermissions(roleKey, userGuid) {
     userActions.addUserRoles(roleKey,
                                 userGuid,
-                                this.resourceGuid,
-                                this.resourceType);
+                                this.entityGuid,
+                                this.entityType);
   }
 
   handleRemovePermissions(roleKey, userGuid) {
     userActions.deleteUserRoles(roleKey,
                                 userGuid,
-                                this.resourceGuid,
-                                this.resourceType);
+                                this.entityGuid,
+                                this.entityType);
   }
 
-  get resourceType() {
+  get entityType() {
     return this.state.currentType === ORG_NAME ? 'org' : 'space';
   }
 
-  get resourceGuid() {
-    const resourceGuid = this.state.current === ORG_NAME ?
+  get entityGuid() {
+    const entityGuid = this.state.currentType === ORG_NAME ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
-    return resourceGuid;
+    return entityGuid;
   }
 
   render() {
@@ -105,11 +116,12 @@ export default class Users extends React.Component {
     }
 
     let content = (<UserList
-      initialUsers={ this.state.users }
-      initialUserType= { this.state.currentType }
-      initialCurrentUserAccess={ this.state.currentUserAccess }
-      initialEmpty={ this.state.empty }
-      initialLoading={ this.state.loading }
+      users={ this.state.users }
+      userType= { this.state.currentType }
+      entityGuid={ this.state.entityGuid }
+      currentUserAccess={ this.state.currentUserAccess }
+      empty={ this.state.empty }
+      loading={ this.state.loading }
       onRemove={ removeHandler }
       onAddPermissions={ this.handleAddPermissions }
       onRemovePermissions={ this.handleRemovePermissions }
@@ -124,8 +136,13 @@ export default class Users extends React.Component {
     }
 
     return (
-      <div>
+      <div className="test-users">
         { errorMessage }
+        <UsersInvite
+          inviteDisabled={ this.state.inviteDisabled }
+          currentUserAccess={ this.state.currentUserAccess }
+          error={ this.state.userInviteError }
+        />
         <div>
           <div>
             { content }

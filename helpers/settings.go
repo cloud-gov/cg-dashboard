@@ -4,15 +4,23 @@ import (
 	"encoding/gob"
 	"errors"
 	"fmt"
+	"log"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/boj/redistore"
 	"github.com/cloudfoundry-community/go-cfenv"
+	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/sessions"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
+)
+
+const (
+	// 7 days at most.
+	expirationConstant = 60 * 60 * 24 * 7
 )
 
 // Settings is the object to hold global values and objects for the service.
@@ -33,6 +41,8 @@ type Settings struct {
 	UaaURL string
 	// Log API
 	LogURL string
+	// Path to root of project.
+	BasePath string
 	// High Privileged OauthConfig
 	HighPrivilegedOauthConfig *clientcredentials.Config
 	// A flag to indicate whether profiling should be included (debug purposes).
@@ -41,6 +51,22 @@ type Settings struct {
 	BuildInfo string
 	//Set the secure flag on session cookies?
 	SecureCookies bool
+	// URL where this app is hosted
+	AppURL string
+	// Type of session backend
+	SessionBackend string
+	// Returns whether the backend is up.
+	SessionBackendHealthCheck func() bool
+	// SMTP host for UAA invites
+	SMTPHost string
+	// SMTP post for UAA invites
+	SMTPPort string
+	// SMTP user for UAA invites
+	SMTPUser string
+	// SMTP password for UAA invites
+	SMTPPass string
+	// SMTP from address for UAA invites
+	SMTPFrom string
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -70,7 +96,15 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	if len(envVars.SessionKey) == 0 {
 		return errors.New("Unable to find '" + SessionKeyEnvVar + "' in environment. Exiting.\n")
 	}
+	if len(envVars.SMTPFrom) == 0 {
+		return errors.New("Unable to find '" + SMTPFromEnvVar + "' in environment. Exiting.\n")
+	}
+	if len(envVars.SMTPHost) == 0 {
+		return errors.New("Unable to find '" + SMTPHostEnvVar + "' in environment. Exiting.\n")
+	}
 
+	s.BasePath = envVars.BasePath
+	s.AppURL = envVars.Hostname
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
 	s.TokenContext = context.TODO()
@@ -86,7 +120,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	s.OAuthConfig = &oauth2.Config{
 		ClientID:     envVars.ClientID,
 		ClientSecret: envVars.ClientSecret,
-		RedirectURL:  envVars.Hostname + "/oauth2callback",
+		RedirectURL:  s.AppURL + "/oauth2callback",
 		Scopes:       []string{"cloud_controller.read", "cloud_controller.write", "cloud_controller.admin", "scim.read", "openid"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  envVars.LoginURL + "/oauth/authorize",
@@ -105,16 +139,61 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 		if err != nil {
 			return err
 		}
-		store, err := redistore.NewRediStore(10, "tcp", address, password, []byte(envVars.SessionKey))
+		// Create a common redis pool of connections.
+		redisPool := &redis.Pool{
+			MaxIdle:     10,
+			IdleTimeout: 240 * time.Second,
+			TestOnBorrow: func(c redis.Conn, t time.Time) error {
+				_, pingErr := c.Do("PING")
+				return pingErr
+			},
+			Dial: func() (redis.Conn, error) {
+				// We need to control how long connections are attempted.
+				// Currently will limit how long redis should respond back to
+				// 10 seconds. Any time less than the overall connection timeout of 60
+				// seconds is good.
+				c, dialErr := redis.Dial("tcp", address,
+					redis.DialConnectTimeout(10*time.Second),
+					redis.DialWriteTimeout(10*time.Second),
+					redis.DialReadTimeout(10*time.Second))
+				if dialErr != nil {
+					return nil, dialErr
+				}
+				if password != "" {
+					if _, authErr := c.Do("AUTH", password); err != nil {
+						c.Close()
+						return nil, authErr
+					}
+				}
+				return c, nil
+			},
+		}
+		// create our redis pool.
+		store, err := redistore.NewRediStoreWithPool(redisPool, []byte(envVars.SessionKey))
 		if err != nil {
 			return err
 		}
 		store.SetMaxLength(4096 * 4)
 		store.Options = &sessions.Options{
 			HttpOnly: true,
+			MaxAge:   expirationConstant,
+			Path:     "/",
 			Secure:   s.SecureCookies,
 		}
 		s.Sessions = store
+		s.SessionBackend = envVars.SessionBackend
+
+		// Use health check function where we do a PING.
+		s.SessionBackendHealthCheck = func() bool {
+			c := redisPool.Get()
+			defer c.Close()
+			_, err := c.Do("PING")
+			if err != nil {
+				log.Printf("{\"health-check-error\": \"%s\"}", err)
+				return false
+			}
+			return true
+		}
 	default:
 		store := sessions.NewFilesystemStore("", []byte(envVars.SessionKey))
 		store.MaxLength(4096 * 4)
@@ -122,10 +201,13 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 			HttpOnly: true,
 			// TODO remove this; work-around for
 			// https://github.com/gorilla/sessions/issues/96
-			MaxAge: 60 * 60 * 24 * 7,
+			MaxAge: expirationConstant,
+			Path:   "/",
 			Secure: s.SecureCookies,
 		}
 		s.Sessions = store
+		s.SessionBackend = "file"
+		s.SessionBackendHealthCheck = func() bool { return true }
 	}
 
 	// Want to save a struct into the session. Have to register it.
@@ -134,10 +216,15 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	s.HighPrivilegedOauthConfig = &clientcredentials.Config{
 		ClientID:     envVars.ClientID,
 		ClientSecret: envVars.ClientSecret,
-		Scopes:       []string{"scim.read"},
+		Scopes:       []string{"scim.invite", "cloud_controller.admin"},
 		TokenURL:     envVars.UAAURL + "/oauth/token",
 	}
 
+	s.SMTPFrom = envVars.SMTPFrom
+	s.SMTPHost = envVars.SMTPHost
+	s.SMTPPass = envVars.SMTPPass
+	s.SMTPPort = envVars.SMTPPort
+	s.SMTPUser = envVars.SMTPUser
 	return nil
 }
 

@@ -1,14 +1,14 @@
 package controllers
 
 import (
-	"fmt"
-	"github.com/18F/cg-dashboard/helpers"
-	"github.com/gocraft/web"
-	"golang.org/x/oauth2"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/18F/cg-dashboard/helpers"
+	"github.com/gocraft/web"
+	"golang.org/x/oauth2"
 )
 
 // SecureContext stores the session info and access token per user.
@@ -18,7 +18,7 @@ type SecureContext struct {
 }
 
 // ResponseHandler is a type declaration for the function that will handle the response for the given request.
-type ResponseHandler func(*http.ResponseWriter, *http.Response)
+type ResponseHandler func(http.ResponseWriter, *http.Response)
 
 // OAuth is a middle ware that checks whether or not the user has a valid token.
 // If the token is present and still valid, it just passes it on.
@@ -36,6 +36,41 @@ func (c *SecureContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.
 	next(rw, req)
 }
 
+// LoginRequired is a middleware that requires a valid token or returns Unauthorized
+func (c *SecureContext) LoginRequired(rw web.ResponseWriter, r *web.Request, next web.NextMiddlewareFunc) {
+
+	// If there is no request just continue
+	if r == nil {
+		next(rw, r)
+		return
+	}
+
+	// Don't cache anything
+	// TODO: Come up with a better caching strategy. We should be able to to cache most API responses.
+	rw.Header().Set("cache-control", "no-cache, no-store, must-revalidate, private")
+	rw.Header().Set("pragma", "no-cache")
+	rw.Header().Set("expires", "-1")
+
+	token := helpers.GetValidToken(r.Request, c.Settings)
+	if token != nil {
+		next(rw, r)
+	} else {
+		// Respond with Unauthorized, the client should detect this,
+		// show appropriate messaging or redirect to login
+		rw.WriteHeader(http.StatusUnauthorized)
+	}
+}
+
+// PrivilegedProxy is an internal function that will construct the client using
+// the credentials of the web app itself (not of the user) with the token in the headers and
+// then sends a request.
+func (c *SecureContext) PrivilegedProxy(rw http.ResponseWriter, req *http.Request, url string) {
+	// Acquire the http client and the refresh token if needed
+	// https://godoc.org/golang.org/x/oauth2#Config.Client
+	client := c.Settings.HighPrivilegedOauthConfig.Client(c.Settings.TokenContext)
+	c.submitRequest(rw, req, url, client, c.GenericResponseHandler)
+}
+
 // Proxy is an internal function that will construct the client with the token in the headers and
 // then send a request.
 func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url string, responseHandler ResponseHandler) {
@@ -45,7 +80,8 @@ func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url str
 	c.submitRequest(rw, req, url, client, responseHandler)
 }
 
-// submitRequest uses a given client and submits the specified request.
+// submitRequest uses a given client and submits the specified request and
+// closes the request and response bodies.
 func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request, url string, client *http.Client, responseHandler ResponseHandler) {
 	// Prevents lingering goroutines from living forever.
 	// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
@@ -61,6 +97,12 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	if request.Body != nil {
 		defer request.Body.Close()
 	}
+	// We need to transfer over the headers we want manually.
+	// The UAA checks for it and will fail with a 415 Response Code if it is
+	// missing during a POST request. (The CF API does not have this requirement).
+	if contentHeader := req.Header.Get("Content-Type"); len(contentHeader) > 0 {
+		request.Header.Set("Content-Type", contentHeader)
+	}
 	request.Close = true
 	// Send the request.
 	res, err := client.Do(request)
@@ -70,25 +112,23 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	if err != nil {
 		log.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(rw, "unknown error. try again")
+		rw.Write([]byte("unknown error. try again"))
 		return
 	}
 	// Should return the same status.
 	rw.WriteHeader(res.StatusCode)
-	responseHandler(&rw, res)
+	responseHandler(rw, res)
 }
 
 // GenericResponseHandler is a normal handler for responses received from the proxy requests.
-func (c *SecureContext) GenericResponseHandler(rw *http.ResponseWriter, response *http.Response) {
-	// Read the body.
-	body, err := ioutil.ReadAll(response.Body)
+func (c *SecureContext) GenericResponseHandler(rw http.ResponseWriter, response *http.Response) {
+	// Write the body into response that is going back to the frontend.
+	_, err := io.Copy(rw, response.Body)
 	if err != nil {
 		log.Println(err)
-		(*rw).WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(*rw, "unknown error. try again")
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("unknown error. try again"))
 		return
 	}
 
-	// Write the body into response that is going back to the frontend.
-	fmt.Fprintf(*rw, string(body))
 }

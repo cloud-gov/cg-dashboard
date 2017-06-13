@@ -17,13 +17,13 @@ Learn more about [cloud.gov](https://cloud.gov).
 ## Tech Stack
 
 ### Backend Server [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-dashboard/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-dashboard?branch=master)
-- `Go` (version 1.6.2)
+- `Go` (version 1.8)
 
 ### Front end application
 - `Node` (version 6.x.x)
-- `React` (version ^0.14.0)
+- `React` (version ^15.0.0)
 - `Babel` (version ^6.x.x)
-- `Karma` (version ^0.13.x)
+- `Karma` (version ^1.4.x)
 - `Webpack` (version ^1.x.x)
 
 ## Setup
@@ -52,6 +52,21 @@ Then edit the file `~/.env/cg-dashboard` and provide the proper values. When you
 - `CONSOLE_API_URL`: The URL of the API service. i.e. `http://api.domain.com`
 - `CONSOLE_LOG_URL`: The URL of the loggregator service. i.e. `http://loggregator.domain.com`
 - `PPROF_ENABLED`: <optional> If set to `true` or `1`, will turn on `/debug/pprof` endpoints as seen [here](https://golang.org/pkg/net/http/pprof/)
+
+
+#### Codecheck
+
+You need to have Docker installed and active within your environment as the
+unit tests use Docker for short term real instances.
+
+To run the go tests:
+
+    $ ./codecheck.sh
+
+`fmt` can be used to fix any linting errors:
+
+    $ go fmt ./controllers
+
 
 ### Front end
 Front end build commands should be run in the same directory as the `package.json` file. If you've used the cloning command from this README it should be something like `/path/to/cg-dashboard-ws/src/github.com/18F/cg-dashboard`. Node version 6 and above should always be used.
@@ -137,10 +152,10 @@ In each space that you plan on deploying, you need to create a `user-provided-se
 Run:
 ```
 # For applications without New Relic monitoring
-cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret", "SESSION_KEY": "a-really-long-secure-value"}'
+cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret", "SESSION_KEY": "a-really-long-secure-value", "SMTP_HOST": "smtp.host.com", "SMTP_PORT": "25", "SMTP_USER": "username", "SMTP_PASS": "password", "SMTP_FROM": "from@address.com"}'
 
 # For applications with New Relic monitoring
-cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret","CONSOLE_NEW_RELIC_LICENSE":"your-new-relic-license", "SESSION_KEY": "a-really-long-secure-value"}'
+cf cups dashboard-ups -p '{"CONSOLE_CLIENT_ID":"your-client-id","CONSOLE_CLIENT_SECRET":"your-client-secret","CONSOLE_NEW_RELIC_LICENSE":"your-new-relic-license", "SESSION_KEY": "a-really-long-secure-value", "SMTP_HOST": "smtp.host.com", "SMTP_PORT": "25", "SMTP_USER": "username", "SMTP_PASS": "password", "SMTP_FROM": "from@address.com"}'
 ```
 
 Create a redis service instance:
@@ -156,7 +171,7 @@ cf create-service redis28 standard dashboard-redis
 - Create client account:
 ```
 uaac client add <your-client-id> \
- --authorities uaa.none \
+ --authorities scim.invite \
  --authorized_grant_types authorization_code,client_credentials,refresh_token \
  --scope cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read \
  --autoapprove true \
@@ -166,10 +181,47 @@ uaac client add <your-client-id> \
 
 
 ### CI
-This project uses CircleCI
-- The following environment variables need to be set in plain text in the global env section:
-  - `CONSOLE_API_URL`, `CONSOLE_UAA_URL`, `CONSOLE_LOG_URL`, `CONSOLE_LOGIN_URL`, `CONSOLE_HOSTNAME="http://localhost:9999"`, `CONSOLE_TEST_ORG_NAME`, `CONSOLE_TEST_SPACE_NAME`, and `CONSOLE_TEST_APP_NAME`
-- In case you fork this project for your own use (no need to do this if forking to make a pull request), you will need to use the CircleCI CLI UI to set the variables
+This project uses CircleCI.
+- You will need to set up the credentials to deploy to the `dashboard-prod` and `dashboard-stage` spaces.
+  - In both spaces run: `cf create-service cloud-gov-service-account space-deployer dashboard-deployer`.
+  - You will get the link for that space's credentials by running `cf service dashboard-deployer`.
+  - You will need to set these [**secret**](https://circleci.com/docs/1.0/environment-variables/#setting-environment-variables-for-all-commands-without-adding-them-to-git) variables in the [CircleCI UI](https://circleci.com/gh/18F/cg-dashboard/edit#env-vars).
+    - `CF_USERNAME_PROD_SPACE` - The username for the `dashboard-prod` deployer
+    - `CF_PASSWORD_PROD_SPACE` - The password for the `dashboard-prod` deployer
+    - `CF_USERNAME_STAGE_SPACE` - The username for the `dashboard-stage` deployer
+    - `CF_PASSWORD_STAGE_SPACE` - The password for the `dashboard-stage` deployer
+- If you fork this project for your own use, you will need to use the CircleCI CLI UI to set the variables. (If you're forking just to make a pull request, there's no need to do this.)
+
+
+### Optional features
+
+Some features can be enabled by supplying the right environment configuration.
+
+#### New Relic Browser
+
+If you have New Relic Browser, you can set your New Relic ID and Browser license
+key. These are public and can be set in your manifest file. Note that your
+Browser license key is different than your New Relic License Key (which should
+be treated as confidential).
+
+```
+# manifest.yml
+env:
+  NEW_RELIC_ID: 12345
+  NEW_RELIC_BROWSER_LICENSE_KEY: abcdef
+```
+
+
+#### Google Analytics
+
+If you have a GA site configured, specify your tracking ID as `GA_TRACKING_ID`
+in your environment.
+
+```
+# manifest.yml
+env:
+  GA_TRACKING_ID: UA-123456-11
+```
 
 
 ## Functional Tests

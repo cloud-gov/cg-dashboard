@@ -3,7 +3,7 @@ package testhelpers
 import (
 	"bytes"
 	"fmt"
-	"html/template"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -14,11 +14,13 @@ import (
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
+	"github.com/stretchr/testify/mock"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
 	"github.com/18F/cg-dashboard/controllers"
 	"github.com/18F/cg-dashboard/helpers"
+	"github.com/18F/cg-dashboard/helpers/testhelpers/mocks"
 )
 
 // MockSessionStore represents an easily fillable session store that implements
@@ -101,8 +103,15 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars hel
 	// Override the session store.
 	settings.Sessions = store
 
+	templates, _ := helpers.InitTemplates(settings.BasePath)
+
 	// Create the router.
-	router := controllers.InitRouter(&settings, &template.Template{})
+	mockMailer := new(mocks.Mailer)
+	// mockery converts []byte to []uint8 thus having to check for that in the
+	// argument.
+	mockMailer.On("SendEmail", mock.AnythingOfType("string"),
+		mock.AnythingOfType("string"), mock.AnythingOfType("[]uint8")).Return(nil)
+	router := controllers.InitRouter(&settings, templates, mockMailer)
 
 	return router, &store
 }
@@ -128,58 +137,125 @@ type BasicSecureTest struct {
 	ExpectedLocation string
 }
 
-// BasicProxyTest contains information for what our test 'external' server should do when the proxy methods contact it.
-type BasicProxyTest struct {
-	BasicSecureTest
-	// RequestMethod is the type of method that our test client should send.
-	RequestMethod string
-	// RequestPath is the path that our test client should send.
-	RequestPath string
-	// RequestBody is the body that our test client should send.
-	RequestBody []byte
-	// ExpectedPath is the path that the test 'external' cloud foundry server we setup should receive.
-	// This is useful as we translate our endpoints to conform with the cloud foundry APIs.
-	// e.g. our endpoint: /uaa/userinfo & cloud foundry endpoint: /userinfo
-	ExpectedPath string
+// Handler is a specific handler for the test server.
+type Handler struct {
 	// The response the test 'external' cloud foundry server should send back.
 	Response string
 	// The code the test 'external' cloud foundry server should send back.
 	ResponseCode int
+	// ExpectedPath is the path that the test 'external' cloud foundry server we setup should receive.
+	// This is useful as we translate our endpoints to conform with the cloud foundry APIs.
+	// e.g. our endpoint: /uaa/userinfo & cloud foundry endpoint: /userinfo
+	ExpectedPath string
+	// RequestMethod is the method the external server should be waiting for.
+	RequestMethod string
 }
 
-// MockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
-var MockCompleteEnvVars = helpers.EnvVars{
-	ClientID:     "ID",
-	ClientSecret: "Secret",
-	Hostname:     "hostname",
-	LoginURL:     "loginurl",
-	UAAURL:       "uaaurl",
-	APIURL:       "apiurl",
-	LogURL:       "logurl",
-	PProfEnabled: "true",
-	SessionKey:   "lalala",
-	BasePath:     os.Getenv(helpers.BasePathEnvVar),
+// BasicProxyTest contains information for what our test 'external' server should do when the proxy methods contact it.
+type BasicProxyTest struct {
+	BasicSecureTest
+	// RequestPath is the path that our test client should send.
+	RequestPath string
+	// RequestBody is the body that our test client should send.
+	RequestBody []byte
+	// Handlers is the list of handlers to use to respond for the server.
+	Handlers []Handler
+	// RequestMethod is the type of method that our test client should send.
+	RequestMethod string
+}
+
+// GetMockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
+func GetMockCompleteEnvVars() helpers.EnvVars {
+	return helpers.EnvVars{
+		ClientID:     "ID",
+		ClientSecret: "Secret",
+		Hostname:     "https://hostname",
+		LoginURL:     "https://loginurl",
+		UAAURL:       "https://uaaurl",
+		APIURL:       "https://apiurl",
+		LogURL:       "https://logurl",
+		PProfEnabled: "true",
+		SessionKey:   "lalala",
+		BasePath:     os.Getenv(helpers.BasePathEnvVar),
+		SMTPFrom:     "cloud@cloud.gov",
+		SMTPHost:     "localhost",
+	}
+}
+
+// CreateExternalServerForPrivileged creates a test server that should reply
+// with the given parameters assuming that the incoming request matches what
+// we want. This call will be with the HighPrivilegedOauthClient.
+func CreateExternalServerForPrivileged(t *testing.T, test BasicProxyTest) *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		privilegedToken := "90d64460d14870c08c81352a05dedd3465940a7c"
+		if r.URL.String() == "/oauth/token" {
+
+			if got, want := r.Header.Get("Content-Type"), "application/x-www-form-urlencoded"; got != want {
+				t.Errorf("Content-Type header = %q; want %q", got, want)
+			}
+			body, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				r.Body.Close()
+			}
+			if err != nil {
+				t.Errorf("failed reading request body: %s.", err)
+			}
+			if string(body) != "client_id="+GetMockCompleteEnvVars().ClientID+"&grant_type=client_credentials&scope=scim.invite+cloud_controller.admin" {
+				t.Errorf("payload = %q; want %q", string(body), "client_id="+GetMockCompleteEnvVars().ClientID+"&grant_type=client_credentials&scope=scim.invite")
+			}
+			w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+			// Write the privileged token so that it can be used.
+			w.Write([]byte("access_token=" + privilegedToken + "&token_type=bearer"))
+		} else {
+			foundHandler := false
+			for _, handler := range test.Handlers {
+				if r.URL.Path == handler.ExpectedPath && r.Method == handler.RequestMethod {
+					w.WriteHeader(handler.ResponseCode)
+					fmt.Fprintln(w, handler.Response)
+					foundHandler = true
+					// Check that we are using the privileged token
+					// This line here is why we can't use the generic CreateExternalServer.
+					// Could add a token parameter. TODO
+					headerAuth := r.Header.Get("Authorization")
+					if headerAuth == "Basic "+privilegedToken {
+						t.Errorf("Unexpected authorization header, %v is found.", headerAuth)
+					}
+					break
+				}
+			}
+			if !foundHandler {
+				t.Errorf("Test name: (%s) Server received method %s\n", test.TestName, r.Method)
+				t.Errorf("Debug path: Got (%s) sent (%s)\n", r.URL.Path, test.RequestPath)
+				t.Errorf("Tried the following handlers %+v\n", test.Handlers)
+			}
+		}
+	}))
 }
 
 // CreateExternalServer creates a test server that should reply with the given parameters assuming that the incoming request matches what we want.
 func CreateExternalServer(t *testing.T, test *BasicProxyTest) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != test.ExpectedPath {
-			t.Errorf("Server expected path %s but instead received path %s\n", test.ExpectedPath, r.URL.Path)
-		} else if r.Method != test.RequestMethod {
-			t.Errorf("Server expected method %s but instead received method %s\n", test.RequestMethod, r.Method)
-		} else {
-			w.WriteHeader(test.ResponseCode)
-			fmt.Fprintln(w, test.Response)
-		}
-		headerAuth := r.Header.Get("Authorization")
-		oauthToken, ok := test.SessionData["token"].(oauth2.Token)
-		if ok {
-			if headerAuth != "Bearer "+oauthToken.AccessToken {
-				t.Errorf("Unexpected authorization header, (%v) is found. Expected %s", headerAuth, oauthToken.AccessToken)
+		foundHandler := false
+		for _, handler := range test.Handlers {
+			if r.URL.RequestURI() == handler.ExpectedPath && r.Method == handler.RequestMethod {
+				foundHandler = true
+				w.WriteHeader(handler.ResponseCode)
+				fmt.Fprintln(w, handler.Response)
+				headerAuth := r.Header.Get("Authorization")
+				oauthToken, ok := test.SessionData["token"].(oauth2.Token)
+				if ok {
+					if headerAuth != "Bearer "+oauthToken.AccessToken {
+						t.Errorf("Unexpected authorization header, (%v) is found. Expected %s", headerAuth, oauthToken.AccessToken)
+					}
+				} else {
+					t.Errorf("Error converting to Session data to oauth.Token struct")
+				}
 			}
-		} else {
-			t.Errorf("Error converting to Session data to oauth.Token struct")
+		}
+		if !foundHandler {
+			t.Errorf("Test name: (%s) Server received method %s\n", test.TestName, r.Method)
+			t.Errorf("Debug path: Got (%s) sent (%s)\n", r.URL.Path, test.RequestPath)
+			t.Errorf("Tried the following handlers %+v\n", test.Handlers)
 		}
 	}))
 }

@@ -217,6 +217,114 @@ const spaces = [
       security_groups_url: "/v2/spaces/5ca76e71-23b9-47a5-90e3-79b44cf75deb/security_groups",
       staging_security_groups_url: "/v2/spaces/5ca76e71-23b9-47a5-90e3-79b44cf75deb/staging_security_groups"
     }
+  },
+  {
+    metadata: {
+      guid: "user_role-org_x-space_xx-4064-82f2-d74df612b794",
+      url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794",
+      created_at: "2015-08-14T19:20:11Z",
+      updated_at: "2015-08-14T19:20:11Z"
+    },
+    entity: {
+      name: "user_role-org_x-space_xx",
+      organization_guid: "user_role-org_x-ffe7-4aa8-8e85-94768d6bd250",
+      space_quota_definition_guid: null,
+      isolation_segment_guid: null,
+      allow_ssh: true,
+      organization_url: "/v2/organizations/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250",
+      developers_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/developers",
+      managers_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/managers",
+      auditors_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/auditors",
+      apps_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/apps",
+      routes_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/routes",
+      domains_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/domains",
+      service_instances_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/service_instances",
+      app_events_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/app_events",
+      events_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/events",
+      security_groups_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/security_groups",
+      staging_security_groups_url: "/v2/spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794/staging_security_groups"
+    }
+  },
+  {
+    metadata: {
+      guid: "user_role-org_x-space_yy-4064-82f2-d74df612b794",
+      url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794",
+      created_at: "2015-08-14T19:20:11Z",
+      updated_at: "2015-08-14T19:20:11Z"
+    },
+    entity: {
+      name: "user_role-org_x-space_yy",
+      organization_guid: "user_role-org_x-ffe7-4aa8-8e85-94768d6bd250",
+      space_quota_definition_guid: null,
+      isolation_segment_guid: null,
+      allow_ssh: true,
+      organization_url: "/v2/organizations/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250",
+      developers_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/developers",
+      managers_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/managers",
+      auditors_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/auditors",
+      apps_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/apps",
+      routes_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/routes",
+      domains_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/domains",
+      service_instances_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/service_instances",
+      app_events_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/app_events",
+      events_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/events",
+      security_groups_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/security_groups",
+      staging_security_groups_url: "/v2/spaces/user_role-org_x-space_yy-4064-82f2-d74df612b794/staging_security_groups"
+    }
+  },
+  {
+    metadata: {
+      guid: "user_role-org_y-space_xx-4064-82f2-d74df612b794",
+      url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794",
+      created_at: "2015-08-14T19:20:11Z",
+      updated_at: "2015-08-14T19:20:11Z"
+    },
+    entity: {
+      name: "user_role-org_y-space_xx",
+      organization_guid: "user_role-org_y-ffe7-4aa8-8e85-94768d6bd250",
+      space_quota_definition_guid: null,
+      isolation_segment_guid: null,
+      allow_ssh: true,
+      organization_url: "/v2/organizations/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250",
+      developers_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/developers",
+      managers_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/managers",
+      auditors_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/auditors",
+      apps_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/apps",
+      routes_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/routes",
+      domains_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/domains",
+      service_instances_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/service_instances",
+      app_events_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/app_events",
+      events_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/events",
+      security_groups_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/security_groups",
+      staging_security_groups_url: "/v2/spaces/user_role-org_y-space_xx-4064-82f2-d74df612b794/staging_security_groups"
+    }
+  },
+  {
+    metadata: {
+      guid: "user_role-org_y-space_yy-4064-82f2-d74df612b794",
+      url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794",
+      created_at: "2015-08-14T19:20:11Z",
+      updated_at: "2015-08-14T19:20:11Z"
+    },
+    entity: {
+      name: "user_role-org_y-space_yy",
+      organization_guid: "user_role-org_y-ffe7-4aa8-8e85-94768d6bd250",
+      space_quota_definition_guid: null,
+      isolation_segment_guid: null,
+      allow_ssh: true,
+      organization_url: "/v2/organizations/user_role-org_y-ffe7-4aa8-8e85-94768d6bd250",
+      developers_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/developers",
+      managers_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/managers",
+      auditors_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/auditors",
+      apps_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/apps",
+      routes_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/routes",
+      domains_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/domains",
+      service_instances_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/service_instances",
+      app_events_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/app_events",
+      events_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/events",
+      security_groups_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/security_groups",
+      staging_security_groups_url: "/v2/spaces/user_role-org_y-space_yy-4064-82f2-d74df612b794/staging_security_groups"
+    }
   }
 ];
 

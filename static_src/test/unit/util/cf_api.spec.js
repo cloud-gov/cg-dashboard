@@ -79,6 +79,41 @@ describe('cfApi', function() {
     });
   });
 
+  describe('postCreateNewUserWithGuid()', function() {
+    it('create a new user through a post request to cloud foundry', function(done) {
+      const userGuid = 'fake-user-guid';
+      const expectedPayload = {
+        guid: userGuid,
+      };
+      const spy = sandbox.stub(http, 'post');
+      spy.returns(createPromise({ data: {}}));
+
+      cfApi.postCreateNewUserWithGuid(userGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch('/users');
+        expect(args[1]).toEqual(expectedPayload);
+        done();
+      });
+    });
+  });
+
+  describe('putAssociateUserToOrganization()', function() {
+    it('add a user to an org on cloud foundry', function(done) {
+      const orgGuid = 'fake-org-guid';
+      const userGuid = 'fake-user-guid';
+      const spy = sandbox.stub(http, 'put');
+      spy.returns(createPromise({ data: {}}));
+
+      cfApi.putAssociateUserToOrganization(userGuid, orgGuid).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch(`/organizations/${orgGuid}/users/${userGuid}`);
+        done();
+      });
+    });
+  });
+
   describe('formatSplitResponse()', function() {
     var testRezs;
 
@@ -190,16 +225,16 @@ describe('cfApi', function() {
       const stub = sandbox.stub(http, 'post');
       stub.returns(createPromise(true, fakeCFErrorRes));
 
-      cfApi.createRoute('a', 'b', 'c', 'd').then(() => {
+      cfApi.createRoute('a', 'b', 'c', 'd').catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         done();
-      }).catch(done.fail);
-
+      });
     });
   });
 
   describe('deleteRoute()', function() {
-    it('should DELETE to the versioned /routes/:routeGuid endpoint with data', function(done) {
+    it('should DELETE to the versioned /routes/:routeGuid endpoint with data',
+        function(done) {
       const routeGuid = 'fake-route-guid';
       const spy = sandbox.stub(http, 'delete');
       spy.returns(Promise.resolve());
@@ -233,7 +268,7 @@ describe('cfApi', function() {
       stub.returns(createPromise(true, fakeCFErrorRes));
       const routeGuid = 'zxcvasdf24';
 
-      cfApi.deleteRoute(routeGuid).then(() => {
+      cfApi.deleteRoute(routeGuid).catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
@@ -280,10 +315,10 @@ describe('cfApi', function() {
     it('should call the fetch error action on failure', function(done) {
       const spy = fetchErrorSetup();
 
-      cfApi.fetchOne().then(() => {
+      cfApi.fetchOne().catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         done();
-      }).catch(done.fail);
+      });
     });
 
     it('should pass any additional arguments to the action', function(done) {
@@ -476,50 +511,56 @@ describe('cfApi', function() {
     });
   });
 
-  describe('getAuthStatus()', function() {
-    it('calls http get request for auth status', (done) => {
-      var spy = sandbox.spy(http, 'get');
+  describe('getAuthStatus()', function () {
+    beforeEach(function (done) {
+      sandbox.stub(http, 'get').returns(Promise.resolve({ data: { status: 'authorized' } }));
 
-      cfApi.getAuthStatus().then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        let actual = spy.getCall(0).args[0];
-        expect(actual).toMatch('authstatus');
-        done();
+      cfApi.getAuthStatus().then(done, done.fail);
+    });
+
+    it('calls http get request for auth status', () => {
+      expect(http.get).toHaveBeenCalledOnce();
+      const actual = http.get.getCall(0).args[0];
+      expect(actual).toMatch('authstatus');
+    });
+
+    describe('given authorized', function () {
+      let authStatus, result;
+
+      beforeEach(function (done) {
+        authStatus = { status: 'logged_in' };
+        http.get.returns(Promise.resolve({ data: authStatus }));
+
+        cfApi.getAuthStatus()
+          .then(_result => {
+            result = _result;
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('calls received status with status on success', () => {
+        expect(result).toBe(authStatus);
       });
     });
 
-    it('calls received status with status on success', (done) => {
-      var expectedStatus = 'logged_in',
-          expected = { data: { status: expectedStatus } },
-          stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(loginActions, 'receivedStatus');
+    describe('given error', function () {
+      let err, result;
 
-      let testPromise = createPromise(expected);
+      beforeEach(function (done) {
+        err = new Error('network error');
+        http.get.returns(Promise.reject(err));
 
-      stub.returns(testPromise);
+        cfApi.getAuthStatus()
+          .then(done.fail)
+          .catch(_result => {
+            result = _result;
+            done();
+          });
+      });
 
-      cfApi.getAuthStatus().then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        expect(spy).toHaveBeenCalledWith(expected.data.status);
-        done();
-      });;
-    });
-
-    it('calls received status with false on failure', (done) => {
-      // Note: the getAuthStatus call will return 401 when not logged in, so
-      // failure here means the user was likely not logged in. Although there
-      // could be the additional problem that there was a problem with the req.
-      var stub = sandbox.stub(http, 'get'),
-          spy = sandbox.spy(loginActions, 'receivedStatus'),
-          expected = { status: 'unauthorized' };
-
-      let testPromise = createPromise(true, expected);
-      stub.returns(testPromise);
-
-      let actual = cfApi.getAuthStatus().then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        expect(spy).toHaveBeenCalledWith(false);
-        done();
+      it('rejects with error', () => {
+        expect(result).toBe(err);
       });
     });
   });
@@ -648,7 +689,7 @@ describe('cfApi', function() {
 
       beforeEach(function (done) {
         appGuid = 'abcd';
-        cfApi.fetchAllPages.reset();
+        cfApi.fetchAllPages.returns(Promise.resolve());
 
         cfApi.fetchSpaceEvents(spaceGuid, { appGuid })
           .then(done, done.fail);
@@ -735,16 +776,17 @@ describe('cfApi', function() {
 
   describe('deleteUnboundServiceInstance()', function() {
     it('should call http delete request on service route with service guid',
-        function() {
-      var spy = sandbox.spy(http, 'delete'),
+        function(done) {
+      var spy = sandbox.stub(http, 'delete').returns(Promise.resolve()),
           expectedGuid = 'yyasdflkjayybbaal1',
           expected = { guid: expectedGuid, url: '/'+ expectedGuid}
 
-      cfApi.deleteUnboundServiceInstance(expected);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp(expectedGuid));
+      cfApi.deleteUnboundServiceInstance(expected).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let actual = spy.getCall(0).args[0];
+        expect(actual).toMatch(new RegExp(expectedGuid));
+        done();
+      }).catch(done.fail);
     });
   });
 
@@ -835,13 +877,13 @@ describe('cfApi', function() {
     });
   })
 
-  describe('fetchSpaceUsers()', function() {
+  describe('fetchSpaceUserRoles()', function() {
     it('should call fetch with spaces user roles url with space guid and the' +
        ' received space users action', function() {
       var expected = 'yyyybba1',
           spy = sandbox.stub(cfApi, 'fetchMany');
 
-      cfApi.fetchSpaceUsers(expected);
+      cfApi.fetchSpaceUserRoles(expected);
 
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
@@ -849,7 +891,7 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('spaces'));
       expect(actual).toMatch(new RegExp('user_roles'));
       actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(userActions.receivedSpaceUsers);
+      expect(actual).toEqual(userActions.receivedSpaceUserRoles);
       actual = spy.getCall(0).args[2];
       expect(actual).toEqual(expected);
     });
@@ -895,17 +937,18 @@ describe('cfApi', function() {
   });
 
   describe('deleteUser()', function() {
-    it('should call a http delete request on the org and user', function() {
-      var spy = sandbox.spy(http, 'delete'),
+    it('should call a http delete request on the org and user', function(done) {
+      var spy = sandbox.stub(http, 'delete').returns(Promise.resolve({ status: 500 })),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp';
 
-      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp(expectedUserGuid));
-      expect(actual).toMatch(new RegExp(expectedOrgGuid));
+      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid).then(() => {
+        expect(spy).toHaveBeenCalledOnce();
+        let actual = spy.getCall(0).args[0];
+        expect(actual).toMatch(new RegExp(expectedUserGuid));
+        expect(actual).toMatch(new RegExp(expectedOrgGuid));
+        done();
+      }).catch(done.fail);
     });
 
     it('should call org deleted action with guid', function(done) {
@@ -929,8 +972,8 @@ describe('cfApi', function() {
 
   describe('deleteOrgUserCategory()', function() {
     it('should call a http delete request on the org user with category ',
-        function() {
-      var spy = sandbox.spy(http, 'delete'),
+        function(done) {
+      var spy = sandbox.stub(http, 'delete').returns(Promise.resolve({})),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp',
           expectedCategory = 'some_role';
@@ -938,20 +981,21 @@ describe('cfApi', function() {
       cfApi.deleteOrgUserCategory(
         expectedUserGuid,
         expectedOrgGuid,
-        expectedCategory);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let actual = spy.getCall(0).args[0];
-      expect(actual).toMatch(new RegExp(expectedUserGuid));
-      expect(actual).toMatch(new RegExp(expectedOrgGuid));
-      expect(actual).toMatch(new RegExp(expectedCategory));
+        expectedCategory).then(() => {
+          expect(spy).toHaveBeenCalledOnce();
+          let actual = spy.getCall(0).args[0];
+          expect(actual).toMatch(new RegExp(expectedUserGuid));
+          expect(actual).toMatch(new RegExp(expectedOrgGuid));
+          expect(actual).toMatch(new RegExp(expectedCategory));
+          done();
+      }).catch(done.fail);
     });
   });
 
   describe('deleteOrgUserPermissions()', function() {
     it('should call an http delete request on org user with permissions',
         function(done) {
-      var spy = sandbox.spy(http, 'delete'),
+      var spy = sandbox.stub(http, 'delete').returns(Promise.resolve({})),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp',
           expectedPermission = 'manager';
@@ -994,7 +1038,7 @@ describe('cfApi', function() {
     });
   });
 
-  describe('deleteOrgUserPermissions()', function() {
+  describe('putOrgUserPermissions()', function() {
     it('should call an http put request on org user with permissions', function() {
       var spy = sandbox.spy(http, 'put'),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
@@ -1219,14 +1263,14 @@ describe('cfApi', function() {
       stub.returns(createPromise(true, fakeCFErrorRes));
       const routeGuid = 'sdf2dsfzxcv4';
 
-      cfApi.putAppRouteAssociation('adfads', routeGuid).then(() => {
+      cfApi.putAppRouteAssociation('adfads', routeGuid).catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
         arg = spy.getCall(0).args[1];
         expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      }).catch(done.fail);
+      });
     });
   });
 
@@ -1274,7 +1318,7 @@ describe('cfApi', function() {
       stub.returns(createPromise(true, fakeCFErrorRes));
       const routeGuid = 'sdf2dsfzxcv4';
 
-      cfApi.deleteAppRouteAssociation('adfads', routeGuid).then(() => {
+      cfApi.deleteAppRouteAssociation('adfads', routeGuid).catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
@@ -1327,14 +1371,14 @@ describe('cfApi', function() {
         path: 'fake-path'
       };
 
-      cfApi.putRouteUpdate(routeGuid, 'a', 'b', route).then(() => {
+      cfApi.putRouteUpdate(routeGuid, 'a', 'b', route).catch(() => {
         expect(spy).toHaveBeenCalledOnce();
         let arg = spy.getCall(0).args[0];
         expect(arg).toEqual(routeGuid);
         arg = spy.getCall(0).args[1];
         expect(arg).toEqual(fakeCFErrorRes.response.data);
         done();
-      }).catch(done.fail);
+      });
     });
   });
 
@@ -1377,6 +1421,86 @@ describe('cfApi', function() {
         expect(arg).toMatch('service_bindings');
         done();
       }).catch(done.fail);
+    });
+  });
+
+  describe('fetchUser()', function () {
+    let userGuid;
+
+    beforeEach(function (done) {
+      userGuid = 'user123';
+      sandbox.stub(http, 'get').returns(Promise.resolve({ data: { entity: { guid: 'user123' } } }));
+
+      cfApi.fetchUser(userGuid).then(done, done.fail);
+    });
+
+    it('calls user endpoint', function () {
+      expect(http.get).toHaveBeenCalledOnce();
+      expect(http.get).toHaveBeenCalledWith(sinon.match(`/users/${userGuid}`));
+    });
+  });
+
+  describe('fetchUserSpaces()', function () {
+    let user, space, result;
+    beforeEach(function (done) {
+      user = { guid: 'user123' };
+      space = { guid: 'space123' };
+      sandbox.stub(http, 'get').returns(Promise.resolve({
+        data: {
+          resources: [{ metadata: space, entity: {} }]
+        }
+      }));
+
+      cfApi.fetchUserSpaces(user.guid)
+        .then(_result => {
+          result = _result;
+        })
+        .then(done, done.fail);
+    });
+
+    it('calls user spaces endpoint', function () {
+      expect(http.get).toHaveBeenCalledWith(sinon.match(`/users/${user.guid}/spaces`));
+    });
+
+    it('resolves with list of spaces', function () {
+      expect(result).toEqual([space]);
+    });
+
+    describe('given orgGuid', function () {
+      let orgGuid;
+      beforeEach(function (done) {
+        orgGuid = 'org123';
+
+        cfApi.fetchUserSpaces(user.guid, { orgGuid })
+          .then(done, done.fail);
+      });
+
+      it('includes query parameter for organization_guid', function () {
+        expect(http.get)
+          .toHaveBeenCalledWith(
+            sinon.match.string,
+            sinon.match({ params: { q: `organization_guid:${orgGuid}` } })
+          );
+      });
+    });
+  });
+
+  describe('fetchUserOrgs()', function () {
+    let userGuid;
+    let fetchAllPagesStub;
+
+    beforeEach(function (done) {
+      userGuid = 'user123';
+      fetchAllPagesStub = sandbox.stub(cfApi, 'fetchAllPages').returns(
+        Promise.resolve({ guid: userGuid }));
+
+      cfApi.fetchUserOrgs(userGuid).then(done, done.fail);
+    });
+
+    it('calls user endpoint', function () {
+      expect(fetchAllPagesStub).toHaveBeenCalledOnce();
+      expect(fetchAllPagesStub).toHaveBeenCalledWith(
+        `/users/${userGuid}/organizations`);
     });
   });
 });

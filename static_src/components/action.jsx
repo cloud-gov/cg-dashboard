@@ -8,7 +8,8 @@ const BUTTON_STYLES = [
   'warning',
   'primary',
   'finish',
-  'base'
+  'base',
+  'white'
 ];
 
 const BUTTON_TYPES = [
@@ -62,7 +63,7 @@ export default class Action extends React.Component {
       } else {
         classList.push('usa-button');
         classList.push(styleClass);
-        if (this.props.type === 'outline') classList.push('usa-button-outline');
+        if (this.props.type === 'outline') classList.push('action-outline');
       }
       classes = this.styler(...classList);
     }

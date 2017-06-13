@@ -15,3 +15,6 @@ static/assets
 vendor/*
 !vendor/vendor.json
 .DS_Store
+context/selenium-logs/selenium-standalone.txt
+# useful for template tests
+*.returned

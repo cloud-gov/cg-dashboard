@@ -19,18 +19,6 @@ func (c *APIContext) APIProxy(rw web.ResponseWriter, req *web.Request) {
 	c.Proxy(rw, req.Request, reqURL, c.GenericResponseHandler)
 }
 
-// Logout is a handler that will attempt to clear the session information for the current user.
-func (c *APIContext) Logout(rw web.ResponseWriter, req *web.Request) {
-	session, _ := c.Settings.Sessions.Get(req.Request, "session")
-	// Clear the token
-	session.Values["token"] = nil
-	// Force the session to expire
-	session.Options.MaxAge = -1
-	session.Save(req.Request, rw)
-	logoutURL := fmt.Sprintf("%s%s", c.Settings.LoginURL, "/logout.do")
-	http.Redirect(rw, req.Request, logoutURL, http.StatusFound)
-}
-
 // UserProfile redirects users to the `/profile` page
 func (c *APIContext) UserProfile(rw web.ResponseWriter, req *web.Request) {
 	profileURL := fmt.Sprintf("%s%s", c.Settings.LoginURL, "/profile")
@@ -40,5 +28,5 @@ func (c *APIContext) UserProfile(rw web.ResponseWriter, req *web.Request) {
 // AuthStatus simply returns authorized. This endpoint is just a quick endpoint to indicate that if a
 // user can reach here after passing through the OAuth Middleware, they are authorized.
 func (c *APIContext) AuthStatus(rw web.ResponseWriter, req *web.Request) {
-	fmt.Fprintf(rw, "{\"status\": \"authorized\"}")
+	rw.Write([]byte("{\"status\": \"authorized\"}"))
 }

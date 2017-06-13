@@ -9,6 +9,10 @@ import Immutable from 'immutable';
 import AppDispatcher from '../dispatcher.js';
 import LoadingStatus from '../util/loading_status.js';
 
+// TODO clean up the listeners and reduce the MAX_LISTENERS to 15
+const MAX_LISTENERS = 20;
+const MAX_LISTENERS_THRESHOLD = 10;
+
 function defaultChangedCallback(changed) {
   if (changed) this.emitChange();
 }
@@ -21,7 +25,8 @@ export default class BaseStore extends EventEmitter {
     this._loadingStatus.on('loading', () => this.emitChange());
     this._loadingStatus.on('loaded', () => this.emitChange());
     this._data = new Immutable.List();
-    this.setMaxListeners(20);
+    this._listenerCount = 0;
+    this.setMaxListeners(MAX_LISTENERS);
   }
 
   subscribe(actionSubscribe) {
@@ -99,11 +104,22 @@ export default class BaseStore extends EventEmitter {
   }
 
   addChangeListener(cb) {
+    if (++this._listenerCount > MAX_LISTENERS_THRESHOLD) {
+      /* eslint-disable no-console */
+      console.warn('listener count is above threshold', {
+        store: this.constructor.name,
+        count: this._listenerCount
+      });
+      console.trace();
+      /* eslint-enable no-console */
+    }
+
     this.on('CHANGE', cb);
   }
 
   removeChangeListener(cb) {
     this.removeListener('CHANGE', cb);
+    this._listenerCount--;
   }
 
   load(promises) {

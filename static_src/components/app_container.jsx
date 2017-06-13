@@ -8,6 +8,7 @@ import { appStates } from '../constants';
 import { config } from 'skin';
 import AppStore from '../stores/app_store.js';
 import Breadcrumbs from './breadcrumbs.jsx';
+import DomainStore from '../stores/domain_store.js';
 import RouteStore from '../stores/route_store.js';
 import EntityIcon from './entity_icon.jsx';
 import ErrorMessage from './error_message.jsx';
@@ -30,10 +31,16 @@ function appReady(app) {
 }
 
 function stateSetter() {
+  let route;
   const currentAppGuid = AppStore.currentAppGuid;
   const app = AppStore.get(currentAppGuid);
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
+
+  if (app) {
+  // This depends on DomainStore
+    route = RouteStore.getRouteURLForApp(app);
+  }
 
   const quotaGuid = (space && space.space_quota_definition_guid) ||
     (org && org.quota_definition_guid) || null;
@@ -48,6 +55,7 @@ function stateSetter() {
     empty: !AppStore.loading && !appReady(app) && !QuotaStore.loading,
     loading: AppStore.loading || QuotaStore.loading,
     org,
+    route,
     quota,
     space
   };
@@ -67,6 +75,7 @@ export default class AppContainer extends React.Component {
 
   componentDidMount() {
     AppStore.addChangeListener(this._onChange);
+    DomainStore.addChangeListener(this._onChange);
     OrgStore.addChangeListener(this._onChange);
     QuotaStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
@@ -75,6 +84,7 @@ export default class AppContainer extends React.Component {
 
   componentWillUnmount() {
     AppStore.removeChangeListener(this._onChange);
+    DomainStore.removeChangeListener(this._onChange);
     OrgStore.removeChangeListener(this._onChange);
     QuotaStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
@@ -94,6 +104,7 @@ export default class AppContainer extends React.Component {
   }
 
   get statusUI() {
+    let label;
     let worstState = this.state.app.state;
     if (this.state.app.state === appStates.started) {
       // If the app is started, use the instance state
@@ -102,13 +113,15 @@ export default class AppContainer extends React.Component {
       );
     }
 
-    return (
-      <span className={ this.styler('usa-label') }>{ worstState }</span>
-    );
+    if (worstState) {
+      label = <span className={ this.styler('usa-label') }>{ worstState }</span>;
+    }
+
+    return label;
   }
 
   get openApp() {
-    const route = RouteStore.getRouteURLForApp(this.state.app);
+    const route = this.state.route;
     if (!route) return null;
     return (
       <Action
@@ -182,7 +195,7 @@ export default class AppContainer extends React.Component {
     );
 
     if (this.state.empty) {
-      content = <h4 className="test-none_message">No app</h4>;
+      content = <h4 className="test-none_message">App not available</h4>;
     } else if (!this.state.loading && appReady(this.state.app)) {
       content = (
         <div>
@@ -197,7 +210,6 @@ export default class AppContainer extends React.Component {
             </div>
           </div>
           <Panel title="Usage and allocation">
-            { this.logsDocumentation }
             <UsageLimits app={ this.state.app } quota={ this.state.quota } />
           </Panel>
 
@@ -210,6 +222,7 @@ export default class AppContainer extends React.Component {
           </Panel>
 
           <Panel title="Recent activity">
+            { this.logsDocumentation }
             <ActivityLog initialAppGuid={ this.state.app.guid } />
           </Panel>
         </div>

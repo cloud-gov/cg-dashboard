@@ -6,6 +6,11 @@
 import React from 'react';
 
 import Action from './action.jsx';
+import ComplexList from './complex_list.jsx';
+import ComplexListItem from './complex_list_item.jsx';
+import ElasticLine from './elastic_line.jsx';
+import ElasticLineItem from './elastic_line_item.jsx';
+import EntityEmpty from './entity_empty.jsx';
 import Loading from './loading.jsx';
 import PanelDocumentation from './panel_documentation.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
@@ -14,27 +19,33 @@ import { config } from 'skin';
 import formatDateTime from '../util/format_date';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-function stateSetter(props) {
-  return {
-    users: props.initialUsers,
-    userType: props.initialUserType,
-    currentUserAccess: props.initialCurrentUserAccess,
-    empty: props.initialEmpty,
-    loading: props.initialLoading
-  };
-}
+const propTypes = {
+  users: React.PropTypes.array,
+  userType: React.PropTypes.string,
+  entityGuid: React.PropTypes.string,
+  currentUserAccess: React.PropTypes.bool,
+  empty: React.PropTypes.bool,
+  loading: React.PropTypes.bool,
+  // Set to a function when there should be a remove button.
+  onRemove: React.PropTypes.func,
+  onRemovePermissions: React.PropTypes.func,
+  onAddPermissions: React.PropTypes.func
+};
+
+const defaultProps = {
+  users: [],
+  userType: 'space_users',
+  currentUserAccess: false,
+  empty: false,
+  loading: false
+};
 
 export default class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = stateSetter(props);
     this.styler = createStyler(style);
     this._handleDelete = this._handleDelete.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState(stateSetter(nextProps));
   }
 
   _handleDelete(userGuid, ev) {
@@ -56,7 +67,7 @@ export default class UserList extends React.Component {
   }
 
   get userTypePretty() {
-    return (this.state.userType === 'org_users') ? 'Organization' : 'Space';
+    return (this.props.userType === 'org_users') ? 'Organization' : 'Space';
   }
 
   get documentation() {
@@ -74,32 +85,63 @@ export default class UserList extends React.Component {
     );
   }
 
+  get emptyState() {
+    const callout = `There are no users in this ${this.userTypePretty.toLowerCase()}`;
+    const content = config.docs.invite_user &&
+      <a href={ config.docs.invite_user }>Read more about adding users to this space.</a>
+
+    return (
+      <EntityEmpty callout={ callout }>
+        { content }
+      </EntityEmpty>
+    );
+  }
+
+  get onlyOneState() {
+    let content;
+    const callout = `You are the only user in this ${this.userTypePretty.toLowerCase()}`;
+
+    if (this.props.userType === 'org_users') {
+      const readMore = config.docs.invite_user &&
+        <a href={ config.docs.invite_user }>Read more about inviting new users.</a>
+
+      content = (
+        <p>
+          You can invite teammates to get cloud.gov accounts. You can invite
+          anyone you need to work with, including federal employees and
+          federal contractors. { readMore }
+        </p>
+      );
+    } else {
+      const content = config.docs.invite_user &&
+        <a href={ config.docs.invite_user }>Read more about adding users to this space.</a>
+    }
+
+    return (
+      <EntityEmpty callout={ callout }>
+        { content }
+      </EntityEmpty>
+    );
+  }
+
   render() {
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
 
-    if (this.state.empty) {
-      content = <h4 className="test-none_message">No users</h4>;
-    } else if (!this.state.loading && this.state.users.length) {
+    if (this.props.empty) {
+      content = this.emptyState;
+    } else if (this.props.users.length === 1) {
+      content = this.onlyOneState;
+    } else if (!this.props.loading && this.props.users.length) {
       content = (
-      <div>
+      <div className="test-user_list">
         { this.documentation }
-        <table>
-          <thead>
-            <tr>
-            { this.columns.map((column) =>
-              <th className={ column.key }
-                  key={ column.key }>
-                { column.label }</th>
-            )}
-            </tr>
-          </thead>
-          <tbody>
-          { this.state.users.map((user) => {
+        <ComplexList>
+          { this.props.users.map((user) => {
             let actions;
             if (this.props.onRemove) {
               let button = <span></span>;
-              if (this.state.currentUserAccess) {
+              if (this.props.currentUserAccess) {
                 button = (
                   <Action
                     style="base"
@@ -110,30 +152,29 @@ export default class UserList extends React.Component {
                 );
               }
               actions = (
-                <td style={{ width: '14rem' }}>
+                <ElasticLineItem align="end">
                   { button }
-                </td>
+                </ElasticLineItem>
               );
             }
-            return ([
-              <tr key={ user.guid }>
-                <td><span>{ user.username }</span></td>
-                <td key={ `${user.guid}-role` }>
+            return (
+              <ElasticLine key={ user.guid }>
+                <ElasticLineItem>{ user.username }</ElasticLineItem>
+                <ElasticLineItem key={ `${user.guid}-role` } align="end">
                   <UserRoleListControl
-                    initialUserType={ this.state.userType }
-                    initialCurrentUserAccess={ this.state.currentUserAccess }
+                    userType={ this.props.userType }
+                    currentUserAccess={ this.props.currentUserAccess }
                     onAddPermissions={ this.props.onAddPermissions }
                     onRemovePermissions={ this.props.onRemovePermissions }
+                    entityGuid={ this.props.entityGuid }
                     user={ user }
                   />
-                </td>
-                <td>{ formatDateTime(user.created_at) }</td>
+                </ElasticLineItem>
                 { actions }
-              </tr>
-              ]);
-            })}
-          </tbody>
-        </table>
+              </ElasticLine>
+              );
+          })}
+        </ComplexList>
       </div>
       );
     }
@@ -144,25 +185,7 @@ export default class UserList extends React.Component {
     </div>
     );
   }
-
 }
 
-UserList.propTypes = {
-  initialUsers: React.PropTypes.array,
-  initialUserType: React.PropTypes.string,
-  initialCurrentUserAccess: React.PropTypes.bool,
-  initialEmpty: React.PropTypes.bool,
-  initialLoading: React.PropTypes.bool,
-  // Set to a function when there should be a remove button.
-  onRemove: React.PropTypes.func,
-  onRemovePermissions: React.PropTypes.func,
-  onAddPermissions: React.PropTypes.func
-};
-
-UserList.defaultProps = {
-  initialUsers: [],
-  initialUserType: 'space_users',
-  initialCurrentUserAccess: false,
-  initialEmpty: false,
-  initialLoading: false
-};
+UserList.propTypes = propTypes;
+UserList.defaultProps = defaultProps;

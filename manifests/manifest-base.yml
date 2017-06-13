@@ -1,11 +1,17 @@
 ---
 buildpack: go_buildpack
 memory: 256M
+domain: app.cloud.gov
 services:
 - dashboard-ups
 - dashboard-redis
 env:
-  GOVERSION: go1.6.3
+  CONSOLE_LOGIN_URL: https://login.fr.cloud.gov/
+  CONSOLE_UAA_URL: https://uaa.fr.cloud.gov/
+  CONSOLE_API_URL: https://api.fr.cloud.gov/
+  CONSOLE_LOG_URL: https://loggregator.fr.cloud.gov/
+  SECURE_COOKIES: true
+  GA_TRACKING_ID: UA-48605964-34
+  GOVERSION: go1.8
   GOPACKAGENAME: github.com/18F/cg-dashboard
-  GO15VENDOREXPERIMENT: 1
   SESSION_BACKEND: redis

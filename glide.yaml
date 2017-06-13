@@ -4,6 +4,7 @@ import:
   subpackages:
   - logmessage
 - package: github.com/gocraft/web
+- package: github.com/jordan-wright/email
 - package: github.com/gogo/protobuf
   subpackages:
   - proto
@@ -21,3 +22,8 @@ import:
   version: ~1.4.0
 - package: github.com/boj/redistore
   version: ~1.2.0
+- package: github.com/ory/dockertest
+  version: v3.0.7
+- package: github.com/stretchr/testify
+  subpackages:
+  - mock

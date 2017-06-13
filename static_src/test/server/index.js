@@ -13,17 +13,15 @@ authstatus(smocks);
 // add all api routes
 api(smocks);
 
-const DEFAULT_PORT = 8000;
-
 /*
  * Starts the server.
  *
- * @param port (optional)
+ * @param port (optional) the system will choose a port automatically
  * @param cb (optional) callback to notify when server starts
  **/
 export function start(...args) {
   const cb = args.pop();
-  const port = args[0] || DEFAULT_PORT;
+  const port = args[0];
 
   const server = new hapi.Server();
 

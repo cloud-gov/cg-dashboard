@@ -124,8 +124,8 @@ const spaceSummaries = [
         routes: [],
         service_count: 0,
         service_names: [],
-        running_instances: 0,
-        name: "fake-rds-broker",
+        running_instances: 1,
+        name: "fake-data-problem",
         production: false,
         space_guid: "82af0edb-8540-4064-82f2-d74df612b794",
         stack_guid: "77590563-6c7c-4ec4-9b4a-01ce9d628190",
@@ -136,10 +136,10 @@ const spaceSummaries = [
           AUTH_PASS: "pass",
           AUTH_USER: "user",
         },
-        memory: 16,
+        memory: 24,
         instances: 1,
         disk_quota: 1024,
-        state: "STOPPED",
+        state: "STARTED",
         version: "4887152d-0d8f-433d-b34a-6a1e62f278f6",
         command: null,
         console: false,
@@ -209,6 +209,38 @@ const spaceSummaries = [
           }
         }
       }
+    ]
+  },
+  {
+    guid: "user_role-org_x-space_xx-4064-82f2-d74df612b794",
+    name: "user_role-org_x-space_xx",
+    apps: [
+    ],
+    services: [
+    ]
+  },
+  {
+    guid: "user_role-org_x-space_yy-4064-82f2-d74df612b794",
+    name: "user_role-org_x-space_yy",
+    apps: [
+    ],
+    services: [
+    ]
+  },
+  {
+    guid: "user_role-org_y-space_xx-4064-82f2-d74df612b794",
+    name: "user_role-org_y-space_xx",
+    apps: [
+    ],
+    services: [
+    ]
+  },
+  {
+    guid: "user_role-org_y-space_yy-4064-82f2-d74df612b794",
+    name: "user_role-org_y-space_yy",
+    apps: [
+    ],
+    services: [
     ]
   },
   {
@@ -518,8 +550,7 @@ const spaceSummaries = [
           CONSOLE_LOG_URL: "https://loggregator.cloud.gov/",
           CONSOLE_UAA_URL: "https://uaa.cloud.gov/",
           GO15VENDOREXPERIMENT: 1,
-          GOPACKAGENAME: "github.com/18F/cg-dashboard",
-          GOVERSION: "go1.6.3"
+          GOPACKAGENAME: "github.com/18F/cg-dashboard"
         },
         memory: 256,
         instances: 1,
@@ -657,8 +688,7 @@ const spaceSummaries = [
           CONSOLE_LOG_URL: "https://loggregator.cloud.gov/",
           CONSOLE_UAA_URL: "https://uaa.cloud.gov/",
           GO15VENDOREXPERIMENT: 1,
-          GOPACKAGENAME: "github.com/18F/cg-dashboard",
-          GOVERSION: "go1.6.3"
+          GOPACKAGENAME: "github.com/18F/cg-dashboard"
         },
         memory: 256,
         instances: 1,
@@ -722,8 +752,7 @@ const spaceSummaries = [
           CONSOLE_LOG_URL: "https://loggregator.cloud.gov/",
           CONSOLE_UAA_URL: "https://uaa.cloud.gov/",
           GO15VENDOREXPERIMENT: 1,
-          GOPACKAGENAME: "github.com/18F/cg-dashboard",
-          GOVERSION: "go1.6.3"
+          GOPACKAGENAME: "github.com/18F/cg-dashboard"
         },
         memory: 256,
         instances: 1,

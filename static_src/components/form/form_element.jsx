@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import formActions from '../../actions/form_actions';
 
 let currid = 0;
 function nextId() {
@@ -11,7 +12,7 @@ export default class FormElement extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      err: null,
+      err: null, // Forms should all be initialized without errors
       value: this.props.value || ''
     };
 
@@ -19,55 +20,40 @@ export default class FormElement extends React.Component {
       this.state.id = nextId();
     }
 
-    this.componentWillMount = this.componentWillMount.bind(this);
-    this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this.onChange = this.onChange.bind(this);
-  }
-
-  componentWillMount() {
-    if (this.props.attachToForm) {
-      this.props.attachToForm(this);
-    }
-  }
-
-  componentDidMount() {
-    this.validate();
   }
 
   componentWillReceiveProps(props) {
     // If our validator changed, we want to update the error state.
     // TODO we probably also want to notify others about the validation result,
     // but this is a poor place to do it.
-    const err = props.validator(this.state.value, props.label);
-    this.setState({ err });
-  }
-
-  componentWillUnmount() {
-    if (this.props.detatchFromForm) {
-      this.props.detatchFromForm(this);
+    if (this.props.validator !== props.validator) {
+      const err = props.validator(this.state.value, props.label);
+      this.setState({ err, value: props.value });
     }
   }
 
   onChange(e) {
-    this.setState({ value: e.target.value }, () => {
-      this.validate();
+    const value = e.target.value;
+    const err = this.props.validator(value, this.props.name);
+    this.setState({ err, value }, () => {
+      formActions.changeField(this.props.formGuid, this.props.name, value)
+        .then(() => {
+          let promise;
+          if (err) {
+            err.value = value;
+            promise = formActions.changeFieldError(this.props.formGuid, this.props.name, err);
+          } else {
+            promise = formActions.changeFieldSuccess(this.props.formGuid, this.props.name);
+          }
+
+          return promise;
+        });
     });
   }
 
   get classes() {
     return this.props.classes.length ? classNames(...this.props.classes) : this.props.className;
-  }
-
-  validate() {
-    const value = this.state.value;
-    const err = this.props.validator(value, this.props.label);
-    if (err) {
-      err.value = value;
-    }
-
-    this.props.onValidate(err, value);
-    this.setState({ err });
-    return err;
   }
 
   get key() {
@@ -76,12 +62,12 @@ export default class FormElement extends React.Component {
 }
 
 FormElement.propTypes = {
-  attachToForm: React.PropTypes.func,
   classes: React.PropTypes.array,
   className: React.PropTypes.string,
-  detatchFromForm: React.PropTypes.func,
+  formGuid: React.PropTypes.string.isRequired,
   key: React.PropTypes.string,
   label: React.PropTypes.string,
+  name: React.PropTypes.string.isRequired,
   onValidate: React.PropTypes.func,
   validator: React.PropTypes.func,
   value: React.PropTypes.any

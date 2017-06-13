@@ -31,7 +31,10 @@ export class ServiceStore extends BaseStore {
         this._fetchAll = false;
         AppDispatcher.waitFor([ServicePlanStore.dispatchToken]);
         const services = action.services;
-        this.mergeMany('guid', services);
+        this.mergeMany('guid', services, () => {
+          // Always emitchange as fetch state was changed.
+          this.emitChange();
+        });
         break;
       }
 

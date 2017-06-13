@@ -7,6 +7,7 @@ import createStyler from '../util/create_styler';
 
 import Disclaimer from './disclaimer.jsx';
 import Footer from './footer.jsx';
+import GlobalErrorContainer from './global_error_container.jsx';
 import Header from './header.jsx';
 import Login from './login.jsx';
 import LoginStore from '../stores/login_store.js';
@@ -57,6 +58,7 @@ export default class App extends React.Component {
         <Disclaimer />
         <Header />
         <div className={ this.styler('main_content', 'content-no_sidebar') }>
+          <GlobalErrorContainer />
           <main className={ this.styler('usa-content') }>
             <div className={ this.styler('content', 'grid') }>
               { content }

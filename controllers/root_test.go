@@ -1,6 +1,7 @@
 package controllers_test
 
 import (
+	"os"
 	"strings"
 	"testing"
 
@@ -8,31 +9,97 @@ import (
 
 	"github.com/18F/cg-dashboard/controllers"
 	. "github.com/18F/cg-dashboard/helpers/testhelpers"
+	. "github.com/18F/cg-dashboard/helpers/testhelpers/docker"
 )
 
 func TestPing(t *testing.T) {
 	response, request := NewTestRequest("GET", "/ping", nil)
 	env, _ := cfenv.Current()
-	router, _, _ := controllers.InitApp(MockCompleteEnvVars, env)
+	router, _, err := controllers.InitApp(GetMockCompleteEnvVars(), env)
+	if err != nil {
+		t.Fatal(err)
+	}
 	router.ServeHTTP(response, request)
-	if response.Body.String() != "{\"status\": \"alive\", \"build-info\": \"developer-build\"}" {
-		t.Errorf("Expected alive. Found %s\n", response.Body.String())
+	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"file","store-up":true}}`
+	if response.Body.String() != expectedResponse {
+		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
+	}
+	if response.Code != 200 {
+		t.Errorf("Expected code %d. Found %d", 200, response.Code)
+	}
+}
+
+func TestPingWithRedis(t *testing.T) {
+	// Create a request
+	response, request := NewTestRequest("GET", "/ping", nil)
+	// Start up redis.
+	redisURI, cleanUpRedis, pauseRedis, unapuaseRedis := CreateTestRedis()
+	os.Setenv("REDIS_URI", redisURI)
+	// Remove redis when finished.
+	defer cleanUpRedis()
+	// Override the mock env vars to use redis for session backend.
+	envVars := GetMockCompleteEnvVars()
+	envVars.SessionBackend = "redis"
+	env, _ := cfenv.Current()
+
+	// Setup router.
+	router, _, err := controllers.InitApp(envVars, env)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Submit PING with healthy Redis instance.
+	router.ServeHTTP(response, request)
+	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":true}}`
+	if response.Body.String() != expectedResponse {
+		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
+	}
+	if response.Code != 200 {
+		t.Errorf("Expected code %d. Found %d", 200, response.Code)
+	}
+
+	// pause the instance from responding.
+	pauseRedis()
+
+	// Try ping again with unhealthy Redis instance.
+	response, request = NewTestRequest("GET", "/ping", nil)
+	router.ServeHTTP(response, request)
+	expectedResponse = `{"status":"outage","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":false}}`
+	if response.Body.String() != expectedResponse {
+		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
+	}
+	if response.Code != 500 {
+		t.Errorf("Expected code %d. Found %d", 500, response.Code)
+	}
+
+	// we unpause the instance.
+	unapuaseRedis()
+
+	// Retry to ping with a new healthy Redis instance.
+	response, request = NewTestRequest("GET", "/ping", nil)
+	router.ServeHTTP(response, request)
+	expectedResponse = `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":true}}`
+	if response.Body.String() != expectedResponse {
+		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
+	}
+	if response.Code != 200 {
+		t.Errorf("Expected code %d. Found %d", 200, response.Code)
 	}
 }
 
 var loginHandshakeTests = []BasicConsoleUnitTest{
 	{
 		TestName:    "Login Handshake With Already Authenticated User",
-		EnvVars:     MockCompleteEnvVars,
+		EnvVars:     GetMockCompleteEnvVars(),
 		Code:        302,
-		Location:    "/#/dashboard",
+		Location:    "https://hostname/#/dashboard",
 		SessionData: ValidTokenData,
 	},
 	{
 		TestName: "Login Handshake With Non Authenticated User",
-		EnvVars:  MockCompleteEnvVars,
+		EnvVars:  GetMockCompleteEnvVars(),
 		Code:     302,
-		Location: "/oauth/authorize",
+		Location: "https://loginurl/oauth/authorize",
 	},
 }
 
@@ -51,4 +118,42 @@ func TestLoginHandshake(t *testing.T) {
 		}
 	}
 
+}
+
+var logoutTests = []BasicSecureTest{
+	{
+		BasicConsoleUnitTest: BasicConsoleUnitTest{
+			TestName:    "Basic Authorized Profile To Logout",
+			EnvVars:     GetMockCompleteEnvVars(),
+			SessionData: ValidTokenData,
+		},
+		ExpectedResponse: "https://loginurl/logout.do",
+	},
+	{
+		BasicConsoleUnitTest: BasicConsoleUnitTest{
+			TestName: "Basic Unauthorized Profile To Logout",
+			EnvVars:  GetMockCompleteEnvVars(),
+		},
+		ExpectedResponse: "https://loginurl/logout.do",
+	},
+}
+
+func TestLogout(t *testing.T) {
+	for _, test := range logoutTests {
+		// Create request
+		response, request := NewTestRequest("GET", "/logout", nil)
+
+		router, store := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
+		router.ServeHTTP(response, request)
+		location := response.Header().Get("location")
+		if location != test.ExpectedResponse {
+			t.Errorf("Logout route does not redirect to logout page (%s:%s)", location, test.ExpectedResponse)
+		}
+		if store.Session.Options.MaxAge != -1 {
+			t.Errorf("Logout does not change MaxAge to -1")
+		}
+		if store.Session.Values["token"] != nil {
+			t.Errorf("Logout does not clear the token stored in the session")
+		}
+	}
 }

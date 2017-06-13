@@ -1,18 +1,16 @@
 package controllers
 
 import (
-	"html/template"
-	"path/filepath"
-
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gocraft/web"
 
 	"github.com/18F/cg-dashboard/helpers"
+	"github.com/18F/cg-dashboard/mailer"
 )
 
 // InitRouter sets up the router (and subrouters).
 // It also includes the closure middleware where we load the global Settings reference into each request.
-func InitRouter(settings *helpers.Settings, templates *template.Template) *web.Router {
+func InitRouter(settings *helpers.Settings, templates *helpers.Templates, mailer mailer.Mailer) *web.Router {
 	if settings == nil {
 		return nil
 	}
@@ -22,6 +20,7 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	router.Middleware(func(c *Context, resp web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
 		c.Settings = settings
 		c.templates = templates
+		c.mailer = mailer
 		next(resp, req)
 	})
 
@@ -32,6 +31,7 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	router.Get("/ping", (*Context).Ping)
 	router.Get("/handshake", (*Context).LoginHandshake)
 	router.Get("/oauth2callback", (*Context).OAuthCallback)
+	router.Get("/logout", (*Context).Logout)
 
 	// Secure all the other routes
 	secureRouter := router.Subrouter(SecureContext{}, "/")
@@ -41,7 +41,6 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	apiRouter.Middleware((*APIContext).OAuth)
 	// All routes accepted
 	apiRouter.Get("/authstatus", (*APIContext).AuthStatus)
-	apiRouter.Get("/logout", (*APIContext).Logout)
 	apiRouter.Get("/profile", (*APIContext).UserProfile)
 	apiRouter.Get("/:*", (*APIContext).APIProxy)
 	apiRouter.Put("/:*", (*APIContext).APIProxy)
@@ -52,6 +51,8 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	uaaRouter := secureRouter.Subrouter(UAAContext{}, "/uaa")
 	uaaRouter.Middleware((*UAAContext).OAuth)
 	uaaRouter.Get("/userinfo", (*UAAContext).UserInfo)
+	uaaRouter.Get("/uaainfo", (*UAAContext).UaaInfo)
+	uaaRouter.Post("/invite/users", (*UAAContext).InviteUserToOrg)
 
 	// Setup the /log subrouter.
 	logRouter := secureRouter.Subrouter(LogContext{}, "/log")
@@ -59,11 +60,11 @@ func InitRouter(settings *helpers.Settings, templates *template.Template) *web.R
 	logRouter.Get("/recent", (*LogContext).RecentLogs)
 
 	// Add auth middleware
-	router.Middleware((*Context).LoginRequired)
+	secureRouter.Middleware((*SecureContext).LoginRequired)
 
 	// Frontend Route Initialization
 	// Set up static file serving to load from the static folder.
-	router.Middleware(web.StaticMiddleware("static"))
+	router.Middleware(StaticMiddleware("static"))
 
 	return router
 }
@@ -75,12 +76,19 @@ func InitApp(envVars helpers.EnvVars, env *cfenv.App) (*web.Router, *helpers.Set
 	if err := settings.InitSettings(envVars, env); err != nil {
 		return nil, nil, err
 	}
+	mailer, err := mailer.InitSMTPMailer(settings)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	// Cache templates
-	templates := template.Must(template.ParseFiles(filepath.Join(envVars.BasePath, "static", "index.html")))
+	templates, err := helpers.InitTemplates(settings.BasePath)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	// Initialize the router
-	router := InitRouter(&settings, templates)
+	router := InitRouter(&settings, templates, mailer)
 
 	return router, &settings, nil
 }

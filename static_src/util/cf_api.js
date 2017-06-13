@@ -3,12 +3,34 @@ import http from 'axios';
 import { noticeError } from '../util/analytics.js';
 import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
-import loginActions from '../actions/login_actions.js';
 import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
 import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
+
+
+// An error from the CF v2 API
+function CfApiV2Error(response) {
+  const { code, title, description } = response && response.data || {};
+
+  if (!code || !title || !description) {
+    throw new Error('CfApiV2Error expected to have code, title, and description.');
+  }
+
+  this.code = code;
+  this.description = description;
+  this.response = response;
+  this.title = title;
+
+  this.message = description;
+}
+
+// Babel doesn't like extending native types with `class`, so use prototype
+// inheritence.
+CfApiV2Error.prototype = Object.create(Error.prototype);
+CfApiV2Error.prototype.constructor = Error;
+
 
 // TODO handleError should probably return a (rejected) Promise
 function handleError(err, errHandler = errorActions.errorFetch) {
@@ -16,20 +38,47 @@ function handleError(err, errHandler = errorActions.errorFetch) {
   // When an error has a `reponse` object, it's likely from ajax.
   if (err.response) {
     const errRes = err.response;
-    if (errRes.status && errRes.status >= 400) {
-      if (errRes.data) {
-        errHandler(errRes.data);
-      } else {
-        errHandler(errRes);
-      }
-      noticeError(err);
+    if (errRes.data) {
+      errHandler(errRes.data);
     } else {
-      throw err;
+      errHandler(errRes);
     }
+    noticeError(err);
+    throw err;
     // Other exceptions should be thrown so they surface.
   } else {
     throw err;
   }
+}
+
+function parseError(resultOrError) {
+  if (resultOrError instanceof Error) {
+    // Leave it alone
+    return resultOrError;
+  }
+
+  if (resultOrError.response) {
+    // The request was successful but the server returned some kind of error.
+    const response = resultOrError.response;
+    if (response.data && typeof response.data === 'object') {
+      if (response.data.description) {
+        // V2 api
+        const error = new CfApiV2Error(response.data);
+        error.response = response;
+        return error;
+      }
+    }
+
+    // If data is not an object, we're not sure what to do with it.
+    const error = new Error(`The API returned an unkown error with status ${response.status}.`);
+    error.response = response;
+    error.data = response.data;
+    return error;
+  }
+
+  const error = new Error('The API returned an unkown error.');
+  error.result = resultOrError;
+  return error;
 }
 
 // Some general error handling for API calls
@@ -135,11 +184,21 @@ export default {
   },
 
   getAuthStatus() {
-    return http.get(`${APIV}/authstatus`).then((res) => {
-      loginActions.receivedStatus(res.data.status);
-    }).catch(() => {
-      loginActions.receivedStatus(false);
-    });
+    return http.get(`${APIV}/authstatus`)
+      .then(res => res.data) // Data looks something like { status: 'authorized' }
+      .catch(res => {
+        if (res && res.response && res.response.status === 401) {
+          // The user is unauthenicated.
+          return Promise.resolve({ status: 'unauthorized' });
+        }
+
+        // At this point we're not sure if the user is auth'd or not. Treat it
+        // as an error condition.
+        const err = parseError(res);
+
+        // Let someone else handle the error
+        return Promise.reject(err);
+      });
   },
 
   fetchOrgLinks(guid) {
@@ -296,9 +355,9 @@ export default {
    *
    * @param {Number} spaceGuid - The guid of the space that the users belong to.
    */
-  fetchSpaceUsers(spaceGuid) {
+  fetchSpaceUserRoles(spaceGuid) {
     return this.fetchMany(`/spaces/${spaceGuid}/user_roles`,
-                          userActions.receivedSpaceUsers,
+                          userActions.receivedSpaceUserRoles,
                           spaceGuid);
   },
 
@@ -335,9 +394,7 @@ export default {
   // TODO deprecate possibly in favor of deleteOrgUserPermissions.
   deleteOrgUserCategory(userGuid, orgGuid, category) {
     return http.delete(`${APIV}/organizations/${orgGuid}/${category}
-      /${userGuid}`).catch(() => {
-        // TODO create correct error action.
-      });
+      /${userGuid}`);
   },
 
   deleteOrgUserPermissions(userGuid, orgGuid, permissions) {
@@ -355,12 +412,32 @@ export default {
     );
   },
 
-  // TODO refactor with org user permissions
   putSpaceUserPermissions(userGuid, spaceGuid, role) {
     return http.put(`${APIV}/spaces/${spaceGuid}/${role}/${userGuid}`)
       .then((res) => res.response, () => {
         // TODO figure out error action
       });
+  },
+
+  postCreateNewUserWithGuid(userGuid) {
+    return http.post(`${APIV}/users`, {
+      guid: userGuid
+    })
+      .then(res => this.formatSplitResponse(res.data))
+      .catch(res => {
+        if (res && res.response && res.response.status === 400) {
+          if (res.response.data.error_code === 'CF-UaaIdTaken') {
+            return Promise.resolve({ guid: userGuid });
+          }
+        }
+        const err = parseError(res);
+        return Promise.reject(err);
+      });
+  },
+
+  putAssociateUserToOrganization(userGuid, orgGuid) {
+    return http.put(`${APIV}/organizations/${orgGuid}/users/${userGuid}`)
+      .then((res) => this.formatSplitResponse(res.data));
   },
 
   // TODO refactor with org user permissions
@@ -513,5 +590,23 @@ export default {
         handleError(err);
         return Promise.reject(err);
       });
+  },
+
+  fetchUser(userGuid) {
+    return this.fetchOne(`/users/${userGuid}`);
+  },
+
+  fetchUserSpaces(userGuid, options = {}) {
+    const data = {};
+    if (options.orgGuid) {
+      data.q = `organization_guid:${options.orgGuid}`;
+    }
+
+    return this.fetchAllPages(`/users/${userGuid}/spaces`, data, results => results);
+  },
+
+  fetchUserOrgs(userGuid) {
+    return this.fetchAllPages(`/users/${userGuid}/organizations`,
+      (results) => Promise.resolve(results));
   }
 };

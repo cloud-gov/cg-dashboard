@@ -1,18 +1,18 @@
 package controllers_test
 
 import (
-	"github.com/18F/cg-dashboard/controllers"
-	"github.com/18F/cg-dashboard/helpers"
-	. "github.com/18F/cg-dashboard/helpers/testhelpers"
-	"github.com/gocraft/web"
-	"golang.org/x/net/context"
-	"golang.org/x/oauth2"
-
 	"fmt"
-	"html/template"
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/18F/cg-dashboard/controllers"
+	"github.com/18F/cg-dashboard/helpers"
+	. "github.com/18F/cg-dashboard/helpers/testhelpers"
+	"github.com/18F/cg-dashboard/helpers/testhelpers/mocks"
+	"github.com/gocraft/web"
+	"golang.org/x/net/context"
+	"golang.org/x/oauth2"
 )
 
 var oauthTests = []BasicSecureTest{
@@ -30,9 +30,8 @@ var oauthTests = []BasicSecureTest{
 			TestName:    "Basic Invalid OAuth Session",
 			SessionData: InvalidTokenData,
 		},
-		ExpectedResponse: `<a href="http://loginURL.com/oauth/authorize?access_type=online&amp;client_id=ClientID&amp;redirect_uri=http%3A%2F%2Fhostname.com%2Foauth2callback&amp;response_type=code&amp;scope=openid&amp;state=state">Found</a>`,
-		ExpectedCode:     302,
-		ExpectedLocation: "http://loginURL.com/oauth/authorize?access_type=online&client_id=ClientID&redirect_uri=http%3A%2F%2Fhostname.com%2Foauth2callback&response_type=code&scope=openid&state=state",
+		ExpectedResponse: `{"status": "unauthorized"}`,
+		ExpectedCode:     401,
 	},
 }
 
@@ -61,19 +60,16 @@ func TestOAuth(t *testing.T) {
 
 		// Setup a test route on the API router (which is guarded by OAuth)
 		response, request := NewTestRequest("GET", "/v2/test", nil)
-		router := controllers.InitRouter(&mockSettings, &template.Template{})
+		router := controllers.InitRouter(&mockSettings, &helpers.Templates{}, &mocks.Mailer{})
 		secureRouter := router.Subrouter(controllers.SecureContext{}, "/")
 		apiRouter := secureRouter.Subrouter(controllers.APIContext{}, "/v2")
 		apiRouter.Middleware((*controllers.APIContext).OAuth)
 		apiRouter.Get("/test", func(c *controllers.APIContext, rw web.ResponseWriter, r *web.Request) {
-			fmt.Fprintf(rw, "test")
+			rw.Write([]byte("test"))
 		})
 
 		// Make the request and check.
 		router.ServeHTTP(response, request)
-		if response.Header().Get("Location") != test.ExpectedLocation {
-			t.Errorf("Test %s did not meet expected location header.\nExpected %s.\nFound %s.\n", test.TestName, test.ExpectedLocation, response.Header().Get("Location"))
-		}
 		if !strings.Contains(response.Body.String(), test.ExpectedResponse) {
 			t.Errorf("Test %s did not contain expected value.\nExpected %s.\n Found (%s)\n.", test.TestName, test.ExpectedResponse, response.Body.String())
 		}
@@ -83,13 +79,29 @@ func TestOAuth(t *testing.T) {
 	}
 }
 
+func TestPrivilegedProxy(t *testing.T) {
+	for _, test := range proxyTests {
+		// We can only get this after the server has started.
+		testServer := CreateExternalServerForPrivileged(t, test)
+		test.EnvVars.UAAURL = testServer.URL
+		// Construct full url for the proxy.
+		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
+		c := &controllers.SecureContext{Context: &controllers.Context{}}
+		response, request, _ := PrepareExternalServerCall(t, c, testServer, fullURL, test)
+		c.PrivilegedProxy(response, request, fullURL)
+		VerifyExternalCallResponse(t, response, &test)
+
+		testServer.Close()
+	}
+}
+
 var proxyTests = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
 				TestName:    "Basic Ok Proxy call",
 				SessionData: ValidTokenData,
-				EnvVars:     MockCompleteEnvVars,
+				EnvVars:     GetMockCompleteEnvVars(),
 			},
 			ExpectedResponse: "test",
 			ExpectedCode:     http.StatusOK,
@@ -97,9 +109,36 @@ var proxyTests = []BasicProxyTest{
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "GET",
 		RequestPath:   "/test",
-		ExpectedPath:  "/test",
-		Response:      "test",
-		ResponseCode:  http.StatusOK,
+		Handlers: []Handler{
+			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/test",
+				Response:      "test",
+				ResponseCode:  http.StatusOK,
+			},
+		},
+	},
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "Proxy response containing format string",
+				SessionData: ValidTokenData,
+				EnvVars:     GetMockCompleteEnvVars(),
+			},
+			ExpectedResponse: "hello%world",
+			ExpectedCode:     http.StatusOK,
+		},
+		// What the "external" server will send back to the proxy.
+		RequestMethod: "GET",
+		RequestPath:   "/test",
+		Handlers: []Handler{
+			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/test",
+				Response:      "hello%world",
+				ResponseCode:  http.StatusOK,
+			},
+		},
 	},
 }
 

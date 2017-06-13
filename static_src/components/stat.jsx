@@ -17,6 +17,7 @@ const STATES = [
 ];
 
 const propTypes = {
+  formGuid: React.PropTypes.string,
   name: React.PropTypes.string,
   title: React.PropTypes.string,
   editable: React.PropTypes.bool,
@@ -104,13 +105,14 @@ export default class Stat extends React.Component {
       primaryStat = (
         <div className={ this.styler('stat-primary')}>
           <FormNumber
+            formGuid={ this.props.formGuid }
             className={ this.styler('stat-input', 'stat-input-text') }
             type="text"
-            id={ `${this.props.name}-value` }
+            id={ this.props.name }
             inline
             label="MB"
             labelAfter
-            name={ `${this.props.name}-value` }
+            name={ this.props.name }
             value={ this.fromBytes(this.state.primaryStat) }
             min={ this.props.min }
             max={ this.props.max }

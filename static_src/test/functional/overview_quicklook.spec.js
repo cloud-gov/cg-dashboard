@@ -1,6 +1,4 @@
 
-import './global_setup';
-
 import OrgQuicklookElement from './pageobjects/org_quicklook.element';
 
 

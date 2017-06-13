@@ -1,0 +1,10 @@
+---
+buildpack: staticfile_buildpack
+applications:
+- memory: 64MB
+  name: console-redirect
+  host: console
+  domain: fr.cloud.gov
+  path: .
+  env:
+    TARGET_DOMAIN: dashboard.fr.cloud.gov
