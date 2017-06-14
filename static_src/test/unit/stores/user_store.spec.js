@@ -289,6 +289,7 @@ describe('UserStore', function () {
         function() {
       var spy = sandbox.stub(cfApi, 'putOrgUserPermissions'),
           expectedRoles = 'org_manager',
+          expectedApiKey = 'managers',
           expectedUserGuid = 'zjkxcvadfzxcvz',
           expectedOrgGuid = 'zxcvzcxvzxroiter';
 
@@ -297,6 +298,7 @@ describe('UserStore', function () {
 
       userActions.addUserRoles(
         expectedRoles,
+        expectedApiKey,
         expectedUserGuid,
         expectedOrgGuid,
         'org'
@@ -306,7 +308,7 @@ describe('UserStore', function () {
       let args = spy.getCall(0).args;
       expect(args[0]).toEqual(expectedUserGuid);
       expect(args[1]).toEqual(expectedOrgGuid);
-      expect(args[2]).toEqual(expectedRoles);
+      expect(args[2]).toEqual(expectedApiKey);
     });
   });
 

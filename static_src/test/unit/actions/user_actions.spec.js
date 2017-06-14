@@ -228,10 +228,13 @@ describe('userActions', function() {
     it(`should call a view action to add user roles with current roles
         user guid and guid and type`, function() {
       var expectedRole = 'org_manager',
+          expectedApiKey = 'managers',
           expectedUserGuid = 'akdfjadzxcvzxcvzxvzx',
           expectedGuid = '2eve2v2vadsfa',
           expectedType = 'org';
 
+      // expectedParams for the params dispatched with userActionTypes.USER_ROLES_ADD.
+      // the apiKey is not sent with it.
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
@@ -243,6 +246,7 @@ describe('userActions', function() {
 
       userActions.addUserRoles(
         expectedRole,
+        expectedApiKey,
         expectedUserGuid,
         expectedGuid,
         expectedType);
@@ -252,6 +256,7 @@ describe('userActions', function() {
 
     describe('for org user that successfully adds a user permission', function() {
       let roles;
+      let apiKey;
       let userGuid;
       let orgGuid;
 
@@ -259,6 +264,7 @@ describe('userActions', function() {
         sandbox.spy(cfApi, 'putOrgUserPermissions');
         sandbox.stub(userActions, 'addedUserRoles').returns(Promise.resolve());
         roles = ['org_manager'];
+        apiKey = 'managers';
         userGuid = 'user-123';
         orgGuid = 'org-123';
         moxios.wait(function() {
@@ -272,6 +278,7 @@ describe('userActions', function() {
 
         userActions.addUserRoles(
           roles,
+          apiKey,
           userGuid,
           orgGuid,
           'org'
@@ -283,7 +290,7 @@ describe('userActions', function() {
         expect(cfApi.putOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           orgGuid,
-          roles
+          apiKey
         ));
       });
 
@@ -300,6 +307,7 @@ describe('userActions', function() {
 
     describe('for org user that unsuccessfully adds a user permission', function() {
       let roles;
+      let apiKey;
       let userGuid;
       let orgGuid;
 
@@ -307,6 +315,7 @@ describe('userActions', function() {
         sandbox.spy(cfApi, 'putOrgUserPermissions');
         sandbox.spy(userActions, 'addedUserRoles');
         roles = ['org_manager'];
+        apiKey = 'managers';
         userGuid = 'user-123';
         orgGuid = 'org-123';
         moxios.wait(function() {
@@ -321,6 +330,7 @@ describe('userActions', function() {
 
         userActions.addUserRoles(
           roles,
+          apiKey,
           userGuid,
           orgGuid,
           'org'
@@ -332,7 +342,7 @@ describe('userActions', function() {
         expect(cfApi.putOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           orgGuid,
-          roles
+          apiKey
         ));
       });
 
@@ -343,6 +353,7 @@ describe('userActions', function() {
 
     describe('for space user that successfully adds a user permission', function() {
       let roles;
+      let apiKey;
       let userGuid;
       let spaceGuid;
 
@@ -350,6 +361,7 @@ describe('userActions', function() {
         sandbox.spy(cfApi, 'putSpaceUserPermissions');
         sandbox.stub(userActions, 'addedUserRoles').returns(Promise.resolve());
         roles = ['space_manager'];
+        apiKey = 'managers';
         userGuid = 'user-123';
         spaceGuid = 'space-123';
         moxios.wait(function() {
@@ -363,6 +375,7 @@ describe('userActions', function() {
 
         userActions.addUserRoles(
           roles,
+          apiKey,
           userGuid,
           spaceGuid,
           'space'
@@ -374,7 +387,7 @@ describe('userActions', function() {
         expect(cfApi.putSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           spaceGuid,
-          roles
+          apiKey
         ));
       });
     });
@@ -382,6 +395,7 @@ describe('userActions', function() {
 
   describe('for space user that unsuccessfully adds a user permission', function() {
     let roles;
+    let apiKey;
     let userGuid;
     let spaceGuid;
 
@@ -389,6 +403,7 @@ describe('userActions', function() {
       sandbox.spy(cfApi, 'putSpaceUserPermissions');
       sandbox.spy(userActions, 'addedUserRoles');
       roles = ['space_manager'];
+      apiKey = 'managers';
       userGuid = 'user-123';
       spaceGuid = 'space-123';
       moxios.wait(function() {
@@ -403,6 +418,7 @@ describe('userActions', function() {
 
       userActions.addUserRoles(
         roles,
+        apiKey,
         userGuid,
         spaceGuid,
         'space'
@@ -445,10 +461,13 @@ describe('userActions', function() {
     it(`should call a view action to remove user roles with current roles
         user guid and org guid and type`, function() {
       var expectedRole = 'org_manager',
+          expecctedApiKey = 'managers',
           expectedUserGuid = 'akdfjasdfjasdfadzxcvzxcvzxvzx',
           expectedGuid = '2eve2dsfa',
           expectedType = 'space';
 
+      // expectedParams for the params dispatched with userActionTypes.USER_ROLES_DELETE.
+      // the apiKey is not sent with it.
       let expectedParams = {
         roles: expectedRole,
         userGuid: expectedUserGuid,
@@ -460,6 +479,7 @@ describe('userActions', function() {
 
       userActions.deleteUserRoles(
         expectedRole,
+        expecctedApiKey,
         expectedUserGuid,
         expectedGuid,
         expectedType);
@@ -469,6 +489,7 @@ describe('userActions', function() {
 
     describe('for org user that successfully deletes a user permission', function() {
       let roles;
+      let apiKey;
       let userGuid;
       let orgGuid;
 
@@ -477,6 +498,7 @@ describe('userActions', function() {
         sandbox.spy(userActions, 'errorRemoveUser');
         sandbox.stub(userActions, 'deletedUserRoles').returns(Promise.resolve());
         roles = ['org_manager'];
+        apiKey = 'managers';
         userGuid = 'user-123';
         orgGuid = 'org-123';
         moxios.wait(function() {
@@ -490,6 +512,7 @@ describe('userActions', function() {
 
         userActions.deleteUserRoles(
           roles,
+          apiKey,
           userGuid,
           orgGuid,
           'org'
@@ -501,7 +524,8 @@ describe('userActions', function() {
         expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           orgGuid,
-          roles
+          roles,
+          apiKey
         ));
       });
 
@@ -522,6 +546,7 @@ describe('userActions', function() {
 
     describe('for org user that unsuccessfully deletes a user permission', function() {
       let roles;
+      let apiKey;
       let userGuid;
       let orgGuid;
 
@@ -530,6 +555,7 @@ describe('userActions', function() {
         sandbox.spy(userActions, 'deletedUserRoles');
         sandbox.stub(userActions, 'errorRemoveUser').returns(Promise.resolve());
         roles = ['org_manager'];
+        apiKey = 'managers';
         userGuid = 'user-123';
         orgGuid = 'org-123';
         moxios.wait(function() {
@@ -544,6 +570,7 @@ describe('userActions', function() {
 
         userActions.deleteUserRoles(
           roles,
+          apiKey,
           userGuid,
           orgGuid,
           'org'
@@ -555,7 +582,8 @@ describe('userActions', function() {
         expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           orgGuid,
-          roles
+          roles,
+          apiKey
         ));
       });
 
@@ -574,6 +602,7 @@ describe('userActions', function() {
 
     describe('for space user that successfully deletes a user permission', function() {
       let roles;
+      let apiKey;
       let userGuid;
       let spaceGuid;
 
@@ -582,6 +611,7 @@ describe('userActions', function() {
         sandbox.spy(userActions, 'errorRemoveUser');
         sandbox.stub(userActions, 'deletedUserRoles').returns(Promise.resolve());
         roles = ['space_manager'];
+        apiKey = 'managers';
         userGuid = 'user-123';
         spaceGuid = 'space-123';
         moxios.wait(function() {
@@ -595,6 +625,7 @@ describe('userActions', function() {
 
         userActions.deleteUserRoles(
           roles,
+          apiKey,
           userGuid,
           spaceGuid,
           'space'
@@ -606,7 +637,8 @@ describe('userActions', function() {
         expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           spaceGuid,
-          roles
+          roles,
+          apiKey
         ));
       });
 
@@ -628,6 +660,7 @@ describe('userActions', function() {
 
   describe('for space user that unsuccessfully deletes a user permission', function() {
     let roles;
+    let apiKey;
     let userGuid;
     let spaceGuid;
 
@@ -636,6 +669,7 @@ describe('userActions', function() {
       sandbox.spy(userActions, 'deletedUserRoles');
       sandbox.stub(userActions, 'errorRemoveUser').returns(Promise.resolve());
       roles = ['space_manager'];
+      apiKey = 'managers';
       userGuid = 'user-123';
       spaceGuid = 'space-123';
       moxios.wait(function() {
@@ -650,6 +684,7 @@ describe('userActions', function() {
 
       userActions.deleteUserRoles(
         roles,
+        apiKey,
         userGuid,
         spaceGuid,
         'space'
@@ -661,7 +696,8 @@ describe('userActions', function() {
       expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
         userGuid,
         spaceGuid,
-        roles
+        roles,
+        apiKey
       ));
     });
 
