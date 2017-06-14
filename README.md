@@ -31,10 +31,10 @@ Learn more about [cloud.gov](https://cloud.gov).
 The Go backend isn't strictly required for all development. Consider [running locally with node](#run-locally-without-needing-go) if you will not be doing primary feature work where you need access to the actual Cloud Foundry API.
 
 #### Cloning the repository
-If you are unfamiliar with [`Go` project directory structure](https://golang.org/doc/code.html#Workspaces), you want the code in this repository to be in something like `<your-code-directory>/cg-dashboard-ws/src/github.com/18f/cg-dashboard`. You can use that exact pattern by cloning the repository with:
+If you are unfamiliar with [`Go` project directory structure](https://golang.org/doc/code.html#Workspaces), you want the code in this repository to be in something like `<your-code-directory>/src/github.com/18f/cg-dashboard`. You can use that exact pattern by cloning the repository with:
 
 ```
-git clone git@github.com:18F/cg-dashboard.git cg-dashboard-ws/src/github.com/18F/cg-dashboard
+git clone git@github.com:18F/cg-dashboard.git src/github.com/18F/cg-dashboard
 ```
 
 #### Set the environment variables
@@ -43,7 +43,7 @@ If you are testing locally, export these variables. There is a sample file of en
 
 Then edit the file `~/.env/cg-dashboard` and provide the proper values. When you want to set all the environment variables, just run `source ~/.env/cg-dashboard`. You'll have to do this every time you open a new shell. If you work at 18F, ask a team member to send you the secret credentials.
 
-- `GOPATH`: The absolute path to your project root. If you followed the cloning instructions above, this path should end with `cg-dashboard-ws`
+- `GOPATH`: The absolute path to your code directory, one level up from the root of this project. If you followed the cloning instructions above, this path should correspond to the value you used for `<your-code-directory>`.
 - `CONSOLE_CLIENT_ID`: Registered client id with UAA.
 - `CONSOLE_CLIENT_SECRET`: The client secret.
 - `CONSOLE_HOSTNAME`: The URL of the service itself.
