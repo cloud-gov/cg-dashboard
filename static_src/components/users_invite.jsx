@@ -63,7 +63,8 @@ export default class UsersInvite extends React.Component {
       content = (
         <div>
           <PanelDocumentation description>
-            <p>Invite new user to cloud.gov and this organization, or add an existing user to this organization.</p>
+            <p>Invite new user to cloud.gov and this organization, or add an existing user to this
+            organization.</p>
           </PanelDocumentation>
           <Form
             guid={ USERS_INVITE_FORM_GUID }
