@@ -89,6 +89,27 @@ type inviteUAAUserRequest struct {
 
 // InviteUAAUserResponse is the expected form of a response from invite users
 // to UAA.
+type UaaVerificationUserResponse struct {
+	UaaVerification []UaaVerification `json:"uaa_verification"`
+}
+
+// NewInvite is the contains detailed information about an single successful
+// user invite to UAA.
+type UaaVerification struct {
+	active               string `json:"active"`
+	verified             string `json:"verified"`
+	origin               string `json:"origin"`
+	zoneId               string `json:"zoneId"`
+	passwordLastModified string `json:"passwordLastModified"`
+	previousLogonTime    string `json:"previousLogonTime"`
+	lastLogonTime        string `json:"lastLogonTime"`
+	id                   string `json:"id"`
+	externalId           string `json:"externalId"`
+	meta                 string `json:"meta"`
+}
+
+// InviteUAAUserResponse is the expected form of a response from invite users
+// to UAA.
 type InviteUAAUserResponse struct {
 	NewInvites []NewInvite `json:"new_invites"`
 }
@@ -249,11 +270,12 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 		// return
 	}
 	resp := w.Result()
-
+	body, _ := ioutil.ReadAll(resp.Body)
 	log.Println("{{{")
 	log.Println("{{{")
 	log.Println(reqURL)
 	log.Println(resp)
+	log.Println(string(body))
 	log.Println("}}}")
 	log.Println("}}}")
 
