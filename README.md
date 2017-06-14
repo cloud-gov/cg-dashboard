@@ -3,9 +3,9 @@
 [![CircleCI](https://circleci.com/gh/18F/cg-dashboard.svg?style=svg)](https://circleci.com/gh/18F/cg-dashboard)
 [![Code Climate](https://codeclimate.com/github/18F/cg-dashboard/badges/gpa.svg)](https://codeclimate.com/github/18F/cg-dashboard)
 
-Environments: [Production](https://dashboard.cloud.gov)
-[Staging](https://dashboard-staging.apps.cloud.gov)
-[Demo](https://dashboard-demo.apps.cloud.gov)
+Environments: [Production](https://dashboard.fr.cloud.gov)
+[Staging](https://dashboard-staging.fr.app.cloud.gov)
+[Demo](https://dashboard-demo.fr.app.cloud.gov)
 
 
 ## Introduction
