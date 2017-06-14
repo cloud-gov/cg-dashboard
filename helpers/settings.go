@@ -216,7 +216,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	s.HighPrivilegedOauthConfig = &clientcredentials.Config{
 		ClientID:     envVars.ClientID,
 		ClientSecret: envVars.ClientSecret,
-		Scopes:       []string{"scim.invite", "cloud_controller.admin"},
+		Scopes:       []string{"scim.invite", "cloud_controller.admin", "scim.read"},
 		TokenURL:     envVars.UAAURL + "/oauth/token",
 	}
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 
 	"encoding/json"
 
@@ -134,6 +135,7 @@ func (c *UAAContext) InviteUAAuser(
 		return
 	}
 	resp := w.Result()
+
 	err = readBodyToStruct(resp.Body, &inviteResponse)
 	return
 }
@@ -203,6 +205,7 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 
 	// Try to invite the user to UAA.
 	inviteResponse, err := c.InviteUAAuser(inviteUserToOrgRequest)
+
 	if err != nil {
 		err.writeTo(rw)
 		return
@@ -223,6 +226,36 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 		err.writeTo(rw)
 		return
 	}
+
+	log.Println("(((((")
+	log.Println("(((((")
+	log.Println(userInvite.UserID)
+	log.Println(")))))")
+	log.Println(")))))")
+
+	reqURL := fmt.Sprintf("%s%s%s", "/Users/", userInvite.UserID, "")
+
+	reqVerify, _ := http.NewRequest("GET", reqURL, nil)
+	w := httptest.NewRecorder()
+	c.uaaProxy(w, reqVerify, reqURL, true)
+	if w.Code != http.StatusOK {
+		resp := w.Result()
+		body, _ := ioutil.ReadAll(resp.Body)
+		err = &UaaError{http.StatusInternalServerError,
+			[]byte("{\"status\": \"failure\", \"data\": \"" +
+				"unable to create user in UAA database.\", \"proxy-data\": \"" +
+				string(body) + "\"}")}
+		log.Println(string(body))
+		// return
+	}
+	resp := w.Result()
+
+	log.Println("{{{")
+	log.Println("{{{")
+	log.Println(reqURL)
+	log.Println(resp)
+	log.Println("}}}")
+	log.Println("}}}")
 
 	// Trigger the e-mail invite.
 	err = c.TriggerInvite(inviteEmailRequest{
