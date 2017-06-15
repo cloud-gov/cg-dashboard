@@ -91,8 +91,6 @@ type inviteUAAUserRequest struct {
 // for a specific user. It is only a partial representation.
 type GetUAAUserResponse struct {
 	Verified             string `json:"verified"`
-	Origin               string `json:"origin"`
-	ZoneID               string `json:"zoneId"`
 	PasswordLastModified string `json:"passwordLastModified"`
 	PreviousLogonTime    string `json:"previousLogonTime"`
 	LastLogonTime        string `json:"lastLogonTime"`
