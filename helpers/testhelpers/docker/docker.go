@@ -51,6 +51,9 @@ func CreateTestMailCatcher() (string, string, string, func()) {
 	}
 	u, _ := url.Parse(pool.Client.Endpoint())
 	hostname := u.Hostname()
+	if hostname == "" {
+		hostname = "localhost"
+	}
 	if err = pool.Retry(func() error {
 		_, dialErr := redis.Dial("tcp", hostname+":"+resource.GetPort("25/tcp"))
 
