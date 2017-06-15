@@ -8,16 +8,40 @@ import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import UserRoleControl from './user_role_control.jsx';
 
+// roleMapping is a centralized relation of roles to machine-readable fields.
+// The root contains which level of users are we referring to.
+// Currently in CF, there are only two levels. space_user and org_users.
+// Each root node contains an array objects to specify various fields.
+// Each object will contain the following 3 fields:
+//
+// 1) key
+// 'key' is useful for two reasons. One: When the app checks for the roles in the
+// space via https://apidocs.cloudfoundry.org/263/spaces/retrieving_the_roles_of_all_users_in_the_space.html
+// or in the
+// org via https://apidocs.cloudfoundry.org/263/organizations/retrieving_the_roles_of_all_users_in_the_organization.html
+// it will compare the roles returned with the value of 'key'.
+// the second reason is because 'key is used in the rendering of the user list.
+// the HTML element ID set as the 'key' + 'userguid'.
+//
+// 2) apiKey
+// 'apiKey' is needed because the API to associate/dissociate roles does not use
+// the same key as 'key'.
+// For example to associate a developer to a space:
+// https://apidocs.cloudfoundry.org/263/spaces/associate_developer_with_the_space.html
+// It uses 'developers' instead of 'space_developer'.
+//
+// 3) label
+// 'label' is a human-readable version of the role.
 const roleMapping = {
   space_users: [
-    { key: 'space_developer', label: 'Space Developer' },
-    { key: 'space_manager', label: 'Space Manager' },
-    { key: 'space_auditor', label: 'Space Auditor' }
+    { key: 'space_developer', apiKey: 'developers', label: 'Space Developer' },
+    { key: 'space_manager', apiKey: 'managers', label: 'Space Manager' },
+    { key: 'space_auditor', apiKey: 'auditors', label: 'Space Auditor' }
   ],
   org_users: [
-    { key: 'org_manager', label: 'Org Manager' },
-    { key: 'billing_manager', label: 'Billing Manager' },
-    { key: 'org_auditor', label: 'Org Auditor' }
+    { key: 'org_manager', apiKey: 'managers', label: 'Org Manager' },
+    { key: 'billing_manager', apiKey: 'billing_managers', label: 'Billing Manager' },
+    { key: 'org_auditor', apiKey: 'auditors', label: 'Org Auditor' }
   ]
 
 };
@@ -50,11 +74,11 @@ export default class UserRoleListControl extends React.Component {
     return (this.roles().indexOf(roleKey) > -1);
   }
 
-  _onChange(roleKey, checked) {
+  _onChange(roleKey, apiKey, checked) {
     const handler = (!checked) ? this.props.onRemovePermissions :
       this.props.onAddPermissions;
 
-    handler(roleKey, this.props.user.guid);
+    handler(roleKey, apiKey, this.props.user.guid);
   }
 
   roles() {
@@ -81,7 +105,7 @@ export default class UserRoleListControl extends React.Component {
               roleKey={ role.key }
               initialValue={ this.checkRole(role.key) }
               initialEnableControl={ this.props.currentUserAccess }
-              onChange={ this._onChange.bind(this, role.key) }
+              onChange={ this._onChange.bind(this, role.key, role.apiKey) }
               userId={ this.props.user.guid }
             />
           </ElasticLineItem>

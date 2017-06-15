@@ -83,15 +83,17 @@ export default class Users extends React.Component {
     userActions.deleteUser(userGuid, this.state.currentOrgGuid);
   }
 
-  handleAddPermissions(roleKey, userGuid) {
+  handleAddPermissions(roleKey, apiKey, userGuid) {
     userActions.addUserRoles(roleKey,
+                                apiKey,
                                 userGuid,
                                 this.entityGuid,
                                 this.entityType);
   }
 
-  handleRemovePermissions(roleKey, userGuid) {
+  handleRemovePermissions(roleKey, apiKey, userGuid) {
     userActions.deleteUserRoles(roleKey,
+                                apiKey,
                                 userGuid,
                                 this.entityGuid,
                                 this.entityType);

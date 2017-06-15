@@ -1001,17 +1001,19 @@ describe('cfApi', function() {
       var spy = sandbox.stub(http, 'delete').returns(Promise.resolve({})),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp',
-          expectedPermission = 'manager';
+          expectedPermission = 'manager',
+          expectedApiKey = 'managers';
 
       cfApi.deleteOrgUserPermissions(
         expectedUserGuid,
         expectedOrgGuid,
-        expectedPermission).then(() => {
+        expectedPermission,
+        expectedApiKey).then(() => {
           expect(spy).toHaveBeenCalledOnce();
           let actual = spy.getCall(0).args[0];
           expect(actual).toMatch(new RegExp(expectedUserGuid));
           expect(actual).toMatch(new RegExp(expectedOrgGuid));
-          expect(actual).toMatch(new RegExp(expectedPermission));
+          expect(actual).toMatch(new RegExp(expectedApiKey));
           done();
         }).catch(done.fail);
     });
@@ -1020,22 +1022,22 @@ describe('cfApi', function() {
         message about the error from cf`, function(done) {
       var spy = sandbox.spy(userActions, 'errorRemoveUser'),
           expectedUserGuid = 'zcvmzxncbvpafd',
-          expectedRespone = {
+          expectedResponse = {
             code: 10006,
             description: 'Please delete the user associations for your spaces',
             error_code: 'CF-AssociationNotEmpty'
           };
-      moxios.stubOnce('DELETE', `/v2/organizations/asdf/role/${expectedUserGuid}`, {
+      moxios.stubOnce('DELETE', `/v2/organizations/asdf/apiKey/${expectedUserGuid}`, {
         status: 400,
-        response: expectedRespone
+        response: expectedResponse
       });
 
-      cfApi.deleteOrgUserPermissions(expectedUserGuid, 'asdf', 'role').then(
+      cfApi.deleteOrgUserPermissions(expectedUserGuid, 'asdf', 'role', 'apiKey').then(
         () => {
         expect(spy).toHaveBeenCalledOnce();
         let args = spy.getCall(0).args;
         expect(args[0]).toEqual(expectedUserGuid);
-        expect(args[1]).toEqual(expectedRespone);
+        expect(args[1]).toEqual(expectedResponse);
         done();
       }).catch(done.fail);
     });

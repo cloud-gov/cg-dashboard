@@ -331,9 +331,18 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/organizations/{orgGuid}/{role}/{userGuid}`,
     handler: function (req, reply) {
       const orgGuid = req.params.orgGuid;
+      const role = req.params.role;
       const user = userRoleOrgAddNewRole(orgGuid);
-
-      reply(SingleResponse(user));
+      switch (role) {
+        case 'managers':
+        case 'auditors':
+        case 'billing_managers':
+        case 'users':
+          reply(SingleResponse(user));
+          break;
+        default:
+          reply().code(500);
+      }
     }
   });
 
@@ -343,7 +352,17 @@ module.exports = function api(smocks) {
     method: 'DELETE',
     path: `${BASE_URL}/organizations/{orgGuid}/{role}/{userGuid}`,
     handler: function (req, reply) {
-      reply(SingleResponse({}));
+      const role = req.params.role;
+      switch (role) {
+        case 'managers':
+        case 'auditors':
+        case 'billing_managers':
+        case 'users':
+          reply(SingleResponse({}));
+          break;
+        default:
+          reply().code(500);
+      }
     }
   });
 
@@ -444,7 +463,17 @@ module.exports = function api(smocks) {
     method: 'PUT',
     path: `${BASE_URL}/spaces/{spaceGuid}/{role}/{userGuid}`,
     handler: function (req, reply) {
-      reply(SingleResponse({}));
+      const role = req.params.role;
+      switch (role) {
+        case 'managers':
+        case 'auditors':
+        case 'developers':
+        case 'users':
+          reply(SingleResponse({}));
+          break;
+        default:
+          reply().code(500);
+      }
     }
   });
 
@@ -454,7 +483,17 @@ module.exports = function api(smocks) {
     method: 'DELETE',
     path: `${BASE_URL}/spaces/{spaceGuid}/{role}/{userGuid}`,
     handler: function (req, reply) {
-      reply(SingleResponse({}));
+      const role = req.params.role;
+      switch (role) {
+        case 'managers':
+        case 'auditors':
+        case 'developers':
+        case 'users':
+          reply(SingleResponse({}));
+          break;
+        default:
+          reply().code(500);
+      }
     }
   });
 

@@ -73,7 +73,7 @@ const userActions = {
     });
   },
 
-  addUserRoles(roles, userGuid, entityGuid, entityType) {
+  addUserRoles(roles, apiKey, userGuid, entityGuid, entityType) {
     const apiMethodMap = {
       org: cfApi.putOrgUserPermissions,
       space: cfApi.putSpaceUserPermissions
@@ -91,7 +91,7 @@ const userActions = {
     return api(
       userGuid,
       entityGuid,
-      roles
+      apiKey
     ).then(() => {
       userActions.addedUserRoles(
         roles,
@@ -113,7 +113,7 @@ const userActions = {
     });
   },
 
-  deleteUserRoles(roles, userGuid, entityGuid, entityType) {
+  deleteUserRoles(roles, apiKey, userGuid, entityGuid, entityType) {
     const apiMethodMap = {
       org: cfApi.deleteOrgUserPermissions,
       space: cfApi.deleteSpaceUserPermissions
@@ -131,7 +131,8 @@ const userActions = {
     return api(
       userGuid,
       entityGuid,
-      roles
+      roles,
+      apiKey
     ).catch((err) => {
       window.console.error(err);
     });

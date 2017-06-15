@@ -397,8 +397,8 @@ export default {
       /${userGuid}`);
   },
 
-  deleteOrgUserPermissions(userGuid, orgGuid, permissions) {
-    return http.delete(`${APIV}/organizations/${orgGuid}/${permissions}/${userGuid}`)
+  deleteOrgUserPermissions(userGuid, orgGuid, permissions, apiKey) {
+    return http.delete(`${APIV}/organizations/${orgGuid}/${apiKey}/${userGuid}`)
       .then(() => {
         userActions.deletedUserRoles(permissions, userGuid, orgGuid, 'organizations');
       }, (err) => {
@@ -440,8 +440,8 @@ export default {
   },
 
   // TODO refactor with org user permissions
-  deleteSpaceUserPermissions(userGuid, spaceGuid, role) {
-    return http.delete(`${APIV}/spaces/${spaceGuid}/${role}/${userGuid}`)
+  deleteSpaceUserPermissions(userGuid, spaceGuid, role, apiKey) {
+    return http.delete(`${APIV}/spaces/${spaceGuid}/${apiKey}/${userGuid}`)
     .then(() => {
       userActions.deletedUserRoles(role, userGuid, spaceGuid, 'spaces');
     }, (err) => {
