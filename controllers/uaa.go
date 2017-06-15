@@ -52,6 +52,7 @@ func readBodyToStruct(rawBody io.ReadCloser, obj interface{}) (err *UaaError) {
 			[]byte("{\"status\": \"failure\", \"data\": \"no body in request.\"}")}
 		return
 	}
+	defer rawBody.Close()
 	body, readErr := ioutil.ReadAll(rawBody)
 	if readErr != nil {
 		err = &UaaError{http.StatusBadRequest,
@@ -59,7 +60,6 @@ func readBodyToStruct(rawBody io.ReadCloser, obj interface{}) (err *UaaError) {
 				readErr.Error() + "\"}")}
 		return
 	}
-	fmt.Println(string(body))
 
 	// Read the response from inviting the user.
 	jsonErr := json.Unmarshal(body, obj)
@@ -90,13 +90,6 @@ type inviteUAAUserRequest struct {
 // InviteUAAUserResponse is the expected form of a response from invite users
 // to UAA.
 type UaaVerificationUserResponse struct {
-	UaaVerification []UaaVerification `json:"uaa_verification"`
-}
-
-// NewInvite is the contains detailed information about an single successful
-// user invite to UAA.
-type UaaVerification struct {
-	active               string `json:"active"`
 	verified             string `json:"verified"`
 	origin               string `json:"origin"`
 	zoneId               string `json:"zoneId"`
@@ -290,22 +283,22 @@ func (c *UAAContext) VerifyUserExists(userInvite NewInvite) (
 	}
 	resp := w.Result()
 
-	body, _ := ioutil.ReadAll(resp.Body)
-	log.Println("---")
-	// log.Println(http.StatusOK)
-	log.Println("---")
-	log.Println("---")
-	log.Println("---")
-	log.Println(string(body))
-	log.Println("---")
-	log.Println("---")
-	log.Println("---")
+	// body, _ := ioutil.ReadAll(resp.Body)
+	// log.Println("---")
+	// // log.Println(http.StatusOK)
+	// log.Println("---")
+	// log.Println("---")
+	// log.Println("---")
+	// log.Println(string(body))
+	// log.Println("---")
+	// log.Println("---")
+	// log.Println("---")
 
 	err = readBodyToStruct(resp.Body, &verifyResp)
 
-	// log.Println("---")
-	// log.Println(verifyResp)
-	// log.Println("---")
+	log.Println("---")
+	log.Println(verifyResp)
+	log.Println("---")
 	return
 }
 
