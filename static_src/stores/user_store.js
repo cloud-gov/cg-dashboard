@@ -75,6 +75,20 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_INVITE_STATUS_UPDATED: {
+        let contextualMessage;
+        if (action.verified) {
+          contextualMessage = "Exists. User associated.";
+        } else {
+          contextualMessage = "Doesnt exist. User sent invite email.";
+        }
+        this._inviteError = Object.assign({}, "action.err", {
+          contextualMessage: contextualMessage
+        });
+        this.emitChange();
+        break;
+      }
+
       case userActionTypes.USER_INVITE_TRIGGER: {
         this._inviteDisabled = true;
         this._inviteError = null;
