@@ -13,6 +13,9 @@ import PanelDocumentation from './panel_documentation.jsx';
 import userActions from '../actions/user_actions';
 import { validateString } from '../util/validators';
 
+import style from 'cloudgov-style/css/cloudgov-style.css';
+import createStyler from '../util/create_styler';
+
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
 
 const propTypes = {
@@ -38,6 +41,8 @@ export default class UsersInvite extends React.Component {
     FormStore.create(USERS_INVITE_FORM_GUID);
     this.props = props;
     this.state = stateSetter(props);
+
+    this.styler = createStyler(style);
 
     this.validateString = validateString().bind(this);
     this._onValidForm = this._onValidForm.bind(this);
@@ -68,7 +73,13 @@ export default class UsersInvite extends React.Component {
   }
 
   render() {
+    let noticeClasses = [];
     let content;
+
+    if (this.props.notice) {
+      noticeClasses = ['form-notification', 'form-notification-info'];
+    }
+
     if (this.props.currentUserAccess) {
       content = (
         <div>
@@ -83,7 +94,6 @@ export default class UsersInvite extends React.Component {
             onSubmit={ this._onValidForm }
             errorOverride={ this.errorMessage }
           >
-            <span>{ this.noticeMessage }</span>
             <FormText
               formGuid={ USERS_INVITE_FORM_GUID }
               classes={ ['test-users_invite_name'] }
@@ -99,6 +109,7 @@ export default class UsersInvite extends React.Component {
               Add user to this organization
             </Action>
           </Form>
+          <span className={ this.styler(noticeClasses) }>{ this.noticeMessage }</span>
         </div>
       );
     } else {
