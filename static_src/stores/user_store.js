@@ -10,20 +10,6 @@ import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
 import { userActionTypes } from '../constants.js';
 
-// TODO why is this role mapping needed?
-const resourceToRole = {
-  space: {
-    managers: 'space_manager',
-    developers: 'space_developer',
-    auditors: 'space_auditor'
-  },
-  org: {
-    managers: 'org_manager',
-    billing_managers: 'billing_manager',
-    auditors: 'org_auditor'
-  }
-};
-
 export class UserStore extends BaseStore {
   constructor() {
     super();
@@ -178,6 +164,7 @@ export class UserStore extends BaseStore {
         const orgPermissionsReq = cfApi.deleteOrgUserPermissions(
           action.userGuid,
           action.orgGuid,
+          'users',
           'users');
 
         orgPermissionsReq.then(() => {
@@ -301,14 +288,6 @@ export class UserStore extends BaseStore {
 
   getError() {
     return this._error;
-  }
-
-  getResourceToRole(resource, entityType) {
-    if (entityType !== 'space' && entityType !== 'org') {
-      throw new Error(`unknown resource type ${entityType}`);
-    }
-    const role = resourceToRole[entityType][resource] || resource;
-    return role;
   }
 
   get currentlyViewedType() {

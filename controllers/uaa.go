@@ -51,6 +51,7 @@ func readBodyToStruct(rawBody io.ReadCloser, obj interface{}) (err *UaaError) {
 			[]byte("{\"status\": \"failure\", \"data\": \"no body in request.\"}")}
 		return
 	}
+	defer rawBody.Close()
 	body, readErr := ioutil.ReadAll(rawBody)
 	if readErr != nil {
 		err = &UaaError{http.StatusBadRequest,
@@ -58,7 +59,6 @@ func readBodyToStruct(rawBody io.ReadCloser, obj interface{}) (err *UaaError) {
 				readErr.Error() + "\"}")}
 		return
 	}
-	fmt.Println(string(body))
 
 	// Read the response from inviting the user.
 	jsonErr := json.Unmarshal(body, obj)
@@ -84,6 +84,15 @@ func (e *UaaError) writeTo(rw http.ResponseWriter) {
 
 type inviteUAAUserRequest struct {
 	Emails []string `json:"emails"`
+}
+
+// GetUAAUserResponse is the expected form of a response from querying UAA
+// for a specific user. It is only a partial representation.
+type GetUAAUserResponse struct {
+	Active     bool   `json:"active"`
+	Verified   bool   `json:"verified"`
+	ID         string `json:"id"`
+	ExternalID string `json:"externalId"`
 }
 
 // InviteUAAUserResponse is the expected form of a response from invite users
@@ -134,6 +143,7 @@ func (c *UAAContext) InviteUAAuser(
 		return
 	}
 	resp := w.Result()
+
 	err = readBodyToStruct(resp.Body, &inviteResponse)
 	return
 }
@@ -203,6 +213,7 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 
 	// Try to invite the user to UAA.
 	inviteResponse, err := c.InviteUAAuser(inviteUserToOrgRequest)
+
 	if err != nil {
 		err.writeTo(rw)
 		return
@@ -224,17 +235,51 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 		return
 	}
 
-	// Trigger the e-mail invite.
-	err = c.TriggerInvite(inviteEmailRequest{
-		Email:     userInvite.Email,
-		InviteURL: userInvite.InviteLink,
-	})
+	verifyResp, err := c.GetUAAUser(userInvite)
 	if err != nil {
 		err.writeTo(rw)
 		return
 	}
+
+	if verifyResp.Verified == false {
+		// Trigger the e-mail invite.
+		err = c.TriggerInvite(inviteEmailRequest{
+			Email:     userInvite.Email,
+			InviteURL: userInvite.InviteLink,
+		})
+		if err != nil {
+			err.writeTo(rw)
+			return
+		}
+	}
+
 	rw.WriteHeader(http.StatusOK)
-	rw.Write([]byte("{\"status\": \"success\", \"userGuid\": \"" + userInvite.UserID + "\"}"))
+	rw.Write([]byte(fmt.Sprintf("{\"status\": \"success\", "+
+		"\"userGuid\": \"%s\", "+
+		"\"verified\": %t}", userInvite.UserID, verifyResp.Verified)))
+}
+
+// GetUAAUser will query UAA for a particular user.
+func (c *UAAContext) GetUAAUser(userInvite NewInvite) (
+	verifyResp GetUAAUserResponse, err *UaaError) {
+	reqURL := fmt.Sprintf("%s%s%s", "/Users/", userInvite.UserID, "")
+
+	reqVerify, _ := http.NewRequest("GET", reqURL, nil)
+	w := httptest.NewRecorder()
+	c.uaaProxy(w, reqVerify, reqURL, true)
+	if w.Code != http.StatusOK {
+		resp := w.Result()
+		body, _ := ioutil.ReadAll(resp.Body)
+		err = &UaaError{http.StatusInternalServerError,
+			[]byte("{\"status\": \"failure\", \"data\": \"" +
+				"unable to create user in UAA database.\", \"proxy-data\": \"" +
+				string(body) + "\"}")}
+		return
+	}
+	resp := w.Result()
+
+	err = readBodyToStruct(resp.Body, &verifyResp)
+	return
 }
 
 type inviteEmailRequest struct {

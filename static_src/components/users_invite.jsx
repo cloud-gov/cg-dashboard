@@ -63,7 +63,8 @@ export default class UsersInvite extends React.Component {
       content = (
         <div>
           <PanelDocumentation description>
-            <p>Organizational Managers can add new users below.</p>
+            <p>Invite new user to cloud.gov and this organization, or add an existing user to this
+            organization.</p>
           </PanelDocumentation>
           <Form
             guid={ USERS_INVITE_FORM_GUID }
@@ -84,7 +85,7 @@ export default class UsersInvite extends React.Component {
               type="submit"
               disabled={ this.props.inviteDisabled }
             >
-              Invite new user
+              Add user to this organization
             </Action>
           </Form>
         </div>
