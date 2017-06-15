@@ -47,6 +47,16 @@ export default class UsersInvite extends React.Component {
     userActions.createUserInvite(values.email.value);
   }
 
+  get noticeMessage() {
+    const notice = this.props.notice;
+    if (!notice) return undefined;
+    const message = notice.contextualMessage;
+    if (notice.message) {
+      return `${message}: ${notice.message}.`;
+    }
+    return message;
+  }
+
   get errorMessage() {
     const err = this.props.error;
     if (!err) return undefined;
@@ -73,6 +83,7 @@ export default class UsersInvite extends React.Component {
             onSubmit={ this._onValidForm }
             errorOverride={ this.errorMessage }
           >
+            <span>{ this.noticeMessage }</span>
             <FormText
               formGuid={ USERS_INVITE_FORM_GUID }
               classes={ ['test-users_invite_name'] }
