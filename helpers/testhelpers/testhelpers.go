@@ -200,8 +200,9 @@ func CreateExternalServerForPrivileged(t *testing.T, test BasicProxyTest) *httpt
 			if err != nil {
 				t.Errorf("failed reading request body: %s.", err)
 			}
-			if string(body) != "client_id="+GetMockCompleteEnvVars().ClientID+"&grant_type=client_credentials&scope=scim.invite+cloud_controller.admin" {
-				t.Errorf("payload = %q; want %q", string(body), "client_id="+GetMockCompleteEnvVars().ClientID+"&grant_type=client_credentials&scope=scim.invite")
+			expectedRequestBody := "client_id=" + GetMockCompleteEnvVars().ClientID + "&grant_type=client_credentials&scope=scim.invite+cloud_controller.admin+scim.read"
+			if string(body) != expectedRequestBody {
+				t.Errorf("payload = %q; want %q", string(body), expectedRequestBody)
 			}
 			w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 			// Write the privileged token so that it can be used.
