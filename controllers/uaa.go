@@ -248,12 +248,16 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 		return
 	}
 
-	verifyResp, err := c.VerifyUserExists(rw, req, userInvite)
+	verifyResp, err := c.VerifyUserExists(userInvite)
 	// log.Println("{{{")
 	// log.Println("{{{")
 	// log.Println(verifyResp)
 	// log.Println("}}}")
 	// log.Println("}}}")
+
+	log.Println("---")
+	log.Println(verifyResp)
+	log.Println("---")
 
 	// Trigger the e-mail invite.
 	err = c.TriggerInvite(inviteEmailRequest{
@@ -268,7 +272,7 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 	rw.Write([]byte("{\"status\": \"success\", \"userGuid\": \"" + userInvite.UserID + "\"}"))
 }
 
-func (c *UAAContext) VerifyUserExists(rw web.ResponseWriter, req *web.Request, userInvite NewInvite) (
+func (c *UAAContext) VerifyUserExists(userInvite NewInvite) (
 	verifyResp UaaVerificationUserResponse, err *UaaError) {
 	reqURL := fmt.Sprintf("%s%s%s", "/Users/", userInvite.UserID, "")
 
@@ -286,15 +290,22 @@ func (c *UAAContext) VerifyUserExists(rw web.ResponseWriter, req *web.Request, u
 	}
 	resp := w.Result()
 
-	// body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := ioutil.ReadAll(resp.Body)
 	log.Println("---")
 	// log.Println(http.StatusOK)
-	// log.Println("---")
-	// log.Println(string(body))
-	// log.Println("---")
+	log.Println("---")
+	log.Println("---")
+	log.Println("---")
+	log.Println(string(body))
+	log.Println("---")
+	log.Println("---")
+	log.Println("---")
 
 	err = readBodyToStruct(resp.Body, &verifyResp)
 
+	// log.Println("---")
+	// log.Println(verifyResp)
+	// log.Println("---")
 	return
 }
 
