@@ -84,6 +84,12 @@ var inviteUsersTest = []BasicProxyTest{
 				ResponseCode:  http.StatusOK,
 			},
 			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/Users/user-guid",
+				ResponseCode:  http.StatusOK,
+				Response:      "{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }",
+			},
+			{
 				RequestMethod: "POST",
 				ExpectedPath:  "/v2/users",
 				ResponseCode:  http.StatusCreated,
@@ -93,7 +99,7 @@ var inviteUsersTest = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
-				TestName:    "UAA Invite User with e-mail in body but missing invite url",
+				TestName:    "UAA Invite User with e-mail in body but missing e-mail",
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
@@ -107,8 +113,14 @@ var inviteUsersTest = []BasicProxyTest{
 			{
 				RequestMethod: "POST",
 				ExpectedPath:  "/invite_users",
-				Response:      "{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"user-guid\"}]}",
+				Response:      "{\"new_invites\": [{\"inviteLink\": \"http://some.link\", \"userId\": \"user-guid\"}]}",
 				ResponseCode:  http.StatusOK,
+			},
+			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/Users/user-guid",
+				ResponseCode:  http.StatusOK,
+				Response:      "{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }",
 			},
 			{
 				RequestMethod: "POST",
@@ -124,7 +136,7 @@ var inviteUsersTest = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "{\"status\": \"success\", \"userGuid\": \"user-guid\"}",
+			ExpectedResponse: "{\"status\": \"success\", \"userGuid\": \"user-guid\", \"verified\": false}",
 			ExpectedCode:     http.StatusOK,
 		},
 		RequestMethod: "POST",
@@ -136,6 +148,45 @@ var inviteUsersTest = []BasicProxyTest{
 				ExpectedPath:  "/invite_users",
 				Response:      "{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"user-guid\", \"inviteLink\": \"http://some.link\"}]}",
 				ResponseCode:  http.StatusOK,
+			},
+			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/Users/user-guid",
+				ResponseCode:  http.StatusOK,
+				Response:      "{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }",
+			},
+			{
+				RequestMethod: "POST",
+				ExpectedPath:  "/v2/users",
+				ResponseCode:  http.StatusCreated,
+			},
+		},
+	},
+	{
+		BasicSecureTest: BasicSecureTest{
+			BasicConsoleUnitTest: BasicConsoleUnitTest{
+				TestName:    "UAA Invite User with already verified user.",
+				SessionData: ValidTokenData,
+				EnvVars:     GetMockCompleteEnvVars(),
+			},
+			ExpectedResponse: "{\"status\": \"success\", \"userGuid\": \"user-guid\", \"verified\": true}",
+			ExpectedCode:     http.StatusOK,
+		},
+		RequestMethod: "POST",
+		RequestPath:   "/uaa/invite/users",
+		RequestBody:   []byte("{\"email\": \"test@example.com\"}"),
+		Handlers: []Handler{
+			{
+				RequestMethod: "POST",
+				ExpectedPath:  "/invite_users",
+				Response:      "{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"user-guid\", \"inviteLink\": \"http://some.link\"}]}",
+				ResponseCode:  http.StatusOK,
+			},
+			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/Users/user-guid",
+				ResponseCode:  http.StatusOK,
+				Response:      "{\"active\": true, \"verified\": true, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }",
 			},
 			{
 				RequestMethod: "POST",
