@@ -68,7 +68,7 @@ export class UserStore extends BaseStore {
         } else {
           contextualMessage = "Doesnt exist. User sent invite email.";
         }
-        this._inviteError = Object.assign({}, "action.err", {
+        this._inviteNotice = Object.assign({}, "action.err", {
           contextualMessage: contextualMessage
         });
         this.emitChange();
@@ -341,6 +341,10 @@ export class UserStore extends BaseStore {
 
   isAdmin() {
     return this._currentUserIsAdmin;
+  }
+
+  getInviteNotice() {
+    return this._inviteNotice;
   }
 
   getInviteError() {
