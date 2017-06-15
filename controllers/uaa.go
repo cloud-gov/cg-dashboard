@@ -87,18 +87,17 @@ type inviteUAAUserRequest struct {
 	Emails []string `json:"emails"`
 }
 
-// InviteUAAUserResponse is the expected form of a response from invite users
-// to UAA.
-type UaaVerificationUserResponse struct {
-	verified             string `json:"verified"`
-	origin               string `json:"origin"`
-	zoneId               string `json:"zoneId"`
-	passwordLastModified string `json:"passwordLastModified"`
-	previousLogonTime    string `json:"previousLogonTime"`
-	lastLogonTime        string `json:"lastLogonTime"`
-	id                   string `json:"id"`
-	externalId           string `json:"externalId"`
-	meta                 string `json:"meta"`
+// GetUAAUserResponse is the expected form of a response from querying UAA
+// for a specific user. It is only a partial representation.
+type GetUAAUserResponse struct {
+	Verified             string `json:"verified"`
+	Origin               string `json:"origin"`
+	ZoneID               string `json:"zoneId"`
+	PasswordLastModified string `json:"passwordLastModified"`
+	PreviousLogonTime    string `json:"previousLogonTime"`
+	LastLogonTime        string `json:"lastLogonTime"`
+	ID                   string `json:"id"`
+	ExternalID           string `json:"externalId"`
 }
 
 // InviteUAAUserResponse is the expected form of a response from invite users
@@ -241,7 +240,7 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 		return
 	}
 
-	verifyResp, err := c.VerifyUserExists(userInvite)
+	verifyResp, err := c.GetUAAUser(userInvite)
 	// log.Println("{{{")
 	// log.Println("{{{")
 	// log.Println(verifyResp)
@@ -265,8 +264,9 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 	rw.Write([]byte("{\"status\": \"success\", \"userGuid\": \"" + userInvite.UserID + "\"}"))
 }
 
-func (c *UAAContext) VerifyUserExists(userInvite NewInvite) (
-	verifyResp UaaVerificationUserResponse, err *UaaError) {
+// GetUAAUser will query UAA for a particular user.
+func (c *UAAContext) GetUAAUser(userInvite NewInvite) (
+	verifyResp GetUAAUserResponse, err *UaaError) {
 	reqURL := fmt.Sprintf("%s%s%s", "/Users/", userInvite.UserID, "")
 
 	reqVerify, _ := http.NewRequest("GET", reqURL, nil)
