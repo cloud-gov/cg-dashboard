@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 
 	"encoding/json"
 
@@ -279,22 +278,7 @@ func (c *UAAContext) GetUAAUser(userInvite NewInvite) (
 	}
 	resp := w.Result()
 
-	// body, _ := ioutil.ReadAll(resp.Body)
-	// log.Println("---")
-	// // log.Println(http.StatusOK)
-	// log.Println("---")
-	// log.Println("---")
-	// log.Println("---")
-	// log.Println(string(body))
-	// log.Println("---")
-	// log.Println("---")
-	// log.Println("---")
-
 	err = readBodyToStruct(resp.Body, &verifyResp)
-
-	log.Println("---")
-	log.Println(verifyResp)
-	log.Println("---")
 	return
 }
 
