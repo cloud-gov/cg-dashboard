@@ -50,6 +50,7 @@ function stateSetter() {
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users,
+    userInviteNotice: UserStore.getInviteNotice(),
     userInviteError: UserStore.getInviteError()
   };
 }
@@ -144,6 +145,7 @@ export default class Users extends React.Component {
           inviteDisabled={ this.state.inviteDisabled }
           currentUserAccess={ this.state.currentUserAccess }
           error={ this.state.userInviteError }
+          notice={ this.state.userInviteNotice }
         />
         <div>
           <div>
