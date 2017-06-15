@@ -226,7 +226,7 @@ func CreateExternalServerForPrivileged(t *testing.T, test BasicProxyTest) *httpt
 			}
 			if !foundHandler {
 				t.Errorf("Test name: (%s) Server received method %s\n", test.TestName, r.Method)
-				t.Errorf("Debug path: Got (%s) sent (%s)\n", r.URL.Path, test.RequestPath)
+				t.Errorf("Debug path: Got stuck on (%s) after frontend sent (%s)\n", r.URL.Path, test.RequestPath)
 				t.Errorf("Tried the following handlers %+v\n", test.Handlers)
 			}
 		}
