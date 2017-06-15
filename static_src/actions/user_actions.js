@@ -163,17 +163,18 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(invite => userActions.receivedInviteStatus(invite))
+      .then(invite => userActions.receivedInviteStatus(invite, email))
       .then(invite => cfApi.fetchUser(invite.userGuid))
       .then(user => userActions.createUserAndAssociate(user))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
   },
 
-  receivedInviteStatus(invite) {
+  receivedInviteStatus(invite, email) {
     const verified = invite.verified;
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_INVITE_STATUS_UPDATED,
+      email,
       verified
     });
 
