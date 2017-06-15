@@ -248,36 +248,12 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 		return
 	}
 
-	log.Println("(((((")
-	log.Println("(((((")
-	log.Println(userInvite.UserID)
-	log.Println(")))))")
-	log.Println(")))))")
-
-	reqURL := fmt.Sprintf("%s%s%s", "/Users/", userInvite.UserID, "")
-
-	reqVerify, _ := http.NewRequest("GET", reqURL, nil)
-	w := httptest.NewRecorder()
-	c.uaaProxy(w, reqVerify, reqURL, true)
-	if w.Code != http.StatusOK {
-		resp := w.Result()
-		body, _ := ioutil.ReadAll(resp.Body)
-		err = &UaaError{http.StatusInternalServerError,
-			[]byte("{\"status\": \"failure\", \"data\": \"" +
-				"unable to create user in UAA database.\", \"proxy-data\": \"" +
-				string(body) + "\"}")}
-		log.Println(string(body))
-		// return
-	}
-	resp := w.Result()
-	body, _ := ioutil.ReadAll(resp.Body)
-	log.Println("{{{")
-	log.Println("{{{")
-	log.Println(reqURL)
-	log.Println(resp)
-	log.Println(string(body))
-	log.Println("}}}")
-	log.Println("}}}")
+	verifyResp, err := c.VerifyUserExists(rw, req, userInvite)
+	// log.Println("{{{")
+	// log.Println("{{{")
+	// log.Println(verifyResp)
+	// log.Println("}}}")
+	// log.Println("}}}")
 
 	// Trigger the e-mail invite.
 	err = c.TriggerInvite(inviteEmailRequest{
@@ -290,6 +266,36 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 	}
 	rw.WriteHeader(http.StatusOK)
 	rw.Write([]byte("{\"status\": \"success\", \"userGuid\": \"" + userInvite.UserID + "\"}"))
+}
+
+func (c *UAAContext) VerifyUserExists(rw web.ResponseWriter, req *web.Request, userInvite NewInvite) (
+	verifyResp UaaVerificationUserResponse, err *UaaError) {
+	reqURL := fmt.Sprintf("%s%s%s", "/Users/", userInvite.UserID, "")
+
+	reqVerify, _ := http.NewRequest("GET", reqURL, nil)
+	w := httptest.NewRecorder()
+	c.uaaProxy(w, reqVerify, reqURL, true)
+	if w.Code != http.StatusOK {
+		resp := w.Result()
+		body, _ := ioutil.ReadAll(resp.Body)
+		err = &UaaError{http.StatusInternalServerError,
+			[]byte("{\"status\": \"failure\", \"data\": \"" +
+				"unable to create user in UAA database.\", \"proxy-data\": \"" +
+				string(body) + "\"}")}
+		return
+	}
+	resp := w.Result()
+
+	// body, _ := ioutil.ReadAll(resp.Body)
+	log.Println("---")
+	// log.Println(http.StatusOK)
+	// log.Println("---")
+	// log.Println(string(body))
+	// log.Println("---")
+
+	err = readBodyToStruct(resp.Body, &verifyResp)
+
+	return
 }
 
 type inviteEmailRequest struct {
