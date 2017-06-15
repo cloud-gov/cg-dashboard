@@ -162,10 +162,21 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
+      .then(invite => userActions.receivedInviteStatus(invite))
       .then(invite => cfApi.fetchUser(invite.userGuid))
       .then(user => userActions.createUserAndAssociate(user))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
+  },
+
+  receivedInviteStatus(invite) {
+    const verified = invite.verified;
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_INVITE_STATUS_UPDATED,
+      verified
+    });
+
+    return Promise.resolve(invite);
   },
 
   userInviteError(err, contextualMessage) {
