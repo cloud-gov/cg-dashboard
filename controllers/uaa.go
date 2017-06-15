@@ -90,13 +90,10 @@ type inviteUAAUserRequest struct {
 // GetUAAUserResponse is the expected form of a response from querying UAA
 // for a specific user. It is only a partial representation.
 type GetUAAUserResponse struct {
-	Active               bool   `json:"active"`
-	Verified             bool   `json:"verified"`
-	PasswordLastModified string `json:"passwordLastModified"`
-	PreviousLogonTime    string `json:"previousLogonTime"`
-	LastLogonTime        string `json:"lastLogonTime"`
-	ID                   string `json:"id"`
-	ExternalID           string `json:"externalId"`
+	Active     bool   `json:"active"`
+	Verified   bool   `json:"verified"`
+	ID         string `json:"id"`
+	ExternalID string `json:"externalId"`
 }
 
 // InviteUAAUserResponse is the expected form of a response from invite users
@@ -258,9 +255,9 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 	}
 
 	rw.WriteHeader(http.StatusOK)
-	rw.Write([]byte("{\"status\": \"success\", " +
-		"\"userGuid\": \"" + userInvite.UserID + "\", " +
-		"\"verified\": " + verifyResp.Verified + "}"))
+	rw.Write([]byte(fmt.Sprintf("{\"status\": \"success\", "+
+		"\"userGuid\": \"%s\", "+
+		"\"verified\": %t}", userInvite.UserID, verifyResp.Verified)))
 }
 
 // GetUAAUser will query UAA for a particular user.
