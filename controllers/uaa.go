@@ -240,27 +240,27 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 	}
 
 	verifyResp, err := c.GetUAAUser(userInvite)
-	// log.Println("{{{")
-	// log.Println("{{{")
-	// log.Println(verifyResp)
-	// log.Println("}}}")
-	// log.Println("}}}")
-
-	log.Println("---")
-	log.Println(verifyResp)
-	log.Println("---")
-
-	// Trigger the e-mail invite.
-	err = c.TriggerInvite(inviteEmailRequest{
-		Email:     userInvite.Email,
-		InviteURL: userInvite.InviteLink,
-	})
 	if err != nil {
 		err.writeTo(rw)
 		return
 	}
+
+	if verifyResp.Verified == false {
+		// Trigger the e-mail invite.
+		err = c.TriggerInvite(inviteEmailRequest{
+			Email:     userInvite.Email,
+			InviteURL: userInvite.InviteLink,
+		})
+		if err != nil {
+			err.writeTo(rw)
+			return
+		}
+	}
+
 	rw.WriteHeader(http.StatusOK)
-	rw.Write([]byte("{\"status\": \"success\", \"userGuid\": \"" + userInvite.UserID + "\"}"))
+	rw.Write([]byte("{\"status\": \"success\", " +
+		"\"userGuid\": \"" + userInvite.UserID + "\", " +
+		"\"verified\": " + verifyResp.Verified + "}"))
 }
 
 // GetUAAUser will query UAA for a particular user.
