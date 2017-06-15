@@ -90,7 +90,8 @@ type inviteUAAUserRequest struct {
 // GetUAAUserResponse is the expected form of a response from querying UAA
 // for a specific user. It is only a partial representation.
 type GetUAAUserResponse struct {
-	Verified             string `json:"verified"`
+	Active               bool   `json:"active"`
+	Verified             bool   `json:"verified"`
 	PasswordLastModified string `json:"passwordLastModified"`
 	PreviousLogonTime    string `json:"previousLogonTime"`
 	LastLogonTime        string `json:"lastLogonTime"`
