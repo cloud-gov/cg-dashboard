@@ -165,7 +165,7 @@ var inviteUsersTest = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
-				TestName:    "UAA Invite User with already verified user.",
+				TestName:    "UAA Invite User with already verified user",
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
