@@ -64,9 +64,9 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_INVITE_STATUS_UPDATED: {
         let contextualMessage;
         if (action.verified) {
-          contextualMessage = "Exists. User associated.";
+          contextualMessage = "The account for " + action.email + " is now associated to this organization. Control their Organization Roles below.";
         } else {
-          contextualMessage = "Doesnt exist. User sent invite email.";
+          contextualMessage = "There was no cloud.gov account found for " + action.email + ". They have been sent an email cloud.gov invitation. Their account has been associated to this organization and their Organization Roles can be controlled below.";
         }
         this._inviteNotice = Object.assign({}, "action.err", {
           contextualMessage: contextualMessage
