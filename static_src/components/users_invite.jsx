@@ -74,15 +74,22 @@ export default class UsersInvite extends React.Component {
   }
 
   get onNotificationDismiss() {
-    userActions.dismissInviteNotification()
+    // userActions.dismissInviteNotification();
   }
 
   render() {
     let noticeClasses = [];
+    let notification;
     let content;
+
 
     if (this.props.notice) {
       noticeClasses = ['form-notification', 'form-notification-info'];
+      notification = (<Notification
+                                  message={ this.noticeMessage }
+                                  actions={ [] }
+                                  onDismiss={ this.onNotificationDismiss }
+                                  status="finish"/>);
     }
 
     if (this.props.currentUserAccess) {
@@ -113,19 +120,12 @@ export default class UsersInvite extends React.Component {
             >
               Add user to this organization
             </Action>
+            { notification }
           </Form>
         </div>
       );
     } else {
       content = '';
-    }
-    if (this.props.notice) {
-      content = content + (<Notification
-                            message={ this.noticeMessage }
-                            actions={ [] }
-                            onDismiss={ this.onNotificationDismiss }
-                            status="finish"
-                          />);
     }
     return (
       <div className="test-users-invite">
