@@ -163,11 +163,7 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(invite => userActions.receivedInviteStatus(invite, email))
-      .then(invite => cfApi.fetchUser(invite.userGuid))
-      .then(user => userActions.createUserAndAssociate(user))
-      .catch(err => userActions.userInviteCreateError(err, `There was a problem
-        inviting ${email}`));
+      .then(invite => userActions.receivedInviteStatus(invite, email));
   },
 
   receivedInviteStatus(invite, email) {
@@ -178,15 +174,20 @@ const userActions = {
       verified
     });
 
-    return Promise.resolve(invite);
+    return cfApi.fetchUser(invite.userGuid)
+      .then(user => userActions.createUserAndAssociate(user))
+      .catch(err => userActions.userInviteCreateError(err, `There was a problem
+        inviting ${email}`));
   },
 
   dismissInviteNotification() {
+    return userActions.clearNotificationContent();
+  },
+
+  clearNotificationContent() {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_INVITE_STATUS_DISMISSED
     });
-
-    return Promise.resolve();
   },
 
   userInviteError(err, contextualMessage) {
