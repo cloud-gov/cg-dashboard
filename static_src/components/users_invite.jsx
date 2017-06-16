@@ -7,6 +7,7 @@
 import React from 'react';
 
 import Action from './action.jsx';
+import Notification from './notification.jsx';
 import FormStore from '../stores/form_store';
 import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
@@ -73,6 +74,7 @@ export default class UsersInvite extends React.Component {
   }
 
   get onNotificationDismiss() {
+    userActions.inviteNotificationDismiss()
   }
 
   render() {
@@ -112,15 +114,18 @@ export default class UsersInvite extends React.Component {
               Add user to this organization
             </Action>
           </Form>
-          <Notification
-            message={ this.noticeMessage }
-            actions={ [] }
-            onDismiss={ this.onNotificationDismiss }
-          />
         </div>
       );
     } else {
       content = '';
+    }
+    if (this.props.notice) {
+      content = content + (<Notification
+                            message={ this.noticeMessage }
+                            actions={ [] }
+                            onDismiss={ this.onNotificationDismiss }
+                            status="finish"
+                          />);
     }
     return (
       <div className="test-users-invite">
