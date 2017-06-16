@@ -11,6 +11,8 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UsersInvite from './users_invite.jsx';
+import NotificationStore from '../stores/notification_store.js';
+import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
 
 const SPACE_NAME = 'space_users';
@@ -19,7 +21,7 @@ const ORG_NAME = 'org_users';
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
-  const currentType = UserStore.currentlyViewedType;
+  const currentType = UserStore.currentViewedType;
   const currentUser = UserStore.currentUser;
 
   let users = [];
@@ -50,7 +52,7 @@ function stateSetter() {
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users,
-    userInviteNotice: UserStore.getInviteNotice(),
+    notices: NotificationStore.getAll(),
     userInviteError: UserStore.getInviteError()
   };
 }
@@ -69,10 +71,12 @@ export default class Users extends React.Component {
 
   componentDidMount() {
     UserStore.addChangeListener(this._onChange);
+    NotificationStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     UserStore.removeChangeListener(this._onChange);
+    NotificationStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
@@ -118,6 +122,11 @@ export default class Users extends React.Component {
       removeHandler = this.handleRemove;
     }
 
+    let noticeClasses = [];
+    if (this.props.notice) {
+      noticeClasses = ['form-notification', 'form-notification-info'];
+    }
+
     let content = (<UserList
       users={ this.state.users }
       userType= { this.state.currentType }
@@ -138,6 +147,25 @@ export default class Users extends React.Component {
       );
     }
 
+    let notifications;
+
+    if (this.state.notices.length) {
+      notifications = [];
+      this.state.notices
+        .slice(0, this.props.maxNotifications)
+        .forEach((notice, i) => {
+          const noticeMessage = (
+            <Notification
+              key={ `notice-${i}` }
+              message={ notice.description }
+              actions={ [] }
+              onDismiss={ this.onNotificationDismiss }
+              status="finish"/>
+          );
+          notifications.push(noticeMessage);
+        });
+    }
+
     return (
       <div className="test-users">
         { errorMessage }
@@ -145,8 +173,8 @@ export default class Users extends React.Component {
           inviteDisabled={ this.state.inviteDisabled }
           currentUserAccess={ this.state.currentUserAccess }
           error={ this.state.userInviteError }
-          notice={ this.state.userInviteNotice }
         />
+        { notifications }
         <div>
           <div>
             { content }
@@ -155,9 +183,12 @@ export default class Users extends React.Component {
       </div>
     );
   }
-
 }
 
-Users.propTypes = { };
+Users.propTypes = {
+  maxNotifications: React.PropTypes.number
+};
 
-Users.defaultProps = { };
+Users.defaultProps = {
+  maxNotifications: 1
+};
