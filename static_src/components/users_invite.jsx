@@ -13,8 +13,8 @@ import PanelDocumentation from './panel_documentation.jsx';
 import userActions from '../actions/user_actions';
 import { validateString } from '../util/validators';
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
 
@@ -54,7 +54,7 @@ export default class UsersInvite extends React.Component {
 
   get noticeMessage() {
     const notice = this.props.notice;
-    if (!notice) return undefined;
+    if (!notice) return "";
     const message = notice.contextualMessage;
     if (notice.message) {
       return `${message}: ${notice.message}.`;
@@ -70,6 +70,9 @@ export default class UsersInvite extends React.Component {
       return `${message}: ${err.message}.`;
     }
     return message;
+  }
+
+  get onNotificationDismiss() {
   }
 
   render() {
@@ -109,7 +112,11 @@ export default class UsersInvite extends React.Component {
               Add user to this organization
             </Action>
           </Form>
-          <span className={ this.styler(noticeClasses) }>{ this.noticeMessage }</span>
+          <Notification
+            message={ this.noticeMessage }
+            actions={ [] }
+            onDismiss={ this.onNotificationDismiss }
+          />
         </div>
       );
     } else {
