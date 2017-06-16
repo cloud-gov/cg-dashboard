@@ -7,12 +7,10 @@
 import React from 'react';
 
 import Action from './action.jsx';
-import Notification from './notification.jsx';
 import FormStore from '../stores/form_store';
 import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
 import userActions from '../actions/user_actions';
-import notificationActions from '../actions/notification_actions';
 
 import { validateString } from '../util/validators';
 
@@ -75,24 +73,8 @@ export default class UsersInvite extends React.Component {
     return message;
   }
 
-  get onNotificationDismiss() {
-    notificationActions.dismissNotification();
-  }
-
   render() {
-    let noticeClasses = [];
-    let notification;
     let content;
-
-
-    if (this.props.notice) {
-      noticeClasses = ['form-notification', 'form-notification-info'];
-      notification = (<Notification
-                                  message={ this.noticeMessage }
-                                  actions={ [] }
-                                  onDismiss={ this.onNotificationDismiss }
-                                  status="finish"/>);
-    }
 
     if (this.props.currentUserAccess) {
       content = (
@@ -122,7 +104,6 @@ export default class UsersInvite extends React.Component {
             >
               Add user to this organization
             </Action>
-            { notification }
           </Form>
         </div>
       );
