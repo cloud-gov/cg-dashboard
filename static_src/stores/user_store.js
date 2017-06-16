@@ -61,9 +61,16 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_INVITE_STATUS_DISMISSED: {
+        this._inviteNotice = Object.assign({}, "", {
+          contextualMessage: ""
+        });
+        this.emitChange();
+      }
+
       case userActionTypes.USER_INVITE_STATUS_UPDATED: {
         let contextualMessage;
-        const currentlyViewedType = this.currentlyViewedType();
+        const currentViewedType = this._currentViewedType;
         const viewTypeNoun = {
           org_users: {
             singular: "organization"
@@ -74,13 +81,13 @@ export class UserStore extends BaseStore {
         }
         if (action.verified) {
           contextualMessage = "The account for " + action.email + " is now associated to this " +
-            viewTypeNoun[currentlyViewedType].singular + ". Control their " +
-            viewTypeNoun[currentlyViewedType].singular + " roles below.";
+            viewTypeNoun[currentViewedType].singular + ". Control their " +
+            viewTypeNoun[currentViewedType].singular + " roles below.";
         } else {
           contextualMessage = "There was no cloud.gov account found for " +
             action.email + ". They have been sent an email cloud.gov invitation. Their account " +
-            "has been associated to this " + viewTypeNoun[currentlyViewedType].singular +
-            " and their " + viewTypeNoun[currentlyViewedType].singular +
+            "has been associated to this " + viewTypeNoun[currentViewedType].singular +
+            " and their " + viewTypeNoun[currentViewedType].singular +
             " roles can be controlled below.";
         }
         this._inviteNotice = Object.assign({}, "action.err", {
@@ -305,7 +312,7 @@ export class UserStore extends BaseStore {
     return this._error;
   }
 
-  get currentlyViewedType() {
+  get currentViewedType() {
     return this._currentViewedType;
   }
 
