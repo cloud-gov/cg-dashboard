@@ -74,7 +74,7 @@ export default class UsersInvite extends React.Component {
   }
 
   get onNotificationDismiss() {
-    userActions.inviteNotificationDismiss()
+    userActions.dismissInviteNotification()
   }
 
   render() {

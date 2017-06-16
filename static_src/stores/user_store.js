@@ -66,6 +66,7 @@ export class UserStore extends BaseStore {
           contextualMessage: ""
         });
         this.emitChange();
+        break;
       }
 
       case userActionTypes.USER_INVITE_STATUS_UPDATED: {
