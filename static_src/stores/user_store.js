@@ -63,10 +63,25 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_INVITE_STATUS_UPDATED: {
         let contextualMessage;
+        const currentlyViewedType = this.currentlyViewedType();
+        const viewTypeNoun = {
+          org_users: {
+            singular: "organization"
+          },
+          space_users: {
+            singular: "space"
+          }
+        }
         if (action.verified) {
-          contextualMessage = "The account for " + action.email + " is now associated to this organization. Control their Organization Roles below.";
+          contextualMessage = "The account for " + action.email + " is now associated to this " +
+            viewTypeNoun[currentlyViewedType].singular + ". Control their " +
+            viewTypeNoun[currentlyViewedType].singular + " roles below.";
         } else {
-          contextualMessage = "There was no cloud.gov account found for " + action.email + ". They have been sent an email cloud.gov invitation. Their account has been associated to this organization and their Organization Roles can be controlled below.";
+          contextualMessage = "There was no cloud.gov account found for " +
+            action.email + ". They have been sent an email cloud.gov invitation. Their account " +
+            "has been associated to this " + viewTypeNoun[currentlyViewedType].singular +
+            " and their " + viewTypeNoun[currentlyViewedType].singular +
+            " roles can be controlled below.";
         }
         this._inviteNotice = Object.assign({}, "action.err", {
           contextualMessage: contextualMessage
