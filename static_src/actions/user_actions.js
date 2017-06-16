@@ -181,11 +181,11 @@ const userActions = {
   },
 
   dismissInviteNotification() {
-    return userActions.clearNotificationContent();
+    userActions.clearNotificationContent();
   },
 
   clearNotificationContent() {
-    AppDispatcher.handleViewAction({
+    AppDispatcher.handleUIAction({
       type: userActionTypes.USER_INVITE_STATUS_DISMISSED
     });
   },
