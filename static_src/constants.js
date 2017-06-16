@@ -32,6 +32,15 @@ const entityHealth = keymirror({
 });
 
 // All global error action types
+const notificationActionTypes = keymirror({
+  FETCH: null,
+  IMPORTANT_FETCH: null,
+  DISMISS: null,
+  CLEAR: null,
+  NOTIFY: null
+});
+
+// All global error action types
 const errorActionTypes = keymirror({
   FETCH: null,
   IMPORTANT_FETCH: null,
