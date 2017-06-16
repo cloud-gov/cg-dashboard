@@ -24,6 +24,8 @@ const entityHealth = keymirror({
   error: null,
   // Entity is inactive
   inactive: null,
+  // Entity is inactive
+  inactive: null,
   // This warrants a bug, so we can figure out what the correct health
   // assessment is when in this state
   unknown: null
@@ -254,6 +256,8 @@ const userActionTypes = keymirror({
   USER_INVITE_TRIGGER: null,
   // Action to return invite status of of invited user.
   USER_INVITE_STATUS_UPDATED: null,
+  // Action to dismiss invite status.
+  USER_INVITE_STATUS_DISMISSED: null,
   // Action to trigger email sent to user with cloud.gov invite url.
   USER_ORG_ASSOCIATE: null,
   // Action to associate user to organization on the server.
