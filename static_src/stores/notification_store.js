@@ -18,7 +18,7 @@ export class NotificationStore extends BaseStore {
   checkForMaxFetchNotices() {
     const notices = this.getAll();
     if (notices.length >= this.maxNotices) {
-      // If too many errors, clear them and provide a generic fetch one.
+      // If too many notices, clear them and provide a generic fetch one.
       this._data = new Immutable.List();
       const genericFetchNotice = {
         description: 'Connection issue, please try again'
@@ -30,9 +30,10 @@ export class NotificationStore extends BaseStore {
   _registerToActions(action) {
     switch (action.type) {
       case notificationActionTypes.NOTIFY: {
-        const notice = Object.assign({}, action.notice);
-        // Put this error at the top, since it is considered higher priority
+        const notice = Object.assign({}, { description: action.msg }, action.notice);
+        // Put this notice at the top, since it is considered higher priority
         this._data = this._data.unshift(notice);
+        this.emitChange();
         break;
       }
 
@@ -68,6 +69,6 @@ export class NotificationStore extends BaseStore {
   }
 }
 
-const _NoticeStore = new NoticeStore();
+const _NotificationStore = new NotificationStore();
 
-export default _NoticeStore;
+export default _NotificationStore;
