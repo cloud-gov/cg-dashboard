@@ -367,6 +367,7 @@ export {
   errorActionTypes,
   formActionTypes,
   loginActionTypes,
+  notificationActionTypes,
   orgActionTypes,
   pageActionTypes,
   quotaActionTypes,
