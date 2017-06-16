@@ -37,10 +37,11 @@ export default {
     return Promise.resolve(notice);
   },
 
-  noticeNotification(notice) {
+  createNotification(notice, msg) {
     AppDispatcher.handleUIAction({
       type: notificationActionTypes.NOTIFY,
-      notice
+      notice,
+      msg
     });
 
     return Promise.resolve(notice);
