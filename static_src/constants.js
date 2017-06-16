@@ -22,8 +22,8 @@ const entityHealth = keymirror({
   warning: null,
   // Something is definitely not right and requires some attention
   error: null,
-  // Entity is inactive
-  inactive: null,
+  // Entity process was successful
+  finish: null,
   // Entity is inactive
   inactive: null,
   // This warrants a bug, so we can figure out what the correct health
