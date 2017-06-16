@@ -7,6 +7,7 @@
 import React from 'react';
 
 import userActions from '../actions/user_actions.js';
+import notificationActions from '../actions/notification_actions.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
@@ -112,6 +113,11 @@ export default class Users extends React.Component {
     const entityGuid = this.state.currentType === ORG_NAME ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
     return entityGuid;
+  }
+
+  onNotificationDismiss(ev) {
+    ev.preventDefault();
+    notificationActions.clearNotifications();
   }
 
   render() {
