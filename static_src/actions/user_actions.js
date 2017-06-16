@@ -10,6 +10,7 @@ import uaaApi from '../util/uaa_api';
 import { userActionTypes } from '../constants';
 import UserStore from '../stores/user_store';
 import OrgStore from '../stores/org_store';
+import notificationActions from './notification_actions';
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -163,7 +164,9 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(invite => userActions.receivedInviteStatus(invite, email));
+      .then(invite => userActions.receivedInviteStatus(invite, email))
+      .catch(err => userActions.userInviteCreateError(err, `There was a problem
+        inviting ${email}`));
   },
 
   receivedInviteStatus(invite, email) {
@@ -176,18 +179,35 @@ const userActions = {
 
     return cfApi.fetchUser(invite.userGuid)
       .then(user => userActions.createUserAndAssociate(user))
+      .then(verified => userActions.createInviteNotification(verified, email))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
   },
 
-  dismissInviteNotification() {
-    userActions.clearNotificationContent();
-  },
-
-  clearNotificationContent() {
-    AppDispatcher.handleUIAction({
-      type: userActionTypes.USER_INVITE_STATUS_DISMISSED
-    });
+  createInviteNotification(verified, email) {
+    let message;
+    const currentViewedType = UserStore.currentViewedType;
+    const viewTypeNoun = {
+      org_users: {
+        singular: "organization"
+      },
+      space_users: {
+        singular: "space"
+      }
+    }
+    if (verified) {
+      message = "The account for " +
+      email + " is now associated to this " +
+        viewTypeNoun[currentViewedType].singular + ". Control their " +
+        viewTypeNoun[currentViewedType].singular + " roles below.";
+    } else {
+      message = "There was no cloud.gov account found for " +
+        email + ". They have been sent an email cloud.gov invitation. Their account " +
+        "has been associated to this " + viewTypeNoun[currentViewedType].singular +
+        " and their " + viewTypeNoun[currentViewedType].singular +
+        " roles can be controlled below.";
+    }
+    notificationActions.createNotification("finish", message);
   },
 
   userInviteError(err, contextualMessage) {
