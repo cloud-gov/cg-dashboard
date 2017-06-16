@@ -12,6 +12,8 @@ import FormStore from '../stores/form_store';
 import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
 import userActions from '../actions/user_actions';
+import notificationActions from '../actions/notification_actions';
+
 import { validateString } from '../util/validators';
 
 import createStyler from '../util/create_styler';
@@ -74,7 +76,7 @@ export default class UsersInvite extends React.Component {
   }
 
   get onNotificationDismiss() {
-    // userActions.dismissInviteNotification();
+    notificationActions.dismissNotification();
   }
 
   render() {
