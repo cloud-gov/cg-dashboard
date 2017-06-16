@@ -181,6 +181,14 @@ const userActions = {
     return Promise.resolve(invite);
   },
 
+  dismissInviteNotification() {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_INVITE_STATUS_DISMISSED
+    });
+
+    return Promise.resolve();
+  },
+
   userInviteError(err, contextualMessage) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_INVITE_ERROR,
