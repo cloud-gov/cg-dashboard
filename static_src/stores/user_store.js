@@ -276,10 +276,6 @@ export class UserStore extends BaseStore {
     return this._error;
   }
 
-  get currentViewedType() {
-    return this._currentViewedType;
-  }
-
   get isLoadingCurrentUser() {
     return this._loading.currentUser === true;
   }
