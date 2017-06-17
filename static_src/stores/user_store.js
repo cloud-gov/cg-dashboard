@@ -341,6 +341,10 @@ export class UserStore extends BaseStore {
     return this.get(this._currentUserGuid);
   }
 
+  get currentlyViewedType() {
+    return this._currentViewedType;
+  }
+
 }
 
 const _UserStore = new UserStore();
