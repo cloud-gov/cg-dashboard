@@ -23,7 +23,7 @@ describe('NotificationStore', function () {
     });
   });
 
-  describe('on DISMISS', () => {
+  describe('on CLEAR', () => {
     let spy;
     let storeNotifications;
     const existingErr = { code: 1122 };
@@ -33,7 +33,7 @@ describe('NotificationStore', function () {
 
       spy = sandbox.spy(NotificationStore, 'emitChange');
 
-      notificationActions.dismissNotification(existingErr);
+      notificationActions.clearNotifications();
 
       storeNotifications = NotificationStore.getAll();
     });

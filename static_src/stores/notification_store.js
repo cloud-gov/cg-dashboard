@@ -24,16 +24,6 @@ export class NotificationStore extends BaseStore {
         break;
       }
 
-      case notificationActionTypes.DISMISS: {
-        const noticeIdx = this.getAll().findIndex((notice) => notice === action.notice);
-        if (noticeIdx) {
-          // TODO little unsafe to access data here?
-          this._data = this._data.delete(noticeIdx);
-          this.emitChange();
-        }
-        break;
-      }
-
       case notificationActionTypes.CLEAR: {
         this._data = new Immutable.List();
         this.emitChange();

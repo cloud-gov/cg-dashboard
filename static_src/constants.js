@@ -33,7 +33,6 @@ const entityHealth = keymirror({
 
 // All global notification action types
 const notificationActionTypes = keymirror({
-  DISMISS: null,
   CLEAR: null,
   NOTIFY: null
 });
