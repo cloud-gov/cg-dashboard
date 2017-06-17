@@ -20,7 +20,6 @@ describe('notificationActions', function () {
     it('should dispatch a server notify event with notification object', () => {
       const notice = 'finish';
       const msg = 'this is a message';
-      const notificationObject = { notice, msg };
       const dispatchSpy = setupUISpy(sandbox);
 
       notificationActions.createNotification(notice, msg);
