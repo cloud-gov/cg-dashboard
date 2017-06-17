@@ -153,7 +153,6 @@ export default class Users extends React.Component {
     if (this.state.notices.length) {
       notifications = [];
       this.state.notices
-        .slice(0, this.props.maxNotifications)
         .forEach((notice, i) => {
           const noticeMessage = (
             <Notification
@@ -187,10 +186,6 @@ export default class Users extends React.Component {
   }
 }
 
-Users.propTypes = {
-  maxNotifications: React.PropTypes.number
-};
+Users.propTypes = {};
 
-Users.defaultProps = {
-  maxNotifications: 1
-};
+Users.defaultProps = {};

@@ -11,20 +11,7 @@ import { notificationActionTypes } from '../constants.js';
 export class NotificationStore extends BaseStore {
   constructor() {
     super();
-    this.maxNotices = 3;
     this.subscribe(() => this._registerToActions.bind(this));
-  }
-
-  checkForMaxFetchNotices() {
-    const notices = this.getAll();
-    if (notices.length >= this.maxNotices) {
-      // If too many notices, clear them and provide a generic fetch one.
-      this._data = new Immutable.List();
-      const genericFetchNotice = {
-        description: 'Connection issue, please try again'
-      };
-      this.push(genericFetchNotice);
-    }
   }
 
   _registerToActions(action) {
@@ -34,13 +21,6 @@ export class NotificationStore extends BaseStore {
         // Put this notice at the top, since it is considered higher priority
         this._data = this._data.unshift(notice);
         this.emitChange();
-        break;
-      }
-
-      case notificationActionTypes.IMPORTANT_FETCH: {
-        const notice = Object.assign({}, { description: action.msg }, action.notice);
-        this.push(notice);
-        this.checkForMaxFetchNotices();
         break;
       }
 
