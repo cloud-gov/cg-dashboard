@@ -1,7 +1,7 @@
 
 import '../../global_setup.js';
 
-import { setupUISpy, setupServerSpy } from '../helpers.js';
+import { setupUISpy } from '../helpers.js';
 import notificationActions from '../../../actions/notification_actions.js';
 import { notificationActionTypes } from '../../../constants.js';
 
@@ -17,41 +17,31 @@ describe('notificationActions', function () {
   });
 
   describe('dismissNotification()', function () {
-    it('should dispatch a server dismiss event with notification object', () => {
-      const notification = { description: 'notification' };
+    it('should dispatch a server notify event with notification object', () => {
+      const notice = 'finish';
+      const msg = 'this is a message';
+      const notificationObject = { notice, msg };
       const dispatchSpy = setupUISpy(sandbox);
 
-      notificationActions.dismissNotification(notification);
+      notificationActions.createNotification(notice, msg);
 
       expect(dispatchSpy).toHaveBeenCalledOnce();
       const dispatch = dispatchSpy.getCall(0).args[0];
-      expect(dispatch.type).toEqual(notificationActionTypes.DISMISS);
-      expect(dispatch.notification).toEqual(notification);
+      expect(dispatch.type).toEqual(notificationActionTypes.NOTIFY);
+      expect(dispatch.notification).toEqual(notificationObject);
     });
   });
 
-  describe('importantDataFetchNotification()', function () {
-    let dispatchSpy;
-    let dispatch;
-    const message = 'app broken';
+  describe('clearNotifications()', function () {
+    it('should dispatch a clear event to clear the event', () => {
+      const dispatchSpy = setupUISpy(sandbox);
 
-    beforeEach(() => {
-      const notification = { description: 'Server notification' };
-      dispatchSpy = setupServerSpy(sandbox);
+      notificationActions.clearNotifications();
 
-      notificationActions.importantDataFetchNotification(notification, message);
-
-      dispatch = dispatchSpy.getCall(0).args[0];
-    });
-
-    it('should dispatch an important fetch notification server event', () => {
       expect(dispatchSpy).toHaveBeenCalledOnce();
-      expect(dispatch.type).toEqual(notificationActionTypes.IMPORTANT_FETCH);
-    });
-
-    it('should wrap the supplied notification message with generic messaging', () => {
-      expect(dispatch.msg).toEqual(
-        `There was an issue connecting to the dashboard, ${message}`);
+      const dispatch = dispatchSpy.getCall(0).args[0];
+      expect(dispatch.type).toEqual(notificationActionTypes.CLEAR);
+      expect(dispatch.notification).toEqual({});
     });
   });
 });
