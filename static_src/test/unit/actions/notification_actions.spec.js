@@ -16,7 +16,7 @@ describe('notificationActions', function () {
     sandbox.restore();
   });
 
-  describe('dismissNotification()', function () {
+  describe('createNotification()', function () {
     it('should dispatch a server notify event with notification object', () => {
       const notice = 'finish';
       const msg = 'this is a message';
@@ -28,7 +28,6 @@ describe('notificationActions', function () {
       expect(dispatchSpy).toHaveBeenCalledOnce();
       const dispatch = dispatchSpy.getCall(0).args[0];
       expect(dispatch.type).toEqual(notificationActionTypes.NOTIFY);
-      expect(dispatch.notification).toEqual(notificationObject);
     });
   });
 
@@ -41,7 +40,6 @@ describe('notificationActions', function () {
       expect(dispatchSpy).toHaveBeenCalledOnce();
       const dispatch = dispatchSpy.getCall(0).args[0];
       expect(dispatch.type).toEqual(notificationActionTypes.CLEAR);
-      expect(dispatch.notification).toEqual({});
     });
   });
 });
