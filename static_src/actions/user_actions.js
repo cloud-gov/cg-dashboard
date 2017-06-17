@@ -179,7 +179,7 @@ const userActions = {
 
     return cfApi.fetchUser(invite.userGuid)
       .then(user => userActions.createUserAndAssociate(user))
-      .then(verified => userActions.createInviteNotification(verified, email))
+      .then(() => userActions.createInviteNotification(verified, email))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
   },
@@ -189,25 +189,24 @@ const userActions = {
     const currentViewedType = UserStore.currentViewedType;
     const viewTypeNoun = {
       org_users: {
-        singular: "organization"
+        singular: 'organization'
       },
       space_users: {
-        singular: "space"
+        singular: 'space'
       }
-    }
+    };
     if (verified) {
-      message = "The account for " +
-      email + " is now associated to this " +
-        viewTypeNoun[currentViewedType].singular + ". Control their " +
-        viewTypeNoun[currentViewedType].singular + " roles below.";
+      message = `The account for ${email} is now associated to this ` +
+        `${viewTypeNoun[currentViewedType].singular}. Control their ` +
+        `${viewTypeNoun[currentViewedType].singular} roles below.`;
     } else {
-      message = "There was no cloud.gov account found for " +
-        email + ". They have been sent an email cloud.gov invitation. Their account " +
-        "has been associated to this " + viewTypeNoun[currentViewedType].singular +
-        " and their " + viewTypeNoun[currentViewedType].singular +
-        " roles can be controlled below.";
+      message = `There was no cloud.gov account found for ${email}` +
+        '. They have been sent an email cloud.gov invitation. Their account ' +
+        `has been associated to this ${viewTypeNoun[currentViewedType].singular}` +
+        ` and their ${viewTypeNoun[currentViewedType].singular}` +
+        ' roles can be controlled below.';
     }
-    notificationActions.createNotification("finish", message);
+    notificationActions.createNotification('finish', message);
   },
 
   userInviteError(err, contextualMessage) {

@@ -61,43 +61,6 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.USER_INVITE_STATUS_DISMISSED: {
-        this._inviteNotice = Object.assign({}, "", {
-          contextualMessage: ""
-        });
-        this.emitChange();
-        break;
-      }
-
-      case userActionTypes.USER_INVITE_STATUS_UPDATED: {
-        let contextualMessage;
-        const currentViewedType = this._currentViewedType;
-        const viewTypeNoun = {
-          org_users: {
-            singular: "organization"
-          },
-          space_users: {
-            singular: "space"
-          }
-        }
-        if (action.verified) {
-          contextualMessage = "The account for " + action.email + " is now associated to this " +
-            viewTypeNoun[currentViewedType].singular + ". Control their " +
-            viewTypeNoun[currentViewedType].singular + " roles below.";
-        } else {
-          contextualMessage = "There was no cloud.gov account found for " +
-            action.email + ". They have been sent an email cloud.gov invitation. Their account " +
-            "has been associated to this " + viewTypeNoun[currentViewedType].singular +
-            " and their " + viewTypeNoun[currentViewedType].singular +
-            " roles can be controlled below.";
-        }
-        this._inviteNotice = Object.assign({}, "action.err", {
-          contextualMessage: contextualMessage
-        });
-        this.emitChange();
-        break;
-      }
-
       case userActionTypes.USER_INVITE_TRIGGER: {
         this._inviteDisabled = true;
         this._inviteError = null;

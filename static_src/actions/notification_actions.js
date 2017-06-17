@@ -47,7 +47,7 @@ export default {
     return Promise.resolve(notice);
   },
 
-  importantDataFetchNotification(err, entityMessage) {
+  importantDataFetchNotification(notice, entityMessage) {
     console.error(notice);
 
     const msg = 'There was an issue connecting to the dashboard, ' +

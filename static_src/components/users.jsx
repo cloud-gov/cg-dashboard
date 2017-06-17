@@ -80,13 +80,9 @@ export default class Users extends React.Component {
     NotificationStore.removeChangeListener(this._onChange);
   }
 
-  _onChange() {
-    this.setState(stateSetter());
-  }
-
-  handleRemove(userGuid, ev) {
+  onNotificationDismiss(ev) {
     ev.preventDefault();
-    userActions.deleteUser(userGuid, this.state.currentOrgGuid);
+    notificationActions.clearNotifications();
   }
 
   handleAddPermissions(roleKey, apiKey, userGuid) {
@@ -105,6 +101,11 @@ export default class Users extends React.Component {
                                 this.entityType);
   }
 
+  handleRemove(userGuid, ev) {
+    ev.preventDefault();
+    userActions.deleteUser(userGuid, this.state.currentOrgGuid);
+  }
+
   get entityType() {
     return this.state.currentType === ORG_NAME ? 'org' : 'space';
   }
@@ -115,9 +116,8 @@ export default class Users extends React.Component {
     return entityGuid;
   }
 
-  onNotificationDismiss(ev) {
-    ev.preventDefault();
-    notificationActions.clearNotifications();
+  _onChange() {
+    this.setState(stateSetter());
   }
 
   render() {
@@ -126,11 +126,6 @@ export default class Users extends React.Component {
 
     if (this.state.currentType === ORG_NAME) {
       removeHandler = this.handleRemove;
-    }
-
-    let noticeClasses = [];
-    if (this.props.notice) {
-      noticeClasses = ['form-notification', 'form-notification-info'];
     }
 
     let content = (<UserList
@@ -166,7 +161,8 @@ export default class Users extends React.Component {
               message={ notice.description }
               actions={ [] }
               onDismiss={ this.onNotificationDismiss }
-              status="finish"/>
+              status="finish"
+            />
           );
           notifications.push(noticeMessage);
         });

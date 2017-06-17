@@ -263,10 +263,6 @@ const userActionTypes = keymirror({
   USER_ROLES_DELETED: null,
   // Action to request an invite link from UAA, with user GUID.
   USER_INVITE_TRIGGER: null,
-  // Action to return invite status of of invited user.
-  USER_INVITE_STATUS_UPDATED: null,
-  // Action to dismiss invite status.
-  USER_INVITE_STATUS_DISMISSED: null,
   // Action to trigger email sent to user with cloud.gov invite url.
   USER_ORG_ASSOCIATE: null,
   // Action to associate user to organization on the server.
