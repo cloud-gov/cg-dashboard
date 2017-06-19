@@ -178,6 +178,7 @@ export class UserStore extends BaseStore {
         this._inviteError = Object.assign({}, action.err, {
           contextualMessage: action.contextualMessage
         });
+        this._inviteDisabled = false;
         this.emitChange();
         break;
       }
