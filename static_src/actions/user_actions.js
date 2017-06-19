@@ -210,7 +210,8 @@ const userActions = {
         `${viewTypeNoun[currentViewedType].singular} roles below.`;
     } else {
       description = `There was no cloud.gov account found for ${email}` +
-        '. They have been sent an email cloud.gov invitation. Their account ' +
+        'or the user has not verified their account by logging in.' +
+        'They have been sent an email cloud.gov invitation. Their account ' +
         `has been associated to this ${viewTypeNoun[currentViewedType].singular}` +
         ` and their ${viewTypeNoun[currentViewedType].singular}` +
         ' roles can be controlled below.';
