@@ -12,13 +12,13 @@ import UserStore from '../stores/user_store';
 import OrgStore from '../stores/org_store';
 
 const VIEW_TYPE_NOUNS = {
-      org_users: {
-        singular: 'organization'
-      },
-      space_users: {
-        singular: 'space'
-      }
-    };
+  org_users: {
+    singular: 'organization'
+  },
+  space_users: {
+    singular: 'space'
+  }
+};
 
 const userActions = {
   fetchOrgUsers(orgGuid) {

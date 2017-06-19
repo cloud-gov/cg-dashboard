@@ -23,7 +23,6 @@ function stateSetter() {
   const currentType = UserStore.currentlyViewedType;
   const currentUser = UserStore.currentUser;
 
-  const inviteNotices = {};
   let users = [];
   let currentUserAccess = false;
   const inviteDisabled = UserStore.inviteDisabled();
