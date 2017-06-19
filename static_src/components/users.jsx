@@ -52,7 +52,7 @@ function stateSetter() {
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users,
-    inviteNotices,
+    inviteNotices: UserStore._inviteNotification,
     userInviteError: UserStore.getInviteError()
   };
 }
@@ -145,23 +145,18 @@ export default class Users extends React.Component {
       );
     }
 
-    let notifications;
+    let notification;
 
-    if (this.state.inviteNotices.length) {
-      notifications = [];
-      this.state.inviteNotices
-        .forEach((notice, i) => {
-          const noticeMessage = (
-            <Notification
-              key={ `notice-${i}` }
-              message={ notice.description }
-              actions={ [] }
-              onDismiss={ this.onNotificationDismiss }
-              status="finish"
-            />
-          );
-          notifications.push(noticeMessage);
-        });
+    if (this.state.inviteNotices.description) {
+      const notice = this.state.inviteNotices;
+      notification = (
+        <Notification
+          message={ notice.description }
+          actions={ [] }
+          onDismiss={ this.onNotificationDismiss }
+          status="finish"
+        />
+      );
     }
 
     return (
@@ -172,7 +167,7 @@ export default class Users extends React.Component {
           currentUserAccess={ this.state.currentUserAccess }
           error={ this.state.userInviteError }
         />
-        { notifications }
+        { notification }
         <div>
           <div>
             { content }
