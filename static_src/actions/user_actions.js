@@ -186,7 +186,7 @@ const userActions = {
 
   createInviteNotification(verified, email) {
     let message;
-    const currentViewedType = UserStore.currentViewedType;
+    const currentViewedType = UserStore.currentlyViewedType;
     const viewTypeNoun = {
       org_users: {
         singular: 'organization'
