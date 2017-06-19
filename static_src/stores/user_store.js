@@ -21,6 +21,7 @@ export class UserStore extends BaseStore {
     this._error = null;
     this._saving = false;
     this._inviteDisabled = false;
+    this._inviteNotification = {};
     this._loading = {};
   }
 
@@ -177,6 +178,20 @@ export class UserStore extends BaseStore {
         this._inviteError = Object.assign({}, action.err, {
           contextualMessage: action.contextualMessage
         });
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_INVITE_STATUS_DISPLAYED: {
+        const noticeType = action.noticeType;
+        const content = action.content;
+        this._inviteNotification = Object.assign({}, noticeType, content);
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_INVITE_STATUS_DISMISSED: {
+        this._inviteNotification = {};
         this.emitChange();
         break;
       }

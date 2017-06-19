@@ -31,12 +31,6 @@ const entityHealth = keymirror({
   unknown: null
 });
 
-// All global notification action types
-const notificationActionTypes = keymirror({
-  CLEAR: null,
-  NOTIFY: null
-});
-
 // All global error action types
 const errorActionTypes = keymirror({
   FETCH: null,
@@ -268,6 +262,10 @@ const userActionTypes = keymirror({
   USER_ASSOCIATED_ORG_DISPLAYED: null,
   // Action when something goes wrong in user invite and email process.
   USER_INVITE_ERROR: null,
+  // Action to display an invite notification
+  USER_INVITE_STATUS_DISPLAYED: null,
+  // Action to dismiss an invite notification
+  USER_INVITE_STATUS_DISMISSED: null,
   // Action to delete a user from an org.
   USER_DELETE: null,
   // Action when a user was deleted from an org on the server.
@@ -360,7 +358,6 @@ export {
   errorActionTypes,
   formActionTypes,
   loginActionTypes,
-  notificationActionTypes,
   orgActionTypes,
   pageActionTypes,
   quotaActionTypes,
