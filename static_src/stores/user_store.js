@@ -79,7 +79,6 @@ export class UserStore extends BaseStore {
         } else {
           this.merge('guid', user, () => {});
         }
-        this._inviteDisabled = false;
         this.emitChange();
         break;
       }
@@ -184,9 +183,11 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_INVITE_STATUS_DISPLAYED: {
+        this._inviteDisabled = false;
         const noticeType = action.noticeType;
-        const content = action.content;
-        this._inviteNotification = Object.assign({}, noticeType, content);
+        const description = action.description;
+        const notice = Object.assign({}, { noticeType }, { description });
+        this._inviteNotification = notice;
         this.emitChange();
         break;
       }
