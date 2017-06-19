@@ -7,12 +7,10 @@
 import React from 'react';
 
 import userActions from '../actions/user_actions.js';
-import notificationActions from '../actions/notification_actions.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UsersInvite from './users_invite.jsx';
-import NotificationStore from '../stores/notification_store.js';
 import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
 
@@ -25,6 +23,7 @@ function stateSetter() {
   const currentType = UserStore.currentlyViewedType;
   const currentUser = UserStore.currentUser;
 
+  const inviteNotices = {};
   let users = [];
   let currentUserAccess = false;
   const inviteDisabled = UserStore.inviteDisabled();
@@ -53,7 +52,7 @@ function stateSetter() {
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users,
-    notices: NotificationStore.getAll(),
+    inviteNotices,
     userInviteError: UserStore.getInviteError()
   };
 }
@@ -72,17 +71,15 @@ export default class Users extends React.Component {
 
   componentDidMount() {
     UserStore.addChangeListener(this._onChange);
-    NotificationStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     UserStore.removeChangeListener(this._onChange);
-    NotificationStore.removeChangeListener(this._onChange);
   }
 
   onNotificationDismiss(ev) {
     ev.preventDefault();
-    notificationActions.clearNotifications();
+    userActions.clearInviteNotifications();
   }
 
   handleAddPermissions(roleKey, apiKey, userGuid) {
@@ -150,9 +147,9 @@ export default class Users extends React.Component {
 
     let notifications;
 
-    if (this.state.notices.length) {
+    if (this.state.inviteNotices.length) {
       notifications = [];
-      this.state.notices
+      this.state.inviteNotices
         .forEach((notice, i) => {
           const noticeMessage = (
             <Notification
