@@ -22,7 +22,7 @@ const ORG_NAME = 'org_users';
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
-  const currentType = UserStore.currentViewedType;
+  const currentType = UserStore.currentlyViewedType;
   const currentUser = UserStore.currentUser;
 
   let users = [];
