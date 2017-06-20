@@ -719,7 +719,7 @@ describe('UserStore', function () {
     let notice;
 
     beforeEach(function() {
-      notice = { noticeType: "finish", description: "message" };
+      notice = { noticeType: "finish", description: "There was no cloud.gov account found for undefinedor the user has not verified their account by logging in.They have been sent an email cloud.gov invitation. Their account has been associated to this space and their space roles can be controlled below." };
       UserStore._inviteNotification = notice;
       sandbox.spy(UserStore, 'emitChange');
 
@@ -728,8 +728,8 @@ describe('UserStore', function () {
 
     it('should create notification for user invite', function() {
       expect(UserStore.getInviteNotification()).toBeDefined();
-      expect(UserStore.getInviteNotification().description).not.toEqual(notice.description);
-      expect(UserStore.getInviteNotification().noticeType).not.toEqual(notice.noticeType);
+      expect(UserStore.getInviteNotification().description).toEqual(notice.description);
+      expect(UserStore.getInviteNotification().noticeType).toEqual(notice.noticeType);
     });
 
     it('should emit a change event', function() {
@@ -802,17 +802,12 @@ describe('UserStore', function () {
         UserStore.push(user);
       });
 
-      it('returns true for _inviteNotification equals true', function () {
+      it('returns notice when _inviteNotification has content', function () {
         UserStore._inviteNotification = notice;
         actual = UserStore.getInviteNotification()
         expect(actual).toBe(notice);
       });
 
-      it('returns true for _inviteNotification equals false', function () {
-        UserStore._inviteNotification = {};
-        actual = UserStore.getInviteNotification()
-        expect(actual).toBe({});
-      });
     });
   });
 
@@ -834,15 +829,15 @@ describe('UserStore', function () {
         UserStore.push(user);
       });
 
-      it('returns true for _currentViewedType equals space_user', function () {
+      it('returns space for _currentViewedType equals space_user', function () {
         UserStore._currentViewedType = 'space_user';
-        actual = UserStore.getInviteNotice()
+        actual = UserStore.currentlyViewedType
         expect(actual).toBe('space_user');
       });
 
-      it('returns true for _currentViewedType equals org_user', function () {
+      it('returns org for _currentViewedType equals org_user', function () {
         UserStore._currentViewedType = 'org_user';
-        actual = UserStore.getInviteNotice()
+        actual = UserStore.currentlyViewedType
         expect(actual).toBe('org_user');
       });
     });

@@ -342,8 +342,8 @@ export class UserStore extends BaseStore {
     return this._currentUserIsAdmin;
   }
 
-  getInviteNotice() {
-    return this._inviteNotice;
+  getInviteNotification() {
+    return this._inviteNotification;
   }
 
   getInviteError() {
