@@ -715,6 +715,50 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on USER_INVITE_STATUS_DISPLAYED', function() {
+    let notice;
+
+    beforeEach(function() {
+      notice = { noticeType: "finish", description: "message" };
+      UserStore._inviteNotification = notice;
+      sandbox.spy(UserStore, 'emitChange');
+
+      userActions.createInviteNotification();
+    });
+
+    it('should create notification for user invite', function() {
+      expect(UserStore.getInviteNotification()).toBeDefined();
+      expect(UserStore.getInviteNotification().description).not.toEqual(notice.description);
+      expect(UserStore.getInviteNotification().noticeType).not.toEqual(notice.noticeType);
+    });
+
+    it('should emit a change event', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on USER_INVITE_STATUS_DISMISSED', function() {
+    let notice;
+
+    beforeEach(function() {
+      notice = { noticeType: "finish", description: "message" };
+      UserStore._inviteNotification = notice;
+      sandbox.spy(UserStore, 'emitChange');
+
+      userActions.clearInviteNotifications();
+    });
+
+    it('should clear notification for user invite', function() {
+      expect(UserStore.getInviteNotification()).toBeDefined();
+      expect(UserStore.getInviteNotification().description).not.toEqual(notice.description);
+      expect(UserStore.getInviteNotification().noticeType).not.toEqual(notice.noticeType);
+    });
+
+    it('should emit a change event', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('on USER_INVITE_ERROR', function() {
     let error;
     let message;
@@ -739,6 +783,70 @@ describe('UserStore', function () {
     });
   });
 
+  describe('getInviteNotification()', function () {
+    describe('user with _inviteNotification', function () {
+      let user, space, org, actual, notice;
+
+      beforeEach(function () {
+        notice = { noticeType: 'finish', description: 'a message' };
+        org = { guid: 'org1234' };
+        space = { guid: 'space1234' };
+        user = {
+          guid: 'user123',
+          roles: {
+            [space.guid]: ['space_developer'],
+            [org.guid]: ['org_manager', 'org_auditor']
+          }
+        };
+
+        UserStore.push(user);
+      });
+
+      it('returns true for _inviteNotification equals true', function () {
+        UserStore._inviteNotification = notice;
+        actual = UserStore.getInviteNotification()
+        expect(actual).toBe(notice);
+      });
+
+      it('returns true for _inviteNotification equals false', function () {
+        UserStore._inviteNotification = {};
+        actual = UserStore.getInviteNotification()
+        expect(actual).toBe({});
+      });
+    });
+  });
+
+  describe('currentlyViewedType()', function () {
+    describe('user with _currentViewedType', function () {
+      let user, space, org, actual;
+
+      beforeEach(function () {
+        org = { guid: 'org1234' };
+        space = { guid: 'space1234' };
+        user = {
+          guid: 'user123',
+          roles: {
+            [space.guid]: ['space_developer'],
+            [org.guid]: ['org_manager', 'org_auditor']
+          }
+        };
+
+        UserStore.push(user);
+      });
+
+      it('returns true for _currentViewedType equals space_user', function () {
+        UserStore._currentViewedType = 'space_user';
+        actual = UserStore.getInviteNotice()
+        expect(actual).toBe('space_user');
+      });
+
+      it('returns true for _currentViewedType equals org_user', function () {
+        UserStore._currentViewedType = 'org_user';
+        actual = UserStore.getInviteNotice()
+        expect(actual).toBe('org_user');
+      });
+    });
+  });
   describe('isAdmin()', function () {
     describe('user with _currentUserIsAdmin', function () {
       let user, space, org, actual;

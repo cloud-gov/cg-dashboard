@@ -173,6 +173,18 @@ describe('userActions', function() {
     });
   });
 
+  describe('createUserInvite()', function() {
+    it('should', function() {
+
+    });
+  });
+
+  describe('receivedInviteStatus()', function() {
+    it('should', function() {
+
+    });
+  });
+
   describe('userInviteError()', function() {
     let err;
     let message;
