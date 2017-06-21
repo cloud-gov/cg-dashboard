@@ -15,7 +15,7 @@ describe('validateEmail', function () {
 
     it('fails for empty', function () {
       const result = validator();
-      expect(result).toEqual({ message: 'Enter an email address in the  field' });
+      expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
     });
   });
 
@@ -27,17 +27,17 @@ describe('validateEmail', function () {
 
     it('fails for none emails string', function () {
       const result = validator('domain');
-      expect(result).toEqual({ message: 'Enter an email address in the  field' });
+      expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
     });
 
     it('fails for none emails string@', function () {
       const result = validator('domain@place');
-      expect(result).toEqual({ message: 'Enter an email address in the  field' });
+      expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
     });
 
     it('fails for none emails string@string', function () {
       const result = validator('domain@place');
-      expect(result).toEqual({ message: 'Enter an email address in the  field' });
+      expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
     });
 
     it('succeeds for email', function () {
