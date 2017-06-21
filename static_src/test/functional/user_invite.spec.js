@@ -23,22 +23,6 @@ describe('User roles', function () {
       expect(userInviteElement.isVisible()).toBe(true);
     });
 
-    it('should get error if enter non-email into invite form', function () {
-      userInviteElement.inputToInviteForm('notemail');
-
-      expect('notemail').toBe(userInviteElement.getInviteFormValue());
-    });
-
-
-    it('should not be able to submit an non email address', function () {
-      userInviteElement.inputToInviteForm('notemail');
-      userInviteElement.submitInviteForm();
-      const topErrorResponse = browser.element('#users-invite-form span.error_message');
-      const topError = 'There were errors submitting the form.';
-      expect(topErrorResponse.text).toEqual(topError);
-      expect(bottomErrorResponse.text).toEqual(bottomError);
-    });
-
     it('should be able to input content into invite form', function () {
       userInviteElement.inputToInviteForm(email);
 
@@ -63,7 +47,10 @@ describe('User roles', function () {
       const invalidEmail = '123';
       userInviteElement.inputToInviteForm(invalidEmail);
       userInviteElement.submitInviteForm();
-      expect(userInviteElement.getErrorMessage()).toMatch(invalidEmail);
+      const topError = 'There were errors submitting the form.';
+      const bottomError = 'The value entered in email is not a valid e-mail address';
+      expect(userInviteElement.getErrorMessage()).toMatch(topError);
+      expect(userInviteElement.getValidatorMessage()).toMatch(bottomError);
     });
   });
 });
