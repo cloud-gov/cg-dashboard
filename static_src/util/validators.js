@@ -43,7 +43,7 @@ export function validateEmail() {
   return function _validateEmail(value, name) {
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value))) {
       return {
-        message: `The ${name || ''} field was not filled out`
+        message: `Enter an email address in the ${name || ''} field.`
       };
     }
 
