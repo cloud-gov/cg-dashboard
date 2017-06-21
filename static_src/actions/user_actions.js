@@ -363,6 +363,4 @@ const userActions = {
   }
 };
 
-const _userActions = userActions;
-
 export default userActions;
