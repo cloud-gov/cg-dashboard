@@ -35,8 +35,6 @@ describe('User roles', function () {
       userInviteElement.submitInviteForm();
       const topErrorResponse = browser.element('#users-invite-form span.error_message');
       const topError = 'There were errors submitting the form.';
-      const bottomErrorResponse = browser.element('#users-invite-form fieldset .error span.error_message');
-      const bottomError = 'The value entered is not a valid e-mail address';
       expect(topErrorResponse.text).toEqual(topError);
       expect(bottomErrorResponse.text).toEqual(bottomError);
     });
