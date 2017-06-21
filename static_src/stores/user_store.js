@@ -358,23 +358,8 @@ export class UserStore extends BaseStore {
     return this._currentViewedType;
   }
 
-  get viewTypeNouns() {
-    const viewTypeNouns = {
-      org_users: {
-        singular: 'organization'
-      },
-      space_users: {
-        singular: 'space'
-      }
-    };
-
-    return viewTypeNouns;
-  }
-
 }
 
 const _UserStore = new UserStore();
-
-window.userstore = _UserStore;
 
 export default _UserStore;

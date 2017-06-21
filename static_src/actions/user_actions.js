@@ -359,6 +359,5 @@ const userActions = {
 };
 
 const _userActions = userActions;
-window.useraction = _userActions;
 
 export default userActions;
