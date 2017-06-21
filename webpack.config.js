@@ -12,7 +12,7 @@ const srcDir = './static_src';
 const compiledDir = './static/assets';
 
 const config = {
-  bail: true,
+  bail: false,
 
   entry: [
     'babel-polyfill',

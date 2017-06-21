@@ -22,6 +22,8 @@ const entityHealth = keymirror({
   warning: null,
   // Something is definitely not right and requires some attention
   error: null,
+  // Entity process was successful
+  finish: null,
   // Entity is inactive
   inactive: null,
   // This warrants a bug, so we can figure out what the correct health
@@ -252,6 +254,8 @@ const userActionTypes = keymirror({
   USER_ROLES_DELETED: null,
   // Action to request an invite link from UAA, with user GUID.
   USER_INVITE_TRIGGER: null,
+  // Action to trigger when invite status is triggered for front end.
+  USER_INVITE_STATUS_UPDATED: null,
   // Action to trigger email sent to user with cloud.gov invite url.
   USER_ORG_ASSOCIATE: null,
   // Action to associate user to organization on the server.
@@ -260,6 +264,10 @@ const userActionTypes = keymirror({
   USER_ASSOCIATED_ORG_DISPLAYED: null,
   // Action when something goes wrong in user invite and email process.
   USER_INVITE_ERROR: null,
+  // Action to display an invite notification
+  USER_INVITE_STATUS_DISPLAYED: null,
+  // Action to dismiss an invite notification
+  USER_INVITE_STATUS_DISMISSED: null,
   // Action to delete a user from an org.
   USER_DELETE: null,
   // Action when a user was deleted from an org on the server.

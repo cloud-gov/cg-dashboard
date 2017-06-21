@@ -21,6 +21,7 @@ export class UserStore extends BaseStore {
     this._error = null;
     this._saving = false;
     this._inviteDisabled = false;
+    this._inviteNotification = {};
     this._loading = {};
   }
 
@@ -78,7 +79,6 @@ export class UserStore extends BaseStore {
         } else {
           this.merge('guid', user, () => {});
         }
-        this._inviteDisabled = false;
         this.emitChange();
         break;
       }
@@ -177,6 +177,23 @@ export class UserStore extends BaseStore {
         this._inviteError = Object.assign({}, action.err, {
           contextualMessage: action.contextualMessage
         });
+        this._inviteDisabled = false;
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_INVITE_STATUS_DISPLAYED: {
+        this._inviteDisabled = false;
+        const noticeType = action.noticeType;
+        const description = action.description;
+        const notice = Object.assign({}, { noticeType }, { description });
+        this._inviteNotification = notice;
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_INVITE_STATUS_DISMISSED: {
+        this._inviteNotification = {};
         this.emitChange();
         break;
       }
@@ -276,10 +293,6 @@ export class UserStore extends BaseStore {
     return this._error;
   }
 
-  get currentlyViewedType() {
-    return this._currentViewedType;
-  }
-
   get isLoadingCurrentUser() {
     return this._loading.currentUser === true;
   }
@@ -329,6 +342,10 @@ export class UserStore extends BaseStore {
     return this._currentUserIsAdmin;
   }
 
+  getInviteNotification() {
+    return this._inviteNotification;
+  }
+
   getInviteError() {
     return this._inviteError;
   }
@@ -337,10 +354,12 @@ export class UserStore extends BaseStore {
     return this.get(this._currentUserGuid);
   }
 
+  get currentlyViewedType() {
+    return this._currentViewedType;
+  }
+
 }
 
 const _UserStore = new UserStore();
-
-window.userstore = _UserStore;
 
 export default _UserStore;

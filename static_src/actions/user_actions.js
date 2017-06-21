@@ -163,10 +163,62 @@ const userActions = {
     });
 
     return uaaApi.inviteUaaUser(email)
-      .then(invite => cfApi.fetchUser(invite.userGuid))
-      .then(user => userActions.createUserAndAssociate(user))
+      .then(invite => userActions.receivedInviteStatus(invite, email))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
+  },
+
+  receivedInviteStatus(invite, email) {
+    const verified = invite.verified;
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_INVITE_STATUS_UPDATED,
+      email,
+      verified
+    });
+
+    return cfApi.fetchUser(invite.userGuid)
+      .then(user => userActions.createUserAndAssociate(user))
+      .then(() => userActions.createInviteNotification(verified, email))
+      .catch(err => userActions.userInviteCreateError(err, `There was a problem
+        inviting ${email}`));
+  },
+
+  clearInviteNotifications() {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_INVITE_STATUS_DISMISSED
+    });
+  },
+
+  createInviteNotification(verified, email) {
+    let description;
+    const noticeType = 'finish';
+    const currentViewedType = UserStore.currentlyViewedType;
+    const viewTypeNouns = {
+      org_users: {
+        singular: 'organization'
+      },
+      space_users: {
+        singular: 'space'
+      }
+    };
+
+    if (verified) {
+      description = `The account for ${email} is now associated to this ` +
+        `${viewTypeNouns[currentViewedType].singular}. Control their ` +
+        `${viewTypeNouns[currentViewedType].singular} roles below.`;
+    } else {
+      description = `There was no cloud.gov account found for ${email} ` +
+        'or the user has not verified their account by logging in.' +
+        'They have been sent an email cloud.gov invitation. Their account ' +
+        `has been associated to this ${viewTypeNouns[currentViewedType].singular}` +
+        ` and their ${viewTypeNouns[currentViewedType].singular}` +
+        ' roles can be controlled below.';
+    }
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_INVITE_STATUS_DISPLAYED,
+      noticeType,
+      description
+    });
   },
 
   userInviteError(err, contextualMessage) {
@@ -310,8 +362,5 @@ const userActions = {
     return Promise.resolve(user);
   }
 };
-
-const _userActions = userActions;
-window.useraction = _userActions;
 
 export default userActions;

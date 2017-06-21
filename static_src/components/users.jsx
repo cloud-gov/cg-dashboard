@@ -11,6 +11,7 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UsersInvite from './users_invite.jsx';
+import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
 
 const SPACE_NAME = 'space_users';
@@ -50,6 +51,7 @@ function stateSetter() {
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users,
+    inviteNotices: UserStore._inviteNotification,
     userInviteError: UserStore.getInviteError()
   };
 }
@@ -74,13 +76,9 @@ export default class Users extends React.Component {
     UserStore.removeChangeListener(this._onChange);
   }
 
-  _onChange() {
-    this.setState(stateSetter());
-  }
-
-  handleRemove(userGuid, ev) {
+  onNotificationDismiss(ev) {
     ev.preventDefault();
-    userActions.deleteUser(userGuid, this.state.currentOrgGuid);
+    userActions.clearInviteNotifications();
   }
 
   handleAddPermissions(roleKey, apiKey, userGuid) {
@@ -99,6 +97,11 @@ export default class Users extends React.Component {
                                 this.entityType);
   }
 
+  handleRemove(userGuid, ev) {
+    ev.preventDefault();
+    userActions.deleteUser(userGuid, this.state.currentOrgGuid);
+  }
+
   get entityType() {
     return this.state.currentType === ORG_NAME ? 'org' : 'space';
   }
@@ -107,6 +110,10 @@ export default class Users extends React.Component {
     const entityGuid = this.state.currentType === ORG_NAME ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
     return entityGuid;
+  }
+
+  _onChange() {
+    this.setState(stateSetter());
   }
 
   render() {
@@ -137,6 +144,20 @@ export default class Users extends React.Component {
       );
     }
 
+    let notification;
+
+    if (this.state.inviteNotices.description) {
+      const notice = this.state.inviteNotices;
+      notification = (
+        <Notification
+          message={ notice.description }
+          actions={ [] }
+          onDismiss={ this.onNotificationDismiss }
+          status="finish"
+        />
+      );
+    }
+
     return (
       <div className="test-users">
         { errorMessage }
@@ -145,6 +166,7 @@ export default class Users extends React.Component {
           currentUserAccess={ this.state.currentUserAccess }
           error={ this.state.userInviteError }
         />
+        { notification }
         <div>
           <div>
             { content }
@@ -153,9 +175,8 @@ export default class Users extends React.Component {
       </div>
     );
   }
-
 }
 
-Users.propTypes = { };
+Users.propTypes = {};
 
-Users.defaultProps = { };
+Users.defaultProps = {};

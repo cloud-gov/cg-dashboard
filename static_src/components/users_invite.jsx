@@ -11,7 +11,11 @@ import FormStore from '../stores/form_store';
 import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
 import userActions from '../actions/user_actions';
+
 import { validateString } from '../util/validators';
+
+import createStyler from '../util/create_styler';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
 
@@ -39,6 +43,8 @@ export default class UsersInvite extends React.Component {
     this.props = props;
     this.state = stateSetter(props);
 
+    this.styler = createStyler(style);
+
     this.validateString = validateString().bind(this);
     this._onValidForm = this._onValidForm.bind(this);
   }
@@ -59,6 +65,7 @@ export default class UsersInvite extends React.Component {
 
   render() {
     let content;
+
     if (this.props.currentUserAccess) {
       content = (
         <div>

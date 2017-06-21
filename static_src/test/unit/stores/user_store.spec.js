@@ -715,6 +715,50 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on USER_INVITE_STATUS_DISPLAYED', function() {
+    let notice;
+
+    beforeEach(function() {
+      notice = { noticeType: "finish", description: "There was no cloud.gov account found for undefined or the user has not verified their account by logging in.They have been sent an email cloud.gov invitation. Their account has been associated to this space and their space roles can be controlled below." };
+      UserStore._inviteNotification = notice;
+      sandbox.spy(UserStore, 'emitChange');
+
+      userActions.createInviteNotification();
+    });
+
+    it('should create notification for user invite', function() {
+      expect(UserStore.getInviteNotification()).toBeDefined();
+      expect(UserStore.getInviteNotification().description).toEqual(notice.description);
+      expect(UserStore.getInviteNotification().noticeType).toEqual(notice.noticeType);
+    });
+
+    it('should emit a change event', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('on USER_INVITE_STATUS_DISMISSED', function() {
+    let notice;
+
+    beforeEach(function() {
+      notice = { noticeType: "finish", description: "message" };
+      UserStore._inviteNotification = notice;
+      sandbox.spy(UserStore, 'emitChange');
+
+      userActions.clearInviteNotifications();
+    });
+
+    it('should clear notification for user invite', function() {
+      expect(UserStore.getInviteNotification()).toBeDefined();
+      expect(UserStore.getInviteNotification().description).not.toEqual(notice.description);
+      expect(UserStore.getInviteNotification().noticeType).not.toEqual(notice.noticeType);
+    });
+
+    it('should emit a change event', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('on USER_INVITE_ERROR', function() {
     let error;
     let message;
@@ -739,6 +783,65 @@ describe('UserStore', function () {
     });
   });
 
+  describe('getInviteNotification()', function () {
+    describe('user with _inviteNotification', function () {
+      let user, space, org, actual, notice;
+
+      beforeEach(function () {
+        notice = { noticeType: 'finish', description: 'a message' };
+        org = { guid: 'org1234' };
+        space = { guid: 'space1234' };
+        user = {
+          guid: 'user123',
+          roles: {
+            [space.guid]: ['space_developer'],
+            [org.guid]: ['org_manager', 'org_auditor']
+          }
+        };
+
+        UserStore.push(user);
+      });
+
+      it('returns notice when _inviteNotification has content', function () {
+        UserStore._inviteNotification = notice;
+        actual = UserStore.getInviteNotification()
+        expect(actual).toBe(notice);
+      });
+
+    });
+  });
+
+  describe('currentlyViewedType()', function () {
+    describe('user with _currentViewedType', function () {
+      let user, space, org, actual;
+
+      beforeEach(function () {
+        org = { guid: 'org1234' };
+        space = { guid: 'space1234' };
+        user = {
+          guid: 'user123',
+          roles: {
+            [space.guid]: ['space_developer'],
+            [org.guid]: ['org_manager', 'org_auditor']
+          }
+        };
+
+        UserStore.push(user);
+      });
+
+      it('returns space for _currentViewedType equals space_user', function () {
+        UserStore._currentViewedType = 'space_user';
+        actual = UserStore.currentlyViewedType
+        expect(actual).toBe('space_user');
+      });
+
+      it('returns org for _currentViewedType equals org_user', function () {
+        UserStore._currentViewedType = 'org_user';
+        actual = UserStore.currentlyViewedType
+        expect(actual).toBe('org_user');
+      });
+    });
+  });
   describe('isAdmin()', function () {
     describe('user with _currentUserIsAdmin', function () {
       let user, space, org, actual;
