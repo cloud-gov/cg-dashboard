@@ -174,14 +174,19 @@ describe('userActions', function() {
   });
 
   describe('createUserInvite()', function() {
-    it('should', function() {
+    it(`should dispatch a view event to process a email invite request`, function() {
+      var expectedParams = 'this@there.com';
+      var expected = [{ email: expectedParams }];
+      var user = { userGuid: 'user-guid' }
 
-    });
-  });
+      let spy = setupViewSpy(sandbox)
+      sandbox.spy(userActions, 'receivedInviteStatus');
+      sandbox.spy(userActions, 'createInviteNotification');
+      sandbox.stub(userActions, 'createUserAndAssociate').returns(Promise.resolve());
+      sandbox.stub(cfApi, 'fetchUser').returns(Promise.resolve(user));
+      userActions.createUserInvite(expectedParams);
 
-  describe('receivedInviteStatus()', function() {
-    it('should', function() {
-
+      assertAction(spy, userActionTypes.USER_INVITE_TRIGGER, expected);
     });
   });
 
