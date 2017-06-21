@@ -51,7 +51,7 @@ export default class UsersInvite extends React.Component {
 
   _onValidForm(errs, values) {
     const email = values.email.value;
-    if (isValidEmail(email)) {
+    if (this.validateEmail(email, 'email') === null) {
       userActions.createUserInvite(email);
     }
   }
