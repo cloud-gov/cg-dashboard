@@ -229,15 +229,15 @@ describe('userActions', function() {
       // nice if the stores were not global singletons or if there was a way to
       // register our own store for the test.
       sandbox.stub(UserStore, 'get').returns('org_user');
-      userActions.createInviteNotification(verified, email).then(done, done.fail);;
+      verified = false;
+      userActions.createInviteNotification(verified, email);
     });
 
-    it('should dispatch a view event of type create invite notification with true', function(done) {
+    it('should dispatch a view event of type create invite notification with true', function() {
       description =   'There was no cloud.gov account found for this@that.com or the '+
                       'user has not verified their account by logging in.They have been '+
                       'sent an email cloud.gov invitation. Their account has been '+
                       'associated to this space and their space roles can be controlled below.';
-      verified = false;
       expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
         type: userActionTypes.USER_INVITE_STATUS_DISPLAYED,
         noticeType,

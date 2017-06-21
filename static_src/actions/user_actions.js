@@ -193,7 +193,14 @@ const userActions = {
     let description;
     const noticeType = 'finish';
     const currentViewedType = UserStore.currentlyViewedType;
-    const viewTypeNouns = UserStore.viewTypeNouns;
+    const viewTypeNouns = {
+      org_users: {
+        singular: 'organization'
+      },
+      space_users: {
+        singular: 'space'
+      }
+    };
 
     if (verified) {
       description = `The account for ${email} is now associated to this ` +
@@ -212,8 +219,6 @@ const userActions = {
       noticeType,
       description
     });
-
-    return Promise.resolve(description);
   },
 
   userInviteError(err, contextualMessage) {
