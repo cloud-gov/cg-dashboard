@@ -11,15 +11,6 @@ import { userActionTypes } from '../constants';
 import UserStore from '../stores/user_store';
 import OrgStore from '../stores/org_store';
 
-const VIEW_TYPE_NOUNS = {
-  org_users: {
-    singular: 'organization'
-  },
-  space_users: {
-    singular: 'space'
-  }
-};
-
 const userActions = {
   fetchOrgUsers(orgGuid) {
     AppDispatcher.handleViewAction({
@@ -202,18 +193,18 @@ const userActions = {
     let description;
     const noticeType = 'finish';
     const currentViewedType = UserStore.currentlyViewedType;
-    const viewTypeNoun = VIEW_TYPE_NOUNS;
+    const viewTypeNouns = UserStore.viewTypeNouns;
 
     if (verified) {
       description = `The account for ${email} is now associated to this ` +
-        `${viewTypeNoun[currentViewedType].singular}. Control their ` +
-        `${viewTypeNoun[currentViewedType].singular} roles below.`;
+        `${viewTypeNouns[currentViewedType].singular}. Control their ` +
+        `${viewTypeNouns[currentViewedType].singular} roles below.`;
     } else {
       description = `There was no cloud.gov account found for ${email} ` +
         'or the user has not verified their account by logging in.' +
         'They have been sent an email cloud.gov invitation. Their account ' +
-        `has been associated to this ${viewTypeNoun[currentViewedType].singular}` +
-        ` and their ${viewTypeNoun[currentViewedType].singular}` +
+        `has been associated to this ${viewTypeNouns[currentViewedType].singular}` +
+        ` and their ${viewTypeNouns[currentViewedType].singular}` +
         ' roles can be controlled below.';
     }
     AppDispatcher.handleViewAction({

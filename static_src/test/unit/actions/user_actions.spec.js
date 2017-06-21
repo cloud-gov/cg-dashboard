@@ -175,18 +175,44 @@ describe('userActions', function() {
 
   describe('createUserInvite()', function() {
     it(`should dispatch a view event to process a email invite request`, function() {
-      var expectedParams = 'this@there.com';
-      var expected = [{ email: expectedParams }];
-      var user = { userGuid: 'user-guid' }
+      var email = 'this@there.com';
+      var expected = { email: email };
+      var user = { userGuid: 'user-guid' };
 
-      let spy = setupViewSpy(sandbox)
+      let spy = setupViewSpy(sandbox);
+      sandbox.stub(uaaApi, 'inviteUaaUser').returns(Promise.resolve(user));
       sandbox.spy(userActions, 'receivedInviteStatus');
-      sandbox.spy(userActions, 'createInviteNotification');
-      sandbox.stub(userActions, 'createUserAndAssociate').returns(Promise.resolve());
-      sandbox.stub(cfApi, 'fetchUser').returns(Promise.resolve(user));
-      userActions.createUserInvite(expectedParams);
+      userActions.createUserInvite(email);
 
       assertAction(spy, userActionTypes.USER_INVITE_TRIGGER, expected);
+    });
+  });
+
+  describe('receivedInviteStatus()', function() {
+    it('should', function() {
+      var invite = { userGuid: "user-guid" };
+      var user = { userGuid: "user-guid" };
+      var email = 'this@there.com';
+      var verified = true;
+      var expected = { email, verified };
+
+      sandbox.spy(userActions, 'receivedInviteStatus');
+      sandbox.stub(uaaApi, 'inviteUaaUser').returns(Promise.resolve(invite));
+      let spy = setupViewSpy(sandbox)
+
+      userActions.receivedInviteStatus(invite, email);
+
+      assertAction(spy, userActionTypes.USER_INVITE_STATUS_UPDATED);
+    });
+  });
+
+  describe('clearInviteNotifications()', function() {
+    it('should dispatch a view event of type clear invite notification', function() {
+      let spy = setupViewSpy(sandbox);
+
+      userActions.clearInviteNotifications();
+
+      assertAction(spy, userActionTypes.USER_INVITE_STATUS_DISMISSED);
     });
   });
 
