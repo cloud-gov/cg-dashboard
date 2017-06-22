@@ -65,7 +65,7 @@ describe('User roles', function () {
     it('should not have the user invite panel', function () {
       browser.url(urlOrgXSpaceXX);
 
-      browser.waitForExist('.test-users-invite');
+      browser.waitForExist('.test-users');
       userInviteElement = new UserInviteElement(browser,
         browser.element(UserInviteElement.primarySelector));
 
