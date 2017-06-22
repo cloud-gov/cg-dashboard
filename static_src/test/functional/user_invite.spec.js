@@ -47,7 +47,10 @@ describe('User roles', function () {
       const invalidEmail = '123';
       userInviteElement.inputToInviteForm(invalidEmail);
       userInviteElement.submitInviteForm();
-      expect(userInviteElement.getErrorMessage()).toMatch(invalidEmail);
+      const topError = 'There were errors submitting the form.';
+      const bottomError = 'The value entered in email is not a valid e-mail address';
+      expect(userInviteElement.getErrorMessage()).toMatch(topError);
+      expect(userInviteElement.getValidatorMessage()).toMatch(bottomError);
     });
   });
 });

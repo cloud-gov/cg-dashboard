@@ -12,7 +12,8 @@ const selectors = {
   primary: userInvite,
   name: '.test-users_invite_name',
   submit: '[type="submit"]',
-  error: '.error_message'
+  error: '.error_message',
+  validator: '.error span.error_message'
 };
 
 export default class UserInviteElement extends BaseElement {
@@ -51,6 +52,14 @@ export default class UserInviteElement extends BaseElement {
 
   getErrorMessage() {
     const errorEl = this.element(selectors.error);
+    if (errorEl) {
+      return errorEl.getText();
+    }
+    return null;
+  }
+
+  getValidatorMessage() {
+    const errorEl = this.element(selectors.validator);
     if (errorEl) {
       return errorEl.getText();
     }

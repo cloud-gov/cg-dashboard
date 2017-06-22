@@ -12,7 +12,7 @@ import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
 import userActions from '../actions/user_actions';
 
-import { validateString } from '../util/validators';
+import { validateEmail } from '../util/validators';
 
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -45,12 +45,15 @@ export default class UsersInvite extends React.Component {
 
     this.styler = createStyler(style);
 
-    this.validateString = validateString().bind(this);
+    this.validateEmail = validateEmail().bind(this);
     this._onValidForm = this._onValidForm.bind(this);
   }
 
   _onValidForm(errs, values) {
-    userActions.createUserInvite(values.email.value);
+    const email = values.email.value;
+    if (this.validateEmail(email, 'email') === null) {
+      userActions.createUserInvite(email);
+    }
   }
 
   get errorMessage() {
@@ -85,7 +88,7 @@ export default class UsersInvite extends React.Component {
               classes={ ['test-users_invite_name'] }
               label="User's email"
               name="email"
-              validator={ this.validateString }
+              validator={ this.validateEmail }
             />
             <Action
               label="submit"
