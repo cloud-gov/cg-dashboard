@@ -11,6 +11,7 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UsersInvite from './users_invite.jsx';
+import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
 
 const SPACE_NAME = 'space_users';
@@ -24,27 +25,34 @@ function stateSetter() {
 
   let users = [];
   let currentUserAccess = false;
+  const inviteDisabled = UserStore.inviteDisabled();
+  let entityGuid;
 
   if (currentType === SPACE_NAME) {
     users = UserStore.getAllInSpace(currentSpaceGuid);
+    entityGuid = currentSpaceGuid;
     currentUserAccess = UserStore.hasRole(currentUser.guid, currentSpaceGuid,
                                           'space_manager');
   } else {
     users = UserStore.getAllInOrg(currentOrgGuid);
+    entityGuid = currentOrgGuid;
     currentUserAccess = UserStore.hasRole(currentUser.guid, currentOrgGuid,
                                           'org_manager');
   }
 
   return {
     error: UserStore.getError(),
+    inviteDisabled,
     currentUserAccess,
     currentOrgGuid,
     currentSpaceGuid,
+    entityGuid,
     currentType,
     saving: UserStore.saving,
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users,
+    inviteNotices: UserStore._inviteNotification,
     userInviteError: UserStore.getInviteError()
   };
 }
@@ -69,8 +77,25 @@ export default class Users extends React.Component {
     UserStore.removeChangeListener(this._onChange);
   }
 
-  _onChange() {
-    this.setState(stateSetter());
+  onNotificationDismiss(ev) {
+    ev.preventDefault();
+    userActions.clearInviteNotifications();
+  }
+
+  handleAddPermissions(roleKey, apiKey, userGuid) {
+    userActions.addUserRoles(roleKey,
+                                apiKey,
+                                userGuid,
+                                this.entityGuid,
+                                this.entityType);
+  }
+
+  handleRemovePermissions(roleKey, apiKey, userGuid) {
+    userActions.deleteUserRoles(roleKey,
+                                apiKey,
+                                userGuid,
+                                this.entityGuid,
+                                this.entityType);
   }
 
   handleRemove(userGuid, ev) {
@@ -78,28 +103,18 @@ export default class Users extends React.Component {
     userActions.deleteUser(userGuid, this.state.currentOrgGuid);
   }
 
-  handleAddPermissions(roleKey, userGuid) {
-    userActions.addUserRoles(roleKey,
-                                userGuid,
-                                this.resourceGuid,
-                                this.resourceType);
-  }
-
-  handleRemovePermissions(roleKey, userGuid) {
-    userActions.deleteUserRoles(roleKey,
-                                userGuid,
-                                this.resourceGuid,
-                                this.resourceType);
-  }
-
-  get resourceType() {
+  get entityType() {
     return this.state.currentType === ORG_NAME ? 'org' : 'space';
   }
 
-  get resourceGuid() {
-    const resourceGuid = this.state.currentType === ORG_NAME ?
+  get entityGuid() {
+    const entityGuid = this.state.currentType === ORG_NAME ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
-    return resourceGuid;
+    return entityGuid;
+  }
+
+  _onChange() {
+    this.setState(stateSetter());
   }
 
   render() {
@@ -111,12 +126,13 @@ export default class Users extends React.Component {
     }
 
     let content = (<UserList
-      initialUsers={ this.state.users }
-      initialUserType= { this.state.currentType }
-      initialCurrentUserAccess={ this.state.currentUserAccess }
-      initialEmpty={ this.state.empty }
-      initialLoading={ this.state.loading }
-      initialSaving={ this.state.saving }
+      users={ this.state.users }
+      userType= { this.state.currentType }
+      entityGuid={ this.state.entityGuid }
+      currentUserAccess={ this.state.currentUserAccess }
+      empty={ this.state.empty }
+      loading={ this.state.loading }
+      saving={ this.state.saving }
       onRemove={ removeHandler }
       onAddPermissions={ this.handleAddPermissions }
       onRemovePermissions={ this.handleRemovePermissions }
@@ -130,21 +146,39 @@ export default class Users extends React.Component {
       );
     }
 
+    let notification;
+
+    if (this.state.inviteNotices.description) {
+      const notice = this.state.inviteNotices;
+      notification = (
+        <Notification
+          message={ notice.description }
+          actions={ [] }
+          onDismiss={ this.onNotificationDismiss }
+          status="finish"
+        />
+      );
+    }
+
     return (
       <div className="test-users">
         { errorMessage }
+        <UsersInvite
+          inviteDisabled={ this.state.inviteDisabled }
+          currentUserAccess={ this.state.currentUserAccess }
+          error={ this.state.userInviteError }
+        />
+        { notification }
         <div>
           <div>
             { content }
           </div>
         </div>
-        <UsersInvite error={ this.state.userInviteError } />
       </div>
     );
   }
-
 }
 
-Users.propTypes = { };
+Users.propTypes = {};
 
-Users.defaultProps = { };
+Users.defaultProps = {};

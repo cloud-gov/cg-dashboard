@@ -19,29 +19,37 @@ import { config } from 'skin';
 import formatDateTime from '../util/format_date';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-function stateSetter(props) {
-  return {
-    users: props.initialUsers,
-    userType: props.initialUserType,
-    currentUserAccess: props.initialCurrentUserAccess,
-    empty: props.initialEmpty,
-    saving: props.initialSaving,
-    savingText: props.initialSavingText,
-    loading: props.initialLoading
-  };
-}
+const propTypes = {
+  users: React.PropTypes.array,
+  userType: React.PropTypes.string,
+  entityGuid: React.PropTypes.string,
+  currentUserAccess: React.PropTypes.bool,
+  empty: React.PropTypes.bool,
+  loading: React.PropTypes.bool,
+  saving: React.PropTypes.bool,
+  savingText: React.PropTypes.string,
+  // Set to a function when there should be a remove button.
+  onRemove: React.PropTypes.func,
+  onRemovePermissions: React.PropTypes.func,
+  onAddPermissions: React.PropTypes.func
+};
+
+const defaultProps = {
+  users: [],
+  userType: 'space_users',
+  currentUserAccess: false,
+  saving: false,
+  savingText: '',
+  empty: false,
+  loading: false
+};
 
 export default class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = stateSetter(props);
     this.styler = createStyler(style);
     this._handleDelete = this._handleDelete.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState(stateSetter(nextProps));
   }
 
   _handleDelete(userGuid, ev) {
@@ -63,7 +71,7 @@ export default class UserList extends React.Component {
   }
 
   get userTypePretty() {
-    return (this.state.userType === 'org_users') ? 'Organization' : 'Space';
+    return (this.props.userType === 'org_users') ? 'Organization' : 'Space';
   }
 
   get documentation() {
@@ -97,7 +105,7 @@ export default class UserList extends React.Component {
     let content;
     const callout = `You are the only user in this ${this.userTypePretty.toLowerCase()}`;
 
-    if (this.state.userType === 'org_users') {
+    if (this.props.userType === 'org_users') {
       const readMore = config.docs.invite_user &&
         <a href={ config.docs.invite_user }>Read more about inviting new users.</a>
 
@@ -125,25 +133,25 @@ export default class UserList extends React.Component {
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
 
-    if (this.state.saving) {
+    if (this.props.saving) {
       saving = <Loading text="Saving" style="globalSaving" />;
     }
 
-    if (this.state.empty) {
+    if (this.props.empty) {
       content = this.emptyState;
-    } else if (this.state.users.length === 1) {
+    } else if (this.props.users.length === 1) {
       content = this.onlyOneState;
-    } else if (!this.state.loading && this.state.users.length) {
+    } else if (!this.props.loading && this.props.users.length) {
       content = (
       <div className="test-user_list">
         { saving }
         { this.documentation }
         <ComplexList>
-          { this.state.users.map((user) => {
+          { this.props.users.map((user) => {
             let actions;
             if (this.props.onRemove) {
               let button = <span></span>;
-              if (this.state.currentUserAccess) {
+              if (this.props.currentUserAccess) {
                 button = (
                   <Action
                     style="base"
@@ -164,10 +172,11 @@ export default class UserList extends React.Component {
                 <ElasticLineItem>{ user.username }</ElasticLineItem>
                 <ElasticLineItem key={ `${user.guid}-role` } align="end">
                   <UserRoleListControl
-                    initialUserType={ this.state.userType }
-                    initialCurrentUserAccess={ this.state.currentUserAccess }
+                    userType={ this.props.userType }
+                    currentUserAccess={ this.props.currentUserAccess }
                     onAddPermissions={ this.props.onAddPermissions }
                     onRemovePermissions={ this.props.onRemovePermissions }
+                    entityGuid={ this.props.entityGuid }
                     user={ user }
                   />
                 </ElasticLineItem>
@@ -186,29 +195,7 @@ export default class UserList extends React.Component {
     </div>
     );
   }
-
 }
 
-UserList.propTypes = {
-  initialUsers: React.PropTypes.array,
-  initialUserType: React.PropTypes.string,
-  initialCurrentUserAccess: React.PropTypes.bool,
-  initialEmpty: React.PropTypes.bool,
-  initialLoading: React.PropTypes.bool,
-  initialSavingText: React.PropTypes.string,
-  initialSaving: React.PropTypes.bool,
-  // Set to a function when there should be a remove button.
-  onRemove: React.PropTypes.func,
-  onRemovePermissions: React.PropTypes.func,
-  onAddPermissions: React.PropTypes.func
-};
-
-UserList.defaultProps = {
-  initialUsers: [],
-  initialUserType: 'space_users',
-  initialCurrentUserAccess: false,
-  initialEmpty: false,
-  initialSaving: false,
-  initialSavingText: "",
-  initialLoading: false
-};
+UserList.propTypes = propTypes;
+UserList.defaultProps = defaultProps;

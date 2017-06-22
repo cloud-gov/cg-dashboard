@@ -1,6 +1,51 @@
 import '../../global_setup.js';
 
-import { validateInteger } from '../../../util/validators';
+import { validateInteger, validateEmail } from '../../../util/validators';
+
+describe('validateEmail', function () {
+  it('returns a function', function () {
+    expect(typeof validateEmail()).toBe('function');
+  });
+
+  describe('given no options', function () {
+    let validator;
+    beforeEach(function () {
+      validator = validateEmail();
+    });
+
+    it('fails for empty', function () {
+      const result = validator();
+      expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
+    });
+  });
+
+  describe('given string', function () {
+    let validator;
+    beforeEach(function () {
+      validator = validateEmail();
+    });
+
+    it('fails for none emails string', function () {
+      const result = validator('domain');
+      expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
+    });
+
+    it('fails for none emails string@', function () {
+      const result = validator('domain@place');
+      expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
+    });
+
+    it('fails for none emails string@string', function () {
+      const result = validator('domain@place');
+      expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
+    });
+
+    it('succeeds for email', function () {
+      const result = validator('domain@place.com');
+      expect(result).toEqual(null);
+    });
+  });
+});
 
 describe('vaidateNumber', function () {
   it('returns a function', function () {

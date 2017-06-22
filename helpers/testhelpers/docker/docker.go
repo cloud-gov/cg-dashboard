@@ -12,7 +12,7 @@ import (
 
 // CreateTestRedis creates a actual redis instance with docker.
 // Useful for unit tests.
-func CreateTestRedis() (string, func()) {
+func CreateTestRedis() (string, func(), func(), func()) {
 	pool, err := dockertest.NewPool("")
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
@@ -31,7 +31,10 @@ func CreateTestRedis() (string, func()) {
 	}); err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
-	return "redis://" + hostnameAndPort, func() { pool.Purge(resource) }
+	return "redis://" + hostnameAndPort,
+		func() { pool.Purge(resource) },
+		func() { pool.Client.PauseContainer(resource.Container.ID) },
+		func() { pool.Client.UnpauseContainer(resource.Container.ID) }
 }
 
 // CreateTestMailCatcher creates a actual redis instance with docker.
@@ -48,6 +51,9 @@ func CreateTestMailCatcher() (string, string, string, func()) {
 	}
 	u, _ := url.Parse(pool.Client.Endpoint())
 	hostname := u.Hostname()
+	if hostname == "" {
+		hostname = "localhost"
+	}
 	if err = pool.Retry(func() error {
 		_, dialErr := redis.Dial("tcp", hostname+":"+resource.GetPort("25/tcp"))
 

@@ -84,6 +84,7 @@ describe('User roles', function () {
         });
 
         it('verify org Y manager cannot modify org X page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
         });
       });
@@ -99,7 +100,20 @@ describe('User roles', function () {
         });
 
         it('verify org Y manager can modify org Y page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
+        });
+
+        it('should give manager X all the permissions', function () {
+          expect(userRoleElement.toggleOrgManagerAccess(guidManagerOrgX, true)).toBe(true);
+          expect(userRoleElement.toggleBillingManagerAccess(guidManagerOrgX, true)).toBe(true);
+          expect(userRoleElement.toggleOrgAuditorAccess(guidManagerOrgX, true)).toBe(true);
+        });
+
+        it('should take all permissions from manager X', function () {
+          expect(userRoleElement.toggleOrgManagerAccess(guidManagerOrgX, false)).toBe(true);
+          expect(userRoleElement.toggleBillingManagerAccess(guidManagerOrgX, false)).toBe(true);
+          expect(userRoleElement.toggleOrgAuditorAccess(guidManagerOrgX, false)).toBe(true);
         });
       });
     });
@@ -109,6 +123,7 @@ describe('User roles', function () {
         // sets cookie to org X manager
         cookieValue = cookieManagerOrgX;
       });
+
       describe('shouldn\'t have permission to edit fields on org Y pages', function () {
         it('should set url to org Y', function () {
           browser.url(urlOrgY);
@@ -120,6 +135,7 @@ describe('User roles', function () {
         });
 
         it('verify org X manager cannot modify org Y page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
         });
       });
@@ -135,7 +151,20 @@ describe('User roles', function () {
         });
 
         it('verify org X manager can modify org X page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
+        });
+
+        it('should give manager Y all the permissions', function () {
+          expect(userRoleElement.toggleOrgManagerAccess(guidManagerOrgY, true)).toBe(true);
+          expect(userRoleElement.toggleBillingManagerAccess(guidManagerOrgY, true)).toBe(true);
+          expect(userRoleElement.toggleOrgAuditorAccess(guidManagerOrgY, true)).toBe(true);
+        });
+
+        it('should take all permissions from manager Y', function () {
+          expect(userRoleElement.toggleOrgManagerAccess(guidManagerOrgY, false)).toBe(true);
+          expect(userRoleElement.toggleBillingManagerAccess(guidManagerOrgY, false)).toBe(true);
+          expect(userRoleElement.toggleOrgAuditorAccess(guidManagerOrgY, false)).toBe(true);
         });
       });
     });
@@ -210,6 +239,7 @@ describe('User roles', function () {
         });
 
         it('verify space manager org X space XX cannot modify space YY org X page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
         });
       });
@@ -225,7 +255,28 @@ describe('User roles', function () {
         });
 
         it('verify space manager org X space XX can modify space XX org X page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
+        });
+
+        it('should give all the space permissions for org X space XX to the user ' +
+        'of the other space (org X space YY)', function () {
+          expect(userRoleElement.toggleSpaceManagerAccess(guidManagerOrgXSpaceYY, true))
+            .toBe(true);
+          expect(userRoleElement.toggleSpaceDeveloperAccess(guidManagerOrgXSpaceYY, true))
+            .toBe(true);
+          expect(userRoleElement.toggleSpaceAuditorAccess(guidManagerOrgXSpaceYY, true))
+            .toBe(true);
+        });
+
+        it('should take all space permissions from the the user of the other space ' +
+        '(org X space YY)', function () {
+          expect(userRoleElement.toggleSpaceManagerAccess(guidManagerOrgXSpaceYY, false))
+            .toBe(true);
+          expect(userRoleElement.toggleSpaceDeveloperAccess(guidManagerOrgXSpaceYY, false))
+            .toBe(true);
+          expect(userRoleElement.toggleSpaceAuditorAccess(guidManagerOrgXSpaceYY, false))
+            .toBe(true);
         });
       });
     });
@@ -235,6 +286,7 @@ describe('User roles', function () {
         // sets cookie to space manager YY
         cookieValue = cookieManagerOrgXSpaceYY;
       });
+
       describe('shouldn\'t have permission to edit fields on org X space XX pages', function () {
         it('should set url to org Y', function () {
           browser.url(urlOrgXSpaceXX);
@@ -246,6 +298,7 @@ describe('User roles', function () {
         });
 
         it('verify org X manager cannot modify org Y page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
         });
       });
@@ -262,7 +315,28 @@ describe('User roles', function () {
         });
 
         it('verify space manager org X space YY can modify space YY org X page', function () {
+          browser.waitForExist('.test-user-role-control');
           expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
+        });
+
+        it('should give all the space permissions for org X space YY to the user ' +
+        'of the other space (org X space XX)', function () {
+          expect(userRoleElement.toggleSpaceManagerAccess(guidManagerOrgXSpaceXX, true))
+            .toBe(true);
+          expect(userRoleElement.toggleSpaceDeveloperAccess(guidManagerOrgXSpaceXX, true))
+            .toBe(true);
+          expect(userRoleElement.toggleSpaceAuditorAccess(guidManagerOrgXSpaceXX, true))
+            .toBe(true);
+        });
+
+        it('should take all space permissions from the the user of the other space ' +
+        '(org X space XX)', function () {
+          expect(userRoleElement.toggleSpaceManagerAccess(guidManagerOrgXSpaceXX, false))
+            .toBe(true);
+          expect(userRoleElement.toggleSpaceDeveloperAccess(guidManagerOrgXSpaceXX, false))
+            .toBe(true);
+          expect(userRoleElement.toggleSpaceAuditorAccess(guidManagerOrgXSpaceXX, false))
+            .toBe(true);
         });
       });
     });

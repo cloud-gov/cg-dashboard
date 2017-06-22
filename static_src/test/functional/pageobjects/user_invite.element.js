@@ -6,42 +6,65 @@ import BaseElement from './base.element';
 // Represents a UserInviteElement for making assertions against. This makes it
 // easier to abstract some of the webdriver details from the UI component.
 
-// TODO attach to class as static property
+const userInvite = '.test-users-invite';
+
+const selectors = {
+  primary: userInvite,
+  name: '.test-users_invite_name',
+  submit: '[type="submit"]',
+  error: '.error_message',
+  validator: '.error span.error_message'
+};
 
 export default class UserInviteElement extends BaseElement {
   inputToInviteForm(input) {
-    return this.element('.test-users_invite_name').setValue(input);
+    browser.waitForExist(`${selectors.primary} ${selectors.name}`);
+    return this.element(selectors.name).setValue(input);
   }
 
   getInviteFormValue() {
-    return this.element('.test-users_invite_name').getValue();
+    browser.waitForExist(`${selectors.primary} ${selectors.name}`);
+    return this.element(selectors.name).getValue();
   }
 
   submitInviteForm() {
+    browser.waitForExist(`${selectors.primary} ${selectors.submit}`);
     const existingUserCount = this.countNumberOfUsers();
-    this.element('[type="submit"]').click();
+    this.element(selectors.submit).click();
     browser.waitUntil(() =>
       this.countNumberOfUsers() > existingUserCount ||
-      browser.isExisting('.test-users-invite .error_message')
+      browser.isExisting(`${selectors.primary} ${selectors.error}`)
     , 10000);
   }
 
   // TODO move this to user list element.
   countNumberOfUsers() {
+    browser.waitForExist('.test-users .complex_list-item');
     return browser.elements('.test-users .complex_list-item').value.length;
   }
 
   // TODO move this to user list element.
   getUserByIndex(idx) {
-    return browser.elements(`.test-users .complex_list-item:nth-child(${idx})`)
-      .value[0];
+    const sel = `.test-users .complex_list-item:nth-child(${idx})`;
+    browser.waitForExist(sel);
+    return browser.elements(sel).value[0];
   }
 
   getErrorMessage() {
-    const errorEl = this.element('.error_message');
+    const errorEl = this.element(selectors.error);
+    if (errorEl) {
+      return errorEl.getText();
+    }
+    return null;
+  }
+
+  getValidatorMessage() {
+    const errorEl = this.element(selectors.validator);
     if (errorEl) {
       return errorEl.getText();
     }
     return null;
   }
 }
+
+UserInviteElement.primarySelector = userInvite;

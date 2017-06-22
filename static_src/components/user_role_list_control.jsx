@@ -8,71 +8,89 @@ import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import UserRoleControl from './user_role_control.jsx';
 
+// roleMapping is a centralized relation of roles to machine-readable fields.
+// The root contains which level of users are we referring to.
+// Currently in CF, there are only two levels. space_user and org_users.
+// Each root node contains an array objects to specify various fields.
+// Each object will contain the following 3 fields:
+//
+// 1) key
+// 'key' is useful for two reasons. One: When the app checks for the roles in the
+// space via https://apidocs.cloudfoundry.org/263/spaces/retrieving_the_roles_of_all_users_in_the_space.html
+// or in the
+// org via https://apidocs.cloudfoundry.org/263/organizations/retrieving_the_roles_of_all_users_in_the_organization.html
+// it will compare the roles returned with the value of 'key'.
+// the second reason is because 'key is used in the rendering of the user list.
+// the HTML element ID set as the 'key' + 'userguid'.
+//
+// 2) apiKey
+// 'apiKey' is needed because the API to associate/dissociate roles does not use
+// the same key as 'key'.
+// For example to associate a developer to a space:
+// https://apidocs.cloudfoundry.org/263/spaces/associate_developer_with_the_space.html
+// It uses 'developers' instead of 'space_developer'.
+//
+// 3) label
+// 'label' is a human-readable version of the role.
 const roleMapping = {
   space_users: [
-    { key: 'space_developer', label: 'Space Developer' },
-    { key: 'space_manager', label: 'Space Manager' },
-    { key: 'space_auditor', label: 'Space Auditor' }
+    { key: 'space_developer', apiKey: 'developers', label: 'Space Developer' },
+    { key: 'space_manager', apiKey: 'managers', label: 'Space Manager' },
+    { key: 'space_auditor', apiKey: 'auditors', label: 'Space Auditor' }
   ],
   org_users: [
-    { key: 'org_manager', label: 'Org Manager' },
-    { key: 'billing_manager', label: 'Billing Manager' },
-    { key: 'org_auditor', label: 'Org Auditor' }
+    { key: 'org_manager', apiKey: 'managers', label: 'Org Manager' },
+    { key: 'billing_manager', apiKey: 'billing_managers', label: 'Billing Manager' },
+    { key: 'org_auditor', apiKey: 'auditors', label: 'Org Auditor' }
   ]
 
 };
 
-const roleToResource = {
-  org_manager: 'managers',
-  billing_manager: 'billing_managers',
-  org_auditor: 'auditors',
-  space_developer: 'developers',
-  space_manager: 'managers',
-  space_auditor: 'auditors'
+const propTypes = {
+  user: React.PropTypes.object.isRequired,
+  userType: React.PropTypes.string,
+  currentUserAccess: React.PropTypes.bool,
+  entityGuid: React.PropTypes.string,
+  onRemovePermissions: React.PropTypes.func,
+  onAddPermissions: React.PropTypes.func,
+};
+
+const defaultProps = {
+  userType: 'space_users',
+  currentUserAccess: false,
+  onRemovePermissions: function defaultRemove() { },
+  onAddPermissions: function defaultAdd() { }
 };
 
 export default class UserRoleListControl extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      user: props.user,
-      userType: props.initialUserType,
-      currentUserAccess: props.initialCurrentUserAccess
-    };
     this._onChange = this._onChange.bind(this);
     this.checkRole = this.checkRole.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      user: nextProps.user,
-      userType: nextProps.initialUserType,
-      currentUserAccess: nextProps.initialCurrentUserAccess
-    });
-  }
-
   checkRole(roleKey) {
-    return (this.roles.indexOf(roleKey) > -1);
+    return (this.roles().indexOf(roleKey) > -1);
   }
 
-  _onChange(roleKey, checked) {
+  _onChange(roleKey, apiKey, checked) {
     const handler = (!checked) ? this.props.onRemovePermissions :
       this.props.onAddPermissions;
-    const resource = roleToResource[roleKey];
 
-    handler(resource, this.props.user.guid);
+    handler(roleKey, apiKey, this.props.user.guid);
   }
 
-  get roles() {
-    const rolesOnType = (this.state.userType === 'space_users') ?
-      this.props.user.space_roles :
-      this.props.user.organization_roles;
-    return rolesOnType || [];
+  roles() {
+    const roles = this.props.user.roles;
+    if (!roles) return [];
+    return roles ?
+      (roles[this.props.entityGuid] || []) :
+      []
   }
 
   get roleMap() {
-    return roleMapping[this.state.userType];
+    return roleMapping[this.props.userType];
   }
 
 
@@ -86,8 +104,8 @@ export default class UserRoleListControl extends React.Component {
               roleName={ role.label }
               roleKey={ role.key }
               initialValue={ this.checkRole(role.key) }
-              initialEnableControl={ this.state.currentUserAccess }
-              onChange={ this._onChange.bind(this, role.key) }
+              initialEnableControl={ this.props.currentUserAccess }
+              onChange={ this._onChange.bind(this, role.key, role.apiKey) }
               userId={ this.props.user.guid }
             />
           </ElasticLineItem>
@@ -97,16 +115,5 @@ export default class UserRoleListControl extends React.Component {
     );
   }
 }
-UserRoleListControl.propTypes = {
-  user: React.PropTypes.object.isRequired,
-  initialUserType: React.PropTypes.string,
-  initialCurrentUserAccess: React.PropTypes.bool,
-  onRemovePermissions: React.PropTypes.func,
-  onAddPermissions: React.PropTypes.func,
-};
-UserRoleListControl.defaultProps = {
-  initialUserType: 'space_users',
-  initialCurrentUserAccess: false,
-  onRemovePermissions: function defaultRemove() { },
-  onAddPermissions: function defaultAdd() { }
-};
+UserRoleListControl.propTypes = propTypes;
+UserRoleListControl.defaultProps = defaultProps;

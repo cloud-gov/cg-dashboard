@@ -95,7 +95,7 @@ export default class ActivityLog extends React.Component {
     let content = <div></div>;
 
     if (this.state.empty && this.state.hasErrors) {
-      content = <h5 className="test-none_message">An error occured fetching recent activity</h5>;
+      content = <h5 className="test-none_message">An error occurred fetching recent activity</h5>;
     } else if (this.state.empty) {
       content = <h5 className="test-none_message">No recent activity</h5>;
     } else {

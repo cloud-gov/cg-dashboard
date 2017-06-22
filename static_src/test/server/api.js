@@ -21,7 +21,7 @@ var spaceQuotaDefinitions = require('./fixtures/space_quota_definitions');
 var spaceUserRoles = require('./fixtures/space_user_roles.js');
 var uaaRoles = require('./fixtures/uaa_roles.js');
 var userOrganizations = require('./fixtures/user_organizations.js');
-var userCreateResponses = require('./fixtures/user_create_responses.js');
+var userAssociationResponses = require('./fixtures/user_association_responses.js');
 var userInviteResponses = require('./fixtures/user_invite_responses.js');
 var userRoles = require('./fixtures/user_roles.js');
 var userRoleOrgAddNewRole = require('./fixtures/user_role_org_add_new_role.js');
@@ -94,7 +94,7 @@ module.exports = function api(smocks) {
     path: '/uaa/invite/users',
     handler: function(req, reply) {
       let userInviteResponse;
-      const email = req.payload.emails[0];
+      const email = req.payload.email;
       if (email && userInviteResponses[email]){
         userInviteResponse = userInviteResponses[email];
         reply(userInviteResponse);
@@ -104,37 +104,6 @@ module.exports = function api(smocks) {
         userInviteResponse = userInviteResponses['default'];
         reply(userInviteResponse);
       }
-    }
-  });
-
-  smocks.route({
-    id: 'cf-users-create',
-    method: 'POST',
-    label: 'CF user invite create',
-    path: `${BASE_URL}/users`,
-    handler: function(req, reply) {
-      let userCreateResponse;
-      const guid = req.payload.guid;
-      if ( guid && userCreateResponses[guid] ){
-        userCreateResponse = userCreateResponses[guid];
-      } else {
-        userCreateResponse = userCreateResponses['default'];
-      }
-      reply(userCreateResponse);
-    }
-  });
-
-  smocks.route({
-    id: 'uaa-users-invite-send',
-    method: 'POST',
-    label: 'UAA user invite send email',
-    path: '/uaa/invite/email',
-    handler: function(req, reply) {
-      let userInviteResponse;
-      const inviteUrl = req.payload.inviteUrl;
-      const email = req.payload.email;
-      userInviteResponse = { "status": "success", "email": email, "invite": inviteUrl };
-      reply(userInviteResponse);
     }
   });
 
@@ -268,10 +237,29 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/users/{guid}`,
     handler: function (req, reply) {
       const guid = req.params.guid;
-      const user = organizationUsers.find((orgUser) =>
+      let user = organizationUsers.find((orgUser) =>
         orgUser.metadata.guid === guid);
+      if (!user) {
+        for (const userName in userInviteResponses) {
+          const invite = userInviteResponses[userName];
+          if (invite.userGuid === guid) {
+            user = {
+              metadata: {
+                guid: invite.userGuid
+              },
+              entity: {
+                username: userName
+              }
+            }
+          }
+        }
+      }
 
-      reply(SingleResponse(user));
+      if (user) {
+        reply(SingleResponse(user));
+      } else {
+        reply({ message: 'User not found'}).code(400);
+      }
     }
   });
 
@@ -293,14 +281,14 @@ module.exports = function api(smocks) {
     id: 'user-associate-to-organizations',
     label: 'User associate to organization',
     method: 'PUT',
-    path: `${BASE_URL}/users/{guid}/organizations/{orgGuid}`,
+    path: `${BASE_URL}/organizations/{orgGuid}/users/{guid}`,
     handler: function(req, reply) {
       let userCreateResponse;
       const guid = req.params.guid;
-      if ( guid && userCreateResponses[guid] ){
-        userCreateResponse = userCreateResponses[guid];
+      if ( guid && userAssociationResponses[guid] ){
+        userCreateResponse = userAssociationResponses[guid];
       } else {
-        userCreateResponse = userCreateResponses['default'];
+        userCreateResponse = userAssociationResponses['default'];
       }
       reply(userCreateResponse);
     }
@@ -343,9 +331,18 @@ module.exports = function api(smocks) {
     path: `${BASE_URL}/organizations/{orgGuid}/{role}/{userGuid}`,
     handler: function (req, reply) {
       const orgGuid = req.params.orgGuid;
+      const role = req.params.role;
       const user = userRoleOrgAddNewRole(orgGuid);
-
-      reply(SingleResponse(user));
+      switch (role) {
+        case 'managers':
+        case 'auditors':
+        case 'billing_managers':
+        case 'users':
+          reply(SingleResponse(user));
+          break;
+        default:
+          reply().code(500);
+      }
     }
   });
 
@@ -355,7 +352,17 @@ module.exports = function api(smocks) {
     method: 'DELETE',
     path: `${BASE_URL}/organizations/{orgGuid}/{role}/{userGuid}`,
     handler: function (req, reply) {
-      reply(SingleResponse({}));
+      const role = req.params.role;
+      switch (role) {
+        case 'managers':
+        case 'auditors':
+        case 'billing_managers':
+        case 'users':
+          reply(SingleResponse({}));
+          break;
+        default:
+          reply().code(500);
+      }
     }
   });
 
@@ -447,6 +454,46 @@ module.exports = function api(smocks) {
         spaceResponseName = guid;
       }
       reply(MultiResponse(spaceUserRoles[spaceResponseName]));
+    }
+  });
+
+  smocks.route({
+    id: 'user-roles-space-add-new-role',
+    label: 'User roles Space Add New role',
+    method: 'PUT',
+    path: `${BASE_URL}/spaces/{spaceGuid}/{role}/{userGuid}`,
+    handler: function (req, reply) {
+      const role = req.params.role;
+      switch (role) {
+        case 'managers':
+        case 'auditors':
+        case 'developers':
+        case 'users':
+          reply(SingleResponse({}));
+          break;
+        default:
+          reply().code(500);
+      }
+    }
+  });
+
+  smocks.route({
+    id: 'user-roles-space-delete-role',
+    label: 'User roles Space Delete role',
+    method: 'DELETE',
+    path: `${BASE_URL}/spaces/{spaceGuid}/{role}/{userGuid}`,
+    handler: function (req, reply) {
+      const role = req.params.role;
+      switch (role) {
+        case 'managers':
+        case 'auditors':
+        case 'developers':
+        case 'users':
+          reply(SingleResponse({}));
+          break;
+        default:
+          reply().code(500);
+      }
     }
   });
 

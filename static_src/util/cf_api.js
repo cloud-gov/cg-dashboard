@@ -355,9 +355,9 @@ export default {
    *
    * @param {Number} spaceGuid - The guid of the space that the users belong to.
    */
-  fetchSpaceUsers(spaceGuid) {
+  fetchSpaceUserRoles(spaceGuid) {
     return this.fetchMany(`/spaces/${spaceGuid}/user_roles`,
-                          userActions.receivedSpaceUsers,
+                          userActions.receivedSpaceUserRoles,
                           spaceGuid);
   },
 
@@ -397,12 +397,12 @@ export default {
       /${userGuid}`);
   },
 
-  deleteOrgUserPermissions(userGuid, orgGuid, permissions) {
-    return http.delete(`${APIV}/organizations/${orgGuid}/${permissions}/${userGuid}`)
-      .then((res) =>
-        res.response
-      , (err) => {
-        userActions.errorRemoveUser(userGuid, err.data);
+  deleteOrgUserPermissions(userGuid, orgGuid, permissions, apiKey) {
+    return http.delete(`${APIV}/organizations/${orgGuid}/${apiKey}/${userGuid}`)
+      .then(() => {
+        userActions.deletedUserRoles(permissions, userGuid, orgGuid, 'organizations');
+      }, (err) => {
+        userActions.errorRemoveUser(userGuid, err.response.data);
       });
   },
 
@@ -414,9 +414,8 @@ export default {
 
   putSpaceUserPermissions(userGuid, spaceGuid, role) {
     return http.put(`${APIV}/spaces/${spaceGuid}/${role}/${userGuid}`)
-      .then((res) => res.response, () => {
-        // TODO figure out error action
-      });
+      .then((res) => res.response
+    );
   },
 
   postCreateNewUserWithGuid(userGuid) {
@@ -436,16 +435,18 @@ export default {
   },
 
   putAssociateUserToOrganization(userGuid, orgGuid) {
-    return http.put(`${APIV}/users/${userGuid}/organizations/${orgGuid}`)
+    return http.put(`${APIV}/organizations/${orgGuid}/users/${userGuid}`)
       .then((res) => this.formatSplitResponse(res.data));
   },
 
   // TODO refactor with org user permissions
-  deleteSpaceUserPermissions(userGuid, spaceGuid, role) {
-    return http.delete(`${APIV}/spaces/${spaceGuid}/${role}/${userGuid}`)
-      .then((res) => res.response, (err) => {
-        userActions.errorRemoveUser(userGuid, err.data);
-      });
+  deleteSpaceUserPermissions(userGuid, spaceGuid, role, apiKey) {
+    return http.delete(`${APIV}/spaces/${spaceGuid}/${apiKey}/${userGuid}`)
+    .then(() => {
+      userActions.deletedUserRoles(role, userGuid, spaceGuid, 'spaces');
+    }, (err) => {
+      userActions.errorRemoveUser(userGuid, err.response.data);
+    });
   },
 
   fetchServicePlan(servicePlanGuid) {

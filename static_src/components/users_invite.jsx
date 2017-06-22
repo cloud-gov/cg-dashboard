@@ -11,26 +11,49 @@ import FormStore from '../stores/form_store';
 import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
 import userActions from '../actions/user_actions';
-import { validateString } from '../util/validators';
+
+import { validateEmail } from '../util/validators';
+
+import createStyler from '../util/create_styler';
+import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
 
 const propTypes = {
+  inviteDisabled: React.PropTypes.bool,
+  currentUserAccess: React.PropTypes.bool,
   error: React.PropTypes.object
 };
-const defaultProps = {};
+const defaultProps = {
+  inviteDisabled: false,
+  currentUserAccess: false,
+  error: {}
+};
+
+function stateSetter(props) {
+  return {
+    error: props.error
+  };
+}
 
 export default class UsersInvite extends React.Component {
   constructor(props) {
     super(props);
     FormStore.create(USERS_INVITE_FORM_GUID);
+    this.props = props;
+    this.state = stateSetter(props);
 
-    this.validateString = validateString().bind(this);
+    this.styler = createStyler(style);
+
+    this.validateEmail = validateEmail().bind(this);
     this._onValidForm = this._onValidForm.bind(this);
   }
 
   _onValidForm(errs, values) {
-    userActions.fetchUserInvite(values.email.value);
+    const email = values.email.value;
+    if (this.validateEmail(email, 'email') === null) {
+      userActions.createUserInvite(email);
+    }
   }
 
   get errorMessage() {
@@ -44,28 +67,45 @@ export default class UsersInvite extends React.Component {
   }
 
   render() {
+    let content;
+
+    if (this.props.currentUserAccess) {
+      content = (
+        <div>
+          <PanelDocumentation description>
+            <p>Invite new user to cloud.gov and this organization, or add an existing user to this
+            organization.</p>
+          </PanelDocumentation>
+          <Form
+            guid={ USERS_INVITE_FORM_GUID }
+            classes={ ['users_invite_form'] }
+            ref="form"
+            onSubmit={ this._onValidForm }
+            errorOverride={ this.errorMessage }
+          >
+            <FormText
+              formGuid={ USERS_INVITE_FORM_GUID }
+              classes={ ['test-users_invite_name'] }
+              label="User's email"
+              name="email"
+              validator={ this.validateEmail }
+            />
+            <Action
+              label="submit"
+              type="submit"
+              disabled={ this.props.inviteDisabled }
+            >
+              Add user to this organization
+            </Action>
+          </Form>
+        </div>
+      );
+    } else {
+      content = '';
+    }
     return (
       <div className="test-users-invite">
-        <h2>User invite</h2>
-        <PanelDocumentation description>
-          <p>Organizational Managers can add new users below.</p>
-        </PanelDocumentation>
-        <Form
-          guid={ USERS_INVITE_FORM_GUID }
-          classes={ ['users_invite_form'] }
-          ref="form"
-          onSubmit={ this._onValidForm }
-          errorOverride={ this.errorMessage }
-        >
-          <FormText
-            formGuid={ USERS_INVITE_FORM_GUID }
-            classes={ ['test-users_invite_name'] }
-            label="User's email"
-            name="email"
-            validator={ this.validateString }
-          />
-          <Action label="submit" type="submit">Invite new user</Action>
-        </Form>
+        {content}
       </div>
     );
   }

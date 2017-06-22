@@ -32,8 +32,9 @@ describe('<Users />', function () {
       beforeEach(function () {
         users.setState({ currentType: 'org_users' });
       });
+
       it('doesnt have permissions to edit users', function () {
-        const actual = users.instance().resourceType;
+        const actual = users.instance().entityType;
         expect(actual).toEqual('org');
       });
     });
@@ -42,8 +43,9 @@ describe('<Users />', function () {
       beforeEach(function () {
         users.setState({ currentType: 'space_users' });
       });
+
       it('doesnt have permissions to edit users', function () {
-        const actual = users.instance().resourceType;
+        const actual = users.instance().entityType;
         expect(actual).toEqual('space');
       });
     });

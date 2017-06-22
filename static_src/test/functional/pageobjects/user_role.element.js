@@ -52,4 +52,43 @@ export default class UserRoleElement extends BaseElement {
   isUserSpaceAuditor(guid) {
     return !!this.browser.getAttribute(`#space_auditor${guid}`, 'checked');
   }
+
+  toggleAccess(selector, state) {
+    this.browser.click(selector);
+    // waitForSelected's state parameter operates in reverse.
+    // if passed true, it will wait for it to be unchecked.
+    // if passed false, it will operate as normal and wait for it to be checked.
+    // http://webdriver.io/api/utility/waitForSelected.html
+    // just flip the state to what the user expected to get the behavior of
+    // which state waitForSelected looks for.
+    // returns true in success of finding whichever desired state.
+    // will never return false. instead, will throw an error.
+    // Sample of how it works:
+    // https://github.com/webdriverio/webdriverio/blob/v4.6.1/test/spec/waitFor.js#L58-L66
+    return this.browser.waitForSelected(selector, 2000, !state);
+  }
+
+  toggleOrgManagerAccess(guid, state) {
+    return this.toggleAccess(`#org_manager${guid}`, state);
+  }
+
+  toggleBillingManagerAccess(guid, state) {
+    return this.toggleAccess(`#billing_manager${guid}`, state);
+  }
+
+  toggleOrgAuditorAccess(guid, state) {
+    return this.toggleAccess(`#org_auditor${guid}`, state);
+  }
+
+  toggleSpaceManagerAccess(guid, state) {
+    return this.toggleAccess(`#space_manager${guid}`, state);
+  }
+
+  toggleSpaceDeveloperAccess(guid, state) {
+    return this.toggleAccess(`#space_developer${guid}`, state);
+  }
+
+  toggleSpaceAuditorAccess(guid, state) {
+    return this.toggleAccess(`#space_auditor${guid}`, state);
+  }
 }
