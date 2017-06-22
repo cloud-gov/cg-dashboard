@@ -243,10 +243,18 @@ const userActions = {
       .then(() => cfApi.fetchOrgUsers(orgGuid))
       .then(orgUsers => userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers));
   },
+
   createdUserAndAssociated(userGuid, orgGuid, orgUsers) {
     const user = orgUsers.filter(function(orgUser){
       return orgUser.guid === userGuid;
-    })[0];
+    });
+
+    if (!user[0]) {
+      const err = new Error('user was not associated to org');
+      return Promise.resolve(userActions.userInviteCreateError(err, `There was a problem
+        inviting ${email}`));
+    }
+
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATED,
       userGuid,
