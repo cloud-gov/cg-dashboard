@@ -439,6 +439,11 @@ export default {
       .then((res) => this.formatSplitResponse(res.data));
   },
 
+  putAssociateUserToSpace(userGuid, spaceGuid) {
+    return http.put(`${APIV}/spaces/${spaceGuid}/auditor/${userGuid}`)
+      .then((res) => this.formatSplitResponse(res.data));
+  },
+
   // TODO refactor with org user permissions
   deleteSpaceUserPermissions(userGuid, spaceGuid, role, apiKey) {
     return http.delete(`${APIV}/spaces/${spaceGuid}/${apiKey}/${userGuid}`)
