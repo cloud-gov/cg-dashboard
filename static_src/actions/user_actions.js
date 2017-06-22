@@ -251,7 +251,6 @@ const userActions = {
     });
 
     return cfApi.putAssociateUserToEntity(userGuid, entityGuid, entityType)
-    // return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
       .then(() => userActions.fetchEntityUsers(entityGuid, entityType))
       .then(entityUsers => userActions.createdUserAndAssociated(userGuid, entityGuid, entityUsers));
   },
@@ -271,7 +270,7 @@ const userActions = {
 
     if (!user[0]) {
       const err = new Error('User was not associated');
-      const message = `The user ${userGuid} was not associated in ${orgGuid}.`;
+      const message = `The user ${userGuid} was not associated in ${entityGuid}.`;
       return Promise.resolve(userActions.userInviteCreateError(err, message));
     }
 
