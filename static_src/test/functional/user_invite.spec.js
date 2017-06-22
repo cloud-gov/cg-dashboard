@@ -6,6 +6,8 @@ describe('User roles', function () {
 
   const email = 'fake-new-user@domain.com';
   const urlOrgX = '/#/org/48b3f8a1-ffe7-4aa8-8e85-94768d6bd250';
+  const urlOrgXSpaceXX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250/' +
+      'spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794',
 
   describe('A user on page for an org', function () {
     it('should navigates to org X', function () {
@@ -51,6 +53,23 @@ describe('User roles', function () {
       const bottomError = 'The value entered in email is not a valid e-mail address';
       expect(userInviteElement.getErrorMessage()).toMatch(topError);
       expect(userInviteElement.getValidatorMessage()).toMatch(bottomError);
+    });
+  });
+
+  describe('A user on page for an space', function () {
+    it('should navigates to org X space XX', function () {
+      browser.url(urlOrgXSpaceXX);
+      browser.waitForExist('.test-users');
+    });
+
+    it('should not have the user invite panel', function () {
+      browser.url(urlOrgXSpaceXX);
+
+      browser.waitForExist('.test-users-invite');
+      userInviteElement = new UserInviteElement(browser,
+        browser.element(UserInviteElement.primarySelector));
+
+      expect(userInviteElement.isVisible()).toBe(false);
     });
   });
 });
