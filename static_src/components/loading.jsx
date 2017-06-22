@@ -77,7 +77,7 @@ class Loading extends React.Component {
             this.styler('loading-inline')
             );
           }
-        };
+        }
       })();
       content = (
         <div className={ classes }
