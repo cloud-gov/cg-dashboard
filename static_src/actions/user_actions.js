@@ -253,30 +253,32 @@ const userActions = {
     return cfApi.putAssociateUserToEntity(userGuid, entityGuid, entityType)
     // return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
       .then(() => userActions.fetchEntityUsers(entityGuid, entityType))
-      .then(orgUsers => userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers));
+      .then(entityUsers => userActions.createdUserAndAssociated(userGuid, entityGuid, entityUsers));
   },
 
   fetchEntityUsers(entityGuid, entityType) {
+    let entityUsers;
     if (entityType === 'org_users') {
-      entityGuid = cfApi.fetchOrgUsers(entityGuid);
+      entityUsers = cfApi.fetchOrgUsers(entityGuid);
     } else {
-      entityGuid = cfApi.fetchOrgUsers(entityGuid);
+      entityUsers = cfApi.fetchSpaceUserRoles(entityGuid);
     }
+    return Promise.resolve(entityUsers);
   },
 
-  createdUserAndAssociated(userGuid, orgGuid, orgUsers) {
-    const user = orgUsers.filter((orgUser) => orgUser.guid === userGuid);
+  createdUserAndAssociated(userGuid, entityGuid, entityUsers) {
+    const user = entityUsers.filter((entityUser) => entityUser.guid === userGuid);
 
     if (!user[0]) {
-      const err = new Error('user was not associated to org');
-      const message = `The user ${userGuid} was not associated in the org ${orgGuid}.`;
+      const err = new Error('User was not associated');
+      const message = `The user ${userGuid} was not associated in ${orgGuid}.`;
       return Promise.resolve(userActions.userInviteCreateError(err, message));
     }
 
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATED,
       userGuid,
-      orgGuid,
+      entityGuid,
       user
     });
     return Promise.resolve(user);
