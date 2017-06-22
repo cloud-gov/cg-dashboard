@@ -10,6 +10,7 @@ import uaaApi from '../util/uaa_api';
 import { userActionTypes } from '../constants';
 import UserStore from '../stores/user_store';
 import OrgStore from '../stores/org_store';
+import SpaceStore from '../stores/space_store';
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -233,15 +234,34 @@ const userActions = {
   },
 
   createUserAndAssociate(userGuid) {
-    const orgGuid = OrgStore.currentOrgGuid;
+    let entityGuid;
+    const entityType = UserStore.currentlyViewedType;
+
+    if (entityType === 'org_users') {
+      entityGuid = OrgStore.currentOrgGuid;
+    } else {
+      entityGuid = SpaceStore.currentSpaceGuid;
+    }
+
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATE,
       userGuid,
-      orgGuid
+      entityType,
+      entityGuid
     });
-    return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
-      .then(() => cfApi.fetchOrgUsers(orgGuid))
+
+    return cfApi.putAssociateUserToEntity(userGuid, entityGuid, entityType)
+    // return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
+      .then(() => userActions.fetchEntityUsers(entityGuid, entityType))
       .then(orgUsers => userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers));
+  },
+
+  fetchEntityUsers(entityGuid, entityType) {
+    if (entityType === 'org_users') {
+      entityGuid = cfApi.fetchOrgUsers(entityGuid);
+    } else {
+      entityGuid = cfApi.fetchOrgUsers(entityGuid);
+    }
   },
 
   createdUserAndAssociated(userGuid, orgGuid, orgUsers) {
