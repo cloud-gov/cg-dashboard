@@ -129,13 +129,11 @@ export default class UserList extends React.Component {
   }
 
   render() {
-    let saving;
+    let savingNotice;
     let loading = <Loading text="Loading users" />;
     let content = <div>{ loading }</div>;
 
-    if (this.props.saving) {
-      saving = <Loading loadingDelayMS={`${0}`} text="Saving" style="globalSaving" />;
-    }
+    savingNotice = <Loading active={ this.props.saving } loadingDelayMS={0} text="Saving" style="globalSaving" />;
 
     if (this.props.empty) {
       content = this.emptyState;
@@ -144,7 +142,7 @@ export default class UserList extends React.Component {
     } else if (!this.props.loading && this.props.users.length) {
       content = (
       <div className="test-user_list">
-        { saving }
+        { savingNotice }
         { this.documentation }
         <ComplexList>
           { this.props.users.map((user) => {
