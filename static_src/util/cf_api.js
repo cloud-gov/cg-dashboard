@@ -450,6 +450,7 @@ export default {
     if (entityType === 'org_users') {
       resp = this.putAssociateUserToOrganization(userGuid, entityGuid);
     } else {
+      debugger;
       resp = this.putAssociateUserToSpace(userGuid, entityGuid);
     }
     return Promise.resolve(resp);
@@ -461,7 +462,7 @@ export default {
   },
 
   putAssociateUserToSpace(userGuid, spaceGuid) {
-    return http.put(`${APIV}/spaces/${spaceGuid}/auditor/${userGuid}`)
+    return http.put(`${APIV}/spaces/${spaceGuid}/auditors`, { auditor_guid: userGuid })
       .then((res) => this.formatSplitResponse(res.data));
   },
 
