@@ -134,7 +134,7 @@ export default class UserList extends React.Component {
     let content = <div>{ loading }</div>;
 
     if (this.props.saving) {
-      saving = <Loading text="Saving" style="globalSaving" />;
+      saving = <Loading loadingDelayMS={`${0}`} text="Saving" style="globalSaving" />;
     }
 
     if (this.props.empty) {
