@@ -39,25 +39,3 @@ input[type="checkbox"] + label::before,
 input[type="radio"] + label::before {
   display: none;
 }
-
-.test-user_list .complex_list-item.processing {
-  border-left: 4px solid #8ba6ca;
-  padding-left: 11px;
-}
-
-.test-user_list .complex_list-item {
-  padding-left: 15px;
-}
-
-.saving.saving-relative {
-  float: right;
-  background: #fad980;
-  padding: 2px 9px;
-  font-family: Georgia, Cambria, Times New Roman, Times, serif;
-  font-size: 1rem;
-  font-style: italic;
-}
-
-.complex_list-item.saving{
-  background: #fad980;
-}
