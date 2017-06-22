@@ -19,10 +19,6 @@ const userActions = {
     });
   },
 
-  returnOrgUsers(orgGuid) {
-    return Promise.resolve(cfApi.fetchOrgUsers(orgGuid))
-  },
-
   fetchOrgUserRoles(orgGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.ORG_USER_ROLES_FETCH,
@@ -244,10 +240,9 @@ const userActions = {
       orgGuid
     });
     return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
-      .then(() => userActions.returnOrgUsers(orgGuid))
+      .then(() => cfApi.fetchOrgUsers(orgGuid))
       .then(orgUsers => userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers));
   },
-
   createdUserAndAssociated(userGuid, orgGuid, orgUsers) {
     const user = orgUsers.filter(function(orgUser){
       return orgUser.guid === userGuid;
