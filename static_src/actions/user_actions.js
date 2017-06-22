@@ -245,14 +245,12 @@ const userActions = {
   },
 
   createdUserAndAssociated(userGuid, orgGuid, orgUsers) {
-    const user = orgUsers.filter(function(orgUser){
-      return orgUser.guid === userGuid;
-    });
+    const user = orgUsers.filter((orgUser) => orgUser.guid === userGuid);
 
     if (!user[0]) {
       const err = new Error('user was not associated to org');
-      return Promise.resolve(userActions.userInviteCreateError(err, `There was a problem
-        inviting ${email}`));
+      const message = `The user ${userGuid} was not associated in the org ${orgGuid}.`;
+      return Promise.resolve(userActions.userInviteCreateError(err, message));
     }
 
     AppDispatcher.handleViewAction({
