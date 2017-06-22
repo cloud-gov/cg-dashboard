@@ -434,6 +434,16 @@ export default {
       });
   },
 
+  putAssociateUserToEntity(userGuid, entityGuid, entityType) {
+    let resp;
+    if (entityType === 'org_users') {
+      resp = this.putAssociateUserToOrganization(userGuid, entityGuid);
+    } else {
+      resp = this.putAssociateUserToSpace(userGuid, entityGuid);
+    }
+    return Promise.resolve(resp);
+  },
+
   putAssociateUserToOrganization(userGuid, orgGuid) {
     return http.put(`${APIV}/organizations/${orgGuid}/users/${userGuid}`)
       .then((res) => this.formatSplitResponse(res.data));
