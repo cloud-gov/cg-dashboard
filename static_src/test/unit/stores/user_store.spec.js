@@ -227,7 +227,7 @@ describe('UserStore', function () {
   describe('on org user associated', function() {
     const userGuid = 'user-543';
     const orgGuid = 'org-abc';
-
+    let orgUsers
     beforeEach(function() {
       UserStore._data = Immutable.List();
       sandbox.spy(UserStore, 'emitChange');
@@ -235,7 +235,8 @@ describe('UserStore', function () {
         guid: userGuid,
         username: 'person@person.com'
       };
-      userActions.createdUserAndAssociated(userGuid, orgGuid, user);
+      orgUsers = [user, {userGuid: 'wrong-udid'}, {userGuid: 'wrong-udid-2'}];
+      userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers);
     });
 
     it('should emit a change', function() {
@@ -256,14 +257,14 @@ describe('UserStore', function () {
       const userGuid = "fake-user-guid";
       const orgGuid = "fake-org-guid";
       const orgUsers = [
-        {userGuid: "fake-user-guid-1"},
+        {userGuid: userGuid},
         {userGuid: "fake-user-guid-2"},
         {userGuid: "fake-user-guid-3"}
       ];
 
       userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers);
 
-      expect(spy).toHaveBeenCalledTwice();
+      expect(spy).toHaveBeenCalledOnce();
     });
 
     it('should merge and update org with new users', function() {

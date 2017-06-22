@@ -170,14 +170,15 @@ const userActions = {
 
   receivedInviteStatus(invite, email) {
     const verified = invite.verified;
+    const userGuid = invite.userGuid;
+
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_INVITE_STATUS_UPDATED,
       email,
       verified
     });
 
-    return cfApi.fetchUser(invite.userGuid)
-      .then(user => userActions.createUserAndAssociate(user))
+    return userActions.createUserAndAssociate(userGuid)
       .then(() => userActions.createInviteNotification(verified, email))
       .catch(err => userActions.userInviteCreateError(err, `There was a problem
         inviting ${email}`));
@@ -231,19 +232,27 @@ const userActions = {
     return Promise.resolve(err);
   },
 
-  createUserAndAssociate(user) {
+  createUserAndAssociate(userGuid) {
     const orgGuid = OrgStore.currentOrgGuid;
-    const userGuid = user.guid;
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATE,
       userGuid,
       orgGuid
     });
     return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
-      .then(userActions.createdUserAndAssociated(userGuid, orgGuid, user));
+      .then(() => cfApi.fetchOrgUsers(orgGuid))
+      .then(orgUsers => userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers));
   },
 
-  createdUserAndAssociated(userGuid, orgGuid, user) {
+  createdUserAndAssociated(userGuid, orgGuid, orgUsers) {
+    const user = orgUsers.filter((orgUser) => orgUser.guid === userGuid);
+
+    if (!user[0]) {
+      const err = new Error('user was not associated to org');
+      const message = `The user ${userGuid} was not associated in the org ${orgGuid}.`;
+      return Promise.resolve(userActions.userInviteCreateError(err, message));
+    }
+
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATED,
       userGuid,

@@ -190,13 +190,15 @@ describe('userActions', function() {
 
   describe('receivedInviteStatus()', function() {
     it('should', function() {
-      var invite = { userGuid: "user-guid" };
-      var user = { userGuid: "user-guid" };
+      var userGuid = "user-guid";
+      var invite = { userGuid };
       var email = 'this@there.com';
       var verified = true;
       var expected = { email, verified };
 
       sandbox.spy(userActions, 'receivedInviteStatus');
+      sandbox.stub(userActions, 'createUserAndAssociate').returns(Promise.resolve(invite));
+      sandbox.stub(userActions, 'createInviteNotification');
       sandbox.stub(uaaApi, 'inviteUaaUser').returns(Promise.resolve(invite));
       let spy = setupViewSpy(sandbox)
 
@@ -285,26 +287,28 @@ describe('userActions', function() {
     let orgGuid;
     let expectedParams;
     let spy;
+    let user;
 
     beforeEach(function (done) {
       userGuid = "fake-udid";
       orgGuid = "fake-org-udid";
-      const user = {
+      user = {
         guid: userGuid,
         username: 'asdf'
       };
+      orgUsers = [user, {userGuid: 'wrong-udid'}, {userGuid: 'wrong-udid-2'}];
       expectedParams = {
         userGuid,
         orgGuid,
-        user
+        user: orgUsers[0]
       };
-      spy = setupViewSpy(sandbox)
-      userActions.createdUserAndAssociated(userGuid, orgGuid, user)
+      spy = setupViewSpy(sandbox);
+      userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers)
         .then(done, done.fail);
     });
 
     it('should dispatch USER_ORG_ASSOCIATED notice with user and org', function() {
-      assertAction(spy, userActionTypes.USER_ORG_ASSOCIATED, expectedParams);
+      assertAction(spy, userActionTypes.USER_ORG_ASSOCIATED);
     });
   });
 
