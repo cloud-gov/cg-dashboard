@@ -8,8 +8,11 @@ import createStyler from '../util/create_styler';
 const LOADING_TIME = 300;
 
 const STYLES = [
+  // globalSaving is applied to saving notifications inside panels
   'globalSaving',
+  // inline is applied when displaying an inline panel loading status
   'inline',
+  // cover is used to show a full page loading status
   'cover'
 ];
 
