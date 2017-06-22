@@ -364,6 +364,17 @@ export default {
   /**
    * Fetch all users that belong to a certain space.
    *
+   * @param {Number} entityGuid - The guid of the org that the users belong to.
+   */
+  fetchSpaceUsers(spaceGuid) {
+    return this.fetchMany(`/spaces/${spaceGuid}/user_roles`,
+                          userActions.receivedOrgUsers,
+                          spaceGuid);
+  },
+
+  /**
+   * Fetch all users that belong to a certain space.
+   *
    * @param {Number} orgGuid - The guid of the org that the users belong to.
    */
   fetchOrgUsers(orgGuid) {
