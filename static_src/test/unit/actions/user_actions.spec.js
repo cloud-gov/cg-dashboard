@@ -234,10 +234,10 @@ describe('userActions', function() {
     });
 
     it('should dispatch a view event of type create invite notification with false', function(done) {
-      description =   'There was no cloud.gov account found for this@that.com or the '+
-                      'user has not verified their account by logging in.They have been '+
-                      'sent an email cloud.gov invitation. Their account has been '+
-                      'associated to this space and their space roles can be controlled below.';
+      description =   'There was no cloud.gov account found for this@that.com or the user has not verified ' +
+                      'their account by logging in.They have been sent an email cloud.gov invitation. ' +
+                      'Their account has been associated to this space and their space roles can be ' +
+                      'controlled below.';
       userActions.createInviteNotification(false, email);
       expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
         type: userActionTypes.USER_INVITE_STATUS_DISPLAYED,
@@ -247,8 +247,8 @@ describe('userActions', function() {
       done();
     });
     it('should dispatch a view event of type create invite notification with true', function(done) {
-      description =  'The account for this@that.com is now associated to this space. '+
-                              'Control their space roles below.';
+      description =  'The account for this@that.com is now associated to this space. Control their ' +
+                     'space roles below.';
       userActions.createInviteNotification(true, email);
       expect(AppDispatcher.handleViewAction).toHaveBeenCalledWith(sinon.match({
         type: userActionTypes.USER_INVITE_STATUS_DISPLAYED,
