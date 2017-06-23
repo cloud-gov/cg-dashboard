@@ -41,7 +41,8 @@ export function validateString() {
 
 export function validateEmail() {
   return function _validateEmail(value, name) {
-    if (!(/^[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/).test(value)) {
+    const emailRegex = /^[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (!(emailRegex).test(value)) {
       const nameString = (name ? `in ${name} ` : '');
       return {
         message: `The value entered ${nameString}is not a valid e-mail address`
