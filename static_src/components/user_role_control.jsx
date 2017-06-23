@@ -1,22 +1,20 @@
 
 import React from 'react';
 
+const propTypes = {
+  userId: React.PropTypes.string.isRequired,
+  roleName: React.PropTypes.string.isRequired,
+  roleKey: React.PropTypes.string.isRequired,
+  initialValue: React.PropTypes.bool,
+  initialEnableControl: React.PropTypes.bool,
+  onChange: React.PropTypes.func
+};
+
 export default class UserRoleControl extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
-    this.state = {
-      checked: props.initialValue,
-      enableControl: props.initialEnableControl
-    };
-    this._handleChange = this._handleChange.bind(this);
-  }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      checked: nextProps.initialValue,
-      enableControl: nextProps.initialEnableControl
-    });
+    this._handleChange = this._handleChange.bind(this);
   }
 
   _handleChange(ev) {
@@ -24,31 +22,31 @@ export default class UserRoleControl extends React.Component {
   }
 
   render() {
+    const {
+      roleKey, roleName, userId, initialValue, initialEnableControl
+    } = this.props;
+    const inputId = roleKey + userId;
+
     return (
       <span className="test-user-role-control">
-        <label htmlFor={ this.props.roleKey + this.props.userId }>
+        <label htmlFor={ inputId }>
           <input type="checkbox"
             onChange={ this._handleChange }
-            name={ this.props.roleKey }
-            checked={ this.state.checked }
-            disabled={ !this.state.enableControl }
-            id={ this.props.roleKey + this.props.userId }
+            name={ roleKey }
+            checked={ initialValue }
+            disabled={ !initialEnableControl }
+            id={ inputId }
           />
-          { this.props.roleName }
+          { roleName }
         </label>
       </span>
     );
   }
-}
-UserRoleControl.propTypes = {
-  roleName: React.PropTypes.string.isRequired,
-  roleKey: React.PropTypes.string.isRequired,
-  initialValue: React.PropTypes.bool,
-  initialEnableControl: React.PropTypes.bool,
-  onChange: React.PropTypes.func
 };
+
+UserRoleControl.propTypes = propTypes;
 UserRoleControl.defaultProps = {
   initialValue: false,
   initialEnableControl: false,
   onChange: function() { }
-}
+};
