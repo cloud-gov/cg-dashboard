@@ -71,6 +71,7 @@ describe('User roles', function () {
       browser.url(urlOrgXSpaceXX);
 
       browser.waitForExist('.test-users');
+      browser.waitForExist('.test-users-invite', 500, true);
       var ells = $$('.test-users-invite');
 
       expect(ells.length).toBe(0);
