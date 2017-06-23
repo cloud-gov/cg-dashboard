@@ -12,6 +12,8 @@ import UserStore from '../stores/user_store';
 import OrgStore from '../stores/org_store';
 import SpaceStore from '../stores/space_store';
 
+const ORG_NAME = OrgStore.cfName;
+
 const userActions = {
   fetchOrgUsers(orgGuid) {
     AppDispatcher.handleViewAction({
@@ -195,14 +197,10 @@ const userActions = {
     let description;
     const noticeType = 'finish';
     const currentViewedType = UserStore.currentlyViewedType;
-    const viewTypeNouns = {
-      org_users: {
-        singular: 'organization'
-      },
-      space_users: {
-        singular: 'space'
-      }
-    };
+    const viewTypeNouns = Object.assign({},
+      { space_users: { singular: 'space' } },
+      { org_users: { singular: 'organization' } }
+    );
 
     if (verified) {
       description = `The account for ${email} is now associated to this ` +
@@ -237,7 +235,7 @@ const userActions = {
     let entityGuid;
     const entityType = UserStore.currentlyViewedType;
 
-    if (entityType === 'org_users') {
+    if (entityType === ORG_NAME) {
       entityGuid = OrgStore.currentOrgGuid;
     } else {
       entityGuid = SpaceStore.currentSpaceGuid;
@@ -257,7 +255,7 @@ const userActions = {
 
   fetchEntityUsers(entityGuid, entityType) {
     let entityUsers;
-    if (entityType === 'org_users') {
+    if (entityType === ORG_NAME) {
       entityUsers = cfApi.fetchOrgUsers(entityGuid);
     } else {
       entityUsers = cfApi.fetchSpaceUserRoles(entityGuid);
