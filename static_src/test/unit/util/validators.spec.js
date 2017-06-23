@@ -31,13 +31,23 @@ describe('validateEmail', function () {
     });
 
     it('fails for none emails string@', function () {
-      const result = validator('domain@place');
+      const result = validator('domain@');
+      expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
+    });
+
+    it('fails for none emails string@domain.', function () {
+      const result = validator('domain@domain.');
       expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
     });
 
     it('fails for none emails string@string', function () {
       const result = validator('domain@place');
-      expect(result).toEqual({ message: 'The value entered is not a valid e-mail address' });
+      expect(result).toEqual(null);
+    });
+
+    it('fails for none emails string@string.com.co', function () {
+      const result = validator('domain@place');
+      expect(result).toEqual(null);
     });
 
     it('succeeds for email', function () {
