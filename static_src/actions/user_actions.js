@@ -10,6 +10,9 @@ import uaaApi from '../util/uaa_api';
 import { userActionTypes } from '../constants';
 import UserStore from '../stores/user_store';
 import OrgStore from '../stores/org_store';
+import SpaceStore from '../stores/space_store';
+
+const ORG_NAME = OrgStore.cfName;
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -194,14 +197,10 @@ const userActions = {
     let description;
     const noticeType = 'finish';
     const currentViewedType = UserStore.currentlyViewedType;
-    const viewTypeNouns = {
-      org_users: {
-        singular: 'organization'
-      },
-      space_users: {
-        singular: 'space'
-      }
-    };
+    const viewTypeNouns = Object.assign({},
+      { space_users: { singular: 'space' } },
+      { org_users: { singular: 'organization' } }
+    );
 
     if (verified) {
       description = `The account for ${email} is now associated to this ` +
@@ -233,30 +232,50 @@ const userActions = {
   },
 
   createUserAndAssociate(userGuid) {
-    const orgGuid = OrgStore.currentOrgGuid;
+    let entityGuid;
+    const entityType = UserStore.currentlyViewedType;
+
+    if (entityType === ORG_NAME) {
+      entityGuid = OrgStore.currentOrgGuid;
+    } else {
+      entityGuid = SpaceStore.currentSpaceGuid;
+    }
+
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATE,
       userGuid,
-      orgGuid
+      entityType,
+      entityGuid
     });
-    return cfApi.putAssociateUserToOrganization(userGuid, orgGuid)
-      .then(() => cfApi.fetchOrgUsers(orgGuid))
-      .then(orgUsers => userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers));
+
+    return cfApi.putAssociateUserToEntity(userGuid, entityGuid, entityType)
+      .then(() => userActions.fetchEntityUsers(entityGuid, entityType))
+      .then(entityUsers => userActions.createdUserAndAssociated(userGuid, entityGuid, entityUsers));
   },
 
-  createdUserAndAssociated(userGuid, orgGuid, orgUsers) {
-    const user = orgUsers.filter((orgUser) => orgUser.guid === userGuid);
+  fetchEntityUsers(entityGuid, entityType) {
+    let entityUsers;
+    if (entityType === ORG_NAME) {
+      entityUsers = cfApi.fetchOrgUsers(entityGuid);
+    } else {
+      entityUsers = cfApi.fetchSpaceUserRoles(entityGuid);
+    }
+    return Promise.resolve(entityUsers);
+  },
+
+  createdUserAndAssociated(userGuid, entityGuid, entityUsers) {
+    const user = entityUsers.filter((entityUser) => entityUser.guid === userGuid);
 
     if (!user[0]) {
-      const err = new Error('user was not associated to org');
-      const message = `The user ${userGuid} was not associated in the org ${orgGuid}.`;
+      const err = new Error('User was not associated');
+      const message = `The user ${userGuid} was not associated in ${entityGuid}.`;
       return Promise.resolve(userActions.userInviteCreateError(err, message));
     }
 
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ORG_ASSOCIATED,
       userGuid,
-      orgGuid,
+      entityGuid,
       user
     });
     return Promise.resolve(user);
