@@ -192,8 +192,6 @@ const userActions = {
 
   createInviteNotification(verified, email) {
     let description;
-    const noticeType = 'finish';
-    const currentViewedType = UserStore.currentlyViewedType;
     const viewTypeNouns = {
       org_users: {
         singular: 'organization'
@@ -202,19 +200,20 @@ const userActions = {
         singular: 'space'
       }
     };
+    const noticeType = 'finish';
+    const currentViewedType = UserStore.currentlyViewedType;
+    const entity = viewTypeNouns[currentViewedType].singular;
 
     if (verified) {
-      description = `The account for ${email} is now associated to this ` +
-        `${viewTypeNouns[currentViewedType].singular}. Control their ` +
-        `${viewTypeNouns[currentViewedType].singular} roles below.`;
+      description = `The cloud.gov account for ${email} is now associated to this ` +
+        `${entity}. Control their ${entity} roles below.`;
     } else {
-      description = `There was no cloud.gov account found for ${email} ` +
-        'or the user has not verified their account by logging in.' +
-        'They have been sent an email cloud.gov invitation. Their account ' +
-        `has been associated to this ${viewTypeNouns[currentViewedType].singular}` +
-        ` and their ${viewTypeNouns[currentViewedType].singular}` +
-        ' roles can be controlled below.';
+      description = `No verified cloud.gov account was found for ${email}, so ` +
+      'the user has been sent an email invitation. Their account has been ' +
+      `associated to this ${entity}, and their ${entity} roles can ` +
+      'be controlled below.';
     }
+
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_INVITE_STATUS_DISPLAYED,
       noticeType,
