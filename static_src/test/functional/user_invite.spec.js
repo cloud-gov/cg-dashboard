@@ -1,11 +1,14 @@
 
+import UserRoleElement from './pageobjects/user_role.element';
 import UserInviteElement from './pageobjects/user_invite.element';
 
 describe('User roles', function () {
   let userInviteElement;
+  let userRoleElement;
 
   const email = 'fake-new-user@domain.com';
   const urlOrgX = '/#/org/48b3f8a1-ffe7-4aa8-8e85-94768d6bd250';
+  const cookieManagerOrgXSpaceXX = 'org_x_space_manager_space_xx';
   const urlOrgXSpaceXX = '/#/org/user_role-org_x-ffe7-4aa8-8e85-94768d6bd250/' +
       'spaces/user_role-org_x-space_xx-4064-82f2-d74df612b794';
 
@@ -58,18 +61,19 @@ describe('User roles', function () {
 
   describe('A user on page for an space', function () {
     it('should navigates to org X space XX', function () {
+      userRoleElement = new UserRoleElement(browser, browser.element('.test-users'));
       browser.url(urlOrgXSpaceXX);
       browser.waitForExist('.test-users');
     });
 
     it('should not have the user invite panel', function () {
+      userRoleElement.setAndGetUserRole(cookieManagerOrgXSpaceXX);
       browser.url(urlOrgXSpaceXX);
 
       browser.waitForExist('.test-users');
-      userInviteElement = new UserInviteElement(browser,
-        browser.element(UserInviteElement.primarySelector));
+      var ells = $$('.test-users-invite');
 
-      expect(userInviteElement.isVisible()).toBe(false);
+      expect(ells.length).toBe(0);
     });
   });
 });
