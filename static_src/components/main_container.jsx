@@ -4,6 +4,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import overrideStyle from '../css/overrides.css';
 
 import createStyler from '../util/create_styler';
+import userProvider from './user_provider.jsx';
 
 import Disclaimer from './disclaimer.jsx';
 import Footer from './footer.jsx';
@@ -23,7 +24,7 @@ function stateSetter() {
   };
 }
 
-export default class App extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.styler = createStyler(style, overrideStyle);
@@ -69,7 +70,8 @@ export default class App extends React.Component {
       </div>
     );
   }
-}
+};
+
 App.propTypes = {
   children: React.PropTypes.any
 };
@@ -77,3 +79,5 @@ App.propTypes = {
 App.defaultProps = {
   children: []
 };
+
+export default userProvider(App);

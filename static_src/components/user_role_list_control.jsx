@@ -43,7 +43,6 @@ const roleMapping = {
     { key: 'billing_manager', apiKey: 'billing_managers', label: 'Billing Manager' },
     { key: 'org_auditor', apiKey: 'auditors', label: 'Org Auditor' }
   ]
-
 };
 
 const propTypes = {
@@ -65,25 +64,24 @@ const defaultProps = {
 export default class UserRoleListControl extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this._onChange = this._onChange.bind(this);
-    this.checkRole = this.checkRole.bind(this);
   }
 
   checkRole(roleKey) {
     return (this.roles().indexOf(roleKey) > -1);
   }
 
-  _onChange(roleKey, apiKey, checked) {
-    const handler = (!checked) ? this.props.onRemovePermissions :
+  _onChange(roleKey, checked) {
+    const handler = !checked ? this.props.onRemovePermissions :
       this.props.onAddPermissions;
+    const apiKey = this.roleMap.filter(role => role.key === roleKey)[0].apiKey;
 
     handler(roleKey, apiKey, this.props.user.guid);
   }
 
   roles() {
     const roles = this.props.user.roles;
-    if (!roles) return [];
     return roles ?
       (roles[this.props.entityGuid] || []) :
       []
@@ -92,7 +90,6 @@ export default class UserRoleListControl extends React.Component {
   get roleMap() {
     return roleMapping[this.props.userType];
   }
-
 
   render() {
     return (
@@ -105,7 +102,7 @@ export default class UserRoleListControl extends React.Component {
               roleKey={ role.key }
               initialValue={ this.checkRole(role.key) }
               initialEnableControl={ this.props.currentUserAccess }
-              onChange={ this._onChange.bind(this, role.key, role.apiKey) }
+              onChange={ this._onChange }
               userId={ this.props.user.guid }
             />
           </ElasticLineItem>
@@ -114,6 +111,7 @@ export default class UserRoleListControl extends React.Component {
       </span>
     );
   }
-}
+};
+
 UserRoleListControl.propTypes = propTypes;
 UserRoleListControl.defaultProps = defaultProps;

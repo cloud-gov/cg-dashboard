@@ -401,6 +401,7 @@ describe('userActions', function() {
       beforeEach(function(done) {
         sandbox.spy(cfApi, 'putOrgUserPermissions');
         sandbox.spy(userActions, 'addedUserRoles');
+        sandbox.spy(userActions, 'errorChangeUserRole');
         roles = ['org_manager'];
         apiKey = 'managers';
         userGuid = 'user-123';
@@ -433,8 +434,12 @@ describe('userActions', function() {
         ));
       });
 
-      it('should not call addedUserRoles action', function() {
+      it('should not call addedUserRoles action', () => {
         expect(userActions.addedUserRoles.called).toEqual(false);
+      });
+
+      it('should call `errorChangeUserRole`', () => {
+        expect(userActions.errorChangeUserRole.called).toEqual(true);
       });
     });
 

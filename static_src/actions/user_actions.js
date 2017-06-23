@@ -101,9 +101,7 @@ const userActions = {
         userGuid,
         entityGuid,
         entityType);
-    }).catch((err) => {
-      window.console.error(err);
-    });
+    }).catch(error => this.errorChangeUserRole(error));
   },
 
   addedUserRoles(roles, userGuid, entityGuid, entityType) {
@@ -136,9 +134,7 @@ const userActions = {
       entityGuid,
       roles,
       apiKey
-    ).catch((err) => {
-      window.console.error(err);
-    });
+    ).catch(error => this.errorChangeUserRole(error));
   },
 
   deletedUserRoles(roles, userGuid, entityGuid, entityType) {
@@ -148,6 +144,16 @@ const userActions = {
       userGuid,
       entityGuid,
       entityType
+    });
+  },
+
+  errorChangeUserRole(error) {
+    const message = 'You don\'t have permission to perform that action';
+
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ROLE_CHANGE_ERROR,
+      error,
+      message
     });
   },
 

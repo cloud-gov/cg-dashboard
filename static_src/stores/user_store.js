@@ -188,6 +188,14 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_ROLE_CHANGE_ERROR: {
+        this._error = Object.assign({}, action.error, {
+          description: action.message
+        });
+        this.emitChange();
+        break;
+      }
+
       case userActionTypes.USER_INVITE_STATUS_DISPLAYED: {
         this._inviteDisabled = false;
         const noticeType = action.noticeType;
