@@ -124,13 +124,30 @@ describe('cfApi', function() {
       const userGuid = 'fake-user-guid';
       const spy = sandbox.stub(http, 'put');
       const users = [{ userGuid: 'user-guid' }];
+      sandbox.stub(cfApi, 'fetchEntityName').returns(entityType);
       sandbox.stub(userActions, 'fetchEntityUsers').returns(users);
-      sandbox.stub(userActions, 'createdUserAndAssociated');
       spy.returns(createPromise({ data: {}}));
-      cfApi.putAssociateUserToEntity(userGuid, entityGuid).then(() => {
+      cfApi.putAssociateUserToEntity(userGuid, entityGuid, entityType).then(() => {
         const args = spy.getCall(0).args;
         expect(spy).toHaveBeenCalledOnce();
         expect(args[0]).toMatch(`/organizations/${entityGuid}/users/${userGuid}`);
+        done();
+      });
+    });
+
+    it('associate a user to space when entityType is space_users', function(done) {
+      const entityType = 'space_users';
+      const entityGuid = 'fake-space-guid';
+      const userGuid = 'fake-user-guid';
+      const spy = sandbox.stub(http, 'put');
+      const users = [{ userGuid: 'user-guid' }];
+      sandbox.stub(cfApi, 'fetchEntityName').returns(entityType);
+      sandbox.stub(userActions, 'fetchEntityUsers').returns(users);
+      spy.returns(createPromise({ data: {}}));
+      cfApi.putAssociateUserToEntity(userGuid, entityGuid, entityType).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch(`/spaces/${entityGuid}/auditors/${userGuid}`);
         done();
       });
     });

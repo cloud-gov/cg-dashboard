@@ -1,6 +1,8 @@
 import http from 'axios';
 
 import { noticeError } from '../util/analytics.js';
+import SpaceStore from '../stores/space_store.js';
+import OrgStore from '../stores/org_store.js';
 import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
 import quotaActions from '../actions/quota_actions.js';
@@ -8,6 +10,8 @@ import routeActions from '../actions/route_actions.js';
 import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
+const ORG_NAME = OrgStore.cfName;
+const SPACE_NAME = SpaceStore.cfName;
 
 // An error from the CF v2 API
 function CfApiV2Error(response) {
@@ -435,8 +439,11 @@ export default {
 
   putAssociateUserToEntity(userGuid, entityGuid, entityType) {
     let resp;
-    if (entityType === 'org_users') {
+    const entityName = this.fetchEntityName(entityType);
+    if (ORG_NAME === entityName) {
       resp = this.putAssociateUserToOrganization(userGuid, entityGuid);
+    } else {
+      resp = this.putAssociateUserToSpace(userGuid, entityGuid);
     }
     return Promise.resolve(resp);
   },
@@ -603,6 +610,16 @@ export default {
         handleError(err);
         return Promise.reject(err);
       });
+  },
+
+  fetchEntityName(entityType) {
+    let entityName;
+    if (entityType === 'org_users') {
+      entityName = ORG_NAME;
+    } else {
+      entityName = SPACE_NAME;
+    }
+    return entityName;
   },
 
   fetchUser(userGuid) {
