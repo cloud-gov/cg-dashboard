@@ -14,8 +14,8 @@ import UsersInvite from './users_invite.jsx';
 import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
 
-const SPACE_NAME = 'space_users';
-const ORG_NAME = 'org_users';
+const SPACE_NAME = SpaceStore.cfName;
+const ORG_NAME = OrgStore.cfName;
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
