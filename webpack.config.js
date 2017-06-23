@@ -42,11 +42,6 @@ const config = {
       },
       {
         test: /\.css$/,
-        include: [
-          path.resolve(__dirname, 'static_src/css'),
-          path.resolve(__dirname, 'node_modules/cloudgov-style'),
-          CG_STYLE_PATH || ' '
-        ],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: 'css-loader'
