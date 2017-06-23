@@ -22,6 +22,7 @@ function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const currentType = UserStore.currentlyViewedType;
   const currentUser = UserStore.currentUser;
+  const isSaving = UserStore.isSaving;
 
   let users = [];
   let currentUserAccess = false;
@@ -48,6 +49,7 @@ function stateSetter() {
     currentSpaceGuid,
     entityGuid,
     currentType,
+    isSaving,
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users,
@@ -131,6 +133,7 @@ export default class Users extends React.Component {
       currentUserAccess={ this.state.currentUserAccess }
       empty={ this.state.empty }
       loading={ this.state.loading }
+      saving={ this.state.isSaving }
       onRemove={ removeHandler }
       onAddPermissions={ this.handleAddPermissions }
       onRemovePermissions={ this.handleRemovePermissions }

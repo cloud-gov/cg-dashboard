@@ -84,10 +84,13 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_ADD: {
+        this._saving = true;
+        this.emitChange();
         break;
       }
 
       case userActionTypes.USER_ROLES_ADDED: {
+        this._saving = false;
         const user = this.get(action.userGuid);
         const addedRole = action.roles;
         if (user) {
@@ -97,22 +100,25 @@ export class UserStore extends BaseStore {
           user.roles[action.entityGuid] = Array.from(updatedRoles);
 
           this.merge('guid', user, () => {});
-          this.emitChange();
         }
 
+        this.emitChange();
         break;
       }
 
       case userActionTypes.USER_ROLES_DELETE: {
+        this._saving = true;
         const user = this.get(action.userGuid);
         if (user) {
           const savingUser = Object.assign({}, user, { saving: true });
           this.merge('guid', savingUser);
         }
+        this.emitChange();
         break;
       }
 
       case userActionTypes.USER_ROLES_DELETED: {
+        this._saving = false;
         const user = this.get(action.userGuid);
         const deletedRole = action.roles;
         if (user) {
@@ -124,8 +130,8 @@ export class UserStore extends BaseStore {
             }
           }
           this.merge('guid', user, () => {});
-          this.emitChange();
         }
+        this.emitChange();
         break;
       }
 
@@ -348,6 +354,10 @@ export class UserStore extends BaseStore {
 
   getInviteError() {
     return this._inviteError;
+  }
+
+  get isSaving() {
+    return this._saving;
   }
 
   get currentUser() {

@@ -26,6 +26,8 @@ const propTypes = {
   currentUserAccess: React.PropTypes.bool,
   empty: React.PropTypes.bool,
   loading: React.PropTypes.bool,
+  saving: React.PropTypes.bool,
+  savingText: React.PropTypes.string,
   // Set to a function when there should be a remove button.
   onRemove: React.PropTypes.func,
   onRemovePermissions: React.PropTypes.func,
@@ -36,6 +38,8 @@ const defaultProps = {
   users: [],
   userType: 'space_users',
   currentUserAccess: false,
+  saving: false,
+  savingText: '',
   empty: false,
   loading: false
 };
@@ -125,8 +129,7 @@ export default class UserList extends React.Component {
   }
 
   render() {
-    let loading = <Loading text="Loading users" />;
-    let content = <div>{ loading }</div>;
+    let content = <div><Loading text="Loading users" /></div>;
 
     if (this.props.empty) {
       content = this.emptyState;
@@ -135,6 +138,7 @@ export default class UserList extends React.Component {
     } else if (!this.props.loading && this.props.users.length) {
       content = (
       <div className="test-user_list">
+        <Loading active={ this.props.saving } loadingDelayMS={0} text="Saving" style="globalSaving" />
         { this.documentation }
         <ComplexList>
           { this.props.users.map((user) => {
