@@ -67,14 +67,15 @@ describe('User roles', function () {
     });
 
     it('should not have the user invite panel', function () {
-      const ells = browser.elements('.test-users-invite');
+      let ells;
       userRoleElement.setAndGetUserRole(cookieManagerOrgXSpaceXX);
       browser.url(urlOrgXSpaceXX);
 
       browser.waitForExist('.test-users');
       browser.waitForExist('.test-users-invite', 500, true);
+      ells = browser.elements('.test-users-invite');
 
-      expect(ells.length).toBe(0);
+      expect(ells.length).toBe(undefined);
     });
   });
 });
