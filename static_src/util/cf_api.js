@@ -451,7 +451,7 @@ export default {
   },
 
   putAssociateUserToSpace(userGuid, spaceGuid) {
-    return http.put(`${APIV}/spaces/${spaceGuid}/auditors`, { auditor_guid: userGuid })
+    return http.put(`${APIV}/spaces/${spaceGuid}/auditors/${userGuid}`)
       .then((res) => this.formatSplitResponse(res.data));
   },
 
