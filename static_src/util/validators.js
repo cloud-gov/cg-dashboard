@@ -1,3 +1,5 @@
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
 export function validateInteger(options) {
   const { max, min } = options || {};
   return function _validateInteger(text) {
@@ -41,7 +43,7 @@ export function validateString() {
 
 export function validateEmail() {
   return function _validateEmail(value, name) {
-    if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value))) {
+    if (!(EMAIL_REGEX).test(value)) {
       const nameString = (name ? `in ${name} ` : '');
       return {
         message: `The value entered ${nameString}is not a valid e-mail address`
