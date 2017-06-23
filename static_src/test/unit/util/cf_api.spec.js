@@ -117,6 +117,42 @@ describe('cfApi', function() {
     });
   });
 
+  describe('putAssociateUserToEntity()', function() {
+    it('associate a user to org when entityType is org_users', function(done) {
+      const entityType = 'org_users';
+      const entityGuid = 'fake-org-guid';
+      const userGuid = 'fake-user-guid';
+      const spy = sandbox.stub(http, 'put');
+      const users = [{ userGuid: 'user-guid' }];
+      sandbox.stub(cfApi, 'fetchEntityName').returns(entityType);
+      sandbox.stub(userActions, 'fetchEntityUsers').returns(users);
+      spy.returns(createPromise({ data: {}}));
+      cfApi.putAssociateUserToEntity(userGuid, entityGuid, entityType).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch(`/organizations/${entityGuid}/users/${userGuid}`);
+        done();
+      });
+    });
+
+    it('associate a user to space when entityType is space_users', function(done) {
+      const entityType = 'space_users';
+      const entityGuid = 'fake-space-guid';
+      const userGuid = 'fake-user-guid';
+      const spy = sandbox.stub(http, 'put');
+      const users = [{ userGuid: 'user-guid' }];
+      sandbox.stub(cfApi, 'fetchEntityName').returns(entityType);
+      sandbox.stub(userActions, 'fetchEntityUsers').returns(users);
+      spy.returns(createPromise({ data: {}}));
+      cfApi.putAssociateUserToEntity(userGuid, entityGuid, entityType).then(() => {
+        const args = spy.getCall(0).args;
+        expect(spy).toHaveBeenCalledOnce();
+        expect(args[0]).toMatch(`/spaces/${entityGuid}/auditors/${userGuid}`);
+        done();
+      });
+    });
+  });
+
   describe('formatSplitResponse()', function() {
     var testRezs;
 

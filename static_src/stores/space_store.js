@@ -15,6 +15,7 @@ class SpaceStore extends BaseStore {
     this._currentSpaceGuid = null;
     this._loading = [];
     this._fetchAll = false;
+    this._cfName = 'space_users';
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
@@ -100,6 +101,10 @@ class SpaceStore extends BaseStore {
 
   currentSpace() {
     return this.get(this._currentSpaceGuid);
+  }
+
+  get cfName() {
+    return this._cfName;
   }
 
   get currentSpaceGuid() {

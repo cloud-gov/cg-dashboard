@@ -17,6 +17,7 @@ export class OrgStore extends BaseStore {
     this._currentOrgGuid = null;
     this._fetchOrg = false;
     this._fetchAll = false;
+    this._cfName = 'org_users';
   }
 
   get loading() {
@@ -130,6 +131,10 @@ export class OrgStore extends BaseStore {
 
   currentOrg() {
     return this.get(this._currentOrgGuid);
+  }
+
+  get cfName() {
+    return this._cfName;
   }
 
   get currentOrgGuid() {

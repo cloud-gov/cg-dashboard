@@ -255,14 +255,14 @@ describe('UserStore', function () {
     it('should emit a change event if data changed', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
       const userGuid = "fake-user-guid";
-      const orgGuid = "fake-org-guid";
-      const orgUsers = [
+      const entityGuid = "fake-org-guid";
+      const entityUsers = [
         {userGuid: userGuid},
         {userGuid: "fake-user-guid-2"},
         {userGuid: "fake-user-guid-3"}
       ];
 
-      userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers);
+      userActions.createdUserAndAssociated(userGuid, entityGuid, entityUsers);
 
       expect(spy).toHaveBeenCalledOnce();
     });
