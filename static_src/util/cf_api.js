@@ -1,7 +1,6 @@
 import http from 'axios';
 
 import { noticeError } from '../util/analytics.js';
-import OrgStore from '../stores/org_store.js';
 import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
 import quotaActions from '../actions/quota_actions.js';
@@ -9,7 +8,6 @@ import routeActions from '../actions/route_actions.js';
 import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
-const ORG_NAME = OrgStore.cfName;
 
 // An error from the CF v2 API
 function CfApiV2Error(response) {
@@ -437,10 +435,8 @@ export default {
 
   putAssociateUserToEntity(userGuid, entityGuid, entityType) {
     let resp;
-    if (entityType === ORG_NAME) {
+    if (entityType === 'org_users') {
       resp = this.putAssociateUserToOrganization(userGuid, entityGuid);
-    } else {
-      resp = this.putAssociateUserToSpace(userGuid, entityGuid);
     }
     return Promise.resolve(resp);
   },
