@@ -148,6 +148,7 @@ export default class Users extends React.Component {
     }
 
     let notification;
+    let userInvite;
 
     if (this.state.inviteNotices.description) {
       const notice = this.state.inviteNotices;
@@ -161,14 +162,20 @@ export default class Users extends React.Component {
       );
     }
 
-    return (
-      <div className="test-users">
-        { errorMessage }
+    if (this.state.currentType === ORG_NAME) {
+      userInvite = (
         <UsersInvite
           inviteDisabled={ this.state.inviteDisabled }
           currentUserAccess={ this.state.currentUserAccess }
           error={ this.state.userInviteError }
         />
+      );
+    }
+
+    return (
+      <div className="test-users">
+        { errorMessage }
+        { userInvite }
         { notification }
         <div>
           <div>
