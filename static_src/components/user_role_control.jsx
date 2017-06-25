@@ -18,7 +18,8 @@ export default class UserRoleControl extends React.Component {
   }
 
   _handleChange(ev) {
-    this.props.onChange(ev.target.checked);
+    const { roleKey, onChange } = this.props;
+    onChange(roleKey, ev.target.checked);
   }
 
   render() {

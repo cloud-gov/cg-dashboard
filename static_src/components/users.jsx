@@ -14,6 +14,8 @@ import UsersInvite from './users_invite.jsx';
 import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
 
+import ErrorMessage from './error_message.jsx';
+
 const SPACE_NAME = SpaceStore.cfName;
 const ORG_NAME = OrgStore.cfName;
 
@@ -120,7 +122,6 @@ export default class Users extends React.Component {
 
   render() {
     let removeHandler;
-    let errorMessage;
 
     if (this.state.currentType === ORG_NAME) {
       removeHandler = this.handleRemove;
@@ -139,14 +140,6 @@ export default class Users extends React.Component {
       onRemovePermissions={ this.handleRemovePermissions }
     />);
 
-    if (this.state.error) {
-      // TODO make this an error message component
-      errorMessage = (
-        <div className="alert alert-danger" role="alert">
-          { this.state.error.description }</div>
-      );
-    }
-
     let notification;
     let userInvite;
 
@@ -164,6 +157,7 @@ export default class Users extends React.Component {
 
     if (this.state.currentType === ORG_NAME) {
       userInvite = (
+      <div className="test-users">
         <UsersInvite
           inviteDisabled={ this.state.inviteDisabled }
           currentUserAccess={ this.state.currentUserAccess }
@@ -174,7 +168,7 @@ export default class Users extends React.Component {
 
     return (
       <div className="test-users">
-        { errorMessage }
+        <ErrorMessage error={this.state.error} />
         { userInvite }
         { notification }
         <div>

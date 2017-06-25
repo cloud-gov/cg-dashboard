@@ -252,6 +252,7 @@ const userActionTypes = keymirror({
   USER_ROLES_DELETE: null,
   // Action when user roles are deleted on the server.
   USER_ROLES_DELETED: null,
+  USER_ROLE_CHANGE_ERROR: null,
   // Action to request an invite link from UAA, with user GUID.
   USER_INVITE_TRIGGER: null,
   // Action to trigger when invite status is triggered for front end.
