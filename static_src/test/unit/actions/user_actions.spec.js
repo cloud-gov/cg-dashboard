@@ -15,7 +15,6 @@ import OrgStore from '../../../stores/org_store';
 describe('userActions', function() {
   var sandbox;
 
-
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
     moxios.install();
@@ -233,7 +232,7 @@ describe('userActions', function() {
     });
 
     it('should dispatch a view event of type create invite notification with false', function(done) {
-      description = 'No verified cloud.gov account was found for this@that.com, so the user has been sent an email invitation. Their account has been associated to this space, and their space roles can be controlled below.';
+      description = 'An email invite was sent to this@that.com. Their account has been associated to this space, and their space roles can be controlled below.';
       var expected = {
         noticeType,
         description

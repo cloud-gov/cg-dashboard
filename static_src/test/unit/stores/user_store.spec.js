@@ -720,7 +720,7 @@ describe('UserStore', function () {
     let notice;
 
     beforeEach(function() {
-      notice = { noticeType: "finish", description: "No verified cloud.gov account was found for undefined, so the user has been sent an email invitation. Their account has been associated to this space, and their space roles can be controlled below." };
+      notice = { noticeType: "finish", description: "An email invite was sent to undefined. Their account has been associated to this space, and their space roles can be controlled below." };
       UserStore._inviteNotification = notice;
       sandbox.spy(UserStore, 'emitChange');
 
