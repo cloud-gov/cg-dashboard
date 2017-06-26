@@ -10,6 +10,8 @@ const propTypes = {
   onChange: React.PropTypes.func
 };
 
+const dangerousRole = 'org_manager';
+
 const warningMessage = 'Performing this action will remove your ability to adjust user\'s roles! Are you sure you want to continue?';
 
 export default class UserRoleControl extends React.Component {
@@ -19,16 +21,24 @@ export default class UserRoleControl extends React.Component {
     this._handleChange = this._handleChange.bind(this);
   }
 
+  userSelfRemovingOrgManager(role, removing) {
+    const { userId } = this.props;
+    const { currentUser: { user_id: { currentUserId } } } = this.context;
+
+    return userId === currentUserId && role === dangerousRole && removing;
+  }
+
   _handleChange(ev) {
     const { roleKey, onChange } = this.props;
+    const { checked, name: { role } } = ev.target;
     let shouldContinue = true;
 
-    if (this.props.userId === this.context.currentUser.user_id) {
+    if (this.userSelfRemovingOrgManager(role, checked)) {
       shouldContinue = window.confirm(warningMessage);
     }
 
     if (shouldContinue) {
-      onChange(roleKey, ev.target.checked);
+      onChange(roleKey, checked);
     }
   }
 

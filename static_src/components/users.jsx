@@ -157,12 +157,13 @@ export default class Users extends React.Component {
 
     if (this.state.currentType === ORG_NAME) {
       userInvite = (
-      <div className="test-users">
-        <UsersInvite
-          inviteDisabled={ this.state.inviteDisabled }
-          currentUserAccess={ this.state.currentUserAccess }
-          error={ this.state.userInviteError }
-        />
+        <div className="test-users">
+          <UsersInvite
+            inviteDisabled={ this.state.inviteDisabled }
+            currentUserAccess={ this.state.currentUserAccess }
+            error={ this.state.userInviteError }
+          />
+        </div>
       );
     }
 
