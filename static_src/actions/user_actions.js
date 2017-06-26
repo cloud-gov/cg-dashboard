@@ -207,9 +207,8 @@ const userActions = {
       description = `The cloud.gov account for ${email} is now associated to this ` +
         `${entity}. Control their ${entity} roles below.`;
     } else {
-      description = `No verified cloud.gov account was found for ${email}, so ` +
-      'the user has been sent an email invitation. Their account has been ' +
-      `associated to this ${entity}, and their ${entity} roles can ` +
+      description = `${email} has been sent an email invitation. Their account ` +
+      `has been associated to this ${entity}, and their ${entity} roles can ` +
       'be controlled below.';
     }
 
