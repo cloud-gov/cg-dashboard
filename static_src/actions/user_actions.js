@@ -134,7 +134,7 @@ const userActions = {
       entityGuid,
       roles,
       apiKey
-    ).catch(err => this.errorChangeUserRole(error));
+    ).catch(error => this.errorChangeUserRole(error));
   },
 
   deletedUserRoles(roles, userGuid, entityGuid, entityType) {
@@ -148,7 +148,7 @@ const userActions = {
   },
 
   errorChangeUserRole(error) {
-    const message = `You don't have permission to perform that action`
+    const message = 'You don\'t have permission to perform that action';
 
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLE_CHANGE_ERROR,

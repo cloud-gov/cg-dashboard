@@ -10,7 +10,7 @@ const propTypes = {
   onChange: React.PropTypes.func
 };
 
-const warningMessage = `Performing this action will remove your ability to adjust user's roles! Are you sure you want to continue?`;
+const warningMessage = 'Performing this action will remove your ability to adjust user\'s roles! Are you sure you want to continue?';
 
 export default class UserRoleControl extends React.Component {
   constructor(props, context) {

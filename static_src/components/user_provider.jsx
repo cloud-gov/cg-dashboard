@@ -3,10 +3,6 @@ import UserStore from '../stores/user_store.js';
 
 const userProvider = Component => {
   class UserProvider extends React.Component {
-    getChildContext() {
-      return { currentUser: this.state.currentUser };
-    }
-
     constructor(props) {
       super(props);
 
@@ -14,22 +10,26 @@ const userProvider = Component => {
       this.onChange = this.onChange.bind(this);
     }
 
+    getChildContext() {
+      return { currentUser: this.state.currentUser };
+    }
+
     componentDidMount() {
       UserStore.addChangeListener(this.onChange);
     }
 
     componentWillUnmount() {
-      UserStore.removeChangeListener(this.onChange)
+      UserStore.removeChangeListener(this.onChange);
     }
 
     onChange() {
       this.setState({
         currentUser: UserStore.currentUser
-      })
+      });
     }
 
     render() {
-      return <Component {...this.props} />
+      return <Component {...this.props} />;
     }
   }
 
