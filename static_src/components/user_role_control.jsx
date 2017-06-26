@@ -10,16 +10,26 @@ const propTypes = {
   onChange: React.PropTypes.func
 };
 
+const warningMessage = `Performing this action will remove your ability to adjust user's roles! Are you sure you want to continue?`;
+
 export default class UserRoleControl extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
 
     this._handleChange = this._handleChange.bind(this);
   }
 
   _handleChange(ev) {
     const { roleKey, onChange } = this.props;
-    onChange(roleKey, ev.target.checked);
+    let shouldContinue = true;
+
+    if (this.props.userId === this.context.currentUser.user_id) {
+      shouldContinue = window.confirm(warningMessage);
+    }
+
+    if (shouldContinue) {
+      onChange(roleKey, ev.target.checked);
+    }
   }
 
   render() {
@@ -45,6 +55,9 @@ export default class UserRoleControl extends React.Component {
   }
 };
 
+UserRoleControl.contextTypes = {
+  currentUser: React.PropTypes.object
+};
 UserRoleControl.propTypes = propTypes;
 UserRoleControl.defaultProps = {
   initialValue: false,

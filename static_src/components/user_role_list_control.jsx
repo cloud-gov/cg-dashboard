@@ -43,7 +43,6 @@ const roleMapping = {
     { key: 'billing_manager', apiKey: 'billing_managers', label: 'Billing Manager' },
     { key: 'org_auditor', apiKey: 'auditors', label: 'Org Auditor' }
   ]
-
 };
 
 const propTypes = {
