@@ -166,6 +166,24 @@ describe('User roles', function () {
           expect(userRoleElement.toggleBillingManagerAccess(guidManagerOrgY, false)).toBe(true);
           expect(userRoleElement.toggleOrgAuditorAccess(guidManagerOrgY, false)).toBe(true);
         });
+
+        describe('alerts when toggling user\s own org manager role', function () {
+          beforeEach(function () {
+            browser.click(`#org_manager${guidManagerOrgX}`);
+          });
+
+          it('should not toggle role when alert is dismissed', function () {
+            browser.alertDismiss();
+
+            expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
+          });
+
+          it('should toggle role when alert is accepted', function () {
+            browser.alertAccept();
+
+            expect(userRoleElement.isFirstUserRoleEnabled()).toBe(false);
+          });
+        });
       });
     });
 

@@ -22,18 +22,14 @@ const defaultProps = {
 export default class ErrorMessage extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
     this.styler = createStyler(style);
   }
 
   get errorMessage() {
-    const err = this.props.error;
-    return err && err.message || err.description;
-  }
+    const { error } = this.props;
+    const message = error && error.message || error.description;
 
-  get hasErrorMessage() {
-    const message = this.errorMessage;
-    return message && message.length;
+    return message ? this.knownMessage(message) : this.shortDefaultMessage;
   }
 
   get statusCode() {
@@ -49,23 +45,23 @@ export default class ErrorMessage extends React.Component {
     );
   }
 
-  get knownMessage() {
-    return (<span>The system returned an error, { this.errorMessage }. Please
-      try again.</span>);
+  knownMessage(message) {
+    return `The system returned an error, ${message}. Please
+      try again`;
   }
 
   render() {
-    const typeClass = `error-${this.props.displayType}`;
-    let content = <span>{ this.shortDefaultMessage }</span>;
+    const { displayType, error } = this.props;
+    const typeClass = `error-${displayType}`;
 
-    if (this.hasErrorMessage) {
-      content = <span>{ this.knownMessage }</span>;
+    if (!error) {
+      return null;
     }
 
     return (
-    <div className={ this.styler('error_message', typeClass) }>
-      { content }
-    </div>
+      <div className={ this.styler('error_message', typeClass) } role="alert">
+        { this.errorMessage }
+      </div>
     );
   }
 }
