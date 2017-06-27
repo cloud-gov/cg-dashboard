@@ -79,9 +79,15 @@ var inviteUsersTest = []BasicProxyTest{
 		Handlers: []Handler{
 			{
 				RequestMethod: "POST",
-				ExpectedPath:  "/invite_users",
+				ExpectedPath:  "/invite_users?redirect_uri=https://hostname",
 				Response:      "{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"user-guid\"}]}",
 				ResponseCode:  http.StatusOK,
+			},
+			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/Users?filter=email+eq+%22test%40example.com%22",
+				ResponseCode:  http.StatusOK,
+				Response:      "{\"resources\": [{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }]}",
 			},
 			{
 				RequestMethod: "GET",
@@ -112,9 +118,15 @@ var inviteUsersTest = []BasicProxyTest{
 		Handlers: []Handler{
 			{
 				RequestMethod: "POST",
-				ExpectedPath:  "/invite_users",
+				ExpectedPath:  "/invite_users?redirect_uri=https://hostname",
 				Response:      "{\"new_invites\": [{\"inviteLink\": \"http://some.link\", \"userId\": \"user-guid\"}]}",
 				ResponseCode:  http.StatusOK,
+			},
+			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/Users?filter=email+eq+%22test%40example.com%22",
+				ResponseCode:  http.StatusOK,
+				Response:      "{\"resources\": [{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }]}",
 			},
 			{
 				RequestMethod: "GET",
@@ -145,9 +157,15 @@ var inviteUsersTest = []BasicProxyTest{
 		Handlers: []Handler{
 			{
 				RequestMethod: "POST",
-				ExpectedPath:  "/invite_users",
+				ExpectedPath:  "/invite_users?redirect_uri=https://hostname",
 				Response:      "{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"user-guid\", \"inviteLink\": \"http://some.link\"}]}",
 				ResponseCode:  http.StatusOK,
+			},
+			{
+				RequestMethod: "GET",
+				ExpectedPath:  "/Users?filter=email+eq+%22test%40example.com%22",
+				ResponseCode:  http.StatusOK,
+				Response:      "{\"resources\": [{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }]}",
 			},
 			{
 				RequestMethod: "GET",
@@ -178,20 +196,15 @@ var inviteUsersTest = []BasicProxyTest{
 		Handlers: []Handler{
 			{
 				RequestMethod: "POST",
-				ExpectedPath:  "/invite_users",
+				ExpectedPath:  "/invite_users?redirect_uri=https://hostname",
 				Response:      "{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"user-guid\", \"inviteLink\": \"http://some.link\"}]}",
 				ResponseCode:  http.StatusOK,
 			},
 			{
 				RequestMethod: "GET",
-				ExpectedPath:  "/Users/user-guid",
+				ExpectedPath:  "/Users?filter=email+eq+%22test%40example.com%22",
 				ResponseCode:  http.StatusOK,
-				Response:      "{\"active\": true, \"verified\": true, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }",
-			},
-			{
-				RequestMethod: "POST",
-				ExpectedPath:  "/v2/users",
-				ResponseCode:  http.StatusCreated,
+				Response:      "{\"resources\": [{\"active\": true, \"verified\": true, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }]}",
 			},
 		},
 	},

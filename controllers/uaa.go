@@ -10,6 +10,7 @@ import (
 
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 
 	"github.com/gocraft/web"
 )
@@ -211,37 +212,36 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 		return
 	}
 
-	// Try to invite the user to UAA.
-	inviteResponse, err := c.InviteUAAuser(inviteUserToOrgRequest)
-
+	var getUserResp GetUAAUserResponse
+	getUserResp, err = c.GetUAAUserByEmail(inviteUserToOrgRequest.Email)
 	if err != nil {
 		err.writeTo(rw)
 		return
 	}
+	if !getUserResp.Verified {
+		// Try to invite the user to UAA.
+		inviteResponse, err := c.InviteUAAuser(inviteUserToOrgRequest)
+		if err != nil {
+			err.writeTo(rw)
+			return
+		}
 
-	// If we don't have a successful invite, we return an error.
-	if len(inviteResponse.NewInvites) < 1 {
-		rw.WriteHeader(http.StatusInternalServerError)
-		rw.Write([]byte("{\"status\": \"failure\", " +
-			"\"data\": \"no successful invites created.\"}"))
-		return
-	}
-	userInvite := inviteResponse.NewInvites[0]
+		// If we don't have a successful invite, we return an error.
+		if len(inviteResponse.NewInvites) < 1 {
+			rw.WriteHeader(http.StatusInternalServerError)
+			rw.Write([]byte("{\"status\": \"failure\", " +
+				"\"data\": \"no successful invites created.\"}"))
+			return
+		}
+		userInvite := inviteResponse.NewInvites[0]
 
-	// Next try to create the user in CF
-	err = c.CreateCFuser(userInvite)
-	if err != nil {
-		err.writeTo(rw)
-		return
-	}
+		// Next try to create the user in CF
+		err = c.CreateCFuser(userInvite)
+		if err != nil {
+			err.writeTo(rw)
+			return
+		}
 
-	verifyResp, err := c.GetUAAUser(userInvite)
-	if err != nil {
-		err.writeTo(rw)
-		return
-	}
-
-	if verifyResp.Verified == false {
 		// Trigger the e-mail invite.
 		err = c.TriggerInvite(inviteEmailRequest{
 			Email:     userInvite.Email,
@@ -256,29 +256,48 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 	rw.WriteHeader(http.StatusOK)
 	rw.Write([]byte(fmt.Sprintf("{\"status\": \"success\", "+
 		"\"userGuid\": \"%s\", "+
-		"\"verified\": %t}", userInvite.UserID, verifyResp.Verified)))
+		"\"verified\": %t}", getUserResp.ID, getUserResp.Verified)))
 }
 
-// GetUAAUser will query UAA for a particular user.
-func (c *UAAContext) GetUAAUser(userInvite NewInvite) (
-	verifyResp GetUAAUserResponse, err *UaaError) {
-	reqURL := fmt.Sprintf("%s%s%s", "/Users/", userInvite.UserID, "")
+// ListUAAUserResponse is the response representation of the User list query.
+// https://docs.cloudfoundry.org/api/uaa/#list63
+type ListUAAUserResponse struct {
+	Resources []GetUAAUserResponse `json:"resources"`
+}
 
+// GetUAAUserByEmail will query UAA for user(s) by e-mail.
+// Only return one user result.
+// Special cases:
+// If multiple are found, an empty response is returned.
+// If none are found, an empty response is returned.
+// Both special cases return no error.
+func (c *UAAContext) GetUAAUserByEmail(email string) (
+	userResponse GetUAAUserResponse, err *UaaError) {
+	filterQuery := fmt.Sprintf("email eq \"%s\"", email)
+	reqURL := fmt.Sprintf("/Users?filter=%s", url.QueryEscape(filterQuery))
 	reqVerify, _ := http.NewRequest("GET", reqURL, nil)
 	w := httptest.NewRecorder()
 	c.uaaProxy(w, reqVerify, reqURL, true)
+	// It will always return StatusOK even if it returns an empty resources list.
 	if w.Code != http.StatusOK {
-		resp := w.Result()
-		body, _ := ioutil.ReadAll(resp.Body)
 		err = &UaaError{http.StatusInternalServerError,
 			[]byte("{\"status\": \"failure\", \"data\": \"" +
-				"unable to create user in UAA database.\", \"proxy-data\": \"" +
-				string(body) + "\"}")}
+				"unable to find user.\"}")}
 		return
 	}
 	resp := w.Result()
+	var listUsersResponse ListUAAUserResponse
+	err = readBodyToStruct(resp.Body, &listUsersResponse)
+	if err != nil {
+		return
+	}
+	// In the case we don't find anything or find duplicates, just return.
+	if len(listUsersResponse.Resources) != 1 {
+		return
+	}
 
-	err = readBodyToStruct(resp.Body, &verifyResp)
+	// In the case we find one, let's return that.
+	userResponse = listUsersResponse.Resources[0]
 	return
 }
 
