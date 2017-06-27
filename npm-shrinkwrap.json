@@ -1022,9 +1022,9 @@
       "resolved": "https://registry.npmjs.org/clone/-/clone-1.0.2.tgz"
     },
     "cloudgov-style": {
-      "version": "2.6.1",
-      "from": "cloudgov-style@>=2.6.1 <3.0.0",
-      "resolved": "https://registry.npmjs.org/cloudgov-style/-/cloudgov-style-2.6.1.tgz"
+      "version": "2.6.4",
+      "from": "cloudgov-style@>=2.6.4 <3.0.0",
+      "resolved": "https://registry.npmjs.org/cloudgov-style/-/cloudgov-style-2.6.4.tgz"
     },
     "co": {
       "version": "4.6.0",
