@@ -23,17 +23,17 @@ export default class UserRoleControl extends React.Component {
 
   userSelfRemovingOrgManager(role, removing) {
     const { userId } = this.props;
-    const { currentUser: { user_id: { currentUserId } } } = this.context;
+    const currentUserId = this.context.currentUser.user_id;
 
     return userId === currentUserId && role === dangerousRole && removing;
   }
 
   _handleChange(ev) {
     const { roleKey, onChange } = this.props;
-    const { checked, name: { role } } = ev.target;
+    const { checked, name } = ev.target;
     let shouldContinue = true;
 
-    if (this.userSelfRemovingOrgManager(role, checked)) {
+    if (this.userSelfRemovingOrgManager(name, !checked)) {
       shouldContinue = window.confirm(warningMessage);
     }
 
@@ -68,6 +68,7 @@ export default class UserRoleControl extends React.Component {
 UserRoleControl.contextTypes = {
   currentUser: React.PropTypes.object
 };
+
 UserRoleControl.propTypes = propTypes;
 UserRoleControl.defaultProps = {
   initialValue: false,
