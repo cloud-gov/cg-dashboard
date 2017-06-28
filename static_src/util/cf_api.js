@@ -400,13 +400,10 @@ export default {
       /${userGuid}`);
   },
 
-  deleteOrgUserPermissions(userGuid, orgGuid, permissions, apiKey) {
+  deleteOrgUserPermissions(userGuid, orgGuid, apiKey) {
     return http.delete(`${APIV}/organizations/${orgGuid}/${apiKey}/${userGuid}`)
-      .then(() => {
-        userActions.deletedUserRoles(permissions, userGuid, orgGuid, 'organizations');
-      }, (err) => {
-        userActions.errorRemoveUser(userGuid, err.response.data);
-      });
+      .then((res) => res.response
+    );
   },
 
   putOrgUserPermissions(userGuid, orgGuid, permissions) {
@@ -458,14 +455,10 @@ export default {
       .then((res) => this.formatSplitResponse(res.data));
   },
 
-  // TODO refactor with org user permissions
-  deleteSpaceUserPermissions(userGuid, spaceGuid, role, apiKey) {
+  deleteSpaceUserPermissions(userGuid, spaceGuid, apiKey) {
     return http.delete(`${APIV}/spaces/${spaceGuid}/${apiKey}/${userGuid}`)
-    .then(() => {
-      userActions.deletedUserRoles(role, userGuid, spaceGuid, 'spaces');
-    }, (err) => {
-      userActions.errorRemoveUser(userGuid, err.response.data);
-    });
+      .then((res) => res.response
+    );
   },
 
   fetchServicePlan(servicePlanGuid) {

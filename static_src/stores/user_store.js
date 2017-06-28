@@ -156,7 +156,6 @@ export class UserStore extends BaseStore {
         const orgPermissionsReq = cfApi.deleteOrgUserPermissions(
           action.userGuid,
           action.orgGuid,
-          'users',
           'users');
 
         orgPermissionsReq.then(() => {

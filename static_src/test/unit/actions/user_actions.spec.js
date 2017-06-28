@@ -587,7 +587,7 @@ describe('userActions', function() {
 
       beforeEach(function(done) {
         sandbox.spy(cfApi, 'deleteOrgUserPermissions');
-        sandbox.spy(userActions, 'errorRemoveUser');
+        sandbox.spy(userActions, 'errorChangeUserRole');
         sandbox.stub(userActions, 'deletedUserRoles').returns(Promise.resolve());
         roles = ['org_manager'];
         apiKey = 'managers';
@@ -616,7 +616,6 @@ describe('userActions', function() {
         expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           orgGuid,
-          roles,
           apiKey
         ));
       });
@@ -631,8 +630,8 @@ describe('userActions', function() {
         ));
       });
 
-      it('should not call errorRemoveUser', function() {
-        expect(userActions.errorRemoveUser.called).toEqual(false);
+      it('should not call errorChangeUserRole', function() {
+        expect(userActions.errorChangeUserRole.called).toEqual(false);
       });
     });
 
@@ -645,7 +644,7 @@ describe('userActions', function() {
       beforeEach(function(done) {
         sandbox.spy(cfApi, 'deleteOrgUserPermissions');
         sandbox.spy(userActions, 'deletedUserRoles');
-        sandbox.stub(userActions, 'errorRemoveUser').returns(Promise.resolve());
+        sandbox.spy(userActions, 'errorChangeUserRole');
         roles = ['org_manager'];
         apiKey = 'managers';
         userGuid = 'user-123';
@@ -674,15 +673,13 @@ describe('userActions', function() {
         expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           orgGuid,
-          roles,
           apiKey
         ));
       });
 
-      it('should call errorRemoveUser with the userGuid and the error response', function() {
-        expect(userActions.errorRemoveUser).toHaveBeenCalledOnce();
-        expect(userActions.errorRemoveUser).toHaveBeenCalledWith(sinon.match(
-          userGuid,
+      it('should call errorChangeUserRole with the userGuid and the error response', function() {
+        expect(userActions.errorChangeUserRole).toHaveBeenCalledOnce();
+        expect(userActions.errorChangeUserRole).toHaveBeenCalledWith(sinon.match(
           {}
         ));
       });
@@ -700,7 +697,7 @@ describe('userActions', function() {
 
       beforeEach(function(done) {
         sandbox.spy(cfApi, 'deleteSpaceUserPermissions');
-        sandbox.spy(userActions, 'errorRemoveUser');
+        sandbox.spy(userActions, 'errorChangeUserRole');
         sandbox.stub(userActions, 'deletedUserRoles').returns(Promise.resolve());
         roles = ['space_manager'];
         apiKey = 'managers';
@@ -729,7 +726,6 @@ describe('userActions', function() {
         expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           spaceGuid,
-          roles,
           apiKey
         ));
       });
@@ -744,8 +740,8 @@ describe('userActions', function() {
         ));
       });
 
-      it('should not call errorRemoveUser', function() {
-        expect(userActions.errorRemoveUser.called).toEqual(false);
+      it('should not call errorChangeUserRole', function() {
+        expect(userActions.errorChangeUserRole.called).toEqual(false);
       });
     });
   });
@@ -759,7 +755,7 @@ describe('userActions', function() {
     beforeEach(function(done) {
       sandbox.spy(cfApi, 'deleteSpaceUserPermissions');
       sandbox.spy(userActions, 'deletedUserRoles');
-      sandbox.stub(userActions, 'errorRemoveUser').returns(Promise.resolve());
+      sandbox.spy(userActions, 'errorChangeUserRole');
       roles = ['space_manager'];
       apiKey = 'managers';
       userGuid = 'user-123';
@@ -788,15 +784,13 @@ describe('userActions', function() {
       expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
         userGuid,
         spaceGuid,
-        roles,
         apiKey
       ));
     });
 
-    it('should call errorRemoveUser action with all information', function() {
-      expect(userActions.errorRemoveUser).toHaveBeenCalledOnce();
-      expect(userActions.errorRemoveUser).toHaveBeenCalledWith(sinon.match(
-        userGuid,
+    it('should call errorChangeUserRole action with all information', function() {
+      expect(userActions.errorChangeUserRole).toHaveBeenCalledOnce();
+      expect(userActions.errorChangeUserRole).toHaveBeenCalledWith(sinon.match(
         {}
       ));
     });

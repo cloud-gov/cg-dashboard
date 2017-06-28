@@ -132,9 +132,14 @@ const userActions = {
     return api(
       userGuid,
       entityGuid,
-      roles,
       apiKey
-    ).catch(error => this.errorChangeUserRole(error));
+    ).then(() => {
+      userActions.deletedUserRoles(
+        roles,
+        userGuid,
+        entityGuid,
+        entityType);
+    }).catch(error => this.errorChangeUserRole(error));
   },
 
   deletedUserRoles(roles, userGuid, entityGuid, entityType) {
