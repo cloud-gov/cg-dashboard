@@ -7,7 +7,7 @@ import AppDispatcher from '../../../dispatcher.js';
 import cfApi from '../../../util/cf_api.js';
 import { UserStore as _UserStore } from '../../../stores/user_store.js';
 import userActions from '../../../actions/user_actions.js';
-import { userActionTypes } from '../../../constants';
+import { userActionTypes, errorActionTypes } from '../../../constants';
 
 describe('UserStore', function () {
   let sandbox, UserStore;
@@ -825,6 +825,29 @@ describe('UserStore', function () {
         expect(actual).toBe(notice);
       });
 
+    });
+  });
+
+  describe('on CLEAR', () => {
+    beforeEach(function() {
+      const notice = { noticeType: "finish", description: "message" };
+      UserStore._inviteNotification = notice;
+      UserStore._error = 'something';
+      UserStore._saving = true;
+      UserStore._inviteError = 'invite error';
+      UserStore._loading = {currentUser: true};
+      sandbox.spy(UserStore, 'emitChange');
+      AppDispatcher.handleViewAction({
+        type: errorActionTypes.CLEAR,
+      });
+
+    });
+    it('resets all of the notifications and errors', () => {
+      expect(UserStore._inviteNotification).toEqual({});
+      expect(UserStore._error).toBe(null);
+      expect(UserStore._saving).toEqual(false);
+      expect(UserStore._inviteError).toBe(null);
+      expect(UserStore._loading).toEqual({});
     });
   });
 
