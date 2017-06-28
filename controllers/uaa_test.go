@@ -90,12 +90,6 @@ var inviteUsersTest = []BasicProxyTest{
 				Response:      "{\"resources\": [{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }]}",
 			},
 			{
-				RequestMethod: "GET",
-				ExpectedPath:  "/Users/user-guid",
-				ResponseCode:  http.StatusOK,
-				Response:      "{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }",
-			},
-			{
 				RequestMethod: "POST",
 				ExpectedPath:  "/v2/users",
 				ResponseCode:  http.StatusCreated,
@@ -129,12 +123,6 @@ var inviteUsersTest = []BasicProxyTest{
 				Response:      "{\"resources\": [{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }]}",
 			},
 			{
-				RequestMethod: "GET",
-				ExpectedPath:  "/Users/user-guid",
-				ResponseCode:  http.StatusOK,
-				Response:      "{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }",
-			},
-			{
 				RequestMethod: "POST",
 				ExpectedPath:  "/v2/users",
 				ResponseCode:  http.StatusCreated,
@@ -144,7 +132,7 @@ var inviteUsersTest = []BasicProxyTest{
 	{
 		BasicSecureTest: BasicSecureTest{
 			BasicConsoleUnitTest: BasicConsoleUnitTest{
-				TestName:    "UAA Invite User with e-mail in body",
+				TestName:    "UAA Invite User with e-mail in body (new user)",
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
@@ -165,13 +153,7 @@ var inviteUsersTest = []BasicProxyTest{
 				RequestMethod: "GET",
 				ExpectedPath:  "/Users?filter=email+eq+%22test%40example.com%22",
 				ResponseCode:  http.StatusOK,
-				Response:      "{\"resources\": [{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }]}",
-			},
-			{
-				RequestMethod: "GET",
-				ExpectedPath:  "/Users/user-guid",
-				ResponseCode:  http.StatusOK,
-				Response:      "{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }",
+				Response:      "{\"resources\": []}",
 			},
 			{
 				RequestMethod: "POST",
