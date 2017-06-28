@@ -251,6 +251,8 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 			err.writeTo(rw)
 			return
 		}
+		// Set the user info that get from the newly invited user.
+		getUserResp.ID = userInvite.UserID
 	}
 
 	rw.WriteHeader(http.StatusOK)
