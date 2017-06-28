@@ -132,7 +132,6 @@ const userActions = {
     return api(
       userGuid,
       entityGuid,
-      roles,
       apiKey
     ).then(() => {
       userActions.deletedUserRoles(

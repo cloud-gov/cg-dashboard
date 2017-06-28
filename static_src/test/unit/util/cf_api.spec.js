@@ -1037,13 +1037,11 @@ describe('cfApi', function() {
       var spy = sandbox.stub(http, 'delete').returns(Promise.resolve({})),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp',
-          expectedPermission = 'manager',
           expectedApiKey = 'managers';
 
       cfApi.deleteOrgUserPermissions(
         expectedUserGuid,
         expectedOrgGuid,
-        expectedPermission,
         expectedApiKey).then(() => {
           expect(spy).toHaveBeenCalledOnce();
           let actual = spy.getCall(0).args[0];
@@ -1059,23 +1057,23 @@ describe('cfApi', function() {
       var spy = sandbox.spy(http, 'delete'),
           expectedUserGuid = 'zcvmzxncbvpafd',
           expectedOrgGuid = '0291kdvakjbdfvhp',
-          expectedPermission = 'manager',
+          expectedApiKey = 'managers',
           expectedResponse = {
             code: 10006,
             description: 'Please delete the user associations for your spaces',
             error_code: 'CF-AssociationNotEmpty'
           };
-      moxios.stubOnce('DELETE', `/v2/organizations/${expectedOrgGuid}/${expectedPermission}/${expectedUserGuid}`, {
+      moxios.stubOnce('DELETE', `/v2/organizations/${expectedOrgGuid}/${expectedApiKey}/${expectedUserGuid}`, {
         status: 400,
         response: expectedResponse
       });
 
-      cfApi.deleteOrgUserPermissions(expectedUserGuid, expectedOrgGuid, expectedPermission, expectedPermission);
+      cfApi.deleteOrgUserPermissions(expectedUserGuid, expectedOrgGuid, expectedApiKey);
       expect(spy).toHaveBeenCalledOnce();
       let actual = spy.getCall(0).args[0];
       expect(actual).toMatch(new RegExp(expectedUserGuid));
       expect(actual).toMatch(new RegExp(expectedOrgGuid));
-      expect(actual).toMatch(new RegExp(expectedPermission));
+      expect(actual).toMatch(new RegExp(expectedApiKey));
       done();
     });
   });
@@ -1085,7 +1083,7 @@ describe('cfApi', function() {
       var spy = sandbox.spy(http, 'put'),
           expectedUserGuid = 'zvmxncznv-9u8qwphu',
           expectedOrgGuid = '0291kdvakjbdfvhp',
-          expectedPermission = 'manager';
+          expectedPermission = 'managers';
 
       cfApi.putOrgUserPermissions(
         expectedUserGuid,

@@ -616,7 +616,6 @@ describe('userActions', function() {
         expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           orgGuid,
-          roles,
           apiKey
         ));
       });
@@ -674,7 +673,6 @@ describe('userActions', function() {
         expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           orgGuid,
-          roles,
           apiKey
         ));
       });
@@ -728,7 +726,6 @@ describe('userActions', function() {
         expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
           userGuid,
           spaceGuid,
-          roles,
           apiKey
         ));
       });
@@ -787,7 +784,6 @@ describe('userActions', function() {
       expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledWith(sinon.match(
         userGuid,
         spaceGuid,
-        roles,
         apiKey
       ));
     });

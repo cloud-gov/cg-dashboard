@@ -400,7 +400,7 @@ export default {
       /${userGuid}`);
   },
 
-  deleteOrgUserPermissions(userGuid, orgGuid, permissions, apiKey) {
+  deleteOrgUserPermissions(userGuid, orgGuid, apiKey) {
     return http.delete(`${APIV}/organizations/${orgGuid}/${apiKey}/${userGuid}`)
       .then((res) => res.response
     );
@@ -455,7 +455,7 @@ export default {
       .then((res) => this.formatSplitResponse(res.data));
   },
 
-  deleteSpaceUserPermissions(userGuid, spaceGuid, role, apiKey) {
+  deleteSpaceUserPermissions(userGuid, spaceGuid, apiKey) {
     return http.delete(`${APIV}/spaces/${spaceGuid}/${apiKey}/${userGuid}`)
       .then((res) => res.response
     );
