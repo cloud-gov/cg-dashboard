@@ -285,6 +285,22 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on user role toggle error', () => {
+    it('updates the error and saving properties of the user store', () => {
+      const message = 'oh no!';
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_ROLE_CHANGE_ERROR,
+        error: {},
+        message
+      });
+
+      expect(UserStore.isSaving).toBe(false);
+      expect(UserStore.getError()).not.toBe(null);
+      expect(UserStore.getError().description).toEqual(message);
+    });
+  });
+
   describe('on user roles add', function() {
     it('should call the api for org add if type org to update the role',
         function() {

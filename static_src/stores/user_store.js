@@ -189,9 +189,11 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLE_CHANGE_ERROR: {
+        this._saving = false;
         this._error = Object.assign({}, action.error, {
           description: action.message
         });
+
         this.emitChange();
         break;
       }

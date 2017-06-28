@@ -804,6 +804,17 @@ describe('userActions', function() {
     it('should not call deletedUserRoles', function() {
       expect(userActions.deletedUserRoles.called).toEqual(false);
     });
+
+    it('calls a handleViewAction with the correct type + params', () => {
+      const spy = sandbox.spy(AppDispatcher, 'handleViewAction');
+      const error = {};
+      const message = 'You don\'t have permission to perform that action';
+      const expectedParams = { error, message };
+
+      userActions.errorChangeUserRole({});
+
+      assertAction(spy, userActionTypes.USER_ROLE_CHANGE_ERROR, expectedParams);
+    });
   });
 
   describe('deletedUserRoles()', function() {
