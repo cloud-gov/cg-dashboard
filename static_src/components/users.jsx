@@ -153,6 +153,9 @@ export default class Users extends React.Component {
           status="finish"
         />
       );
+    } else {
+      // If there's nothing, let's reset the notification to null.
+      notification = null;
     }
 
     if (this.state.currentType === ORG_NAME) {

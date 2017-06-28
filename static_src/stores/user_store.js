@@ -8,7 +8,7 @@ import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
 import cfApi from '../util/cf_api.js';
-import { userActionTypes } from '../constants.js';
+import { userActionTypes, errorActionTypes } from '../constants.js';
 
 export class UserStore extends BaseStore {
   constructor() {
@@ -279,6 +279,16 @@ export class UserStore extends BaseStore {
           this._currentViewedType = action.userType;
           this.emitChange();
         }
+        break;
+      }
+
+      case errorActionTypes.CLEAR: {
+        this._error = null;
+        this._saving = false;
+        this._inviteNotification = {};
+        this._inviteError = null;
+        this._loading = {};
+        this.emitChange();
         break;
       }
 
