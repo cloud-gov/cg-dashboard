@@ -1,5 +1,7 @@
 platform: linux
-image: docker:///sclevine/nanocf
+image_resource:
+  type: docker-image
+  source: {respoistory: sclevine/nanocf}
 inputs:
 - name: dashboard
 run:
