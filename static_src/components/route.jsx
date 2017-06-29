@@ -34,7 +34,7 @@ function stateSetter(props) {
 export default class Route extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.styler = createStyler(style);
     this.state = stateSetter(props);
 

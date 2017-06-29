@@ -8,7 +8,7 @@ import classNames from 'classnames';
 export default class Dropdown extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.state = { open: false };
     this.handleTitleClick = this.handleTitleClick.bind(this);
   }

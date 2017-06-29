@@ -32,7 +32,7 @@ function stateSetter() {
 export default class CreateServiceInstance extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.state = {
       errs: [],
       spaces: SpaceStore.getAll(),

@@ -29,7 +29,7 @@ const defaultProps = {
 export default class Notification extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.styler = createStyler(style);
 
     this.onCloseClick = this.onCloseClick.bind(this);

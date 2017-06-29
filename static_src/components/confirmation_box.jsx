@@ -19,7 +19,7 @@ const CONFIRM_STYLES = [
 export default class ConfirmationBox extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.state = {};
     this.styler = createStyler(style);
     this._confirmHandler = this._confirmHandler.bind(this);

@@ -52,7 +52,7 @@ function formGuid(app) {
 export default class UsageAndLimits extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.styler = createStyler(style);
 
     // Create the form instance in the store

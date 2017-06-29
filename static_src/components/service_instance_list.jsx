@@ -25,7 +25,6 @@ const defaultProps = {
 export default class ServiceInstanceList extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
 
     this.styler = createStyler(style);
   }
