@@ -338,6 +338,10 @@ const routeActionTypes = keymirror({
   ROUTE_ERROR: null
 });
 
+const routerActionTypes = keymirror({
+  NAVIGATE: null
+});
+
 const domainActionTypes = keymirror({
   DOMAIN_FETCH: null,
   DOMAIN_RECEIVED: null
@@ -366,6 +370,7 @@ export {
   pageActionTypes,
   quotaActionTypes,
   routeActionTypes,
+  routerActionTypes,
   spaceActionTypes,
   serviceActionTypes,
   userActionTypes

@@ -24,7 +24,8 @@ export function assertAction(spy, type, params) {
   let actionInfo = spy.getCall(0).args[0];
   expect(actionInfo.type).toEqual(type);
   for (let param in params) {
-    expect(actionInfo[param]).toEqual(params[param]);
+    const datum = 'data' in actionInfo ? actionInfo.data[param] : actionInfo[param];
+    expect(datum).toEqual(params[param]);
   }
 }
 
