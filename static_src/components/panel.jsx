@@ -3,10 +3,12 @@ import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
+import PanelHeader from './panel_header.jsx';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  title: React.PropTypes.string
+  title: React.PropTypes.string,
+  children: React.PropTypes.any
 };
 
 const defaultProps = {
@@ -21,16 +23,20 @@ export default class Panel extends React.Component {
   }
 
   render() {
+    let panelHed;
 
-    let panelHed = null;
-    if (this.props.title != '') {
-      panelHed = <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>;
+    if (this.props.title !== '') {
+      panelHed = (
+        <PanelHeader>
+          <h1 className={ this.styler('panel-title') }>{ this.props.title }</h1>
+        </PanelHeader>
+      );
     }
 
     return (
       <div className={ this.styler('panel') }>
         {panelHed}
-        <div className={ this.styler('panel-rows') }>
+        <div>
           { this.props.children }
         </div>
       </div>

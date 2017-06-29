@@ -161,7 +161,7 @@ export default class OrgContainer extends React.Component {
           </div>
         </div>
         <Panel title="">
-          <div className={ this.styler('grid', 'panel-overview-header') }>
+          <div className={ this.styler('grid', 'overview') }>
             <div className={ this.styler('grid-width-6') }>
               <h1 className={ this.styler('panel-title') }>Organization overview</h1>
             </div>
