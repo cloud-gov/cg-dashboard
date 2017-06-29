@@ -5,4 +5,4 @@ image_resource:
 inputs:
 - name: dashboard
 run:
-  path: dashboard/push.sh
+  path: dashboard/ci/scripts/push.sh
