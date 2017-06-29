@@ -1,0 +1,7 @@
+  ---
+  platform: linux
+  image: docker:///sclevine/nanocf
+  inputs:
+  - name: dashboard
+  run:
+    path: myapp/push.sh
