@@ -1,0 +1,14 @@
+resources:
+  - name: dashboard
+    type: git
+    source:
+      uri: https://github.com/18F/cg-dashboard.git
+      branch: js-add-concourse
+
+jobs:
+  - name: test-dashboard
+    plan:
+    - get: dashboard
+    - task: push
+      privileged: true
+      file: dashboard/ci/tasks/test.yml
