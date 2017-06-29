@@ -12,7 +12,7 @@ const propTypes = {
 
 const dangerousRole = 'org_manager';
 
-const warningMessage = 'Performing this action will remove your ability to adjust user\'s roles! Are you sure you want to continue?';
+const warningMessage = 'Performing this action will remove your ability to adjust user roles! Are you sure you want to continue?';
 
 export default class UserRoleControl extends React.Component {
   constructor(props, context) {
