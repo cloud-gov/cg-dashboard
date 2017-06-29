@@ -32,7 +32,7 @@ function stateSetter(serviceGuid) {
 export default class ServicePlanList extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.state = stateSetter(props.initialServiceGuid);
 
     this._onChange = this._onChange.bind(this);

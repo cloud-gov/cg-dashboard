@@ -64,7 +64,7 @@ function stateSetter() {
 export default class AppContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);

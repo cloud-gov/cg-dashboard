@@ -24,7 +24,7 @@ function stateSetter() {
 export default class GlobalErrorContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.state = stateSetter();
     this.styler = createStyler(style);
 

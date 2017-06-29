@@ -7,7 +7,7 @@ import FormError from './form_error.jsx';
 export default class FormSelect extends FormElement {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.state = this.state || {};
     this.state.value = '';
     this.state.err = null;

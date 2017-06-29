@@ -27,7 +27,7 @@ function stateSetter(props) {
 export default class Form extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.state = stateSetter(props);
 
     this._onStoreChange = this._onStoreChange.bind(this);

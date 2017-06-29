@@ -25,7 +25,7 @@ function stateSetter() {
 export class Nav extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.state = stateSetter();
     this.styler = createStyler(style, overrideStyle);
     this._onChange = this._onChange.bind(this);

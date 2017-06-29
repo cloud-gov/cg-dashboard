@@ -17,7 +17,7 @@ const defaultProps = {};
 export default class GlobalError extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.styler = createStyler(style);
 
     this.onNotificationDismiss = this.onNotificationDismiss.bind(this);

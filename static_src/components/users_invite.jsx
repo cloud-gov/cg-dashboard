@@ -40,7 +40,7 @@ export default class UsersInvite extends React.Component {
   constructor(props) {
     super(props);
     FormStore.create(USERS_INVITE_FORM_GUID);
-    this.props = props;
+
     this.state = stateSetter(props);
 
     this.styler = createStyler(style);

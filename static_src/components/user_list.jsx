@@ -47,7 +47,7 @@ const defaultProps = {
 export default class UserList extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.styler = createStyler(style);
     this._handleDelete = this._handleDelete.bind(this);
   }

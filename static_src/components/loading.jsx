@@ -33,7 +33,7 @@ const defaultProps = {
 class Loading extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.styler = createStyler(style);
     this.state = {
       waitTimer: false

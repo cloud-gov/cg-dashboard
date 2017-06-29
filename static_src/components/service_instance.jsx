@@ -30,7 +30,7 @@ const defaultProps = {
 export default class ServiceInstance extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+
     this.styler = createStyler(style);
 
     this.bindHandler = this.bindHandler.bind(this);
