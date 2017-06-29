@@ -134,7 +134,10 @@ export function app(orgGuid, spaceGuid, appGuid, next) {
 }
 
 export function checkAuth(...args) {
+  console.log('the args', args)
   const next = args.pop();
+
+  console.log(next)
 
   // These may or may not be set depending on route
   const [orgGuid, spaceGuid] = args;

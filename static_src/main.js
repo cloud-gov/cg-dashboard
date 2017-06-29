@@ -11,15 +11,29 @@ import { trackPageView } from './util/analytics.js';
 import routes, { checkAuth, clearErrors, notFound } from './routes';
 
 const meta = document.querySelector('meta[name="gorilla.csrf.Token"]');
+
 if (meta) {
   axios.defaults.headers.common['X-CSRF-Token'] = meta.content;
 }
 
-const router = new Router(routes);
-router.configure({
-  async: true,
-  before: [clearErrors, checkAuth],
-  notfound: notFound,
-  on: () => trackPageView(window.location.hash)
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const cRouter = {
+  run(routes, cb) {
+    const router = new Router(routes);
+    router.configure({
+      async: true,
+      before: [clearErrors, checkAuth],
+      notfound: notFound,
+      on: () => trackPageView(window.location.hash)
+    });
+    router.init('/');
+
+    return cb(router);
+  }
+};
+
+cRouter.run(routes, (router) => {
+  ReactDOM.render(<div></div>, document.querySelector('.js-app'));
 });
-router.init('/');
