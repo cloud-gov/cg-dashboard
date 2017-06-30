@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ ! -x $GOPATH/bin/glide ]; then
+  go get github.com/Masterminds/glide
+fi
+
+if [ ! -x vendor ]; then
+  $GOPATH/bin/glide install
+fi
+
+
+exec "$@"

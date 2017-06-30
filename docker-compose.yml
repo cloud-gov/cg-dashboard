@@ -1,25 +1,99 @@
 version: '2'
 services:
   app:
-    extends:
-      file: docker-services.yml
-      service: base_app
-    command: npm run testing-server
+    extends: go
+    working_dir: /go/src/github.com/18F/cg-dashboard
+    command: run server.go
+    depends_on:
+      - mail
+      - redis
+    links:
+      - "redis"
+      - "mail"
     ports:
-    - 8001:8001
+      - "9999:9999"
+    environment:
+      CONSOLE_API_URL: https://api.local.pcfdev.io
+      CONSOLE_HOSTNAME: http://localhost:9999
+      CONSOLE_LOGIN_URL: https://uaa.local.pcfdev.io
+      CONSOLE_LOG_URL: https://loggregator.local.pcfdev.io
+      CONSOLE_UAA_URL: https://uaa.local.pcfdev.io
+      SECURE_COOKIES: "true"
+      SESSION_BACKEND: redis
+      VCAP_APPLICATION: '{}'
+      VCAP_SERVICES: >
+        {
+          "user-provided": [{
+            "credentials": {
+               "CONSOLE_CLIENT_ID": "dashboard-local",
+               "CONSOLE_CLIENT_SECRET": "notarealsecret",
+               "SESSION_KEY": "notarealsessionkey",
+               "SMTP_FROM": "no-reply@cloud.gov",
+               "SMTP_HOST": "mail",
+               "SMTP_PASS": "",
+               "SMTP_PORT": "1025",
+               "SMTP_USER": ""
+            },
+            "name": "dashboard-ups",
+            "label": "user-provided"
+          }],
+          "redis28": [{
+            "credentials": {
+               "hostname": "redis",
+               "password": "",
+               "port": "6379"
+            },
+            "uri": "redis://:@redis:6379",
+            "label": "redis28",
+            "name": "dashboard-redis"
+          }]
+        }
+  redis:
+    image: "redis:alpine"
+  mail:
+    image: tophfr/mailcatcher
+    ports:
+      - 1025:25
+      - 8025:80
+  npm:
+    image: node:6.11.0
+    working_dir: /cg-dashboard
+    entrypoint: ./devtools/node/install_deps_then npm
+    volumes:
+      - global-node-modules:/usr/local/lib/node_modules
+      - npm-cache:/root/.npm
+      - node-modules:/cg-dashboard/node_modules
+      - .:/cg-dashboard
+      - cg-style-node-modules:/cg-style/node_modules
+      - ../cg-style:/cg-style
   watch:
     extends:
-      file: docker-services.yml
-      service: base_app
+      service: npm
     command: npm run watch
+    working_dir: /cg-dashboard
   watch_cg_style:
     extends:
-      file: docker-services.yml
-      service: base_app
+      service: npm
     working_dir: /cg-style
     command: npm run watch
+  go:
+    image: golang:1.8.3
+    environment:
+      - GOPATH=/go
+    volumes:
+      - .:/go/src/github.com/18F/cg-dashboard
+      - go-bins:/go/bin/
+      - go-dep-tool-src:/go/src/github.com/Masterminds
+    working_dir: /go/src/github.com/18F/cg-dashboard
+    entrypoint: ./devtools/golang/install_deps_then go
 volumes:
   node-modules:
   cg-style-node-modules:
   npm-cache:
   global-node-modules:
+  go-bins:
+  go-dep-tool-src:
+
+# commands
+
+# dependencies
