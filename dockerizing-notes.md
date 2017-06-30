@@ -1,9 +1,5 @@
 # Dockerizing Notes
 
-- Fixed the issue with `npm install` that respects `npm-shrinkwrap.json`. the
-  problem was not being able to build the same fsevents due to not having
-  python in the container.
-
 ## Running
 
 You will first need to ensure that `../cg-style` exists relative
@@ -20,7 +16,5 @@ to your cg-dashboard checkout and contains a checkout of
 
 ## TODO:
 
-* figure out why the shrinkwrap doesn't work -- looks like it has to do
-  with fsevents not building due to missing python in the container
 * add a test verifying that `.nvmrc` specifies the same node version
   as the `Dockerfile`.
