@@ -1,10 +1,16 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import style from 'cloudgov-style/css/cloudgov-style.css';
+import classnames from 'classnames';
+import Link from './action/link.jsx';
+import Button from './action/button.jsx';
 
-import createStyler from '../util/create_styler';
-
+const BUTTON_TYPES = {
+  BUTTON: 'button',
+  OUTLINE: 'outline',
+  LINK: 'link',
+  SUBMIT: 'submit'
+};
 const BUTTON_STYLES = [
   'warning',
   'primary',
@@ -12,15 +18,6 @@ const BUTTON_STYLES = [
   'base',
   'white'
 ];
-
-const BUTTON_TYPES = [
-  'button',
-  'outline',
-  'outline-inverse',
-  'link',
-  'submit'
-];
-
 const propTypes = {
   children: PropTypes.any,
   classes: PropTypes.array,
@@ -29,77 +26,75 @@ const propTypes = {
   href: PropTypes.string,
   label: PropTypes.string,
   style: PropTypes.oneOf(BUTTON_STYLES),
-  type: PropTypes.oneOf(BUTTON_TYPES)
+  type: React.PropTypes.oneOf(Object.keys(BUTTON_TYPES).map(key => BUTTON_TYPES[key]))
 };
-
 const defaultProps = {
   style: 'primary',
   classes: [],
   label: '',
   type: 'button',
   disabled: false,
-  clickHandler: () => true,
-  children: []
+  clickHandler: () => true
 };
 
 export default class Action extends React.Component {
-  constructor(props) {
-    super(props);
+  get baseClasses() {
+    return `action action-${this.props.style}`;
+  }
 
-    this.styler = createStyler(style);
+  get classes() {
+    return this.props.classes.join(' ');
+  }
+
+  get buttonClasses() {
+    if (this.typeOfLink) return {};
+
+    return classnames({
+      'action-outline': this.props.type === BUTTON_TYPES.OUTLINE,
+      'usa-button-disabled': this.props.disabled
+    }, 'usa-button', `usa-button-${this.props.style}`);
+  }
+
+  get sharedProps() {
+    return {
+      className: classnames(this.baseClasses, this.classes, this.buttonClasses),
+      label: this.props.label,
+      clickHandler: this.props.clickHandler
+    };
+  }
+
+  get buttonProps() {
+    const htmlButtonType = this.props.type === BUTTON_TYPES.BUTTON ?
+      BUTTON_TYPES.BUTTON : BUTTON_TYPES.SUBMIT;
+
+    return { disabled: this.props.disabled, type: htmlButtonType };
+  }
+
+  get linkProps() {
+    return { href: this.props.href };
+  }
+
+  get typeOfLink() {
+    return this.props.type === BUTTON_TYPES.LINK;
+  }
+
+  get isLink() {
+    return this.props.href || this.typeOfLink;
+  }
+
+  get component() {
+    return this.isLink ? Link : Button;
   }
 
   render() {
-    const styleClass = `usa-button-${this.props.style}`;
-    let classes = this.styler(...this.props.classes);
-    let content = <div></div>;
-    const classList = [...this.props.classes];
+    const Component = this.component;
+    const extraProps = this.isLink ? this.linkProps : this.buttonProps;
 
-    classList.push('action');
-    classList.push(`action-${this.props.style}`);
-
-    if (this.props.type !== 'link') {
-      if (this.props.disabled) {
-        classList.push('usa-button-disabled');
-      } else {
-        classList.push('usa-button');
-        classList.push(styleClass);
-        if (this.props.type === 'outline') classList.push('action-outline');
-      }
-      classes = this.styler(...classList);
-    }
-
-    if (this.props.type === 'link' || this.props.href) {
-      classList.push('action-link');
-
-      classes = this.styler(...classList);
-
-      content = (
-        <a
-          className={ classes }
-          title={ this.props.label }
-          onClick={ (ev) => this.props.clickHandler(ev) }
-          disabled={ this.props.disabled }
-          href={ this.props.href || '#' }
-        >
-          { this.props.children }
-        </a>
-      );
-    } else {
-      content = (
-        <button
-          className={ classes }
-          aria-label={ this.props.label }
-          onClick={ (ev) => this.props.clickHandler(ev) }
-          disabled={this.props.disabled}
-          type={ this.props.type === 'submit' ? this.props.type : null }
-        >
-          { this.props.children }
-        </button>
-      );
-    }
-
-    return content;
+    return (
+      <Component { ...this.sharedProps } { ...extraProps }>
+        { this.props.children }
+      </Component>
+    );
   }
 }
 
