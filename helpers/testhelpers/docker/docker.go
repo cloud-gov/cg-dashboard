@@ -60,9 +60,10 @@ func CreateTestRedis() (string, func(), func(), func()) {
 	// Get the hostname of the Docker Host.
 	u, _ := url.Parse(pool.Client.Endpoint())
 	host := u.Hostname()
-	// Get the exposed port of the docker container which uses 6379 internally.
 
+	// Get the exposed port of the docker container which uses 6379 internally.
 	port := resource.GetPort("6379/tcp")
+
 	// Create a docker network if necessary.
 	// refer to connectToDockerNetwork
 	internalHost, connected := connectToDockerNetwork(pool, resource, "test-redis")
@@ -71,6 +72,7 @@ func CreateTestRedis() (string, func(), func(), func()) {
 		host = internalHost
 		port = "6379"
 	}
+
 	hostnameAndPort := host + ":" + port
 	if err = pool.Retry(func() error {
 		_, dialErr := redis.Dial("tcp", hostnameAndPort)
@@ -97,20 +99,35 @@ func CreateTestMailCatcher() (string, string, string, func()) {
 	if err != nil {
 		log.Fatalf("Could not start resource: %s", err)
 	}
+	// Get the hostname of the Docker Host.
 	u, _ := url.Parse(pool.Client.Endpoint())
 	hostname := u.Hostname()
-	if hostname == "" {
-		hostname = "localhost"
+
+	// Get the exposed port of the docker container which uses 25 internally.
+	smtpPort := resource.GetPort("25/tcp")
+	apiPort := resource.GetPort("80/tcp")
+
+	// Create a docker network if necessary.
+	// refer to connectToDockerNetwork
+	internalHost, connected := connectToDockerNetwork(pool,
+		resource, "test-mailcatcher")
+	if connected {
+		// If network created, reassign the hostname and ports to use.
+		hostname = internalHost
+		smtpPort = "25"
+		apiPort = "80"
 	}
+
 	if err = pool.Retry(func() error {
-		_, dialErr := redis.Dial("tcp", hostname+":"+resource.GetPort("25/tcp"))
+		_, dialErr := http.Get("http://" + hostname + ":" + apiPort + "/messages/")
+		if err != nil {
+			return err
+		}
 
 		return dialErr
 	}); err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
-	smtpPort := resource.GetPort("25/tcp")
-	apiPort := resource.GetPort("80/tcp")
 	return hostname, smtpPort, apiPort, func() { pool.Purge(resource) }
 }
 
@@ -118,15 +135,15 @@ func CreateTestMailCatcher() (string, string, string, func()) {
 // last message.
 // Upon reading this message, the message is automatically removed
 // (by design of mailcatcher.)
-func GetLatestMailMessageData(hostname, apiPort string) ([]byte, string, string) {
+func GetLatestMailMessageData(hostname, apiPort string) ([]byte, error) {
 	res, err := http.Get("http://" + hostname + ":" + apiPort + "/messages/1.json")
 	if err != nil {
-		log.Fatal(err)
+		return []byte{}, err
 	}
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		return []byte{}, err
 	}
-	return body, "", ""
+	return body, nil
 }

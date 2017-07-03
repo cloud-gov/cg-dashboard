@@ -31,7 +31,10 @@ func TestSendEmail(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected nil error, found %s", err.Error())
 	}
-	receivedData, _, _ := GetLatestMailMessageData(hostname, apiPort)
+	receivedData, err := GetLatestMailMessageData(hostname, apiPort)
+	if err != nil {
+		t.Errorf("Expected nil error, found %s", err.Error())
+	}
 	if !strings.Contains(string(receivedData), `"sender":"<test@dashboard.com>"`) {
 		t.Error("Expected to find sender metadata")
 	}
@@ -43,7 +46,9 @@ func TestSendEmail(t *testing.T) {
 	}
 	// Useful for generating test data. Undo to learn more about the data.
 	// log.Println(string(receivedData))
-	cleanup()
+
+	cleanup() // Destroy the mail server.
+
 	// Try sending mail to bad server.
 	err = mailer.SendEmail("test@receiver.com", "sample subject", body.Bytes())
 	if err == nil {
