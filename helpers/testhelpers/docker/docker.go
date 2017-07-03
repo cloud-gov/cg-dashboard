@@ -5,10 +5,45 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"strings"
 
+	dockerclient "github.com/fsouza/go-dockerclient"
 	"github.com/garyburd/redigo/redis"
 	"github.com/ory/dockertest"
 )
+
+// connectToDockerNetwork will connect the given docker container to the
+// "servicesTestNetwork" and assign it the provided alias.
+// This method assumes that the servicesTestNetwork already exists (which is
+// the case if using the docker-compose way.) By using docker-compose,
+// DOCKER_IN_DOCKER will be set and the logic in here will only take effect
+// then. We need to connect the service to the network when in
+// DOCKER_IN_DOCKER mode / docker-compose so that the container running the
+// test can connect to the test container.
+// Returns the hostname and true/false if successfully able to
+// connect to the network.
+func connectToDockerNetwork(pool *dockertest.Pool,
+	resource *dockertest.Resource,
+	hostname string) (string, bool) {
+	if os.Getenv("DOCKER_IN_DOCKER") == "1" {
+		if networks, err := pool.Client.ListNetworks(); err == nil {
+			for _, network := range networks {
+				if strings.Contains(network.Name, "servicesTestNetwork") {
+					pool.Client.ConnectNetwork(network.ID,
+						dockerclient.NetworkConnectionOptions{
+							Container: resource.Container.Name,
+							EndpointConfig: &dockerclient.EndpointConfig{
+								Aliases: []string{hostname},
+							},
+						})
+					return hostname, true
+				}
+			}
+		}
+	}
+	return "", false
+}
 
 // CreateTestRedis creates a actual redis instance with docker.
 // Useful for unit tests.
@@ -22,8 +57,21 @@ func CreateTestRedis() (string, func(), func(), func()) {
 	if err != nil {
 		log.Fatalf("Could not start resource: %s", err)
 	}
+	// Get the hostname of the Docker Host.
 	u, _ := url.Parse(pool.Client.Endpoint())
-	hostnameAndPort := u.Hostname() + ":" + resource.GetPort("6379/tcp")
+	host := u.Hostname()
+	// Get the exposed port of the docker container which uses 6379 internally.
+
+	port := resource.GetPort("6379/tcp")
+	// Create a docker network if necessary.
+	// refer to connectToDockerNetwork
+	internalHost, connected := connectToDockerNetwork(pool, resource, "test-redis")
+	if connected {
+		// If network created, reassign the hostname and port to use.
+		host = internalHost
+		port = "6379"
+	}
+	hostnameAndPort := host + ":" + port
 	if err = pool.Retry(func() error {
 		_, dialErr := redis.Dial("tcp", hostnameAndPort)
 

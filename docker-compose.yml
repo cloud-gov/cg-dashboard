@@ -7,19 +7,19 @@ services:
     depends_on:
       - mail
       - redis
-    links:
-      - "redis"
-      - "mail"
     ports:
-      - "9999:9999"
+      - "8002:8002"
+    networks:
+      - servicesNetwork
     environment:
       CONSOLE_API_URL: https://api.local.pcfdev.io
-      CONSOLE_HOSTNAME: http://localhost:9999
+      CONSOLE_HOSTNAME: http://localhost:8002
       CONSOLE_LOGIN_URL: https://uaa.local.pcfdev.io
       CONSOLE_LOG_URL: https://loggregator.local.pcfdev.io
       CONSOLE_UAA_URL: https://uaa.local.pcfdev.io
       SESSION_BACKEND: redis
       LOCAL_CF: "1"
+      PORT: 8002
       VCAP_APPLICATION: '{}'
       VCAP_SERVICES: >
         {
@@ -29,9 +29,9 @@ services:
                "CONSOLE_CLIENT_SECRET": "notarealsecret",
                "SESSION_KEY": "notarealsessionkey",
                "SMTP_FROM": "no-reply@cloud.gov",
-               "SMTP_HOST": "mail",
+               "SMTP_HOST": "smtp.fake.com",
                "SMTP_PASS": "",
-               "SMTP_PORT": "1025",
+               "SMTP_PORT": "25",
                "SMTP_USER": ""
             },
             "name": "dashboard-ups",
@@ -39,22 +39,35 @@ services:
           }],
           "redis28": [{
             "credentials": {
-               "hostname": "redis",
+               "hostname": "redis.service.fake.kubernetes",
                "password": "",
                "port": "6379"
             },
-            "uri": "redis://:@redis:6379",
+            "uri": "redis://:@redis.service.fake.kubernetes:6379",
             "label": "redis28",
-            "name": "dashboard-redis"
+            "name": "dashboard-redis",
+            "tags": [
+             "redis28",
+             "redis"
+            ]
           }]
         }
   redis:
-    image: "redis:alpine"
+    image: "redis:2.8"
+    volumes:
+      - redis-data:/data
+    networks:
+      servicesNetwork:
+        aliases:
+          - redis.service.fake.kubernetes
   mail:
     image: tophfr/mailcatcher
     ports:
-      - 1025:25
-      - 8025:80
+      - 8025:80 # for the web UI
+    networks:
+      servicesNetwork:
+        aliases:
+          - smtp.fake.com
   npm:
     image: node:6.11.0
     working_dir: /cg-dashboard
@@ -80,12 +93,19 @@ services:
     image: golang:1.8.3
     environment:
       - GOPATH=/go
+      # not a GO convention but useful for running go tests.
+      - BASE_PATH=/go/src/github.com/18F/cg-dashboard
+      - DOCKER_IN_DOCKER=1
     volumes:
       - .:/go/src/github.com/18F/cg-dashboard
       - go-bins:/go/bin/
       - go-dep-tool-src:/go/src/github.com/Masterminds
+      # needed for running go tests that use https://github.com/ory/dockertest
+      - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /go/src/github.com/18F/cg-dashboard
     entrypoint: ./devtools/golang/install_deps_then go
+    networks:
+      - servicesTestNetwork
 volumes:
   node-modules:
   cg-style-node-modules:
@@ -93,7 +113,14 @@ volumes:
   global-node-modules:
   go-bins:
   go-dep-tool-src:
+  redis-data:
 
+networks:
+  servicesNetwork:
+    driver: bridge
+  # needed for running go tests that use https://github.com/ory/dockertest
+  servicesTestNetwork:
+    driver: bridge
 # commands
 
 # dependencies

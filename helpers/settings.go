@@ -251,11 +251,15 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 }
 
 func getRedisSettings(env *cfenv.App) (string, string, error) {
-	uri, err := getRedisService(env)
-	if err != nil {
-		uri = os.Getenv("REDIS_URI")
-	}
+	var err error
+	// Try to read directly from REDIS_URI first.
+	uri := os.Getenv("REDIS_URI")
 	if uri == "" {
+		// If no direct REDIS_URI, parse VCAP_SERVICES
+		uri, err = getRedisService(env)
+	}
+	// If nothing worked so far, default to localhost
+	if uri == "" || err != nil {
 		uri = "redis://localhost:6379"
 	}
 
