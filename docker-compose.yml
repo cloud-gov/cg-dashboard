@@ -18,8 +18,8 @@ services:
       CONSOLE_LOGIN_URL: https://uaa.local.pcfdev.io
       CONSOLE_LOG_URL: https://loggregator.local.pcfdev.io
       CONSOLE_UAA_URL: https://uaa.local.pcfdev.io
-      SECURE_COOKIES: "true"
       SESSION_BACKEND: redis
+      LOCAL_CF: "1"
       VCAP_APPLICATION: '{}'
       VCAP_SERVICES: >
         {

@@ -1,10 +1,12 @@
 package helpers
 
 import (
+	"crypto/tls"
 	"encoding/gob"
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
 	"os"
 	"time"
@@ -33,8 +35,6 @@ type Settings struct {
 	LoginURL string
 	// Sessions is the session store for all connected users.
 	Sessions sessions.Store
-	// context.Context var from golang.org/x/net/context to make token Client work
-	TokenContext context.Context
 	// Generate secure random state
 	StateGenerator func() (string, error)
 	// UAA API
@@ -49,8 +49,10 @@ type Settings struct {
 	PProfEnabled bool
 	// Build Info
 	BuildInfo string
-	//Set the secure flag on session cookies?
+	// Set the secure flag on session cookies
 	SecureCookies bool
+	// Inidicates if targeting a local CF environment.
+	LocalCF bool
 	// URL where this app is hosted
 	AppURL string
 	// Type of session backend
@@ -67,6 +69,21 @@ type Settings struct {
 	SMTPPass string
 	// SMTP from address for UAA invites
 	SMTPFrom string
+}
+
+// CreateContext returns a new context to be used for http connections.
+func (s *Settings) CreateContext() context.Context {
+	ctx := context.TODO()
+	// If targeting local cf env, we won't have
+	// valid SSL certs so we need to disable verifying them.
+	if s.LocalCF {
+		httpClient := http.DefaultClient
+		httpClient.Transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		ctx = context.WithValue(ctx, oauth2.HTTPClient, httpClient)
+	}
+	return ctx
 }
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
@@ -107,14 +124,19 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	s.AppURL = envVars.Hostname
 	s.ConsoleAPI = envVars.APIURL
 	s.LoginURL = envVars.LoginURL
-	s.TokenContext = context.TODO()
 	s.UaaURL = envVars.UAAURL
 	s.LogURL = envVars.LogURL
 	s.PProfEnabled = ((envVars.PProfEnabled == "true") || (envVars.PProfEnabled == "1"))
 	if s.BuildInfo = envVars.BuildInfo; len(s.BuildInfo) == 0 {
 		s.BuildInfo = "developer-build"
 	}
+	s.LocalCF = ((envVars.LocalCF == "true") || (envVars.LocalCF == "1"))
 	s.SecureCookies = ((envVars.SecureCookies == "true") || (envVars.SecureCookies == "1"))
+	// Safe guard: shouldn't run with insecure cookies if we are
+	// in a non-development environment (i.e. production)
+	if s.LocalCF == false && s.SecureCookies == false {
+		return errors.New("cannot run with insecure cookies when targteing a production CF environment")
+	}
 
 	// Setup OAuth2 Client Service.
 	s.OAuthConfig = &oauth2.Config{

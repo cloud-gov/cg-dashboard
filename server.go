@@ -34,6 +34,7 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.BuildInfo = os.Getenv(helpers.BuildInfoEnvVar)
 	envVars.NewRelicLicense = os.Getenv(helpers.NewRelicLicenseEnvVar)
 	envVars.SecureCookies = os.Getenv(helpers.SecureCookiesEnvVar)
+	envVars.LocalCF = os.Getenv(helpers.LocalCFEnvVar)
 	envVars.SessionBackend = os.Getenv(helpers.SessionBackendEnvVar)
 	envVars.SessionKey = os.Getenv(helpers.SessionKeyEnvVar)
 	envVars.BasePath = os.Getenv(helpers.BasePathEnvVar)

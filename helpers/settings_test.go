@@ -16,7 +16,42 @@ type initSettingsTest struct {
 
 var initSettingsTests = []initSettingsTest{
 	{
-		testName: "Basic Valid Settings",
+		testName: "Basic Valid Production CF Settings",
+		envVars: helpers.EnvVars{
+			ClientID:      "ID",
+			ClientSecret:  "Secret",
+			Hostname:      "hostname",
+			LoginURL:      "loginurl",
+			UAAURL:        "uaaurl",
+			APIURL:        "apiurl",
+			LogURL:        "logurl",
+			SessionKey:    "lalala",
+			SMTPFrom:      "blah@blah.com",
+			SMTPHost:      "localhost",
+			SecureCookies: "1",
+		},
+		returnValueNull: true,
+	},
+	{
+		testName: "Basic Valid Local CF Settings",
+		envVars: helpers.EnvVars{
+			ClientID:      "ID",
+			ClientSecret:  "Secret",
+			Hostname:      "hostname",
+			LoginURL:      "loginurl",
+			UAAURL:        "uaaurl",
+			APIURL:        "apiurl",
+			LogURL:        "logurl",
+			SessionKey:    "lalala",
+			SMTPFrom:      "blah@blah.com",
+			SMTPHost:      "localhost",
+			SecureCookies: "0",
+			LocalCF:       "1",
+		},
+		returnValueNull: true,
+	},
+	{
+		testName: "Basic Invalid Prod CF Settings",
 		envVars: helpers.EnvVars{
 			ClientID:     "ID",
 			ClientSecret: "Secret",
@@ -28,8 +63,10 @@ var initSettingsTests = []initSettingsTest{
 			SessionKey:   "lalala",
 			SMTPFrom:     "blah@blah.com",
 			SMTPHost:     "localhost",
+			LocalCF:      "0",
+			// Let SecureCookies Default to false (similar to what would happen in real life).
 		},
-		returnValueNull: true,
+		returnValueNull: false,
 	},
 	{
 		testName: "Missing Client ID check",

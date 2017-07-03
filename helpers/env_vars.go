@@ -31,6 +31,8 @@ var (
 	NewRelicLicenseEnvVar = "CONSOLE_NEW_RELIC_LICENSE"
 	// SecureCookiesEnvVar is set to true or 1, then set the Secure flag be set on session coookies
 	SecureCookiesEnvVar = "SECURE_COOKIES"
+	// LocalCFEnvVar is set to true or 1, then we indicate that we are using a local CF env.
+	LocalCFEnvVar = "LOCAL_CF"
 	// SessionBackendEnvVar is the session backend type
 	SessionBackendEnvVar = "SESSION_BACKEND"
 	// SessionKeyEnvVar is the secret key used to protect session data
@@ -62,6 +64,7 @@ type EnvVars struct {
 	BuildInfo       string
 	NewRelicLicense string
 	SecureCookies   string
+	LocalCF         string
 	SessionBackend  string
 	SessionKey      string
 	BasePath        string
