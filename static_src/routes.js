@@ -28,7 +28,6 @@ import userActions from './actions/user_actions.js';
 // TODO this is hard to stub since we query it at module load time. It should
 // be passed in or something.
 const mainEl = document.querySelector('.js-app');
-
 const MAX_OVERVIEW_SPACES = 10;
 
 export function login(next) {
@@ -44,18 +43,17 @@ export function overview(next) {
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
 
-  spaceActions.fetchAll()
-    .then(spaces => {
-      let i = 0;
-      const max = Math.min(MAX_OVERVIEW_SPACES, spaces.length);
-      const fetches = [];
-      for (; i < max; i++) {
-        fetches.push(spaceActions.fetch(spaces[i].guid));
-      }
+  orgActions.fetchAll();
+  spaceActions.fetchAll().then(spaces => {
+    let i = 0;
+    const max = Math.min(MAX_OVERVIEW_SPACES, spaces.length);
+    const fetches = [];
+    for (; i < max; i++) {
+      fetches.push(spaceActions.fetch(spaces[i].guid));
+    }
 
-      return Promise.all(fetches);
-    })
-    .then(pageActions.loadSuccess, pageActions.loadError);
+    return Promise.all(fetches);
+  }).then(pageActions.loadSuccess, pageActions.loadError);
 
   ReactDOM.render(<MainContainer>
     <Overview />
@@ -182,8 +180,6 @@ export function checkAuth(...args) {
     })
     .then(() => {
       userActions.fetchCurrentUser({ orgGuid, spaceGuid });
-      orgActions.fetchAll();
-      spaceActions.fetchAll();
       next();
     });
 }
