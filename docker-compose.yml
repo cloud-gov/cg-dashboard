@@ -69,7 +69,9 @@ services:
         aliases:
           - smtp.fake.com
   npm:
-    image: node:6.11.0
+    build:
+      context: .
+      dockerfile: ./devtools/node/Dockerfile
     working_dir: /cg-dashboard
     entrypoint: ./devtools/node/install_deps_then npm
     volumes:
