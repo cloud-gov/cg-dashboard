@@ -16,6 +16,6 @@ docker run governmentpaas/cf-uaac \
   uaac client delete dashboard-local; \
   uaac client add dashboard-local \
     --scope="cloud_controller.admin cloud_controller.read cloud_controller.write openid scim.read scim.invite" \
-    --redirect_uri="http://localhost:9999/oauth2callback" \
-    --authorities="uaa.none scim.invite cloud_controller.admin" \
+    --redirect_uri="http://localhost:8002/oauth2callback" \
+    --authorities="uaa.none scim.invite cloud_controller.admin scim.read" \
     --authorized_grant_types "authorization_code client_credentials refresh_token" -s "notarealsecret"'

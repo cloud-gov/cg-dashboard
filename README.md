@@ -171,7 +171,7 @@ cf create-service redis28 standard dashboard-redis
 - Create client account:
 ```
 uaac client add <your-client-id> \
- --authorities scim.invite \
+ --authorities "uaa.none scim.invite cloud_controller.admin scim.read" \
  --authorized_grant_types authorization_code,client_credentials,refresh_token \
  --scope cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read \
  --autoapprove true \
