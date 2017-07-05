@@ -200,7 +200,7 @@ There's no perfect guidance on what should be a container component vs a props c
   
 #### Anti-patterns
 
-##### Having components with both props and state. 
+##### Components should 
 
 Most components will use either props or state to control updates. There are some components that currently break this anti-pattern, often having initial data passed in. This can be done with the `handleUIAction` dispatcher, which sets the distinction that the action is just a UI based action rather then from the server or app.
 
@@ -217,6 +217,18 @@ Instead, use [ui actions](#ui-actions).
 This pattern is slowly being phased out of multiple stores, so will be seen many places. For new stores, all async work should be done in the action creator functions. For example, for a fetch action, the fetch action should be dispatched and then the API call should be made.
 
 When async code is in stores, it should be migrated to action creators.
+
+## Analytics
+
+Both client-side routed page views and all client-side events are logged in google analytics.
+
+- Different client-side urls, such as `/org/{org guid}/spaces/` are logged as page views. This is done through the [router](https://github.com/18F/cg-dashboard/blob/828fe79a8a303734719afcdce3e4bdabfe39b824/static_src/main.js#L23).
+- Any action called is logged as a Google Analytics event. This is done from the [App Dispatcher](https://github.com/18F/cg-dashboard/blob/master/static_src/dispatcher.js).
+- There's a utility file for all analytics related functionality, [util/analytics.js](https://github.com/18F/cg-dashboard/blob/828fe79a8a303734719afcdce3e4bdabfe39b824/static_src/util/analytics.js)
+
+### Google analytics dashboard
+
+There's no distinction from the dashboard and any of the other cloud.gov site's in the GA dashboard. To help with this, there's a shared GA segment representing just the dashboard production traffic. If you have access to the cloud.gov GA, it's available with a [shared link](https://analytics.google.com/analytics/web/template?uid=n5PjjEaRSlSzON6I3mrhrA). There's also a dashboard GA dashboard, which doesn't have a shareable link but should be in the "Customization" -> "Dashboard" section.
 
 ## Performance
 
