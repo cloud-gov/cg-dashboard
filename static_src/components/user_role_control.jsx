@@ -5,8 +5,8 @@ const propTypes = {
   userId: React.PropTypes.string.isRequired,
   roleName: React.PropTypes.string.isRequired,
   roleKey: React.PropTypes.string.isRequired,
-  initialValue: React.PropTypes.bool,
-  initialEnableControl: React.PropTypes.bool,
+  value: React.PropTypes.bool,
+  enableControl: React.PropTypes.bool,
   onChange: React.PropTypes.func
 };
 
@@ -44,7 +44,7 @@ export default class UserRoleControl extends React.Component {
 
   render() {
     const {
-      roleKey, roleName, userId, initialValue, initialEnableControl
+      roleKey, roleName, userId, value, enableControl
     } = this.props;
     const inputId = roleKey + userId;
 
@@ -54,8 +54,8 @@ export default class UserRoleControl extends React.Component {
           <input type="checkbox"
             onChange={ this._handleChange }
             name={ roleKey }
-            checked={ initialValue }
-            disabled={ !initialEnableControl }
+            checked={ value }
+            disabled={ !enableControl }
             id={ inputId }
           />
           { roleName }
@@ -71,7 +71,7 @@ UserRoleControl.contextTypes = {
 
 UserRoleControl.propTypes = propTypes;
 UserRoleControl.defaultProps = {
-  initialValue: false,
-  initialEnableControl: false,
+  value: false,
+  enableControl: false,
   onChange: function() { }
 };
