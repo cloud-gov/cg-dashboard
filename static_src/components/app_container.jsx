@@ -223,7 +223,7 @@ export default class AppContainer extends React.Component {
 
           <Panel title="Recent activity">
             { this.logsDocumentation }
-            <ActivityLog initialAppGuid={ this.state.app.guid } />
+            <ActivityLog />
           </Panel>
         </div>
       );
