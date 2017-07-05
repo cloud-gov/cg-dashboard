@@ -58,9 +58,7 @@ export default class ServiceList extends React.Component {
 
             if (service.servicePlans.length) {
               servicePlans = (
-                <ServicePlanList initialServiceGuid={ service.guid }
-                  initialServicePlans={ service.servicePlans }
-                />
+                <ServicePlanList serviceGuid={ service.guid } />
               );
             }
 

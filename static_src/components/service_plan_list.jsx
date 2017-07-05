@@ -33,7 +33,7 @@ export default class ServicePlanList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = stateSetter(props.initialServiceGuid);
+    this.state = stateSetter(props.serviceGuid);
 
     this._onChange = this._onChange.bind(this);
     this._handleAdd = this._handleAdd.bind(this);
@@ -41,7 +41,7 @@ export default class ServicePlanList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(stateSetter(nextProps.initialServiceGuid));
+    this.setState(stateSetter(nextProps.serviceGuid));
   }
 
   _onChange() {
@@ -132,7 +132,7 @@ export default class ServicePlanList extends React.Component {
 }
 
 ServicePlanList.propTypes = {
-  initialServiceGuid: React.PropTypes.string
+  serviceGuid: React.PropTypes.string
 };
 
 ServicePlanList.defaultProps = {};
