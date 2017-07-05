@@ -3,6 +3,10 @@ import React from 'react';
 import FormText from './form_text.jsx';
 import { validateInteger } from '../../util/validators';
 
+const propTypes = {
+  min: React.PropTypes.number,
+  max: React.PropTypes.number
+};
 
 export default class FormNumber extends React.Component {
   constructor(props) {
@@ -20,7 +24,4 @@ export default class FormNumber extends React.Component {
   }
 }
 
-FormNumber.propTypes = {
-  min: React.PropTypes.number,
-  max: React.PropTypes.number
-};
+FormNumber.propTypes = propTypes;

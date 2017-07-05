@@ -3,6 +3,9 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../../util/create_styler';
 
+const propTypes = { message: React.PropTypes.string };
+const defaultProps = { message: '' };
+
 export default class FormError extends React.Component {
   constructor(props) {
     super(props);
@@ -18,5 +21,5 @@ export default class FormError extends React.Component {
   }
 }
 
-FormError.propTypes = { message: React.PropTypes.string };
-FormError.defaultProps = { message: '' };
+FormError.propTypes = propTypes;
+FormError.defaultProps = defaultProps;

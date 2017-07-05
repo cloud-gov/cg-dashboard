@@ -29,6 +29,14 @@ function stateSetter() {
   };
 }
 
+const propTypes = {
+  currentPage: React.PropTypes.string
+};
+
+const defaultProps = {
+  currentPage: 'apps'
+};
+
 export default class SpaceContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -119,10 +127,6 @@ export default class SpaceContainer extends React.Component {
   }
 }
 
-SpaceContainer.propTypes = {
-  currentPage: React.PropTypes.string
-};
+SpaceContainer.propTypes = propTypes;
 
-SpaceContainer.defaultProps = {
-  currentPage: 'apps'
-};
+SpaceContainer.defaultProps = defaultProps;

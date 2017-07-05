@@ -4,6 +4,14 @@ import React from 'react';
 
 import createStyler from '../util/create_styler';
 
+const propTypes = {
+  className: React.PropTypes.string
+};
+
+const defaultProps = {
+  className: ''
+};
+
 export default class InfoEnvironment extends React.Component {
   constructor(props) {
     super(props);
@@ -20,10 +28,6 @@ export default class InfoEnvironment extends React.Component {
   }
 }
 
-InfoEnvironment.propTypes = {
-  className: React.PropTypes.string
-};
+InfoEnvironment.propTypes = propTypes;
 
-InfoEnvironment.defaultProps = {
-  className: ''
-};
+InfoEnvironment.defaultProps = defaultProps;

@@ -8,6 +8,13 @@ import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import formatRoute from '../util/format_route';
 
+const propTypes = {
+  domain: React.PropTypes.object,
+  item: React.PropTypes.object.isRequired,
+  route: React.PropTypes.object,
+  service: React.PropTypes.object
+};
+
 export default class ActivityLogItem extends React.Component {
   constructor(props) {
     super(props);
@@ -193,9 +200,4 @@ export default class ActivityLogItem extends React.Component {
   }
 }
 
-ActivityLogItem.propTypes = {
-  domain: React.PropTypes.object,
-  item: React.PropTypes.object.isRequired,
-  route: React.PropTypes.object,
-  service: React.PropTypes.object
-};
+ActivityLogItem.propTypes = propTypes;

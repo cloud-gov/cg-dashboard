@@ -3,6 +3,10 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
 
+const propTypes = {
+  children: React.PropTypes.node,
+  title: React.PropTypes.node.isRequired
+};
 
 export default class PageHeader extends React.Component {
   constructor(props) {
@@ -30,7 +34,4 @@ export default class PageHeader extends React.Component {
   }
 }
 
-PageHeader.propTypes = {
-  children: React.PropTypes.node,
-  title: React.PropTypes.node.isRequired
-};
+PageHeader.propTypes = propTypes;

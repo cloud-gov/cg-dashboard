@@ -49,6 +49,18 @@ function formGuid(app) {
   return `app-${app.guid}-usage-and-limits`;
 }
 
+const propTypes = {
+  app: React.PropTypes.object,
+  editing: React.PropTypes.bool,
+  quota: React.PropTypes.object
+};
+
+const defaultProps = {
+  app: {},
+  editing: false,
+  quota: {}
+};
+
 export default class UsageAndLimits extends React.Component {
   constructor(props) {
     super(props);
@@ -295,14 +307,6 @@ export default class UsageAndLimits extends React.Component {
   }
 }
 
-UsageAndLimits.propTypes = {
-  app: React.PropTypes.object,
-  editing: React.PropTypes.bool,
-  quota: React.PropTypes.object
-};
+UsageAndLimits.propTypes = propTypes;
 
-UsageAndLimits.defaultProps = {
-  app: {},
-  editing: false,
-  quota: {}
-};
+UsageAndLimits.defaultProps = defaultProps;

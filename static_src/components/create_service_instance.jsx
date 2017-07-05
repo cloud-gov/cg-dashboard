@@ -20,6 +20,15 @@ import { validateString } from '../util/validators';
 
 const CREATE_SERVICE_INSTANCE_FORM_GUID = 'create-service-form';
 
+const propTypes = {
+  service: React.PropTypes.object,
+  servicePlan: React.PropTypes.object.isRequired
+};
+
+const defaultProps = {
+  service: {}
+};
+
 function stateSetter() {
   return {
     createError: ServiceInstanceStore.createError,
@@ -159,11 +168,6 @@ export default class CreateServiceInstance extends React.Component {
   }
 }
 
-CreateServiceInstance.propTypes = {
-  service: React.PropTypes.object,
-  servicePlan: React.PropTypes.object.isRequired
-};
+CreateServiceInstance.propTypes = propTypes;
 
-CreateServiceInstance.defaultProps = {
-  service: {}
-};
+CreateServiceInstance.defaultProps = defaultProps;

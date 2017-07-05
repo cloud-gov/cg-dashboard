@@ -11,6 +11,10 @@ import serviceActions from '../actions/service_actions.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import createStyler from '../util/create_styler';
 
+const propTypes = {
+  serviceGuid: React.PropTypes.string
+};
+
 function stateSetter(serviceGuid) {
   const servicePlans = ServicePlanStore.getAllFromService(serviceGuid).sort((a, b) => {
     const costA = ServicePlanStore.getCost(a);
@@ -131,8 +135,6 @@ export default class ServicePlanList extends React.Component {
   }
 }
 
-ServicePlanList.propTypes = {
-  serviceGuid: React.PropTypes.string
-};
+ServicePlanList.propTypes = propTypes;
 
 ServicePlanList.defaultProps = {};

@@ -4,6 +4,13 @@ import React from 'react';
 
 import createStyler from '../util/create_styler';
 
+const propTypes = {
+  url: React.PropTypes.string,
+  text: React.PropTypes.string,
+  children: React.PropTypes.any,
+  classes: React.PropTypes.array
+};
+
 export default class HeaderLink extends React.Component {
 
   constructor(props) {
@@ -23,9 +30,4 @@ export default class HeaderLink extends React.Component {
   }
 }
 
-HeaderLink.propTypes = {
-  url: React.PropTypes.string,
-  text: React.PropTypes.string,
-  children: React.PropTypes.any,
-  classes: React.PropTypes.array
-};
+HeaderLink.propTypes = propTypes;
