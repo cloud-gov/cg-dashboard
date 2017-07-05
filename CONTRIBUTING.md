@@ -286,6 +286,19 @@ Here are some basic rules to work with components successfully:
   // Bad
   this.state = { ...data };
   ```
+- Due to the flux architecture, components should rarely set their own state, but should receive all their state from their stores. Rather then setting state when something happens, components should call action creators which will change the store data.
+  ```js
+  // Good
+  onHandleClick() {
+    userActions.addUser();
+    // Eventually state will be set from stores.
+  }  
+  
+  // Bad
+  onHandleClick() {
+    this.setState({ loading: true });
+  }
+  ```
 - Break up long render methods by putting some of the HTML UI in other methods.
   ```js
   // Good
