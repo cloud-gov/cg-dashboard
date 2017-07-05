@@ -12,7 +12,7 @@ import createStyler from '../util/create_styler';
 import ServiceInstanceStore from '../stores/service_instance_store';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-function stateSetter(props) {
+function stateSetter() {
   const appGuid = AppStore.currentAppGuid;
   const activity = ActivityStore
     .getAll()
