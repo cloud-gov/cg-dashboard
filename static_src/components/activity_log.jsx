@@ -4,7 +4,7 @@ import React from 'react';
 import Action from './action.jsx';
 import ActivityLogItem from './activity_log_item.jsx';
 import ActivityStore from '../stores/activity_store';
-import AppStreo from '../stores/app_store.js';
+import AppStore from '../stores/app_store.js';
 import DomainStore from '../stores/domain_store';
 import PanelActions from './panel_actions.jsx';
 import RouteStore from '../stores/route_store';
@@ -60,6 +60,7 @@ export default class ActivityLog extends React.Component {
   }
 
   componentDidMount() {
+    AppStore.addChangeListener(this._onChange);
     ActivityStore.addChangeListener(this._onChange);
     DomainStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
@@ -67,6 +68,7 @@ export default class ActivityLog extends React.Component {
   }
 
   componentWillUnmount() {
+    AppStore.removeChangeListener(this._onChange);
     ActivityStore.removeChangeListener(this._onChange);
     DomainStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
