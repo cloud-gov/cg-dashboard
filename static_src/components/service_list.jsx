@@ -15,8 +15,8 @@ import ServicePlanList from './service_plan_list.jsx';
 import createStyler from '../util/create_styler';
 import formatDateTime from '../util/format_date.js';
 
-function stateSetter(props) {
-  const services = props.initialServices;
+function stateSetter() {
+  const services = ServiceStore.getAll();
 
   return {
     empty: !ServiceStore.loading && !services.length,
@@ -28,13 +28,20 @@ function stateSetter(props) {
 export default class ServiceList extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = stateSetter(props);
+    this.state = stateSetter();
     this.styler = createStyler(style);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState(stateSetter(nextProps));
+  componentDidMount() {
+    ServiceStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    ServiceStore.removeChangeListener(this._onChange);
+  }
+
+  _onChange() {
+    this.setState(stateSetter());
   }
 
   render() {
@@ -87,10 +94,6 @@ export default class ServiceList extends React.Component {
   }
 }
 
-ServiceList.propTypes = {
-  initialServices: React.PropTypes.array
-};
+ServiceList.propTypes = {};
 
-ServiceList.defaultProps = {
-  initialServices: []
-};
+ServiceList.defaultProps = {};

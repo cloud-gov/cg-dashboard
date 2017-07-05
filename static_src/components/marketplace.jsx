@@ -92,7 +92,7 @@ export default class Marketplace extends React.Component {
     let loading = <Loading text="Loading marketplace services" />;
     let content = <div>{ loading }</div>;
     if (!this.state.loading) {
-      let list = <ServiceList initialServices={ state.services } />;
+      let list = <ServiceList />;
       content = (
         <div>
           { this.documentation }
