@@ -163,26 +163,114 @@ To update a single package to a specific version
 - CSS in component files should opt to use CSS Modules first, and will use normal CSS class architecture after.
 
 ### Working with React/Flux
+
 The dashboard uses the [Flux architecture](https://facebook.github.io/flux/docs/overview.html) and renders HTML with [React](https://facebook.github.io/react/). The Flux implementation is mostly vanilla JS with a Flux dispatcher, as opposed to using a tool such as Redux.
 
 #### Action creators
 
-- Each action creator (each method in `*_actions.js`)  should dispatch only
-  a single action.
+Action creators are simple functions which always dispatch an action of a certain type with certain data through the central dispatcher and perform a API request if the action requires it. These actions are listened to by just the stores, which will usually modify their data when an certain action happens.
+
+Here are some basic rules to work with action creators successfully:
+
+- An action creator should usually have a match store, i.e. `UserStore` -> `UserActions`.
+- An action creator should have a corresponding [constant](https://github.com/18F/cg-dashboard/blob/master/static_src/constants.js) for the action.
+- Action creator methods should generally be named as `{verb}{noun}` and use the appropriate tense based on whether the action is going to happen vs it has happened
+  ```js
+  // Good
+  fetchSpaces()
+  receivedSpaces()
+  addUser()
+  addedUser()
+  
+  // Bad
+  spacesFetch()
+  ```
+- Each action creator (each method in `*_actions.js`) should dispatch only a single action.
+  ```js
+  // Bad
+  addedUser(user) {
+    AppDispatcher.handleServerAction({ type, user});
+    AppDispatcher.handleServerAction({ type2, user});
+  }
+  ```
 - Each action creator should return a `Promise`.
-- Any XHR calls should happen within the fetch action creators which
-  should return a promise of the request.
+  ```js
+  // Good
+  receivedSpaces(spaces) {
+    return Promise.resolve(spaces);
+  }
+  ```
+- There should not be more then on action with the same data.
+- Any XHR calls should happen within the fetch action creators which should return a promise of the request.
 - Any `fetch` action should call the appropriate `receive`/`success`/`error` action on the resolve of the fetch's promise.
-- Each async action should have a fetch, success, and error sub-action (e.g.
-  `TOGGLE`, `TOGGLE_SUCCESS`, and `TOGGLE_ERROR`).
+  ```js
+  // Good
+  fetchUser(guid) {
+    return cfApi.fetchUser(guid).then((user) => userActions.receivedUser(user));
+  }
+  ```
+- Each async action should have a fetch, success, and error sub-action (e.g. `TOGGLE`, `TOGGLE_SUCCESS`, and `TOGGLE_ERROR`).
 
 #### Stores
 
-- Stores should avoid doing async work, including making any calls to the API.
-  Instead, action creators should manage the async data flow and dispatch
-  actions to update the store as async event occur.
-- Store specs should not use action creators, instead they should dispatch
-  actions directly.
+Stores are meant to hold all the data of the application such as the Cloud Foundry entities such as organizations, spaces, apps, etc as well as UI data such as loading states, current pages, and current user info. They use [Immutable.js](https://facebook.github.io/immutable-js) as their main data structure to limit accidental manipulation of the data. They bind to certain actions and change their data. When they change their data, they emit a changed which is listend to by the components that require their data, which in turn render.
+
+Here are some basic rules to work with stores successfully:
+
+- Stores should not call action creators.
+- The data in stores should be an [Immutable.List](https://facebook.github.io/immutable-js/docs/#/List).
+- Secondary properties, such as loading state, error state, current GUIDs, should be stored as read-only properties on the store by having underscored variables that are accessible with JS getters. [See more](https://github.com/18F/cg-dashboard/blob/master/static_src/stores/app_store.js#L17).
+  ```js
+  // Good
+  export class OrgStore extends BaseStore {
+    constructor() {
+      super();
+      this._currentOrgGuid = null;
+      this._fetchOrg = false;
+    }
+    
+    get loading() {
+      return this._fetchOrg || this._fetchAll;
+    }
+    
+    get currentOrgGuid() {
+      return this._currentOrgGuid;
+    }
+  }
+  ```
+- Stores should generally not access their `_data` directly but should attempt to use the data manipulation functions in the [BaseStore](https://github.com/18F/cg-dashboard/blob/master/static_src/stores/base_store.js), such as `push`, `merge`, `mergeAll`, etc.
+  ```js
+  // Good
+  case orgActions.ORGS.RECEIVED: {
+    this.mergeAll('guid', action.orgs);
+  }
+  
+  // Bad
+  case orgActions.ORGS.RECEIVED: {
+    this._data = new Immutable.List(this._data, action.orgs);
+  }
+  ```
+- Show preference for emitting a change as the performance hit is worth reducing bugs due to changes not being reflected in the UI because the change wasn't emitted. This should always be the case when something like loading state changed.
+  ```js
+  // Good
+   this._fetchAll = false
+  this.mergeMany('guid', updates, () => {});
+  this.emitChange();
+  
+  // Bad
+  this._fetchAll = false
+  this.mergeMany('guid', updates, (changed) => {
+    if (changed) this.emitChange();
+  });
+  ```
+- Stores should generally avoid doing async work, including making any calls to the API, and `setTimeout`. The only case where it's easier for the store to make API calls is when a store's loading state depends on more then one data request, in which case, the `BaseStore.load` method should be used. See anti-patterns for more information
+  
+##### When to create a store
+
+Creating a new store should generally be avoided but there are a few circumstances where it makes sense:
+
+- There isn't already a store for a certain Cloud Foundry Entity, such as an org, app, space (these already exist).
+- There's a need for data to be shared across the whole application, such as global notifications and errors.
   
 #### Patterns
 
