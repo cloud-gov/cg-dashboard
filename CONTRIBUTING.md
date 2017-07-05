@@ -271,6 +271,84 @@ Creating a new store should generally be avoided but there are a few circumstanc
 
 - There isn't already a store for a certain Cloud Foundry Entity, such as an org, app, space (these already exist).
 - There's a need for data to be shared across the whole application, such as global notifications and errors.
+
+#### Components
+
+Components are React JSX components that render the HTML UI of the application. Components subscribe to stores that have data they care about or have properties that are passed down from the component that rendered them. Components call action creators when things happen in the UI, such as a user clicks a button to add an entity.
+
+Here are some basic rules to work with components successfully:
+
+- Always set the component's state with the `setState` method (unless in the constructor). Never set state in the `render()` method.
+  ```js
+  // Good
+  this.setState({ ...data });
+  
+  // Bad
+  this.state = { ...data };
+  ```
+- Break up long render methods by putting some of the HTML UI in other methods.
+  ```js
+  // Good
+  getErrorMessage() {
+    return <ErrorMessage></ErrorMessage>
+  }
+  
+  render() {
+    const error = this.getErrorMessage();
+  }
+  ```
+- Be sure to bind methods to `this` that are called from click or DOM events in the constructor.
+  ```js
+  // Good
+  this.handleOverviewClick = this.handleOverviewClick.bind(this);
+  ```
+- For UI that is only rendered conditionally, set the UI's variable with an empty `let` statement, as React will not render `undefined items`, but will also not crash.
+  ```js
+  // Good
+  let errorMessage;
+  if (this.state.error) {
+    errorMessage = <Error>{ this.state.error }</Error>
+  }
+  ...
+  
+  return (<div>
+    { errorMessage}
+    { otherStuff }
+  </div>);
+  
+  // Bad
+  if (condition) {
+    conditionalContent = <div></div>;
+  } else {
+    conditionalContent = ''; // Not required
+  }
+  
+  ```
+ - Keep the `propTypes` and `defaultProps` as `const`s at the top of the file directly before the component class definition, and set the consts at the bottom.
+   ```js
+   // Good
+   const propTypes = { things: PropTypes.array };
+   const defaultProps = { things: [] };
+
+   class Things extends React.Component {
+   ...
+   }
+
+   Things.propTypes = propTypes;
+   Things.defaultProps = defaultProps;
+   ```
+- If UI displaying is dependant on a certian amount of time, this should be set in the component rather then the store, see [Loading component](https://github.com/18F/cg-dashboard/blob/master/static_src/components/loading.jsx#L44) as an example.
+- If a component's prop types is technically an enum, use `oneOf` rather then the underlying data structure.
+  ```js
+  // Good
+  const propTypes = { status: PropTypes.oneOf(['red', 'green', 'yellow']);
+  
+  // Bad
+  const propTypes = { status: PropTypes.string };
+  ```
+ - Use `createStyler` for adding cg-style CSS classes to components.
+ - Components should usually have either `state` or `props`, but usually not both. See [Container component](#container-component).
+   - The only time it should have both when there's a prop for a configurable part of the UI.
   
 #### Patterns
 
@@ -287,12 +365,6 @@ The general pattern for different UIs on the app is to fetch data for Cloud Foun
 There's no perfect guidance on what should be a container component vs a props component, besides that almost all base pages are a container component. A good way to determine is to see what data various UIs require and then separate containers and prop containers based on this.
   
 #### Anti-patterns
-
-##### Components should 
-
-Most components will use either props or state to control updates. There are some components that currently break this anti-pattern, often having initial data passed in. This can be done with the `handleUIAction` dispatcher, which sets the distinction that the action is just a UI based action rather then from the server or app.
-
-Instead, use the [state container component](#container-component).
 
 ##### Setting state in component rather then through actions
 
