@@ -102,10 +102,6 @@ export default class AppList extends React.Component {
   }
 }
 
-AppList.propTypes = {
-  initialApps: React.PropTypes.array
-};
+AppList.propTypes = {};
 
-AppList.defaultProps = {
-  initialApps: []
-};
+AppList.defaultProps = {};
