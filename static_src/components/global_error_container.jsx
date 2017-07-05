@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import ErrorStore from '../stores/error_store.js';
@@ -7,7 +8,7 @@ import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const propTypes = {
-  maxItems: React.PropTypes.number
+  maxItems: PropTypes.number
 };
 const defaultProps = {
   maxItems: 1

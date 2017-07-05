@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
@@ -24,12 +25,12 @@ const STYLE_TYPES = [
 ];
 
 const propTypes = {
-  children: React.PropTypes.node,
-  name: React.PropTypes.string.isRequired,
-  styleType: React.PropTypes.oneOf(STYLE_TYPES),
-  iconType: React.PropTypes.oneOf(ICON_TYPES),
-  iconSize: React.PropTypes.oneOf(ICON_SIZE),
-  bordered: React.PropTypes.bool
+  children: PropTypes.node,
+  name: PropTypes.string.isRequired,
+  styleType: PropTypes.oneOf(STYLE_TYPES),
+  iconType: PropTypes.oneOf(ICON_TYPES),
+  iconSize: PropTypes.oneOf(ICON_SIZE),
+  bordered: PropTypes.bool
 };
 
 const defaultProps = {

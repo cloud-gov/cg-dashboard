@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -16,8 +17,8 @@ import orgActions from '../actions/org_actions.js';
 import { orgHref } from '../util/url';
 
 const propTypes = {
-  org: React.PropTypes.object.isRequired,
-  spaces: React.PropTypes.array
+  org: PropTypes.object.isRequired,
+  spaces: PropTypes.array
 };
 
 const defaultProps = {

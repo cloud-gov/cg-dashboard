@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -48,8 +49,8 @@ export default class FormText extends FormElement {
 }
 
 FormText.propTypes = Object.assign({}, FormElement.propTypes, {
-  inline: React.PropTypes.bool,
-  labelAfter: React.PropTypes.bool
+  inline: PropTypes.bool,
+  labelAfter: PropTypes.bool
 });
 
 FormText.defaultProps = Object.assign({}, FormElement.defaultProps, {

@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
@@ -21,14 +22,14 @@ const BUTTON_TYPES = [
 ];
 
 const propTypes = {
-  children: React.PropTypes.any,
-  classes: React.PropTypes.array,
-  clickHandler: React.PropTypes.func,
-  disabled: React.PropTypes.bool,
-  href: React.PropTypes.string,
-  label: React.PropTypes.string,
-  style: React.PropTypes.oneOf(BUTTON_STYLES),
-  type: React.PropTypes.oneOf(BUTTON_TYPES)
+  children: PropTypes.any,
+  classes: PropTypes.array,
+  clickHandler: PropTypes.func,
+  disabled: PropTypes.bool,
+  href: PropTypes.string,
+  label: PropTypes.string,
+  style: PropTypes.oneOf(BUTTON_STYLES),
+  type: PropTypes.oneOf(BUTTON_TYPES)
 };
 
 const defaultProps = {

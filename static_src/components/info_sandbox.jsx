@@ -1,5 +1,6 @@
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
@@ -22,7 +23,7 @@ export default class InfoSandbox extends React.Component {
 }
 
 InfoSandbox.propTypes = {
-  className: React.PropTypes.string
+  className: PropTypes.string
 };
 
 InfoSandbox.defaultProps = {

@@ -1,5 +1,6 @@
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Action from './action.jsx';
@@ -12,12 +13,12 @@ import formatRoute from '../util/format_route';
 import routeFormCss from '../css/route_form.css';
 
 const propTypes = {
-  domains: React.PropTypes.array.isRequired,
-  route: React.PropTypes.object,
-  routeLimit: React.PropTypes.number,
-  error: React.PropTypes.object,
-  submitHandler: React.PropTypes.func,
-  cancelHandler: React.PropTypes.func
+  domains: PropTypes.array.isRequired,
+  route: PropTypes.object,
+  routeLimit: PropTypes.number,
+  error: PropTypes.object,
+  submitHandler: PropTypes.func,
+  cancelHandler: PropTypes.func
 };
 
 const defaultProps = {

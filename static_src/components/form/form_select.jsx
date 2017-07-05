@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import FormElement from './form_element.jsx';
@@ -47,7 +48,7 @@ export default class FormSelect extends FormElement {
   }
 }
 FormSelect.propTypes = Object.assign(FormSelect.propTypes, {
-  options: React.PropTypes.array
+  options: PropTypes.array
 });
 FormSelect.defaultProps = Object.assign(FormSelect.defaultProps, {
   options: []

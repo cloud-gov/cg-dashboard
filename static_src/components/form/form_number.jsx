@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import FormText from './form_text.jsx';
@@ -21,6 +22,6 @@ export default class FormNumber extends React.Component {
 }
 
 FormNumber.propTypes = {
-  min: React.PropTypes.number,
-  max: React.PropTypes.number
+  min: PropTypes.number,
+  max: PropTypes.number
 };

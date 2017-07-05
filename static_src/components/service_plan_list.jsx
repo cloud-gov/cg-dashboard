@@ -4,6 +4,7 @@
  */
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Action from './action.jsx';
@@ -132,7 +133,7 @@ export default class ServicePlanList extends React.Component {
 }
 
 ServicePlanList.propTypes = {
-  initialServiceGuid: React.PropTypes.string
+  initialServiceGuid: PropTypes.string
 };
 
 ServicePlanList.defaultProps = {};

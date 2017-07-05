@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -139,7 +140,7 @@ export class Nav extends React.Component {
   }
 }
 Nav.propTypes = {
-  subLinks: React.PropTypes.array
+  subLinks: PropTypes.array
 };
 Nav.defaultProps = {
   subLinks: []

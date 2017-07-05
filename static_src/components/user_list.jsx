@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 /**
  * Renders a list of users.
  */
@@ -20,18 +21,18 @@ import formatDateTime from '../util/format_date';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const propTypes = {
-  users: React.PropTypes.array,
-  userType: React.PropTypes.string,
-  entityGuid: React.PropTypes.string,
-  currentUserAccess: React.PropTypes.bool,
-  empty: React.PropTypes.bool,
-  loading: React.PropTypes.bool,
-  saving: React.PropTypes.bool,
-  savingText: React.PropTypes.string,
+  users: PropTypes.array,
+  userType: PropTypes.string,
+  entityGuid: PropTypes.string,
+  currentUserAccess: PropTypes.bool,
+  empty: PropTypes.bool,
+  loading: PropTypes.bool,
+  saving: PropTypes.bool,
+  savingText: PropTypes.string,
   // Set to a function when there should be a remove button.
-  onRemove: React.PropTypes.func,
-  onRemovePermissions: React.PropTypes.func,
-  onAddPermissions: React.PropTypes.func
+  onRemove: PropTypes.func,
+  onRemovePermissions: PropTypes.func,
+  onAddPermissions: PropTypes.func
 };
 
 const defaultProps = {

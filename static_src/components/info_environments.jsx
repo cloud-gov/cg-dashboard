@@ -1,5 +1,6 @@
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
@@ -21,7 +22,7 @@ export default class InfoEnvironment extends React.Component {
 }
 
 InfoEnvironment.propTypes = {
-  className: React.PropTypes.string
+  className: PropTypes.string
 };
 
 InfoEnvironment.defaultProps = {

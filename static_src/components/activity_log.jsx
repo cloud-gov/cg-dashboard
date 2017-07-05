@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Action from './action.jsx';
@@ -39,8 +40,8 @@ function stateSetter(props) {
 }
 
 const propTypes = {
-  initialAppGuid: React.PropTypes.string.isRequired,
-  maxItems: React.PropTypes.number
+  initialAppGuid: PropTypes.string.isRequired,
+  maxItems: PropTypes.number
 };
 
 const defaultProps = {

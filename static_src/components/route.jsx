@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Action from './action.jsx';
@@ -16,8 +17,8 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 
 const propTypes = {
-  appGuid: React.PropTypes.string.isRequired,
-  route: React.PropTypes.object
+  appGuid: PropTypes.string.isRequired,
+  route: PropTypes.object
 };
 
 const defaultProps = {

@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -13,10 +14,10 @@ import OrgStore from '../stores/org_store.js';
 import { spaceHref } from '../util/url';
 
 const propTypes = {
-  space: React.PropTypes.object.isRequired,
-  orgGuid: React.PropTypes.string.isRequired,
-  showAppDetail: React.PropTypes.bool,
-  user: React.PropTypes.object
+  space: PropTypes.object.isRequired,
+  orgGuid: PropTypes.string.isRequired,
+  showAppDetail: PropTypes.bool,
+  user: PropTypes.object
 };
 
 const defaultProps = {

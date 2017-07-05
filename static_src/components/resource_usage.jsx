@@ -1,5 +1,7 @@
 
 
+import PropTypes from 'prop-types';
+
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -9,15 +11,15 @@ import formatBytes from '../util/format_bytes';
 import Stat from './stat.jsx';
 
 const propTypes = {
-  formGuid: React.PropTypes.string,
-  max: React.PropTypes.number,
-  min: React.PropTypes.number,
-  onChange: React.PropTypes.func,
-  title: React.PropTypes.string.isRequired,
-  amountUsed: React.PropTypes.number,
-  amountTotal: React.PropTypes.number,
-  byteWarningThreshold: React.PropTypes.number,
-  secondaryInfo: React.PropTypes.node
+  formGuid: PropTypes.string,
+  max: PropTypes.number,
+  min: PropTypes.number,
+  onChange: PropTypes.func,
+  title: PropTypes.string.isRequired,
+  amountUsed: PropTypes.number,
+  amountTotal: PropTypes.number,
+  byteWarningThreshold: PropTypes.number,
+  secondaryInfo: PropTypes.node
 };
 
 const defaultProps = {

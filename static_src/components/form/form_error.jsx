@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
@@ -18,5 +19,5 @@ export default class FormError extends React.Component {
   }
 }
 
-FormError.propTypes = { message: React.PropTypes.string };
+FormError.propTypes = { message: PropTypes.string };
 FormError.defaultProps = { message: '' };
