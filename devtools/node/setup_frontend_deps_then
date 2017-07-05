@@ -1,0 +1,6 @@
+#!/bin/bash
+
+SCRIPTS_PATH=$(cd $(dirname $0); pwd -P)
+$SCRIPTS_PATH/setup_frontend_deps
+
+exec "$@"

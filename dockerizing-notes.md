@@ -18,29 +18,17 @@ It will start up PCFDev and then create the UAA clients for you.
 
 ## Running
 
-To build the assets one-time:
-``docker-compose run npm run build``
-
 To start the system up, you can run:
-`docker-compose up app -d`
+`docker-compose up app frontend watch`
 
-You can navigate to two components:
+You can navigate to three components:
 
-1) The dashboard
+| Component        | Address           | Description  |
+| ------------- |:-------------:| -----:|
+| The Dashboard      | http://localhost:9999 | This is what this repository contains.<br/>By using PCF Dev, there are two users created automatically by default. <!-- TODO: Put text about creds -->|
+| The mailcatcher view      | http://localhost:8025      |   Useful for debugging e-mails. There are invite flows that send e-mails. This UI captures them |
+| HTML VNC Viewer | http://localhost:6901/?password=vncpassword      | Useful for seeing Javascript Karma Tests and Selenium Tests running.<br/>Based on [this](https://github.com/ConSol/docker-headless-vnc-container) container |
 
-Address: http://localhost:9999
-This is what this repository contains.
-
-By using PCF Dev, there are two users created automatically by default.
-
-<!-- Put text about creds -->
-
-2) The mailcatcher view
-
-http://localhost:8025
-
-Useful for debugging e-mails. There are invite flows that send e-mails. This UI
-captures them.
 
 <!-- TODO Update this -->
 You will first need to ensure that `../cg-style` exists relative

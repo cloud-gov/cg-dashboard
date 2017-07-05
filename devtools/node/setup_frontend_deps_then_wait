@@ -1,0 +1,13 @@
+#!/bin/bash
+
+SCRIPTS_PATH=$(cd $(dirname $0); pwd -P)
+$SCRIPTS_PATH/setup_frontend_deps
+
+# in the case of wait, we will want to setup the VNC.
+/dockerstartup/vnc_startup.sh
+if [ $? -ne 0 ]; then
+  # if it fails, we should exit before getting caught in the sleep command.
+  echo "something went wrong setting up vnc"
+  exit 1
+fi
+sleep 100d

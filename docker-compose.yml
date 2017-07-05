@@ -68,12 +68,13 @@ services:
       servicesNetwork:
         aliases:
           - smtp.fake.com
-  npm:
+  frontend_dev_tools:
     build:
       context: .
       dockerfile: ./devtools/node/Dockerfile
     working_dir: /cg-dashboard
-    entrypoint: ./devtools/node/install_deps_then npm
+    # override the current entrypoint from the base image.
+    entrypoint: ""
     volumes:
       - global-node-modules:/usr/local/lib/node_modules
       - npm-cache:/root/.npm
@@ -81,16 +82,24 @@ services:
       - .:/cg-dashboard
       - cg-style-node-modules:/cg-style/node_modules
       - ../cg-style:/cg-style
+      - nvm-data:/headless/.nvm
+  frontend:
+    extends:
+      service: frontend_dev_tools
+    command: ./devtools/node/setup_frontend_deps_then_wait
+    ports:
+      - "5901:5901"
+      - "6901:6901"
   watch:
     extends:
-      service: npm
-    command: npm run watch
+      service: frontend_dev_tools
+    command: ./devtools/node/setup_frontend_deps_then npm run watch
     working_dir: /cg-dashboard
   watch_cg_style:
     extends:
-      service: npm
+      service: frontend_dev_tools
     working_dir: /cg-style
-    command: npm run watch
+    command: ./devtools/node/setup_frontend_deps_then npm run watch
   go:
     image: golang:1.8.3
     environment:
@@ -116,6 +125,7 @@ volumes:
   go-bins:
   go-dep-tool-src:
   redis-data:
+  nvm-data:
 
 networks:
   servicesNetwork:
@@ -123,6 +133,3 @@ networks:
   # needed for running go tests that use https://github.com/ory/dockertest
   servicesTestNetwork:
     driver: bridge
-# commands
-
-# dependencies

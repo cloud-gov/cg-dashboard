@@ -18,3 +18,4 @@ vendor/*
 context/selenium-logs/selenium-standalone.txt
 # useful for template tests
 *.returned
+.org.chromium*
