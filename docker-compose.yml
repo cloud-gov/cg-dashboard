@@ -1,12 +1,16 @@
-version: '2'
+version: '2.1'
 services:
   app:
     extends: go
     working_dir: /go/src/github.com/18F/cg-dashboard
     command: run server.go
     depends_on:
-      - mail
-      - redis
+      mail:
+        condition: service_started
+      redis:
+        condition: service_started
+      frontend:
+        condition: service_healthy
     ports:
       - "8002:8002"
     networks:
@@ -91,16 +95,27 @@ services:
     ports:
       - "5901:5901"
       - "6901:6901"
+    healthcheck:
+      test: ["CMD", "wget", "http://localhost:6901"]
+      interval: 1m00s
+      timeout: 10s
+      retries: 10
   watch:
     extends:
       service: frontend_dev_tools
     command: ./devtools/node/setup_frontend_deps_then npm run watch
     working_dir: /cg-dashboard
+    depends_on:
+      frontend:
+        condition: service_healthy
   watch_cg_style:
     extends:
       service: frontend_dev_tools
     working_dir: /cg-style
     command: ./devtools/node/setup_frontend_deps_then npm run watch
+    depends_on:
+      frontend:
+        condition: service_healthy
   go:
     image: golang:1.8.3
     environment:
