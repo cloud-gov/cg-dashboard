@@ -4,8 +4,6 @@ import ReactDOM from 'react-dom';
 import errorActions from '../../actions/error_actions';
 import loginActions from '../../actions/login_actions';
 import LoginStore from '../../stores/login_store';
-import orgActions from '../../actions/org_actions';
-import spaceActions from '../../actions/space_actions';
 import userActions from '../../actions/user_actions';
 import windowUtil from '../../util/window';
 import { checkAuth } from '../../routes';
@@ -26,8 +24,6 @@ describe('routes', function () {
     beforeEach(function () {
       sandbox.stub(loginActions, 'fetchStatus').returns(Promise.resolve({ status: 'authorized' }));
       sandbox.stub(userActions, 'fetchCurrentUser').returns(Promise.resolve());
-      sandbox.stub(orgActions, 'fetchAll').returns(Promise.resolve());
-      sandbox.stub(spaceActions, 'fetchAll').returns(Promise.resolve());
     });
 
     describe('given no arguments', function () {
@@ -47,10 +43,8 @@ describe('routes', function () {
         expect(loginActions.fetchStatus).toHaveBeenCalledOnce();
       });
 
-      it('fetches page data', function () {
+      it('fetches the current user', function () {
         expect(userActions.fetchCurrentUser).toHaveBeenCalledOnce();
-        expect(orgActions.fetchAll).toHaveBeenCalledOnce();
-        expect(spaceActions.fetchAll).toHaveBeenCalledOnce();
       });
     });
 
@@ -71,10 +65,8 @@ describe('routes', function () {
         expect(loginActions.fetchStatus).toHaveBeenCalledOnce();
       });
 
-      it('fetches page data', function () {
+      it('fetches the current user', function () {
         expect(userActions.fetchCurrentUser).toHaveBeenCalledOnce();
-        expect(orgActions.fetchAll).toHaveBeenCalledOnce();
-        expect(spaceActions.fetchAll).toHaveBeenCalledOnce();
       });
 
       it('calls userActions.fetchCurrentUser() with guids for filtered API calls', function () {
@@ -110,10 +102,8 @@ describe('routes', function () {
         expect(loginActions.fetchStatus).toHaveBeenCalledOnce();
       });
 
-      it('fetches page data', function () {
+      it('fetches the current user', function () {
         expect(userActions.fetchCurrentUser).toHaveBeenCalledOnce();
-        expect(orgActions.fetchAll).toHaveBeenCalledOnce();
-        expect(spaceActions.fetchAll).toHaveBeenCalledOnce();
       });
 
       it('calls noticeError action', function () {
@@ -145,10 +135,8 @@ describe('routes', function () {
         expect(ReactDOM.render).toHaveBeenCalledOnce();
       });
 
-      it('does not fetch page data', function () {
+      it('does not fetch the current user', function () {
         expect(userActions.fetchCurrentUser).not.toHaveBeenCalled();
-        expect(orgActions.fetchAll).not.toHaveBeenCalled();
-        expect(spaceActions.fetchAll).not.toHaveBeenCalled();
       });
     });
   });

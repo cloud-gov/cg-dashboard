@@ -69,13 +69,7 @@ describe('Global error', function () {
       beforeEach(function () {
         browser.refresh();
         globalErrorsElement = getErrorsComponent();
-
-        browser.waitForExist(BreadcrumbsElement.primarySelector);
-        const breadcrumbsElement = new BreadcrumbsElement(
-          browser,
-          browser.element(BreadcrumbsElement.primarySelector)
-        );
-        breadcrumbsElement.goToSpace();
+        browser.url('/#');
       });
 
       it('dismisses the error when navigating to any other route', function () {

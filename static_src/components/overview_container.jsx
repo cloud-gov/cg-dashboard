@@ -92,21 +92,23 @@ export default class OverviewContainer extends React.Component {
       </span>
     );
 
-    if (state.empty) {
-      content = this.emptyState;
-    } else if (!state.loading && this.state.orgs.length > 0 || this.anyOrgsOpen()) {
-      content = (
-        <div>
-        { state.orgs.map((org) =>
-          <div key={ org.guid } className="test-panel-row-organizations">
-            <OrgQuicklook
-              org={ org }
-              spaces={ this.orgSpaces(org.guid) }
-            />
+    if (!state.loading) {
+      if (state.empty) {
+        content = this.emptyState;
+      } else if (this.state.orgs.length > 0 || this.anyOrgsOpen()) {
+        content = (
+          <div>
+          { state.orgs.map((org) =>
+            <div key={ org.guid } className="test-panel-row-organizations">
+              <OrgQuicklook
+                org={ org }
+                spaces={ this.orgSpaces(org.guid) }
+              />
+            </div>
+          )}
           </div>
-        )}
-        </div>
-      );
+        );
+      }
     }
 
     return (
