@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 /**
  * form.jsx
  *
@@ -89,13 +90,13 @@ export default class Form extends React.Component {
 }
 
 Form.propTypes = {
-  action: React.PropTypes.string,
-  children: React.PropTypes.node,
-  classes: React.PropTypes.array,
-  guid: React.PropTypes.string.isRequired,
-  method: React.PropTypes.string,
-  onSubmit: React.PropTypes.func,
-  errorOverride: React.PropTypes.string
+  action: PropTypes.string,
+  children: PropTypes.node,
+  classes: PropTypes.array,
+  guid: PropTypes.string.isRequired,
+  method: PropTypes.string,
+  onSubmit: PropTypes.func,
+  errorOverride: PropTypes.string
 };
 
 Form.defaultProps = {

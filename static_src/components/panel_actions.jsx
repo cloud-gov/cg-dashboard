@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -8,8 +9,8 @@ import createStyler from '../util/create_styler';
 const ALIGN_TYPES = ['left', 'right', 'both'];
 
 const propTypes = {
-  children: React.PropTypes.any,
-  align: React.PropTypes.oneOf(ALIGN_TYPES)
+  children: PropTypes.any,
+  align: PropTypes.oneOf(ALIGN_TYPES)
 };
 const defaultProps = {
   children: [],

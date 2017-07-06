@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -8,10 +9,10 @@ import createStyler from '../util/create_styler';
 import UserStore from '../stores/user_store';
 
 const propTypes = {
-  org: React.PropTypes.object,
-  space: React.PropTypes.object,
-  brief: React.PropTypes.bool,
-  user: React.PropTypes.object
+  org: PropTypes.object,
+  space: PropTypes.object,
+  brief: PropTypes.bool,
+  user: PropTypes.object
 };
 
 const defaultProps = {

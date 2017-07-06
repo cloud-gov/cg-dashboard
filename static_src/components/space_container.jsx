@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import AppCountStatus from './app_count_status.jsx';
@@ -120,7 +121,7 @@ export default class SpaceContainer extends React.Component {
 }
 
 SpaceContainer.propTypes = {
-  currentPage: React.PropTypes.string
+  currentPage: PropTypes.string
 };
 
 SpaceContainer.defaultProps = {

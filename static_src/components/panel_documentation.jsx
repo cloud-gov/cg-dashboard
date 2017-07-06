@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -6,8 +7,8 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  children: React.PropTypes.any,
-  description: React.PropTypes.bool
+  children: PropTypes.any,
+  description: PropTypes.bool
 };
 const defaultProps = {
   children: null,

@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
@@ -30,6 +31,6 @@ export default class BreadcrumbsItem extends React.Component {
 }
 
 BreadcrumbsItem.propTypes = {
-  children: React.PropTypes.node.isRequired,
-  url: React.PropTypes.string
+  children: PropTypes.node.isRequired,
+  url: PropTypes.string
 };

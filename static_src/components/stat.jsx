@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -17,16 +18,16 @@ const STATES = [
 ];
 
 const propTypes = {
-  formGuid: React.PropTypes.string,
-  name: React.PropTypes.string,
-  title: React.PropTypes.string,
-  editable: React.PropTypes.bool,
-  min: React.PropTypes.number,
-  max: React.PropTypes.number,
-  onChange: React.PropTypes.func,
-  primaryStat: React.PropTypes.number.isRequired,
-  statState: React.PropTypes.oneOf(STATES),
-  secondaryInfo: React.PropTypes.node
+  formGuid: PropTypes.string,
+  name: PropTypes.string,
+  title: PropTypes.string,
+  editable: PropTypes.bool,
+  min: PropTypes.number,
+  max: PropTypes.number,
+  onChange: PropTypes.func,
+  primaryStat: PropTypes.number.isRequired,
+  statState: PropTypes.oneOf(STATES),
+  secondaryInfo: PropTypes.node
 };
 
 const defaultProps = {

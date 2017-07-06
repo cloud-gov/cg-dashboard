@@ -4,6 +4,7 @@
  */
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import ComplexList from './complex_list.jsx';
@@ -88,7 +89,7 @@ export default class ServiceList extends React.Component {
 }
 
 ServiceList.propTypes = {
-  initialServices: React.PropTypes.array
+  initialServices: PropTypes.array
 };
 
 ServiceList.defaultProps = {

@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -6,7 +7,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  title: React.PropTypes.string
+  title: PropTypes.string
 };
 
 const defaultProps = {

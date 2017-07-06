@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import loadingImg from 'cloudgov-style/img/loading.gif';
@@ -17,10 +18,10 @@ const STYLES = [
 ];
 
 const propTypes = {
-  text: React.PropTypes.string,
-  active: React.PropTypes.bool,
-  loadingDelayMS: React.PropTypes.number,
-  style: React.PropTypes.oneOf(STYLES)
+  text: PropTypes.string,
+  active: PropTypes.bool,
+  loadingDelayMS: PropTypes.number,
+  style: PropTypes.oneOf(STYLES)
 };
 
 const defaultProps = {

@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import keymirror from 'keymirror';
 
@@ -13,10 +14,10 @@ const STATUSES = Object.assign({}, entityHealth, keymirror({
 
 
 const propTypes = {
-  message: React.PropTypes.node,
-  status: React.PropTypes.oneOf(Object.keys(STATUSES)),
-  actions: React.PropTypes.arrayOf(React.PropTypes.object),
-  onDismiss: React.PropTypes.func
+  message: PropTypes.node,
+  status: PropTypes.oneOf(Object.keys(STATUSES)),
+  actions: PropTypes.arrayOf(PropTypes.object),
+  onDismiss: PropTypes.func
 };
 
 const defaultProps = {

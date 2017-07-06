@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 /*
  * Renders a users roles with controls to edit them
  */
@@ -46,12 +47,12 @@ const roleMapping = {
 };
 
 const propTypes = {
-  user: React.PropTypes.object.isRequired,
-  userType: React.PropTypes.string,
-  currentUserAccess: React.PropTypes.bool,
-  entityGuid: React.PropTypes.string,
-  onRemovePermissions: React.PropTypes.func,
-  onAddPermissions: React.PropTypes.func,
+  user: PropTypes.object.isRequired,
+  userType: PropTypes.string,
+  currentUserAccess: PropTypes.bool,
+  entityGuid: PropTypes.string,
+  onRemovePermissions: PropTypes.func,
+  onAddPermissions: PropTypes.func,
 };
 
 const defaultProps = {
@@ -111,7 +112,7 @@ export default class UserRoleListControl extends React.Component {
       </span>
     );
   }
-};
+}
 
 UserRoleListControl.propTypes = propTypes;
 UserRoleListControl.defaultProps = defaultProps;

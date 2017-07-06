@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import UserStore from '../stores/user_store.js';
 
@@ -34,7 +35,7 @@ const userProvider = Component => {
   }
 
   UserProvider.childContextTypes = {
-    currentUser: React.PropTypes.object
+    currentUser: PropTypes.object
   };
 
   return UserProvider;
