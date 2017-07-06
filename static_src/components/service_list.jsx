@@ -11,12 +11,16 @@ import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import PanelGroup from './panel_group.jsx';
 import ServiceStore from '../stores/service_store.js';
+import ServicePlanStore from '../stores/service_plan_store.js';
 import ServicePlanList from './service_plan_list.jsx';
 import createStyler from '../util/create_styler';
 import formatDateTime from '../util/format_date.js';
 
 function stateSetter() {
-  const services = ServiceStore.getAll();
+  const services = ServiceStore.getAll().map((service) => {
+    const plan = ServicePlanStore.getAllFromService(service.guid);
+    return { ...service, servicePlans: plan };
+  });
 
   return {
     empty: !ServiceStore.loading && !services.length,

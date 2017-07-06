@@ -18,14 +18,9 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 function stateSetter() {
   const loading = ServiceStore.loading || ServicePlanStore.loading;
-  const services = ServiceStore.getAll().map((service) => {
-    const plan = ServicePlanStore.getAllFromService(service.guid);
-    return { ...service, servicePlans: plan };
-  });
   const currentOrgGuid = OrgStore.currentOrgGuid;
 
   return {
-    services,
     currentOrgGuid,
     loading: loading,
     currentOrg: OrgStore.get(currentOrgGuid),

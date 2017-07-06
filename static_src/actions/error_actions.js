@@ -47,8 +47,6 @@ export default {
   },
 
   importantDataFetchError(err, entityMessage) {
-    console.error(err);
-
     const msg = 'There was an issue connecting to the dashboard, ' +
       `${entityMessage || 'please try again later.'}`;
 
