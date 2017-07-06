@@ -14,7 +14,8 @@ fi
 
 ./node_modules/.bin/deps-ok &> /dev/null
 if [ $? -ne 0 ]; then
-  npm install --quiet
+  echo "Missing dependencies. Running npm install. Please wait..."
+  npm install
 fi
 
 npm run test-selenium-install
