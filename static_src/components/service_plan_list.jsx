@@ -4,6 +4,7 @@
  */
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Action from './action.jsx';
@@ -12,7 +13,7 @@ import ServicePlanStore from '../stores/service_plan_store.js';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  serviceGuid: React.PropTypes.string
+  serviceGuid: PropTypes.string
 };
 
 function stateSetter(serviceGuid) {

@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import ComplexListItem from './complex_list_item.jsx';
@@ -6,11 +7,11 @@ import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const propTypes = {
-  children: React.PropTypes.array,
-  className: React.PropTypes.string,
-  title: React.PropTypes.string,
-  titleElement: React.PropTypes.element,
-  emptyMessage: React.PropTypes.element
+  children: PropTypes.array,
+  className: PropTypes.string,
+  title: PropTypes.string,
+  titleElement: PropTypes.element,
+  emptyMessage: PropTypes.element
 };
 const defaultProps = {
   children: [],

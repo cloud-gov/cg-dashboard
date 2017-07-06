@@ -1,6 +1,7 @@
 
 import moment from 'moment-timezone';
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
@@ -9,10 +10,10 @@ import ElasticLineItem from './elastic_line_item.jsx';
 import formatRoute from '../util/format_route';
 
 const propTypes = {
-  domain: React.PropTypes.object,
-  item: React.PropTypes.object.isRequired,
-  route: React.PropTypes.object,
-  service: React.PropTypes.object
+  domain: PropTypes.object,
+  item: PropTypes.object.isRequired,
+  route: PropTypes.object,
+  service: PropTypes.object
 };
 
 export default class ActivityLogItem extends React.Component {

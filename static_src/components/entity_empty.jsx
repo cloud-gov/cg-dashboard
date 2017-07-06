@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import PanelDocumentation from './panel_documentation.jsx';
@@ -7,8 +8,8 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 
 const propTypes = {
-  callout: React.PropTypes.node,
-  children: React.PropTypes.any
+  callout: PropTypes.node,
+  children: PropTypes.any
 };
 
 const defaultProps = {

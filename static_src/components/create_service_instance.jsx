@@ -3,6 +3,7 @@
  */
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -21,8 +22,8 @@ import { validateString } from '../util/validators';
 const CREATE_SERVICE_INSTANCE_FORM_GUID = 'create-service-form';
 
 const propTypes = {
-  service: React.PropTypes.object,
-  servicePlan: React.PropTypes.object.isRequired
+  service: PropTypes.object,
+  servicePlan: PropTypes.object.isRequired
 };
 
 const defaultProps = {

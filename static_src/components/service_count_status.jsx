@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
@@ -11,8 +12,8 @@ import { appInstanceHealth, worstAppInstanceState } from '../util/health';
 
 
 const propTypes = {
-  serviceCount: React.PropTypes.number,
-  services: React.PropTypes.array
+  serviceCount: PropTypes.number,
+  services: PropTypes.array
 };
 
 const defaultProps = {

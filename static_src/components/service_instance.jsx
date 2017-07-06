@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -17,9 +18,9 @@ import { OPERATION_FAILED } from '../stores/service_instance_store.js';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  currentAppGuid: React.PropTypes.string.isRequired,
-  serviceInstance: React.PropTypes.object,
-  bound: React.PropTypes.bool
+  currentAppGuid: PropTypes.string.isRequired,
+  serviceInstance: PropTypes.object,
+  bound: PropTypes.bool
 };
 
 const defaultProps = {

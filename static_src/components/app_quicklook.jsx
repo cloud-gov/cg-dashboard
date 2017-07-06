@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import ElasticLine from './elastic_line.jsx';
@@ -16,11 +17,11 @@ const EXTRA_INFO = [
 ];
 
 const propTypes = {
-  app: React.PropTypes.object.isRequired,
-  orgGuid: React.PropTypes.string.isRequired,
-  spaceGuid: React.PropTypes.string.isRequired,
-  spaceName: React.PropTypes.string,
-  extraInfo: React.PropTypes.arrayOf((propVal) => EXTRA_INFO.includes(propVal))
+  app: PropTypes.object.isRequired,
+  orgGuid: PropTypes.string.isRequired,
+  spaceGuid: PropTypes.string.isRequired,
+  spaceName: PropTypes.string,
+  extraInfo: PropTypes.arrayOf((propVal) => EXTRA_INFO.includes(propVal))
 };
 
 const defaultProps = {

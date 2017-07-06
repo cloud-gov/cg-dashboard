@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import overrideStyle from '../css/overrides.css';
@@ -70,10 +71,10 @@ class App extends React.Component {
       </div>
     );
   }
-};
+}
 
 App.propTypes = {
-  children: React.PropTypes.any
+  children: PropTypes.any
 };
 
 App.defaultProps = {

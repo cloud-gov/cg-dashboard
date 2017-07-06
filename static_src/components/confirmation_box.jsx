@@ -4,6 +4,7 @@
  */
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
@@ -17,11 +18,11 @@ const CONFIRM_STYLES = [
 ];
 
 const propTypes = {
-  style: React.PropTypes.oneOf(CONFIRM_STYLES),
-  message: React.PropTypes.any,
-  confirmationText: React.PropTypes.string,
-  confirmHandler: React.PropTypes.func.isRequired,
-  cancelHandler: React.PropTypes.func.isRequired
+  style: PropTypes.oneOf(CONFIRM_STYLES),
+  message: PropTypes.any,
+  confirmationText: PropTypes.string,
+  confirmHandler: PropTypes.func.isRequired,
+  cancelHandler: PropTypes.func.isRequired
 };
 
 const defaultProps = {

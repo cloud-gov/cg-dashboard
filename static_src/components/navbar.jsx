@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -12,7 +13,7 @@ import SpaceStore from '../stores/space_store.js';
 import * as url from '../util/url';
 
 const propTypes = {
-  subLinks: React.PropTypes.array
+  subLinks: PropTypes.array
 };
 const defaultProps = {
   subLinks: []

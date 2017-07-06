@@ -1,5 +1,6 @@
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Action from './action.jsx';
@@ -50,9 +51,9 @@ function formGuid(app) {
 }
 
 const propTypes = {
-  app: React.PropTypes.object,
-  editing: React.PropTypes.bool,
-  quota: React.PropTypes.object
+  app: PropTypes.object,
+  editing: PropTypes.bool,
+  quota: PropTypes.object
 };
 
 const defaultProps = {

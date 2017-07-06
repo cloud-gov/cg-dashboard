@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -6,8 +7,8 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  columns: React.PropTypes.number,
-  children: React.PropTypes.any
+  columns: PropTypes.number,
+  children: PropTypes.any
 };
 const defaultProps = {
   columns: 0,

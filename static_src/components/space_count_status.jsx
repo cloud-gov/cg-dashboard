@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
@@ -7,7 +8,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 import CountStatus from './count_status.jsx';
 
 const propTypes = {
-  spaces: React.PropTypes.array
+  spaces: PropTypes.array
 };
 
 const defaultProps = {

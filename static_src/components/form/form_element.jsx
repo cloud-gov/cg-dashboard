@@ -1,17 +1,18 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import formActions from '../../actions/form_actions';
 
 const propTypes = {
-  classes: React.PropTypes.array,
-  className: React.PropTypes.string,
-  formGuid: React.PropTypes.string.isRequired,
-  key: React.PropTypes.string,
-  label: React.PropTypes.string,
-  name: React.PropTypes.string.isRequired,
-  onValidate: React.PropTypes.func,
-  validator: React.PropTypes.func,
-  value: React.PropTypes.any
+  classes: PropTypes.array,
+  className: PropTypes.string,
+  formGuid: PropTypes.string.isRequired,
+  key: PropTypes.string,
+  label: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  onValidate: PropTypes.func,
+  validator: PropTypes.func,
+  value: PropTypes.any
 };
 
 const defaultProps = {

@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
@@ -9,8 +10,8 @@ import { entityHealth } from '../constants.js';
 import { appHealth, worstHealth } from '../util/health';
 
 const propTypes = {
-  appCount: React.PropTypes.number,
-  apps: React.PropTypes.array
+  appCount: PropTypes.number,
+  apps: PropTypes.array
 };
 
 const defaultProps = {

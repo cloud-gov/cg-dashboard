@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
@@ -10,8 +11,8 @@ const ALIGN_STYLES = [
 ];
 
 const propTypes = {
-  align: React.PropTypes.oneOf(ALIGN_STYLES),
-  children: React.PropTypes.any
+  align: PropTypes.oneOf(ALIGN_STYLES),
+  children: PropTypes.any
 };
 
 const defaultProps = {

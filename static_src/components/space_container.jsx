@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import AppCountStatus from './app_count_status.jsx';
@@ -30,7 +31,7 @@ function stateSetter() {
 }
 
 const propTypes = {
-  currentPage: React.PropTypes.string
+  currentPage: PropTypes.string
 };
 
 const defaultProps = {

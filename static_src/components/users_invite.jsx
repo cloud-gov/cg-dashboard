@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 /**
  * Renders a form that allows org users to invite new users
  * to cloud.gov
@@ -20,9 +21,9 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
 
 const propTypes = {
-  inviteDisabled: React.PropTypes.bool,
-  currentUserAccess: React.PropTypes.bool,
-  error: React.PropTypes.object
+  inviteDisabled: PropTypes.bool,
+  currentUserAccess: PropTypes.bool,
+  error: PropTypes.object
 };
 const defaultProps = {
   inviteDisabled: false,

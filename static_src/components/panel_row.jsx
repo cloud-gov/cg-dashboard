@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -13,10 +14,10 @@ const STYLES = [
 ];
 
 const propTypes = {
-  id: React.PropTypes.string,
-  className: React.PropTypes.string,
-  children: React.PropTypes.any,
-  styleClass: React.PropTypes.oneOf(STYLES)
+  id: PropTypes.string,
+  className: PropTypes.string,
+  children: PropTypes.any,
+  styleClass: PropTypes.oneOf(STYLES)
 };
 
 const defaultProps = {};

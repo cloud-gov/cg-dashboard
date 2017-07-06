@@ -1,14 +1,15 @@
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  url: React.PropTypes.string,
-  text: React.PropTypes.string,
-  children: React.PropTypes.any,
-  classes: React.PropTypes.array
+  url: PropTypes.string,
+  text: PropTypes.string,
+  children: PropTypes.any,
+  classes: PropTypes.array
 };
 
 export default class HeaderLink extends React.Component {

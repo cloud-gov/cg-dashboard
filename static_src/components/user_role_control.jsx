@@ -1,13 +1,14 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 const propTypes = {
-  userId: React.PropTypes.string.isRequired,
-  roleName: React.PropTypes.string.isRequired,
-  roleKey: React.PropTypes.string.isRequired,
-  value: React.PropTypes.bool,
-  enableControl: React.PropTypes.bool,
-  onChange: React.PropTypes.func
+  userId: PropTypes.string.isRequired,
+  roleName: PropTypes.string.isRequired,
+  roleKey: PropTypes.string.isRequired,
+  value: PropTypes.bool,
+  enableControl: PropTypes.bool,
+  onChange: PropTypes.func
 };
 
 const dangerousRole = 'org_manager';
@@ -63,10 +64,10 @@ export default class UserRoleControl extends React.Component {
       </span>
     );
   }
-};
+}
 
 UserRoleControl.contextTypes = {
-  currentUser: React.PropTypes.object
+  currentUser: PropTypes.object
 };
 
 UserRoleControl.propTypes = propTypes;

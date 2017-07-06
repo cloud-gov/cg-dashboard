@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Notification from './notification.jsx';
@@ -9,7 +10,7 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 
 const propTypes = {
-  err: React.PropTypes.object
+  err: PropTypes.object
 };
 
 const defaultProps = {};

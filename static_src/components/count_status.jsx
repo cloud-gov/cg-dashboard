@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -14,10 +15,10 @@ const ICON_TYPES = [
 ];
 
 const propTypes = {
-  count: React.PropTypes.number,
-  name: React.PropTypes.string.isRequired,
-  health: React.PropTypes.oneOf(Object.values(entityHealth)),
-  iconType: React.PropTypes.oneOf(ICON_TYPES)
+  count: PropTypes.number,
+  name: PropTypes.string.isRequired,
+  health: PropTypes.oneOf(Object.values(entityHealth)),
+  iconType: PropTypes.oneOf(ICON_TYPES)
 };
 
 const defaultProps = {

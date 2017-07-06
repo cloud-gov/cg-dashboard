@@ -1,11 +1,12 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
 
 const propTypes = {
-  children: React.PropTypes.node,
-  title: React.PropTypes.node.isRequired
+  children: PropTypes.node,
+  title: PropTypes.node.isRequired
 };
 
 export default class PageHeader extends React.Component {

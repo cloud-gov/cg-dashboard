@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Action from './action.jsx';
@@ -41,7 +42,7 @@ function stateSetter() {
 }
 
 const propTypes = {
-  maxItems: React.PropTypes.number
+  maxItems: PropTypes.number
 };
 
 const defaultProps = {
