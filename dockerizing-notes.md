@@ -97,7 +97,14 @@ if you wanted to see it, you would need to use VNC. And since the `frontend`
 already is using the 6901 port for VNC, we can just use the existing service._
 
 #### Backend One-Offs
-<!-- TODO -->
+
+Format: `docker-compose run --rm backend "<cmd>"`
+
+_Note: You will need the double quotes around your command._
+
+Examples:
+- Add dependency: `docker-compose run --rm backend "glide get github.com/some/repo"`
+- Run `./codecheck.sh`: `docker-compose run --rm backend "./codecheck.sh"`
 
 #### UAA One-Offs
 <!-- TODO -->

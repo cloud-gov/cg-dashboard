@@ -1,9 +1,9 @@
 version: '2.1'
 services:
   app:
-    extends: go
+    extends: backend
     working_dir: /go/src/github.com/18F/cg-dashboard
-    command: run server.go
+    entrypoint: ./devtools/golang/install_deps_then "go run server.go"
     depends_on:
       mail:
         condition: service_started
@@ -118,7 +118,7 @@ services:
     depends_on:
       frontend:
         condition: service_healthy
-  go:
+  backend:
     image: golang:1.8.3
     environment:
       - GOPATH=/go
@@ -132,7 +132,7 @@ services:
       # needed for running go tests that use https://github.com/ory/dockertest
       - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /go/src/github.com/18F/cg-dashboard
-    entrypoint: ./devtools/golang/install_deps_then go
+    entrypoint: ./devtools/golang/install_deps_then
     networks:
       - servicesTestNetwork
   frontend_testing_server:
