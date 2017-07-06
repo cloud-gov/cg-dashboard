@@ -1,15 +1,32 @@
 # Dockerizing Notes
 
+## Table of Contents
+
+- [Quick-Start](#quick-start)
+  - [Requirements](#quick-start-requirements)
+  - [Running](#quick-start-running)
+- [Full Setup](#full-setup)
+  - [Requirements](#full-setup-requirements)
+  - [Running](#full-setup-running)
+  - [Running One-Offs](#full-setup-running-one-offs)
+    - [Frontend One-Offs](#frontend-one-offs)
+    - [Backend One-Offs](#backend-one-offs)
+    - [UAA One-Offs](#uaa-one-offs)
+    - [CF One-Offs](#cf-one-offs)
+- [Tear Down](#tear-down)
+
 ## Quick Start
+
+For quick and low impact changes (e.g. typos, changes to **existing** styling)
+or for a quick glance at the dashboard, you can follow this quick start
+section to start the frontend testing server.
+For all others changes, use the [full setup guide](#full-setup).
 
 ### Quick-Start: Requirements
 
 - [docker-compose](https://docs.docker.com/compose/install/)
 
 ### Quick-Start: Running
-For quick and low impact changes (e.g. typos, changes to **existing** styling),
-you can use the frontend testing server. For all others changes,
-use the [full setup guide](#full-setup).
 
 ```sh
 docker-compose up frontend_testing_server
@@ -49,7 +66,7 @@ You can navigate to three components:
 
 | Component        | Address           | Description  |
 | ------------- |:-------------:| -----:|
-| The Dashboard      | http://localhost:9999 | This is what this repository contains.<br/>By using PCF Dev, there are two users created automatically by default. <!-- TODO: Put text about creds -->|
+| The Dashboard      | http://localhost:8002 | This is what this repository contains.<br/>By using PCF Dev, there are two users created automatically by default. <!-- TODO: Put text about creds -->|
 | The mailcatcher view      | http://localhost:8025      |   Useful for debugging e-mails. There are invite flows that send e-mails. This UI captures them |
 | HTML VNC Viewer | http://localhost:6901/?password=vncpassword      | Useful for seeing Javascript Karma Tests and Selenium Tests running.<br/>Based on [this](https://github.com/ConSol/docker-headless-vnc-container) container |
 
