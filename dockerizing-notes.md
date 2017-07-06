@@ -6,20 +6,33 @@
 You will need to install:
 
 - [PCFDev](https://docs.pivotal.io/pcf-dev/#installing)
-- docker-compose
+- [docker-compose](https://docs.docker.com/compose/install/)
 
-## Setup
+## Quick Start
 
-### Start PCFDev
+For quick and low impact changes (e.g. typos, changes to **existing** styling),
+you can use the frontend testing server. For all others changes,
+use the [full setup guide](#full-setup).
 
-Run `./devtools/setup_local.sh`
+```sh
+# Start the 1) frontend service and 2) npm run watch service.
+docker-compose up frontend watch -d
+# Run the testing server.
+docker-compose exec frontend bash -c "npm run testing-server"
+```
 
-It will start up PCFDev and then create the UAA clients for you.
+You can navigate to `localhost:8001` and see the testing server.
 
-## Running
+## Full Setup
 
-To start the system up, you can run:
-`docker-compose up app frontend watch`
+From the root of the repository:
+
+```sh
+# Start PCFDev and create the UAA client for you.
+./devtools/setup_local.sh
+# Start the app.
+docker-compose up app frontend watch -d
+```
 
 You can navigate to three components:
 
@@ -28,6 +41,12 @@ You can navigate to three components:
 | The Dashboard      | http://localhost:9999 | This is what this repository contains.<br/>By using PCF Dev, there are two users created automatically by default. <!-- TODO: Put text about creds -->|
 | The mailcatcher view      | http://localhost:8025      |   Useful for debugging e-mails. There are invite flows that send e-mails. This UI captures them |
 | HTML VNC Viewer | http://localhost:6901/?password=vncpassword      | Useful for seeing Javascript Karma Tests and Selenium Tests running.<br/>Based on [this](https://github.com/ConSol/docker-headless-vnc-container) container |
+
+## Tear Down
+
+You can run: `docker-compose down` to tear down the services.
+
+If you want to start fresh which removes containers and **volumes**, run `./devtools/clean.sh`. It also removes the vendored dependencies for Go (i.e. `vendor`) and Javascript (i.e. `node_modules`)
 
 
 <!-- TODO Update this -->
