@@ -78,7 +78,7 @@ services:
       dockerfile: ./devtools/node/Dockerfile
     working_dir: /cg-dashboard
     # override the current entrypoint from the base image.
-    entrypoint: ""
+    entrypoint: ./devtools/node/install_deps_then
     volumes:
       - global-node-modules:/usr/local/lib/node_modules
       - npm-cache:/root/.npm
@@ -87,11 +87,11 @@ services:
       - ./node_modules:/cg-dashboard/node_modules
       - cg-style-node-modules:/cg-style/node_modules
       - ../cg-style:/cg-style
-      - nvm-data:/headless/.nvm
+      - frontend-home:/headless
   frontend:
     extends:
       service: frontend_dev_tools
-    command: ./devtools/node/setup_frontend_deps_then_wait
+    command: 'sleep 100d'
     ports:
       - "5901:5901"
       - "6901:6901"
@@ -105,7 +105,7 @@ services:
   watch:
     extends:
       service: frontend_dev_tools
-    command: ./devtools/node/setup_frontend_deps_then npm run watch
+    command: 'npm run watch'
     working_dir: /cg-dashboard
     depends_on:
       frontend:
@@ -114,7 +114,7 @@ services:
     extends:
       service: frontend_dev_tools
     working_dir: /cg-style
-    command: ./devtools/node/setup_frontend_deps_then npm run watch
+    command: 'npm run watch'
     depends_on:
       frontend:
         condition: service_healthy
@@ -138,7 +138,7 @@ services:
   frontend_testing_server:
     extends:
       service: frontend_dev_tools
-    command: ./devtools/node/setup_frontend_deps_then npm run testing-server
+    command: 'npm run testing-server'
     working_dir: /cg-dashboard
     ports:
       - "8001:8001"
@@ -150,7 +150,7 @@ volumes:
   go-bins:
   go-dep-tool-src:
   redis-data:
-  nvm-data:
+  frontend-home:
 
 networks:
   servicesNetwork:

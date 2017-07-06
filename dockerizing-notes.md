@@ -78,33 +78,42 @@ executable in a container.
 
 #### Frontend One-Offs
 
-For frontend one-offs, once the `frontend` service is up and running, you can
-use the docker-compose `exec` command.
+Format: `docker-compose run --rm frontend <COMMAND>`
+
+Examples
+- Add dependency: `docker-compose run --rm frontend npm install <dep> --save`
+- Frontend unit tests: `docker-compose run --rm frontend npm run test-unit`
+- Frontend functional tests (w/o visual debugging):
+`docker-compose run --rm frontend npm run test-functional`
+
+For more possible commands, refer to the package.json.
+
+##### Visual Debugging
+Once the `frontend` service is up and running (via
+`docker-compose up frontend -d`), you can use the docker-compose `exec` command
+to attach to the existing container. While viewing the container via HTML
+VNC Viewer (refer to the table above), you will see the container's Chrome
+browser open and execute the commands.
 
 Format: `docker-compose exec frontend bash -c "<COMMAND>"`
 
 Examples:
-- Add dependency: `docker-compose exec frontend bash -c "npm install <dep> --save"`
-- Frontend unit tests: `docker-compose exec frontend bash -c "npm run test-unit"`
 - Frontend functional tests: `docker-compose exec frontend bash -c "npm run test-functional"`
 
-For more possible commands, refer to the package.json.
+##### Updating the node version.
 
-_For those familiar with docker, it may seem strange that we run one-offs with
-`exec` command (vs usually with the `run` command). This is because since
-currently, some of the one-off commands need to be able to start Chrome AND
-if you wanted to see it, you would need to use VNC. And since the `frontend`
-already is using the 6901 port for VNC, we can just use the existing service._
+Currently, we need to append to the PATH at container build time, so that
+node and npm are in the PATH at container runtime. Change the `NODE_VERSION` in
+the Dockerfile in the `devtools/node` directory. Then rebuild the image with:
+`docker-compose build frontend_dev_tools`
 
 #### Backend One-Offs
 
-Format: `docker-compose run --rm backend "<cmd>"`
-
-_Note: You will need the double quotes around your command._
+Format: `docker-compose run --rm backend <COMMAND>`
 
 Examples:
-- Add dependency: `docker-compose run --rm backend "glide get github.com/some/repo"`
-- Run `./codecheck.sh`: `docker-compose run --rm backend "./codecheck.sh"`
+- Add dependency: `docker-compose run --rm backend glide get github.com/some/repo`
+- Run `./codecheck.sh`: `docker-compose run --rm backend ./codecheck.sh`
 
 #### UAA One-Offs
 <!-- TODO -->
