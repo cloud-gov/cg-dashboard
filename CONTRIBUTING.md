@@ -163,26 +163,205 @@ To update a single package to a specific version
 - CSS in component files should opt to use CSS Modules first, and will use normal CSS class architecture after.
 
 ### Working with React/Flux
+
 The dashboard uses the [Flux architecture](https://facebook.github.io/flux/docs/overview.html) and renders HTML with [React](https://facebook.github.io/react/). The Flux implementation is mostly vanilla JS with a Flux dispatcher, as opposed to using a tool such as Redux.
 
 #### Action creators
 
-- Each action creator (each method in `*_actions.js`)  should dispatch only
-  a single action.
+Action creators are simple functions which always dispatch an action of a certain type with certain data through the central dispatcher and perform a API request if the action requires it. These actions are listened to by just the stores, which will usually modify their data when an certain action happens.
+
+Here are some basic rules to work with action creators successfully:
+
+- An action creator should usually have a match store, i.e. `UserStore` -> `UserActions`.
+- An action creator should have a corresponding [constant](https://github.com/18F/cg-dashboard/blob/master/static_src/constants.js) for the action.
+- Action creator methods should generally be named as `{verb}{noun}` and use the appropriate tense based on whether the action is going to happen vs it has happened
+  ```js
+  // Good
+  fetchSpaces()
+  receivedSpaces()
+  addUser()
+  addedUser()
+  
+  // Bad
+  spacesFetch()
+  ```
+- Each action creator (each method in `*_actions.js`) should dispatch only a single action.
+  ```js
+  // Bad
+  addedUser(user) {
+    AppDispatcher.handleServerAction({ type, user});
+    AppDispatcher.handleServerAction({ type2, user});
+  }
+  ```
 - Each action creator should return a `Promise`.
-- Any XHR calls should happen within the fetch action creators which
-  should return a promise of the request.
+  ```js
+  // Good
+  receivedSpaces(spaces) {
+    return Promise.resolve(spaces);
+  }
+  ```
+- There should not be more then on action with the same data.
+- Any XHR calls should happen within the fetch action creators which should return a promise of the request.
 - Any `fetch` action should call the appropriate `receive`/`success`/`error` action on the resolve of the fetch's promise.
-- Each async action should have a fetch, success, and error sub-action (e.g.
-  `TOGGLE`, `TOGGLE_SUCCESS`, and `TOGGLE_ERROR`).
+  ```js
+  // Good
+  fetchUser(guid) {
+    return cfApi.fetchUser(guid).then((user) => userActions.receivedUser(user));
+  }
+  ```
+- Each async action should have a fetch, success, and error sub-action (e.g. `TOGGLE`, `TOGGLE_SUCCESS`, and `TOGGLE_ERROR`).
 
 #### Stores
 
-- Stores should avoid doing async work, including making any calls to the API.
-  Instead, action creators should manage the async data flow and dispatch
-  actions to update the store as async event occur.
-- Store specs should not use action creators, instead they should dispatch
-  actions directly.
+Stores are meant to hold all the data of the application such as the Cloud Foundry entities such as organizations, spaces, apps, etc as well as UI data such as loading states, current pages, and current user info. They use [Immutable.js](https://facebook.github.io/immutable-js) as their main data structure to limit accidental manipulation of the data. They bind to certain actions and change their data. When they change their data, they emit a changed which is listend to by the components that require their data, which in turn render.
+
+Here are some basic rules to work with stores successfully:
+
+- Stores should not call action creators.
+- The data in stores should be an [Immutable.List](https://facebook.github.io/immutable-js/docs/#/List).
+- Secondary properties, such as loading state, error state, current GUIDs, should be stored as read-only properties on the store by having underscored variables that are accessible with JS getters. [See more](https://github.com/18F/cg-dashboard/blob/master/static_src/stores/app_store.js#L17).
+  ```js
+  // Good
+  export class OrgStore extends BaseStore {
+    constructor() {
+      super();
+      this._currentOrgGuid = null;
+      this._fetchOrg = false;
+    }
+    
+    get loading() {
+      return this._fetchOrg || this._fetchAll;
+    }
+    
+    get currentOrgGuid() {
+      return this._currentOrgGuid;
+    }
+  }
+  ```
+- Stores should generally not access their `_data` directly but should attempt to use the data manipulation functions in the [BaseStore](https://github.com/18F/cg-dashboard/blob/master/static_src/stores/base_store.js), such as `push`, `merge`, `mergeAll`, etc.
+  ```js
+  // Good
+  case orgActions.ORGS.RECEIVED: {
+    this.mergeAll('guid', action.orgs);
+  }
+  
+  // Bad
+  case orgActions.ORGS.RECEIVED: {
+    this._data = new Immutable.List(this._data, action.orgs);
+  }
+  ```
+- Show preference for emitting a change as the performance hit is worth reducing bugs due to changes not being reflected in the UI because the change wasn't emitted. This should always be the case when something like loading state changed.
+  ```js
+  // Good
+   this._fetchAll = false
+  this.mergeMany('guid', updates, () => {});
+  this.emitChange();
+  
+  // Bad
+  this._fetchAll = false
+  this.mergeMany('guid', updates, (changed) => {
+    if (changed) this.emitChange();
+  });
+  ```
+- Stores should generally avoid doing async work, including making any calls to the API, and `setTimeout`. The only case where it's easier for the store to make API calls is when a store's loading state depends on more then one data request, in which case, the `BaseStore.load` method should be used. See anti-patterns for more information
+  
+##### When to create a store
+
+Creating a new store should generally be avoided but there are a few circumstances where it makes sense:
+
+- There isn't already a store for a certain Cloud Foundry Entity, such as an org, app, space (these already exist).
+- There's a need for data to be shared across the whole application, such as global notifications and errors.
+
+#### Components
+
+Components are React JSX components that render the HTML UI of the application. Components subscribe to stores that have data they care about or have properties that are passed down from the component that rendered them. Components call action creators when things happen in the UI, such as a user clicks a button to add an entity.
+
+Here are some basic rules to work with components successfully:
+
+- Always set the component's state with the `setState` method (unless in the constructor). Never set state in the `render()` method.
+  ```js
+  // Good
+  this.setState({ ...data });
+  
+  // Bad
+  this.state = { ...data };
+  ```
+- Due to the flux architecture, components should rarely set their own state, but should receive all their state from their stores. Rather then setting state when something happens, components should call action creators which will change the store data.
+  ```js
+  // Good
+  onHandleClick() {
+    userActions.addUser();
+    // Eventually state will be set from stores.
+  }  
+  
+  // Bad
+  onHandleClick() {
+    this.setState({ loading: true });
+  }
+  ```
+- Break up long render methods by putting some of the HTML UI in other methods.
+  ```js
+  // Good
+  getErrorMessage() {
+    return <ErrorMessage></ErrorMessage>
+  }
+  
+  render() {
+    const error = this.getErrorMessage();
+  }
+  ```
+- Be sure to bind methods to `this` that are called from click or DOM events in the constructor.
+  ```js
+  // Good
+  this.handleOverviewClick = this.handleOverviewClick.bind(this);
+  ```
+- For UI that is only rendered conditionally, set the UI's variable with an empty `let` statement, as React will not render `undefined items`, but will also not crash.
+  ```js
+  // Good
+  let errorMessage;
+  if (this.state.error) {
+    errorMessage = <Error>{ this.state.error }</Error>
+  }
+  ...
+  
+  return (<div>
+    { errorMessage}
+    { otherStuff }
+  </div>);
+  
+  // Bad
+  if (condition) {
+    conditionalContent = <div></div>;
+  } else {
+    conditionalContent = ''; // Not required
+  }
+  
+  ```
+ - Keep the `propTypes` and `defaultProps` as `const`s at the top of the file directly before the component class definition, and set the consts at the bottom.
+   ```js
+   // Good
+   const propTypes = { things: PropTypes.array };
+   const defaultProps = { things: [] };
+
+   class Things extends React.Component {
+   ...
+   }
+
+   Things.propTypes = propTypes;
+   Things.defaultProps = defaultProps;
+   ```
+- If UI displaying is dependant on a certian amount of time, this should be set in the component rather then the store, see [Loading component](https://github.com/18F/cg-dashboard/blob/master/static_src/components/loading.jsx#L44) as an example.
+- If a component's prop types is technically an enum, use `oneOf` rather then the underlying data structure.
+  ```js
+  // Good
+  const propTypes = { status: PropTypes.oneOf(['red', 'green', 'yellow']);
+  
+  // Bad
+  const propTypes = { status: PropTypes.string };
+  ```
+ - Use `createStyler` for adding cg-style CSS classes to components.
+ - Components should usually have either `state` or `props`, but usually not both. See [Container component](#container-component).
+   - The only time it should have both when there's a prop for a configurable part of the UI.
   
 #### Patterns
 
@@ -200,12 +379,6 @@ There's no perfect guidance on what should be a container component vs a props c
   
 #### Anti-patterns
 
-##### Having components with both props and state. 
-
-Most components will use either props or state to control updates. There are some components that currently break this anti-pattern, often having initial data passed in. This can be done with the `handleUIAction` dispatcher, which sets the distinction that the action is just a UI based action rather then from the server or app.
-
-Instead, use the [state container component](#container-component).
-
 ##### Setting state in component rather then through actions
 
 Besides pure UI components, no components should set state within themselves without the use of an action. This is due to keeping both UI actions the users take, and server actions when data comes in from the server to move through the app in the same way, through the dispatcher. 
@@ -218,9 +391,23 @@ This pattern is slowly being phased out of multiple stores, so will be seen many
 
 When async code is in stores, it should be migrated to action creators.
 
+## Analytics
+
+Both client-side routed page views and all client-side events are logged in google analytics.
+
+- Different client-side urls, such as `/org/{org guid}/spaces/` are logged as page views. This is done through the [router](https://github.com/18F/cg-dashboard/blob/828fe79a8a303734719afcdce3e4bdabfe39b824/static_src/main.js#L23).
+- Any action called is logged as a Google Analytics event. This is done from the [App Dispatcher](https://github.com/18F/cg-dashboard/blob/master/static_src/dispatcher.js).
+- There's a utility file for all analytics related functionality, [util/analytics.js](https://github.com/18F/cg-dashboard/blob/828fe79a8a303734719afcdce3e4bdabfe39b824/static_src/util/analytics.js)
+
+### Google analytics dashboard
+
+There's no distinction from the dashboard and any of the other cloud.gov site's in the GA dashboard. To help with this, there's a shared GA segment representing just the dashboard production traffic. If you have access to the cloud.gov GA, it's available with a [shared link](https://analytics.google.com/analytics/web/template?uid=n5PjjEaRSlSzON6I3mrhrA). There's also a dashboard GA dashboard, which doesn't have a shareable link but should be in the "Customization" -> "Dashboard" section.
+
 ## Performance
 
-Performance, as in speed of the site as perceived to users, has been briefly researched and tracked. The main web performance metrics tracked are [Speed Index](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index), [input latency](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency), [time to interactive](https://developers.google.com/web/tools/lighthouse/audits/time-to-interactive), total page weight, and number of DOM nodes. These metrics were tracked for five comparison sites for cloud.gov and documented in a [google sheet, GSA only](https://docs.google.com/spreadsheets/d/1SuGQv5o75n6bkZaQNzL-cjkR2WTDvGuQJlFtPuUGNfM/edit#gid=0). These comparison stats were used to determine performance goals (ideal numbers to reach over time) and budgets (limits placed on the team to stop performance from degrading). Performance is tracked as part of the CI build process, and the build fails if performance goes over the budgets. Any library added that's total file size is above 25kb should be evaluated for performance affect.
+Performance, as in speed of the site as perceived to users, has been briefly researched and tracked. The main web performance metrics tracked are [Speed Index](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index), [input latency](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency), [time to interactive](https://developers.google.com/web/tools/lighthouse/audits/time-to-interactive), total page weight, and number of DOM nodes. These metrics were tracked for five comparison sites for cloud.gov and documented in a [google sheet, GSA only](https://docs.google.com/spreadsheets/d/1SuGQv5o75n6bkZaQNzL-cjkR2WTDvGuQJlFtPuUGNfM/edit#gid=0). These comparison stats were used to determine performance goals (ideal numbers to reach over time) and budgets (limits placed on the team to stop performance from degrading). 
+
+Performance is tracked as part of the CI build process, and the build fails if performance goes over the budgets. Any library added that's total file size is above 25kb should be evaluated for performance affect. Update 07/05: Currently the performance is not tracked as part of the CI build due to memory and resource limits on CircleCI, but should be added back later when these issues are resolved.
 
 ## Onboarding checklist
 Complete the [onboarding tasks](https://github.com/18F/cg-product/blob/master/OnboardingChecklist.md) for the whole cloud.gov team and for the Customer theme.
