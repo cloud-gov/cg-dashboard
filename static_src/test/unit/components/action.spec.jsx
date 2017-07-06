@@ -2,7 +2,7 @@
 import '../../global_setup.js';
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import Action from '../../../components/action.jsx';
 import Link from '../../../components/action/link.jsx';
 import Button from '../../../components/action/button.jsx';
@@ -77,10 +77,10 @@ describe('<Action />', function () {
     let clickHandlerSpy;
     beforeEach(() => {
       clickHandlerSpy = sinon.spy();
-      action = shallow(<Action clickHandler={ clickHandlerSpy } />);
+      action = mount(<Action clickHandler={ clickHandlerSpy } />);
     });
 
-    xit('triggers clickHandler', () => {
+    it('triggers clickHandler', () => {
       action.find(Button).simulate('click');
       expect(clickHandlerSpy).toHaveBeenCalledOnce();
     });
