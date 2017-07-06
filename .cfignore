@@ -9,3 +9,7 @@ cg-deck
 cg-dashboard
 /screenshots/
 static/tests/
+.org.chromium*
+# only exclude these index.html files from the VNC service.
+# they only appear in the root folder.
+/index.html*
