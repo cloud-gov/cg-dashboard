@@ -135,6 +135,13 @@ services:
     entrypoint: ./devtools/golang/install_deps_then go
     networks:
       - servicesTestNetwork
+  frontend_testing_server:
+    extends:
+      service: frontend_dev_tools
+    command: ./devtools/node/setup_frontend_deps_then npm run testing-server
+    working_dir: /cg-dashboard
+    ports:
+      - "8001:8001"
 volumes:
   node-modules:
   cg-style-node-modules:
