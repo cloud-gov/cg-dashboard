@@ -100,6 +100,8 @@ services:
       interval: 1m00s
       timeout: 10s
       retries: 10
+    environment:
+      - START_VNC=1
   watch:
     extends:
       service: frontend_dev_tools
