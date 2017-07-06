@@ -66,9 +66,14 @@ You can navigate to three components:
 
 | Component        | Address           | Description  |
 | ------------- |:-------------:| -----:|
-| The Dashboard      | http://localhost:8002 | This is what this repository contains.<br/>By using PCF Dev, there are two users created automatically by default. <!-- TODO: Put text about creds -->|
+| The Dashboard      | http://localhost:8002 | This is what this repository contains.<br/>By using PCF Dev, there are two users created automatically by default.<br/>Admin User: `admin`:`admin`<br/> Regular User: `user`:`pass`|
 | The mailcatcher view      | http://localhost:8025      |   Useful for debugging e-mails. There are invite flows that send e-mails. This UI captures them |
 | HTML VNC Viewer | http://localhost:6901/?password=vncpassword      | Useful for seeing Javascript Karma Tests and Selenium Tests running.<br/>Based on [this](https://github.com/ConSol/docker-headless-vnc-container) container |
+
+_Note: the credentials here are not sensitive since they are
+only used with the local deployment and the credentials are public knowledge.
+[\[1\]](https://github.com/pivotal-cf/pcfdev)
+[\[2\]](https://github.com/ConSol/docker-headless-vnc-container)_
 
 ### Full Setup: Running One-Offs
 
@@ -91,7 +96,7 @@ For more possible commands, refer to the package.json.
 ##### Visual Debugging
 Once the `frontend` service is up and running (via
 `docker-compose up frontend -d`), you can use the docker-compose `exec` command
-to attach to the existing container. While viewing the container via HTML
+to attach to the existing container. While viewing the container via the HTML
 VNC Viewer (refer to the table above), you will see the container's Chrome
 browser open and execute the commands.
 
@@ -116,10 +121,42 @@ Examples:
 - Run `./codecheck.sh`: `docker-compose run --rm backend ./codecheck.sh`
 
 #### UAA One-Offs
-<!-- TODO -->
+
+If you are trying to modify your local UAA, you can use a Docker Image and
+use a multi-command which first logs in then runs your desired command.
+
+Example:
+```sh
+docker run governmentpaas/cf-uaac \
+  /bin/sh -c '
+  uaac target https://uaa.local.pcfdev.io --skip-ssl-validation && \
+  uaac token client get admin -s "admin-client-secret" && \
+  <MORE UAA COMMAND(S)>'
+```
+
+For an example, look at the `devtools/setup_local.sh` script.
+
+_Note: the credentials here are not sensitive since they are
+only used with PCFDEV (which is local and also the credentials are
+public knowledge in the [PCFDEV](https://github.com/pivotal-cf/pcfdev) repo)._
 
 #### CF One-Offs
-<!-- TODO -->
+
+Similar to the UAA One-Offs section, you can use a docker image with the CF CLI.
+
+Example:
+```
+docker run governmentpaas/cf-cli \
+  /bin/sh -c '
+  cf login -a https://api.local.pcfdev.io --skip-ssl-validation -u admin -p admin && \
+  <MORE CF COMMAND(S)>'
+```
+
+Also, you could use your local CF CLI. (which you will likely have already.)
+
+_Note: the credentials here are not sensitive since they are
+only used with PCFDEV (which is local and also the credentials are
+public knowledge in the [PCFDEV](https://github.com/pivotal-cf/pcfdev) repo)._
 
 ## Tear Down
 
