@@ -80,6 +80,7 @@ services:
       - npm-cache:/root/.npm
       - node-modules:/cg-dashboard/node_modules
       - .:/cg-dashboard
+      - ./node_modules:/cg-dashboard/node_modules
       - cg-style-node-modules:/cg-style/node_modules
       - ../cg-style:/cg-style
       - nvm-data:/headless/.nvm
