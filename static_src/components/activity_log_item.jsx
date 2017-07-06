@@ -3,7 +3,6 @@ import moment from 'moment-timezone';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-
 import createStyler from '../util/create_styler';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';

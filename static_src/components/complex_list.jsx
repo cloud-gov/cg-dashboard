@@ -7,7 +7,10 @@ import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const propTypes = {
-  children: PropTypes.array,
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.array,
+    React.PropTypes.object
+  ]),
   className: PropTypes.string,
   title: PropTypes.string,
   titleElement: PropTypes.element,

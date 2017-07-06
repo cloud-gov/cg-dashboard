@@ -1,6 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import overrideStyle from '../css/overrides.css';
 
@@ -27,6 +28,7 @@ function stateSetter() {
 
 class App extends React.Component {
   constructor(props) {
+    console.log(style, overrideStyle)
     super(props);
     this.styler = createStyler(style, overrideStyle);
     this.state = stateSetter();;
