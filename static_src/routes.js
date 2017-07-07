@@ -24,6 +24,7 @@ import { appHealth } from './util/health.js';
 import { entityHealth } from './constants.js';
 import windowUtil from './util/window';
 import userActions from './actions/user_actions.js';
+import routerActions from './actions/router_actions.js';
 
 // TODO this is hard to stub since we query it at module load time. It should
 // be passed in or something.
@@ -33,7 +34,6 @@ const MAX_OVERVIEW_SPACES = 10;
 
 export function login(next) {
   ReactDOM.render(<MainContainer><Login /></MainContainer>, mainEl);
-  next();
 }
 
 export function overview(next) {
@@ -60,8 +60,6 @@ export function overview(next) {
   ReactDOM.render(<MainContainer>
     <Overview />
   </MainContainer>, mainEl);
-
-  next();
 }
 
 export function org(orgGuid, next) {
@@ -79,8 +77,6 @@ export function org(orgGuid, next) {
     <MainContainer>
       <OrgContainer />
     </MainContainer>, mainEl);
-
-  next();
 }
 
 export function space(orgGuid, spaceGuid, next) {
@@ -97,14 +93,14 @@ export function space(orgGuid, spaceGuid, next) {
   userActions.fetchSpaceUserRoles(spaceGuid);
   orgActions.fetch(orgGuid);
   serviceActions.fetchAllServices(orgGuid);
-
-  ReactDOM.render(
-    <MainContainer>
-      <SpaceContainer
-        currentPage="apps"
-      />
-    </MainContainer>, mainEl);
-  next();
+  routerActions.navigate(SpaceContainer, { currentPage: 'apps' });
+  //
+  // ReactDOM.render(
+  //   <MainContainer>
+  //     <SpaceContainer
+  //       currentPage="apps"
+  //     />
+  //   </MainContainer>, mainEl);
 }
 
 export function app(orgGuid, spaceGuid, appGuid, next) {
@@ -126,15 +122,14 @@ export function app(orgGuid, spaceGuid, appGuid, next) {
   routeActions.fetchRoutesForApp(appGuid);
   serviceActions.fetchAllInstances(spaceGuid);
   serviceActions.fetchServiceBindings();
-  ReactDOM.render(
-    <MainContainer>
-      <AppContainer />
-    </MainContainer>, mainEl);
-  next();
+  routerActions.navigate(AppContainer);
+  // ReactDOM.render(
+  //   <MainContainer>
+  //     <AppContainer />
+  //   </MainContainer>, mainEl);
 }
 
 export function checkAuth(...args) {
-  console.log('the args', args)
   const next = args.pop();
 
   console.log(next)
@@ -204,7 +199,6 @@ export function notFound(next) {
   appActions.changeCurrentApp();
 
   ReactDOM.render(<h1>Not Found</h1>, mainEl);
-  next();
 }
 
 const routes = {
