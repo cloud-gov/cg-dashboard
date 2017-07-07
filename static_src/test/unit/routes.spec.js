@@ -1,6 +1,6 @@
 
 import '../global_setup.js';
-import ReactDOM from 'react-dom';
+import routerActions from '../../actions/router_actions';
 import errorActions from '../../actions/error_actions';
 import loginActions from '../../actions/login_actions';
 import LoginStore from '../../stores/login_store';
@@ -126,7 +126,7 @@ describe('routes', function () {
 
       beforeEach(function (done) {
         next = sandbox.spy(done);
-        sandbox.stub(ReactDOM, 'render');
+        sandbox.stub(routerActions, 'navigate');
         sandbox.stub(windowUtil, 'redirect');
         loginActions.fetchStatus.returns(Promise.resolve({ status: 'unauthorized' }));
 
@@ -142,7 +142,7 @@ describe('routes', function () {
       });
 
       it('renders a loader', function () {
-        expect(ReactDOM.render).toHaveBeenCalledOnce();
+        expect(routerActions.navigate).toHaveBeenCalledOnce();
       });
 
       it('does not fetch page data', function () {

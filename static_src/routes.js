@@ -1,6 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
 import activityActions from './actions/activity_actions.js';
 import AppContainer from './components/app_container.jsx';
 import appActions from './actions/app_actions.js';
@@ -10,7 +7,6 @@ import Loading from './components/loading.jsx';
 import Login from './components/login.jsx';
 import loginActions from './actions/login_actions';
 import LoginStore from './stores/login_store';
-import MainContainer from './components/main_container.jsx';
 import NotFound from './components/not_found.jsx';
 import orgActions from './actions/org_actions.js';
 import Overview from './components/overview_container.jsx';
@@ -27,14 +23,11 @@ import windowUtil from './util/window';
 import userActions from './actions/user_actions.js';
 import routerActions from './actions/router_actions.js';
 
-// TODO this is hard to stub since we query it at module load time. It should
-// be passed in or something.
-const mainEl = document.querySelector('.js-app');
-
 const MAX_OVERVIEW_SPACES = 10;
 
 export function login(next) {
   routerActions.navigate(Login);
+  next();
 }
 
 export function overview(next) {
@@ -44,7 +37,7 @@ export function overview(next) {
   orgActions.changeCurrentOrg();
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
-
+  routerActions.navigate(Overview);
   spaceActions.fetchAll()
     .then(spaces => {
       let i = 0;
@@ -56,8 +49,9 @@ export function overview(next) {
 
       return Promise.all(fetches);
     })
-    .then(pageActions.loadSuccess, pageActions.loadError)
-    .then(() => routerActions.navigate(Overview));
+    .then(pageActions.loadSuccess, pageActions.loadError);
+
+  next();
 }
 
 export function org(orgGuid, next) {
@@ -72,6 +66,7 @@ export function org(orgGuid, next) {
   userActions.fetchOrgUsers(orgGuid);
   userActions.fetchOrgUserRoles(orgGuid);
   routerActions.navigate(OrgContainer);
+  next();
 }
 
 export function space(orgGuid, spaceGuid, next) {
@@ -89,6 +84,7 @@ export function space(orgGuid, spaceGuid, next) {
   orgActions.fetch(orgGuid);
   serviceActions.fetchAllServices(orgGuid);
   routerActions.navigate(SpaceContainer, { currentPage: 'apps' });
+  next();
 }
 
 export function app(orgGuid, spaceGuid, appGuid, next) {
@@ -111,6 +107,7 @@ export function app(orgGuid, spaceGuid, appGuid, next) {
   serviceActions.fetchAllInstances(spaceGuid);
   serviceActions.fetchServiceBindings();
   routerActions.navigate(AppContainer);
+  next();
 }
 
 export function checkAuth(...args) {
@@ -149,9 +146,6 @@ export function checkAuth(...args) {
       // Just in case something goes wrong, don't leave the user hanging. Show
       // a delayed loading indicator to give them a hint. Hopefully the
       // redirect is quick and they never see the loader.
-      // ReactDOM.render(
-      //   <Loading text="Redirecting to login" loadingDelayMS={ 3000 } style="inline" />
-      // , mainEl);
       routerActions.navigate(Loading, {
         text: 'Redirecting to login',
         loadingDelayMS: 3000,
@@ -185,6 +179,7 @@ export function notFound(next) {
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
   routerActions.navigate(NotFound);
+  next();
 }
 
 const routes = {

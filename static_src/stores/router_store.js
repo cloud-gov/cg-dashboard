@@ -12,10 +12,12 @@ class RouterStore extends BaseStore {
   registerToActions(action) {
     const { type, data } = action;
 
-    switch(type) {
+    switch (type) {
       case routerActionTypes.NAVIGATE:
         this.routeComponent = Object.assign({}, { ...data });
         this.emitChange();
+        break;
+      default:
         break;
     }
   }
@@ -23,6 +25,6 @@ class RouterStore extends BaseStore {
   get component() {
     return this.routeComponent;
   }
-};
+}
 
 export default new RouterStore();
