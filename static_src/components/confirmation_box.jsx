@@ -17,6 +17,22 @@ const CONFIRM_STYLES = [
   'block'
 ];
 
+const propTypes = {
+  style: PropTypes.oneOf(CONFIRM_STYLES),
+  message: PropTypes.any,
+  confirmationText: PropTypes.string,
+  confirmHandler: PropTypes.func.isRequired,
+  cancelHandler: PropTypes.func.isRequired
+};
+
+const defaultProps = {
+  style: 'inline',
+  message: <div></div>,
+  confirmationText: 'Confirm delete',
+  confirmHandler: (ev) => { console.log('confirm ev', ev); },
+  cancelHandler: (ev) => { console.log('cancel ev', ev); }
+};
+
 export default class ConfirmationBox extends React.Component {
   constructor(props) {
     super(props);
@@ -60,18 +76,6 @@ export default class ConfirmationBox extends React.Component {
   }
 }
 
-ConfirmationBox.propTypes = {
-  style: PropTypes.oneOf(CONFIRM_STYLES),
-  message: PropTypes.any,
-  confirmationText: PropTypes.string,
-  confirmHandler: PropTypes.func.isRequired,
-  cancelHandler: PropTypes.func.isRequired
-};
+ConfirmationBox.propTypes = propTypes;
 
-ConfirmationBox.defaultProps = {
-  style: 'inline',
-  message: <div></div>,
-  confirmationText: 'Confirm delete',
-  confirmHandler: (ev) => { console.log('confirm ev', ev); },
-  cancelHandler: (ev) => { console.log('cancel ev', ev); }
-};
+ConfirmationBox.defaultProps = defaultProps;

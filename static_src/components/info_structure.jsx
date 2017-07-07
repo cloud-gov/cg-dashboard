@@ -5,6 +5,14 @@ import React from 'react';
 
 import createStyler from '../util/create_styler';
 
+const propTypes = {
+  className: PropTypes.string
+};
+
+const defaultProps = {
+  className: ''
+};
+
 export default class InfoStructure extends React.Component {
   constructor(props) {
     super(props);
@@ -28,10 +36,6 @@ export default class InfoStructure extends React.Component {
   }
 }
 
-InfoStructure.propTypes = {
-  className: PropTypes.string
-};
+InfoStructure.propTypes = propTypes;
 
-InfoStructure.defaultProps = {
-  className: ''
-};
+InfoStructure.defaultProps = defaultProps;

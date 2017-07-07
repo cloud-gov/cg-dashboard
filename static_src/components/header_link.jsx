@@ -5,6 +5,13 @@ import React from 'react';
 
 import createStyler from '../util/create_styler';
 
+const propTypes = {
+  url: PropTypes.string,
+  text: PropTypes.string,
+  children: PropTypes.any,
+  classes: PropTypes.array
+};
+
 export default class HeaderLink extends React.Component {
 
   constructor(props) {
@@ -24,9 +31,4 @@ export default class HeaderLink extends React.Component {
   }
 }
 
-HeaderLink.propTypes = {
-  url: PropTypes.string,
-  text: PropTypes.string,
-  children: PropTypes.any,
-  classes: PropTypes.array
-};
+HeaderLink.propTypes = propTypes;

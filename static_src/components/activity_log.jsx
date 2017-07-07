@@ -5,6 +5,7 @@ import React from 'react';
 import Action from './action.jsx';
 import ActivityLogItem from './activity_log_item.jsx';
 import ActivityStore from '../stores/activity_store';
+import AppStore from '../stores/app_store.js';
 import DomainStore from '../stores/domain_store';
 import PanelActions from './panel_actions.jsx';
 import RouteStore from '../stores/route_store';
@@ -12,20 +13,21 @@ import createStyler from '../util/create_styler';
 import ServiceInstanceStore from '../stores/service_instance_store';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
-function stateSetter(props) {
+function stateSetter() {
+  const appGuid = AppStore.currentAppGuid;
   const activity = ActivityStore
     .getAll()
     .filter(item => {
       if (item.activity_type === 'log') {
-        return item.app_guid === props.initialAppGuid && item.status_code >= 400;
+        return item.app_guid === appGuid && item.status_code >= 400;
       }
 
       if (item.activity_type === 'event' && item.type === 'audit.service_binding.create') {
-        return item.metadata.request.app_guid === props.initialAppGuid;
+        return item.metadata.request.app_guid === appGuid;
       }
 
       if (item.activity_type === 'event') {
-        return item.actee === props.initialAppGuid;
+        return item.actee === appGuid;
       }
 
       return false;
@@ -40,7 +42,6 @@ function stateSetter(props) {
 }
 
 const propTypes = {
-  initialAppGuid: PropTypes.string.isRequired,
   maxItems: PropTypes.number
 };
 
@@ -60,6 +61,7 @@ export default class ActivityLog extends React.Component {
   }
 
   componentDidMount() {
+    AppStore.addChangeListener(this._onChange);
     ActivityStore.addChangeListener(this._onChange);
     DomainStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
@@ -67,6 +69,7 @@ export default class ActivityLog extends React.Component {
   }
 
   componentWillUnmount() {
+    AppStore.removeChangeListener(this._onChange);
     ActivityStore.removeChangeListener(this._onChange);
     DomainStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);

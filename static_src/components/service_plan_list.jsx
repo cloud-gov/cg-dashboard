@@ -12,6 +12,10 @@ import serviceActions from '../actions/service_actions.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import createStyler from '../util/create_styler';
 
+const propTypes = {
+  serviceGuid: PropTypes.string
+};
+
 function stateSetter(serviceGuid) {
   const servicePlans = ServicePlanStore.getAllFromService(serviceGuid).sort((a, b) => {
     const costA = ServicePlanStore.getCost(a);
@@ -34,7 +38,7 @@ export default class ServicePlanList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = stateSetter(props.initialServiceGuid);
+    this.state = stateSetter(props.serviceGuid);
 
     this._onChange = this._onChange.bind(this);
     this._handleAdd = this._handleAdd.bind(this);
@@ -42,7 +46,7 @@ export default class ServicePlanList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(stateSetter(nextProps.initialServiceGuid));
+    this.setState(stateSetter(nextProps.serviceGuid));
   }
 
   _onChange() {
@@ -132,8 +136,6 @@ export default class ServicePlanList extends React.Component {
   }
 }
 
-ServicePlanList.propTypes = {
-  initialServiceGuid: PropTypes.string
-};
+ServicePlanList.propTypes = propTypes;
 
 ServicePlanList.defaultProps = {};

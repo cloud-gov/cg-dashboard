@@ -18,14 +18,9 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 function stateSetter() {
   const loading = ServiceStore.loading || ServicePlanStore.loading;
-  const services = ServiceStore.getAll().map((service) => {
-    const plan = ServicePlanStore.getAllFromService(service.guid);
-    return { ...service, servicePlans: plan };
-  });
   const currentOrgGuid = OrgStore.currentOrgGuid;
 
   return {
-    services,
     currentOrgGuid,
     loading: loading,
     currentOrg: OrgStore.get(currentOrgGuid),
@@ -92,7 +87,7 @@ export default class Marketplace extends React.Component {
     let loading = <Loading text="Loading marketplace services" />;
     let content = <div>{ loading }</div>;
     if (!this.state.loading) {
-      let list = <ServiceList initialServices={ state.services } />;
+      let list = <ServiceList />;
       content = (
         <div>
           { this.documentation }

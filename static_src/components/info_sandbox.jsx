@@ -5,6 +5,14 @@ import React from 'react';
 
 import createStyler from '../util/create_styler';
 
+const propTypes = {
+  className: PropTypes.string
+};
+
+const defaultProps = {
+  className: ''
+};
+
 export default class InfoSandbox extends React.Component {
   constructor(props) {
     super(props);
@@ -22,10 +30,6 @@ export default class InfoSandbox extends React.Component {
   }
 }
 
-InfoSandbox.propTypes = {
-  className: PropTypes.string
-};
+InfoSandbox.propTypes = propTypes;
 
-InfoSandbox.defaultProps = {
-  className: ''
-};
+InfoSandbox.defaultProps = defaultProps;

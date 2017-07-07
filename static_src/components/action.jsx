@@ -26,7 +26,7 @@ const propTypes = {
   href: PropTypes.string,
   label: PropTypes.string,
   style: PropTypes.oneOf(BUTTON_STYLES),
-  type: React.PropTypes.oneOf(Object.keys(BUTTON_TYPES).map(key => BUTTON_TYPES[key]))
+  type: PropTypes.oneOf(BUTTON_TYPES)
 };
 const defaultProps = {
   style: 'primary',

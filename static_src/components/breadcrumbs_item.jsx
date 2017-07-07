@@ -5,6 +5,10 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import createStyler from '../util/create_styler';
 
+const propTypes = {
+  children: PropTypes.node.isRequired,
+  url: PropTypes.string
+};
 
 export default class BreadcrumbsItem extends React.Component {
   constructor(props) {
@@ -30,7 +34,4 @@ export default class BreadcrumbsItem extends React.Component {
   }
 }
 
-BreadcrumbsItem.propTypes = {
-  children: PropTypes.node.isRequired,
-  url: PropTypes.string
-};
+BreadcrumbsItem.propTypes = propTypes;

@@ -6,6 +6,12 @@ import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import classNames from 'classnames';
 
+const propTypes = {
+  title: PropTypes.string.isRequired,
+  items: PropTypes.any,
+  classes: PropTypes.array
+};
+
 export default class Dropdown extends React.Component {
   constructor(props) {
     super(props);
@@ -43,8 +49,4 @@ export default class Dropdown extends React.Component {
   }
 }
 
-Dropdown.propTypes = {
-  title: PropTypes.string.isRequired,
-  items: PropTypes.any,
-  classes: PropTypes.array
-};
+Dropdown.propTypes = propTypes;

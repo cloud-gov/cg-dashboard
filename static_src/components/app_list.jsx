@@ -1,5 +1,4 @@
 
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import style from 'cloudgov-style/css/cloudgov-style.css';
@@ -103,10 +102,6 @@ export default class AppList extends React.Component {
   }
 }
 
-AppList.propTypes = {
-  initialApps: PropTypes.array
-};
+AppList.propTypes = {};
 
-AppList.defaultProps = {
-  initialApps: []
-};
+AppList.defaultProps = {};

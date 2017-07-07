@@ -12,12 +12,16 @@ import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import PanelGroup from './panel_group.jsx';
 import ServiceStore from '../stores/service_store.js';
+import ServicePlanStore from '../stores/service_plan_store.js';
 import ServicePlanList from './service_plan_list.jsx';
 import createStyler from '../util/create_styler';
 import formatDateTime from '../util/format_date.js';
 
-function stateSetter(props) {
-  const services = props.initialServices;
+function stateSetter() {
+  const services = ServiceStore.getAll().map((service) => {
+    const plan = ServicePlanStore.getAllFromService(service.guid);
+    return { ...service, servicePlans: plan };
+  });
 
   return {
     empty: !ServiceStore.loading && !services.length,
@@ -29,13 +33,20 @@ function stateSetter(props) {
 export default class ServiceList extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = stateSetter(props);
+    this.state = stateSetter();
     this.styler = createStyler(style);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState(stateSetter(nextProps));
+  componentDidMount() {
+    ServiceStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    ServiceStore.removeChangeListener(this._onChange);
+  }
+
+  _onChange() {
+    this.setState(stateSetter());
   }
 
   render() {
@@ -52,9 +63,7 @@ export default class ServiceList extends React.Component {
 
             if (service.servicePlans.length) {
               servicePlans = (
-                <ServicePlanList initialServiceGuid={ service.guid }
-                  initialServicePlans={ service.servicePlans }
-                />
+                <ServicePlanList serviceGuid={ service.guid } />
               );
             }
 
@@ -92,6 +101,4 @@ ServiceList.propTypes = {
   initialServices: PropTypes.array
 };
 
-ServiceList.defaultProps = {
-  initialServices: []
-};
+ServiceList.defaultProps = {};

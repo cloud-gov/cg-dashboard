@@ -72,7 +72,7 @@ class App extends React.Component {
       </div>
     );
   }
-};
+}
 
 App.propTypes = {
   children: PropTypes.any

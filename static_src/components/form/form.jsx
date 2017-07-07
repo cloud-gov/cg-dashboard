@@ -15,6 +15,21 @@ import classNames from 'classnames';
 import FormError from './form_error.jsx';
 import FormStore from '../../stores/form_store';
 
+const propTypes = {
+  action: PropTypes.string,
+  children: PropTypes.node,
+  classes: PropTypes.array,
+  guid: PropTypes.string.isRequired,
+  method: PropTypes.string,
+  onSubmit: PropTypes.func,
+  errorOverride: PropTypes.string
+};
+
+const defaultProps = {
+  action: '/',
+  classes: [],
+  method: 'post'
+};
 
 function stateSetter(props) {
   const model = FormStore.get(props.guid);
@@ -89,18 +104,6 @@ export default class Form extends React.Component {
   }
 }
 
-Form.propTypes = {
-  action: PropTypes.string,
-  children: PropTypes.node,
-  classes: PropTypes.array,
-  guid: PropTypes.string.isRequired,
-  method: PropTypes.string,
-  onSubmit: PropTypes.func,
-  errorOverride: PropTypes.string
-};
+Form.propTypes = propTypes;
 
-Form.defaultProps = {
-  action: '/',
-  classes: [],
-  method: 'post'
-};
+Form.defaultProps = defaultProps;

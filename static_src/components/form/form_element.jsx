@@ -1,7 +1,26 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import classNames from 'classnames';
 import formActions from '../../actions/form_actions';
+
+const propTypes = {
+  classes: PropTypes.array,
+  className: PropTypes.string,
+  formGuid: PropTypes.string.isRequired,
+  key: PropTypes.string,
+  label: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  onValidate: PropTypes.func,
+  validator: PropTypes.func,
+  value: PropTypes.any
+};
+
+const defaultProps = {
+  classes: [],
+  label: '',
+  onValidate: () => {},
+  validator: () => {}
+};
 
 let currid = 0;
 function nextId() {
@@ -62,21 +81,6 @@ export default class FormElement extends React.Component {
   }
 }
 
-FormElement.propTypes = {
-  classes: PropTypes.array,
-  className: PropTypes.string,
-  formGuid: PropTypes.string.isRequired,
-  key: PropTypes.string,
-  label: PropTypes.string,
-  name: PropTypes.string.isRequired,
-  onValidate: PropTypes.func,
-  validator: PropTypes.func,
-  value: PropTypes.any
-};
+FormElement.propTypes = propTypes;
 
-FormElement.defaultProps = {
-  classes: [],
-  label: '',
-  onValidate: () => {},
-  validator: () => {}
-};
+FormElement.defaultProps = defaultProps;

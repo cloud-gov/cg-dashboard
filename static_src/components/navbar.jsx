@@ -12,6 +12,13 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import * as url from '../util/url';
 
+const propTypes = {
+  subLinks: PropTypes.array
+};
+const defaultProps = {
+  subLinks: []
+};
+
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
@@ -139,9 +146,7 @@ export class Nav extends React.Component {
     );
   }
 }
-Nav.propTypes = {
-  subLinks: PropTypes.array
-};
-Nav.defaultProps = {
-  subLinks: []
-};
+
+Nav.propTypes = propTypes;
+
+Nav.defaultProps = defaultProps;
