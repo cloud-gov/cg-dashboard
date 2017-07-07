@@ -1,4 +1,4 @@
-# Manual Development Workspace Instructions
+# Manual Development Workspace Setup Instructions
 
 ### Go backend
 The Go backend isn't strictly required for all development. Consider [running locally with node](#run-locally-without-needing-go) if you will not be doing primary feature work where you need access to the actual Cloud Foundry API.

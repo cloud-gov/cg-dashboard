@@ -4,7 +4,7 @@ if cf dev status | grep 'Running' > /dev/null; then
     echo "PCFDev already started"
 else
     echo "Starting PCFDev"
-    echo "This can take around 10 mins."
+    echo "This can take around 10-30 mins."
     cf dev start -s none
 fi
 
