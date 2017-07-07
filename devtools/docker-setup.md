@@ -117,6 +117,20 @@ docker-compose exec watch bash -c "npm unlink cloudgov-style && npm install"
 docker-compose restart watch
 ```
 
+#### Recompile the Backend
+
+The frontend will automatically recompile upon changing the source.
+That is not the case for the backend. Unforunately, the Go watchers
+tried caused the CPU to spike up very high.
+
+In order to recompile, just run:
+
+```sh
+docker-compose up -d app
+```
+
+It will replace the existing app container with a new one, thus recompiling the backend.
+
 ### Full Setup: Running One-Offs
 
 Running one-offs is especially important if you don't have the proper tools
