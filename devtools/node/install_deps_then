@@ -16,10 +16,13 @@ if [ $? -ne 0 ]; then
   npm install
 fi
 
-
-if [ ! -x node_modules/selenium-standalone/.selenium/selenium-server ]; then
-  echo "Finishing the selenium install."
-  npm run test-selenium-install
+if [[ -z "${CG_STLYE}" ]]; then
+  if [ ! -x node_modules/selenium-standalone/.selenium/selenium-server ]; then
+    echo "Finishing the selenium install."
+    npm run test-selenium-install
+  fi
+else
+  echo "In cg-style repo. no extra commands to run."
 fi
 
 

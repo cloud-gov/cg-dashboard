@@ -78,7 +78,7 @@ services:
       dockerfile: ./devtools/node/Dockerfile
     working_dir: /cg-dashboard
     # override the current entrypoint from the base image.
-    entrypoint: ./devtools/node/install_deps_then
+    entrypoint: /cg-dashboard/devtools/node/install_deps_then
     volumes:
       - global-node-modules:/usr/local/lib/node_modules
       - npm-cache:/root/.npm
@@ -86,8 +86,11 @@ services:
       - .:/cg-dashboard
       - ./node_modules:/cg-dashboard/node_modules
       - cg-style-node-modules:/cg-style/node_modules
-      - ../cg-style:/cg-style
+      - ${CG_STYLE_PATH-../cg-style}:/cg-style
       - frontend-home:/headless
+    environment:
+      - CG_DASHBOARD_DIR=/cg-dashboard
+      - CG_STYLE_DIR=/cg-style
   frontend:
     extends:
       service: frontend_dev_tools
@@ -99,7 +102,7 @@ services:
       test: ["CMD", "wget", "http://localhost:6901"]
       interval: 1m00s
       timeout: 10s
-      retries: 10
+      retries: 20
     environment:
       - START_VNC=1
   watch:
@@ -118,6 +121,8 @@ services:
     depends_on:
       frontend:
         condition: service_healthy
+    environment:
+      - CG_STYLE=1
   backend:
     image: golang:1.8.3
     environment:
