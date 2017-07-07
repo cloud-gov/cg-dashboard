@@ -14,6 +14,7 @@
     - [UAA One-Offs](#uaa-one-offs)
     - [CF One-Offs](#cf-one-offs)
 - [Tear Down](#tear-down)
+- [Side Effects](#side-effects)
 
 ## Quick Start
 
@@ -207,3 +208,8 @@ If you want to start fresh which removes ALL containers and **volumes**
 (even those **not** related to the project), run `./devtools/clean.sh`.
 It also removes the dependencies for Go (i.e. `vendor/`) and
 Javascript (i.e. `node_modules/`).
+
+## Side Effects
+
+By using the noVNC container, it will automatically pollute the root of repository
+with index.html* files. git and cf are already setup to ignore them.
