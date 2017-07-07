@@ -103,7 +103,7 @@ func CreateTestMailCatcher() (string, string, string, func()) {
 	u, _ := url.Parse(pool.Client.Endpoint())
 	hostname := u.Hostname()
 
-	// Get the exposed port of the docker container which uses 25 internally.
+	// Get the exposed ports of the docker container which uses 25 & 80 internally.
 	smtpPort := resource.GetPort("25/tcp")
 	apiPort := resource.GetPort("80/tcp")
 
