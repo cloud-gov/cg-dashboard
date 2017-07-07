@@ -11,6 +11,7 @@ import Login from './components/login.jsx';
 import loginActions from './actions/login_actions';
 import LoginStore from './stores/login_store';
 import MainContainer from './components/main_container.jsx';
+import NotFound from './components/not_found.jsx';
 import orgActions from './actions/org_actions.js';
 import Overview from './components/overview_container.jsx';
 import OrgContainer from './components/org_container.jsx';
@@ -33,7 +34,7 @@ const mainEl = document.querySelector('.js-app');
 const MAX_OVERVIEW_SPACES = 10;
 
 export function login(next) {
-  ReactDOM.render(<MainContainer><Login /></MainContainer>, mainEl);
+  routerActions.navigate(Login);
 }
 
 export function overview(next) {
@@ -55,11 +56,8 @@ export function overview(next) {
 
       return Promise.all(fetches);
     })
-    .then(pageActions.loadSuccess, pageActions.loadError);
-
-  ReactDOM.render(<MainContainer>
-    <Overview />
-  </MainContainer>, mainEl);
+    .then(pageActions.loadSuccess, pageActions.loadError)
+    .then(() => routerActions.navigate(Overview));
 }
 
 export function org(orgGuid, next) {
@@ -73,10 +71,7 @@ export function org(orgGuid, next) {
   userActions.changeCurrentlyViewedType('org_users');
   userActions.fetchOrgUsers(orgGuid);
   userActions.fetchOrgUserRoles(orgGuid);
-  ReactDOM.render(
-    <MainContainer>
-      <OrgContainer />
-    </MainContainer>, mainEl);
+  routerActions.navigate(OrgContainer);
 }
 
 export function space(orgGuid, spaceGuid, next) {
@@ -94,13 +89,6 @@ export function space(orgGuid, spaceGuid, next) {
   orgActions.fetch(orgGuid);
   serviceActions.fetchAllServices(orgGuid);
   routerActions.navigate(SpaceContainer, { currentPage: 'apps' });
-  //
-  // ReactDOM.render(
-  //   <MainContainer>
-  //     <SpaceContainer
-  //       currentPage="apps"
-  //     />
-  //   </MainContainer>, mainEl);
 }
 
 export function app(orgGuid, spaceGuid, appGuid, next) {
@@ -123,16 +111,10 @@ export function app(orgGuid, spaceGuid, appGuid, next) {
   serviceActions.fetchAllInstances(spaceGuid);
   serviceActions.fetchServiceBindings();
   routerActions.navigate(AppContainer);
-  // ReactDOM.render(
-  //   <MainContainer>
-  //     <AppContainer />
-  //   </MainContainer>, mainEl);
 }
 
 export function checkAuth(...args) {
   const next = args.pop();
-
-  console.log(next)
 
   // These may or may not be set depending on route
   const [orgGuid, spaceGuid] = args;
@@ -167,9 +149,14 @@ export function checkAuth(...args) {
       // Just in case something goes wrong, don't leave the user hanging. Show
       // a delayed loading indicator to give them a hint. Hopefully the
       // redirect is quick and they never see the loader.
-      ReactDOM.render(
-        <Loading text="Redirecting to login" loadingDelayMS={ 3000 } style="inline" />
-      , mainEl);
+      // ReactDOM.render(
+      //   <Loading text="Redirecting to login" loadingDelayMS={ 3000 } style="inline" />
+      // , mainEl);
+      routerActions.navigate(Loading, {
+        text: 'Redirecting to login',
+        loadingDelayMS: 3000,
+        style: 'inline'
+      });
 
       // Stop the routing
       next(false);
@@ -197,8 +184,7 @@ export function notFound(next) {
   orgActions.changeCurrentOrg();
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
-
-  ReactDOM.render(<h1>Not Found</h1>, mainEl);
+  routerActions.navigate(NotFound);
 }
 
 const routes = {

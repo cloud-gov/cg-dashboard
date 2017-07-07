@@ -27,7 +27,6 @@ function stateSetter() {
 
 class App extends React.Component {
   constructor(props) {
-    console.log(style, overrideStyle)
     super(props);
     this.styler = createStyler(style, overrideStyle);
     this.state = stateSetter();;

@@ -12,6 +12,7 @@ import routes, { checkAuth, clearErrors, notFound } from './routes';
 
 import RouterStore from './stores/router_store.js';
 import MainContainer from './components/main_container.jsx';
+import Loading from './components/loading.jsx';
 
 const meta = document.querySelector('meta[name="gorilla.csrf.Token"]');
 
@@ -51,12 +52,12 @@ class RouteHandler extends React.Component {
 
   render() {
     const { component: Component, props } = this.state;
-    return Component ? <Component { ...props } /> : null;
+    return Component ? <Component { ...props } /> : <Loading />;
   }
 }
 
 const cRouter = {
-  run(routes) {
+  run(routes, renderEl) {
     const router = new Router(routes);
     router.configure({
       async: true,
@@ -69,10 +70,10 @@ const cRouter = {
     ReactDOM.render(
       <MainContainer>
         <RouteHandler />
-      </MainContainer>, document.querySelector('.js-app'));
+      </MainContainer>, renderEl);
 
     router.init('/');
   }
 };
 
-cRouter.run(routes);
+cRouter.run(routes, document.querySelector('.js-app'));
