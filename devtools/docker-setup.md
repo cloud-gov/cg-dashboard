@@ -53,7 +53,7 @@ You will need to install:
 ### Full Setup: Running
 
 *Recommendation: You should open two terminals to the root of this repository
-so you can run the <Optional> commands below so you can view more information
+so you can run the "[Optional]" commands below so you can view more information
 about the containers as they start up since it does take awhile.*
 
 From the root of the repository:
@@ -68,7 +68,7 @@ From the root of the repository:
 # (but not as long as the first command)
 docker-compose up -d app frontend watch
 
-# <Optional> In the second terminal, you can tail
+# [Optional] In the second terminal, you can tail
 # the logs of the containers
 docker-compose logs -f
 ```
