@@ -172,7 +172,7 @@ Action creators are simple functions which always dispatch an action of a certai
 
 Here are some basic rules to work with action creators successfully:
 
-- An action creator should usually have a match store, i.e. `UserStore` -> `UserActions`.
+- An action creator should usually have a matching store, i.e. `UserStore` -> `UserActions`.
 - An action creator should have a corresponding [constant](https://github.com/18F/cg-dashboard/blob/master/static_src/constants.js) for the action.
 - Action creator methods should generally be named as `{verb}{noun}` and use the appropriate tense based on whether the action is going to happen vs it has happened
   ```js
@@ -200,7 +200,7 @@ Here are some basic rules to work with action creators successfully:
     return Promise.resolve(spaces);
   }
   ```
-- There should not be more then on action with the same data.
+- There should not be more then one action with the same data.
 - Any XHR calls should happen within the fetch action creators which should return a promise of the request.
 - Any `fetch` action should call the appropriate `receive`/`success`/`error` action on the resolve of the fetch's promise.
   ```js
