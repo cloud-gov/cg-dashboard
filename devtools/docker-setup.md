@@ -126,6 +126,7 @@ tried caused the CPU to spike up very high.
 In order to recompile, just run:
 
 ```sh
+docker-compose stop app
 docker-compose up -d app
 ```
 
