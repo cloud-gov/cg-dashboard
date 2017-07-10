@@ -77,7 +77,7 @@ You can navigate to three components:
 
 | Component        | Address           | Description  |
 | ------------- |:-------------:| ----- |
-| The Dashboard      | http://localhost:8002 | This is what this repository contains.<br/>By using PCF Dev, there are two users created automatically by default.<br/>Admin User: `admin`:`admin`<br/> Regular User: `user`:`pass`|
+| The Dashboard      | http://localhost:8002 | This is what this repository contains.<br/>By using PCF Dev, there are two users created automatically by default.<br/>Admin User: `admin`:`admin`<br/> Regular User: `user`:`pass`<br/><br/><h5>SSL Note</h5>When you login, you will need to skip the security SSL warning / add exception in your browser since we do not have a valid certificate for *local.pcfdev.io.|
 | The mailcatcher view      | http://localhost:8025      |   Useful for debugging e-mails. There are invite flows that send e-mails. This UI captures them |
 | HTML VNC Viewer | http://localhost:6901/?password=vncpassword      | Useful for seeing Javascript Karma Tests and Selenium Tests running.<br/>Based on [this](https://github.com/ConSol/docker-headless-vnc-container) container |
 
