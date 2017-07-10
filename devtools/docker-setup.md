@@ -249,5 +249,6 @@ If you want to destroy your PCDev deployment, run: `cf dev destroy`
 
 ## Side Effects
 
-By using the noVNC container, it will automatically pollute the root of repository
-with index.html* files. git and cf are already setup to ignore them.
+### Extra Files From Containers
+In the case that there are extra files created, you should modify
+`devtools/node/cleanup.js` so that there's a watcher that removes those files.
