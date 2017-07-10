@@ -11,6 +11,7 @@ else
       # -s none flag so we can just run it again with only `cf dev start`.
       echo "Already created once, trying again."
       cf dev start
+    fi
 fi
 
 # log into local pcf dev and create dashboard client.
