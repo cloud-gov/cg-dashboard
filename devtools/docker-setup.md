@@ -135,8 +135,10 @@ It will replace the existing app container with a new one, thus recompiling the 
 ### Full Setup: Running One-Offs
 
 Running one-offs is especially important if you don't have the proper tools
-installed on your computer. With Docker, you can use the appropriate
-executable in a container.
+(such as [Go](https://golang.org/), [node](https://nodejs.org/en/),
+[cf cli](https://github.com/cloudfoundry/cli), or
+[uaac](https://github.com/cloudfoundry/cf-uaac)) installed on your computer.
+With Docker, you can use the appropriate executable in a container.
 
 #### Frontend One-Offs
 
