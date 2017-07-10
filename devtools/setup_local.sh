@@ -6,6 +6,11 @@ else
     echo "Starting PCFDev"
     echo "This can take around 10-30 mins."
     cf dev start -s none
+    if [ $? -ne 0 ]; then
+      # in the case that we already created an image, it doesn't like the
+      # -s none flag so we can just run it again with only `cf dev start`.
+      echo "Already created once, trying again."
+      cf dev start
 fi
 
 # log into local pcf dev and create dashboard client.
