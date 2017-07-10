@@ -105,6 +105,9 @@ services:
       retries: 20
     environment:
       - START_VNC=1
+    depends_on:
+      frontend_cleanup:
+        condition: service_started
   watch:
     extends:
       service: frontend_dev_tools
@@ -123,6 +126,11 @@ services:
         condition: service_healthy
     environment:
       - CG_STYLE=1
+  frontend_cleanup:
+    extends:
+      service: frontend_dev_tools
+    working_dir: /cg-dashboard
+    command: 'node devtools/node/cleanup.js'
   backend:
     image: golang:1.8.3
     environment:
