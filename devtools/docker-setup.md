@@ -59,10 +59,26 @@ about the containers as they start up since it does take awhile.*
 From the root of the repository:
 
 ```sh
-# Start PCFDev and create the UAA client for you.
+# Start PCFDev.
 # Will take a long time and your computer fans will spin up but afterwards
 # your system will return to normal.
-./devtools/setup_local.sh
+cf dev start -s none
+# Run "cf dev start" on all subsequent runs. You can't pass configuration flags
+# to an existing PCFDev deployment.
+# You can only pass configuration flags on first creation.
+
+# Create the UAA client "dashboard-local" with appropriate permissions.
+# Will also delete the old one (if one exists), in case you want to try new permissions.
+docker run governmentpaas/cf-uaac \
+  /bin/sh -c '
+  uaac target https://uaa.local.pcfdev.io --skip-ssl-validation && \
+  uaac token client get admin -s "admin-client-secret" && \
+  uaac client delete dashboard-local; \
+  uaac client add dashboard-local \
+    --scope="cloud_controller.admin cloud_controller.read cloud_controller.write openid scim.read scim.invite" \
+    --redirect_uri="http://localhost:8002/oauth2callback" \
+    --authorities="uaa.none scim.invite cloud_controller.admin scim.read" \
+    --authorized_grant_types "authorization_code client_credentials refresh_token" -s "notarealsecret"'
 
 # Start the app. Will also take a long time
 # (but not as long as the first command)
@@ -194,7 +210,7 @@ docker run governmentpaas/cf-uaac \
   <MORE UAA COMMAND(S)>'
 ```
 
-For an example, look at the `devtools/setup_local.sh` script.
+For an example, look at the `uaac` command in the [Full Setup: Running section](#full-setup-running).
 
 _Note: the credentials here are not sensitive since they are
 only used with PCFDEV (which is local and also the credentials are
@@ -226,6 +242,10 @@ If you want to start fresh which removes ALL containers and **volumes**
 (even those **not** related to the project), run `./devtools/clean.sh`.
 It also removes the dependencies for Go (i.e. `vendor/`) and
 Javascript (i.e. `node_modules/`).
+
+If you want to suspend PCFDev (keep all the data), run: `cf dev suspend`
+
+If you want to destroy your PCDev deployment, run: `cf dev destroy`
 
 ## Side Effects
 
