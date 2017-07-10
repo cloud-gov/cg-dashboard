@@ -18,3 +18,8 @@ vendor/*
 context/selenium-logs/selenium-standalone.txt
 # useful for template tests
 *.returned
+.org.chromium*
+# only exclude these index.html files from the VNC service.
+# they only appear in the root folder.
+/index.html*
+/.glide*

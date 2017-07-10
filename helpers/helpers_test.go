@@ -3,7 +3,6 @@ package helpers_test
 import (
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/18F/cg-dashboard/helpers/testhelpers"
-	"golang.org/x/net/context"
 
 	"net/http"
 	"testing"
@@ -42,7 +41,6 @@ var getValidTokenTests = []tokenTestData{
 func TestGetValidToken(t *testing.T) {
 	mockRequest, _ := http.NewRequest("GET", "", nil)
 	mockSettings := helpers.Settings{}
-	mockSettings.TokenContext = context.TODO()
 
 	for _, test := range getValidTokenTests {
 		// Initialize a new session store.

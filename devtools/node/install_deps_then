@@ -1,0 +1,44 @@
+#!/bin/bash
+
+if [ ! -f $NVM_DIR/nvm.sh ]; then
+  echo "Downloading nvm."
+  bash -i -c "wget -O - https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash"
+fi
+bash -i -c "nvm install $NODE_VERSION && nvm alias default && nvm use default"
+
+if [ ! -x node_modules/.bin/deps-ok ]; then
+  npm install deps-ok
+fi
+
+./node_modules/.bin/deps-ok &> /dev/null
+if [ $? -ne 0 ]; then
+  echo "Missing dependencies. Running npm install. Please wait..."
+  npm install
+fi
+
+if [[ -z "${CG_STLYE}" ]]; then
+  if [ ! -x node_modules/selenium-standalone/.selenium/selenium-server ]; then
+    echo "Finishing the selenium install."
+    npm run test-selenium-install
+  fi
+else
+  echo "In cg-style repo. no extra commands to run."
+fi
+
+
+if [[ -z "${START_VNC}" ]]; then
+  echo "Not starting VNC"
+else
+  # make sure we comment out the nvm bash_completion line because
+  # it doesn't work when starting VNC.
+  sed -i 's/.*NVM_DIR\/bash_completion/#&/' $HOME/.bashrc
+  # in the case of wait, we will want to setup the VNC.
+  /dockerstartup/vnc_startup.sh
+  if [ $? -ne 0 ]; then
+    # if it fails, we should exit before getting caught in the sleep command.
+    echo "something went wrong setting up vnc"
+    exit 1
+  fi
+fi
+
+exec "$@"

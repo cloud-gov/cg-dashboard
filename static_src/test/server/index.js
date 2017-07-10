@@ -26,8 +26,7 @@ export function start(...args) {
   const server = new hapi.Server();
 
   server.connection({
-    port,
-    host: 'localhost'
+    port
   });
 
   // configure smocks as a hapi plugin

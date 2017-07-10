@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ ! -x $GOPATH/bin/glide ]; then
+  go get github.com/Masterminds/glide
+fi
+
+export PATH=$GOPATH/bin:$PATH
+if [ ! -x vendor ]; then
+  glide install
+fi
+
+prgm=$1
+shift;
+bash -i -c "$prgm $@"

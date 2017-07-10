@@ -11,7 +11,6 @@ import (
 	. "github.com/18F/cg-dashboard/helpers/testhelpers"
 	"github.com/18F/cg-dashboard/helpers/testhelpers/mocks"
 	"github.com/gocraft/web"
-	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 )
 
@@ -37,7 +36,6 @@ var oauthTests = []BasicSecureTest{
 
 func TestOAuth(t *testing.T) {
 	mockSettings := helpers.Settings{}
-	mockSettings.TokenContext = context.TODO()
 	mockSettings.OAuthConfig = &oauth2.Config{
 		ClientID:     "ClientID",
 		ClientSecret: "ClientSecret",

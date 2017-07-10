@@ -15,7 +15,6 @@ import (
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
 	"github.com/stretchr/testify/mock"
-	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
 	"github.com/18F/cg-dashboard/controllers"
@@ -167,18 +166,19 @@ type BasicProxyTest struct {
 // GetMockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
 func GetMockCompleteEnvVars() helpers.EnvVars {
 	return helpers.EnvVars{
-		ClientID:     "ID",
-		ClientSecret: "Secret",
-		Hostname:     "https://hostname",
-		LoginURL:     "https://loginurl",
-		UAAURL:       "https://uaaurl",
-		APIURL:       "https://apiurl",
-		LogURL:       "https://logurl",
-		PProfEnabled: "true",
-		SessionKey:   "lalala",
-		BasePath:     os.Getenv(helpers.BasePathEnvVar),
-		SMTPFrom:     "cloud@cloud.gov",
-		SMTPHost:     "localhost",
+		ClientID:      "ID",
+		ClientSecret:  "Secret",
+		Hostname:      "https://hostname",
+		LoginURL:      "https://loginurl",
+		UAAURL:        "https://uaaurl",
+		APIURL:        "https://apiurl",
+		LogURL:        "https://logurl",
+		PProfEnabled:  "true",
+		SessionKey:    "lalala",
+		BasePath:      os.Getenv(helpers.BasePathEnvVar),
+		SMTPFrom:      "cloud@cloud.gov",
+		SMTPHost:      "localhost",
+		SecureCookies: "1",
 	}
 }
 
@@ -272,7 +272,6 @@ func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testS
 		mockSettings := &helpers.Settings{}
 		env, _ := cfenv.Current()
 		mockSettings.InitSettings(test.EnvVars, env)
-		mockSettings.TokenContext = context.TODO()
 		c.Settings = mockSettings
 
 		response, request := NewTestRequest(test.RequestMethod, fullURL, test.RequestBody)

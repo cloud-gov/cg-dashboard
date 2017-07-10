@@ -67,7 +67,7 @@ func (c *SecureContext) LoginRequired(rw web.ResponseWriter, r *web.Request, nex
 func (c *SecureContext) PrivilegedProxy(rw http.ResponseWriter, req *http.Request, url string) {
 	// Acquire the http client and the refresh token if needed
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
-	client := c.Settings.HighPrivilegedOauthConfig.Client(c.Settings.TokenContext)
+	client := c.Settings.HighPrivilegedOauthConfig.Client(c.Settings.CreateContext())
 	c.submitRequest(rw, req, url, client, c.GenericResponseHandler)
 }
 
@@ -76,7 +76,7 @@ func (c *SecureContext) PrivilegedProxy(rw http.ResponseWriter, req *http.Reques
 func (c *SecureContext) Proxy(rw http.ResponseWriter, req *http.Request, url string, responseHandler ResponseHandler) {
 	// Acquire the http client and the refresh token if needed
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
-	client := c.Settings.OAuthConfig.Client(c.Settings.TokenContext, &c.Token)
+	client := c.Settings.OAuthConfig.Client(c.Settings.CreateContext(), &c.Token)
 	c.submitRequest(rw, req, url, client, responseHandler)
 }
 

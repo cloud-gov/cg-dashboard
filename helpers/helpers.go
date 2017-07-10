@@ -36,7 +36,7 @@ func GetValidToken(req *http.Request, settings *Settings) *oauth2.Token {
 		reqURL := fmt.Sprintf("%s%s", settings.ConsoleAPI, "/v2/info")
 		request, _ := http.NewRequest("GET", reqURL, nil)
 		request.Close = true
-		client := settings.OAuthConfig.Client(settings.TokenContext, &token)
+		client := settings.OAuthConfig.Client(settings.CreateContext(), &token)
 		// Prevents lingering goroutines from living forever.
 		// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
 		client.Timeout = TimeoutConstant
