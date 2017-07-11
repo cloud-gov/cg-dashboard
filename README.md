@@ -5,7 +5,7 @@
 
 Environments: [Production](https://dashboard.fr.cloud.gov)
 [Staging](https://dashboard-staging.fr.app.cloud.gov)
-[Demo](https://dashboard-demo.fr.app.cloud.gov)
+[Testing Server](https://dashboard-testing-server.app.cloud.gov)
 
 
 ## Introduction
