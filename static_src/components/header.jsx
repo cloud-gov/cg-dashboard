@@ -38,7 +38,7 @@ export default class Header extends React.Component {
     <header className={ this.styler('header', 'header-no_sidebar', 'test-header') }>
       <div className={ this.styler('header-wrap') }>
         <div className={ this.styler('header-title') }>
-          <a href="/" className={ this.styler('logo') } title="Home">
+          <a href="/#/" className={ this.styler('logo') } title="Home">
             <svg className={ this.styler('logo-img') }>
               <use
                 xlinkHref={ this.getImagePath('logo-dashboard') }
