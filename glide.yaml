@@ -1,8 +1,5 @@
 package: github.com/18F/cg-dashboard
 import:
-- package: github.com/cloudfoundry/loggregatorlib
-  subpackages:
-  - logmessage
 - package: github.com/gocraft/web
 - package: github.com/jordan-wright/email
 - package: github.com/gogo/protobuf

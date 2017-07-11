@@ -54,11 +54,6 @@ func InitRouter(settings *helpers.Settings, templates *helpers.Templates, mailer
 	uaaRouter.Get("/uaainfo", (*UAAContext).UaaInfo)
 	uaaRouter.Post("/invite/users", (*UAAContext).InviteUserToOrg)
 
-	// Setup the /log subrouter.
-	logRouter := secureRouter.Subrouter(LogContext{}, "/log")
-	logRouter.Middleware((*LogContext).OAuth)
-	logRouter.Get("/recent", (*LogContext).RecentLogs)
-
 	// Add auth middleware
 	secureRouter.Middleware((*SecureContext).LoginRequired)
 

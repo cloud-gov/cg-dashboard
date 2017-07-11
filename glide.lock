@@ -1,5 +1,5 @@
-hash: 4fa33221e0ab33bf3850bee88bd2a41af94bd9cec69df67f2ab72337f68c6908
-updated: 2017-05-11T14:07:41.972759638-04:00
+hash: 4b936bc90aa77f5baf60232b67376ca8edf304940dd3d332d9a70584c4cca765
+updated: 2017-07-11T14:40:14.661306851-04:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: fa152c58bc15761d0200cb75fe958b89a9d4888e
@@ -11,11 +11,6 @@ imports:
   version: 32cd0c5b3aef12c76ed64aaf678f6c79736be7dc
 - name: github.com/cloudfoundry-community/go-cfenv
   version: 96ad7376813bfd13c95af69ca5b4ef5725f6b335
-- name: github.com/cloudfoundry/loggregatorlib
-  version: 03bfd6ee4743a1a21433092663292b65aa4ee14e
-  subpackages:
-  - logmessage
-  - signature
 - name: github.com/davecgh/go-spew
   version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
   subpackages:
@@ -97,7 +92,7 @@ imports:
 - name: github.com/ory/dockertest
   version: 9d0647ae761f96a6738c5afb49688d22979b21ff
 - name: github.com/pkg/errors
-  version: 248dadf4e9068a0b3e79f02ed0a610d935de5302
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/pmezard/go-difflib
   version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:
