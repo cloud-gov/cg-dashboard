@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Box from './box.jsx';
 import Action from './action.jsx';
 import { Form, FormText, FormSelect, FormElement, FormError } from './form';
 import FormStore from '../stores/form_store';
