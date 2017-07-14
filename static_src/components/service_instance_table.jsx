@@ -11,6 +11,8 @@ import { config } from 'skin';
 import formatDateTime from '../util/format_date';
 import serviceActions from '../actions/service_actions.js';
 
+const propTypes = {};
+
 function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
   const serviceInstances = ServiceInstanceStore.getAllBySpaceGuid(
@@ -179,4 +181,4 @@ export default class ServiceInstanceTable extends React.Component {
   }
 }
 
-ServiceInstanceTable.propTypes = { };
+ServiceInstanceTable.propTypes = propTypes;

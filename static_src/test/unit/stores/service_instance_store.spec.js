@@ -13,12 +13,20 @@ import ServicePlanStore from '../../../stores/service_plan_store.js';
 import { CREATED_NOTIFICATION_TIME_MS } from '../../../stores/service_instance_store.js';
 
 describe('ServiceInstanceStore', function() {
-  var sandbox;
+  let sandbox;
+
+  const addServiceInstanceToStore = (guid, store) => {
+    const instance = { guid: guid, url: '/' + guid };
+    store._data = Immutable.fromJS([instance]);
+
+    return instance;
+  };
 
   beforeEach(() => {
     ServiceInstanceStore._data = Immutable.List();
     ServiceInstanceStore._createError = null;
     ServiceInstanceStore._createLoading = false;
+    ServiceInstanceStore._updating = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -29,6 +37,18 @@ describe('ServiceInstanceStore', function() {
   describe('constructor()', () => {
     it('should set _data to empty array', () => {
       expect(ServiceInstanceStore.getAll()).toBeEmptyArray();
+    });
+
+    it('should set _updating to false', () => {
+      expect(ServiceInstanceStore.updating).toBe(false);
+    });
+  });
+
+  describe('updating()', () => {
+    it('should return the value of the _updating property', () => {
+      expect(ServiceInstanceStore.updating).toBe(false);
+      ServiceInstanceStore._updating = true;
+      expect(ServiceInstanceStore._updating).toBe(true);
     });
   });
 
@@ -315,31 +335,35 @@ describe('ServiceInstanceStore', function() {
 
       expect(spy).not.toHaveBeenCalled();
     });
+
+    it('should set _updating flag to true', () => {
+      addServiceInstanceToStore('2903fdkhgasd980', ServiceInstanceStore);
+
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_INSTANCE_DELETE,
+        serviceInstanceGuid: 'adsf'
+      });
+
+      expect(ServiceInstanceStore._updating).toBe(true);
+    });
   });
 
-  describe('on service instance delete confirm', function() {
-    it('should emit a change event if the instance exists', function() {
+  describe('on service instance delete confirm', () => {
+    it('should emit a change event if the instance exists', () => {
       const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
       const instanceGuid = '2903fdkhgasd980';
-      let existingInstance = {
-        guid: instanceGuid
-      };
 
-      ServiceInstanceStore._data = Immutable.fromJS([existingInstance]);
+      addServiceInstanceToStore(instanceGuid, ServiceInstanceStore);
 
       serviceActions.deleteInstanceConfirm(instanceGuid);;
 
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should add a confirmDelete key on the service instance to delete',
-       function() {
+    it('should add a confirmDelete key on the service instance to delete', () => {
       const instanceGuid = '2903fdkhgasd980';
-      let existingInstance = {
-        guid: instanceGuid
-      };
 
-      ServiceInstanceStore._data = Immutable.fromJS([existingInstance]);
+      addServiceInstanceToStore(instanceGuid, ServiceInstanceStore);
       serviceActions.deleteInstanceConfirm(instanceGuid);;
 
       const actual = ServiceInstanceStore.get(instanceGuid);
@@ -347,14 +371,11 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
-  describe('on service instance delete cancel', function() {
-    it('should emit a change event if the instance exists', function() {
+  describe('on service instance delete cancel', () => {
+    it('should emit a change event if the instance exists', () => {
       const instanceGuid = '2903fdkhzxcvzxcv';
-      let existingInstance = {
-        guid: instanceGuid
-      };
 
-      ServiceInstanceStore._data = Immutable.fromJS([existingInstance]);
+      addServiceInstanceToStore(instanceGuid, ServiceInstanceStore);
       serviceActions.deleteInstanceConfirm(instanceGuid);;
 
       const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
@@ -363,14 +384,11 @@ describe('ServiceInstanceStore', function() {
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should add a confirmDelete key on the service instance to delete',
-       function() {
+    it('should add a confirmDelete key on the service instance to delete', () => {
       const instanceGuid = 'zxcvqwehgasd980';
-      let existingInstance = {
-        guid: instanceGuid
-      };
 
-      ServiceInstanceStore._data = Immutable.fromJS([existingInstance]);
+      addServiceInstanceToStore(instanceGuid, ServiceInstanceStore);
+
       serviceActions.deleteInstanceConfirm(instanceGuid);;
       let actual = ServiceInstanceStore.get(instanceGuid);
       expect(actual.confirmDelete).toBeTruthy();
@@ -383,13 +401,24 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on service instance deleted', function() {
+    const expectedGuid = 'macldksajpi';
+    let service;
+
+    beforeEach(() => {
+      service = addServiceInstanceToStore(expectedGuid, ServiceInstanceStore);
+    });
+
+    it('should toggle _updating flag to false', () => {
+      AppDispatcher.handleServerAction({
+        type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
+        serviceInstanceGuid: expectedGuid
+      });
+
+      expect(ServiceInstanceStore.updating).toBe(false);
+    });
+
     it('should remove the service from the data', function() {
-      var expectedGuid = 'macldksajpi',
-          expected = { guid: expectedGuid, url: '/' + expectedGuid };
-
-      ServiceInstanceStore.push(expected);
-
-      expect(ServiceInstanceStore.get(expectedGuid)).toEqual(expected);
+      expect(ServiceInstanceStore.get(expectedGuid)).toEqual(service);
 
       AppDispatcher.handleServerAction({
         type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
@@ -401,10 +430,6 @@ describe('ServiceInstanceStore', function() {
 
     it('should emit a change event if found locally', function() {
       var spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
-      var expectedGuid = 'macldksajpi',
-          expected = { guid: expectedGuid, url: '/' + expectedGuid };
-
-      ServiceInstanceStore._data = Immutable.fromJS([expected]);
 
       AppDispatcher.handleServerAction({
         type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
