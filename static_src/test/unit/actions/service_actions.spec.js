@@ -473,14 +473,14 @@ describe('serviceActions', function() {
   });
 
   describe('deleteInstance()', function () {
-    let expectedInstanceGuid, expected, viewSpy;
+    const expectedInstanceGuid = 'asdfasdf';
+    let expected, viewSpy;
 
-    beforeEach(function (done) {
-      expectedInstanceGuid = 'asdfasdf';
+    beforeEach((done) => {
       expected = { guid: expectedInstanceGuid, url: `/${expectedInstanceGuid}` };
 
       viewSpy = setupViewSpy(sandbox);
-      sandbox.stub(cfApi, 'deleteUnboundServiceInstance').returns(Promise.resolve());
+      sandbox.stub(cfApi, 'deleteUnboundServiceInstance').returns(Promise.reject());
       sandbox.spy(serviceActions, 'deletedInstance');
 
       // TODO this should be a fresh instance of ServiceInstanceStore, but the
@@ -491,30 +491,40 @@ describe('serviceActions', function() {
       serviceActions.deleteInstance(expectedInstanceGuid).then(done, done.fail);
     });
 
-    it('should dispatch a instance delete view event with instance guid', () => {
-      const expectedParams = {
-        serviceInstanceGuid: expectedInstanceGuid
-      };
+    describe('successful call', () => {
+      it('should dispatch a instance delete view event with instance guid', () => {
+        const expectedParams = {
+          serviceInstanceGuid: expectedInstanceGuid
+        };
 
-      assertAction(viewSpy, serviceActionTypes.SERVICE_INSTANCE_DELETE, expectedParams);
+        assertAction(viewSpy, serviceActionTypes.SERVICE_INSTANCE_DELETE, expectedParams);
+      });
+
+      it('should call api delete with the service', function () {
+        const arg = cfApi.deleteUnboundServiceInstance.getCall(0).args[0];
+
+        expect(cfApi.deleteUnboundServiceInstance).toHaveBeenCalledOnce();
+        expect(arg).toEqual(expected);
+      });
+
+      it('should call service deleted action with guid', function () {
+        expect(serviceActions.deletedInstance).toHaveBeenCalledOnce();
+        expect(serviceActions.deletedInstance).toHaveBeenCalledWith(expectedInstanceGuid);
+      });
+
+      describe('for non existing instance', function () {
+        it('should do nothing if the service isn\'t in data', function () {
+          cfApi.deleteUnboundServiceInstance.reset();
+          serviceActions.deleteInstance('1234');
+          expect(cfApi.deleteUnboundServiceInstance).not.toHaveBeenCalled();
+        });
+      });
     });
 
-    it('should call api delete with the service', function () {
-      expect(cfApi.deleteUnboundServiceInstance).toHaveBeenCalledOnce();
-      const arg = cfApi.deleteUnboundServiceInstance.getCall(0).args[0];
-      expect(arg).toEqual(expected);
-    });
-
-    it('should call service deleted action with guid', function () {
-      expect(serviceActions.deletedInstance).toHaveBeenCalledOnce();
-      expect(serviceActions.deletedInstance).toHaveBeenCalledWith(expectedInstanceGuid);
-    });
-
-    describe('for non existing instance', function () {
-      it('should do nothing if the service isn\'t in data', function () {
-        cfApi.deleteUnboundServiceInstance.reset();
-        serviceActions.deleteInstance('1234');
-        expect(cfApi.deleteUnboundServiceInstance).not.toHaveBeenCalled();
+    describe('unsuccessful call', () => {
+      it ('should still call the `deleteInstance` if the api call fails', () => {
+        expect(serviceActions.deletedInstance).toHaveBeenCalledOnce();
+        expect(serviceActions.deletedInstance).toHaveBeenCalledWith(expectedInstanceGuid);
       });
     });
   });

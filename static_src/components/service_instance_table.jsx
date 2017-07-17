@@ -8,10 +8,10 @@ import PanelDocumentation from './panel_documentation.jsx';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import SpaceStore from '../stores/space_store.js';
 import { config } from 'skin';
-import createStyler from '../util/create_styler';
 import formatDateTime from '../util/format_date';
 import serviceActions from '../actions/service_actions.js';
-import style from 'cloudgov-style/css/cloudgov-style.css';
+
+const propTypes = {};
 
 function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
@@ -22,7 +22,8 @@ function stateSetter() {
     serviceInstances,
     currentSpaceGuid,
     loading: ServiceInstanceStore.loading,
-    empty: !ServiceInstanceStore.loading && !serviceInstances.length
+    empty: !ServiceInstanceStore.loading && !serviceInstances.length,
+    updating: ServiceInstanceStore.updating
   };
 }
 
@@ -36,8 +37,6 @@ export default class ServiceInstanceTable extends React.Component {
     this._handleDelete = this._handleDelete.bind(this);
     this._handleDeleteConfirmation = this._handleDeleteConfirmation.bind(this);
     this._handleDeleteCancel = this._handleDeleteCancel.bind(this);
-    this.renderConfirmationBox = this.renderConfirmationBox.bind(this);
-    this.styler = createStyler(style);
   }
 
   componentDidMount() {
@@ -101,6 +100,7 @@ export default class ServiceInstanceTable extends React.Component {
         style="nexto"
         confirmHandler={ this._handleDelete.bind(this, instanceGuid) }
         cancelHandler={ this._handleDeleteCancel.bind(this, instanceGuid) }
+        disabled={ this.state.updating }
       />
     );
   }
@@ -120,6 +120,11 @@ export default class ServiceInstanceTable extends React.Component {
       content = (
       <div>
         { this.documentation }
+        <Loading
+          style="globalSaving"
+          text="Deleting service instance"
+          active={ this.state.updating }
+        />
         <table>
           <thead>
             <tr>
@@ -169,11 +174,11 @@ export default class ServiceInstanceTable extends React.Component {
     }
 
     return (
-      <div className={ this.styler('tableWrapper') }>
+      <div className="tableWrapper">
         { content }
       </div>
     );
   }
 }
 
-ServiceInstanceTable.propTypes = { };
+ServiceInstanceTable.propTypes = propTypes;

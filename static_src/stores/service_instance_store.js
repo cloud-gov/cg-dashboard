@@ -45,6 +45,7 @@ export class ServiceInstanceStore extends BaseStore {
     this._createdTempNotification = false;
     this._fetchAll = false;
     this._fetching = false;
+    this._updating = false;
   }
 
   get createInstanceForm() {
@@ -61,6 +62,10 @@ export class ServiceInstanceStore extends BaseStore {
 
   get createdTempNotification() {
     return this._createdTempNotification;
+  }
+
+  get updating() {
+    return this._updating;
   }
 
   get loading() {
@@ -230,6 +235,7 @@ export class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_DELETE: {
+        this._updating = true;
         const serviceInstance = this.get(action.serviceInstanceGuid);
         const toDelete = Object.assign({}, serviceInstance, { deleting: true });
         this.merge('guid', toDelete);
@@ -237,6 +243,7 @@ export class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_DELETED: {
+        this._updating = false;
         this.delete(action.serviceInstanceGuid);
         break;
       }
