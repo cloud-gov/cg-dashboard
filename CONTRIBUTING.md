@@ -2,7 +2,7 @@
 
 We're so glad you're thinking about contributing to an 18F open source project! If you're unsure or afraid of anything, just ask or submit the issue or pull request anyways. The worst that can happen is that you'll be politely asked to change something. We appreciate any sort of contribution, and don't want a wall of rules to get in the way of that.
 
-*Disclaimer:* Everthing in this guide is not set in stone and subject to change based on changing project requirements and tools. 
+*Disclaimer:* Everything in this guide is not set in stone and subject to change based on changing project requirements and tools.
 
 Before contributing, we encourage you to read our CONTRIBUTING policy (you are here), our LICENSE, and our README, all of which should be in this repository. If you have any questions, or want to read more about our underlying policies, you can consult the 18F Open Source Policy GitHub repository at https://github.com/18f/open-source-policy, or just shoot us an email/official government letterhead note to [18f@gsa.gov](mailto:18f@gsa.gov).
 
@@ -58,7 +58,7 @@ For more information, see the high-level [cloud.gov respository](https://github.
 - Languages
   - ES6 Javascript ([primer](http://webapplog.com/es6/))
   - CSS
-- JS unit testing: 
+- JS unit testing:
   - [Karma with Chrome](https://karma-runner.github.io/1.0/index.html)
   - [Sinon](http://sinonjs.org/)
   - [Jasmine](http://jasmine.github.io/)
@@ -183,7 +183,7 @@ Here are some basic rules to work with action creators successfully:
   receivedSpaces()
   addUser()
   addedUser()
-  
+
   // Bad
   spacesFetch()
   ```
@@ -202,7 +202,7 @@ Here are some basic rules to work with action creators successfully:
     return Promise.resolve(spaces);
   }
   ```
-- There should not be more then one action with the same data.
+- There should not be more than one action with the same data.
 - Any XHR calls should happen within the fetch action creators which should return a promise of the request.
 - Any `fetch` action should call the appropriate `receive`/`success`/`error` action on the resolve of the fetch's promise.
   ```js
@@ -230,11 +230,11 @@ Here are some basic rules to work with stores successfully:
       this._currentOrgGuid = null;
       this._fetchOrg = false;
     }
-    
+
     get loading() {
       return this._fetchOrg || this._fetchAll;
     }
-    
+
     get currentOrgGuid() {
       return this._currentOrgGuid;
     }
@@ -246,7 +246,7 @@ Here are some basic rules to work with stores successfully:
   case orgActions.ORGS.RECEIVED: {
     this.mergeAll('guid', action.orgs);
   }
-  
+
   // Bad
   case orgActions.ORGS.RECEIVED: {
     this._data = new Immutable.List(this._data, action.orgs);
@@ -258,7 +258,7 @@ Here are some basic rules to work with stores successfully:
    this._fetchAll = false
   this.mergeMany('guid', updates, () => {});
   this.emitChange();
-  
+
   // Bad
   this._fetchAll = false
   this.mergeMany('guid', updates, (changed) => {
@@ -266,7 +266,7 @@ Here are some basic rules to work with stores successfully:
   });
   ```
 - Stores should generally avoid doing async work, including making any calls to the API, and `setTimeout`. The only case where it's easier for the store to make API calls is when a store's loading state depends on more then one data request, in which case, the `BaseStore.load` method should be used. See anti-patterns for more information
-  
+
 ##### When to create a store
 
 Creating a new store should generally be avoided but there are a few circumstances where it makes sense:
@@ -284,7 +284,7 @@ Here are some basic rules to work with components successfully:
   ```js
   // Good
   this.setState({ ...data });
-  
+
   // Bad
   this.state = { ...data };
   ```
@@ -294,8 +294,8 @@ Here are some basic rules to work with components successfully:
   onHandleClick() {
     userActions.addUser();
     // Eventually state will be set from stores.
-  }  
-  
+  }
+
   // Bad
   onHandleClick() {
     this.setState({ loading: true });
@@ -307,7 +307,7 @@ Here are some basic rules to work with components successfully:
   getErrorMessage() {
     return <ErrorMessage></ErrorMessage>
   }
-  
+
   render() {
     const error = this.getErrorMessage();
   }
@@ -325,19 +325,19 @@ Here are some basic rules to work with components successfully:
     errorMessage = <Error>{ this.state.error }</Error>
   }
   ...
-  
+
   return (<div>
     { errorMessage}
     { otherStuff }
   </div>);
-  
+
   // Bad
   if (condition) {
     conditionalContent = <div></div>;
   } else {
     conditionalContent = ''; // Not required
   }
-  
+
   ```
  - Keep the `propTypes` and `defaultProps` as `const`s at the top of the file directly before the component class definition, and set the consts at the bottom.
    ```js
@@ -357,14 +357,14 @@ Here are some basic rules to work with components successfully:
   ```js
   // Good
   const propTypes = { status: PropTypes.oneOf(['red', 'green', 'yellow']);
-  
+
   // Bad
   const propTypes = { status: PropTypes.string };
   ```
  - Use `createStyler` for adding cg-style CSS classes to components.
  - Components should usually have either `state` or `props`, but usually not both. See [Container component](#container-component).
    - The only time it should have both when there's a prop for a configurable part of the UI.
-  
+
 #### Patterns
 
 <a name="ui-actions"></a>
@@ -378,12 +378,12 @@ When a UI is supposed to do something based on something a user did, such as cli
 The general pattern for different UIs on the app is to fetch data for Cloud Foundry entities, and then render React components with the data. To organize around this, container components should get and keep the state of the data and pass down this data through various UI based components through props. This means UIs will have one container (which is usually but not always linked to a page, like `org`, `space`, etc) and all other components will just have props and will have all data passed down through them.
 
 There's no perfect guidance on what should be a container component vs a props component, besides that almost all base pages are a container component. A good way to determine is to see what data various UIs require and then separate containers and prop containers based on this.
-  
+
 #### Anti-patterns
 
 ##### Setting state in component rather then through actions
 
-Besides pure UI components, no components should set state within themselves without the use of an action. This is due to keeping both UI actions the users take, and server actions when data comes in from the server to move through the app in the same way, through the dispatcher. 
+Besides pure UI components, no components should set state within themselves without the use of an action. This is due to keeping both UI actions the users take, and server actions when data comes in from the server to move through the app in the same way, through the dispatcher.
 
 Instead, use [ui actions](#ui-actions).
 
@@ -407,7 +407,7 @@ There's no distinction from the dashboard and any of the other cloud.gov site's 
 
 ## Performance
 
-Performance, as in speed of the site as perceived to users, has been briefly researched and tracked. The main web performance metrics tracked are [Speed Index](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index), [input latency](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency), [time to interactive](https://developers.google.com/web/tools/lighthouse/audits/time-to-interactive), total page weight, and number of DOM nodes. These metrics were tracked for five comparison sites for cloud.gov and documented in a [google sheet, GSA only](https://docs.google.com/spreadsheets/d/1SuGQv5o75n6bkZaQNzL-cjkR2WTDvGuQJlFtPuUGNfM/edit#gid=0). These comparison stats were used to determine performance goals (ideal numbers to reach over time) and budgets (limits placed on the team to stop performance from degrading). 
+Performance, as in speed of the site as perceived to users, has been briefly researched and tracked. The main web performance metrics tracked are [Speed Index](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index), [input latency](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency), [time to interactive](https://developers.google.com/web/tools/lighthouse/audits/time-to-interactive), total page weight, and number of DOM nodes. These metrics were tracked for five comparison sites for cloud.gov and documented in a [google sheet, GSA only](https://docs.google.com/spreadsheets/d/1SuGQv5o75n6bkZaQNzL-cjkR2WTDvGuQJlFtPuUGNfM/edit#gid=0). These comparison stats were used to determine performance goals (ideal numbers to reach over time) and budgets (limits placed on the team to stop performance from degrading).
 
 Performance is tracked as part of the CI build process, and the build fails if performance goes over the budgets. Any library added that's total file size is above 25kb should be evaluated for performance affect. Update 07/05: Currently the performance is not tracked as part of the CI build due to memory and resource limits on CircleCI, but should be added back later when these issues are resolved.
 
