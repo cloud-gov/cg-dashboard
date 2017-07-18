@@ -4,7 +4,7 @@
 [![Code Climate](https://codeclimate.com/github/18F/cg-dashboard/badges/gpa.svg)](https://codeclimate.com/github/18F/cg-dashboard)
 
 Environments: [Production](https://dashboard.fr.cloud.gov)
-[Staging](https://dashboard-staging.fr.app.cloud.gov)
+[Staging](https://dashboard-staging.app.cloud.gov)
 [Testing Server](https://dashboard-testing-server.app.cloud.gov)
 
 
