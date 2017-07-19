@@ -258,7 +258,7 @@ describe('userActions', function() {
     });
   });
 
-  describe('userInviteError()', function() {
+  describe('userListNoticeError()', function() {
     let err;
     let message;
 
@@ -267,7 +267,7 @@ describe('userActions', function() {
       message = 'something happened when invititing';
       sandbox.stub(AppDispatcher, 'handleServerAction');
 
-      userActions.userInviteError(err, message).then(done, done.fail);
+      userActions.userListNoticeError(err, message).then(done, done.fail);
     });
 
     it('should dispatch server action of type user error with error and optional message',
