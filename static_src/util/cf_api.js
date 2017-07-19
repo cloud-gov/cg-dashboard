@@ -403,7 +403,19 @@ export default {
   deleteOrgUserPermissions(userGuid, orgGuid, apiKey) {
     return http.delete(`${APIV}/organizations/${orgGuid}/${apiKey}/${userGuid}`)
       .then((res) => res.response
-    );
+    ).catch(res => {
+        const err = parseError(res);
+        if (res && res.response && res.response.status === 400) {
+          if (res.response.data.error_code === 'CF-AssociationNotEmpty') {
+            const description = "This user can't be removed because they still have a Space " +
+                                "role within the Organization. Please remove all Space " +
+                                "associations before removing this User from the Org.";
+            userActions.createUserSpaceAssociationNotification(description);
+            return Promise.reject(err);
+          }
+        }
+        return Promise.reject(err);
+      });
   },
 
   putOrgUserPermissions(userGuid, orgGuid, permissions) {
