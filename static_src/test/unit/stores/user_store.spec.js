@@ -737,16 +737,16 @@ describe('UserStore', function () {
 
     beforeEach(function() {
       notice = { noticeType: "finish", description: "An email invite was sent to undefined. Their account has been associated to this space, and their space roles can be controlled below." };
-      UserStore._inviteNotification = notice;
+      UserStore._userListNotification = notice;
       sandbox.spy(UserStore, 'emitChange');
 
       userActions.createInviteNotification();
     });
 
     it('should create notification for user invite', function() {
-      expect(UserStore.getInviteNotification()).toBeDefined();
-      expect(UserStore.getInviteNotification().description).toEqual(notice.description);
-      expect(UserStore.getInviteNotification().noticeType).toEqual(notice.noticeType);
+      expect(UserStore.getUserListNotification()).toBeDefined();
+      expect(UserStore.getUserListNotification().description).toEqual(notice.description);
+      expect(UserStore.getUserListNotification().noticeType).toEqual(notice.noticeType);
     });
 
     it('should emit a change event', function() {
@@ -759,16 +759,16 @@ describe('UserStore', function () {
 
     beforeEach(function() {
       notice = { noticeType: "finish", description: "message" };
-      UserStore._inviteNotification = notice;
+      UserStore._userListNotification = notice;
       sandbox.spy(UserStore, 'emitChange');
 
       userActions.clearInviteNotifications();
     });
 
     it('should clear notification for user invite', function() {
-      expect(UserStore.getInviteNotification()).toBeDefined();
-      expect(UserStore.getInviteNotification().description).not.toEqual(notice.description);
-      expect(UserStore.getInviteNotification().noticeType).not.toEqual(notice.noticeType);
+      expect(UserStore.getUserListNotification()).toBeDefined();
+      expect(UserStore.getUserListNotification().description).not.toEqual(notice.description);
+      expect(UserStore.getUserListNotification().noticeType).not.toEqual(notice.noticeType);
     });
 
     it('should emit a change event', function() {
@@ -781,18 +781,18 @@ describe('UserStore', function () {
     let message;
 
     beforeEach(function() {
-      UserStore._inviteError = null;
+      UserStore._userListNotificationError = null;
       message = 'Inviting user did not work';
       error = { status: 500, message: 'CF said this' };
       sandbox.spy(UserStore, 'emitChange');
 
-      userActions.userInviteError(error, message);
+      userActions.userListNoticeError(error, message);
     });
 
     it('should add a error message to the user invite error field', function() {
-      expect(UserStore.getInviteError()).toBeDefined();
-      expect(UserStore.getInviteError().contextualMessage).toEqual(message);
-      expect(UserStore.getInviteError().message).toEqual(error.message);
+      expect(UserStore.getUserListNotificationError()).toBeDefined();
+      expect(UserStore.getUserListNotificationError().contextualMessage).toEqual(message);
+      expect(UserStore.getUserListNotificationError().message).toEqual(error.message);
     });
 
     it('should emit a change event', function() {
@@ -800,8 +800,8 @@ describe('UserStore', function () {
     });
   });
 
-  describe('getInviteNotification()', function () {
-    describe('user with _inviteNotification', function () {
+  describe('getUserListNotification()', function () {
+    describe('user with _userListNotification', function () {
       let user, space, org, actual, notice;
 
       beforeEach(function () {
@@ -819,9 +819,9 @@ describe('UserStore', function () {
         UserStore.push(user);
       });
 
-      it('returns notice when _inviteNotification has content', function () {
-        UserStore._inviteNotification = notice;
-        actual = UserStore.getInviteNotification()
+      it('returns notice when _userListNotification has content', function () {
+        UserStore._userListNotification = notice;
+        actual = UserStore.getUserListNotification()
         expect(actual).toBe(notice);
       });
 
@@ -831,10 +831,10 @@ describe('UserStore', function () {
   describe('on CLEAR', () => {
     beforeEach(function() {
       const notice = { noticeType: "finish", description: "message" };
-      UserStore._inviteNotification = notice;
+      UserStore._userListNotification = notice;
       UserStore._error = 'something';
       UserStore._saving = true;
-      UserStore._inviteError = 'invite error';
+      UserStore._userListNotificationError = 'invite error';
       UserStore._loading = {currentUser: true};
       sandbox.spy(UserStore, 'emitChange');
       AppDispatcher.handleViewAction({
@@ -843,10 +843,10 @@ describe('UserStore', function () {
 
     });
     it('resets all of the notifications and errors', () => {
-      expect(UserStore._inviteNotification).toEqual({});
+      expect(UserStore._userListNotification).toEqual({});
       expect(UserStore._error).toBe(null);
       expect(UserStore._saving).toEqual(false);
-      expect(UserStore._inviteError).toBe(null);
+      expect(UserStore._userListNotificationError).toBe(null);
       expect(UserStore._loading).toEqual({});
     });
   });
