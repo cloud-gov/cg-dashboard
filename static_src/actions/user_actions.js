@@ -200,8 +200,23 @@ const userActions = {
 
   clearInviteNotifications() {
     AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_INVITE_STATUS_DISMISSED
+      type: userActionTypes.USER_LIST_NOTICE_DISMISSED
     });
+  },
+
+  createUserListNotification(noticeType, description) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_LIST_NOTICE_CREATED,
+      noticeType,
+      description
+    });
+  },
+
+  createUserSpaceAssociationNotification(notification) {
+    const description = notification;
+    const noticeType = 'error';
+
+    userActions.createUserListNotification(noticeType, description);
   },
 
   createInviteNotification(verified, email) {
@@ -223,11 +238,7 @@ const userActions = {
       'be controlled below.';
     }
 
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_INVITE_STATUS_DISPLAYED,
-      noticeType,
-      description
-    });
+    userActions.createUserListNotification(noticeType, description);
   },
 
   userInviteError(err, contextualMessage) {
