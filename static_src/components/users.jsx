@@ -82,7 +82,7 @@ export default class Users extends React.Component {
 
   onNotificationDismiss(ev) {
     ev.preventDefault();
-    userActions.clearInviteNotifications();
+    userActions.clearUserListNotifications();
   }
 
   handleAddPermissions(roleKey, apiKey, userGuid) {

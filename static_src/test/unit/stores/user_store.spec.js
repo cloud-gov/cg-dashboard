@@ -732,7 +732,7 @@ describe('UserStore', function () {
     });
   });
 
-  describe('on USER_INVITE_STATUS_DISPLAYED', function() {
+  describe('on USER_LIST_NOTICE_CREATED', function() {
     let notice;
 
     beforeEach(function() {
@@ -754,7 +754,7 @@ describe('UserStore', function () {
     });
   });
 
-  describe('on USER_INVITE_STATUS_DISMISSED', function() {
+  describe('on USER_LIST_NOTICE_DISMISSED', function() {
     let notice;
 
     beforeEach(function() {
@@ -762,7 +762,7 @@ describe('UserStore', function () {
       UserStore._userListNotification = notice;
       sandbox.spy(UserStore, 'emitChange');
 
-      userActions.clearInviteNotifications();
+      userActions.createUserListNotification();
     });
 
     it('should clear notification for user invite', function() {

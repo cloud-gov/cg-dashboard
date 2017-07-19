@@ -207,13 +207,13 @@ describe('userActions', function() {
     });
   });
 
-  describe('clearInviteNotifications()', function() {
+  describe('clearUserListNotifications()', function() {
     it('should dispatch a view event of type clear invite notification', function() {
       let spy = setupViewSpy(sandbox);
 
-      userActions.clearInviteNotifications();
+      userActions.clearUserListNotifications();
 
-      assertAction(spy, userActionTypes.USER_INVITE_STATUS_DISMISSED);
+      assertAction(spy, userActionTypes.USER_LIST_NOTICE_DISMISSED);
     });
   });
 
@@ -240,7 +240,7 @@ describe('userActions', function() {
       let spy = setupViewSpy(sandbox);
       sandbox.spy(userActions, 'receivedInviteStatus');
       userActions.createInviteNotification(false, email);
-      assertAction(spy, userActionTypes.USER_INVITE_STATUS_DISPLAYED, expected);
+      assertAction(spy, userActionTypes.USER_LIST_NOTICE_CREATED, expected);
       done();
     });
 
@@ -253,7 +253,7 @@ describe('userActions', function() {
       let spy = setupViewSpy(sandbox);
       sandbox.spy(userActions, 'receivedInviteStatus');
       userActions.createInviteNotification(true, email);
-      assertAction(spy, userActionTypes.USER_INVITE_STATUS_DISPLAYED, expected);
+      assertAction(spy, userActionTypes.USER_LIST_NOTICE_CREATED, expected);
       done();
     });
   });

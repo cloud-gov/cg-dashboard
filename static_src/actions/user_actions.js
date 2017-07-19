@@ -198,7 +198,7 @@ const userActions = {
         inviting ${email}`));
   },
 
-  clearInviteNotifications() {
+  clearUserListNotifications() {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_LIST_NOTICE_DISMISSED
     });
@@ -241,7 +241,7 @@ const userActions = {
     userActions.createUserListNotification(noticeType, description);
   },
 
-  userInviteError(err, contextualMessage) {
+  userListNoticeError(err, contextualMessage) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_INVITE_ERROR,
       err,
