@@ -13,11 +13,16 @@ import UserList from './user_list.jsx';
 import UsersInvite from './users_invite.jsx';
 import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
-
 import ErrorMessage from './error_message.jsx';
+import PanelDocumentation from './panel_documentation.jsx';
 
+const propTypes = {};
 const SPACE_NAME = SpaceStore.cfName;
 const ORG_NAME = OrgStore.cfName;
+const ORG_MANAGER = 'org_manager';
+const SPACE_MANAGER = 'space_manager';
+const ORG_ENTITY = 'organization';
+const SPACE_ENTITY = 'space';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
@@ -35,15 +40,16 @@ function stateSetter() {
     users = UserStore.getAllInSpace(currentSpaceGuid);
     entityGuid = currentSpaceGuid;
     currentUserAccess = UserStore.hasRole(currentUser.guid, currentSpaceGuid,
-                                          'space_manager');
+                                          SPACE_MANAGER);
   } else {
     users = UserStore.getAllInOrg(currentOrgGuid);
     entityGuid = currentOrgGuid;
     currentUserAccess = UserStore.hasRole(currentUser.guid, currentOrgGuid,
-                                          'org_manager');
+                                          ORG_MANAGER);
   }
 
   return {
+    currentUser,
     error: UserStore.getError(),
     inviteDisabled,
     currentUserAccess,
@@ -67,7 +73,7 @@ export default class Users extends React.Component {
     this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
+    this.handleRemoveUser = this.handleRemoveUser.bind(this);
     this.handleAddPermissions = this.handleAddPermissions.bind(this);
     this.handleRemovePermissions = this.handleRemovePermissions.bind(this);
   }
@@ -86,34 +92,89 @@ export default class Users extends React.Component {
   }
 
   handleAddPermissions(roleKey, apiKey, userGuid) {
-    userActions.addUserRoles(roleKey,
-                                apiKey,
-                                userGuid,
-                                this.entityGuid,
-                                this.entityType);
+    userActions.addUserRoles(
+      roleKey,
+      apiKey,
+      userGuid,
+      this.entityGuid,
+      this.entityType
+    );
   }
 
   handleRemovePermissions(roleKey, apiKey, userGuid) {
-    userActions.deleteUserRoles(roleKey,
-                                apiKey,
-                                userGuid,
-                                this.entityGuid,
-                                this.entityType);
+    userActions.deleteUserRoles(
+      roleKey,
+      apiKey,
+      userGuid,
+      this.entityGuid,
+      this.entityType
+    );
   }
 
-  handleRemove(userGuid, ev) {
+  handleRemoveUser(userGuid, ev) {
     ev.preventDefault();
     userActions.deleteUser(userGuid, this.state.currentOrgGuid);
   }
 
   get entityType() {
-    return this.state.currentType === ORG_NAME ? 'org' : 'space';
+    return this.isOrganization ? ORG_ENTITY : SPACE_ENTITY;
+  }
+
+  get isOrganization() {
+    return this.state.currentType === ORG_NAME;
   }
 
   get entityGuid() {
-    const entityGuid = this.state.currentType === ORG_NAME ?
+    const entityGuid = this.isOrganization ?
       this.state.currentOrgGuid : this.state.currentSpaceGuid;
     return entityGuid;
+  }
+
+  get currentUserIsOrgManager() {
+    const { currentUser } = this.state;
+    const { currentOrgGuid } = OrgStore;
+
+    return UserStore.hasRole(currentUser.guid, currentOrgGuid, ORG_MANAGER);
+  }
+
+  get notification() {
+    const { userListNotices } = this.state;
+
+    if (!userListNotices.description) return null;
+
+    return (
+      <Notification
+        message={ userListNotices.description }
+        actions={ [] }
+        onDismiss={ this.onNotificationDismiss }
+        status="finish"
+      />
+    );
+  }
+
+  get userInvite() {
+    if (!this.currentUserIsOrgManager) {
+      const cfAPILink = 'https://cloud.gov/docs/getting-started/setup/#set-up-the-command-line';
+
+      return (
+        <PanelDocumentation>
+          {`Currently, only an org manager can invite users to this ${this.entityType}
+          via the dashboard. If the user you want to add is already a cloud.gov member,
+          you can invite them using the <a href=${cfAPILink}>cloud foundry api. </a>
+          Speak to your org manager if you need to add a user to this ${this.entityType} who
+          is not a member of cloud.gov`}
+        </PanelDocumentation>
+      );
+    }
+
+    return (
+      <UsersInvite
+        inviteEntityType={ this.entityType }
+        inviteDisabled={ this.state.inviteDisabled }
+        currentUserAccess={ this.state.currentUserAccess }
+        error={ this.state.userListNoticeError }
+      />
+    );
   }
 
   _onChange() {
@@ -123,68 +184,30 @@ export default class Users extends React.Component {
   render() {
     let removeHandler;
 
-    if (this.state.currentType === ORG_NAME) {
-      removeHandler = this.handleRemove;
-    }
-
-    let content = (<UserList
-      users={ this.state.users }
-      userType= { this.state.currentType }
-      entityGuid={ this.state.entityGuid }
-      currentUserAccess={ this.state.currentUserAccess }
-      empty={ this.state.empty }
-      loading={ this.state.loading }
-      saving={ this.state.isSaving }
-      onRemove={ removeHandler }
-      onAddPermissions={ this.handleAddPermissions }
-      onRemovePermissions={ this.handleRemovePermissions }
-    />);
-
-    let notification;
-    let userInvite;
-
-    if (this.state.userListNotices.description) {
-      const notice = this.state.userListNotices;
-      notification = (
-        <Notification
-          message={ notice.description }
-          actions={ [] }
-          onDismiss={ this.onNotificationDismiss }
-          status={ notice.noticeType }
-        />
-      );
-    } else {
-      // If there's nothing, let's reset the notification to null.
-      notification = null;
-    }
-
-    if (this.state.currentType === ORG_NAME) {
-      userInvite = (
-        <div className="test-users">
-          <UsersInvite
-            inviteDisabled={ this.state.inviteDisabled }
-            currentUserAccess={ this.state.currentUserAccess }
-            error={ this.state.userListNoticeError }
-          />
-        </div>
-      );
+    if (this.isOrganization) {
+      removeHandler = this.handleRemoveUser;
     }
 
     return (
       <div className="test-users">
         <ErrorMessage error={this.state.error} />
-        { userInvite }
-        { notification }
-        <div>
-          <div>
-            { content }
-          </div>
-        </div>
+        { this.userInvite }
+        { this.notification }
+        <UserList
+          users={ this.state.users }
+          userType= { this.state.currentType }
+          entityGuid={ this.state.entityGuid }
+          currentUserAccess={ this.state.currentUserAccess }
+          empty={ this.state.empty }
+          loading={ this.state.loading }
+          saving={ this.state.isSaving }
+          onRemove={ removeHandler }
+          onAddPermissions={ this.handleAddPermissions }
+          onRemovePermissions={ this.handleRemovePermissions }
+        />
       </div>
     );
   }
 }
 
-Users.propTypes = {};
-
-Users.defaultProps = {};
+Users.propTypes = propTypes;

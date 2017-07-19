@@ -160,6 +160,7 @@ export default class BaseStore extends EventEmitter {
     } else {
       this._data = this._data.push(toMerge);
     }
+
     return cb(true);
   }
 

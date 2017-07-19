@@ -6,15 +6,7 @@ import { shallow } from 'enzyme';
 import UserRoleListControl from '../../../components/user_role_list_control.jsx';
 
 describe('<UserRoleListControl />', function () {
-  let userRoleListControl, sandbox;
-
-  beforeEach(function () {
-    sandbox = sinon.sandbox.create();
-  });
-
-  afterEach(function () {
-    sandbox.restore();
-  });
+  let userRoleListControl;
 
   describe('with an org user', function () {
     const orgGuid = 'org-123';

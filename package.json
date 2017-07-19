@@ -13,6 +13,8 @@
     "build-style": "cd node_modules/cloudgov-style && npm install && npm run build",
     "check-style": "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"git://github.com\" ]] && npm run build-style || exit 0'",
     "clean": "rm -rf ./static/assets/*",
+    "dev-start": "cf dev start && docker-compose up -d app frontend watch",
+    "dev-stop": "cf dev stop && docker-compose stop",
     "lint": "eslint --ext .js --ext .jsx ./static_src",
     "test": "npm run lint && npm run test-unit && npm run test-functional",
     "test-functional": "NODE_ENV=test npm run testing-server-run -- wdio wdio.conf.js",

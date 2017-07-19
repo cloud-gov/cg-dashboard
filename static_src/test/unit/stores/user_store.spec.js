@@ -108,13 +108,14 @@ describe('UserStore', function () {
     });
   });
 
-  describe('on space user roles received', function() {
-    let expectedUsers;
+  describe('on space user roles received', () => {
     const userGuidA = 'user-a';
     const userGuidB = 'user-b';
     const spaceGuid = 'space-123';
+    let expectedUsers;
+    let spy;
 
-    beforeEach(function() {
+    beforeEach(() => {
       const spaceUserRoles = [
         {
           guid: userGuidA,
@@ -134,22 +135,25 @@ describe('UserStore', function () {
       expectedUsers = [
         {
           guid: userGuidA,
-          roles: { [spaceGuid]: ['space_developer'] }
+          roles: { [spaceGuid]: ['space_developer'] },
+          space_roles: [ 'space_developer' ]
         },
         {
           guid: userGuidB,
-          roles: { [spaceGuid]: ['space_developer', 'space_manager'] }
+          roles: { [spaceGuid]: ['space_developer', 'space_manager'] },
+          space_roles: [ 'space_developer', 'space_manager' ]
         }
-      ]
+      ];
 
-      UserStore.push(currentUsers[0]);
-      sandbox.spy(UserStore, 'emitChange');
+      UserStore._data = Immutable.fromJS(currentUsers);
+      spy = sandbox.spy(UserStore, 'emitChange');
 
       userActions.receivedSpaceUserRoles(spaceUserRoles, spaceGuid);
     });
 
-    afterEach(function() {
+    afterEach(() => {
       UserStore._data = [];
+      spy.restore(UserStore);
     });
 
     it('should emit a change event', function() {
@@ -180,8 +184,7 @@ describe('UserStore', function () {
       expect(spy).toHaveBeenCalledOnce();
     });
 
-    it('should merge and update new users with existing users in data',
-        function() {
+    it('should merge and update new users with existing users in data', () => {
       const userGuid = 'user-75384';
       const orgGuid = 'org-534789';
       const currentUsers = [
@@ -224,19 +227,19 @@ describe('UserStore', function () {
     });
   });
 
-  describe('on org user associated', function() {
+  describe('on org user associated', () => {
     const userGuid = 'user-543';
     const orgGuid = 'org-abc';
-    let orgUsers
-    beforeEach(function() {
-      UserStore._data = Immutable.List();
-      sandbox.spy(UserStore, 'emitChange');
+    let orgUsers;
+
+    beforeEach(() => {
       const user = {
         guid: userGuid,
         username: 'person@person.com'
       };
       orgUsers = [user, {userGuid: 'wrong-udid'}, {userGuid: 'wrong-udid-2'}];
-      userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers);
+      sandbox.spy(UserStore, 'emitChange');
+      userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers, 'org_users');
     });
 
     it('should emit a change', function() {
@@ -318,7 +321,7 @@ describe('UserStore', function () {
         expectedApiKey,
         expectedUserGuid,
         expectedOrgGuid,
-        'org'
+        'organization'
       );
 
       expect(spy).toHaveBeenCalledOnce();
