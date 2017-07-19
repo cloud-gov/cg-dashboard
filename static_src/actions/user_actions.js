@@ -213,10 +213,7 @@ const userActions = {
   },
 
   createUserSpaceAssociationNotification(notification) {
-    const description = notification;
-    const noticeType = 'error';
-
-    userActions.createUserListNotification(noticeType, description);
+    userActions.createUserListNotification('error', notification);
   },
 
   createInviteNotification(verified, email) {

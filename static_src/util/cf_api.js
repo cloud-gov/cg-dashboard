@@ -405,14 +405,17 @@ export default {
       .then((res) => res.response
     ).catch(res => {
       const err = parseError(res);
-      if (res && res.response && res.response.status === 400) {
-        if (res.response.data.error_code === 'CF-AssociationNotEmpty') {
-          const description = 'This user can\'t be removed because they still have a Space ' +
-                              'role within the Organization. Please remove all Space ' +
-                              'associations before removing this User from the Org.';
-          userActions.createUserSpaceAssociationNotification(description);
-          return Promise.reject(err);
-        }
+      const errorConditions = (res &&
+                               res.response &&
+                               res.response.status === 400 &&
+                               res.response.data.error_code === 'CF-AssociationNotEmpty'
+                              );
+      if (errorConditions) {
+        const description = 'This user can\'t be removed because they still have a space ' +
+                            'role within the organization. Please remove all space ' +
+                            'associations before removing this user from the organization.';
+        userActions.createUserSpaceAssociationNotification(description);
+        return Promise.reject(err);
       }
       return Promise.reject(err);
     });

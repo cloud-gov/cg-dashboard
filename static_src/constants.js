@@ -268,7 +268,7 @@ const userActionTypes = keymirror({
   USER_ASSOCIATED_ORG_DISPLAYED: null,
   // Action when something goes wrong in user invite and email process.
   USER_INVITE_ERROR: null,
-  // Action to display an invite notification
+  // Action to prepare an invite notification
   USER_INVITE_STATUS_CREATED: null,
   // Action to dismiss an invite notification
   USER_LIST_NOTICE_DISMISSED: null,
