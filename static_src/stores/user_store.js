@@ -21,7 +21,7 @@ export class UserStore extends BaseStore {
     this._error = null;
     this._saving = false;
     this._inviteDisabled = false;
-    this._inviteNotification = {};
+    this._userListNotification = {};
     this._loading = {};
   }
 
@@ -64,7 +64,7 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.USER_INVITE_TRIGGER: {
         this._inviteDisabled = true;
-        this._inviteError = null;
+        this._userListNotificationError = null;
         this.emitChange();
         break;
       }
@@ -179,7 +179,7 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_INVITE_ERROR: {
-        this._inviteError = Object.assign({}, action.err, {
+        this._userListNotificationError = Object.assign({}, action.err, {
           contextualMessage: action.contextualMessage
         });
         this._inviteDisabled = false;
@@ -197,18 +197,18 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.USER_INVITE_STATUS_DISPLAYED: {
+      case userActionTypes.USER_LIST_NOTICE_CREATED: {
         this._inviteDisabled = false;
         const noticeType = action.noticeType;
         const description = action.description;
         const notice = Object.assign({}, { noticeType }, { description });
-        this._inviteNotification = notice;
+        this._userListNotification = notice;
         this.emitChange();
         break;
       }
 
-      case userActionTypes.USER_INVITE_STATUS_DISMISSED: {
-        this._inviteNotification = {};
+      case userActionTypes.USER_LIST_NOTICE_DISMISSED: {
+        this._userListNotification = {};
         this.emitChange();
         break;
       }
@@ -285,8 +285,8 @@ export class UserStore extends BaseStore {
       case errorActionTypes.CLEAR: {
         this._error = null;
         this._saving = false;
-        this._inviteNotification = {};
-        this._inviteError = null;
+        this._userListNotification = {};
+        this._userListNotificationError = null;
         this._loading = {};
         this.emitChange();
         break;
@@ -367,12 +367,12 @@ export class UserStore extends BaseStore {
     return this._currentUserIsAdmin;
   }
 
-  getInviteNotification() {
-    return this._inviteNotification;
+  getUserListNotification() {
+    return this._userListNotification;
   }
 
-  getInviteError() {
-    return this._inviteError;
+  getUserListNotificationError() {
+    return this._userListNotificationError;
   }
 
   get isSaving() {
