@@ -386,9 +386,23 @@ export default {
       .then(() => {
         userActions.deletedUser(userGuid, orgGuid);
       }).catch((err) => {
-        if (err.response.data) {
-          userActions.errorRemoveUser(userGuid, err.data);
+        // Check if we got caught on user roles in spaces
+        const error = parseError(err);
+        const userHasSpaceRoles = (error &&
+          error.response &&
+          error.response.status === 400 &&
+          error.response.data.error_code === 'CF-AssociationNotEmpty'
+        );
+        if (userHasSpaceRoles) {
+          const description = 'This user can\'t be removed because they still have a space ' +
+                              'role within the organization. Please remove all space ' +
+                              'associations before removing this user from the organization.';
+          userActions.createUserSpaceAssociationNotification(description);
+        } else if (error.response.data) {
+          // else use generic error
+          userActions.errorRemoveUser(userGuid, error.response.data);
         } else {
+          // fall back to logging.
           handleError(err);
         }
       });
@@ -405,14 +419,6 @@ export default {
       .then((res) => res.response
     ).catch(res => {
       const err = parseError(res);
-      const errorConditions = (res &&
-                               res.response &&
-                               res.response.status === 400 &&
-                               res.response.data.error_code === 'CF-AssociationNotEmpty'
-                              );
-      if (errorConditions) {
-        return Promise.resolve();
-      }
       return Promise.reject(err);
     });
   },

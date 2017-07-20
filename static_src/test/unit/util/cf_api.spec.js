@@ -1007,6 +1007,46 @@ describe('cfApi', function() {
         done();
       }).catch(done.fail);
     });
+    describe('error handling', function() {
+      it('should return display a generic error if unsuccessful', function(done) {
+        var spy = sandbox.spy(userActions, 'errorRemoveUser'),
+            expectedUserGuid = 'aldfskjmcx',
+            expectedOrgGuid = 'sa09dvjakdnva';
+        moxios.stubOnce('DELETE', `/v2/organizations/${expectedOrgGuid}/users/${expectedUserGuid}`, {
+          status: 500,
+          response: {},
+        });
+
+        cfApi.deleteUser(expectedUserGuid, expectedOrgGuid).then(() => {
+          expect(spy).toHaveBeenCalledOnce();
+          let args = spy.getCall(0).args;
+          expect(args[0]).toEqual(expectedUserGuid);
+          expect(args[1]).toEqual({});
+          done();
+        }).catch(done.fail);
+      });
+
+      it('should return display a notification about user having existing roles', function(done) {
+        var spy = sandbox.spy(userActions, 'createUserSpaceAssociationNotification'),
+            expectedUserGuid = 'aldfskjmcx',
+            expectedOrgGuid = 'sa09dvjakdnva';
+        moxios.stubOnce('DELETE', `/v2/organizations/${expectedOrgGuid}/users/${expectedUserGuid}`, {
+          status: 400,
+          response: {error_code: 'CF-AssociationNotEmpty'},
+        });
+
+        const description = "This user can't be removed because they still " +
+        "have a space role within the organization. Please remove all " +
+        "space associations before removing this user from the organization."
+
+        cfApi.deleteUser(expectedUserGuid, expectedOrgGuid).then(() => {
+          expect(spy).toHaveBeenCalledOnce();
+          let args = spy.getCall(0).args;
+          expect(args[0]).toEqual(description);
+          done();
+        }).catch(done.fail);
+      });
+    })
   });
 
   describe('deleteOrgUserCategory()', function() {
