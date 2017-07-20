@@ -103,7 +103,7 @@ export default class Users extends React.Component {
 
   handleRemove(userGuid, ev) {
     ev.preventDefault();
-    userActions.deleteUserIfNoSpaceAssociation(userGuid, this.state.currentOrgGuid);
+    userActions.deleteUser(userGuid, this.state.currentOrgGuid);
   }
 
   get entityType() {

@@ -153,14 +153,7 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_DELETE: {
-        const orgPermissionsReq = cfApi.deleteOrgUserPermissions(
-          action.userGuid,
-          action.orgGuid,
-          'users');
-
-        orgPermissionsReq.then(() => {
-          cfApi.deleteUser(action.userGuid, action.orgGuid);
-        });
+        cfApi.deleteUser(action.userGuid, action.orgGuid);
 
         break;
       }

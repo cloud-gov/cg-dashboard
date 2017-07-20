@@ -426,35 +426,10 @@ describe('UserStore', function () {
   });
 
   describe('on user delete', function() {
-    it('should remove user permissions from org', function() {
-      var spy = sandbox.spy(cfApi, 'deleteOrgUserPermissions'),
-          expectedUserGuid = '19p83fhasjkdhf',
-          expectedOrgGuid = 'zxncmvduhvad',
-          expectedCategory = 'users';
-
-      userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
-
-      expect(spy).toHaveBeenCalledOnce();
-      let args = spy.getCall(0).args;
-      expect(args[0]).toEqual(expectedUserGuid);
-      expect(args[1]).toEqual(expectedOrgGuid);
-      expect(args[2]).toEqual(expectedCategory);
-    });
-
     it('should delete the user on the server', function() {
       var spy = sandbox.spy(cfApi, 'deleteUser'),
-          stub = sandbox.stub(cfApi, 'deleteOrgUserPermissions'),
           expectedUserGuid = 'znxvmnzvmz',
           expectedOrgGuid = '029fjaskdjfalskdna';
-
-      let testPromise = {
-        then: function(cb) {
-          cb();
-        }
-      }
-
-      stub.returns(testPromise);
-
       userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
 
       expect(spy).toHaveBeenCalledOnce();
