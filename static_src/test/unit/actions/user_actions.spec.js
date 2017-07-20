@@ -635,6 +635,69 @@ describe('userActions', function() {
       });
     });
 
+    describe('for org user that unsuccessfully deletes a user permission ' +
+    'because the user still has roles elsewhere', function() {
+      let roles;
+      let apiKey;
+      let userGuid;
+      let orgGuid;
+
+      beforeEach(function(done) {
+        sandbox.spy(cfApi, 'deleteOrgUserPermissions');
+        sandbox.spy(userActions, 'deletedUserRoles');
+        sandbox.spy(userActions, 'createUserSpaceAssociationNotification');
+        sandbox.spy(userActions, 'errorChangeUserRole');
+        roles = ['org_manager'];
+        apiKey = 'managers';
+        userGuid = 'user-123';
+        orgGuid = 'org-123';
+        moxios.wait(function() {
+          let request = moxios.requests.mostRecent();
+          request.respondWith({
+            status: 400,
+            response: {
+              error_code: 'CF-AssociationNotEmpty'
+            }
+          }).then(function () {
+            done();
+          });
+        });
+
+        userActions.deleteUserRoles(
+          roles,
+          apiKey,
+          userGuid,
+          orgGuid,
+          'org'
+        ).then(done, done.fail);
+      });
+
+      it('should call api for org delete user permission with guids and roles', () => {
+        expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledOnce();
+        expect(cfApi.deleteOrgUserPermissions).toHaveBeenCalledWith(sinon.match(
+          userGuid,
+          orgGuid,
+          apiKey
+        ));
+      });
+
+      it('should call createUserSpaceAssociationNotification with a description as to why you can\'t delete the user', function() {
+        const description = 'This user can\'t be removed because they still have a space ' +
+                    'role within the organization. Please remove all space ' +
+                    'associations before removing this user from the organization.';
+        expect(userActions.createUserSpaceAssociationNotification).toHaveBeenCalledOnce();
+        expect(userActions.createUserSpaceAssociationNotification).toHaveBeenCalledWith(description);
+      });
+
+      it('should not call deletedUserRoles', function() {
+        expect(userActions.deletedUserRoles.called).toEqual(false);
+      });
+
+      it('should not call errorChangeUserRole', function() {
+        expect(userActions.errorChangeUserRole.called).toEqual(false);
+      });
+    });
+
     describe('for org user that unsuccessfully deletes a user permission', function() {
       let roles;
       let apiKey;
