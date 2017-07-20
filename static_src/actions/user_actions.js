@@ -61,11 +61,9 @@ const userActions = {
   },
 
   receivedOrgSpacesToExtractSpaceUsers(orgSpaces) {
-    let spaceUserRoles;
-    const spaceUsers = orgSpaces.map((orgSpace) => {
-      spaceUserRoles = cfApi.fetchSpaceUserRoles(orgSpace.guid);
-    });
-    return Promise.resolve(spaceUserRoles);
+    return Promise.all(orgSpaces.map((orgSpace) => {
+      Promise.resolve(cfApi.fetchSpaceUserRoles(orgSpace.guid))
+    }));
   },
 
   fetchUserAssociationsToOrgSpaces(userGuid, orgGuid) {
@@ -78,7 +76,7 @@ const userActions = {
     userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid)
       .then((spaceUsers) => {
         usersSpaces = spaceUsers.filter((spaceUser) => {
-          return spaceUser.guid === userGuid;
+          spaceUser.guid === userGuid;
         });
         if (usersSpaces.length > 0) {
           const description = 'This user can\'t be removed because they still have a space ' +
