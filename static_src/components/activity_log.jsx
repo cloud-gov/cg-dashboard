@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Action from './action.jsx';
-import ActivityLogItem from './activity_log_item.jsx';
+import AppActivity from './app_activity/app_activity.jsx';
 import ActivityStore from '../stores/activity_store';
 import AppStore from '../stores/app_store.js';
 import DomainStore from '../stores/domain_store';
@@ -131,7 +131,7 @@ export default class ActivityLog extends React.Component {
                   }
 
                   return (
-                    <ActivityLogItem
+                    <AppActivity
                       key={ item.guid }
                       item={ item }
                       service={ service }
