@@ -73,7 +73,7 @@ const userActions = {
 
   deleteUserIfNoSpaceAssociation(userGuid, orgGuid) {
     let usersSpaces;
-    userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid)
+    Promise.resolve(userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid))
       .then((spaceUsers) => {
         usersSpaces = spaceUsers.filter((spaceUser) => {
           spaceUser.guid === userGuid;
