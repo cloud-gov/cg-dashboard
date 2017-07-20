@@ -60,6 +60,37 @@ const userActions = {
     });
   },
 
+  receivedOrgSpacesToExtractSpaceUsers(orgSpaces) {
+    let spaceUserRoles;
+    const spaceUsers = orgSpaces.map((orgSpace) => {
+      spaceUserRoles = cfApi.fetchSpaceUserRoles(orgSpace.guid);
+    });
+    return Promise.resolve(spaceUserRoles);
+  },
+
+  fetchUserAssociationsToOrgSpaces(userGuid, orgGuid) {
+    return Promise.resolve(cfApi.fetchAllOrgSpaces(orgGuid))
+      .then((orgSpaces) => userActions.receivedOrgSpacesToExtractSpaceUsers(orgSpaces));
+  },
+
+  deleteUserIfNoSpaceAssociation(userGuid, orgGuid) {
+    let usersSpaces;
+    userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid)
+      .then((spaceUsers) => {
+        usersSpaces = spaceUsers.filter((spaceUser) => {
+          return spaceUser.guid === userGuid;
+        });
+        if (usersSpaces.length > 0) {
+          const description = 'This user can\'t be removed because they still have a space ' +
+                          'role within the organization. Please remove all space ' +
+                          'associations before removing this user from the organization.';
+          userActions.createUserSpaceAssociationNotification(description);
+        } else {
+          userActions.deleteUser(userGuid, orgGuid);
+        }
+      });
+  },
+
   deleteUser(userGuid, orgGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_DELETE,
