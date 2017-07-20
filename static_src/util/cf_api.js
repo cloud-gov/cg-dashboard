@@ -417,10 +417,7 @@ export default {
   deleteOrgUserPermissions(userGuid, orgGuid, apiKey) {
     return http.delete(`${APIV}/organizations/${orgGuid}/${apiKey}/${userGuid}`)
       .then((res) => res.response
-    ).catch(res => {
-      const err = parseError(res);
-      return Promise.reject(err);
-    });
+    );
   },
 
   putOrgUserPermissions(userGuid, orgGuid, permissions) {
@@ -490,10 +487,6 @@ export default {
             return Promise.reject(e);
           })
       );
-  },
-
-  fetchAllOrgSpaces(orgGuid) {
-    return this.fetchMany(`/organizations/${orgGuid}/spaces`);
   },
 
   fetchAllServices(orgGuid) {
