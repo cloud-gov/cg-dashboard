@@ -411,11 +411,7 @@ export default {
                                res.response.data.error_code === 'CF-AssociationNotEmpty'
                               );
       if (errorConditions) {
-        const description = 'This user can\'t be removed because they still have a space ' +
-                            'role within the organization. Please remove all space ' +
-                            'associations before removing this user from the organization.';
-        userActions.createUserSpaceAssociationNotification(description);
-        return Promise.reject(err);
+        return Promise.resolve();
       }
       return Promise.reject(err);
     });
@@ -488,6 +484,10 @@ export default {
             return Promise.reject(e);
           })
       );
+  },
+
+  fetchAllOrgSpaces(orgGuid) {
+    return this.fetchMany(`/organizations/${orgGuid}/spaces`);
   },
 
   fetchAllServices(orgGuid) {
