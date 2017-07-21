@@ -1038,7 +1038,7 @@ describe('cfApi', function() {
 
         const description = 'This user can\'t be removed because they still ' +
         'have a space role within the organization. Please remove all ' +
-        'space associations before removing this user from the organization.' +
+        'space associations before removing this user from the organization. ' +
         'To review how, click the "Managing Teammates" link below.';
 
         cfApi.deleteUser(expectedUserGuid, expectedOrgGuid).then(() => {
