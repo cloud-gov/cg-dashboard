@@ -213,6 +213,11 @@ export default {
     return this.fetchOrgDetails(guid);
   },
 
+  fetchAllOrgSpaces(guid) {
+    return http.get(`${APIV}/organizations/${guid}/spaces`)
+        .then((res) => res.data);
+  },
+
   fetchOrgDetails(guid) {
     return http.get(`${APIV}/organizations/${guid}/summary`)
         .then((res) => res.data);

@@ -120,8 +120,9 @@ describe('userActions', function() {
   });
 
   describe('receivedOrgSpacesToExtractSpaceUsers()', function() {
-    let orgSpaces;
     let orgSpace;
+    let orgSpaces;
+
     beforeEach(function () {
       orgSpace = { guid: 'org-guid-this-is'};
 
@@ -143,7 +144,35 @@ describe('userActions', function() {
   });
 
   describe('fetchUserAssociationsToOrgSpaces()', function() {
-    it(``, function() {
+    let userGuid;
+    let orgGuid;
+    let user;
+    let users;
+    let orgSpace;
+    let orgSpaces;
+
+    beforeEach(function (done) {
+      userGuid = 'user-guid';
+      orgGuid = 'org-guid';
+      user = { guid: 'user-guid-this-is' };
+      users = [user, user, user];
+      orgSpace = { guid: 'org-guid-this-is' };
+      orgSpaces = [orgSpace, orgSpace, orgSpace];
+
+      sandbox.stub(userActions, 'receivedOrgSpacesToExtractSpaceUsers')
+        .returns(Promise.resolve(users));
+      sandbox.stub(cfApi, 'fetchAllOrgSpaces')
+        .returns(Promise.resolve(orgSpaces));
+
+      userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid).then(done, done.fail);;
+    });
+
+    it(`should call cfApi.fetchAllOrgSpaces`, function() {
+      expect(cfApi.fetchAllOrgSpaces).toHaveBeenCalledOnce();
+    });
+
+    it(`should call userActions.receivedOrgSpacesToExtractSpaceUsers`, function() {
+      expect(userActions.receivedOrgSpacesToExtractSpaceUsers).toHaveBeenCalledOnce();
     });
   });
 
