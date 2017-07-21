@@ -119,6 +119,39 @@ describe('userActions', function() {
     });
   });
 
+  describe('receivedOrgSpacesToExtractSpaceUsers()', function() {
+    let orgSpaces;
+    let orgSpace;
+    beforeEach(function () {
+      orgSpace = { guid: 'org-guid-this-is'};
+
+      sandbox.stub(cfApi, 'fetchSpaceUserRoles')
+        .returns(Promise.resolve({ guid: '' }));
+    });
+
+    it('calls receivedOrgSpacesToExtractSpaceUsers once when org has one space', function (done) {
+      orgSpaces = [orgSpace];
+      userActions.receivedOrgSpacesToExtractSpaceUsers(orgSpaces).then(done, done.fail);
+      expect(cfApi.fetchSpaceUserRoles).toHaveBeenCalledOnce();
+    });
+
+    it('calls receivedOrgSpacesToExtractSpaceUsers three times when org has three spaces', function (done) {
+      orgSpaces = [orgSpace, orgSpace, orgSpace];
+      userActions.receivedOrgSpacesToExtractSpaceUsers(orgSpaces).then(done, done.fail);
+      expect(cfApi.fetchSpaceUserRoles).toHaveBeenCalledThrice();
+    });
+  });
+
+  describe('fetchUserAssociationsToOrgSpaces()', function() {
+    it(``, function() {
+    });
+  });
+
+  describe('deleteUserIfNoSpaceAssociation()', function() {
+    it(``, function() {
+    });
+  });
+
   describe('deleteUser()', function() {
     it('should dispatch a view event of type user delete with user guid',
         function() {
