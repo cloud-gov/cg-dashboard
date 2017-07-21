@@ -80,7 +80,8 @@ const userActions = {
         if (usersSpaces.length > 0) {
           const description = 'This user can\'t be removed because they still have a space ' +
                           'role within the organization. Please remove all space ' +
-                          'associations before removing this user from the organization.';
+                          'associations before removing this user from the organization.' +
+                          'To review how, click the "Managing Teammates" link below.';
           userActions.createUserSpaceAssociationNotification(description);
         } else {
           userActions.deleteUser(userGuid, orgGuid);

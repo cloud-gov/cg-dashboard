@@ -1007,8 +1007,9 @@ describe('cfApi', function() {
         done();
       }).catch(done.fail);
     });
+
     describe('error handling', function() {
-      it('should return display a generic error if unsuccessful', function(done) {
+      it('should display a generic error if unsuccessful', function(done) {
         var spy = sandbox.spy(userActions, 'errorRemoveUser'),
             expectedUserGuid = 'aldfskjmcx',
             expectedOrgGuid = 'sa09dvjakdnva';
@@ -1026,7 +1027,7 @@ describe('cfApi', function() {
         }).catch(done.fail);
       });
 
-      it('should return display a notification about user having existing roles', function(done) {
+      it('should display a notification about user having existing roles', function(done) {
         var spy = sandbox.spy(userActions, 'createUserSpaceAssociationNotification'),
             expectedUserGuid = 'aldfskjmcx',
             expectedOrgGuid = 'sa09dvjakdnva';
@@ -1035,9 +1036,10 @@ describe('cfApi', function() {
           response: {error_code: 'CF-AssociationNotEmpty'},
         });
 
-        const description = "This user can't be removed because they still " +
-        "have a space role within the organization. Please remove all " +
-        "space associations before removing this user from the organization."
+        const description = 'This user can\'t be removed because they still ' +
+        'have a space role within the organization. Please remove all ' +
+        'space associations before removing this user from the organization.' +
+        'To review how, click the "Managing Teammates" link below.';
 
         cfApi.deleteUser(expectedUserGuid, expectedOrgGuid).then(() => {
           expect(spy).toHaveBeenCalledOnce();
