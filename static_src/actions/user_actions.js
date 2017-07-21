@@ -61,9 +61,10 @@ const userActions = {
   },
 
   receivedOrgSpacesToExtractSpaceUsers(orgSpaces) {
-    return Promise.all(orgSpaces.map((orgSpace) => {
-      Promise.resolve(cfApi.fetchSpaceUserRoles(orgSpace.guid))
-    }));
+    const orgSpaceUsers = orgSpaces.map((orgSpace) => Promise.resolve(
+      cfApi.fetchSpaceUserRoles(orgSpace.guid)
+    ));
+    return Promise.all(orgSpaceUsers);
   },
 
   fetchUserAssociationsToOrgSpaces(userGuid, orgGuid) {
@@ -73,11 +74,9 @@ const userActions = {
 
   deleteUserIfNoSpaceAssociation(userGuid, orgGuid) {
     let usersSpaces;
-    Promise.resolve(userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid))
+    userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid)
       .then((spaceUsers) => {
-        usersSpaces = spaceUsers.filter((spaceUser) => {
-          spaceUser.guid === userGuid;
-        });
+        usersSpaces = spaceUsers.filter(spaceUser => spaceUser.guid === userGuid);
         if (usersSpaces.length > 0) {
           const description = 'This user can\'t be removed because they still have a space ' +
                           'role within the organization. Please remove all space ' +
