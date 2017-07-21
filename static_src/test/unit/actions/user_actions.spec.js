@@ -164,7 +164,7 @@ describe('userActions', function() {
       sandbox.stub(cfApi, 'fetchAllOrgSpaces')
         .returns(Promise.resolve(orgSpaces));
 
-      userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid).then(done, done.fail);;
+      userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid).then(done, done.fail);
     });
 
     it(`should call cfApi.fetchAllOrgSpaces`, function() {
@@ -176,8 +176,64 @@ describe('userActions', function() {
     });
   });
 
+  describe('deleteUserOrDisplayNotice()', function() {
+    let userGuid;
+    let orgGuid;
+    let user;
+    let spaceUsers;
+    let orgSpace;
+    let orgSpaces;
+
+    beforeEach(function () {
+      userGuid = 'user-guid';
+      orgGuid = 'org-guid';
+      user = { guid: userGuid };
+      orgSpace = { guid: 'org-guid-this-is' };
+      orgSpaces = [orgSpace, orgSpace, orgSpace];
+
+      sandbox.stub(userActions, 'createUserSpaceAssociationNotification');
+      sandbox.stub(userActions, 'deleteUser');
+    });
+
+    it(`should call userActions.createUserSpaceAssociationNotification if there are users`, function() {
+      spaceUsers = [user, user, user];
+      userActions.deleteUserOrDisplayNotice(spaceUsers, userGuid, orgGuid);
+      expect(userActions.createUserSpaceAssociationNotification).toHaveBeenCalledOnce();
+    });
+
+    it(`should call userActions.deleteUser if there aren't users`, function() {
+      spaceUsers = [];
+      userActions.deleteUserOrDisplayNotice(spaceUsers, userGuid, orgGuid);
+      expect(userActions.deleteUser).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('deleteUserIfNoSpaceAssociation()', function() {
-    it(``, function() {
+    let userGuid;
+    let orgGuid;
+    let user;
+    let spaceUsers;
+
+    beforeEach(function (done) {
+      userGuid = 'user-guid';
+      orgGuid = 'org-guid';
+      user = { guid: userGuid };
+      spaceUsers = [user, user, user];
+
+      sandbox.stub(userActions, 'fetchUserAssociationsToOrgSpaces')
+        .returns(Promise.resolve(spaceUsers));
+
+      sandbox.stub(userActions, 'deleteUserOrDisplayNotice');
+
+      userActions.deleteUserIfNoSpaceAssociation(userGuid, orgGuid).then(done, done.fail);
+    });
+
+    it(`should call userActions.fetchUserAssociationsToOrgSpaces`, function() {
+      expect(userActions.fetchUserAssociationsToOrgSpaces).toHaveBeenCalledOnce();
+    });
+
+    it(`should call userActions.deleteUserOrDisplayNotice`, function() {
+      expect(userActions.deleteUserOrDisplayNotice).toHaveBeenCalledOnce();
     });
   });
 
