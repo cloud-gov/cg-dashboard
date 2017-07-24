@@ -130,6 +130,7 @@ export default class UserList extends React.Component {
   }
 
   render() {
+    let buttonText;
     let content = <div><Loading text="Loading users" /></div>;
 
     if (this.props.empty) {
@@ -147,12 +148,17 @@ export default class UserList extends React.Component {
             if (this.props.onRemove) {
               let button = <span></span>;
               if (this.props.currentUserAccess) {
+                if (this.props.userType === 'org_users') {
+                  buttonText = 'Remove User From Org';
+                } else if (this.props.userType === 'space_users') {
+                  buttonText = 'Remove All Space Roles';
+                }
                 button = (
                   <Action
                     style="base"
                     clickHandler={ this._handleDelete.bind(this, user.guid) }
                     label="delete">
-                    <span>Remove User From Org</span>
+                    <span>{ buttonText }</span>
                   </Action>
                 );
               }

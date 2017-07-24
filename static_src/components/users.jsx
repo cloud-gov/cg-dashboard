@@ -106,6 +106,11 @@ export default class Users extends React.Component {
     userActions.deleteUser(userGuid, this.state.currentOrgGuid);
   }
 
+  handleRemoveSpaceRoles(userGuid, ev) {
+    ev.preventDefault();
+    userActions.removeAllSpaceRoles(userGuid, this.entityGuid);
+  }
+
   get entityType() {
     return this.state.currentType === ORG_NAME ? 'org' : 'space';
   }
@@ -125,6 +130,8 @@ export default class Users extends React.Component {
 
     if (this.state.currentType === ORG_NAME) {
       removeHandler = this.handleRemove;
+    } else if (this.state.currentType === SPACE_NAME) {
+      removeHandler = this.handleRemoveSpaceRoles;
     }
 
     let content = (<UserList
