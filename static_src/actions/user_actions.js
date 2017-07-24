@@ -13,6 +13,10 @@ import OrgStore from '../stores/org_store';
 import SpaceStore from '../stores/space_store';
 
 const ORG_NAME = OrgStore.cfName;
+const MSG_USER_HAS_SPACE_ROLES = 'This user can\'t be removed because they still have a space ' +
+                  'role within the organization. Please remove all space ' +
+                  'associations before removing this user from the organization. ' +
+                  'To review how, click the "Managing Teammates" link below.';
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -75,11 +79,7 @@ const userActions = {
   deleteUserOrDisplayNotice(spaceUsers, userGuid, orgGuid) {
     const usersSpaces = spaceUsers.filter(spaceUser => spaceUser.guid === userGuid);
     if (usersSpaces.length > 0) {
-      const description = 'This user can\'t be removed because they still have a space ' +
-                          'role within the organization. Please remove all space ' +
-                          'associations before removing this user from the organization. ' +
-                          'To review how, click the "Managing Teammates" link below.';
-      userActions.createUserSpaceAssociationNotification(description);
+      userActions.createUserSpaceAssociationNotification(MSG_USER_HAS_SPACE_ROLES);
     } else {
       userActions.deleteUser(userGuid, orgGuid);
     }
@@ -97,7 +97,7 @@ const userActions = {
       orgGuid
     });
 
-    cfApi.deleteUser(userGuid, orgGuid)
+    return cfApi.deleteUser(userGuid, orgGuid)
       .then(() => userActions.deletedUser(userGuid, orgGuid))
       .catch(error => {
         // Check whether we got caught on user roles in spaces
@@ -108,7 +108,7 @@ const userActions = {
         );
         if (userHasSpaceRoles) {
           this.createUserSpaceAssociationNotification(MSG_USER_HAS_SPACE_ROLES);
-        } else if (error.response.data) {
+        } else {
           // else use generic error
           this.errorRemoveUser(userGuid, error.response.data);
         }

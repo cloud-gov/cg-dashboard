@@ -388,30 +388,8 @@ export default {
 
   deleteUser(userGuid, orgGuid) {
     return http.delete(`${APIV}/organizations/${orgGuid}/users/${userGuid}`)
-      .then(() => {
-        userActions.deletedUser(userGuid, orgGuid);
-      }).catch((err) => {
-        // Check whether we got caught on user roles in spaces
-        const error = parseError(err);
-        const userHasSpaceRoles = (error &&
-          error.response &&
-          error.response.status === 400 &&
-          error.response.data.error_code === 'CF-AssociationNotEmpty'
-        );
-        if (userHasSpaceRoles) {
-          const description = 'This user can\'t be removed because they still have a space ' +
-                              'role within the organization. Please remove all space ' +
-                              'associations before removing this user from the organization. ' +
-                              'To review how, click the "Managing Teammates" link below.';
-          userActions.createUserSpaceAssociationNotification(description);
-        } else if (error.response.data) {
-          // else use generic error
-          userActions.errorRemoveUser(userGuid, error.response.data);
-        } else {
-          // fall back to logging.
-          handleError(err);
-        }
-      });
+    .then((res) => res.response);
+    // TODO. should log catch if unable to parseError.
   },
 
   // TODO deprecate possibly in favor of deleteOrgUserPermissions.

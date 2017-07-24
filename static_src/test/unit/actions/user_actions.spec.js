@@ -238,61 +238,134 @@ describe('userActions', function() {
   });
 
   describe('deleteUser()', function() {
-    it('should dispatch a view event of type user delete with user guid',
-        function(done) {
+    let spy;
+    let expectedParams;
+    beforeEach(function(done) {
       var expectedUserGuid = 'adsklfjanmxcv',
-          expectedOrgGuid = 'sdkjfcmxxzcxvzz',
-          expectedParams = {
-            userGuid: expectedUserGuid,
-            orgGuid: expectedOrgGuid
-          };
+          expectedOrgGuid = 'sdkjfcmxxzcxvzz';
+      expectedParams = {
+        userGuid: expectedUserGuid,
+        orgGuid: expectedOrgGuid
+      };
 
-      let spy = setupViewSpy(sandbox);
-      sandbox.stub(userActions, 'deletedUser');
-      sandbox.stub(cfApi, 'deleteUser').resolves({});
+      spy = setupViewSpy(sandbox);
+      sandbox.spy(userActions, 'deletedUser');
+      sandbox.spy(userActions, 'errorRemoveUser');
+      sandbox.spy(userActions, 'createUserSpaceAssociationNotification');
+      sandbox.spy(cfApi, 'deleteUser');
+      moxios.wait(function() {
+        let request = moxios.requests.mostRecent();
+        request.respondWith({
+          status: 200
+        }).then(function () {
+          done();
+        });
+      });
 
-      userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
-
-      assertAction(spy, userActionTypes.USER_DELETE, expectedParams);
-      expect(cfApi.deleteUser.called).toEqual(true);
-      expect(userActions.deletedUser).toHaveBeenCalledOnce();
+      userActions.deleteUser(expectedUserGuid, expectedOrgGuid).then(done, done.fail);
     });
+    it('should dispatch a view event of type user delete with user guid',
+        function() {
+      assertAction(spy, userActionTypes.USER_DELETE, expectedParams);
+    });
+    it('should call the deleteUser cf api',
+        function() {
+      expect(cfApi.deleteUser).toHaveBeenCalledOnce();
+    });
+    it('should only call the deletedUser action upon success',
+        function() {
+      expect(userActions.errorRemoveUser).not.toHaveBeenCalledOnce();
+      expect(userActions.deletedUser).toHaveBeenCalledOnce();
+      expect(userActions.createUserSpaceAssociationNotification).not.toHaveBeenCalledOnce();
+    });
+  });
 
-    describe('error handling', function() {
-      it('should display a generic error if unsuccessful', function() {
-        var spy = sandbox.spy(userActions, 'errorRemoveUser'),
-            expectedUserGuid = 'aldfskjmcx',
-            expectedOrgGuid = 'sa09dvjakdnva';
-        sandbox.stub(userActions, 'deletedUser');
-        sandbox.stub(cfApi, 'deleteUser')
-          .returns(Promise.reject({ error: {response: {data: {}}}}));
+  describe('deleteUser() generic error handling', function() {
+    let spy;
+    let expectedParams;
+    beforeEach(function(done) {
+      var expectedUserGuid = 'adsklfjanmxcv',
+          expectedOrgGuid = 'sdkjfcmxxzcxvzz';
+      expectedParams = {
+        userGuid: expectedUserGuid,
+        orgGuid: expectedOrgGuid
+      };
 
-        userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
-        expect(userActions.deletedUser).not.toHaveBeenCalledOnce();
-        expect(userActions.deletedUser.called).toEqual(false);
-        expect(spy).toHaveBeenCalledOnce();
-        let args = spy.getCall(0).args;
-        expect(args[0]).toEqual(expectedUserGuid);
-        expect(args[1]).toEqual({});
+      spy = setupViewSpy(sandbox);
+      sandbox.spy(userActions, 'deletedUser');
+      sandbox.spy(userActions, 'errorRemoveUser');
+      sandbox.spy(userActions, 'createUserSpaceAssociationNotification');
+      sandbox.spy(cfApi, 'deleteUser');
+      moxios.wait(function() {
+        let request = moxios.requests.mostRecent();
+        request.respondWith({
+          status: 500
+        }).then(function () {
+          done();
+        });
       });
 
-      it('should display a notification about user having existing roles', function() {
-        var spy = sandbox.spy(userActions, 'createUserSpaceAssociationNotification'),
-            expectedUserGuid = 'aldfskjmcx',
-            expectedOrgGuid = 'sa09dvjakdnva';
-        sandbox.spy(userActions, 'deletedUser');
+      userActions.deleteUser(expectedUserGuid, expectedOrgGuid).then(done, done.fail);
+    });
+    it('should dispatch a view event of type user delete with user guid',
+        function() {
+      assertAction(spy, userActionTypes.USER_DELETE, expectedParams);
+    });
+    it('should call the deleteUser cf api',
+        function() {
+      expect(cfApi.deleteUser).toHaveBeenCalledOnce();
+    });
+    it('should only call the errorRemoveUser action upon generic failure',
+        function() {
+      expect(userActions.deletedUser).not.toHaveBeenCalledOnce();
+      expect(userActions.errorRemoveUser).toHaveBeenCalledOnce();
+      expect(userActions.createUserSpaceAssociationNotification).not.toHaveBeenCalledOnce();
+    });
+  });
 
-        const description = 'This user can\'t be removed because they still ' +
-        'have a space role within the organization. Please remove all ' +
-        'space associations before removing this user from the organization. ' +
-        'To review how, click the "Managing Teammates" link below.';
+  describe('deleteUser() existingRole error handling', function() {
+    let spy;
+    let expectedParams;
+    beforeEach(function(done) {
+      var expectedUserGuid = 'adsklfjanmxcv',
+          expectedOrgGuid = 'sdkjfcmxxzcxvzz';
+      expectedParams = {
+        userGuid: expectedUserGuid,
+        orgGuid: expectedOrgGuid
+      };
 
-        userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
-        expect(userActions.deletedUser.called).toEqual(false);
-        expect(spy).toHaveBeenCalledOnce();
-        let args = spy.getCall(0).args;
-        expect(args[0]).toEqual(description);
+      spy = setupViewSpy(sandbox);
+      sandbox.spy(userActions, 'deletedUser');
+      sandbox.spy(userActions, 'errorRemoveUser');
+      sandbox.spy(userActions, 'createUserSpaceAssociationNotification');
+      sandbox.spy(cfApi, 'deleteUser');
+      moxios.wait(function() {
+        let request = moxios.requests.mostRecent();
+        request.respondWith({
+          status: 400,
+          response: {error_code: 'CF-AssociationNotEmpty'},
+        }).then(function () {
+          done();
+        });
       });
+
+      userActions.deleteUser(expectedUserGuid, expectedOrgGuid).then(done, done.fail);
+    });
+    // TODO: Should revisit because assertAction checks for handleViewAction to
+    // only be called once. This error handling will make it called twice.
+    xit('should dispatch a view event of type user delete with user guid',
+        function() {
+      assertAction(spy, userActionTypes.USER_DELETE, expectedParams);
+    });
+    it('should call the deleteUser cf api',
+        function() {
+      expect(cfApi.deleteUser).toHaveBeenCalledOnce();
+    });
+    it('should only call the errorRemoveUser action upon generic failure',
+        function() {
+      expect(userActions.deletedUser).not.toHaveBeenCalledOnce();
+      expect(userActions.errorRemoveUser).not.toHaveBeenCalledOnce();
+      expect(userActions.createUserSpaceAssociationNotification).toHaveBeenCalledOnce();
     });
   });
 

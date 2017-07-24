@@ -153,8 +153,7 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_DELETE: {
-        cfApi.deleteUser(action.userGuid, action.orgGuid);
-
+        // Nothing should happen.
         break;
       }
 
