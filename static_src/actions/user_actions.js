@@ -13,6 +13,10 @@ import OrgStore from '../stores/org_store';
 import SpaceStore from '../stores/space_store';
 
 const ORG_NAME = OrgStore.cfName;
+const MSG_USER_HAS_SPACE_ROLES = 'This user can\'t be removed because they still have a space ' +
+                  'role within the organization. Please remove all space ' +
+                  'associations before removing this user from the organization. ' +
+                  'To review how, click the "Managing Teammates" link below.';
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -60,12 +64,55 @@ const userActions = {
     });
   },
 
+  receivedOrgSpacesToExtractSpaceUsers(orgSpaces) {
+    const orgSpaceUsers = orgSpaces.map((orgSpace) => Promise.resolve(
+      cfApi.fetchSpaceUserRoles(orgSpace.guid)
+    ));
+    return Promise.all(orgSpaceUsers);
+  },
+
+  fetchUserAssociationsToOrgSpaces(userGuid, orgGuid) {
+    return Promise.resolve(cfApi.fetchAllOrgSpaces(orgGuid))
+      .then((orgSpaces) => userActions.receivedOrgSpacesToExtractSpaceUsers(orgSpaces));
+  },
+
+  deleteUserOrDisplayNotice(spaceUsers, userGuid, orgGuid) {
+    const usersSpaces = spaceUsers.filter(spaceUser => spaceUser.guid === userGuid);
+    if (usersSpaces.length > 0) {
+      userActions.createUserSpaceAssociationNotification(MSG_USER_HAS_SPACE_ROLES);
+    } else {
+      userActions.deleteUser(userGuid, orgGuid);
+    }
+  },
+
+  deleteUserIfNoSpaceAssociation(userGuid, orgGuid) {
+    return Promise.resolve(userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid))
+      .then((spaceUsers) => userActions.deleteUserOrDisplayNotice(spaceUsers, userGuid, orgGuid));
+  },
+
   deleteUser(userGuid, orgGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_DELETE,
       userGuid,
       orgGuid
     });
+
+    return cfApi.deleteUser(userGuid, orgGuid)
+      .then(() => userActions.deletedUser(userGuid, orgGuid))
+      .catch(error => {
+        // Check whether we got caught on user roles in spaces
+        const userHasSpaceRoles = (error &&
+          error.response &&
+          error.response.status === 400 &&
+          error.response.data.error_code === 'CF-AssociationNotEmpty'
+        );
+        if (userHasSpaceRoles) {
+          this.createUserSpaceAssociationNotification(MSG_USER_HAS_SPACE_ROLES);
+        } else {
+          // else use generic error
+          this.errorRemoveUser(userGuid, error.response.data);
+        }
+      });
   },
 
   deletedUser(userGuid, orgGuid) {
@@ -198,10 +245,22 @@ const userActions = {
         inviting ${email}`));
   },
 
-  clearInviteNotifications() {
+  clearUserListNotifications() {
     AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_INVITE_STATUS_DISMISSED
+      type: userActionTypes.USER_LIST_NOTICE_DISMISSED
     });
+  },
+
+  createUserListNotification(noticeType, description) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_LIST_NOTICE_CREATED,
+      noticeType,
+      description
+    });
+  },
+
+  createUserSpaceAssociationNotification(notification) {
+    userActions.createUserListNotification('error', notification);
   },
 
   createInviteNotification(verified, email) {
@@ -223,14 +282,10 @@ const userActions = {
       'be controlled below.';
     }
 
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_INVITE_STATUS_DISPLAYED,
-      noticeType,
-      description
-    });
+    userActions.createUserListNotification(noticeType, description);
   },
 
-  userInviteError(err, contextualMessage) {
+  userListNoticeError(err, contextualMessage) {
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_INVITE_ERROR,
       err,

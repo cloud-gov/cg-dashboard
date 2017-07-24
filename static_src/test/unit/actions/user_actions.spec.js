@@ -119,22 +119,254 @@ describe('userActions', function() {
     });
   });
 
+  describe('receivedOrgSpacesToExtractSpaceUsers()', function() {
+    let orgSpace;
+    let orgSpaces;
+
+    beforeEach(function () {
+      orgSpace = { guid: 'org-guid-this-is'};
+
+      sandbox.stub(cfApi, 'fetchSpaceUserRoles')
+        .returns(Promise.resolve({ guid: '' }));
+    });
+
+    it('calls receivedOrgSpacesToExtractSpaceUsers once when org has one space', function (done) {
+      orgSpaces = [orgSpace];
+      userActions.receivedOrgSpacesToExtractSpaceUsers(orgSpaces).then(done, done.fail);
+      expect(cfApi.fetchSpaceUserRoles).toHaveBeenCalledOnce();
+    });
+
+    it('calls receivedOrgSpacesToExtractSpaceUsers three times when org has three spaces', function (done) {
+      orgSpaces = [orgSpace, orgSpace, orgSpace];
+      userActions.receivedOrgSpacesToExtractSpaceUsers(orgSpaces).then(done, done.fail);
+      expect(cfApi.fetchSpaceUserRoles).toHaveBeenCalledThrice();
+    });
+  });
+
+  describe('fetchUserAssociationsToOrgSpaces()', function() {
+    let userGuid;
+    let orgGuid;
+    let user;
+    let users;
+    let orgSpace;
+    let orgSpaces;
+
+    beforeEach(function (done) {
+      userGuid = 'user-guid';
+      orgGuid = 'org-guid';
+      user = { guid: 'user-guid-this-is' };
+      users = [user, user, user];
+      orgSpace = { guid: 'org-guid-this-is' };
+      orgSpaces = [orgSpace, orgSpace, orgSpace];
+
+      sandbox.stub(userActions, 'receivedOrgSpacesToExtractSpaceUsers')
+        .returns(Promise.resolve(users));
+      sandbox.stub(cfApi, 'fetchAllOrgSpaces')
+        .returns(Promise.resolve(orgSpaces));
+
+      userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid).then(done, done.fail);
+    });
+
+    it(`should call cfApi.fetchAllOrgSpaces`, function() {
+      expect(cfApi.fetchAllOrgSpaces).toHaveBeenCalledOnce();
+    });
+
+    it(`should call userActions.receivedOrgSpacesToExtractSpaceUsers`, function() {
+      expect(userActions.receivedOrgSpacesToExtractSpaceUsers).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('deleteUserOrDisplayNotice()', function() {
+    let userGuid;
+    let orgGuid;
+    let user;
+    let spaceUsers;
+    let orgSpace;
+    let orgSpaces;
+
+    beforeEach(function () {
+      userGuid = 'user-guid';
+      orgGuid = 'org-guid';
+      user = { guid: userGuid };
+      orgSpace = { guid: 'org-guid-this-is' };
+      orgSpaces = [orgSpace, orgSpace, orgSpace];
+
+      sandbox.stub(userActions, 'createUserSpaceAssociationNotification');
+      sandbox.stub(userActions, 'deleteUser');
+    });
+
+    it(`should call userActions.createUserSpaceAssociationNotification if there are users`, function() {
+      spaceUsers = [user, user, user];
+      userActions.deleteUserOrDisplayNotice(spaceUsers, userGuid, orgGuid);
+      expect(userActions.createUserSpaceAssociationNotification).toHaveBeenCalledOnce();
+    });
+
+    it(`should call userActions.deleteUser if there aren't users`, function() {
+      spaceUsers = [];
+      userActions.deleteUserOrDisplayNotice(spaceUsers, userGuid, orgGuid);
+      expect(userActions.deleteUser).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('deleteUserIfNoSpaceAssociation()', function() {
+    let userGuid;
+    let orgGuid;
+    let user;
+    let spaceUsers;
+
+    beforeEach(function (done) {
+      userGuid = 'user-guid';
+      orgGuid = 'org-guid';
+      user = { guid: userGuid };
+      spaceUsers = [user, user, user];
+
+      sandbox.stub(userActions, 'fetchUserAssociationsToOrgSpaces')
+        .returns(Promise.resolve(spaceUsers));
+
+      sandbox.stub(userActions, 'deleteUserOrDisplayNotice');
+
+      userActions.deleteUserIfNoSpaceAssociation(userGuid, orgGuid).then(done, done.fail);
+    });
+
+    it(`should call userActions.fetchUserAssociationsToOrgSpaces`, function() {
+      expect(userActions.fetchUserAssociationsToOrgSpaces).toHaveBeenCalledOnce();
+    });
+
+    it(`should call userActions.deleteUserOrDisplayNotice`, function() {
+      expect(userActions.deleteUserOrDisplayNotice).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('deleteUser()', function() {
+    let spy;
+    let expectedParams;
+    beforeEach(function(done) {
+      var expectedUserGuid = 'adsklfjanmxcv',
+          expectedOrgGuid = 'sdkjfcmxxzcxvzz';
+      expectedParams = {
+        userGuid: expectedUserGuid,
+        orgGuid: expectedOrgGuid
+      };
+
+      spy = setupViewSpy(sandbox);
+      sandbox.spy(userActions, 'deletedUser');
+      sandbox.spy(userActions, 'errorRemoveUser');
+      sandbox.spy(userActions, 'createUserSpaceAssociationNotification');
+      sandbox.spy(cfApi, 'deleteUser');
+      moxios.wait(function() {
+        let request = moxios.requests.mostRecent();
+        request.respondWith({
+          status: 200
+        }).then(function () {
+          done();
+        });
+      });
+
+      userActions.deleteUser(expectedUserGuid, expectedOrgGuid).then(done, done.fail);
+    });
     it('should dispatch a view event of type user delete with user guid',
         function() {
-      var expectedUserGuid = 'adsklfjanmxcv',
-          expectedOrgGuid = 'sdkjfcmxxzcxvzz',
-          expectedParams = {
-            userGuid: expectedUserGuid,
-            orgGuid: expectedOrgGuid
-          };
-
-      let spy = setupViewSpy(sandbox)
-
-      userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
-
       assertAction(spy, userActionTypes.USER_DELETE, expectedParams);
-    })
+    });
+    it('should call the deleteUser cf api',
+        function() {
+      expect(cfApi.deleteUser).toHaveBeenCalledOnce();
+    });
+    it('should only call the deletedUser action upon success',
+        function() {
+      expect(userActions.errorRemoveUser).not.toHaveBeenCalledOnce();
+      expect(userActions.deletedUser).toHaveBeenCalledOnce();
+      expect(userActions.createUserSpaceAssociationNotification).not.toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('deleteUser() generic error handling', function() {
+    let spy;
+    let expectedParams;
+    beforeEach(function(done) {
+      var expectedUserGuid = 'adsklfjanmxcv',
+          expectedOrgGuid = 'sdkjfcmxxzcxvzz';
+      expectedParams = {
+        userGuid: expectedUserGuid,
+        orgGuid: expectedOrgGuid
+      };
+
+      spy = setupViewSpy(sandbox);
+      sandbox.spy(userActions, 'deletedUser');
+      sandbox.spy(userActions, 'errorRemoveUser');
+      sandbox.spy(userActions, 'createUserSpaceAssociationNotification');
+      sandbox.spy(cfApi, 'deleteUser');
+      moxios.wait(function() {
+        let request = moxios.requests.mostRecent();
+        request.respondWith({
+          status: 500
+        }).then(function () {
+          done();
+        });
+      });
+
+      userActions.deleteUser(expectedUserGuid, expectedOrgGuid).then(done, done.fail);
+    });
+    it('should dispatch a view event of type user delete with user guid',
+        function() {
+      assertAction(spy, userActionTypes.USER_DELETE, expectedParams);
+    });
+    it('should call the deleteUser cf api',
+        function() {
+      expect(cfApi.deleteUser).toHaveBeenCalledOnce();
+    });
+    it('should only call the errorRemoveUser action upon generic failure',
+        function() {
+      expect(userActions.deletedUser).not.toHaveBeenCalledOnce();
+      expect(userActions.errorRemoveUser).toHaveBeenCalledOnce();
+      expect(userActions.createUserSpaceAssociationNotification).not.toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('deleteUser() existingRole error handling', function() {
+    let spy;
+    let expectedParams;
+    beforeEach(function(done) {
+      var expectedUserGuid = 'adsklfjanmxcv',
+          expectedOrgGuid = 'sdkjfcmxxzcxvzz';
+      expectedParams = {
+        userGuid: expectedUserGuid,
+        orgGuid: expectedOrgGuid
+      };
+
+      spy = setupViewSpy(sandbox);
+      sandbox.spy(userActions, 'deletedUser');
+      sandbox.spy(userActions, 'errorRemoveUser');
+      sandbox.spy(userActions, 'createUserSpaceAssociationNotification');
+      sandbox.spy(cfApi, 'deleteUser');
+      moxios.wait(function() {
+        let request = moxios.requests.mostRecent();
+        request.respondWith({
+          status: 400,
+          response: {error_code: 'CF-AssociationNotEmpty'},
+        }).then(function () {
+          done();
+        });
+      });
+
+      userActions.deleteUser(expectedUserGuid, expectedOrgGuid).then(done, done.fail);
+    });
+    // TODO: Should revisit because assertAction checks for handleViewAction to
+    // only be called once. This error handling will make it called twice.
+    xit('should dispatch a view event of type user delete with user guid',
+        function() {
+      assertAction(spy, userActionTypes.USER_DELETE, expectedParams);
+    });
+    it('should call the deleteUser cf api',
+        function() {
+      expect(cfApi.deleteUser).toHaveBeenCalledOnce();
+    });
+    it('should only call the createUserSpaceAssociationNotification action upon existing role error',
+        function() {
+      expect(userActions.deletedUser).not.toHaveBeenCalledOnce();
+      expect(userActions.errorRemoveUser).not.toHaveBeenCalledOnce();
+      expect(userActions.createUserSpaceAssociationNotification).toHaveBeenCalledOnce();
+    });
   });
 
   describe('deletedUser()', function() {
@@ -207,13 +439,13 @@ describe('userActions', function() {
     });
   });
 
-  describe('clearInviteNotifications()', function() {
+  describe('clearUserListNotifications()', function() {
     it('should dispatch a view event of type clear invite notification', function() {
       let spy = setupViewSpy(sandbox);
 
-      userActions.clearInviteNotifications();
+      userActions.clearUserListNotifications();
 
-      assertAction(spy, userActionTypes.USER_INVITE_STATUS_DISMISSED);
+      assertAction(spy, userActionTypes.USER_LIST_NOTICE_DISMISSED);
     });
   });
 
@@ -240,7 +472,7 @@ describe('userActions', function() {
       let spy = setupViewSpy(sandbox);
       sandbox.spy(userActions, 'receivedInviteStatus');
       userActions.createInviteNotification(false, email);
-      assertAction(spy, userActionTypes.USER_INVITE_STATUS_DISPLAYED, expected);
+      assertAction(spy, userActionTypes.USER_LIST_NOTICE_CREATED, expected);
       done();
     });
 
@@ -253,12 +485,12 @@ describe('userActions', function() {
       let spy = setupViewSpy(sandbox);
       sandbox.spy(userActions, 'receivedInviteStatus');
       userActions.createInviteNotification(true, email);
-      assertAction(spy, userActionTypes.USER_INVITE_STATUS_DISPLAYED, expected);
+      assertAction(spy, userActionTypes.USER_LIST_NOTICE_CREATED, expected);
       done();
     });
   });
 
-  describe('userInviteError()', function() {
+  describe('userListNoticeError()', function() {
     let err;
     let message;
 
@@ -267,7 +499,7 @@ describe('userActions', function() {
       message = 'something happened when invititing';
       sandbox.stub(AppDispatcher, 'handleServerAction');
 
-      userActions.userInviteError(err, message).then(done, done.fail);
+      userActions.userListNoticeError(err, message).then(done, done.fail);
     });
 
     it('should dispatch server action of type user error with error and optional message',

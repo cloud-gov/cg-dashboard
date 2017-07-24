@@ -989,24 +989,6 @@ describe('cfApi', function() {
         done();
       }).catch(done.fail);
     });
-
-    it('should call org deleted action with guid', function(done) {
-      var stub = sandbox.stub(http, 'delete'),
-          spy = sandbox.spy(userActions, 'deletedUser'),
-          expectedUserGuid = 'aldfskjmcx',
-          expectedOrgGuid = 'sa09dvjakdnva';
-
-      let testPromise = createPromise({status: true});
-      stub.returns(testPromise);
-
-      cfApi.deleteUser(expectedUserGuid, expectedOrgGuid).then(() => {
-        expect(spy).toHaveBeenCalledOnce();
-        let args = spy.getCall(0).args;
-        expect(args[0]).toEqual(expectedUserGuid);
-        expect(args[1]).toEqual(expectedOrgGuid);
-        done();
-      }).catch(done.fail);
-    });
   });
 
   describe('deleteOrgUserCategory()', function() {

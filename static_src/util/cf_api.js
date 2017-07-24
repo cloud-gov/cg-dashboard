@@ -213,6 +213,11 @@ export default {
     return this.fetchOrgDetails(guid);
   },
 
+  fetchAllOrgSpaces(guid) {
+    return http.get(`${APIV}/organizations/${guid}/spaces`)
+        .then((res) => res.data);
+  },
+
   fetchOrgDetails(guid) {
     return http.get(`${APIV}/organizations/${guid}/summary`)
         .then((res) => res.data);
@@ -383,15 +388,8 @@ export default {
 
   deleteUser(userGuid, orgGuid) {
     return http.delete(`${APIV}/organizations/${orgGuid}/users/${userGuid}`)
-      .then(() => {
-        userActions.deletedUser(userGuid, orgGuid);
-      }).catch((err) => {
-        if (err.response.data) {
-          userActions.errorRemoveUser(userGuid, err.data);
-        } else {
-          handleError(err);
-        }
-      });
+    .then((res) => res.response);
+    // TODO. should log catch if unable to parseError.
   },
 
   // TODO deprecate possibly in favor of deleteOrgUserPermissions.

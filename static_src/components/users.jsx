@@ -55,8 +55,8 @@ function stateSetter() {
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users,
-    inviteNotices: UserStore._inviteNotification,
-    userInviteError: UserStore.getInviteError()
+    userListNotices: UserStore._userListNotification,
+    userListNoticeError: UserStore.getUserListNotificationError()
   };
 }
 
@@ -82,7 +82,7 @@ export default class Users extends React.Component {
 
   onNotificationDismiss(ev) {
     ev.preventDefault();
-    userActions.clearInviteNotifications();
+    userActions.clearUserListNotifications();
   }
 
   handleAddPermissions(roleKey, apiKey, userGuid) {
@@ -143,14 +143,14 @@ export default class Users extends React.Component {
     let notification;
     let userInvite;
 
-    if (this.state.inviteNotices.description) {
-      const notice = this.state.inviteNotices;
+    if (this.state.userListNotices.description) {
+      const notice = this.state.userListNotices;
       notification = (
         <Notification
           message={ notice.description }
           actions={ [] }
           onDismiss={ this.onNotificationDismiss }
-          status="finish"
+          status={ notice.noticeType }
         />
       );
     } else {
@@ -164,7 +164,7 @@ export default class Users extends React.Component {
           <UsersInvite
             inviteDisabled={ this.state.inviteDisabled }
             currentUserAccess={ this.state.currentUserAccess }
-            error={ this.state.userInviteError }
+            error={ this.state.userListNoticeError }
           />
         </div>
       );
