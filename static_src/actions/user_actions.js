@@ -96,6 +96,23 @@ const userActions = {
       userGuid,
       orgGuid
     });
+
+    cfApi.deleteUser(userGuid, orgGuid)
+      .then(() => userActions.deletedUser(userGuid, orgGuid))
+      .catch(error => {
+        // Check whether we got caught on user roles in spaces
+        const userHasSpaceRoles = (error &&
+          error.response &&
+          error.response.status === 400 &&
+          error.response.data.error_code === 'CF-AssociationNotEmpty'
+        );
+        if (userHasSpaceRoles) {
+          this.createUserSpaceAssociationNotification(MSG_USER_HAS_SPACE_ROLES);
+        } else if (error.response.data) {
+          // else use generic error
+          this.errorRemoveUser(userGuid, error.response.data);
+        }
+      });
   },
 
   deletedUser(userGuid, orgGuid) {

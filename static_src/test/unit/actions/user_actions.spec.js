@@ -239,7 +239,7 @@ describe('userActions', function() {
 
   describe('deleteUser()', function() {
     it('should dispatch a view event of type user delete with user guid',
-        function() {
+        function(done) {
       var expectedUserGuid = 'adsklfjanmxcv',
           expectedOrgGuid = 'sdkjfcmxxzcxvzz',
           expectedParams = {
@@ -248,10 +248,51 @@ describe('userActions', function() {
           };
 
       let spy = setupViewSpy(sandbox);
+      sandbox.stub(userActions, 'deletedUser');
+      sandbox.stub(cfApi, 'deleteUser').resolves({});
 
       userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
 
       assertAction(spy, userActionTypes.USER_DELETE, expectedParams);
+      expect(cfApi.deleteUser.called).toEqual(true);
+      expect(userActions.deletedUser).toHaveBeenCalledOnce();
+    });
+
+    describe('error handling', function() {
+      it('should display a generic error if unsuccessful', function() {
+        var spy = sandbox.spy(userActions, 'errorRemoveUser'),
+            expectedUserGuid = 'aldfskjmcx',
+            expectedOrgGuid = 'sa09dvjakdnva';
+        sandbox.stub(userActions, 'deletedUser');
+        sandbox.stub(cfApi, 'deleteUser')
+          .returns(Promise.reject({ error: {response: {data: {}}}}));
+
+        userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
+        expect(userActions.deletedUser).not.toHaveBeenCalledOnce();
+        expect(userActions.deletedUser.called).toEqual(false);
+        expect(spy).toHaveBeenCalledOnce();
+        let args = spy.getCall(0).args;
+        expect(args[0]).toEqual(expectedUserGuid);
+        expect(args[1]).toEqual({});
+      });
+
+      it('should display a notification about user having existing roles', function() {
+        var spy = sandbox.spy(userActions, 'createUserSpaceAssociationNotification'),
+            expectedUserGuid = 'aldfskjmcx',
+            expectedOrgGuid = 'sa09dvjakdnva';
+        sandbox.spy(userActions, 'deletedUser');
+
+        const description = 'This user can\'t be removed because they still ' +
+        'have a space role within the organization. Please remove all ' +
+        'space associations before removing this user from the organization. ' +
+        'To review how, click the "Managing Teammates" link below.';
+
+        userActions.deleteUser(expectedUserGuid, expectedOrgGuid);
+        expect(userActions.deletedUser.called).toEqual(false);
+        expect(spy).toHaveBeenCalledOnce();
+        let args = spy.getCall(0).args;
+        expect(args[0]).toEqual(description);
+      });
     });
   });
 
