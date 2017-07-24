@@ -98,10 +98,11 @@ const userActions = {
     });
 
     const spaceRoles = ['auditors', 'developers', 'managers'];
-    Promise.all(spaceRoles.map((role) => {
-      Promise.resolve(cfApi.deleteSpaceUserPermissions(userGuid, spaceGuid, role));
-    }))
-    .then((responses) => userActions.handleSpaceRolesRemoved(responses, userGuid));
+    const spaceRemovalRequests = spaceRoles.map((role) =>
+      Promise.resolve(cfApi.deleteSpaceUserPermissions(userGuid, spaceGuid, role))
+    );
+    return Promise.all(spaceRemovalRequests)
+      .then((responses) => userActions.handleSpaceRolesRemoved(responses, userGuid));
   },
 
   handleSpaceRolesRemoved(responses, userGuid) {
