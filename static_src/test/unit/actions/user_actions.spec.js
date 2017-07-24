@@ -361,7 +361,7 @@ describe('userActions', function() {
         function() {
       expect(cfApi.deleteUser).toHaveBeenCalledOnce();
     });
-    it('should only call the errorRemoveUser action upon generic failure',
+    it('should only call the createUserSpaceAssociationNotification action upon existing role error',
         function() {
       expect(userActions.deletedUser).not.toHaveBeenCalledOnce();
       expect(userActions.errorRemoveUser).not.toHaveBeenCalledOnce();
