@@ -208,6 +208,42 @@ describe('userActions', function() {
     });
   });
 
+  describe('removeAllSpaceRoles()', function() {
+    let userGuid;
+    let spaceGuid;
+    let user;
+    let spy;
+    let expectedParams;
+
+    beforeEach(function (done) {
+      spy = setupViewSpy(sandbox);
+      userGuid = 'user-guid';
+      spaceGuid = 'space-guid';
+      user = { guid: userGuid };
+      expectedParams = { userGuid, spaceGuid }
+
+      sandbox.stub(cfApi, 'deleteSpaceUserPermissions')
+        .returns(Promise.resolve({}));
+
+      sandbox.stub(userActions, 'handleSpaceRolesRemoved');
+
+      userActions.removeAllSpaceRoles(userGuid, spaceGuid).then(done, done.fail);
+    });
+
+    it('should dispatch a view event for USER_REMOVE_ALL_SPACE_ROLES',
+        function() {
+      assertAction(spy, userActionTypes.USER_REMOVE_ALL_SPACE_ROLES, expectedParams);
+    });
+
+    it(`should call cfApi.deleteSpaceUserPermissions`, function() {
+      expect(cfApi.deleteSpaceUserPermissions).toHaveBeenCalledThrice();
+    });
+
+    it(`should call userActions.handleSpaceRolesRemoved`, function() {
+      expect(userActions.handleSpaceRolesRemoved).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('deleteUserIfNoSpaceAssociation()', function() {
     let userGuid;
     let orgGuid;

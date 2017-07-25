@@ -172,6 +172,13 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_REMOVED_ALL_SPACE_ROLES: {
+        this.delete(action.userGuid, (changed) => {
+          if (changed) this.emitChange();
+        });
+        break;
+      }
+
       case userActionTypes.ERROR_REMOVE_USER: {
         this._error = action.error;
         this.emitChange();

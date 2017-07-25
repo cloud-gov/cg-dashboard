@@ -116,12 +116,21 @@ export default class Users extends React.Component {
     userActions.deleteUser(userGuid, this.state.currentOrgGuid);
   }
 
+  handleRemoveSpaceRoles(userGuid, ev) {
+    ev.preventDefault();
+    userActions.removeAllSpaceRoles(userGuid, this.entityGuid);
+  }
+
   get entityType() {
     return this.isOrganization ? ORG_ENTITY : SPACE_ENTITY;
   }
 
   get isOrganization() {
     return this.state.currentType === ORG_NAME;
+  }
+
+  get isSpace() {
+    return this.state.currentType === SPACE_NAME;
   }
 
   get entityGuid() {
@@ -186,6 +195,8 @@ export default class Users extends React.Component {
 
     if (this.isOrganization) {
       removeHandler = this.handleRemoveUser;
+    } else if (this.isSpace) {
+      removeHandler = this.handleRemoveSpaceRoles;
     }
 
     return (

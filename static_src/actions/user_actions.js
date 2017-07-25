@@ -90,6 +90,29 @@ const userActions = {
       .then((spaceUsers) => userActions.deleteUserOrDisplayNotice(spaceUsers, userGuid, orgGuid));
   },
 
+  removeAllSpaceRoles(userGuid, spaceGuid) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_REMOVE_ALL_SPACE_ROLES,
+      userGuid,
+      spaceGuid
+    });
+
+    const spaceRoles = ['auditors', 'developers', 'managers'];
+    const spaceRemovalRequests = spaceRoles.map((role) =>
+      Promise.resolve(cfApi.deleteSpaceUserPermissions(userGuid, spaceGuid, role))
+    );
+    return Promise.all(spaceRemovalRequests)
+      .then((responses) => userActions.handleSpaceRolesRemoved(responses, userGuid));
+  },
+
+  handleSpaceRolesRemoved(responses, userGuid) {
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_REMOVED_ALL_SPACE_ROLES,
+      responses,
+      userGuid
+    });
+  },
+
   deleteUser(userGuid, orgGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_DELETE,

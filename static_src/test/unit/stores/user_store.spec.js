@@ -442,6 +442,55 @@ describe('UserStore', function () {
     });
   });
 
+  describe('on user spaces roles remove', function() {
+    let spaceGuid;
+    beforeEach(() => {
+      spaceGuid = 'space-guid';
+    });
+
+    it('should remove the user of the guid from the data', function() {
+      var expectedUserGuid = 'zxkvnakjdva',
+          expectedUser = { guid: expectedUserGuid };
+
+      UserStore._data.push(expectedUser);
+
+      userActions.removeAllSpaceRoles(expectedUserGuid, spaceGuid);
+
+      expect(UserStore.get(expectedUserGuid)).toBeFalsy();
+    });
+  });
+
+  describe('on user spaces roles removed', function() {
+    it('should remove the user of the guid from the data', function() {
+      var expectedUserGuid = 'zxkvnakjdva',
+          expectedUser = { guid: expectedUserGuid };
+
+      UserStore._data.push(expectedUser);
+
+      userActions.handleSpaceRolesRemoved(['random-response'], expectedUserGuid);
+
+      expect(UserStore.get(expectedUserGuid)).toBeFalsy();
+    });
+
+    it('should emit a change event if it deletes something', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange'),
+          testUserGuid = 'qpweoiralkfdsj';
+
+      UserStore._data = Immutable.fromJS([{guid: testUserGuid}]);
+      userActions.handleSpaceRolesRemoved(['random-response'], testUserGuid);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should not emit a change event if nothing deleted', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange');
+
+      userActions.handleSpaceRolesRemoved(['random-response'], 'asdfljk');
+
+      expect(spy).not.toHaveBeenCalledOnce();
+    });
+  });
+
   describe('on user deleted', function() {
     it('should remove the user of the guid from the data', function() {
       var expectedUserGuid = 'zxkvnakjdva',
