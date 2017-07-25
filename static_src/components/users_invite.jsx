@@ -1,27 +1,22 @@
-
-import PropTypes from 'prop-types';
 /**
  * Renders a form that allows org users to invite new users
  * to cloud.gov
  */
 
+import PropTypes from 'prop-types';
 import React from 'react';
-
 import Action from './action.jsx';
 import FormStore from '../stores/form_store';
 import { Form, FormText } from './form';
 import PanelDocumentation from './panel_documentation.jsx';
 import userActions from '../actions/user_actions';
-
 import { validateEmail } from '../util/validators';
-
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const USERS_INVITE_FORM_GUID = 'users-invite-form';
 
 const propTypes = {
   inviteDisabled: PropTypes.bool,
+  inviteEntityType: PropTypes.string.isRequired,
   currentUserAccess: PropTypes.bool,
   error: PropTypes.object
 };
@@ -44,8 +39,6 @@ export default class UsersInvite extends React.Component {
 
     this.state = stateSetter(props);
 
-    this.styler = createStyler(style);
-
     this.validateEmail = validateEmail().bind(this);
     this._onValidForm = this._onValidForm.bind(this);
   }
@@ -65,55 +58,60 @@ export default class UsersInvite extends React.Component {
   }
 
   get errorMessage() {
-    const err = this.props.error;
-    if (!err) return undefined;
-    const message = err.contextualMessage;
-    if (err.message) {
-      return `${message}: ${err.message}.`;
+    const { error } = this.props;
+
+    if (!error) return '';
+
+    const message = error.contextualMessage;
+
+    if (error.message) {
+      return `${message}: ${error.message}.`;
     }
+
     return message;
   }
 
-  render() {
-    let content;
+  get invitationMessage() {
+    const entity = this.props.inviteEntityType;
 
-    if (this.props.currentUserAccess) {
-      content = (
-        <div>
-          <PanelDocumentation description>
-            <p>Invite new user to cloud.gov and this organization, or add an existing user to this
-            organization.</p>
-          </PanelDocumentation>
-          <Form
-            guid={ USERS_INVITE_FORM_GUID }
-            classes={ ['users_invite_form'] }
-            ref="form"
-            onSubmit={ this._onValidForm }
-            errorOverride={ this.errorMessage }
-          >
-            <FormText
-              formGuid={ USERS_INVITE_FORM_GUID }
-              classes={ ['test-users_invite_name'] }
-              label="User's email"
-              name="email"
-              validator={ this.validateEmail }
-            />
-            <Action
-              label="submit"
-              type="submit"
-              disabled={ this.props.inviteDisabled }
-            >
-              Add user to this organization
-            </Action>
-          </Form>
-        </div>
-      );
-    } else {
-      content = '';
+    return `Invite a new user to cloud.gov and this ${entity}` +
+      ` or add an existing user to this ${entity}.`;
+  }
+
+  render() {
+    const { inviteDisabled } = this.props;
+
+    if (!this.props.currentUserAccess) {
+      return null;
     }
+
     return (
       <div className="test-users-invite">
-        {content}
+        <PanelDocumentation description>
+          <p>{ this.invitationMessage }</p>
+        </PanelDocumentation>
+        <Form
+          guid={ USERS_INVITE_FORM_GUID }
+          classes={ ['users_invite_form'] }
+          ref="form"
+          onSubmit={ this._onValidForm }
+          errorOverride={ this.errorMessage }
+        >
+          <FormText
+            formGuid={ USERS_INVITE_FORM_GUID }
+            classes={ ['test-users_invite_name'] }
+            label="User's email"
+            name="email"
+            validator={ this.validateEmail }
+          />
+          <Action
+            label="submit"
+            type="submit"
+            disabled={ inviteDisabled }
+          >
+            Add user to this { this.state.inviteEntityType }
+          </Action>
+        </Form>
       </div>
     );
   }

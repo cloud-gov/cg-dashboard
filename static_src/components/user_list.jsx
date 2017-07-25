@@ -168,6 +168,7 @@ export default class UserList extends React.Component {
                 </ElasticLineItem>
               );
             }
+
             return (
               <ElasticLine key={ user.guid }>
                 <ElasticLineItem>{ user.username }</ElasticLineItem>

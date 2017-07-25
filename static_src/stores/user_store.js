@@ -54,11 +54,14 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.SPACE_USER_ROLES_RECEIVED: {
-        const updatedUsers = this.mergeRoles(action.users, action.spaceGuid,
-          'space_roles');
+        const { users, spaceGuid } = action;
 
-        this.mergeMany('guid', updatedUsers, () => { });
+        // Force an update to the cached list of users, otherwise mergeRoles
+        // won't be able to find the new user
+        this.mergeMany('guid', users, () => {});
+        this.mergeMany('guid', this.mergeRoles(users, spaceGuid, 'space_roles'), () => {});
         this.emitChange();
+
         break;
       }
 
@@ -70,16 +73,20 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ORG_ASSOCIATED: {
-        const user = Object.assign({},
-          { guid: action.userGuid, roles: { [action.entityGuid]: [] } },
-          action.user);
+        const user = Object.assign({}, {
+          guid: action.userGuid,
+          roles: { [action.entityGuid]: [] }
+        }, action.user);
         this._inviteInputActive = true;
+
         if (!this.get(user.guid)) {
           this.push(user);
         } else {
           this.merge('guid', user, () => {});
         }
+
         this.emitChange();
+
         break;
       }
 
@@ -152,6 +159,7 @@ export class UserStore extends BaseStore {
         break;
       }
 
+      // TODO: this should not be happening in the user store
       case userActionTypes.USER_DELETE: {
         // Nothing should happen.
         break;
@@ -310,6 +318,7 @@ export class UserStore extends BaseStore {
     const usersInOrg = this._data.filter((user) =>
       !!user.get('roles') && !!user.get('roles').get(orgGuid)
     );
+
     return usersInOrg.toJS();
   }
 
@@ -385,7 +394,6 @@ export class UserStore extends BaseStore {
   get currentlyViewedType() {
     return this._currentViewedType;
   }
-
 }
 
 const _UserStore = new UserStore();
