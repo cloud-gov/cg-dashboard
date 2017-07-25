@@ -270,9 +270,9 @@ const userActionTypes = keymirror({
   USER_INVITE_ERROR: null,
   // Action to dismiss an user list notification.
   USER_LIST_NOTICE_DISMISSED: null,
-  // Action when all roles for space user are removed.
+  // Action to remove all roles for space user.
   USER_REMOVE_ALL_SPACE_ROLES: null,
-  // Action to removed all roles for space user.
+  // Action when all roles for space user are removed.
   USER_REMOVED_ALL_SPACE_ROLES: null,
   // Action to delete a user from an org.
   USER_DELETE: null,
