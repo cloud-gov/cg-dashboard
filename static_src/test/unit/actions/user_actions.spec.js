@@ -512,34 +512,34 @@ describe('userActions', function() {
     });
   });
 
-  describe('createdUserAndAssociated', function () {
-    let userGuid;
-    let orgUsers;
-    let orgGuid;
-    let expectedParams;
+  describe('createdUserAndAssociated', () => {
+    const userGuid = "fake-udid";
+    const orgGuid = "fake-org-udid";
+    const user = {
+      guid: userGuid,
+      username: 'asdf'
+    };
+    const orgUsers = [user, {guid: 'wrong-udid'}, {guid: 'wrong-udid-2'}];
     let spy;
-    let user;
 
-    beforeEach(function (done) {
-      userGuid = "fake-udid";
-      orgGuid = "fake-org-udid";
-      user = {
-        guid: userGuid,
-        username: 'asdf'
-      };
-      orgUsers = [user, {userGuid: 'wrong-udid'}, {userGuid: 'wrong-udid-2'}];
-      expectedParams = {
-        userGuid,
-        orgGuid,
-        user: orgUsers[0]
-      };
+    beforeEach(() => {
       spy = setupViewSpy(sandbox);
-      userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers)
-        .then(done, done.fail);
     });
 
-    it('should dispatch USER_ORG_ASSOCIATED notice with user and org', function() {
-      assertAction(spy, userActionTypes.USER_ORG_ASSOCIATED);
+    describe('when entityType is org_users', () => {
+      it('should dispatch USER_ORG_ASSOCIATED notice with user and org', (done) => {
+        userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers, 'org_users')
+          .then(done, done.fail);
+        assertAction(spy, userActionTypes.USER_ORG_ASSOCIATED);
+      });
+    });
+
+    describe('when entityType is not org_users', () => {
+      it('should not dispatch USER_ORG_ASSOCIATED notice with user and org', (done) => {
+        userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers)
+          .then(done, done.fail);
+        expect(spy.called).toBe(false);
+      });
     });
   });
 
@@ -550,7 +550,7 @@ describe('userActions', function() {
           expectedApiKey = 'managers',
           expectedUserGuid = 'akdfjadzxcvzxcvzxvzx',
           expectedGuid = '2eve2v2vadsfa',
-          expectedType = 'org';
+          expectedType = 'organization';
 
       // expectedParams for the params dispatched with userActionTypes.USER_ROLES_ADD.
       // the apiKey is not sent with it.
@@ -600,7 +600,7 @@ describe('userActions', function() {
           apiKey,
           userGuid,
           orgGuid,
-          'org'
+          'organization'
         ).then(done, done.fail);
       });
 
@@ -619,7 +619,7 @@ describe('userActions', function() {
           roles,
           userGuid,
           orgGuid,
-          'org'
+          'organization'
         ));
       });
     });
@@ -653,7 +653,7 @@ describe('userActions', function() {
           apiKey,
           userGuid,
           orgGuid,
-          'org'
+          'organization'
         ).then(done, done.fail);
       });
 
@@ -839,7 +839,7 @@ describe('userActions', function() {
           apiKey,
           userGuid,
           orgGuid,
-          'org'
+          'organization'
         ).then(done, done.fail);
       });
 
@@ -858,7 +858,7 @@ describe('userActions', function() {
           roles,
           userGuid,
           orgGuid,
-          'org'
+          'organization'
         ));
       });
 
@@ -896,7 +896,7 @@ describe('userActions', function() {
           apiKey,
           userGuid,
           orgGuid,
-          'org'
+          'organization'
         ).then(done, done.fail);
       });
 

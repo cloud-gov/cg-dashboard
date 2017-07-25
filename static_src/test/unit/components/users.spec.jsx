@@ -1,52 +1,83 @@
 import '../../global_setup.js';
 
 import React from 'react';
+import Immutable from 'immutable';
+import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import Users from '../../../components/users.jsx';
+import PanelDocumentation from '../../../components/panel_documentation.jsx';
+import UsersInvite from '../../../components/users_invite.jsx';
 import UserStore from '../../../stores/user_store';
+import SpaceStore from '../../../stores/space_store';
 
-describe('<Users />', function () {
-  let users, sandbox;
+const buildRoles = (spaceGuid, roles = []) => {
+  const obj = {};
+  obj[spaceGuid] = roles;
 
-  beforeEach(function () {
-    sandbox = sinon.sandbox.create();
-  });
+  return obj;
+};
 
-  afterEach(function () {
-    sandbox.restore();
-  });
+describe('<Users />', () => {
+  const userGuid = 'a-user-guid';
+  const spaceGuid = 'space-guid';
+  const user = {
+    guid: userGuid,
+    roles: buildRoles(spaceGuid, ['org_manager'])
+  };
 
-  describe('with a user', function () {
-    beforeEach(function () {
-      const userGuid = 'a-user-guid';
-      const user = {
-        guid: userGuid
-      };
-      UserStore._currentUserGuid = userGuid;
-      UserStore.push(user);
+  let users;
 
+  SpaceStore._currentSpaceGuid = spaceGuid;
+  UserStore._currentUserGuid = userGuid;
+
+  describe('with a user', () => {
+    beforeEach(() => {
+      UserStore._data = Immutable.fromJS([user]);
       users = shallow(<Users />);
     });
 
-    describe('when at org level', function () {
-      beforeEach(function () {
+    describe('when at org level', () => {
+      it('has an `entityType` of organization', () => {
         users.setState({ currentType: 'org_users' });
-      });
-
-      it('doesnt have permissions to edit users', function () {
         const actual = users.instance().entityType;
-        expect(actual).toEqual('org');
+
+        expect(actual).toEqual('organization');
       });
     });
 
-    describe('when at space level', function () {
-      beforeEach(function () {
+    describe('when at space level', () => {
+      it('has an `entityType` of space', () => {
         users.setState({ currentType: 'space_users' });
+        const actual = users.instance().entityType;
+
+        expect(actual).toEqual('space');
+      });
+    });
+
+    describe('when a user is an org manager', () => {
+      afterEach(() => {
+        sinon.restore(UserStore);
       });
 
-      it('doesnt have permissions to edit users', function () {
-        const actual = users.instance().entityType;
-        expect(actual).toEqual('space');
+      it('renders a <UsersInvite /> component', () => {
+        sinon.stub(UserStore, 'hasRole').returns(true);
+        users = shallow(<Users />);
+
+        expect(users.find(UsersInvite).length).toBe(1);
+      });
+    });
+
+    describe('when a user is not an org manager', () => {
+      it('renders message telling user to ask an org manager to add users', () => {
+        const spaceUser = Object.assign({}, user, {
+          roles: buildRoles(spaceGuid, ['space_manager'])
+        });
+
+        UserStore._data = Immutable.fromJS([spaceUser]);
+        users = shallow(<Users />);
+
+        expect(users.find(UsersInvite).length).toBe(0);
+        expect(users.find(PanelDocumentation).length).toBe(1);
       });
     });
   });

@@ -4,32 +4,58 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import { Form } from '../../../components/form';
+import PanelDocumentation from '../../../components/panel_documentation.jsx';
 import UsersInvite from '../../../components/users_invite.jsx';
 import Action from '../../../components/action.jsx';
 
 describe('<UsersInvite />', function () {
-  let sandbox;
+  const entityType = 'space';
+  const props = {
+    inviteEntityType: entityType,
+    currentUserAccess: true
+  };
+  let wrapper;
 
-  beforeEach(function () {
-    sandbox = sinon.sandbox.create();
+  describe('when user has access to inviting other users', () => {
+    beforeEach(() => {
+      wrapper = shallow(<UsersInvite { ...props } />);
+    });
+
+    it('renders one <Form /> component', () => {
+      expect(wrapper.find(Form).length).toEqual(1);
+    });
+
+    it('renders one <Action /> component', () => {
+      expect(wrapper.find(Action).length).toEqual(1);
+    });
+
+    describe('conditional documentation based on inviteEntityType', () => {
+      it('refers to `space` when type is space', () => {
+        const doc = 'Invite a new user to cloud.gov and this space' +
+          ' or add an existing user to this space.';
+
+        expect(wrapper.find(PanelDocumentation).find('p').text()).toBe(doc);
+      });
+
+      it('refers to `organization` when type is organization', () => {
+        const doc = 'Invite a new user to cloud.gov and this organization' +
+          ' or add an existing user to this organization.';
+        const orgProps = Object.assign({}, props, {
+          inviteEntityType: 'organization'
+        });
+        wrapper = shallow(<UsersInvite { ...orgProps } />);
+
+        expect(wrapper.find(PanelDocumentation).find('p').text()).toBe(doc);
+      });
+    });
   });
 
-  afterEach(function () {
-    sandbox.restore();
-  });
+  describe('when user does not have ability to invite other users', () => {
+    it('does not render <Form /> component', () => {
+      const noAccessProps = Object.assign({}, props, { currentUserAccess: false });
+      wrapper = shallow(<UsersInvite { ...noAccessProps } />);
 
-  it('doesnt renders <Form /> components if currentUser doesnt have access', () => {
-    const userInvite = shallow(<UsersInvite currentUserAccess="false" />);
-    expect(userInvite.find(Form).length).toEqual(1);
-  });
-
-  it('renders one <Form /> components', () => {
-    const userInvite = shallow(<UsersInvite currentUserAccess="true" />);
-    expect(userInvite.find(Form).length).toEqual(1);
-  });
-
-  it('renders one <Action /> components', () => {
-    const userInvite = shallow(<UsersInvite currentUserAccess="true" />);
-    expect(userInvite.find(Action).length).toEqual(1);
+      expect(wrapper.find(Form).length).toEqual(0);
+    });
   });
 });

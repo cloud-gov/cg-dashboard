@@ -125,7 +125,7 @@ const userActions = {
 
   addUserRoles(roles, apiKey, userGuid, entityGuid, entityType) {
     const apiMethodMap = {
-      org: cfApi.putOrgUserPermissions,
+      organization: cfApi.putOrgUserPermissions,
       space: cfApi.putSpaceUserPermissions
     };
     const api = apiMethodMap[entityType];
@@ -163,7 +163,7 @@ const userActions = {
 
   deleteUserRoles(roles, apiKey, userGuid, entityGuid, entityType) {
     const apiMethodMap = {
-      org: cfApi.deleteOrgUserPermissions,
+      organization: cfApi.deleteOrgUserPermissions,
       space: cfApi.deleteSpaceUserPermissions
     };
     const api = apiMethodMap[entityType];
@@ -296,52 +296,55 @@ const userActions = {
   },
 
   createUserAndAssociate(userGuid) {
-    let entityGuid;
     const entityType = UserStore.currentlyViewedType;
+    const orgGuid = OrgStore.currentOrgGuid;
+    let cfApiRequest;
+    let entityGuid;
 
     if (entityType === ORG_NAME) {
-      entityGuid = OrgStore.currentOrgGuid;
+      entityGuid = orgGuid;
+      cfApiRequest = cfApi.putAssociateUserToOrganization.bind(cfApi, userGuid, entityGuid);
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_ORG_ASSOCIATE,
+        userGuid,
+        entityType,
+        entityGuid
+      });
     } else {
       entityGuid = SpaceStore.currentSpaceGuid;
+      cfApiRequest = cfApi.putAssociateUserToSpace.bind(cfApi, userGuid, orgGuid, entityGuid);
     }
 
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_ORG_ASSOCIATE,
-      userGuid,
-      entityType,
-      entityGuid
-    });
-
-    return cfApi.putAssociateUserToEntity(userGuid, entityGuid, entityType)
+    return cfApiRequest()
       .then(() => userActions.fetchEntityUsers(entityGuid, entityType))
-      .then(entityUsers => userActions.createdUserAndAssociated(userGuid, entityGuid, entityUsers));
+      .then(entityUsers => {
+        userActions.createdUserAndAssociated(userGuid, entityGuid, entityUsers, entityType);
+      });
   },
 
   fetchEntityUsers(entityGuid, entityType) {
-    let entityUsers;
-    if (entityType === ORG_NAME) {
-      entityUsers = cfApi.fetchOrgUsers(entityGuid);
-    } else {
-      entityUsers = cfApi.fetchSpaceUserRoles(entityGuid);
-    }
-    return Promise.resolve(entityUsers);
+    return cfApi[(entityType === ORG_NAME) ? 'fetchOrgUsers' : 'fetchSpaceUserRoles'](entityGuid);
   },
 
-  createdUserAndAssociated(userGuid, entityGuid, entityUsers) {
-    const user = entityUsers.filter((entityUser) => entityUser.guid === userGuid);
+  createdUserAndAssociated(userGuid, entityGuid, entityUsers, entityType) {
+    const user = entityUsers.filter(entityUser => entityUser.guid === userGuid)[0];
 
-    if (!user[0]) {
+    if (!user) {
       const err = new Error('User was not associated');
       const message = `The user ${userGuid} was not associated in ${entityGuid}.`;
       return Promise.resolve(userActions.userInviteCreateError(err, message));
     }
 
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_ORG_ASSOCIATED,
-      userGuid,
-      entityGuid,
-      user
-    });
+    if (entityType === ORG_NAME) {
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_ORG_ASSOCIATED,
+        userGuid,
+        entityGuid,
+        user
+      });
+    }
+
     return Promise.resolve(user);
   },
 
@@ -433,12 +436,14 @@ const userActions = {
     // TODO add error action
     return userActions
       .fetchCurrentUserInfo()
-      .then(userInfo =>
-        Promise.all([
-          userActions.fetchUser(userInfo.user_id),
-          userActions.fetchCurrentUserUaaInfo(userInfo.user_id)
-        ])
-      )
+      .then(userInfo => {
+        const userId = userInfo.user_id;
+
+        return Promise.all([
+          userActions.fetchUser(userId),
+          userActions.fetchCurrentUserUaaInfo(userId)
+        ]);
+      })
       // Grab user from store with all merged properties
       .then(() => UserStore.currentUser)
       .then(userActions.receivedCurrentUser);
