@@ -102,40 +102,11 @@ export default class UserList extends React.Component {
     );
   }
 
-  get onlyOneState() {
-    let content;
-    const callout = `You are the only user in this ${this.userTypePretty.toLowerCase()}`;
-
-    if (this.props.userType === 'org_users') {
-      const readMore = config.docs.invite_user &&
-        <a href={ config.docs.invite_user }>Read more about inviting new users.</a>
-
-      content = (
-        <p>
-          You can invite teammates to get cloud.gov accounts. You can invite
-          anyone you need to work with, including federal employees and
-          federal contractors. { readMore }
-        </p>
-      );
-    } else {
-      const content = config.docs.invite_user &&
-        <a href={ config.docs.invite_user }>Read more about adding users to this space.</a>
-    }
-
-    return (
-      <EntityEmpty callout={ callout }>
-        { content }
-      </EntityEmpty>
-    );
-  }
-
   render() {
     let content = <div><Loading text="Loading users" /></div>;
 
     if (this.props.empty) {
       content = this.emptyState;
-    } else if (this.props.users.length === 1) {
-      content = this.onlyOneState;
     } else if (!this.props.loading && this.props.users.length) {
       content = (
       <div className="test-user_list">
