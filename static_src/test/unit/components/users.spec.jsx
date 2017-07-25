@@ -68,16 +68,28 @@ describe('<Users />', () => {
     });
 
     describe('when a user is not an org manager', () => {
-      it('renders message telling user to ask an org manager to add users', () => {
-        const spaceUser = Object.assign({}, user, {
-          roles: buildRoles(spaceGuid, ['space_manager'])
-        });
+      const spaceUser = Object.assign({}, user, {
+        roles: buildRoles(spaceGuid, ['space_manager'])
+      });
 
+      beforeEach(() => {
         UserStore._data = Immutable.fromJS([spaceUser]);
         users = shallow(<Users />);
+      });
 
+      it('renders message telling user to ask an org manager to add users', () => {
         expect(users.find(UsersInvite).length).toBe(0);
         expect(users.find(PanelDocumentation).length).toBe(1);
+      });
+
+      it('renders a link for the user to follow to get more information', () => {
+        const panelDoc = users.find(PanelDocumentation);
+        const link = panelDoc.find('a');
+        // eslint-disable-next-line max-len
+        const href = 'https://docs.cloudfoundry.org/adminguide/cli-user-management.html#space-roles';
+
+        expect(link.length).toBe(1);
+        expect(link.prop('href')).toBe(href);
       });
     });
   });
