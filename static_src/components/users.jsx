@@ -23,6 +23,7 @@ const ORG_MANAGER = 'org_manager';
 const SPACE_MANAGER = 'space_manager';
 const ORG_ENTITY = 'organization';
 const SPACE_ENTITY = 'space';
+const cfCliLink = 'https://docs.cloudfoundry.org/adminguide/cli-user-management.html#space-roles';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
@@ -163,15 +164,14 @@ export default class Users extends React.Component {
 
   get userInvite() {
     if (!this.currentUserIsOrgManager) {
-      const cfAPILink = 'https://cloud.gov/docs/getting-started/setup/#set-up-the-command-line';
-
       return (
         <PanelDocumentation>
-          {`Currently, only an org manager can invite users to this ${this.entityType}
-          via the dashboard. If the user you want to add is already a cloud.gov member,
-          you can invite them using the <a href=${cfAPILink}>cloud foundry api. </a>
-          Speak to your org manager if you need to add a user to this ${this.entityType} who
-          is not a member of cloud.gov`}
+          Currently, only an org manager can invite users to this { this.entityType } via
+          the dashboard. If the user you want to add is already a member
+          of this organization, you can invite them using the
+          <a href={ cfCliLink }> cloud foundry command line interface. </a>
+          Speak to your org manager if you need to add a user to this { this.entityType } who
+          is not a member of this organization.
         </PanelDocumentation>
       );
     }
