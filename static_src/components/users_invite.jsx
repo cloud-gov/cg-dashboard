@@ -109,7 +109,7 @@ export default class UsersInvite extends React.Component {
             type="submit"
             disabled={ inviteDisabled }
           >
-            Add user to this { this.state.inviteEntityType }
+            Add user to this { this.props.inviteEntityType }
           </Action>
         </Form>
       </div>
