@@ -27,18 +27,21 @@ fi
 
 
 if [[ -z "${START_VNC}" ]]; then
-  echo "Not starting VNC"
+  echo "Not starting VNC..."
 else
   # make sure we comment out the nvm bash_completion line because
   # it doesn't work when starting VNC.
   sed -i 's/.*NVM_DIR\/bash_completion/#&/' $HOME/.bashrc
   # in the case of wait, we will want to setup the VNC.
-  /dockerstartup/vnc_startup.sh
+  echo "Starting VNC service..."
+  /dockerstartup/vnc_startup.sh &> /dev/null
   if [ $? -ne 0 ]; then
     # if it fails, we should exit before getting caught in the sleep command.
-    echo "something went wrong setting up vnc"
+    echo "Something went wrong setting up vnc"
     exit 1
   fi
+  echo "VNC service started!"
 fi
 
+echo "Running '$@'"
 exec "$@"
