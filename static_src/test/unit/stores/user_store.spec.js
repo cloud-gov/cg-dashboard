@@ -909,6 +909,7 @@ describe('UserStore', function () {
       });
     });
   });
+
   describe('isAdmin()', function () {
     describe('user with _currentUserIsAdmin', function () {
       let user, space, org, actual;

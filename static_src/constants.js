@@ -268,10 +268,6 @@ const userActionTypes = keymirror({
   USER_ASSOCIATED_ORG_DISPLAYED: null,
   // Action when something goes wrong in user invite and email process.
   USER_INVITE_ERROR: null,
-  // Current user parent entity users requested
-  USER_PARENT_ENTITY_USERS_TRIGGER: null,
-  // Current user parent entity notice created
-  USER_PARENT_ENTITY_USERS_NOTICE_CREATED: null,
   // Action to dismiss an user list notification.
   USER_LIST_NOTICE_DISMISSED: null,
   // Action to remove all roles for space user.

@@ -66,13 +66,6 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.USER_PARENT_ENTITY_USERS_TRIGGER: {
-        this._userParentEntityUserSelectDisabled = true;
-        this._userListNotificationError = null;
-        this.emitChange();
-        break;
-      }
-
       case userActionTypes.USER_INVITE_TRIGGER: {
         this._inviteDisabled = true;
         this._userListNotificationError = null;
@@ -217,16 +210,6 @@ export class UserStore extends BaseStore {
           description: action.message
         });
 
-        this.emitChange();
-        break;
-      }
-
-      case userActionTypes.USER_PARENT_ENTITY_USERS_NOTICE_CREATED: {
-        this._userParentEntityUserSelectDisabled = false;
-        const noticeType = action.noticeType;
-        const description = action.description;
-        const notice = Object.assign({}, { noticeType }, { description });
-        this._userListNotification = notice;
         this.emitChange();
         break;
       }
