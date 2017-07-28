@@ -31,10 +31,6 @@ const defaultProps = {
   error: {}
 };
 
-function stateSetter() {
-  return {};
-}
-
 export default class OrgUsersSelector extends React.Component {
   constructor(props) {
     super(props);

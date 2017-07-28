@@ -34,10 +34,10 @@ describe('<OrgUsersSelector />', function () {
 
   describe('when user selector', () => {
     it('renders users', () => {
-      const username = "username";
-      const guid = "a-guid";
+      const username = 'username';
+      const guid = 'a-guid';
       const user = { guid, username };
-      const parentEntityUsers = [user, user, user]
+      const parentEntityUsers = [user, user, user];
       const usersProps = Object.assign({}, props, { parentEntityUsers });
       wrapper = shallow(<OrgUsersSelector { ...usersProps } />);
       const formSelect = wrapper.find(Form).find(FormSelect);
