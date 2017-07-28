@@ -12,6 +12,8 @@ import PanelDocumentation from './panel_documentation.jsx';
 import userActions from '../actions/user_actions';
 import { validateString } from '../util/validators';
 
+const AUDITOR_NAME = 'auditors';
+const SPACE_AUDITOR_NAME = 'space_auditor';
 const USERS_PARENT_ENTITY_USER_FORM_GUID = 'users-parent-entity-users-form';
 
 const propTypes = {
@@ -61,8 +63,8 @@ export default class OrgUsersSelector extends React.Component {
   _onSubmitForm(errs, values) {
     const entityType = this.state.currentEntity;
     const entityGuid = this.state.currentEntityGuid;
-    const apiKey = 'auditors';
-    const roles = 'space_auditor';
+    const apiKey = AUDITOR_NAME;
+    const roles = SPACE_AUDITOR_NAME;
     if (values.userGuid) {
       const userGuid = values.userGuid.value;
       userActions.addUserRoles(roles, apiKey, userGuid, entityGuid, entityType);
