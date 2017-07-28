@@ -47,6 +47,18 @@ describe('<UsersInvite />', function () {
 
         expect(wrapper.find(PanelDocumentation).find('p').text()).toBe(doc);
       });
+
+      it('refers to `organization` when type is organization in the action button', () => {
+        const buttonHTML = '<button class="action action-primary usa-button ' +
+          'usa-button-primary" aria-label="submit" type="submit">' +
+          'Add user to this organization</button>';
+        const orgProps = Object.assign({}, props, {
+          inviteEntityType: 'organization'
+        });
+        wrapper = shallow(<UsersInvite { ...orgProps } />);
+
+        expect(wrapper.find(Action).html()).toEqual(buttonHTML);
+      });
     });
   });
 

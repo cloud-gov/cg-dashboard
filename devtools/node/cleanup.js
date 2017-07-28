@@ -8,7 +8,4 @@ chokidar.watch([
   '^index.html*'
 ]).on('add', (file) => {
   fs.unlinkSync(`${file}`);
-  /* eslint-disable no-console */
-  console.log(`deleted ${file}`);
-  /* eslint-enable no-console */
 });

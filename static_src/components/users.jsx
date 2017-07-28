@@ -193,7 +193,7 @@ export default class Users extends React.Component {
       <UsersInvite
         inviteEntityType={ this.entityType }
         inviteDisabled={ this.state.inviteDisabled }
-        currentUserAccess={ this.state.currentUserAccess }
+        currentUserAccess={ this.currentUserIsOrgManager }
         error={ this.state.userListNoticeError }
       />
     );
