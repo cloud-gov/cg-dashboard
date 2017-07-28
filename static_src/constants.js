@@ -248,6 +248,10 @@ const userActionTypes = keymirror({
   USER_ROLES_ADD: null,
   // Action when user roles are added on the server.
   USER_ROLES_ADDED: null,
+  // Action to add permissions to a user for a space or org on the server with username.
+  USER_ROLES_ADD_WITH_USERNAME: null,
+  // Action when user roles are added on the server with username.
+  USER_ROLES_ADDED_WITH_USERNAME: null,
   // Action to delete persmissions to a user for a space or org on the server.
   USER_ROLES_DELETE: null,
   // Action when user roles are deleted on the server.
@@ -268,6 +272,10 @@ const userActionTypes = keymirror({
   USER_ASSOCIATED_ORG_DISPLAYED: null,
   // Action when something goes wrong in user invite and email process.
   USER_INVITE_ERROR: null,
+  // Current user parent entity users requested
+  USER_PARENT_ENTITY_USERS_TRIGGER: null,
+  // Current user parent entity notice created
+  USER_PARENT_ENTITY_USERS_NOTICE_CREATED: null,
   // Action to dismiss an user list notification.
   USER_LIST_NOTICE_DISMISSED: null,
   // Action to remove all roles for space user.
