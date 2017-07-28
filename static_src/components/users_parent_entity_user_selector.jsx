@@ -39,7 +39,6 @@ function stateSetter(props) {
     parentEntity: props.parentEntity,
     currentEntityGuid: props.currentEntityGuid,
     currentEntity: props.currentEntity,
-    parentEntityUsers: props.parentEntityUsers,
     error: props.error
   };
 }
@@ -90,7 +89,9 @@ export default class UsersParentEntityUserSelector extends React.Component {
 
   get userSelector() {
     const orgUsers = this.state.parentEntityUsers.map((user) => {
-      return { value: user.guid, label: user.username };
+      return (
+        { value: user.guid, label: user.username }
+      );
     });
 
     if (!orgUsers) {

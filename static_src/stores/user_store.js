@@ -195,15 +195,6 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.USER_INVITE_ERROR: {
-        this._userListNotificationError = Object.assign({}, action.err, {
-          contextualMessage: action.contextualMessage
-        });
-        this._inviteDisabled = false;
-        this.emitChange();
-        break;
-      }
-
       case userActionTypes.USER_ROLE_CHANGE_ERROR: {
         this._saving = false;
         this._error = Object.assign({}, action.error, {
@@ -334,7 +325,7 @@ export class UserStore extends BaseStore {
 
   getAllInOrgAndNotSpace() {
     const usersInOrg = this._data.toJS().filter((user) =>
-      !user['space_roles']
+      !user.space_roles
     );
 
     return usersInOrg;
