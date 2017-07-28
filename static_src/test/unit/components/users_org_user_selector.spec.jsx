@@ -2,8 +2,9 @@ import '../../global_setup.js';
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Form } from '../../../components/form';
+import { Form, FormSelect } from '../../../components/form';
 import OrgUsersSelector from '../../../components/users_org_user_selector.jsx';
+import PanelDocumentation from '../../../components/panel_documentation.jsx';
 
 describe('<OrgUsersSelector />', function () {
   const parentEntityType = 'organization';
@@ -19,14 +20,36 @@ describe('<OrgUsersSelector />', function () {
   };
   let wrapper;
 
-  describe('when user sees a error message', () => {
-    it('renders error in form', () => {
-      const error = {};
-      error.contextualMessage = "this is a message";
-      error.message = "this is the medium"
-      const errorProps = Object.assign({}, props, { error });
-      wrapper = shallow(<OrgUsersSelector { ...errorProps } />);
-      expect(wrapper.find(Form).find('.error_message').length).toEqual(1);
+
+  describe('when the working description is displayed as text panel', () => {
+    beforeEach(() => {
+      wrapper = shallow(<OrgUsersSelector { ...props } />);
+    });
+
+    it('displays proper message', () => {
+      const doc = 'Invite an existing user in this organization to this space.';
+      expect(wrapper.find(PanelDocumentation).find('p').text()).toBe(doc);
+    });
+  });
+
+  describe('when user selector', () => {
+    it('renders users', () => {
+      const username = "username";
+      const guid = "a-guid";
+      const user = { guid, username };
+      const parentEntityUsers = [user, user, user]
+      const usersProps = Object.assign({}, props, { parentEntityUsers });
+      wrapper = shallow(<OrgUsersSelector { ...usersProps } />);
+      const formSelect = wrapper.find(Form).find(FormSelect);
+      expect(formSelect.length).toEqual(1);
+      expect(formSelect.props().options.length).toEqual(3);
+    });
+    it('renders without users', () => {
+      const usersProps = Object.assign({}, props, { parentEntityUsers: [] });
+      wrapper = shallow(<OrgUsersSelector { ...usersProps } />);
+      const formSelect = wrapper.find(Form).find(FormSelect);
+      expect(formSelect.length).toEqual(1);
+      expect(formSelect.props().options.length).toEqual(0);
     });
   });
 

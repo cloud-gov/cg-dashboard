@@ -58,20 +58,6 @@ export default class OrgUsersSelector extends React.Component {
     }
   }
 
-  get errorMessage() {
-    const { error } = this.props;
-
-    if (!error) return '';
-
-    const message = error.contextualMessage;
-
-    if (error.message) {
-      return `${message}: ${error.message}.`;
-    }
-
-    return message;
-  }
-
   get invitationMessage() {
     const { parentEntity } = this.props;
     const { currentEntity } = this.props;
@@ -120,7 +106,6 @@ export default class OrgUsersSelector extends React.Component {
           classes={ ['users_parent_entity_user_form'] }
           ref="form"
           onSubmit={ this._onSubmitForm }
-          errorOverride={ this.errorMessage }
         >
           { this.userSelector }
           <Action
