@@ -11,7 +11,7 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UsersInvite from './users_invite.jsx';
-import OrgUsersSelector from './users_parent_entity_user_selector.jsx';
+import OrgUsersSelector from './users_org_user_selector.jsx';
 import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
 import ErrorMessage from './error_message.jsx';
@@ -215,7 +215,6 @@ export default class Users extends React.Component {
     return (
       <OrgUsersSelector
         orgUsersSelectorDisabled={ this.state.orgUsersSelectorDisabled }
-        parentEntityGuid={ this.state.currentOrgGuid }
         parentEntity={ ORG_ENTITY }
         currentEntityGuid={ this.entityGuid }
         currentEntity={ this.entityType }

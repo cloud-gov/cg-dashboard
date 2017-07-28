@@ -21,7 +21,6 @@ const propTypes = {
   currentUserAccess: PropTypes.bool,
   parentEntityUsers: PropTypes.array,
   error: PropTypes.object,
-  parentEntityGuid: PropTypes.string,
   parentEntity: PropTypes.string,
   currentEntityGuid: PropTypes.string,
   currentEntity: PropTypes.string
@@ -32,25 +31,13 @@ const defaultProps = {
   error: {}
 };
 
-
-function stateSetter(props) {
-  return {
-    orgUsersSelectorDisabled: props.orgUsersSelectorDisabled,
-    currentUserAccess: props.currentUserAccess,
-    parentEntityUsers: props.parentEntityUsers,
-    parentEntityGuid: props.parentEntityGuid,
-    parentEntity: props.parentEntity,
-    currentEntityGuid: props.currentEntityGuid,
-    currentEntity: props.currentEntity,
-    error: props.error
-  };
+function stateSetter() {
+  return {};
 }
 
 export default class OrgUsersSelector extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = stateSetter(props);
 
     this.validateString = validateString().bind(this);
     this._onSubmitForm = this._onSubmitForm.bind(this);
@@ -61,13 +48,13 @@ export default class OrgUsersSelector extends React.Component {
   }
 
   _onSubmitForm(errs, values) {
-    const entityType = this.state.currentEntity;
-    const entityGuid = this.state.currentEntityGuid;
+    const { currentEntity } = this.props;
+    const { currentEntityGuid } = this.props;
     const apiKey = AUDITOR_NAME;
     const roles = SPACE_AUDITOR_NAME;
     if (values.userGuid) {
       const userGuid = values.userGuid.value;
-      userActions.addUserRoles(roles, apiKey, userGuid, entityGuid, entityType);
+      userActions.addUserRoles(roles, apiKey, userGuid, currentEntityGuid, currentEntity);
     }
   }
 
@@ -86,15 +73,16 @@ export default class OrgUsersSelector extends React.Component {
   }
 
   get invitationMessage() {
-    const parentEntity = this.props.parentEntity;
-    const currentEntity = this.props.currentEntity;
+    const { parentEntity } = this.props;
+    const { currentEntity } = this.props;
 
     return `Invite an existing user in this ${parentEntity}` +
       ` to this ${currentEntity}.`;
   }
 
   get userSelector() {
-    const orgUsers = this.state.parentEntityUsers.map((user) =>
+    const { parentEntityUsers } = this.props;
+    const orgUsers = parentEntityUsers.map((user) =>
       ({ value: user.guid, label: user.username })
     );
 
@@ -105,7 +93,7 @@ export default class OrgUsersSelector extends React.Component {
     return (
       <FormSelect
         formGuid={ USERS_PARENT_ENTITY_USER_FORM_GUID }
-        classes={ ['test-users_parent_entity_user_name'] }
+        classes={ ['test-users'] }
         label="Username"
         name="userGuid"
         options={ orgUsers }
@@ -116,6 +104,7 @@ export default class OrgUsersSelector extends React.Component {
 
   render() {
     const { orgUsersSelectorDisabled } = this.props;
+    const { currentEntity } = this.props;
 
     if (!this.props.currentUserAccess) {
       return null;
@@ -139,7 +128,7 @@ export default class OrgUsersSelector extends React.Component {
             type="submit"
             disabled={ orgUsersSelectorDisabled }
           >
-            Add user to this { this.state.currentEntity }
+            Add user to this { currentEntity }
           </Action>
         </Form>
       </div>
