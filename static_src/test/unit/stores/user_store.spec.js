@@ -682,6 +682,19 @@ describe('UserStore', function () {
     });
   });
 
+  describe('getAllInOrgAndNotSpace()', function() {
+    it('should find all users that are in an org, without the space users', function() {
+      var spaceGuid = 'asdfa';
+      var testUser = { guid: 'adfzxcv', roles: { [spaceGuid]: [ 'space_user'] } };
+
+      UserStore.push(testUser);
+
+      let actual = UserStore.getAllInOrg(spaceGuid);
+
+      expect(actual[0]).toEqual(testUser);
+    });
+  });
+
   describe('USER_FETCH', function () {
     let user;
     beforeEach(function () {
