@@ -88,11 +88,9 @@ export default class UsersParentEntityUserSelector extends React.Component {
   }
 
   get userSelector() {
-    const orgUsers = this.state.parentEntityUsers.map((user) => {
-      return (
-        { value: user.guid, label: user.username }
-      );
-    });
+    const orgUsers = this.state.parentEntityUsers.map((user) =>
+      ({ value: user.guid, label: user.username })
+    );
 
     if (!orgUsers) {
       return null;
@@ -107,7 +105,7 @@ export default class UsersParentEntityUserSelector extends React.Component {
         options={ orgUsers }
         validator={ this.validateString }
       />
-    )
+    );
   }
 
   render() {
