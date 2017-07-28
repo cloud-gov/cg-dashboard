@@ -11,7 +11,7 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UsersInvite from './users_invite.jsx';
-import UsersParentEntityUserSelector from './users_parent_entity_user_selector.jsx';
+import OrgUsersSelector from './users_parent_entity_user_selector.jsx';
 import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
 import ErrorMessage from './error_message.jsx';
@@ -37,7 +37,7 @@ function stateSetter() {
   let parentEntityUsers;
   let currentUserAccess = false;
   const inviteDisabled = UserStore.inviteDisabled();
-  const userParentEntityUserSelectDisabled = UserStore.userParentEntityUserSelectDisabled();
+  const orgUsersSelectorDisabled = UserStore.orgUsersSelectorDisabled();
   let entityGuid;
 
   if (currentType === SPACE_NAME) {
@@ -57,7 +57,7 @@ function stateSetter() {
     currentUser,
     error: UserStore.getError(),
     inviteDisabled,
-    userParentEntityUserSelectDisabled,
+    orgUsersSelectorDisabled,
     currentUserAccess,
     currentOrgGuid,
     currentSpaceGuid,
@@ -207,14 +207,14 @@ export default class Users extends React.Component {
     if (!this.currentUserIsSpaceManager) {
       return (
         <PanelDocumentation>
-          ORG AND SPACE MANAGERS CAN DO THIS.
+          Org Managers and Space Managers can add current organization users into this space.
         </PanelDocumentation>
       );
     }
 
     return (
-      <UsersParentEntityUserSelector
-        userParentEntityUserSelectDisabled={ this.state.userParentEntityUserSelectDisabled }
+      <OrgUsersSelector
+        orgUsersSelectorDisabled={ this.state.orgUsersSelectorDisabled }
         parentEntityGuid={ this.state.currentOrgGuid }
         parentEntity={ ORG_ENTITY }
         currentEntityGuid={ this.entityGuid }

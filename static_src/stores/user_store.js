@@ -21,7 +21,7 @@ export class UserStore extends BaseStore {
     this._error = null;
     this._saving = false;
     this._inviteDisabled = false;
-    this._userParentEntityUserSelectDisabled = false;
+    this._orgUsersSelectorDisabled = false;
     this._userListNotification = {};
     this._loading = {};
   }
@@ -190,7 +190,7 @@ export class UserStore extends BaseStore {
         this._userListNotificationError = Object.assign({}, action.err, {
           contextualMessage: action.contextualMessage
         });
-        this._userParentEntityUserSelectDisabled = false;
+        this._orgUsersSelectorDisabled = false;
         this.emitChange();
         break;
       }
@@ -376,8 +376,8 @@ export class UserStore extends BaseStore {
     return !!roles.find((role) => wrappedRoles.includes(role));
   }
 
-  userParentEntityUserSelectDisabled() {
-    return this._userParentEntityUserSelectDisabled;
+  orgUsersSelectorDisabled() {
+    return this._orgUsersSelectorDisabled;
   }
 
   inviteDisabled() {

@@ -15,7 +15,7 @@ import { validateString } from '../util/validators';
 const USERS_PARENT_ENTITY_USER_FORM_GUID = 'users-parent-entity-users-form';
 
 const propTypes = {
-  userParentEntityUserSelectDisabled: PropTypes.bool,
+  orgUsersSelectorDisabled: PropTypes.bool,
   currentUserAccess: PropTypes.bool,
   parentEntityUsers: PropTypes.array,
   error: PropTypes.object,
@@ -25,14 +25,15 @@ const propTypes = {
   currentEntity: PropTypes.string
 };
 const defaultProps = {
-  userParentEntityUserSelectDisabled: false,
+  orgUsersSelectorDisabled: false,
   currentUserAccess: false,
   error: {}
 };
 
+
 function stateSetter(props) {
   return {
-    userParentEntityUserSelectDisabled: props.userParentEntityUserSelectDisabled,
+    orgUsersSelectorDisabled: props.orgUsersSelectorDisabled,
     currentUserAccess: props.currentUserAccess,
     parentEntityUsers: props.parentEntityUsers,
     parentEntityGuid: props.parentEntityGuid,
@@ -43,15 +44,18 @@ function stateSetter(props) {
   };
 }
 
-export default class UsersParentEntityUserSelector extends React.Component {
+export default class OrgUsersSelector extends React.Component {
   constructor(props) {
     super(props);
-    FormStore.create(USERS_PARENT_ENTITY_USER_FORM_GUID);
 
     this.state = stateSetter(props);
 
     this.validateString = validateString().bind(this);
     this._onSubmitForm = this._onSubmitForm.bind(this);
+  }
+
+  componentDidMount() {
+    FormStore.create(USERS_PARENT_ENTITY_USER_FORM_GUID);
   }
 
   _onSubmitForm(errs, values) {
@@ -109,7 +113,7 @@ export default class UsersParentEntityUserSelector extends React.Component {
   }
 
   render() {
-    const { userParentEntityUserSelectDisabled } = this.props;
+    const { orgUsersSelectorDisabled } = this.props;
 
     if (!this.props.currentUserAccess) {
       return null;
@@ -131,7 +135,7 @@ export default class UsersParentEntityUserSelector extends React.Component {
           <Action
             label="submit"
             type="submit"
-            disabled={ userParentEntityUserSelectDisabled }
+            disabled={ orgUsersSelectorDisabled }
           >
             Add user to this { this.state.currentEntity }
           </Action>
@@ -142,6 +146,6 @@ export default class UsersParentEntityUserSelector extends React.Component {
 
 }
 
-UsersParentEntityUserSelector.propTypes = propTypes;
+OrgUsersSelector.propTypes = propTypes;
 
-UsersParentEntityUserSelector.defaultProps = defaultProps;
+OrgUsersSelector.defaultProps = defaultProps;
