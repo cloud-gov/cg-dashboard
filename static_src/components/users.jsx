@@ -204,9 +204,6 @@ export default class Users extends React.Component {
       return null;
     }
 
-    const disabled = this.state.userParentEntityUserSelectDisabled;
-    const parentEntityUsers = this.state.parentEntityUsers;
-
     if (!this.currentUserIsSpaceManager) {
       return (
         <PanelDocumentation>
@@ -217,8 +214,12 @@ export default class Users extends React.Component {
 
     return (
       <UsersParentEntityUserSelector
-        userParentEntityUserSelectDisabled={ disabled }
-        parentEntityUsers={ parentEntityUsers }
+        userParentEntityUserSelectDisabled={ this.state.userParentEntityUserSelectDisabled }
+        parentEntityGuid={ this.state.currentOrgGuid }
+        parentEntity={ ORG_ENTITY }
+        currentEntityGuid={ this.entityGuid }
+        currentEntity={ this.entityType }
+        parentEntityUsers={ this.state.parentEntityUsers }
         inviteEntityType={ this.entityType }
         currentUserAccess={ this.state.currentUserAccess }
         error={ this.state.userListNoticeError }

@@ -18,7 +18,11 @@ const propTypes = {
   userParentEntityUserSelectDisabled: PropTypes.bool,
   currentUserAccess: PropTypes.bool,
   parentEntityUsers: PropTypes.array,
-  error: PropTypes.object
+  error: PropTypes.object,
+  parentEntityGuid: PropTypes.string,
+  parentEntity: PropTypes.string,
+  currentEntityGuid: PropTypes.string,
+  currentEntity: PropTypes.string
 };
 const defaultProps = {
   userParentEntityUserSelectDisabled: false,
@@ -28,7 +32,13 @@ const defaultProps = {
 
 function stateSetter(props) {
   return {
-    // Find a way to get all users in this org
+    userParentEntityUserSelectDisabled: props.userParentEntityUserSelectDisabled,
+    currentUserAccess: props.currentUserAccess,
+    parentEntityUsers: props.parentEntityUsers,
+    parentEntityGuid: props.parentEntityGuid,
+    parentEntity: props.parentEntity,
+    currentEntityGuid: props.currentEntityGuid,
+    currentEntity: props.currentEntity,
     parentEntityUsers: props.parentEntityUsers,
     error: props.error
   };
@@ -46,9 +56,13 @@ export default class UsersParentEntityUserSelector extends React.Component {
   }
 
   _onSubmitForm(errs, values) {
-    if (values.username) {
-      const username = values.username.value;
-      userActions.addUserToSpace(username);
+    const entityType = this.state.currentEntity;
+    const entityGuid = this.state.currentEntityGuid;
+    const apiKey = 'auditors';
+    const roles = 'space_auditor';
+    if (values.userGuid) {
+      const userGuid = values.userGuid.value;
+      userActions.addUserRoles(roles, apiKey, userGuid, entityGuid, entityType);
     }
   }
 
@@ -88,7 +102,7 @@ export default class UsersParentEntityUserSelector extends React.Component {
         formGuid={ USERS_PARENT_ENTITY_USER_FORM_GUID }
         classes={ ['test-users_parent_entity_user_name'] }
         label="Username"
-        name="username"
+        name="userGuid"
         options={ orgUsers }
         validator={ this.validateString }
       />

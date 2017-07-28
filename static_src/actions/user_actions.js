@@ -159,44 +159,6 @@ const userActions = {
     });
   },
 
-  addUserByUsernameRoles(roles, apiKey, username, entityGuid, entityType) {
-    const apiMethodMap = {
-      organization: cfApi.putOrgUserPermissions,
-      space: cfApi.putSpaceUserPermissions
-    };
-    const api = apiMethodMap[entityType];
-
-    AppDispatcher.handleViewAction({
-      type: userActionTypes.USER_ROLES_ADD_WITH_USERNAME,
-      roles,
-      userGuid,
-      entityGuid,
-      entityType
-    });
-
-    return api(
-      userGuid,
-      entityGuid,
-      apiKey
-    ).then(() => {
-      userActions.addedUserByUsernameRoles(
-        roles,
-        userGuid,
-        entityGuid,
-        entityType);
-    }).catch(error => this.errorChangeUserRole(error));
-  },
-
-  addedUserByUsernameRoles(roles, userGuid, entityGuid, entityType) {
-    AppDispatcher.handleServerAction({
-      type: userActionTypes.USER_ROLES_ADDED_WITH_USERNAME,
-      roles,
-      userGuid,
-      entityGuid,
-      entityType
-    });
-  },
-
   addUserRoles(roles, apiKey, userGuid, entityGuid, entityType) {
     const apiMethodMap = {
       organization: cfApi.putOrgUserPermissions,

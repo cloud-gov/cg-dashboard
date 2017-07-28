@@ -248,10 +248,6 @@ const userActionTypes = keymirror({
   USER_ROLES_ADD: null,
   // Action when user roles are added on the server.
   USER_ROLES_ADDED: null,
-  // Action to add permissions to a user for a space or org on the server with username.
-  USER_ROLES_ADD_WITH_USERNAME: null,
-  // Action when user roles are added on the server with username.
-  USER_ROLES_ADDED_WITH_USERNAME: null,
   // Action to delete persmissions to a user for a space or org on the server.
   USER_ROLES_DELETE: null,
   // Action when user roles are deleted on the server.
