@@ -74,16 +74,6 @@ const userActions = {
     return Promise.all(orgSpaceUsers);
   },
 
-  getParentEntityUsers(entityType, entityGuid) {
-    let users;
-    if (entityType === ORG_ENTITY) {
-      users = userActions.fetchOrgUsers(entityGuid);
-    } else if (entityType === SPACE_ENTITY) {
-      users = userActions.fetchSpaceUserRoles(entityGuid);
-    }
-    return Promise.resolve(users);
-  },
-
   fetchUserAssociationsToOrgSpaces(userGuid, orgGuid) {
     return Promise.resolve(cfApi.fetchAllOrgSpaces(orgGuid))
       .then((orgSpaces) => userActions.receivedOrgSpacesToExtractSpaceUsers(orgSpaces));
