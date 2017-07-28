@@ -12,7 +12,10 @@ import UserStore from '../stores/user_store';
 import OrgStore from '../stores/org_store';
 import SpaceStore from '../stores/space_store';
 
+const ORG_ENTITY = 'organization';
+const SPACE_ENTITY = 'space';
 const ORG_NAME = OrgStore.cfName;
+// const SPACE_NAME = SpaceStore.cfName;
 const MSG_USER_HAS_SPACE_ROLES = 'This user can\'t be removed because they still have a space ' +
                   'role within the organization. Please remove all space ' +
                   'associations before removing this user from the organization. ' +
@@ -69,6 +72,16 @@ const userActions = {
       cfApi.fetchSpaceUserRoles(orgSpace.guid)
     ));
     return Promise.all(orgSpaceUsers);
+  },
+
+  getParentEntityUsers(entityType, entityGuid) {
+    let users;
+    if (entityType === ORG_ENTITY) {
+      users = userActions.fetchOrgUsers(entityGuid);
+    } else if (entityType === SPACE_ENTITY) {
+      users = userActions.fetchSpaceUserRoles(entityGuid);
+    }
+    return Promise.resolve(users);
   },
 
   fetchUserAssociationsToOrgSpaces(userGuid, orgGuid) {
@@ -143,6 +156,44 @@ const userActions = {
       type: userActionTypes.USER_DELETED,
       userGuid,
       orgGuid
+    });
+  },
+
+  addUserByUsernameRoles(roles, apiKey, username, entityGuid, entityType) {
+    const apiMethodMap = {
+      organization: cfApi.putOrgUserPermissions,
+      space: cfApi.putSpaceUserPermissions
+    };
+    const api = apiMethodMap[entityType];
+
+    AppDispatcher.handleViewAction({
+      type: userActionTypes.USER_ROLES_ADD_WITH_USERNAME,
+      roles,
+      userGuid,
+      entityGuid,
+      entityType
+    });
+
+    return api(
+      userGuid,
+      entityGuid,
+      apiKey
+    ).then(() => {
+      userActions.addedUserByUsernameRoles(
+        roles,
+        userGuid,
+        entityGuid,
+        entityType);
+    }).catch(error => this.errorChangeUserRole(error));
+  },
+
+  addedUserByUsernameRoles(roles, userGuid, entityGuid, entityType) {
+    AppDispatcher.handleServerAction({
+      type: userActionTypes.USER_ROLES_ADDED_WITH_USERNAME,
+      roles,
+      userGuid,
+      entityGuid,
+      entityType
     });
   },
 
@@ -291,8 +342,8 @@ const userActions = {
     const noticeType = 'finish';
     const currentViewedType = UserStore.currentlyViewedType;
     const viewTypeNouns = Object.assign({},
-      { space_users: { singular: 'space' } },
-      { org_users: { singular: 'organization' } }
+      { space_users: { singular: SPACE_ENTITY } },
+      { org_users: { singular: ORG_ENTITY } }
     );
     const entity = viewTypeNouns[currentViewedType].singular;
 
