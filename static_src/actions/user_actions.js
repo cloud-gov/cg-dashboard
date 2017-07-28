@@ -15,7 +15,6 @@ import SpaceStore from '../stores/space_store';
 const ORG_ENTITY = 'organization';
 const SPACE_ENTITY = 'space';
 const ORG_NAME = OrgStore.cfName;
-// const SPACE_NAME = SpaceStore.cfName;
 const MSG_USER_HAS_SPACE_ROLES = 'This user can\'t be removed because they still have a space ' +
                   'role within the organization. Please remove all space ' +
                   'associations before removing this user from the organization. ' +
