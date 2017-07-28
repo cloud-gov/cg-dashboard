@@ -34,7 +34,7 @@ CfApiV2Error.prototype.constructor = Error;
 // TODO handleError should probably return a (rejected) Promise
 function handleError(err, errHandler = errorActions.errorFetch) {
   // An http error should be passed to error actions.
-  // When an error has a `reponse` object, it's likely from ajax.
+  // When an error has a `response` object, it's likely from ajax.
   if (err.response) {
     const errRes = err.response;
     if (errRes.data) {
@@ -301,10 +301,7 @@ export default {
 
     return http.post(`${APIV}/service_instances?accepts_incomplete=true`, payload)
       .then((res) => this.formatSplitResponse(res.data))
-      .catch((err) => {
-        handleError(err);
-        return Promise.reject(err);
-      });
+      .catch((error) => Promise.reject(error));
   },
 
   deleteUnboundServiceInstance(serviceInstance) {

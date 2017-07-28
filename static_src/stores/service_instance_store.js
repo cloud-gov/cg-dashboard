@@ -33,6 +33,21 @@ const APP_STATE_MAP = {
   [OPERATION_RUNNING]: appStates.running
 };
 
+const FRIENDLY_ERROR_MAP = {
+  'CF-ServiceInstanceInvalid': 'Invalid space selected.',
+  'CF-MessageParseError': 'One or more form fields is blank or invalid.'
+};
+
+const getFriendlyError = error => {
+  const { code, error_code: errorCode } = error;
+
+  if (errorCode in FRIENDLY_ERROR_MAP) {
+    return FRIENDLY_ERROR_MAP[errorCode];
+  }
+
+  return `Error #${code}: please contact cloud.gov support for help troubleshooting this issue.`;
+};
+
 export class ServiceInstanceStore extends BaseStore {
   constructor() {
     super();
@@ -199,7 +214,9 @@ export class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR: {
-        this._createError = action.error;
+        this._createError = {
+          description: getFriendlyError(action.error)
+        };
         this._createLoading = false;
         this.emitChange();
         break;

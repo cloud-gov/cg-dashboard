@@ -357,8 +357,7 @@ describe('serviceActions', function() {
   });
 
   describe('createdInstance()', function() {
-    it('should dispatch a server event of type instance created with service',
-        function() {
+    it('dispatchs a server event of type instance created with service', () => {
       var expectedInstance = { guid: 'asdfas' };
 
       let expectedParams = {
@@ -373,19 +372,47 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('errorCreateInstance()', function() {
-    it('should dispatch a server event of type error create instance', function() {
-      var expectedErr = { status: 400 };
+  describe('errorCreateInstance()', () => {
+    const type = serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR;
+    let spy;
 
-      let expectedParams = {
-        error: expectedErr
-      }
-      let spy = setupServerSpy(sandbox);
+    beforeEach(() => {
+      spy = sandbox.spy(AppDispatcher, 'handleServerAction');
+    });
 
-      serviceActions.errorCreateInstance(expectedErr);
+    afterEach(() => {
+      spy.restore();
+    });
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR,
-                   expectedParams);
+    describe('server fault', () => {
+      it('dispatches the correct error type and a code 500', () => {
+        const originalError = { message: 'Bad error', stack: [] };
+        const actual = { code: 500 };
+
+        serviceActions.errorCreateInstance(originalError);
+
+        const actionInfo = spy.getCall(0).args[0];
+        const { type, error } = actionInfo;
+
+        expect(spy).toHaveBeenCalledOnce();
+        expect(actionInfo.type).toEqual(type);
+        expect(error).toEqual(actual);
+      });
+    });
+
+    describe('API error/malformed request', () => {
+      it('dispatches the correct error type and error data object', () => {
+        const originalError = { response: { data: { hey: 'there' } } };
+
+        serviceActions.errorCreateInstance(originalError);
+
+        const actionInfo = spy.getCall(0).args[0];
+        const { type, error } = actionInfo;
+
+        expect(spy).toHaveBeenCalledOnce();
+        expect(actionInfo.type).toEqual(type);
+        expect(error).toEqual(originalError.response.data);
+      });
     });
   });
 

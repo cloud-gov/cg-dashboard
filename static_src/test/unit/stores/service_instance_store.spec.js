@@ -286,16 +286,35 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
-  describe('on instance create error', function() {
-    it('should set create error to passed in error', function() {
-      var expectedError = { status: 500 };
+  describe('on SERVICE_INSTANCE_CREATE_ERROR', () => {
+    it('should set `createError` based on error received', () => {
+      const serverError = { code: 500 };
+      const argumentError = { response: { data: { error_code: 'CF-MessageParseError' } } };
+      const spaceError = { response: { data: { error_code: 'CF-ServiceInstanceInvalid' } } };
+      const serverErrorMsg =
+        'Error #500: please contact cloud.gov support for help troubleshooting this issue.';
+      let actual;
 
-      serviceActions.errorCreateInstance(expectedError);
+      serviceActions.errorCreateInstance(serverError);
+      actual = ServiceInstanceStore.createError;
 
-      let actual = ServiceInstanceStore.createError;
+      expect(actual).toEqual({
+        description: serverErrorMsg
+      });
 
-      expect(actual).toBeTruthy();
-      expect(actual).toEqual(expectedError);
+      serviceActions.errorCreateInstance(argumentError);
+      actual = ServiceInstanceStore.createError;
+
+      expect(actual).toEqual({
+        description: 'One or more form fields is blank or invalid.'
+      });
+
+      serviceActions.errorCreateInstance(spaceError);
+      actual = ServiceInstanceStore.createError;
+
+      expect(actual).toEqual({
+        description: 'Invalid space selected.'
+      });
     });
 
     it('should emit a change event', function() {
