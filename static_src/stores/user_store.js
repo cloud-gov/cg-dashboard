@@ -21,6 +21,7 @@ export class UserStore extends BaseStore {
     this._error = null;
     this._saving = false;
     this._inviteDisabled = false;
+    this._userParentEntityUserSelectDisabled = false;
     this._userListNotification = {};
     this._loading = {};
   }
@@ -62,6 +63,13 @@ export class UserStore extends BaseStore {
         this.mergeMany('guid', this.mergeRoles(users, spaceGuid, 'space_roles'), () => {});
         this.emitChange();
 
+        break;
+      }
+
+      case userActionTypes.USER_PARENT_ENTITY_USERS_TRIGGER: {
+        this._userParentEntityUserSelectDisabled = true;
+        this._userListNotificationError = null;
+        this.emitChange();
         break;
       }
 
@@ -189,6 +197,15 @@ export class UserStore extends BaseStore {
         this._userListNotificationError = Object.assign({}, action.err, {
           contextualMessage: action.contextualMessage
         });
+        this._userParentEntityUserSelectDisabled = false;
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_INVITE_ERROR: {
+        this._userListNotificationError = Object.assign({}, action.err, {
+          contextualMessage: action.contextualMessage
+        });
         this._inviteDisabled = false;
         this.emitChange();
         break;
@@ -200,6 +217,16 @@ export class UserStore extends BaseStore {
           description: action.message
         });
 
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_PARENT_ENTITY_USERS_NOTICE_CREATED: {
+        this._userParentEntityUserSelectDisabled = false;
+        const noticeType = action.noticeType;
+        const description = action.description;
+        const notice = Object.assign({}, { noticeType }, { description });
+        this._userListNotification = notice;
         this.emitChange();
         break;
       }
@@ -322,6 +349,14 @@ export class UserStore extends BaseStore {
     return usersInOrg.toJS();
   }
 
+  getAllInOrgAndNotSpace() {
+    const usersInOrg = this._data.toJS().filter((user) =>
+      !user['space_roles']
+    );
+
+    return usersInOrg;
+  }
+
   getError() {
     return this._error;
   }
@@ -365,6 +400,10 @@ export class UserStore extends BaseStore {
     const user = this.get(userGuid);
     const roles = user && user.roles && user.roles[key] || [];
     return !!roles.find((role) => wrappedRoles.includes(role));
+  }
+
+  userParentEntityUserSelectDisabled() {
+    return this._userParentEntityUserSelectDisabled;
   }
 
   inviteDisabled() {
