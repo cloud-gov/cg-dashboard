@@ -18,17 +18,15 @@ export class FormStore extends BaseStore {
     return form.fields[fieldName];
   }
 
-  create(formGuid, initialData) {
-    const formFields = Object.keys(initialData || {})
-      .reduce((fields, fieldName) => {
-        const formField = {
-          name: fieldName,
-          value: initialData[fieldName]
-        };
+  create(formGuid, initialData = {}) {
+    const formFields = Object.keys(initialData).reduce((fields, fieldName) => {
+      const formField = {
+        name: fieldName,
+        value: initialData[fieldName]
+      };
 
-        return { ...fields, [fieldName]: formField };
-      }, {});
-
+      return { ...fields, [fieldName]: formField };
+    }, {});
     const form = { guid: formGuid, fields: formFields };
     this.push(form);
     return form;

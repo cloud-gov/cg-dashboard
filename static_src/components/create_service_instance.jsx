@@ -1,12 +1,9 @@
 /**
  * Renders the form to create a service instance
  */
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import Action from './action.jsx';
 import { Form, FormText, FormSelect, FormElement, FormError } from './form';
 import FormStore from '../stores/form_store';
@@ -15,7 +12,6 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
-import createStyler from '../util/create_styler';
 import { validateString } from '../util/validators';
 
 const CREATE_SERVICE_INSTANCE_FORM_GUID = 'create-service-form';
@@ -48,17 +44,14 @@ export default class CreateServiceInstance extends React.Component {
       createError: ServiceInstanceStore.createError
     };
 
-    // Create the form in the store
-    FormStore.create(CREATE_SERVICE_INSTANCE_FORM_GUID);
-
     this.validateString = validateString().bind(this);
     this._onChange = this._onChange.bind(this);
     this._onValidForm = this._onValidForm.bind(this);
     this._onCancelForm = this._onCancelForm.bind(this);
-    this.styler = createStyler(style);
   }
 
   componentDidMount() {
+    FormStore.create(CREATE_SERVICE_INSTANCE_FORM_GUID);
     SpaceStore.addChangeListener(this._onChange);
     ServiceInstanceStore.addChangeListener(this._onChange);
     this.scrollIntoView();
@@ -80,9 +73,13 @@ export default class CreateServiceInstance extends React.Component {
 
   _onValidForm(errs, values) {
     this.setState({ errs }, () => {
+      const { name, space } = values;
+      const instanceName = name || null;
+      const spaceName = space || null;
+
       serviceActions.createInstance(
-        values.name.value,
-        values.space.value,
+        instanceName,
+        spaceName,
         this.props.servicePlan.guid
       );
     });
@@ -101,8 +98,18 @@ export default class CreateServiceInstance extends React.Component {
     return this.props.servicePlan.name || 'Unknown Service Plan Name';
   }
 
-  render() {
+  get validSpaceTargets() {
     const currentOrgGuid = OrgStore.currentOrgGuid;
+    const { spaces } = this.state;
+
+    return spaces.filter(space => {
+      return space.org === currentOrgGuid;
+    }).map(space => {
+      return { value: space.guid, label: space.name }
+    });
+  }
+
+  render() {
     let createError;
     let createAction = (
       <Action label="submit" type="submit">Create service instance</Action>
@@ -116,14 +123,14 @@ export default class CreateServiceInstance extends React.Component {
       createAction = <Loading style="inline" />;
     } else if (this.state.createdTempNotification) {
       createAction = (
-        <span className={ this.styler('status', 'status-ok') }>
+        <span className="status status-ok">
           Created! To bind the service instance to an app, go to an application page and use the services panel.
         </span>
       );
     }
 
     return (
-      <div className = { this.styler('actions-large') }>
+      <div className="actions-large">
         { createError }
         <Form
           guid={ CREATE_SERVICE_INSTANCE_FORM_GUID }
@@ -132,11 +139,13 @@ export default class CreateServiceInstance extends React.Component {
           onSubmit={ this._onValidForm }
         >
           <legend>
-            Create a service instance for <strong
-              className={this.styler('actions-callout-inline-block') }>
-            { this.serviceName }</strong> using <strong
-              className={this.styler('actions-callout-inline-block')}>
-            { this.servicePlanName }</strong> plan.
+            Create a service instance for
+            <strong className="actions-callout-inline-block">
+              { this.serviceName }
+            </strong> using
+            <strong className="actions-callout-inline-block">
+              { this.servicePlanName }
+            </strong> plan.
           </legend>
           <FormText
             formGuid={ CREATE_SERVICE_INSTANCE_FORM_GUID }
@@ -150,16 +159,16 @@ export default class CreateServiceInstance extends React.Component {
             classes={ ['test-create_service_instance_space'] }
             label="Select the space for the service instance"
             name="space"
-            options={ this.state.spaces.filter((space) => {
-              return space.org === currentOrgGuid;
-            }).map((space) => {
-              return { value: space.guid, label: space.name };
-            })}
+            options={ this.validSpaceTargets }
             validator={ this.validateString }
           />
           { createAction }
-                                                                                                                                       <Action label="cancel" style="base" type="outline"
-              clickHandler={ this._onCancelForm.bind(this) }>
+          <Action
+            label="cancel"
+            style="base"
+            type="outline"
+            clickHandler={ this._onCancelForm }
+          >
             Cancel
           </Action>
         </Form>

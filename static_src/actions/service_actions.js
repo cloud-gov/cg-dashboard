@@ -134,7 +134,8 @@ const serviceActions = {
 
     return cfApi.createServiceInstance(name, spaceGuid, servicePlanGuid)
       .then(serviceInstance => serviceActions.fetchInstance(serviceInstance.guid))
-      .then(serviceActions.createdInstance, serviceActions.errorCreateInstance);
+      .then(serviceActions.createdInstance)
+      .catch(serviceActions.errorCreateInstance);
   },
 
   createdInstance(serviceInstance) {
@@ -146,10 +147,13 @@ const serviceActions = {
     return Promise.resolve(serviceInstance);
   },
 
-  errorCreateInstance(err) {
+  errorCreateInstance(error) {
+    const { response } = error;
+    const safeError = (response && response.data) || { code: 500 };
+
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR,
-      error: err
+      error: safeError
     });
 
     return Promise.resolve();

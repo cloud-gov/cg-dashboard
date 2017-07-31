@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-
 import style from 'cloudgov-style/css/cloudgov-style.css';
 import FormElement from './form_element.jsx';
 import FormError from './form_error.jsx';
 import createStyler from '../../util/create_styler';
-
 
 export default class FormText extends FormElement {
   constructor(props) {
