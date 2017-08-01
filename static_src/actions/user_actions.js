@@ -148,7 +148,7 @@ const userActions = {
     });
   },
 
-  addUserRoles(resource_role_name, user_role, userGuid, entityGuid, entityType) {
+  addUserRoles(resourceRoleName, userRole, userGuid, entityGuid, entityType) {
     const apiMethodMap = {
       organization: cfApi.putOrgUserPermissions,
       space: cfApi.putSpaceUserPermissions
@@ -157,7 +157,7 @@ const userActions = {
 
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLES_ADD,
-      resource_role_name,
+      resourceRoleName,
       userGuid,
       entityGuid,
       entityType
@@ -166,10 +166,10 @@ const userActions = {
     return api(
       userGuid,
       entityGuid,
-      user_role
+      userRole
     ).then(() => {
       userActions.addedUserRoles(
-        resource_role_name,
+        resourceRoleName,
         userGuid,
         entityGuid,
         entityType);
