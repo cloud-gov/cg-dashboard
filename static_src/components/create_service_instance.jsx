@@ -74,8 +74,8 @@ export default class CreateServiceInstance extends React.Component {
   _onValidForm(errs, values) {
     this.setState({ errs }, () => {
       const { name, space } = values;
-      const instanceName = name || null;
-      const spaceName = space || null;
+      const instanceName = name && name.value || null;
+      const spaceName = space && space.value || null;
 
       serviceActions.createInstance(
         instanceName,
