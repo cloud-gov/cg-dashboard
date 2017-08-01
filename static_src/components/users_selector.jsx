@@ -31,7 +31,7 @@ const defaultProps = {
   error: {}
 };
 
-export default class OrgUsersSelector extends React.Component {
+export default class UsersSelector extends React.Component {
   constructor(props) {
     super(props);
 
@@ -118,6 +118,6 @@ export default class OrgUsersSelector extends React.Component {
 
 }
 
-OrgUsersSelector.propTypes = propTypes;
+UsersSelector.propTypes = propTypes;
 
-OrgUsersSelector.defaultProps = defaultProps;
+UsersSelector.defaultProps = defaultProps;
