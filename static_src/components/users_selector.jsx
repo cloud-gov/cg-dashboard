@@ -75,7 +75,7 @@ export default class UsersSelector extends React.Component {
     return (
       <FormSelect
         formGuid={ USERS_SELECTOR_GUID }
-        classes={ ['test-users-selector'] }
+        classes={ ['test-users-selector-field'] }
         label="Username"
         name="userGuid"
         options={ orgUsers }

@@ -45,8 +45,8 @@ export default class UserInviteElement extends BaseElement {
 
   // TODO move this to user list element.
   countNumberOfUserSelectors() {
-    browser.waitForExist('.test-users-selector');
-    return browser.elements('.test-users-selector').value.length;
+    browser.waitForExist('select.test-users-selector-field');
+    return browser.elements('select.test-users-selector-field').value.length;
   }
 
   // TODO move this to user list element.
