@@ -14,7 +14,7 @@ import { validateString } from '../util/validators';
 
 const AUDITOR_NAME = 'auditors';
 const SPACE_AUDITOR_NAME = 'space_auditor';
-const USERS_PARENT_ENTITY_USER_FORM_GUID = 'users-parent-entity-users-form';
+const USERS_SELECTOR_GUID = 'users-selector';
 
 const propTypes = {
   usersSelectorDisabled: PropTypes.bool,
@@ -40,7 +40,7 @@ export default class UsersSelector extends React.Component {
   }
 
   componentDidMount() {
-    FormStore.create(USERS_PARENT_ENTITY_USER_FORM_GUID);
+    FormStore.create(USERS_SELECTOR_GUID);
   }
 
   _onSubmitForm(errs, values) {
@@ -74,8 +74,8 @@ export default class UsersSelector extends React.Component {
 
     return (
       <FormSelect
-        formGuid={ USERS_PARENT_ENTITY_USER_FORM_GUID }
-        classes={ ['test-users'] }
+        formGuid={ USERS_SELECTOR_GUID }
+        classes={ ['test-users-selector'] }
         label="Username"
         name="userGuid"
         options={ orgUsers }
@@ -98,8 +98,8 @@ export default class UsersSelector extends React.Component {
           <p>{ this.invitationMessage }</p>
         </PanelDocumentation>
         <Form
-          guid={ USERS_PARENT_ENTITY_USER_FORM_GUID }
-          classes={ ['org_user_selector'] }
+          guid={ USERS_SELECTOR_GUID }
+          classes={ ['users_selector'] }
           ref="form"
           onSubmit={ this._onSubmitForm }
         >
