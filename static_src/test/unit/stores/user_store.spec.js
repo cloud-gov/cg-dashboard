@@ -683,7 +683,7 @@ describe('UserStore', function () {
   });
 
   describe('getAllInOrgAndNotSpace()', function() {
-    it('should find all users that are in an org, without the space users', function() {
+    it('should find all users that are in an org and not in the space', function() {
       var spaceGuid = 'sdfadf';
       var orgGuid = 'asdfa';
       var testUser = { guid: 'adfzxcv', roles: { [orgGuid]: [ 'org_user'] } };

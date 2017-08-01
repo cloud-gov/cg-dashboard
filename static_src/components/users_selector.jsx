@@ -46,11 +46,11 @@ export default class UsersSelector extends React.Component {
   _onSubmitForm(errs, values) {
     const { currentEntity } = this.props;
     const { currentEntityGuid } = this.props;
-    const apiKey = AUDITOR_NAME;
-    const roles = SPACE_AUDITOR_NAME;
+    const user_role = AUDITOR_NAME;
+    const resource_role_name = SPACE_AUDITOR_NAME;
     if (values.userGuid) {
       const userGuid = values.userGuid.value;
-      userActions.addUserRoles(roles, apiKey, userGuid, currentEntityGuid, currentEntity);
+      userActions.addUserRoles(resource_role_name, user_role, userGuid, currentEntityGuid, currentEntity);
     }
   }
 

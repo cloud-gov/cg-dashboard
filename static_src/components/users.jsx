@@ -11,7 +11,7 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UsersInvite from './users_invite.jsx';
-import UsersSelector from './users_org_user_selector.jsx';
+import UsersSelector from './users_selector.jsx';
 import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
 import ErrorMessage from './error_message.jsx';
