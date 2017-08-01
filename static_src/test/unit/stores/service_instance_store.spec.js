@@ -306,7 +306,9 @@ describe('ServiceInstanceStore', function() {
       actual = ServiceInstanceStore.createError;
 
       expect(actual).toEqual({
-        description: 'One or more form fields is blank or invalid.'
+        description: 'Service instance creation failed. If all form fields are ' +
+          'filled in, you may need to create the service instance using the CF CLI. ' +
+          'Please refer to https://cloud.gov/docs/services/ for more information.'
       });
 
       serviceActions.errorCreateInstance(spaceError);
