@@ -66,15 +66,13 @@ describe('User roles', function () {
       browser.waitForExist('.test-users');
     });
 
-    it('should not have the user invite panel', function () {
+    it('should have the user selector panel', function () {
       userRoleElement.setAndGetUserRole(cookieManagerOrgXSpaceXX);
       browser.url(urlOrgXSpaceXX);
 
-      browser.waitForExist('.test-users');
-      browser.waitForExist('.test-users-invite', 500, true);
-      const ells = browser.elements('.test-users-invite');
+      const userSelectorCount = userInviteElement.countNumberOfUserSelectors();
 
-      expect(ells.length).toBe(undefined);
+      expect(userSelectorCount).toBe(1);
     });
   });
 });

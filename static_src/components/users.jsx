@@ -11,6 +11,7 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserList from './user_list.jsx';
 import UsersInvite from './users_invite.jsx';
+import UsersSelector from './users_selector.jsx';
 import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
 import ErrorMessage from './error_message.jsx';
@@ -33,12 +34,15 @@ function stateSetter() {
   const isSaving = UserStore.isSaving;
 
   let users = [];
+  let parentEntityUsers;
   let currentUserAccess = false;
   const inviteDisabled = UserStore.inviteDisabled();
+  const usersSelectorDisabled = UserStore.usersSelectorDisabled();
   let entityGuid;
 
   if (currentType === SPACE_NAME) {
     users = UserStore.getAllInSpace(currentSpaceGuid);
+    parentEntityUsers = UserStore.getAllInOrgAndNotSpace(currentSpaceGuid);
     entityGuid = currentSpaceGuid;
     currentUserAccess = UserStore.hasRole(currentUser.guid, currentSpaceGuid,
                                           SPACE_MANAGER);
@@ -53,6 +57,7 @@ function stateSetter() {
     currentUser,
     error: UserStore.getError(),
     inviteDisabled,
+    usersSelectorDisabled,
     currentUserAccess,
     currentOrgGuid,
     currentSpaceGuid,
@@ -62,6 +67,7 @@ function stateSetter() {
     loading: UserStore.loading,
     empty: !UserStore.loading && !users.length,
     users,
+    parentEntityUsers,
     userListNotices: UserStore._userListNotification,
     userListNoticeError: UserStore.getUserListNotificationError()
   };
@@ -140,6 +146,13 @@ export default class Users extends React.Component {
     return entityGuid;
   }
 
+  get currentUserIsSpaceManager() {
+    const { currentUser } = this.state;
+    const { currentSpaceGuid } = SpaceStore;
+
+    return UserStore.hasRole(currentUser.guid, currentSpaceGuid, SPACE_MANAGER);
+  }
+
   get currentUserIsOrgManager() {
     const { currentUser } = this.state;
     const { currentOrgGuid } = OrgStore;
@@ -186,6 +199,33 @@ export default class Users extends React.Component {
     );
   }
 
+  get userParentEntityUserSelector() {
+    if (!this.isSpace) {
+      return null;
+    }
+
+    if (!this.currentUserIsSpaceManager) {
+      return (
+        <PanelDocumentation>
+          Org Managers and Space Managers can add current organization users into this space.
+        </PanelDocumentation>
+      );
+    }
+
+    return (
+      <UsersSelector
+        usersSelectorDisabled={ this.state.usersSelectorDisabled }
+        parentEntity={ ORG_ENTITY }
+        currentEntityGuid={ this.entityGuid }
+        currentEntity={ this.entityType }
+        parentEntityUsers={ this.state.parentEntityUsers }
+        inviteEntityType={ this.entityType }
+        currentUserAccess={ this.state.currentUserAccess }
+        error={ this.state.userListNoticeError }
+      />
+    );
+  }
+
   _onChange() {
     this.setState(stateSetter());
   }
@@ -203,6 +243,7 @@ export default class Users extends React.Component {
       <div className="test-users">
         <ErrorMessage error={this.state.error} />
         { this.userInvite }
+        { this.userParentEntityUserSelector }
         { this.notification }
         <UserList
           users={ this.state.users }

@@ -44,6 +44,12 @@ export default class UserInviteElement extends BaseElement {
   }
 
   // TODO move this to user list element.
+  countNumberOfUserSelectors() {
+    browser.waitForExist('.test-users-selector');
+    return browser.elements('.test-users-selector').value.length;
+  }
+
+  // TODO move this to user list element.
   getUserByIndex(idx) {
     const sel = `.test-users .complex_list-item:nth-child(${idx})`;
     browser.waitForExist(sel);

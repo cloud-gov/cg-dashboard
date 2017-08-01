@@ -12,6 +12,8 @@ import UserStore from '../stores/user_store';
 import OrgStore from '../stores/org_store';
 import SpaceStore from '../stores/space_store';
 
+const ORG_ENTITY = 'organization';
+const SPACE_ENTITY = 'space';
 const ORG_NAME = OrgStore.cfName;
 const MSG_USER_HAS_SPACE_ROLES = 'This user can\'t be removed because they still have a space ' +
                   'role within the organization. Please remove all space ' +
@@ -146,7 +148,7 @@ const userActions = {
     });
   },
 
-  addUserRoles(roles, apiKey, userGuid, entityGuid, entityType) {
+  addUserRoles(role, resource, userGuid, entityGuid, entityType) {
     const apiMethodMap = {
       organization: cfApi.putOrgUserPermissions,
       space: cfApi.putSpaceUserPermissions
@@ -155,7 +157,7 @@ const userActions = {
 
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLES_ADD,
-      roles,
+      role,
       userGuid,
       entityGuid,
       entityType
@@ -164,10 +166,10 @@ const userActions = {
     return api(
       userGuid,
       entityGuid,
-      apiKey
+      resource
     ).then(() => {
       userActions.addedUserRoles(
-        roles,
+        role,
         userGuid,
         entityGuid,
         entityType);
@@ -291,8 +293,8 @@ const userActions = {
     const noticeType = 'finish';
     const currentViewedType = UserStore.currentlyViewedType;
     const viewTypeNouns = Object.assign({},
-      { space_users: { singular: 'space' } },
-      { org_users: { singular: 'organization' } }
+      { space_users: { singular: SPACE_ENTITY } },
+      { org_users: { singular: ORG_ENTITY } }
     );
     const entity = viewTypeNouns[currentViewedType].singular;
 

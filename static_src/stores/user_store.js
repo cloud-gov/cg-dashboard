@@ -21,6 +21,7 @@ export class UserStore extends BaseStore {
     this._error = null;
     this._saving = false;
     this._inviteDisabled = false;
+    this._usersSelectorDisabled = false;
     this._userListNotification = {};
     this._loading = {};
   }
@@ -189,7 +190,7 @@ export class UserStore extends BaseStore {
         this._userListNotificationError = Object.assign({}, action.err, {
           contextualMessage: action.contextualMessage
         });
-        this._inviteDisabled = false;
+        this._usersSelectorDisabled = false;
         this.emitChange();
         break;
       }
@@ -322,6 +323,14 @@ export class UserStore extends BaseStore {
     return usersInOrg.toJS();
   }
 
+  getAllInOrgAndNotSpace() {
+    const usersInOrg = this._data.toJS().filter((user) =>
+      !user.space_roles
+    );
+
+    return usersInOrg;
+  }
+
   getError() {
     return this._error;
   }
@@ -365,6 +374,10 @@ export class UserStore extends BaseStore {
     const user = this.get(userGuid);
     const roles = user && user.roles && user.roles[key] || [];
     return !!roles.find((role) => wrappedRoles.includes(role));
+  }
+
+  usersSelectorDisabled() {
+    return this._usersSelectorDisabled;
   }
 
   inviteDisabled() {
