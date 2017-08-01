@@ -93,13 +93,13 @@ export default class OrgUsersSelector extends React.Component {
     }
 
     return (
-      <div className="test-users-invite">
+      <div className="test-users-selector">
         <PanelDocumentation description>
           <p>{ this.invitationMessage }</p>
         </PanelDocumentation>
         <Form
           guid={ USERS_PARENT_ENTITY_USER_FORM_GUID }
-          classes={ ['users_parent_entity_user_form'] }
+          classes={ ['org_user_selector'] }
           ref="form"
           onSubmit={ this._onSubmitForm }
         >
