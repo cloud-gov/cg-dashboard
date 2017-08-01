@@ -37,7 +37,7 @@ function stateSetter() {
   let parentEntityUsers;
   let currentUserAccess = false;
   const inviteDisabled = UserStore.inviteDisabled();
-  const orgUsersSelectorDisabled = UserStore.orgUsersSelectorDisabled();
+  const usersSelectorDisabled = UserStore.usersSelectorDisabled();
   let entityGuid;
 
   if (currentType === SPACE_NAME) {
@@ -57,7 +57,7 @@ function stateSetter() {
     currentUser,
     error: UserStore.getError(),
     inviteDisabled,
-    orgUsersSelectorDisabled,
+    usersSelectorDisabled,
     currentUserAccess,
     currentOrgGuid,
     currentSpaceGuid,
@@ -214,7 +214,7 @@ export default class Users extends React.Component {
 
     return (
       <UsersSelector
-        orgUsersSelectorDisabled={ this.state.orgUsersSelectorDisabled }
+        usersSelectorDisabled={ this.state.usersSelectorDisabled }
         parentEntity={ ORG_ENTITY }
         currentEntityGuid={ this.entityGuid }
         currentEntity={ this.entityType }

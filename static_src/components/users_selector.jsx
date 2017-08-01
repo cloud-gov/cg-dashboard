@@ -17,7 +17,7 @@ const SPACE_AUDITOR_NAME = 'space_auditor';
 const USERS_PARENT_ENTITY_USER_FORM_GUID = 'users-parent-entity-users-form';
 
 const propTypes = {
-  orgUsersSelectorDisabled: PropTypes.bool,
+  usersSelectorDisabled: PropTypes.bool,
   currentUserAccess: PropTypes.bool,
   parentEntityUsers: PropTypes.array,
   error: PropTypes.object,
@@ -26,7 +26,7 @@ const propTypes = {
   currentEntity: PropTypes.string
 };
 const defaultProps = {
-  orgUsersSelectorDisabled: false,
+  usersSelectorDisabled: false,
   currentUserAccess: false,
   error: {}
 };
@@ -85,7 +85,7 @@ export default class UsersSelector extends React.Component {
   }
 
   render() {
-    const { orgUsersSelectorDisabled } = this.props;
+    const { usersSelectorDisabled } = this.props;
     const { currentEntity } = this.props;
 
     if (!this.props.currentUserAccess) {
@@ -107,7 +107,7 @@ export default class UsersSelector extends React.Component {
           <Action
             label="submit"
             type="submit"
-            disabled={ orgUsersSelectorDisabled }
+            disabled={ usersSelectorDisabled }
           >
             Add user to this { currentEntity }
           </Action>

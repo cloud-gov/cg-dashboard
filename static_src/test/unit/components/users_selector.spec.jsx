@@ -11,7 +11,7 @@ describe('<UsersSelector />', function () {
   const entityType = 'space';
   const props = {
     currentUserAccess: true,
-    orgUsersSelectorDisabled: false,
+    usersSelectorDisabled: false,
     parentEntityUsers: [],
     error: {},
     parentEntity: parentEntityType,
