@@ -3,14 +3,15 @@ import '../../global_setup.js';
 
 import Immutable from 'immutable';
 
-import AppDispatcher from '../../../dispatcher.js';
-import cfApi from '../../../util/cf_api.js';
-import ServiceInstanceStore from '../../../stores/service_instance_store.js';
-import serviceActions from '../../../actions/service_actions.js';
-import { serviceActionTypes } from '../../../constants.js';
-import ServiceStore from '../../../stores/service_store.js';
-import ServicePlanStore from '../../../stores/service_plan_store.js';
-import { CREATED_NOTIFICATION_TIME_MS } from '../../../stores/service_instance_store.js';
+import AppDispatcher from '../../../dispatcher';
+import cfApi from '../../../util/cf_api';
+import ServiceInstanceStore from '../../../stores/service_instance_store';
+import { FRIENDLY_ERROR_MAP } from '../../../stores/service_instance_store';
+import serviceActions from '../../../actions/service_actions';
+import { serviceActionTypes } from '../../../constants';
+import ServiceStore from '../../../stores/service_store';
+import ServicePlanStore from '../../../stores/service_plan_store';
+import { CREATED_NOTIFICATION_TIME_MS } from '../../../stores/service_instance_store';
 
 describe('ServiceInstanceStore', function() {
   let sandbox;
@@ -287,10 +288,15 @@ describe('ServiceInstanceStore', function() {
   });
 
   describe('on SERVICE_INSTANCE_CREATE_ERROR', () => {
+    const serviceInstanceError = code => {
+      return { response: { data: { error_code: code } } };
+    };
+
     it('should set `createError` based on error received', () => {
       const serverError = { code: 500 };
-      const argumentError = { response: { data: { error_code: 'CF-MessageParseError' } } };
-      const spaceError = { response: { data: { error_code: 'CF-ServiceInstanceInvalid' } } };
+      const argumentError = serviceInstanceError('CF-MessageParseError');
+      const spaceError = serviceInstanceError('CF-ServiceInstanceInvalid');
+      const configError = serviceInstanceError('CF-ServiceBrokerBadResponse');
       const serverErrorMsg =
         'Error #500: please contact cloud.gov support for help troubleshooting this issue.';
       let actual;
@@ -306,16 +312,21 @@ describe('ServiceInstanceStore', function() {
       actual = ServiceInstanceStore.createError;
 
       expect(actual).toEqual({
-        description: 'Service instance creation failed. If all form fields are ' +
-          'filled in, you may need to create the service instance using the CF CLI. ' +
-          'Please refer to https://cloud.gov/docs/services/ for more information.'
+        description: FRIENDLY_ERROR_MAP['CF-MessageParseError']
       });
 
       serviceActions.errorCreateInstance(spaceError);
       actual = ServiceInstanceStore.createError;
 
       expect(actual).toEqual({
-        description: 'Invalid space selected.'
+        description: FRIENDLY_ERROR_MAP['CF-ServiceInstanceInvalid']
+      });
+
+      serviceActions.errorCreateInstance(configError);
+      actual = ServiceInstanceStore.createError;
+
+      expect(actual).toEqual({
+        description: FRIENDLY_ERROR_MAP['CF-ServiceBrokerBadResponse']
       });
     });
 

@@ -35,9 +35,9 @@ const APP_STATE_MAP = {
 
 const FRIENDLY_ERROR_MAP = {
   'CF-ServiceInstanceInvalid': 'Invalid space selected.',
-  'CF-MessageParseError': 'Service instance creation failed. If all form fields are ' +
-    'filled in, you may need to create the service instance using the CF CLI. ' +
-    'Please refer to https://cloud.gov/docs/services/ for more information.'
+  'CF-ServiceBrokerBadResponse': 'This service instance must be created using the CF CLI.' +
+    ' Please refer to https://cloud.gov/docs/services/ for more information.',
+  'CF-MessageParseError': 'One or more form fields are blank or invalid.'
 };
 
 const getFriendlyError = error => {
@@ -347,3 +347,5 @@ const _ServiceInstanceStore = new ServiceInstanceStore();
 _ServiceInstanceStore.OPERATION_STATES = OPERATION_STATES;
 
 export default _ServiceInstanceStore;
+
+export { FRIENDLY_ERROR_MAP };
