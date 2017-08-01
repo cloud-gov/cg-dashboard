@@ -591,7 +591,7 @@ describe('userActions', function() {
       // expectedParams for the params dispatched with userActionTypes.USER_ROLES_ADD.
       // the apiKey is not sent with it.
       let expectedParams = {
-        roles: expectedRole,
+        role: expectedRole,
         userGuid: expectedUserGuid,
         entityGuid: expectedGuid,
         entityType: expectedType
