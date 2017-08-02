@@ -153,7 +153,7 @@ export default class ServiceInstance extends React.Component {
     if (instance.error) {
       return (
         <ElasticLineItem align="end">
-          <FormError message={ instance.error } />
+          <FormError message={ instance.error.description } />
         </ElasticLineItem>
       );
     }

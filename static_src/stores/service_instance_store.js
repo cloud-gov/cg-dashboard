@@ -32,6 +32,7 @@ const APP_STATE_MAP = {
 };
 
 const SERVICE_INSTANCE_CREATE_ERROR_MAP = {
+  'CF-ServiceInstanceNameTaken': 'The service instance name is taken. Please use a unique name.',
   'CF-ServiceInstanceInvalid': 'Invalid space selected.',
   'CF-ServiceBrokerBadResponse': 'This service instance must be created using the CF CLI.' +
     ' Please refer to https://cloud.gov/docs/services/ for more information.',
@@ -39,11 +40,14 @@ const SERVICE_INSTANCE_CREATE_ERROR_MAP = {
 };
 
 const BINDING_ERROR_MAP = {
-  'CF-ServiceBindingAppServiceTaken': 'Service instance already bound to the current app'
+  'CF-ServiceBindingAppServiceTaken': 'Service instance already bound to the current app',
+  'CF-BindingCannot': 'Cannot bind service instance.'
 };
 
 const getFriendlyError = (error, errorMap) => {
   const { code, error_code: errorCode } = error;
+
+  debugger;
 
   if (errorCode in errorMap) {
     return errorMap[errorCode];
@@ -334,7 +338,9 @@ export class ServiceInstanceStore extends BaseStore {
         }
 
         const newInstance = Object.assign({}, instance, {
-          error: getFriendlyError(action.error, BINDING_ERROR_MAP),
+          error: {
+            description: getFriendlyError(action.error, BINDING_ERROR_MAP)
+          },
           loading: false
         });
 
@@ -369,4 +375,7 @@ _ServiceInstanceStore.OPERATION_STATES = OPERATION_STATES;
 
 export default _ServiceInstanceStore;
 
-export { FRIENDLY_ERROR_MAP };
+export {
+  SERVICE_INSTANCE_CREATE_ERROR_MAP,
+  BINDING_ERROR_MAP
+};

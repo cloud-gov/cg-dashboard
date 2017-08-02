@@ -19,10 +19,6 @@ const defaultProps = {
 };
 
 export default class ServiceInstanceList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     // TODO, when react implements returning unwraped arrays, move ComplexList
     // to container of this.

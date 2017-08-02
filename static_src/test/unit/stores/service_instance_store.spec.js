@@ -6,7 +6,10 @@ import Immutable from 'immutable';
 import AppDispatcher from '../../../dispatcher';
 import cfApi from '../../../util/cf_api';
 import ServiceInstanceStore from '../../../stores/service_instance_store';
-import { FRIENDLY_ERROR_MAP } from '../../../stores/service_instance_store';
+import {
+  SERVICE_INSTANCE_CREATE_ERROR_MAP
+} from '../../../stores/service_instance_store';
+import errorActions from '../../../actions/error_actions';
 import serviceActions from '../../../actions/service_actions';
 import { serviceActionTypes } from '../../../constants';
 import ServiceStore from '../../../stores/service_store';
@@ -297,8 +300,10 @@ describe('ServiceInstanceStore', function() {
       const argumentError = serviceInstanceError('CF-MessageParseError');
       const spaceError = serviceInstanceError('CF-ServiceInstanceInvalid');
       const configError = serviceInstanceError('CF-ServiceBrokerBadResponse');
+      const dupeNameError = serviceInstanceError('CF-ServiceInstanceNameTaken');
       const serverErrorMsg =
-        'Error #500: please contact cloud.gov support for help troubleshooting this issue.';
+        'Error #500. Please contact cloud.gov support for help troubleshooting this issue.';
+
       let actual;
 
       serviceActions.errorCreateInstance(serverError);
@@ -312,21 +317,28 @@ describe('ServiceInstanceStore', function() {
       actual = ServiceInstanceStore.createError;
 
       expect(actual).toEqual({
-        description: FRIENDLY_ERROR_MAP['CF-MessageParseError']
+        description: SERVICE_INSTANCE_CREATE_ERROR_MAP['CF-MessageParseError']
       });
 
       serviceActions.errorCreateInstance(spaceError);
       actual = ServiceInstanceStore.createError;
 
       expect(actual).toEqual({
-        description: FRIENDLY_ERROR_MAP['CF-ServiceInstanceInvalid']
+        description: SERVICE_INSTANCE_CREATE_ERROR_MAP['CF-ServiceInstanceInvalid']
       });
 
       serviceActions.errorCreateInstance(configError);
       actual = ServiceInstanceStore.createError;
 
       expect(actual).toEqual({
-        description: FRIENDLY_ERROR_MAP['CF-ServiceBrokerBadResponse']
+        description: SERVICE_INSTANCE_CREATE_ERROR_MAP['CF-ServiceBrokerBadResponse']
+      });
+
+      serviceActions.errorCreateInstance(dupeNameError);
+      actual = ServiceInstanceStore.createError;
+
+      expect(actual).toEqual({
+        description: SERVICE_INSTANCE_CREATE_ERROR_MAP['CF-ServiceInstanceNameTaken']
       });
     });
 
@@ -595,9 +607,13 @@ describe('ServiceInstanceStore', function() {
 
   describe('on instance error', function() {
     const testCFError = {
-      code: 40023,
-      description: 'Cannot bind',
-      error_code: 'CF-BindingCannot'
+      response: {
+        data: {
+          code: 40023,
+          description: 'Cannot bind',
+          error_code: 'CF-BindingCannot'
+        }
+      }
     };
 
     describe('setting `error` property', () => {
@@ -617,7 +633,7 @@ describe('ServiceInstanceStore', function() {
 
         const actual = ServiceInstanceStore.get(instanceGuid);
         const expected = Object.assign({}, instance, {
-          error: testCFError,
+          error: { description: 'Cannot bind service instance.' },
           loading: false
         });
 
@@ -691,6 +707,18 @@ describe('ServiceInstanceStore', function() {
       const actual = ServiceInstanceStore.get(serviceInstanceGuid);
 
       expect(actual.loading).toEqual('Unbinding');
+    });
+  });
+
+  describe('on errorActionTypes.CLEAR', () => {
+    it('removes all errors from store and service instances', () => {
+      ServiceInstanceStore._data = Immutable.fromJS([{ error: {} }]);
+      ServiceInstanceStore._createError = 'An error!';
+
+      errorActions.clearErrors();
+
+      expect(ServiceInstanceStore.createError).toBe(null);
+      expect(ServiceInstanceStore._data.toArray()[0].get('error')).toBe(null);
     });
   });
 });

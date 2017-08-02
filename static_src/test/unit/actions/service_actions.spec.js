@@ -794,7 +794,7 @@ describe('serviceActions', function() {
   describe('instanceError()', function() {
     it('should dispatch a server event of service instance error', function() {
       const instanceGuid = 'adfzcvb2cvb435n';
-      const err = { status: 500, data: { }};
+      const err = { code: 500 };
       const params = {
         serviceInstanceGuid: instanceGuid,
         error: err
