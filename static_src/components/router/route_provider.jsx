@@ -15,14 +15,6 @@ class RouteProvider extends React.Component {
     RouterStore.addChangeListener(this.onChange);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.state === nextState) {
-      return false;
-    }
-
-    return true;
-  }
-
   componentWillUnmount() {
     RouterStore.removeChangeListener(this.onChange);
   }
