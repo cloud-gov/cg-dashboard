@@ -1,21 +1,17 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
+import FormError from './form/form_error.jsx';
 import Loading from './loading.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
 
 import { OPERATION_FAILED } from '../stores/service_instance_store.js';
-
-import createStyler from '../util/create_styler';
 
 const propTypes = {
   currentAppGuid: PropTypes.string.isRequired,
@@ -32,16 +28,10 @@ export default class ServiceInstance extends React.Component {
   constructor(props) {
     super(props);
 
-    this.styler = createStyler(style);
-
     this.bindHandler = this.bindHandler.bind(this);
     this.unbindHandler = this.unbindHandler.bind(this);
     this.unbindConfirmedHandler = this.unbindConfirmedHandler.bind(this);
     this.unbindCancelHandler = this.unbindCancelHandler.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.props = nextProps;
   }
 
   unbindConfirmedHandler(ev) {
@@ -70,6 +60,7 @@ export default class ServiceInstance extends React.Component {
 
   get instanceState() {
     let content;
+
     if (!this.props.serviceInstance) return content;
 
     const instanceState = ServiceInstanceStore.getInstanceState(
@@ -78,7 +69,7 @@ export default class ServiceInstance extends React.Component {
     if (instanceState === OPERATION_FAILED) {
       content = (
         <span style={{ marginLeft: '0.5rem', display: 'inline' }}
-          className={ this.styler('error_message') }>
+          className="error_message">
           { ServiceInstanceStore.getInstanceReadableState(
             this.props.serviceInstance) }
         </span>
@@ -158,10 +149,11 @@ export default class ServiceInstance extends React.Component {
 
   get displayError() {
     const instance = this.props.serviceInstance;
+
     if (instance.error) {
       return (
         <ElasticLineItem align="end">
-          <FormError message={ instance.error.description } />
+          <FormError message={ instance.error } />
         </ElasticLineItem>
       );
     }

@@ -600,37 +600,39 @@ describe('ServiceInstanceStore', function() {
       error_code: 'CF-BindingCannot'
     };
 
-    it('should toggle the error value of the instance', function() {
+    describe('setting `error` property', () => {
       const instanceGuid = 'zvxcsdf34sint';
       const instance = { guid: instanceGuid };
-      const err = testCFError;
 
-      ServiceInstanceStore.push(instance);
-
-      serviceActions.instanceError(instanceGuid, err);
-
-      const actual = ServiceInstanceStore.get(instanceGuid);
-      const expected = Object.assign({}, instance, {
-        error: err
+      beforeEach(() => {
+        ServiceInstanceStore._data = Immutable.fromJS([instance]);
       });
 
-      expect(actual).toEqual(expected);
-    });
+      afterEach(() => {
+        ServiceInstanceStore._data = null;
+      });
 
-    it('should emit change if errored instance found', function() {
-      const instanceGuid = 'zvxcsdf34sint';
-      const instance = { guid: instanceGuid };
-      const err = testCFError;
+      it('should toggle the `error` and `loading` value of the instance', function() {
+        serviceActions.instanceError(instanceGuid, testCFError);
 
-      ServiceInstanceStore.push(instance);
+        const actual = ServiceInstanceStore.get(instanceGuid);
+        const expected = Object.assign({}, instance, {
+          error: testCFError,
+          loading: false
+        });
 
-      const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
+        expect(actual).toEqual(expected);
+      });
 
-      serviceActions.instanceError('fake-guid', err);
-      serviceActions.instanceError(instanceGuid, err);
-      serviceActions.instanceError(instanceGuid, err);
+      it('should emit change if errored instance found', function() {
+        const spy = sandbox.spy(ServiceInstanceStore, 'emitChange');
 
-      expect(spy).toHaveBeenCalledOnce();
+        serviceActions.instanceError('fake-guid', testCFError);
+        serviceActions.instanceError(instanceGuid, testCFError);
+        serviceActions.instanceError(instanceGuid, testCFError);
+
+        expect(spy).toHaveBeenCalledOnce();
+      });
     });
   });
 

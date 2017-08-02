@@ -265,7 +265,7 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_RECEIVED: {
         const receivedUser = Object.assign({}, action.user, { fetching: false });
         if (action.user) {
-          this.merge('guid', receivedUser);
+          this.merge('guid', receivedUser, () => this.emitChange());
         }
         break;
       }

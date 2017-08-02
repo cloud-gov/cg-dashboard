@@ -178,5 +178,4 @@ export default class CreateServiceInstance extends React.Component {
 }
 
 CreateServiceInstance.propTypes = propTypes;
-
 CreateServiceInstance.defaultProps = defaultProps;
