@@ -1,13 +1,8 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
 import ComplexList from './complex_list.jsx';
 import ServiceInstance from './service_instance.jsx';
-
-import createStyler from '../util/create_styler';
 
 const propTypes = {
   currentAppGuid: PropTypes.string.isRequired,
@@ -24,12 +19,6 @@ const defaultProps = {
 };
 
 export default class ServiceInstanceList extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.styler = createStyler(style);
-  }
-
   render() {
     // TODO, when react implements returning unwraped arrays, move ComplexList
     // to container of this.

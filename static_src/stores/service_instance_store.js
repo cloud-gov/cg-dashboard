@@ -3,11 +3,9 @@
  * Store for services data. Will store and update services data on changes from
  * UI and server.
  */
-import Immutable from 'immutable';
-
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
-import { appStates, serviceActionTypes } from '../constants.js';
+import { appStates, serviceActionTypes, errorActionTypes } from '../constants.js';
 import ServiceStore from './service_store.js';
 import ServicePlanStore from './service_plan_store.js';
 
@@ -33,21 +31,29 @@ const APP_STATE_MAP = {
   [OPERATION_RUNNING]: appStates.running
 };
 
-const FRIENDLY_ERROR_MAP = {
+const SERVICE_INSTANCE_CREATE_ERROR_MAP = {
+  'CF-ServiceInstanceNameTaken': 'The service instance name is taken. Please use a unique name.',
   'CF-ServiceInstanceInvalid': 'Invalid space selected.',
   'CF-ServiceBrokerBadResponse': 'This service instance must be created using the CF CLI.' +
     ' Please refer to https://cloud.gov/docs/services/ for more information.',
   'CF-MessageParseError': 'One or more form fields are blank or invalid.'
 };
 
-const getFriendlyError = error => {
+const BINDING_ERROR_MAP = {
+  'CF-ServiceBindingAppServiceTaken': 'Service instance already bound to the current app',
+  'CF-BindingCannot': 'Cannot bind service instance.'
+};
+
+const getFriendlyError = (error, errorMap) => {
   const { code, error_code: errorCode } = error;
 
-  if (errorCode in FRIENDLY_ERROR_MAP) {
-    return FRIENDLY_ERROR_MAP[errorCode];
+  debugger;
+
+  if (errorCode in errorMap) {
+    return errorMap[errorCode];
   }
 
-  return `Error #${code}: please contact cloud.gov support for help troubleshooting this issue.`;
+  return `Error #${code}. Please contact cloud.gov support for help troubleshooting this issue.`;
 };
 
 export class ServiceInstanceStore extends BaseStore {
@@ -55,7 +61,6 @@ export class ServiceInstanceStore extends BaseStore {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
 
-    this._data = new Immutable.List();
     this._createInstanceForm = null;
     this._createError = null;
     this._createLoading = false;
@@ -217,7 +222,7 @@ export class ServiceInstanceStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR: {
         this._createError = {
-          description: getFriendlyError(action.error)
+          description: getFriendlyError(action.error, SERVICE_INSTANCE_CREATE_ERROR_MAP)
         };
         this._createLoading = false;
         this.emitChange();
@@ -327,11 +332,33 @@ export class ServiceInstanceStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_INSTANCE_ERROR: {
         const instance = this.get(action.serviceInstanceGuid);
-        if (!instance) break;
-        const newInstance = Object.assign({}, instance, { error: action.error });
+
+        if (!instance) {
+          break;
+        }
+
+        const newInstance = Object.assign({}, instance, {
+          error: {
+            description: getFriendlyError(action.error, BINDING_ERROR_MAP)
+          },
+          loading: false
+        });
+
         this.merge('guid', newInstance, (changed) => {
           if (changed) this.emitChange();
         });
+        break;
+      }
+
+      case errorActionTypes.CLEAR: {
+        const clearedInstances = this._data.filter((val) => val.has('error'))
+          .map((instance) => instance.update('error', () => null));
+
+        this._createError = null;
+        this.mergeMany('guid', clearedInstances, () => {
+          this.emitChange();
+        });
+
         break;
       }
 
@@ -348,4 +375,7 @@ _ServiceInstanceStore.OPERATION_STATES = OPERATION_STATES;
 
 export default _ServiceInstanceStore;
 
-export { FRIENDLY_ERROR_MAP };
+export {
+  SERVICE_INSTANCE_CREATE_ERROR_MAP,
+  BINDING_ERROR_MAP
+};

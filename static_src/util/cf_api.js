@@ -572,10 +572,7 @@ export default {
     };
     return http.post(`${APIV}/service_bindings`, payload)
       .then(res => this.formatSplitResponse(res.data))
-      .catch(err => {
-        handleError(err);
-        return Promise.reject(err);
-      });
+      .catch(err => Promise.reject(err));
   },
 
   deleteServiceBinding(serviceBinding) {

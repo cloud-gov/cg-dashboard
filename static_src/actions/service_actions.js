@@ -13,6 +13,12 @@ import errorActions from './error_actions.js';
 import { serviceActionTypes } from '../constants';
 import ServiceInstanceStore from '../stores/service_instance_store';
 
+const formatError = error => {
+  const { response } = error;
+
+  return (response && response.data) || { code: 500 };
+};
+
 const serviceActions = {
   fetchAllServices(orgGuid) {
     AppDispatcher.handleViewAction({
@@ -148,8 +154,7 @@ const serviceActions = {
   },
 
   errorCreateInstance(error) {
-    const { response } = error;
-    const safeError = (response && response.data) || { code: 500 };
+    const safeError = formatError(error);
 
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR,
@@ -316,7 +321,7 @@ const serviceActions = {
     AppDispatcher.handleServerAction({
       type: serviceActionTypes.SERVICE_INSTANCE_ERROR,
       serviceInstanceGuid,
-      error
+      error: formatError(error)
     });
 
     return Promise.resolve();
