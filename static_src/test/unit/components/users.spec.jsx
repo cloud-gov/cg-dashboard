@@ -98,8 +98,8 @@ describe('<Users />', () => {
         it('renders message telling user to ask an org manager to add users', () => {
           expect(users.find(PanelDocumentation).length).toBe(1);
           expect(users.find(PanelDocumentation).prop('children'))
-            .toEqual('Only an org manager can new invite users to this ' +
-            'organization via the dashboard. Speak to your org manager if ' +
+            .toEqual('Only an Org Manager can new invite users to this ' +
+            'organization via the dashboard. Speak to your Org Manager if ' +
             'you need to add a user to this organization');
         });
 
@@ -177,7 +177,7 @@ describe('<Users />', () => {
           expect(users.find(PanelDocumentation).length).toBe(1);
           expect(users.find(PanelDocumentation).prop('children'))
             .toEqual('If you wish to invite users into this space, please ask ' +
-            'an org manager or a space manager');
+            'an Org Manager or a Space Manager');
         });
       });
 
@@ -209,9 +209,9 @@ describe('<Users />', () => {
         it('should show a <PanelDocumentation />', () => {
           expect(users.find(PanelDocumentation).length).toBe(1);
           expect(users.find(PanelDocumentation).prop('children'))
-            .toEqual('As an space manager, you can invite existing organization ' +
+            .toEqual('As an Space Manager, you can invite existing organization ' +
             'users into your space. If you wish to invite a person who is not in ' +
-            'the organization into your space, please ask an org manager');
+            'the organization into your space, please ask an Org Manager');
         });
       });
     });
