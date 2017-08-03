@@ -368,15 +368,13 @@ export default {
    * @param {String} orgGuid - The guid of the org that the users belong to.
    */
   fetchOrgUsers(orgGuid) {
-    return this.fetchMany(`/organizations/${orgGuid}/users`,
-                          userActions.receivedOrgUsers,
-                          orgGuid);
+    return this.fetchAllPages(`/organizations/${orgGuid}/users`,
+              (results) => userActions.receivedOrgUsers(results, orgGuid));
   },
 
   fetchOrgUserRoles(orgGuid) {
-    return this.fetchMany(`/organizations/${orgGuid}/user_roles`,
-                          userActions.receivedOrgUserRoles,
-                          orgGuid);
+    return this.fetchAllPages(`/organizations/${orgGuid}/user_roles`,
+              (results) => userActions.receivedOrgUserRoles(results, orgGuid));
   },
 
   deleteUser(userGuid, orgGuid) {
