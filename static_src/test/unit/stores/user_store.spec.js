@@ -35,26 +35,10 @@ describe('UserStore', function () {
   });
 
   describe('on space users fetch', function() {
-    it('should fetch space users through api', function() {
-      var spy = sandbox.spy(cfApi, 'fetchSpaceUserRoles'),
-          expectedGuid = 'axckzvjxcov';
-
-      AppDispatcher.handleViewAction({
-        type: userActionTypes.SPACE_USER_ROLES_FETCH,
-        spaceGuid: expectedGuid
-      });
-
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedGuid);
-    });
-
     it('should set loading', function() {
-      const expectedGuid = 'axckzvjxcov';
-
       AppDispatcher.handleViewAction({
         type: userActionTypes.SPACE_USER_ROLES_FETCH,
-        spaceGuid: expectedGuid
+        spaceGuid: 'axckzvjxcov'
       });
 
       expect(UserStore.loading).toEqual(true);
@@ -63,17 +47,14 @@ describe('UserStore', function () {
 
   describe('on org users fetch', function() {
     it('should fetch org users through the api', function() {
-      var spy = sandbox.spy(cfApi, 'fetchOrgUsers'),
-          expectedGuid = 'axckzvjxcov';
+      const expectedGuid = 'axckzvjxcov';
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.ORG_USERS_FETCH,
-        orgGuid: expectedGuid
+        orgGuid: 'axckzvjxcov'
       });
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedGuid);
+      expect(UserStore.loading).toEqual(true);
     });
   });
 
@@ -86,19 +67,78 @@ describe('UserStore', function () {
 
       expect(UserStore.loading).toEqual(true);
     });
+  });
 
-    it('should fetch org user roles through api', function() {
-      var spy = sandbox.spy(cfApi, 'fetchOrgUserRoles'),
-          expectedGuid = 'axckzvjxcov';
-
+  describe('disable loading upon all calls completing for org page', function() {
+    const expectedGuid = 'axckzvjxcov';
+    beforeEach(() => {
       AppDispatcher.handleViewAction({
         type: userActionTypes.ORG_USER_ROLES_FETCH,
         orgGuid: expectedGuid
       });
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.ORG_USERS_FETCH,
+        orgGuid: expectedGuid
+      });
+    });
 
-      expect(spy).toHaveBeenCalledOnce();
-      let arg = spy.getCall(0).args[0];
-      expect(arg).toEqual(expectedGuid);
+    it('should see that loading is true.', function() {
+      expect(UserStore.loading).toEqual(true);
+    });
+
+    it('should see that loading is still true after only org user roles are received', function() {
+      AppDispatcher.handleServerAction({
+        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
+        orgUserRoles: [],
+        expectedGuid
+      });
+      expect(UserStore.loading).toEqual(true);
+    });
+
+    it('should see that loading is still true after only org users are received', function() {
+      AppDispatcher.handleServerAction({
+        type: userActionTypes.ORG_USERS_RECEIVED,
+        users: [],
+        expectedGuid
+      });
+      expect(UserStore.loading).toEqual(true);
+    });
+
+    it('should see that loading is false after both calls', function() {
+      AppDispatcher.handleServerAction({
+        type: userActionTypes.ORG_USERS_RECEIVED,
+        users: [],
+        expectedGuid
+      });
+      AppDispatcher.handleServerAction({
+        type: userActionTypes.ORG_USER_ROLES_RECEIVED,
+        orgUserRoles: [],
+        expectedGuid
+      });
+      expect(UserStore.loading).toEqual(false);
+    });
+  });
+
+  describe('disable loading upon all calls completing for space page', function() {
+    const expectedGuid = 'axckzvjxcov';
+    beforeEach(() => {
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.SPACE_USER_ROLES_FETCH,
+        spaceGuid: expectedGuid
+      });
+    });
+
+    it('should see that loading is true.', function() {
+      expect(UserStore.loading).toEqual(true);
+    });
+
+    it('should see that loading is false after only space users & roles are received', function() {
+      AppDispatcher.handleServerAction({
+        type: userActionTypes.SPACE_USER_ROLES_RECEIVED,
+        users: [],
+        expectedGuid
+      });
+      expect(UserStore.loading).toEqual(false);
     });
   });
 

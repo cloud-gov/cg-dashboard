@@ -38,18 +38,21 @@ export function overview(next) {
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
 
-  spaceActions.fetchAll()
-    .then(spaces => {
-      let i = 0;
-      const max = Math.min(MAX_OVERVIEW_SPACES, spaces.length);
-      const fetches = [];
-      for (; i < max; i++) {
-        fetches.push(spaceActions.fetch(spaces[i].guid));
-      }
+  Promise.all([
+    orgActions.fetchAll(),
+    spaceActions.fetchAll()
+      .then(spaces => {
+        let i = 0;
+        const max = Math.min(MAX_OVERVIEW_SPACES, spaces.length);
+        const fetches = [];
+        for (; i < max; i++) {
+          fetches.push(spaceActions.fetch(spaces[i].guid));
+        }
 
-      return Promise.all(fetches);
-    })
-    .then(pageActions.loadSuccess, pageActions.loadError);
+        return Promise.all(fetches);
+      })
+  ])
+  .then(pageActions.loadSuccess, pageActions.loadError);
   routerActions.navigate(Overview);
   next();
 }
@@ -91,6 +94,7 @@ export function space(orgGuid, spaceGuid, next) {
 export function app(orgGuid, spaceGuid, appGuid, next) {
   orgActions.toggleSpaceMenu(orgGuid);
   spaceActions.changeCurrentSpace(spaceGuid);
+  orgActions.fetch(orgGuid);
   spaceActions.fetch(spaceGuid);
   activityActions.fetchSpaceEvents(spaceGuid, appGuid);
   activityActions.fetchAppLogs(appGuid);
@@ -162,8 +166,6 @@ export function checkAuth(...args) {
     })
     .then(() => {
       userActions.fetchCurrentUser({ orgGuid, spaceGuid });
-      orgActions.fetchAll();
-      spaceActions.fetchAll();
       next();
     });
 }

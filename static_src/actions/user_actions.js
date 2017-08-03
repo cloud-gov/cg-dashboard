@@ -26,6 +26,8 @@ const userActions = {
       type: userActionTypes.ORG_USERS_FETCH,
       orgGuid
     });
+    return cfApi.fetchOrgUsers(orgGuid)
+      .then((users) => userActions.receivedOrgUsers(users, orgGuid));
   },
 
   fetchOrgUserRoles(orgGuid) {
@@ -33,6 +35,8 @@ const userActions = {
       type: userActionTypes.ORG_USER_ROLES_FETCH,
       orgGuid
     });
+    return cfApi.fetchOrgUserRoles(orgGuid)
+      .then((orgUsers) => userActions.receivedOrgUserRoles(orgUsers, orgGuid));
   },
 
   fetchSpaceUserRoles(spaceGuid) {
@@ -40,6 +44,9 @@ const userActions = {
       type: userActionTypes.SPACE_USER_ROLES_FETCH,
       spaceGuid
     });
+
+    return cfApi.fetchSpaceUserRoles(spaceGuid)
+      .then((spaceUsers) => userActions.receivedSpaceUserRoles(spaceUsers, spaceGuid));
   },
 
   receivedOrgUsers(users, orgGuid) {
@@ -349,7 +356,8 @@ const userActions = {
   },
 
   fetchEntityUsers(entityGuid, entityType) {
-    return cfApi[(entityType === ORG_NAME) ? 'fetchOrgUsers' : 'fetchSpaceUserRoles'](entityGuid);
+    return cfApi[(entityType === ORG_NAME) ?
+      'fetchOrgUsers' : 'fetchSpaceUserRoles'](entityGuid);
   },
 
   createdUserAndAssociated(userGuid, entityGuid, entityUsers, entityType) {

@@ -7,7 +7,6 @@
 import Immutable from 'immutable';
 
 import BaseStore from './base_store.js';
-import cfApi from '../util/cf_api.js';
 import { userActionTypes, errorActionTypes } from '../constants.js';
 
 export class UserStore extends BaseStore {
@@ -26,27 +25,30 @@ export class UserStore extends BaseStore {
     this._loading = {};
   }
 
+  get loading() {
+    return !this._loading || this._loading.currentUser ||
+      this._loading.entityUsers || this._loading.entityRoles;
+  }
+
   _registerToActions(action) {
     switch (action.type) {
       case userActionTypes.ORG_USERS_FETCH: {
-        this.load([cfApi.fetchOrgUsers(action.orgGuid)]);
-        this.emitChange();
+        this._loading.entityUsers = true;
         break;
       }
 
       case userActionTypes.ORG_USER_ROLES_FETCH: {
-        this.load([cfApi.fetchOrgUserRoles(action.orgGuid)]);
-        this.emitChange();
+        this._loading.entityRoles = true;
         break;
       }
 
       case userActionTypes.SPACE_USER_ROLES_FETCH: {
-        this.load([cfApi.fetchSpaceUserRoles(action.spaceGuid)]);
-        this.emitChange();
+        this._loading.entityRoles = true;
         break;
       }
 
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
+        this._loading.entityRoles = false;
         const updatedUsers = this.mergeRoles(action.orgUserRoles, action.orgGuid,
           'organization_roles');
         this.mergeMany('guid', updatedUsers, () => { });
@@ -55,6 +57,11 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.SPACE_USER_ROLES_RECEIVED: {
+        // There is no SPACE_USERS_RECEIVED for now unlike orgs,
+        // so we will set both loading entity rules to false.
+        this._loading.entityUsers = false;
+        this._loading.entityRoles = false;
+
         const { users, spaceGuid } = action;
 
         // Force an update to the cached list of users, otherwise mergeRoles
@@ -144,6 +151,7 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.ORG_USERS_RECEIVED: {
+        this._loading.entityUsers = false;
         const orgGuid = action.orgGuid;
         const orgUsers = action.users;
 

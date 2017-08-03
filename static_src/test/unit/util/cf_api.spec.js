@@ -905,7 +905,7 @@ describe('cfApi', function() {
     it('should call fetch with spaces user roles url with space guid and the' +
        ' received space users action', function() {
       var expected = 'yyyybba1',
-          spy = sandbox.stub(cfApi, 'fetchMany');
+          spy = sandbox.spy(cfApi, 'fetchAllPages');
 
       cfApi.fetchSpaceUserRoles(expected);
 
@@ -915,9 +915,7 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('spaces'));
       expect(actual).toMatch(new RegExp('user_roles'));
       actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(userActions.receivedSpaceUserRoles);
-      actual = spy.getCall(0).args[2];
-      expect(actual).toEqual(expected);
+      expect(actual).toEqual(jasmine.any(Function));
     });
   });
 
@@ -925,7 +923,7 @@ describe('cfApi', function() {
     it('should call fetch org users with org guid and received org users action',
         function() {
       var expected = 'yyyybba1',
-          spy = sandbox.stub(cfApi, 'fetchMany');
+          spy = sandbox.spy(cfApi, 'fetchAllPages');
 
       cfApi.fetchOrgUsers(expected);
 
@@ -935,9 +933,7 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('organizations'));
       expect(actual).toMatch(new RegExp('users'));
       actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(userActions.receivedOrgUsers);
-      actual = spy.getCall(0).args[2];
-      expect(actual).toEqual(expected);
+      expect(actual).toEqual(jasmine.any(Function));
     });
   });
 
@@ -945,7 +941,7 @@ describe('cfApi', function() {
     it(`should call fetch org user roles with org guid and received org user
         roles action and org guid`, function() {
       var expectedOrgGuid = 'zkjvczcvzwexdvzdfa',
-          spy = sandbox.stub(cfApi, 'fetchMany');
+          spy = sandbox.spy(cfApi, 'fetchAllPages');
 
       cfApi.fetchOrgUserRoles(expectedOrgGuid);
       expect(spy).toHaveBeenCalledOnce();
@@ -954,9 +950,7 @@ describe('cfApi', function() {
       expect(actual).toMatch(new RegExp('organizations'));
       expect(actual).toMatch(new RegExp('roles'));
       actual = spy.getCall(0).args[1];
-      expect(actual).toEqual(userActions.receivedOrgUserRoles);
-      actual = spy.getCall(0).args[2];
-      expect(actual).toEqual(expectedOrgGuid);
+      expect(actual).toEqual(jasmine.any(Function));
     });
   });
 

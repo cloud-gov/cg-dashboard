@@ -8,7 +8,7 @@ import orgActions from '../../actions/org_actions';
 import spaceActions from '../../actions/space_actions';
 import userActions from '../../actions/user_actions';
 import windowUtil from '../../util/window';
-import { checkAuth } from '../../routes';
+import { checkAuth, overview } from '../../routes';
 
 
 describe('routes', function () {
@@ -20,6 +20,19 @@ describe('routes', function () {
 
   afterEach(function () {
     sandbox.restore();
+  });
+
+  describe('overview()', function () {
+    beforeEach(function (done) {
+      sandbox.stub(orgActions, 'fetchAll').returns(Promise.resolve());
+      sandbox.stub(spaceActions, 'fetchAll').returns(Promise.resolve());
+      overview(done);
+    });
+
+    it('fetches page data', function () {
+      expect(orgActions.fetchAll).toHaveBeenCalledOnce();
+      expect(spaceActions.fetchAll).toHaveBeenCalledOnce();
+    });
   });
 
   describe('checkAuth()', function () {
@@ -49,8 +62,6 @@ describe('routes', function () {
 
       it('fetches page data', function () {
         expect(userActions.fetchCurrentUser).toHaveBeenCalledOnce();
-        expect(orgActions.fetchAll).toHaveBeenCalledOnce();
-        expect(spaceActions.fetchAll).toHaveBeenCalledOnce();
       });
     });
 
@@ -73,8 +84,6 @@ describe('routes', function () {
 
       it('fetches page data', function () {
         expect(userActions.fetchCurrentUser).toHaveBeenCalledOnce();
-        expect(orgActions.fetchAll).toHaveBeenCalledOnce();
-        expect(spaceActions.fetchAll).toHaveBeenCalledOnce();
       });
 
       it('calls userActions.fetchCurrentUser() with guids for filtered API calls', function () {
@@ -112,8 +121,6 @@ describe('routes', function () {
 
       it('fetches page data', function () {
         expect(userActions.fetchCurrentUser).toHaveBeenCalledOnce();
-        expect(orgActions.fetchAll).toHaveBeenCalledOnce();
-        expect(spaceActions.fetchAll).toHaveBeenCalledOnce();
       });
 
       it('calls noticeError action', function () {
@@ -147,8 +154,6 @@ describe('routes', function () {
 
       it('does not fetch page data', function () {
         expect(userActions.fetchCurrentUser).not.toHaveBeenCalled();
-        expect(orgActions.fetchAll).not.toHaveBeenCalled();
-        expect(spaceActions.fetchAll).not.toHaveBeenCalled();
       });
     });
   });
