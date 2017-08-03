@@ -24,7 +24,14 @@ const ORG_MANAGER = 'org_manager';
 const SPACE_MANAGER = 'space_manager';
 const ORG_ENTITY = 'organization';
 const SPACE_ENTITY = 'space';
-const cfCliLink = 'https://docs.cloudfoundry.org/adminguide/cli-user-management.html#space-roles';
+const ORG_INVITE_HELP = 'Only an Org Manager can new invite users to this ' +
+  'organization via the dashboard. Speak to your Org Manager if you need to ' +
+  'add a user to this organization';
+const SPACE_INVITE_SPACE_MANAGER_HELP = 'As an Space Manager, you can invite existing ' +
+  'organization users into your space. If you wish to invite a person who is ' +
+  'not in the organization into your space, please ask an Org Manager';
+const SPACE_INVITE_HELP = 'If you wish to invite users into this space, please ' +
+  'ask an Org Manager or a Space Manager';
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
@@ -176,19 +183,40 @@ export default class Users extends React.Component {
   }
 
   get userInvite() {
-    if (!this.currentUserIsOrgManager) {
+    // When on the org page, only the Org Manager should see the user invite
+    // form. If not, display notification.
+    if (this.isOrganization && !this.currentUserIsOrgManager) {
       return (
         <PanelDocumentation>
-          Currently, only an org manager can invite users to this { this.entityType } via
-          the dashboard. If the user you want to add is already a member
-          of this organization, you can invite them using the
-          <a href={ cfCliLink }> cloud foundry command line interface. </a>
-          Speak to your org manager if you need to add a user to this { this.entityType } who
-          is not a member of this organization.
+          { ORG_INVITE_HELP }
+        </PanelDocumentation>
+      );
+    }
+    // When on the space page, likewise, an Org Manager should always see the
+    // invite form. Else, let's dig into what to display.
+    if (this.isSpace && !this.currentUserIsOrgManager) {
+      // if the user is a Space Manager, let them know that they can invite
+      // existing org users but not new ones.
+      if (this.currentUserIsSpaceManager) {
+        return (
+          <PanelDocumentation>
+            { SPACE_INVITE_SPACE_MANAGER_HELP }
+          </PanelDocumentation>
+        );
+      }
+      // Else, just tell the user to invite a Space Manager or Org Manager.
+      // Let's not confuse the regular user with the difference between
+      // new and existing org users.
+      // We can figure out wording later.
+      return (
+        <PanelDocumentation>
+          { SPACE_INVITE_HELP }
         </PanelDocumentation>
       );
     }
 
+    // Only the Org Manager will get this far.
+    // We should only display the form then.
     return (
       <UsersInvite
         inviteEntityType={ this.entityType }
@@ -200,16 +228,11 @@ export default class Users extends React.Component {
   }
 
   get userParentEntityUserSelector() {
-    if (!this.isSpace) {
+    // only show something if in a space and if the user is a org manager
+    // or space manager.
+    if (!this.isSpace ||
+      (!this.currentUserIsSpaceManager && !this.currentUserIsOrgManager)) {
       return null;
-    }
-
-    if (!this.currentUserIsSpaceManager) {
-      return (
-        <PanelDocumentation>
-          Org Managers and Space Managers can add current organization users into this space.
-        </PanelDocumentation>
-      );
     }
 
     return (
