@@ -245,22 +245,24 @@ describe('ServiceInstanceStore', function() {
     });
   });
 
-  describe('on service instance create ui', function() {
-    it('should set createInstanceForm to object with service and plan from stores',
-        function() {
-      var expectedService = { guid: 'adsf3232222a' },
-          expectedServicePlan = { guid: 'zxvczvqe' };
+  describe('on service instance create ui', () => {
+    it('should set createInstanceForm to object with service and plan from stores', (done) => {
+      const expectedService = { guid: 'adsf3232222a' };
+      const expectedServicePlan = { guid: 'zxvczvqe' };
 
       sandbox.stub(ServiceStore, 'get').returns(expectedService);
       sandbox.stub(ServicePlanStore, 'get').returns(expectedServicePlan);
+      sandbox.stub(serviceActions, 'createInstanceFormCancel').returns(Promise.resolve());
 
-      serviceActions.createInstanceForm('adfkjvnzxczv', 'aldsfjalqwe');
+      serviceActions.createInstanceForm('adfkjvnzxczv', 'aldsfjalqwe').then(() => {
+        const actual = ServiceInstanceStore.createInstanceForm;
 
-      let actual = ServiceInstanceStore.createInstanceForm;
-
-      expect(actual).toBeTruthy();
-      expect(actual.service).toEqual(expectedService);
-      expect(actual.servicePlan).toEqual(expectedServicePlan);
+        expect(actual).toBeTruthy();
+        expect(actual.error).toBe(null);
+        expect(actual.service).toEqual(expectedService);
+        expect(actual.servicePlan).toEqual(expectedServicePlan);
+        done();
+      }, done);
     });
 
     it('should emit a change event', function() {
@@ -295,7 +297,7 @@ describe('ServiceInstanceStore', function() {
       return { response: { data: { error_code: code } } };
     };
 
-    it('should set `createError` based on error received', () => {
+    it('should set error props of instance form based on error received', () => {
       const serverError = { code: 500 };
       const argumentError = serviceInstanceError('CF-MessageParseError');
       const spaceError = serviceInstanceError('CF-ServiceInstanceInvalid');
@@ -307,35 +309,35 @@ describe('ServiceInstanceStore', function() {
       let actual;
 
       serviceActions.errorCreateInstance(serverError);
-      actual = ServiceInstanceStore.createError;
+      actual = ServiceInstanceStore._createInstanceForm.error;
 
       expect(actual).toEqual({
         description: serverErrorMsg
       });
 
       serviceActions.errorCreateInstance(argumentError);
-      actual = ServiceInstanceStore.createError;
+      actual = ServiceInstanceStore._createInstanceForm.error;
 
       expect(actual).toEqual({
         description: SERVICE_INSTANCE_CREATE_ERROR_MAP['CF-MessageParseError']
       });
 
       serviceActions.errorCreateInstance(spaceError);
-      actual = ServiceInstanceStore.createError;
+      actual = ServiceInstanceStore._createInstanceForm.error;
 
       expect(actual).toEqual({
         description: SERVICE_INSTANCE_CREATE_ERROR_MAP['CF-ServiceInstanceInvalid']
       });
 
       serviceActions.errorCreateInstance(configError);
-      actual = ServiceInstanceStore.createError;
+      actual = ServiceInstanceStore._createInstanceForm.error;
 
       expect(actual).toEqual({
         description: SERVICE_INSTANCE_CREATE_ERROR_MAP['CF-ServiceBrokerBadResponse']
       });
 
       serviceActions.errorCreateInstance(dupeNameError);
-      actual = ServiceInstanceStore.createError;
+      actual = ServiceInstanceStore._createInstanceForm.error;
 
       expect(actual).toEqual({
         description: SERVICE_INSTANCE_CREATE_ERROR_MAP['CF-ServiceInstanceNameTaken']

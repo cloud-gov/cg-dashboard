@@ -78,20 +78,24 @@ export default class Marketplace extends React.Component {
     if (state.createInstanceForm) {
       form = (
         <CreateServiceInstance
+          error={ state.createInstanceForm.error }
           service={ state.createInstanceForm.service }
           servicePlan={ state.createInstanceForm.servicePlan }
         />
       );
     }
 
-    let loading = <Loading text="Loading marketplace services" />;
-    let content = <div>{ loading }</div>;
+    let content = (
+      <div>
+        <Loading text="Loading marketplace services" />;
+      </div>
+    );
+
     if (!this.state.loading) {
-      let list = <ServiceList />;
       content = (
         <div>
           { this.documentation }
-          { list }
+          <ServiceList />
           { form }
         </div>
       );

@@ -47,8 +47,6 @@ const BINDING_ERROR_MAP = {
 const getFriendlyError = (error, errorMap) => {
   const { code, error_code: errorCode } = error;
 
-  debugger;
-
   if (errorCode in errorMap) {
     return errorMap[errorCode];
   }
@@ -187,16 +185,20 @@ export class ServiceInstanceStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM: {
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
+
         this._createInstanceForm = {
+          error: null,
           service: ServiceStore.get(action.serviceGuid),
           servicePlan: ServicePlanStore.get(action.servicePlanGuid)
         };
+
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM_CANCEL:
         this._createInstanceForm = null;
+
         this.emitChange();
         break;
 
@@ -221,11 +223,15 @@ export class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR: {
-        this._createError = {
-          description: getFriendlyError(action.error, SERVICE_INSTANCE_CREATE_ERROR_MAP)
-        };
+        this._createInstanceForm = Object.assign({}, this._createInstanceForm || {}, {
+          error: {
+            description: getFriendlyError(action.error, SERVICE_INSTANCE_CREATE_ERROR_MAP)
+          }
+        });
         this._createLoading = false;
+
         this.emitChange();
+
         break;
       }
 
