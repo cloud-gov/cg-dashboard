@@ -247,7 +247,7 @@ export default {
 
   fetchOrgs() {
     return this.fetchAllPages('/organizations',
-      (res) => Promise.resolve(res))
+      results => Promise.resolve(results))
       .catch(err => {
         handleError(err);
         return Promise.reject(err);
@@ -357,7 +357,7 @@ export default {
    */
   fetchSpaceUserRoles(spaceGuid) {
     return this.fetchAllPages(`/spaces/${spaceGuid}/user_roles`,
-      (results) => Promise.resolve(results));
+      results => Promise.resolve(results));
   },
 
   /**
@@ -367,12 +367,12 @@ export default {
    */
   fetchOrgUsers(orgGuid) {
     return this.fetchAllPages(`/organizations/${orgGuid}/users`,
-      (results) => Promise.resolve(results));
+      results => Promise.resolve(results));
   },
 
   fetchOrgUserRoles(orgGuid) {
     return this.fetchAllPages(`/organizations/${orgGuid}/user_roles`,
-      (results) => Promise.resolve(results));
+      results => Promise.resolve(results));
   },
 
   deleteUser(userGuid, orgGuid) {

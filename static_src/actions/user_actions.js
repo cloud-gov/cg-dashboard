@@ -27,7 +27,7 @@ const userActions = {
       orgGuid
     });
     return cfApi.fetchOrgUsers(orgGuid)
-      .then((users) => userActions.receivedOrgUsers(users, orgGuid));
+      .then(users => userActions.receivedOrgUsers(users, orgGuid));
   },
 
   fetchOrgUserRoles(orgGuid) {
@@ -36,7 +36,7 @@ const userActions = {
       orgGuid
     });
     return cfApi.fetchOrgUserRoles(orgGuid)
-      .then((orgUsers) => userActions.receivedOrgUserRoles(orgUsers, orgGuid));
+      .then(orgUsers => userActions.receivedOrgUserRoles(orgUsers, orgGuid));
   },
 
   fetchSpaceUserRoles(spaceGuid) {
@@ -46,7 +46,7 @@ const userActions = {
     });
 
     return cfApi.fetchSpaceUserRoles(spaceGuid)
-      .then((spaceUsers) => userActions.receivedSpaceUserRoles(spaceUsers, spaceGuid));
+      .then(spaceUsers => userActions.receivedSpaceUserRoles(spaceUsers, spaceGuid));
   },
 
   receivedOrgUsers(users, orgGuid) {
