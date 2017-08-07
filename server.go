@@ -156,7 +156,7 @@ func startMonitoring(license string) {
 func startApp(port string, env *cfenv.App) {
 	// Load environment variables
 	envVars := loadEnvVars()
-	// Override with cloud foundry user provided service credentials if specified.
+	// Override with Cloud Foundry user-provided service credentials if specified.
 	loadUPSVars(&envVars, env)
 
 	app, settings, err := controllers.InitApp(envVars, env)

@@ -138,13 +138,13 @@ type BasicSecureTest struct {
 
 // Handler is a specific handler for the test server.
 type Handler struct {
-	// The response the test 'external' cloud foundry server should send back.
+	// The response the test 'external' Cloud Foundry server should send back.
 	Response string
-	// The code the test 'external' cloud foundry server should send back.
+	// The code the test 'external' Cloud Foundry server should send back.
 	ResponseCode int
-	// ExpectedPath is the path that the test 'external' cloud foundry server we setup should receive.
-	// This is useful as we translate our endpoints to conform with the cloud foundry APIs.
-	// e.g. our endpoint: /uaa/userinfo & cloud foundry endpoint: /userinfo
+	// ExpectedPath is the path that the test 'external' Cloud Foundry server we setup should receive.
+	// This is useful as we translate our endpoints to conform with the Cloud Foundry APIs.
+	// e.g. our endpoint: /uaa/userinfo & Cloud Foundry endpoint: /userinfo
 	ExpectedPath string
 	// RequestMethod is the method the external server should be waiting for.
 	RequestMethod string
