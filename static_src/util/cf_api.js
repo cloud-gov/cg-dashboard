@@ -5,7 +5,6 @@ import domainActions from '../actions/domain_actions.js';
 import errorActions from '../actions/error_actions.js';
 import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
-import userActions from '../actions/user_actions.js';
 
 const APIV = '/v2';
 
@@ -247,8 +246,8 @@ export default {
   },
 
   fetchOrgs() {
-    return http.get(`${APIV}/organizations`)
-      .then(res => this.formatSplitResponses(res.data.resources))
+    return this.fetchAllPages('/organizations',
+      results => Promise.resolve(results))
       .catch(err => {
         handleError(err);
         return Promise.reject(err);
@@ -357,9 +356,8 @@ export default {
    * @param {String} spaceGuid - The guid of the space that the users belong to.
    */
   fetchSpaceUserRoles(spaceGuid) {
-    return this.fetchMany(`/spaces/${spaceGuid}/user_roles`,
-                          userActions.receivedSpaceUserRoles,
-                          spaceGuid);
+    return this.fetchAllPages(`/spaces/${spaceGuid}/user_roles`,
+      results => Promise.resolve(results));
   },
 
   /**
@@ -368,15 +366,13 @@ export default {
    * @param {String} orgGuid - The guid of the org that the users belong to.
    */
   fetchOrgUsers(orgGuid) {
-    return this.fetchMany(`/organizations/${orgGuid}/users`,
-                          userActions.receivedOrgUsers,
-                          orgGuid);
+    return this.fetchAllPages(`/organizations/${orgGuid}/users`,
+      results => Promise.resolve(results));
   },
 
   fetchOrgUserRoles(orgGuid) {
-    return this.fetchMany(`/organizations/${orgGuid}/user_roles`,
-                          userActions.receivedOrgUserRoles,
-                          orgGuid);
+    return this.fetchAllPages(`/organizations/${orgGuid}/user_roles`,
+      results => Promise.resolve(results));
   },
 
   deleteUser(userGuid, orgGuid) {

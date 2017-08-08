@@ -26,47 +26,83 @@ describe('userActions', function() {
   });
 
   describe('fetchOrgUsers()', function() {
+    const expectedOrgGuid = 'asdflkjz',
+        expectedParams = {
+          orgGuid: expectedOrgGuid
+        };
+    let spy;
+
+    beforeEach(function(done){
+      spy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'fetchOrgUsers').returns(Promise.resolve([]));
+      sandbox.spy(userActions, 'receivedOrgUsers');
+      userActions.fetchOrgUsers(expectedOrgGuid).then(done, done.fail);
+    });
+
     it('should dispatch a view event of type org users fetch', function() {
-      var expectedOrgGuid = 'asdflkjz',
-          expectedParams = {
-            orgGuid: expectedOrgGuid
-          };
-
-      let spy = setupViewSpy(sandbox);
-
-      userActions.fetchOrgUsers(expectedOrgGuid);
-
       assertAction(spy, userActionTypes.ORG_USERS_FETCH, expectedParams);
+    });
+
+    it('should call cf api fetchOrgUsers', function() {
+      expect(cfApi.fetchOrgUsers).toHaveBeenCalledOnce();
+    });
+
+    it('should call receivedOrgUsers', function() {
+      expect(userActions.receivedOrgUsers).toHaveBeenCalledOnce();
     });
   });
 
   describe('fetchOrgUserRoles()', function() {
+    const expectedOrgGuid = 'zknxvzmnxjkafakdlsxcv',
+        expectedParams = {
+          orgGuid: expectedOrgGuid
+        };
+    let spy;
+
+    beforeEach(function(done){
+      spy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'fetchOrgUserRoles').returns(Promise.resolve([]));
+      sandbox.spy(userActions, 'receivedOrgUserRoles');
+      userActions.fetchOrgUserRoles(expectedOrgGuid).then(done, done.fail);
+    });
+
     it('should dispatch a view event of type org user roles fetch', function() {
-      var expectedOrgGuid = 'zknxvzmnxjkafakdlsxcv',
-          expectedParams = {
-            orgGuid: expectedOrgGuid
-          };
-
-      let spy = setupViewSpy(sandbox);
-
-      userActions.fetchOrgUserRoles(expectedOrgGuid);
-
       assertAction(spy, userActionTypes.ORG_USER_ROLES_FETCH, expectedParams);
+    });
+
+    it('should call cf api fetchOrgUserRoles', function() {
+      expect(cfApi.fetchOrgUserRoles).toHaveBeenCalledOnce();
+    });
+
+    it('should call receivedOrgUserRoles', function() {
+      expect(userActions.receivedOrgUserRoles).toHaveBeenCalledOnce();
     });
   });
 
   describe('fetchSpaceUserRoles()', function() {
+    const expectedSpaceGuid = 'asdflkjz',
+        expectedParams = {
+          spaceGuid: expectedSpaceGuid
+        };
+    let spy;
+
+    beforeEach(function(done){
+      spy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'fetchSpaceUserRoles').returns(Promise.resolve([]));
+      sandbox.spy(userActions, 'receivedSpaceUserRoles');
+      userActions.fetchSpaceUserRoles(expectedSpaceGuid).then(done, done.fail);
+    });
+
     it('should dispatch a view event of type space users fetch', function() {
-      var expectedSpaceGuid = 'asdflkjz',
-          expectedParams = {
-            spaceGuid: expectedSpaceGuid
-          };
-
-      let spy = setupViewSpy(sandbox);
-
-      userActions.fetchSpaceUserRoles(expectedSpaceGuid);
-
       assertAction(spy, userActionTypes.SPACE_USER_ROLES_FETCH, expectedParams);
+    });
+
+    it('should call cf api fetchSpaceUserRoles', function() {
+      expect(cfApi.fetchSpaceUserRoles).toHaveBeenCalledOnce();
+    });
+
+    it('should call receivedSpaceUserRoles', function() {
+      expect(userActions.receivedSpaceUserRoles).toHaveBeenCalledOnce();
     });
   });
 
