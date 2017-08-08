@@ -45,7 +45,7 @@ A feature is a higher-level epic that will encompass multiple smaller units of w
 - All appropriate shared global styling is in cg-style rather then cg-dashboard
   or other repos.
 - All potential errors are handled correctly.
-- If uses new data from cloud foundry api (new methods added to `cf_api.js`) ensure they are mocked in testing server.
+- If the feature uses new data from the Cloud Foundry API (new methods added to `cf_api.js`), ensure they are mocked in the testing server.
 - Open an issue or PR in [cg-docs](https://github.com/18F/cg-docs) to document the new feature.
 - A product owner or team member will check a story waiting acceptance and put it into "done" if it meets the criteria.
 - The feature has been usability tested with at least two current or potential cloud.gov users.

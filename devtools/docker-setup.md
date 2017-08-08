@@ -39,7 +39,7 @@ navigate to `http://localhost:8001` and see the testing server.
 ## Full Setup
 
 After running the Full Setup instructions, you will have a
-local cloud foundry deployment (with UAA), the dashboard, a redis service
+local Cloud Foundry deployment (with UAA), the dashboard, a redis service
 instance, mailcatcher for testing e-mails, and npm watch running so that you can
 automatically recompile your frontend changes.
 

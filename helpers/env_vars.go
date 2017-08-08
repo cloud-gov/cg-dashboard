@@ -17,7 +17,7 @@ var (
 	//  base uaa URL endpoint that this app should use to get tokens.
 	UAAURLEnvVar = "CONSOLE_UAA_URL"
 	// APIURLEnvVar is the environment variable key that represents the
-	// base api URL endpoint that this app should use to access cloud foundry data.
+	// base api URL endpoint that this app should use to access Cloud Foundry data.
 	APIURLEnvVar = "CONSOLE_API_URL"
 	// LogURLEnvVar is the environment variable key that represents the
 	// endpoint to the loggregator.
