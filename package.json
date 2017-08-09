@@ -1,6 +1,6 @@
 {
   "name": "cloudgov-dashboard",
-  "version": "1.16.8",
+  "version": "1.16.9",
   "engines": {
     "node": "6.x.x",
     "npm": "3.x.x"
