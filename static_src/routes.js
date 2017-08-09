@@ -62,14 +62,16 @@ export function org(orgGuid, next) {
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
 
-  orgActions.toggleSpaceMenu(orgGuid);
-  orgActions.fetch(orgGuid);
-  cfApi.fetchSpaces().then(() => spaceActions.fetchAllForOrg(orgGuid));
-  userActions.changeCurrentlyViewedType('org_users');
-  userActions.fetchOrgUsers(orgGuid);
-  userActions.fetchOrgUserRoles(orgGuid);
-  routerActions.navigate(OrgContainer);
-  next();
+  spaceActions.fetchAll().then(() => {
+    orgActions.toggleSpaceMenu(orgGuid);
+    orgActions.fetch(orgGuid);
+    spaceActions.fetchAllForOrg(orgGuid);
+    userActions.changeCurrentlyViewedType('org_users');
+    userActions.fetchOrgUsers(orgGuid);
+    userActions.fetchOrgUserRoles(orgGuid);
+    routerActions.navigate(OrgContainer);
+    next();
+  });
 }
 
 export function space(orgGuid, spaceGuid, next) {
