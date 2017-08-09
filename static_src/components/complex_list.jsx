@@ -1,15 +1,14 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
 import ComplexListItem from './complex_list_item.jsx';
 import createStyler from '../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const propTypes = {
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.array,
-    React.PropTypes.object
+  children: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object
   ]),
   className: PropTypes.string,
   title: PropTypes.string,
