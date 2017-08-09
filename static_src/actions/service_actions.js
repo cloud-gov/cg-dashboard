@@ -113,13 +113,13 @@ const serviceActions = {
   },
 
   createInstanceForm(serviceGuid, planGuid) {
-    AppDispatcher.handleViewAction({
-      type: serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM,
-      serviceGuid,
-      servicePlanGuid: planGuid
+    return serviceActions.createInstanceFormCancel().then(() => {
+      AppDispatcher.handleViewAction({
+        type: serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM,
+        serviceGuid,
+        servicePlanGuid: planGuid
+      });
     });
-
-    return Promise.resolve();
   },
 
   createInstanceFormCancel() {

@@ -258,23 +258,36 @@ describe('serviceActions', function() {
     });
   });
 
-  describe('createInstanceForm()', function() {
-    it(`should dispatch a view event of type create instance form with the
-        service guid and service plan guid`, function() {
-      var expectedServiceGuid = 'wqphjhajkajkhadjhfd',
-          expectedServicePlanGuid = 'fp2ajkdsfadgh32fasd';
+  describe('createInstanceForm()', () => {
+    const expectedServiceGuid = 'wqphjhajkajkhadjhfd';
+    const expectedServicePlanGuid = 'fp2ajkdsfadgh32fasd';
 
-      let expectedParams = {
-        servicePlanGuid: expectedServicePlanGuid,
-        serviceGuid: expectedServiceGuid
-      };
-      let spy = setupViewSpy(sandbox);
+    const expectedParams = {
+      servicePlanGuid: expectedServicePlanGuid,
+      serviceGuid: expectedServiceGuid
+    };
+
+    it('should dispatch a form cancel action', (done) => {
+      let uiSpy = setupUISpy(sandbox);
 
       serviceActions.createInstanceForm(expectedServiceGuid,
-        expectedServicePlanGuid);
+        expectedServicePlanGuid).then(() => {
+          assertAction(uiSpy, serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM_CANCEL);
+          done();
+        }, done.fail);
+    });
 
-      assertAction(spy, serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM,
-                   expectedParams);
+    it('should dispatch a form create action', (done) => {
+      let viewSpy = setupViewSpy(sandbox);
+
+      sandbox.stub(serviceActions, 'createInstanceFormCancel').returns(Promise.resolve());
+
+      serviceActions.createInstanceForm(expectedServiceGuid,
+        expectedServicePlanGuid).then(() => {
+          assertAction(viewSpy, serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM,
+                       expectedParams);
+          done();
+        }, done.fail);
     });
   });
 

@@ -2,15 +2,11 @@
 /**
  * Renders a list of service plans
  */
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import Action from './action.jsx';
+import ServicePlan from './service_plan.jsx';
 import serviceActions from '../actions/service_actions.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
-import createStyler from '../util/create_styler';
 
 const propTypes = {
   serviceGuid: PropTypes.string
@@ -42,7 +38,6 @@ export default class ServicePlanList extends React.Component {
 
     this._onChange = this._onChange.bind(this);
     this._handleAdd = this._handleAdd.bind(this);
-    this.styler = createStyler(style);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -54,8 +49,7 @@ export default class ServicePlanList extends React.Component {
   }
 
   _handleAdd(planGuid) {
-    serviceActions.createInstanceForm(this.state.serviceGuid,
-      planGuid);
+    serviceActions.createInstanceForm(this.state.serviceGuid, planGuid);
   }
 
   get columns() {
@@ -91,45 +85,33 @@ export default class ServicePlanList extends React.Component {
           <tr>
             { this.columns.map((column) => {
               return (
-                <th className={ column.key }
-                  key={ column.key }
-                >
-                  { column.label }</th>
+                <th className={ column.key } key={ column.key }>
+                  { column.label }
+                </th>
               );
             })}
           </tr>
         </thead>
         <tbody>
-          { this.rows.map((plan) => {
-            return (
-              <tr key={ plan.guid }>
-                <td label="Name">
-                  <span>{ plan.name }</span>
-                </td>
-                <td label="Description">{ plan.description }</td>
-                <td label="Cost">
-                  <span>
-                    { this.cost(plan) }
-                  </span>
-                </td>
-                <td label="Actions">
-                  <Action
-                    classes={ ["test-create_service_instance"] }
-                    clickHandler={ this._handleAdd.bind(this, plan.guid) }
-                    label="create">
-                      <span>Create service instance</span>
-                  </Action>
-                </td>
-              </tr>
-            )
-          })}
+          {
+            this.rows.map((plan, index) => {
+              return (
+                <ServicePlan
+                  cost={ this.cost(plan) }
+                  key={ index }
+                  onAddInstance={ this._handleAdd }
+                  plan={ plan }
+                />
+              );
+            })
+          }
         </tbody>
       </table>
       );
     }
 
     return (
-    <div className={ this.styler('tableWrapper') }>
+    <div className='tableWrapper'>
       { content }
     </div>
     );

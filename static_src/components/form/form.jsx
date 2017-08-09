@@ -33,6 +33,7 @@ const defaultProps = {
 
 function stateSetter(props) {
   const model = FormStore.get(props.guid);
+
   return {
     errors: [],
     model

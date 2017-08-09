@@ -12,11 +12,13 @@ import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import serviceActions from '../actions/service_actions.js';
+import formActions from '../actions/form_actions';
 import { validateString } from '../util/validators';
 
 const CREATE_SERVICE_INSTANCE_FORM_GUID = 'create-service-form';
 
 const propTypes = {
+  error: PropTypes.object,
   service: PropTypes.object,
   servicePlan: PropTypes.object.isRequired
 };
@@ -27,7 +29,6 @@ const defaultProps = {
 
 function stateSetter() {
   return {
-    createError: ServiceInstanceStore.createError,
     createLoading: ServiceInstanceStore.createLoading,
     createdTempNotification: ServiceInstanceStore.createdTempNotification,
     spaces: SpaceStore.getAll()
@@ -40,8 +41,7 @@ export default class CreateServiceInstance extends React.Component {
 
     this.state = {
       errs: [],
-      spaces: SpaceStore.getAll(),
-      createError: ServiceInstanceStore.createError
+      spaces: SpaceStore.getAll()
     };
 
     this.validateString = validateString().bind(this);
@@ -109,24 +109,31 @@ export default class CreateServiceInstance extends React.Component {
     });
   }
 
-  render() {
-    let createError;
+  get contextualAction() {
+    const { createLoading, createdTempNotification } = this.state;
+
     let createAction = (
       <Action label="submit" type="submit">Create service instance</Action>
     );
 
-    if (this.state.createError) {
-      createError = <FormError message={ this.state.createError.description } />
-    }
-
-    if (this.state.createLoading) {
+    if (createLoading) {
       createAction = <Loading style="inline" />;
-    } else if (this.state.createdTempNotification) {
+    } else if (createdTempNotification) {
       createAction = (
         <span className="status status-ok">
           Created! To bind the service instance to an app, go to an application page and use the services panel.
         </span>
       );
+    }
+
+    return createAction;
+  }
+
+  render() {
+    let createError;
+
+    if (this.props.error) {
+      createError = <FormError message={ this.props.error.description } />
     }
 
     return (
@@ -162,7 +169,7 @@ export default class CreateServiceInstance extends React.Component {
             options={ this.validSpaceTargets }
             validator={ this.validateString }
           />
-          { createAction }
+          { this.contextualAction }
           <Action
             label="cancel"
             style="base"
