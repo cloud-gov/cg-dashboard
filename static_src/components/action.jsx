@@ -26,7 +26,7 @@ const propTypes = {
   href: PropTypes.string,
   label: PropTypes.string,
   style: PropTypes.oneOf(BUTTON_STYLES),
-  type: PropTypes.oneOf(BUTTON_TYPES)
+  type: PropTypes.oneOf(Object.keys(BUTTON_TYPES).map(t => BUTTON_TYPES[t]))
 };
 const defaultProps = {
   style: 'primary',
