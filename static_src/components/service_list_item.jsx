@@ -5,7 +5,15 @@ import ElasticLineItem from './elastic_line_item.jsx';
 import ServicePlanList from './service_plan_list.jsx';
 import formatDateTime from '../util/format_date.js';
 
-const ServiceListItem = ({ guid, label, description, updatedAt, servicePlans}) =>
+const propTypes = {
+  guid: PropTypes.string,
+  label: PropTypes.string,
+  description: PropTypes.string,
+  updatedAt: PropTypes.string,
+  servicePlans: PropTypes.array
+};
+
+const ServiceListItem = ({ guid, label, description, updatedAt, servicePlans }) =>
   <div className="panel-section">
     <ElasticLine>
       <ElasticLineItem>
@@ -20,5 +28,7 @@ const ServiceListItem = ({ guid, label, description, updatedAt, servicePlans}) =
     </ElasticLine>
     <ServicePlanList plans={ servicePlans } serviceGuid={ guid } />
   </div>;
+
+ServiceListItem.propTypes = propTypes;
 
 export default ServiceListItem;
