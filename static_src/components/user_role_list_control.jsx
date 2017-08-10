@@ -82,7 +82,12 @@ export default class UserRoleListControl extends React.Component {
   }
 
   roles() {
-    const roles = this.props.user.roles;
+    let roles;
+    if (this.props.userType == 'space_users') {
+      roles = this.props.user.space_roles;
+    } else {
+      roles = this.props.user.roles;
+    }
     return roles ?
       (roles[this.props.entityGuid] || []) :
       []
