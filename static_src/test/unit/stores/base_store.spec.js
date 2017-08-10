@@ -214,6 +214,80 @@ describe('BaseStore', () => {
     });
   });
 
+  describe('deleteProp', function() {
+    const existingEntityA = {
+      guid: 'zznbmbz',
+      name: 'ea',
+      cpu: 34
+    };
+    const existingEntityB = {
+      guid: 'zzlkcxv',
+      name: 'eb',
+      cpu: 66
+    };
+
+    beforeEach(function() {
+      store.push(existingEntityA);
+      store.push(existingEntityB);
+    });
+
+    it('should remove the property that match the guid and prop and call .emitChange()', function () {
+      var spy = sandbox.spy(store, 'emitChange');
+      var guidA = existingEntityA.guid;
+      var guidB = existingEntityB.guid
+
+      expect(store.getAll().length).toEqual(2);
+      expect(store.get(guidB)).toEqual(existingEntityB);
+      expect(store.get(guidA)).toEqual(existingEntityA);
+
+      store.deleteProp(guidB, 'cpu');
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(store.getAll().length).toEqual(2);
+      expect(store.get(guidB).cpu).toEqual(undefined);
+      expect(store.get(guidB).guid).toEqual(existingEntityB.guid);
+      expect(store.get(guidB).name).toEqual(existingEntityB.name);
+      expect(store.get(guidA)).toEqual(existingEntityA);
+    });
+
+    it('should do nothing if the guid does not match', function () {
+      var spy = sandbox.spy(store, 'emitChange');
+      var guidA = existingEntityA.guid;
+      var guidB = existingEntityB.guid
+
+      expect(store.getAll().length).toEqual(2);
+      expect(store.get(guidB)).toEqual(existingEntityB);
+      expect(store.get(guidA)).toEqual(existingEntityA);
+
+      store.deleteProp('nonExistentFakeGuid', 'cpu');
+
+      expect(spy).not.toHaveBeenCalledOnce();
+      expect(store.getAll().length).toEqual(2);
+      expect(store.get(guidB)).toEqual(existingEntityB);
+      expect(store.get(guidA)).toEqual(existingEntityA);
+    });
+
+    it('should do nothing if the prop does not match but will call emitChange', function () {
+      // Currently there's no way to detect in a thread safe way that the deleteIn
+      // was successful, so emitChange will be called.
+      // There will still be no change though.
+      var spy = sandbox.spy(store, 'emitChange');
+      var guidA = existingEntityA.guid;
+      var guidB = existingEntityB.guid
+
+      expect(store.getAll().length).toEqual(2);
+      expect(store.get(guidB)).toEqual(existingEntityB);
+      expect(store.get(guidA)).toEqual(existingEntityA);
+
+      store.deleteProp(guidA, 'ram');
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(store.getAll().length).toEqual(2);
+      expect(store.get(guidB)).toEqual(existingEntityB);
+      expect(store.get(guidA)).toEqual(existingEntityA);
+    });
+  });
+
   describe('merge()', function() {
     var existingEntityA = {
       guid: 'zznbmbz',

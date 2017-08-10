@@ -73,7 +73,7 @@ describe('<UserRoleListControl />', function () {
       const userGuid = 'a-user-guid';
       const user = {
         guid: userGuid,
-        roles: []
+        space_roles: {}
       };
 
       userRoleListControl = shallow(
@@ -103,7 +103,7 @@ describe('<UserRoleListControl />', function () {
         const user = {
           guid: 'user-123',
           entityGuid: spaceGuid,
-          roles: {
+          space_roles: {
             [spaceGuid]: ['space_manager']
           }
         };

@@ -169,19 +169,17 @@ describe('UserStore', function () {
       const currentUsers = [
         {
           guid: userGuidB,
-          roles: { [spaceGuid]: ['space_developer'] }
+          space_roles: { [spaceGuid]: ['space_developer'] }
         }
       ];
       expectedUsers = [
         {
           guid: userGuidA,
-          roles: { [spaceGuid]: ['space_developer'] },
-          space_roles: [ 'space_developer' ]
+          space_roles: { [spaceGuid]: ['space_developer'] }
         },
         {
           guid: userGuidB,
-          roles: { [spaceGuid]: ['space_developer', 'space_manager'] },
-          space_roles: [ 'space_developer', 'space_manager' ]
+          space_roles: { [spaceGuid]: ['space_developer', 'space_manager'] }
         }
       ];
 
@@ -384,8 +382,10 @@ describe('UserStore', function () {
       beforeEach(function() {
         const existingUser = {
           guid: userGuid,
+          space_roles: {
+            [spaceGuid]: [existingRole]
+          },
           roles: {
-            [spaceGuid]: [existingRole],
             [otherOrgGuid]: ['org_manager']
           }
         };
@@ -401,12 +401,12 @@ describe('UserStore', function () {
         expect(UserStore.emitChange).toHaveBeenCalledOnce();
       });
 
-      it('should add the role for that org', function() {
-        expect(user.roles[spaceGuid]).toContain(addedRole);
+      it('should add the role for that space', function() {
+        expect(user.space_roles[spaceGuid]).toContain(addedRole);
       });
 
       it('should not change any other roles', function() {
-        expect(user.roles[spaceGuid]).toContain(existingRole);
+        expect(user.space_roles[spaceGuid]).toContain(existingRole);
         expect(user.roles[otherOrgGuid]).toContain('org_manager');
       });
     });
@@ -427,7 +427,7 @@ describe('UserStore', function () {
       });
 
       it('should add the role for that org', function() {
-        expect(user.roles[spaceGuid]).toContain(addedRole);
+        expect(user.space_roles[spaceGuid]).toContain(addedRole);
       });
     });
   });
@@ -699,7 +699,7 @@ describe('UserStore', function () {
     // TODO possibly move this functionality to shared place.
     it('should find all user that have the space guid passed in', function() {
       var spaceGuid = 'asdfa';
-      var testUser = { guid: 'adfzxcv', roles: { [spaceGuid]: [ 'space_user'] } };
+      var testUser = { guid: 'adfzxcv', space_roles: { [spaceGuid]: [ 'space_user'] } };
 
       UserStore.push(testUser);
 

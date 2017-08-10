@@ -78,6 +78,17 @@ export default class BaseStore extends EventEmitter {
     return !Immutable.is(this._data, c);
   }
 
+  deleteProp(guid, prop, cb = defaultChangedCallback.bind(this)) {
+    const index = this._data.findIndex((d) =>
+      d.get('guid') === guid
+    );
+
+    if (index === -1) return cb(false);
+
+    this._data = this._data.deleteIn([index, prop]);
+    return cb(true);
+  }
+
   delete(guid, cb = defaultChangedCallback.bind(this)) {
     const index = this._data.findIndex((d) =>
       d.get('guid') === guid

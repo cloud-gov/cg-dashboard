@@ -66,10 +66,10 @@ export class UserStore extends BaseStore {
 
         // Force an update to the cached list of users, otherwise mergeRoles
         // won't be able to find the new user
-        this.mergeMany('guid', users, () => {});
-        this.mergeMany('guid', this.mergeRoles(users, spaceGuid, 'space_roles'), () => {});
+        const updatedUsers = this.mergeRoles(users, spaceGuid,
+          'space_roles');
+        this.mergeMany('guid', updatedUsers, () => { });
         this.emitChange();
-
         break;
       }
 
@@ -107,17 +107,8 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_ROLES_ADDED: {
         this._saving = false;
         const user = this.get(action.userGuid);
-        const addedRole = action.roles;
-        if (user) {
-          if (!user.roles) user.roles = {};
-          const updatedRoles = new Set(user.roles[action.entityGuid] || []);
-          updatedRoles.add(addedRole);
-          user.roles[action.entityGuid] = Array.from(updatedRoles);
-
-          this.merge('guid', user, () => {});
-        }
-
-        this.emitChange();
+        this.addUserRole(user, action.entityType, action.entityGuid,
+          action.roles, () => this.emitChange());
         break;
       }
 
@@ -135,18 +126,8 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_ROLES_DELETED: {
         this._saving = false;
         const user = this.get(action.userGuid);
-        const deletedRole = action.roles;
-        if (user) {
-          const roles = user.roles && user.roles[action.entityGuid];
-          if (roles) {
-            const idx = deletedRole && roles.indexOf(deletedRole);
-            if (idx > -1) {
-              roles.splice(idx, 1);
-            }
-          }
-          this.merge('guid', user, () => {});
-        }
-        this.emitChange();
+        this.deleteUserRole(user, action.entityType, action.entityGuid,
+          action.roles, () => this.emitChange());
         break;
       }
 
@@ -182,9 +163,10 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_REMOVED_ALL_SPACE_ROLES: {
-        this.delete(action.userGuid, (changed) => {
-          if (changed) this.emitChange();
-        });
+        const user = this.get(action.userGuid);
+        if (user) {
+          this.deleteProp(action.userGuid, 'space_roles', () => this.emitChange());
+        }
         break;
       }
 
@@ -313,12 +295,51 @@ export class UserStore extends BaseStore {
     }
   }
 
+  addUserRole(user, entityType, entityGuid, addedRole, cb) {
+    const updatedUser = user;
+    if (updatedUser) {
+      if (entityType === 'space') {
+        if (!updatedUser.space_roles) updatedUser.space_roles = {};
+        const updatedRoles = new Set(user.space_roles[entityGuid] || []);
+        updatedRoles.add(addedRole);
+        updatedUser.space_roles[entityGuid] = Array.from(updatedRoles);
+      } else {
+        if (!updatedUser.roles) updatedUser.roles = {};
+        const updatedRoles = new Set(user.roles[entityGuid] || []);
+        updatedRoles.add(addedRole);
+        updatedUser.roles[entityGuid] = Array.from(updatedRoles);
+      }
+      this.merge('guid', updatedUser, () => {});
+      cb();
+    }
+  }
+
+  deleteUserRole(user, entityType, entityGuid, deletedRole, cb) {
+    const updatedUser = user;
+    if (updatedUser) {
+      let roles;
+      if (entityType === 'space') {
+        roles = updatedUser.space_roles && updatedUser.space_roles[entityGuid];
+      } else {
+        roles = updatedUser.roles && updatedUser.roles[entityGuid];
+      }
+      if (roles) {
+        const idx = deletedRole && roles.indexOf(deletedRole);
+        if (idx > -1) {
+          roles.splice(idx, 1);
+        }
+      }
+      this.merge('guid', updatedUser, () => {});
+      cb();
+    }
+  }
+
   /**
    * Get all users in a certain space
    */
   getAllInSpace(spaceGuid) {
     const usersInSpace = this._data.filter((user) =>
-      !!user.get('roles') && !!user.get('roles').get(spaceGuid)
+      !!user.get('space_roles') && !!user.get('space_roles').get(spaceGuid)
     );
     return usersInSpace.toJS();
   }
@@ -350,10 +371,15 @@ export class UserStore extends BaseStore {
   mergeRoles(roles, entityGuid, entityType) {
     return roles.map((role) => {
       const user = Object.assign({}, this.get(role.guid) || { guid: role.guid });
-      if (!user.roles) user.roles = {};
       const updatingRoles = role[entityType] || [];
 
-      user.roles[entityGuid] = updatingRoles;
+      if (entityType === 'space_roles') {
+        if (!user.space_roles) user.space_roles = {};
+        user.space_roles[entityGuid] = updatingRoles;
+      } else {
+        if (!user.roles) user.roles = {};
+        user.roles[entityGuid] = updatingRoles;
+      }
       return user;
     });
   }
@@ -380,7 +406,8 @@ export class UserStore extends BaseStore {
 
     const key = entityGuid;
     const user = this.get(userGuid);
-    const roles = user && user.roles && user.roles[key] || [];
+    const roles = [...(user && user.roles && user.roles[key] || []),
+      ...(user && user.space_roles && user.space_roles[key] || [])];
     return !!roles.find((role) => wrappedRoles.includes(role));
   }
 
