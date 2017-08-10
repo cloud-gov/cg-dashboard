@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-
 import CreateServiceInstance from './create_service_instance.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
@@ -12,9 +11,9 @@ import ServiceInstanceStore from '../stores/service_instance_store.js';
 import ServiceList from './service_list.jsx';
 import ServicePlanStore from '../stores/service_plan_store.js';
 import ServiceStore from '../stores/service_store.js';
-import createStyler from '../util/create_styler';
 import { config } from 'skin';
-import style from 'cloudgov-style/css/cloudgov-style.css';
+
+const propTypes = {};
 
 function stateSetter() {
   const loading = ServiceStore.loading || ServicePlanStore.loading;
@@ -24,7 +23,11 @@ function stateSetter() {
     currentOrgGuid,
     loading: loading,
     currentOrg: OrgStore.get(currentOrgGuid),
-    createInstanceForm: ServiceInstanceStore.createInstanceForm
+    createInstanceForm: ServiceInstanceStore.createInstanceForm,
+    services: ServiceStore.getAll().map((service) => {
+      const plan = ServicePlanStore.getAllFromService(service.guid);
+      return { ...service, servicePlans: plan };
+    })
   };
 }
 
@@ -35,7 +38,6 @@ export default class Marketplace extends React.Component {
     this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
-    this.styler = createStyler(style);
   }
 
   componentDidMount() {
@@ -85,17 +87,13 @@ export default class Marketplace extends React.Component {
       );
     }
 
-    let content = (
-      <div>
-        <Loading text="Loading marketplace services" />;
-      </div>
-    );
+    let content = <Loading text="Loading marketplace services" />;
 
-    if (!this.state.loading) {
+    if (!state.loading) {
       content = (
         <div>
           { this.documentation }
-          <ServiceList />
+          <ServiceList services={ state.services } />
           { form }
         </div>
       );
@@ -109,4 +107,4 @@ export default class Marketplace extends React.Component {
   }
 }
 
-Marketplace.propTypes = { };
+Marketplace.propTypes = propTypes;

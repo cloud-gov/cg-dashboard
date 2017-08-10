@@ -4,96 +4,60 @@
  */
 import PropTypes from 'prop-types';
 import React from 'react';
-import ComplexList from './complex_list.jsx';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
-import PanelGroup from './panel_group.jsx';
 import ServiceStore from '../stores/service_store.js';
-import ServicePlanStore from '../stores/service_plan_store.js';
 import ServicePlanList from './service_plan_list.jsx';
 import formatDateTime from '../util/format_date.js';
 
-function stateSetter() {
-  const services = ServiceStore.getAll().map((service) => {
-    const plan = ServicePlanStore.getAllFromService(service.guid);
-    return { ...service, servicePlans: plan };
-  });
+const propTypes = {
+  services: PropTypes.array
+};
 
-  return {
-    empty: !ServiceStore.loading && !services.length,
-    services
+const empty = services => !ServiceStore.loading && !services.length;
+
+const ServiceList = ({ services }) => {
+  const { services } = this.props;
+
+  let content = <div></div>;
+
+  if (empty(services)) {
+    content = <h4 className="test-none_message">No services</h4>;
+  } else if (services.length) {
+    content = (
+      <div>
+        { services.map((service) => {
+          const { servicePlans, guid, label, description, updated_at } = service;
+
+          return (
+            <div className="panel-section" key={ guid }>
+              <ElasticLine>
+                <ElasticLineItem>
+                  <h3 className="sans-s6">
+                    <strong>{ label }</strong>
+                  </h3>
+                  <span>{ description }</span>
+                </ElasticLineItem>
+                <ElasticLineItem align="end">
+                  Updated { formatDateTime(updated_at) }
+                </ElasticLineItem>
+              </ElasticLine>
+              <ServicePlanList plans={ servicePlans } serviceGuid={ guid } />
+            </div>
+          );
+        })}
+      </div>
+    );
   }
-}
 
-
-export default class ServiceList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = stateSetter();
-  }
-
-  componentDidMount() {
-    ServiceStore.addChangeListener(this._onChange);
-  }
-
-  componentWillUnmount() {
-    ServiceStore.removeChangeListener(this._onChange);
-  }
-
-  _onChange() {
-    this.setState(stateSetter());
-  }
-
-  render() {
-    let content = <div></div>;
-
-    if (this.state.empty) {
-      content = <h4 className="test-none_message">No services</h4>;
-    } else if (this.state.services.length) {
-      const state = this.state;
-      content = (
-        <div>
-          { state.services.map((service) => {
-            let servicePlans;
-
-            if (service.servicePlans.length) {
-              servicePlans = (
-                <ServicePlanList serviceGuid={ service.guid } />
-              );
-            }
-
-            // TODO use new panel section component
-            return (
-              <div className="panel-section" key={ service.guid }>
-                <ElasticLine>
-                  <ElasticLineItem>
-                    <h3 className="sans-s6">
-                      <strong>{ service.label }</strong>
-                    </h3>
-                    <span>{ service.description }</span>
-                  </ElasticLineItem>
-                  <ElasticLineItem align="end">
-                    Updated { formatDateTime(service.updated_at) }
-                  </ElasticLineItem>
-                </ElasticLine>
-                { servicePlans }
-              </div>
-            );
-          })}
-        </div>
-      );
-    }
-
-    return (
+  return (
     <div>
       { content }
     </div>
-    );
-  }
-}
-
-ServiceList.propTypes = {
-  initialServices: PropTypes.array
+  );
 };
 
+ServiceList.propTypes = propTypes;
 ServiceList.defaultProps = {};
+
+export default ServiceList;
