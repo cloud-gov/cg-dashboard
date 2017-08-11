@@ -48,10 +48,6 @@ export default class ServicePlanList extends React.Component {
     return columns;
   }
 
-  get rows() {
-    return this.props.plans;
-  }
-
   cost(plan) {
     const cost = ServicePlanStore.getCost(plan);
     if (plan.free || cost === 0) return 'Free';
@@ -59,12 +55,12 @@ export default class ServicePlanList extends React.Component {
   }
 
   render() {
-    const { plans } = this.props;
+    const plans = sortPlansByCost(this.props.plans);
     let content = <div></div>;
 
     if (empty(plans)) {
       content = <h4 className="test-none_message">No service plans</h4>;
-    } else if (this.rows.length) {
+    } else if (plans.length) {
       content = (
         <table>
           <thead>
@@ -80,7 +76,7 @@ export default class ServicePlanList extends React.Component {
           </thead>
           <tbody>
             {
-              this.rows.map((plan, index) => {
+              plans.map((plan, index) => {
                 return (
                   <ServicePlan
                     cost={ this.cost(plan) }
