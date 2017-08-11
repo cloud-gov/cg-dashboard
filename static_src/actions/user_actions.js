@@ -346,6 +346,13 @@ const userActions = {
     } else {
       entityGuid = SpaceStore.currentSpaceGuid;
       cfApiRequest = cfApi.putAssociateUserToSpace.bind(cfApi, userGuid, orgGuid, entityGuid);
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_SPACE_ASSOCIATE,
+        userGuid,
+        entityType,
+        entityGuid
+      });
     }
 
     return cfApiRequest()
@@ -372,6 +379,13 @@ const userActions = {
     if (entityType === ORG_NAME) {
       AppDispatcher.handleViewAction({
         type: userActionTypes.USER_ORG_ASSOCIATED,
+        userGuid,
+        entityGuid,
+        user
+      });
+    } else {
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_SPACE_ASSOCIATED,
         userGuid,
         entityGuid,
         user

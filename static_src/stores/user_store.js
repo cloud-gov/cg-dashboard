@@ -80,21 +80,33 @@ export class UserStore extends BaseStore {
         break;
       }
 
-      case userActionTypes.USER_ORG_ASSOCIATED: {
+      case userActionTypes.USER_ORG_ASSOCIATE: {
+        this._inviteInputActive = false;
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_SPACE_ASSOCIATE: {
+        this._inviteInputActive = false;
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.USER_ORG_ASSOCIATED : {
         const user = Object.assign({}, {
           guid: action.userGuid,
           roles: { [action.entityGuid]: [] }
         }, action.user);
-        this._inviteInputActive = true;
+        this.associateNewUserToEntity(user);
+        break;
+      }
 
-        if (!this.get(user.guid)) {
-          this.push(user);
-        } else {
-          this.merge('guid', user, () => {});
-        }
-
-        this.emitChange();
-
+      case userActionTypes.USER_SPACE_ASSOCIATED: {
+        const user = Object.assign({}, action.user, {
+          guid: action.userGuid,
+          space_roles: { [action.entityGuid]: action.user.space_roles }
+        });
+        this.associateNewUserToEntity(user);
         break;
       }
 
@@ -293,6 +305,17 @@ export class UserStore extends BaseStore {
       default:
         break;
     }
+  }
+  associateNewUserToEntity(user) {
+    this._inviteInputActive = true;
+
+    if (!this.get(user.guid)) {
+      this.push(user);
+    } else {
+      this.merge('guid', user, () => {});
+    }
+
+    this.emitChange();
   }
 
   addUserRole(user, entityType, entityGuid, addedRole, cb) {
