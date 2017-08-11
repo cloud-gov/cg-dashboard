@@ -607,10 +607,10 @@ describe('userActions', function() {
     });
 
     describe('when entityType is not org_users', () => {
-      it('should not dispatch USER_ORG_ASSOCIATED notice with user and org', (done) => {
+      it('should dispatch USER_SPACE_ASSOCIATED notice with user and org', (done) => {
         userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers)
           .then(done, done.fail);
-        expect(spy.called).toBe(false);
+        assertAction(spy, userActionTypes.USER_SPACE_ASSOCIATED);
       });
     });
   });
