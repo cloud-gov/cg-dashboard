@@ -4,7 +4,6 @@ import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
 import errorActions from './actions/error_actions';
 import Loading from './components/loading.jsx';
-import Login from './components/login.jsx';
 import loginActions from './actions/login_actions';
 import LoginStore from './stores/login_store';
 import NotFound from './components/not_found.jsx';
@@ -24,11 +23,6 @@ import userActions from './actions/user_actions.js';
 import routerActions from './actions/router_actions.js';
 
 const MAX_OVERVIEW_SPACES = 10;
-
-export function login(next) {
-  routerActions.navigate(Login);
-  next();
-}
 
 export function overview(next) {
   pageActions.load();
@@ -176,7 +170,6 @@ export function notFound(next) {
 const routes = {
   '/': overview,
   '/dashboard': overview,
-  '/login': login,
   '/org': {
     '/:orgGuid': {
       '/spaces': {

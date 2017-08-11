@@ -6,7 +6,6 @@ import Disclaimer from './disclaimer.jsx';
 import Footer from './footer.jsx';
 import GlobalErrorContainer from './global_error_container.jsx';
 import Header from './header.jsx';
-import Login from './login.jsx';
 import LoginStore from '../stores/login_store.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
