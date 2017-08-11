@@ -71,6 +71,8 @@ const userActions = {
       users,
       spaceGuid
     });
+
+    return Promise.resolve(users);
   },
 
   receivedOrgSpacesToExtractSpaceUsers(orgSpaces) {
@@ -350,6 +352,7 @@ const userActions = {
 
     return cfApiRequest()
       .then(() => userActions.fetchEntityUsers(entityGuid, entityType))
+      .then(users => userActions.receivedSpaceUserRoles(users, entityGuid))
       .then(entityUsers => {
         userActions.createdUserAndAssociated(userGuid, entityGuid, entityUsers, entityType);
       });
