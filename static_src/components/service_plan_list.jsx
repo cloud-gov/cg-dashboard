@@ -9,11 +9,14 @@ import serviceActions from '../actions/service_actions.js';
 import ServicePlanStore from '../stores/service_plan_store.js';
 
 const propTypes = {
+  plans: PropTypes.array,
   serviceGuid: PropTypes.string
 };
 
-function stateSetter(serviceGuid) {
-  const servicePlans = ServicePlanStore.getAllFromService(serviceGuid).sort((a, b) => {
+const empty = plans => !ServicePlanStore.loading && !plans.length;
+
+const sortPlansByCost = (plans) =>
+  plans.sort((a, b) => {
     const costA = ServicePlanStore.getCost(a);
     const costB = ServicePlanStore.getCost(b);
     if (costA === costB) {
@@ -23,33 +26,15 @@ function stateSetter(serviceGuid) {
     }
   });
 
-  return {
-    serviceGuid,
-    servicePlans,
-    empty: !ServicePlanStore.loading && !servicePlans.length
-  };
-}
-
 export default class ServicePlanList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = stateSetter(props.serviceGuid);
-
-    this._onChange = this._onChange.bind(this);
     this._handleAdd = this._handleAdd.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState(stateSetter(nextProps.serviceGuid));
-  }
-
-  _onChange() {
-    this.setState(stateSetter(this.state.serviceGuid));
-  }
-
   _handleAdd(planGuid) {
-    serviceActions.createInstanceForm(this.state.serviceGuid, planGuid);
+    serviceActions.createInstanceForm(this.props.serviceGuid, planGuid);
   }
 
   get columns() {
@@ -63,10 +48,6 @@ export default class ServicePlanList extends React.Component {
     return columns;
   }
 
-  get rows() {
-    return this.state.servicePlans;
-  }
-
   cost(plan) {
     const cost = ServicePlanStore.getCost(plan);
     if (plan.free || cost === 0) return 'Free';
@@ -74,46 +55,47 @@ export default class ServicePlanList extends React.Component {
   }
 
   render() {
+    const plans = sortPlansByCost(this.props.plans);
     let content = <div></div>;
 
-    if (this.state.empty) {
+    if (empty(plans)) {
       content = <h4 className="test-none_message">No service plans</h4>;
-    } else if (this.rows.length) {
+    } else if (plans.length) {
       content = (
-      <table>
-        <thead>
-          <tr>
-            { this.columns.map((column) => {
-              return (
-                <th className={ column.key } key={ column.key }>
-                  { column.label }
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {
-            this.rows.map((plan, index) => {
-              return (
-                <ServicePlan
-                  cost={ this.cost(plan) }
-                  key={ index }
-                  onAddInstance={ this._handleAdd }
-                  plan={ plan }
-                />
-              );
-            })
-          }
-        </tbody>
-      </table>
+        <table>
+          <thead>
+            <tr>
+              { this.columns.map((column) => {
+                return (
+                  <th className={ column.key } key={ column.key }>
+                    { column.label }
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {
+              plans.map((plan, index) => {
+                return (
+                  <ServicePlan
+                    cost={ this.cost(plan) }
+                    key={ index }
+                    onAddInstance={ this._handleAdd }
+                    plan={ plan }
+                  />
+                );
+              })
+            }
+          </tbody>
+        </table>
       );
     }
 
     return (
-    <div className='tableWrapper'>
-      { content }
-    </div>
+      <div className='tableWrapper'>
+        { content }
+      </div>
     );
   }
 }
