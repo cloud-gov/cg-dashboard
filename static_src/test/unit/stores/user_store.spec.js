@@ -281,7 +281,7 @@ describe('UserStore', function () {
     });
 
     it('should emit a change', function() {
-      expect(UserStore.emitChange).toHaveBeenCalledTwice();
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
     });
 
     it('should add the user to the org through an empty role list', function() {

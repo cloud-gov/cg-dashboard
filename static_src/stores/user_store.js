@@ -49,9 +49,8 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
         this._loading.entityRoles = false;
-        const updatedUsers = this.mergeRoles(action.orgUserRoles, action.orgGuid,
+        this.associateUsersAndRolesToEntity(action.orgUserRoles, action.orgGuid,
           'organization_roles');
-        this.mergeMany('guid', updatedUsers, () => { });
         this.emitChange();
         break;
       }
@@ -63,10 +62,7 @@ export class UserStore extends BaseStore {
         this._loading.entityRoles = false;
 
         const { users, spaceGuid } = action;
-
-        const updatedUsers = this.mergeRoles(users, spaceGuid,
-          'space_roles');
-        this.mergeMany('guid', updatedUsers, () => { });
+        this.associateUsersAndRolesToEntity(users, spaceGuid, 'space_roles');
         this.emitChange();
         break;
       }
@@ -91,20 +87,26 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ORG_ASSOCIATED : {
+        this._inviteInputActive = true;
         const user = Object.assign({}, {
           guid: action.userGuid,
           roles: { [action.entityGuid]: [] }
         }, action.user);
-        this.associateNewUserToEntity(user);
+        this.associateUsersAndRolesToEntity([user], action.entityGuid,
+          'organization_roles');
+        this.emitChange();
         break;
       }
 
       case userActionTypes.USER_SPACE_ASSOCIATED: {
+        this._inviteInputActive = true;
         const user = Object.assign({}, action.user, {
           guid: action.userGuid,
           space_roles: { [action.entityGuid]: action.user.space_roles }
         });
-        this.associateNewUserToEntity(user);
+        this.associateUsersAndRolesToEntity([user], action.entityGuid,
+          'space_roles');
+        this.emitChange();
         break;
       }
 
@@ -304,16 +306,10 @@ export class UserStore extends BaseStore {
         break;
     }
   }
-  associateNewUserToEntity(user) {
-    this._inviteInputActive = true;
 
-    if (!this.get(user.guid)) {
-      this.push(user);
-    } else {
-      this.merge('guid', user, () => {});
-    }
-
-    this.emitChange();
+  associateUsersAndRolesToEntity(users, entityGuid, roleType) {
+    const updatedUsers = this.mergeRoles(users, entityGuid, roleType);
+    this.mergeMany('guid', updatedUsers, () => { });
   }
 
   addUserRole(user, entityType, entityGuid, addedRole, cb) {
