@@ -260,10 +260,14 @@ const userActionTypes = keymirror({
   USER_INVITE_STATUS_UPDATED: null,
   // Action to trigger when user list notice is created.
   USER_LIST_NOTICE_CREATED: null,
-  // Action to trigger email sent to user with cloud.gov invite url.
+  // Action to associate user to an organization.
   USER_ORG_ASSOCIATE: null,
-  // Action to associate user to organization on the server.
+  // Action when user is associated to an organization.
   USER_ORG_ASSOCIATED: null,
+  // Action to associate user to a space.
+  USER_SPACE_ASSOCIATE: null,
+  // Action when user is associated to a space.
+  USER_SPACE_ASSOCIATED: null,
   // Display the user associated to org.
   USER_ASSOCIATED_ORG_DISPLAYED: null,
   // Action when something goes wrong in user invite and email process.

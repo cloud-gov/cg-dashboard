@@ -281,7 +281,7 @@ describe('UserStore', function () {
     });
 
     it('should emit a change', function() {
-      expect(UserStore.emitChange).toHaveBeenCalledTwice();
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
     });
 
     it('should add the user to the org through an empty role list', function() {
@@ -319,6 +319,67 @@ describe('UserStore', function () {
         type: userActionTypes.USER_ORG_ASSOCIATED,
         user: { guid: 'blah' },
         orgGuid: 'adsfa'
+      });
+      let actual = UserStore.get('wpqoifesadkzcvn');
+      let expected = Object.assign({}, existingUser, newUser);
+      expect(actual).not.toEqual(expected);
+    });
+  });
+
+  describe('on space user associated', () => {
+    const userGuid = 'user-543';
+    const spaceGuid = 'space-abc';
+    let spaceUsers;
+
+    beforeEach(() => {
+      const user = {
+        guid: userGuid,
+        username: 'person@person.com'
+      };
+      spaceUsers = [user, {userGuid: 'wrong-udid'}, {userGuid: 'wrong-udid-2'}];
+      sandbox.spy(UserStore, 'emitChange');
+      userActions.createdUserAndAssociated(userGuid, spaceGuid, spaceUsers, 'space_users');
+    });
+
+    it('should emit a change', function() {
+      expect(UserStore.emitChange).toHaveBeenCalledOnce();
+    });
+
+    it('should add the user to the space through an empty role list', function() {
+      const actualUser = UserStore.get(userGuid);
+      expect(actualUser).toBeDefined();
+      expect(actualUser.space_roles).toBeDefined();
+      expect(actualUser.space_roles[spaceGuid]).toBeDefined();
+    });
+  });
+
+  describe('on space user association received', function() {
+    it('should emit a change event if data changed', function() {
+      var spy = sandbox.spy(UserStore, 'emitChange');
+      const userGuid = "fake-user-guid";
+      const entityGuid = "fake-space-guid";
+      const entityUsers = [
+        {userGuid: userGuid},
+        {userGuid: "fake-user-guid-2"},
+        {userGuid: "fake-user-guid-3"}
+      ];
+
+      userActions.createdUserAndAssociated(userGuid, entityGuid, entityUsers);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it('should merge and update space with new users', function() {
+      const existingUser = { guid: 'wpqoifesadkzcvn', name: 'Michael' };
+      const newUser = { guid: 'dkzcvwpqoifesan' };
+
+      UserStore.push(existingUser);
+      expect(UserStore.get('wpqoifesadkzcvn')).toEqual(existingUser);
+
+      AppDispatcher.handleViewAction({
+        type: userActionTypes.USER_SPACE_ASSOCIATED,
+        user: { guid: 'blah' },
+        spaceGuid: 'adsfa'
       });
       let actual = UserStore.get('wpqoifesadkzcvn');
       let expected = Object.assign({}, existingUser, newUser);
