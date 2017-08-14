@@ -4,7 +4,6 @@ import appActions from './actions/app_actions.js';
 import cfApi from './util/cf_api.js';
 import errorActions from './actions/error_actions';
 import Loading from './components/loading.jsx';
-import Login from './components/login.jsx';
 import loginActions from './actions/login_actions';
 import LoginStore from './stores/login_store';
 import NotFound from './components/not_found.jsx';
@@ -24,11 +23,6 @@ import userActions from './actions/user_actions.js';
 import routerActions from './actions/router_actions.js';
 
 const MAX_OVERVIEW_SPACES = 10;
-
-export function login(next) {
-  routerActions.navigate(Login);
-  next();
-}
 
 export function overview(next) {
   pageActions.load();
@@ -133,43 +127,29 @@ export function checkAuth(...args) {
         // load. and kick off an error action so the user is aware that
         // something is amiss. Definitely avoid sending them through a login
         // flow which might also be broken.
-        const loginError = LoginStore.error;
-        return errorActions.noticeError(loginError);
+        return errorActions.noticeError(LoginStore.error);
       }
 
-      // We're interested in the most recent fetchStatus, so avoid checking
-      // LoginStore.isLoggedIn which won't be the latest in case of an error.
       if (authStatus.status === 'authorized') {
         // Normal page load
         return Promise.resolve();
       }
 
-      // The user is Unauthenicated. We could redirect to a home page where
-      // user could click login but since we don't have any such page, just
-      // start the login flow by redirecting to /handshake. This is as if they
-      // had clicked login.
-      windowUtil.redirect('/handshake');
-
-      // Just in case something goes wrong, don't leave the user hanging. Show
-      // a delayed loading indicator to give them a hint. Hopefully the
-      // redirect is quick and they never see the loader.
+      // Show a redirect loading component in case of slow connection
       routerActions.navigate(Loading, {
         text: 'Redirecting to login',
         loadingDelayMS: 3000,
         style: 'inline'
       });
 
-      // Stop the routing
-      next(false);
-
-      // Hang the promise chain to avoid additional loading and API calls
-      const hang = new Promise();
-      return hang;
+      // Redirect the user to the cloud.gov login page
+      return Promise.reject(windowUtil.redirect('/handshake'));
     })
     .then(() => {
       userActions.fetchCurrentUser({ orgGuid, spaceGuid });
       next();
-    });
+    })
+    .catch(() => next(false));
 }
 
 export function clearErrors(...args) {
@@ -190,7 +170,6 @@ export function notFound(next) {
 const routes = {
   '/': overview,
   '/dashboard': overview,
-  '/login': login,
   '/org': {
     '/:orgGuid': {
       '/spaces': {

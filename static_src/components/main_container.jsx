@@ -1,21 +1,19 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-import overrideStyle from '../css/overrides.css';
-
-import createStyler from '../util/create_styler';
 import userProvider from './user_provider.jsx';
-
 import Disclaimer from './disclaimer.jsx';
 import Footer from './footer.jsx';
 import GlobalErrorContainer from './global_error_container.jsx';
 import Header from './header.jsx';
-import Login from './login.jsx';
 import LoginStore from '../stores/login_store.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import { Nav } from './navbar.jsx';
+
+const propTypes = {
+  children: PropTypes.any
+};
 
 function stateSetter() {
   return {
@@ -28,7 +26,7 @@ function stateSetter() {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.styler = createStyler(style, overrideStyle);
+
     this.state = stateSetter();;
     this._onChange = this._onChange.bind(this);
   }
@@ -46,24 +44,15 @@ class App extends React.Component {
   }
 
   render() {
-    let content;
-
-    if (this.state.isLoggedIn) {
-      content = this.props.children;
-    } else {
-      content = <Login />;
-    }
-
-
     return (
       <div>
         <Disclaimer />
         <Header />
-        <div className={ this.styler('main_content', 'content-no_sidebar') }>
+        <div className="main_content content-no_sidebar">
           <GlobalErrorContainer />
-          <main className={ this.styler('usa-content') }>
-            <div className={ this.styler('content', 'grid') }>
-              { content }
+          <main className="usa-content">
+            <div className="content grid">
+              { this.props.children }
             </div>
           </main>
         </div>
@@ -73,9 +62,7 @@ class App extends React.Component {
   }
 }
 
-App.propTypes = {
-  children: PropTypes.any
-};
+App.propTypes = propTypes;
 
 App.defaultProps = {
   children: []
