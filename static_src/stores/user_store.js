@@ -64,8 +64,6 @@ export class UserStore extends BaseStore {
 
         const { users, spaceGuid } = action;
 
-        // Force an update to the cached list of users, otherwise mergeRoles
-        // won't be able to find the new user
         const updatedUsers = this.mergeRoles(users, spaceGuid,
           'space_roles');
         this.mergeMany('guid', updatedUsers, () => { });
