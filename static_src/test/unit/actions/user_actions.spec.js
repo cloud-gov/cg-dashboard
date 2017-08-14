@@ -607,8 +607,8 @@ describe('userActions', function() {
     });
 
     describe('when entityType is not org_users', () => {
-      it('should dispatch USER_SPACE_ASSOCIATED notice with user and org', (done) => {
-        userActions.createdUserAndAssociated(userGuid, orgGuid, orgUsers)
+      it('should dispatch USER_SPACE_ASSOCIATED notice with user and space', (done) => {
+        userActions.createdUserAndAssociated(userGuid, 'fake-space-guid', orgUsers)
           .then(done, done.fail);
         assertAction(spy, userActionTypes.USER_SPACE_ASSOCIATED);
       });

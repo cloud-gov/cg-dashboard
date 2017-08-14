@@ -345,7 +345,7 @@ describe('UserStore', function () {
       expect(UserStore.emitChange).toHaveBeenCalledOnce();
     });
 
-    it('should add the user to the org through an empty role list', function() {
+    it('should add the user to the space through an empty role list', function() {
       const actualUser = UserStore.get(userGuid);
       expect(actualUser).toBeDefined();
       expect(actualUser.space_roles).toBeDefined();
@@ -357,7 +357,7 @@ describe('UserStore', function () {
     it('should emit a change event if data changed', function() {
       var spy = sandbox.spy(UserStore, 'emitChange');
       const userGuid = "fake-user-guid";
-      const entityGuid = "fake-org-guid";
+      const entityGuid = "fake-space-guid";
       const entityUsers = [
         {userGuid: userGuid},
         {userGuid: "fake-user-guid-2"},
