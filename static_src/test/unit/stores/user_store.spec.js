@@ -159,6 +159,7 @@ describe('UserStore', function () {
       const spaceUserRoles = [
         {
           guid: userGuidA,
+          username: "userA",
           space_roles: [ 'space_developer' ]
         },
         {
@@ -169,16 +170,19 @@ describe('UserStore', function () {
       const currentUsers = [
         {
           guid: userGuidB,
+          username: "userB",
           space_roles: { [spaceGuid]: ['space_developer'] }
         }
       ];
       expectedUsers = [
         {
           guid: userGuidA,
+          username: "userA",
           space_roles: { [spaceGuid]: ['space_developer'] }
         },
         {
           guid: userGuidB,
+          username: "userB",
           space_roles: { [spaceGuid]: ['space_developer', 'space_manager'] }
         }
       ];
