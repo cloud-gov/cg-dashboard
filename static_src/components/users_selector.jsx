@@ -58,8 +58,7 @@ export default class UsersSelector extends React.Component {
     const { parentEntity } = this.props;
     const { currentEntity } = this.props;
 
-    return `Invite an existing user in this ${parentEntity}` +
-      ` to this ${currentEntity}.`;
+    return `Invite an existing ${parentEntity} user to this ${currentEntity}.`;
   }
 
   get userSelector() {
