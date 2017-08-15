@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+
 const propTypes = { message: PropTypes.string };
 const defaultProps = { message: '' };
 

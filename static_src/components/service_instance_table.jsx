@@ -1,8 +1,7 @@
-
 import React from 'react';
-
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
+import FormError from './form/form_error.jsx';
 import Loading from './loading.jsx';
 import PanelDocumentation from './panel_documentation.jsx';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
@@ -94,12 +93,25 @@ export default class ServiceInstanceTable extends React.Component {
     );
   }
 
-  renderConfirmationBox(instanceGuid) {
+  displayError(instance) {
+    if (!instance.error) return null;
+
+    const style = { width: '100%' };
+
+    return (
+      <td colspan="6">
+        <FormError message={ instance.error.description } />
+      </td>
+    );
+  }
+
+  renderConfirmationBox(instance) {
+    if (!instance.confirmDelete) return null;
     return (
       <ConfirmationBox
         style="nexto"
-        confirmHandler={ this._handleDelete.bind(this, instanceGuid) }
-        cancelHandler={ this._handleDeleteCancel.bind(this, instanceGuid) }
+        confirmHandler={ this._handleDelete.bind(this, instance.guid) }
+        cancelHandler={ this._handleDeleteCancel.bind(this, instance.guid) }
         disabled={ this.state.updating }
       />
     );
@@ -141,28 +153,24 @@ export default class ServiceInstanceTable extends React.Component {
             const lastOpTime = lastOp.updated_at || lastOp.created_at;
             return (
               <tr key={ instance.guid }>
+                { this.displayError(instance) }
                 <td><span>{ instance.name }</span></td>
                 <td>{ instance.last_operation.type }</td>
                 <td>
                   { formatDateTime(lastOpTime) }
                 </td>
                 <td style={specialtdStyles}>
-                  <span>
-                    <div>
-                      <Action
-                        style="base"
-                        classes={ ['test-delete_instance'] }
-                        disabled={instance.confirmDelete}
-                        clickHandler={ this._handleDeleteConfirmation.bind(
-                            this, instance.guid)}
-                        label="delete"
-                      >
-                        <span>Delete Instance</span>
-                      </Action>
-                    </div>
-                    { (instance.confirmDelete) ? this.renderConfirmationBox(
-                      instance.guid) : '' }
-                  </span>
+                  <Action
+                    style="base"
+                    classes={ ['test-delete_instance'] }
+                    disabled={instance.confirmDelete}
+                    clickHandler={ this._handleDeleteConfirmation.bind(
+                        this, instance.guid)}
+                    label="delete"
+                  >
+                    <span>Delete Instance</span>
+                  </Action>
+                  { this.renderConfirmationBox(instance) }
                 </td>
               </tr>
               );

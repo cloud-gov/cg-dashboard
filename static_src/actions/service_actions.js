@@ -223,8 +223,7 @@ const serviceActions = {
 
     return cfApi.deleteUnboundServiceInstance(toDelete)
       .then(() => serviceActions.deletedInstance(instanceGuid))
-      // TODO if the delete fails, we want to expose it to the user
-      .catch(() => serviceActions.deletedInstance(instanceGuid)); // Swallow the error
+      .catch((error) => serviceActions.errorDeleteInstance(error, instanceGuid));
   },
 
   deletedInstance(serviceInstanceGuid) {
@@ -234,6 +233,16 @@ const serviceActions = {
     });
 
     return Promise.resolve(serviceInstanceGuid);
+  },
+
+  errorDeleteInstance(error, instanceGuid) {
+    AppDispatcher.handleServerAction({
+      type: serviceActionTypes.SERVICE_INSTANCE_DELETE_ERROR,
+      instanceGuid,
+      error: formatError(error)
+    });
+
+    return Promise.resolve(instanceGuid);
   },
 
   changeServiceInstanceCheck(serviceInstanceGuid) {

@@ -173,6 +173,8 @@ const serviceActionTypes = keymirror({
   SERVICE_INSTANCE_DELETE_CANCEL: null,
   // Action to decide whether to delete a single service instance.
   SERVICE_INSTANCE_DELETE_CONFIRM: null,
+  // Action when service instance deletion encounters an error.
+  SERVICE_INSTANCE_DELETE_ERROR: null,
   // Action when any error happens with a specific instance.
   SERVICE_INSTANCE_ERROR: null,
   // Action when service instance is fetched from the server.

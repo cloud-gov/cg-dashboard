@@ -272,6 +272,26 @@ export class ServiceInstanceStore extends BaseStore {
         break;
       }
 
+      case serviceActionTypes.SERVICE_INSTANCE_DELETE_ERROR: {
+        this._updating = false;
+
+        const instance = this.get(action.instanceGuid);
+
+        if (!instance) {
+          return;
+        }
+
+        const updatedInstance = Object.assign({}, instance, {
+          deleting: false, error: action.error
+        });
+
+        this.merge('guid', updatedInstance, () => {
+          this.emitChange()
+        });
+
+        break;
+      }
+
       case serviceActionTypes.SERVICE_INSTANCE_DELETED: {
         this._updating = false;
         this.delete(action.serviceInstanceGuid);
