@@ -89,8 +89,7 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_ORG_ASSOCIATED : {
         this._inviteInputActive = true;
         const user = Object.assign({}, {
-          guid: action.userGuid,
-          roles: { [action.entityGuid]: [] }
+          guid: action.userGuid
         }, action.user);
         this.associateUsersAndRolesToEntity([user], action.entityGuid,
           'organization_roles');
@@ -101,8 +100,7 @@ export class UserStore extends BaseStore {
       case userActionTypes.USER_SPACE_ASSOCIATED: {
         this._inviteInputActive = true;
         const user = Object.assign({}, action.user, {
-          guid: action.userGuid,
-          space_roles: { [action.entityGuid]: action.user.space_roles }
+          guid: action.userGuid
         });
         this.associateUsersAndRolesToEntity([user], action.entityGuid,
           'space_roles');
@@ -385,9 +383,13 @@ export class UserStore extends BaseStore {
     return this._loading.currentUser === true;
   }
 
+  getDefaultUserInfo(user) {
+    return { guid: user.guid, username: user.username };
+  }
+
   mergeRoles(roles, entityGuid, entityType) {
     return roles.map((role) => {
-      const user = Object.assign({}, this.get(role.guid) || { guid: role.guid });
+      const user = Object.assign({}, this.get(role.guid) || this.getDefaultUserInfo(role));
       const updatingRoles = role[entityType] || [];
 
       if (entityType === 'space_roles') {
