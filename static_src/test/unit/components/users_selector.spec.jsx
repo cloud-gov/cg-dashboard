@@ -27,7 +27,7 @@ describe('<UsersSelector />', function () {
     });
 
     it('displays proper message', () => {
-      const doc = 'Invite an existing user in this organization to this space.';
+      const doc = 'Invite an existing organization user to this space.';
       expect(wrapper.find(PanelDocumentation).find('p').text()).toBe(doc);
     });
   });
