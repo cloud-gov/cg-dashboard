@@ -1,17 +1,12 @@
 
 import React from 'react';
-
-import Action from './action.jsx';
-import ConfirmationBox from './confirmation_box.jsx';
 import Loading from './loading.jsx';
 import PanelDocumentation from './panel_documentation.jsx';
+import ServiceInstanceTableRow from './service_instance_table_row.jsx';
 import ServiceInstanceStore from '../stores/service_instance_store.js';
 import SpaceStore from '../stores/space_store.js';
 import { config } from 'skin';
-import formatDateTime from '../util/format_date';
 import serviceActions from '../actions/service_actions.js';
-
-const propTypes = {};
 
 function stateSetter() {
   const currentSpaceGuid = SpaceStore.currentSpaceGuid;
@@ -34,17 +29,10 @@ export default class ServiceInstanceTable extends React.Component {
     this.state = stateSetter();
 
     this._onChange = this._onChange.bind(this);
-    this._handleDelete = this._handleDelete.bind(this);
-    this._handleDeleteConfirmation = this._handleDeleteConfirmation.bind(this);
-    this._handleDeleteCancel = this._handleDeleteCancel.bind(this);
   }
 
   componentDidMount() {
     ServiceInstanceStore.addChangeListener(this._onChange);
-  }
-
-  componentWillReceiveProps() {
-    this.setState(stateSetter());
   }
 
   componentWillUnmount() {
@@ -53,21 +41,6 @@ export default class ServiceInstanceTable extends React.Component {
 
   _onChange() {
     this.setState(stateSetter());
-  }
-
-  _handleDelete(instanceGuid, ev) {
-    ev.preventDefault();
-    serviceActions.deleteInstance(instanceGuid);
-  }
-
-  _handleDeleteConfirmation(instanceGuid, ev) {
-    ev.preventDefault();
-    serviceActions.deleteInstanceConfirm(instanceGuid);
-  }
-
-  _handleDeleteCancel(instanceGuid, ev) {
-    ev.preventDefault();
-    serviceActions.deleteInstanceCancel(instanceGuid);
   }
 
   get columns() {
@@ -94,82 +67,46 @@ export default class ServiceInstanceTable extends React.Component {
     );
   }
 
-  renderConfirmationBox(instanceGuid) {
-    return (
-      <ConfirmationBox
-        style="nexto"
-        confirmHandler={ this._handleDelete.bind(this, instanceGuid) }
-        cancelHandler={ this._handleDeleteCancel.bind(this, instanceGuid) }
-        disabled={ this.state.updating }
-      />
-    );
+  get serviceInstances() {
+    return this.state.serviceInstances.map(instance =>
+      <ServiceInstanceTableRow
+        key={ instance. guid }
+        instance={ instance }
+        onBeginDelete={ serviceActions.deleteInstanceConfirm }
+        onConfirmDelete={ serviceActions.deleteInstance }
+        onCancelDelete={ serviceActions.deleteInstanceCancel }
+      />);
   }
 
   render() {
-    let loading = <Loading text="Loading service instances" />;
-    let content = <div>{ loading }</div>;
-
-    const specialtdStyles = {
-      whiteSpace: 'nowrap',
-      width: '25%'
-    };
+    let content = <Loading text="Loading service instances" />;
 
     if (this.state.empty) {
       content = <h4 className="test-none_message">No service instances</h4>;
     } else if (!this.state.loading && this.state.serviceInstances.length) {
       content = (
-      <div>
-        { this.documentation }
-        <Loading
-          style="globalSaving"
-          text="Deleting service instance"
-          active={ this.state.updating }
-        />
-        <table>
-          <thead>
-            <tr>
-            { this.columns.map((column) =>
-              <th className={ column.key } key={ column.key }>
-                { column.label }
-              </th>
-            )}
-            </tr>
-          </thead>
-          <tbody>
-          { this.state.serviceInstances.map((instance) => {
-            const lastOp = instance.last_operation;
-            const lastOpTime = lastOp.updated_at || lastOp.created_at;
-            return (
-              <tr key={ instance.guid }>
-                <td><span>{ instance.name }</span></td>
-                <td>{ instance.last_operation.type }</td>
-                <td>
-                  { formatDateTime(lastOpTime) }
-                </td>
-                <td style={specialtdStyles}>
-                  <span>
-                    <div>
-                      <Action
-                        style="base"
-                        classes={ ['test-delete_instance'] }
-                        disabled={instance.confirmDelete}
-                        clickHandler={ this._handleDeleteConfirmation.bind(
-                            this, instance.guid)}
-                        label="delete"
-                      >
-                        <span>Delete Instance</span>
-                      </Action>
-                    </div>
-                    { (instance.confirmDelete) ? this.renderConfirmationBox(
-                      instance.guid) : '' }
-                  </span>
-                </td>
+        <div>
+          { this.documentation }
+          <Loading
+            style="globalSaving"
+            text="Deleting service instance"
+            active={ this.state.updating }
+          />
+          <table>
+            <thead>
+              <tr>
+              { this.columns.map((column) =>
+                <th className={ column.key } key={ column.key }>
+                  { column.label }
+                </th>
+              )}
               </tr>
-              );
-          })}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              { this.serviceInstances }
+            </tbody>
+          </table>
+        </div>
       );
     }
 
@@ -179,6 +116,4 @@ export default class ServiceInstanceTable extends React.Component {
       </div>
     );
   }
-}
-
-ServiceInstanceTable.propTypes = propTypes;
+};
