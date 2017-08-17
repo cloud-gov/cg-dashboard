@@ -16,6 +16,11 @@ import formActions from '../actions/form_actions';
 import { validateString } from '../util/validators';
 
 const CREATE_SERVICE_INSTANCE_FORM_GUID = 'create-service-form';
+const CF_CLI_SERVICE_DETAILS = {
+  'cdn-route': 'https://cloud.gov/docs/services/cdn-route/',
+  'cloud-gov-identity-provider': 'https://cloud.gov/docs/services/cloud-gov-identity-provider/',
+  'cloud-gov-service-account': 'https://cloud.gov/docs/services/cloud-gov-service-account/'
+};
 
 const propTypes = {
   error: PropTypes.object,
@@ -90,6 +95,73 @@ export default class CreateServiceInstance extends React.Component {
     serviceActions.createInstanceFormCancel();
   }
 
+  get formContent() {
+    const serviceName = this.serviceName;
+    if (CF_CLI_SERVICE_DETAILS.hasOwnProperty(serviceName)) {
+      return (
+        <Form
+          guid={ CREATE_SERVICE_INSTANCE_FORM_GUID }
+          classes={ ['test-create_service_instance_form'] }
+          ref="form"
+          onSubmit={ this._onValidForm }
+        >
+          <legend>
+            The
+            <strong className="actions-callout-inline-block">
+              { serviceName }
+            </strong> service instance must be created using the CF CLI.
+            Please refer to <a href={ CF_CLI_SERVICE_DETAILS[serviceName] }
+            target="_blank">{ CF_CLI_SERVICE_DETAILS[serviceName] }</a> for more
+            information.
+          </legend>
+        </Form>
+      );
+    } else {
+      return (
+        <Form
+          guid={ CREATE_SERVICE_INSTANCE_FORM_GUID }
+          classes={ ['test-create_service_instance_form'] }
+          ref="form"
+          onSubmit={ this._onValidForm }
+        >
+          <legend>
+            Create a service instance for
+            <strong className="actions-callout-inline-block">
+              { this.serviceName }
+            </strong> using
+            <strong className="actions-callout-inline-block">
+              { this.servicePlanName }
+            </strong> plan.
+          </legend>
+          <FormText
+            formGuid={ CREATE_SERVICE_INSTANCE_FORM_GUID }
+            classes={ ['test-create_service_instance_name'] }
+            label="Choose a name for the service instance"
+            name="name"
+            validator={ this.validateString }
+          />
+          <FormSelect
+            formGuid={ CREATE_SERVICE_INSTANCE_FORM_GUID }
+            classes={ ['test-create_service_instance_space'] }
+            label="Select the space for the service instance"
+            name="space"
+            options={ this.validSpaceTargets }
+            validator={ this.validateString }
+          />
+          { this.contextualAction }
+          <Action
+            label="cancel"
+            style="base"
+            type="outline"
+            clickHandler={ this._onCancelForm }
+          >
+            Cancel
+          </Action>
+        </Form>
+      );
+    }
+  }
+
   get serviceName() {
     return this.props.service.label || 'Unknown Service Name';
   }
@@ -139,46 +211,7 @@ export default class CreateServiceInstance extends React.Component {
     return (
       <div className="actions-large">
         { createError }
-        <Form
-          guid={ CREATE_SERVICE_INSTANCE_FORM_GUID }
-          classes={ ['test-create_service_instance_form'] }
-          ref="form"
-          onSubmit={ this._onValidForm }
-        >
-          <legend>
-            Create a service instance for
-            <strong className="actions-callout-inline-block">
-              { this.serviceName }
-            </strong> using
-            <strong className="actions-callout-inline-block">
-              { this.servicePlanName }
-            </strong> plan.
-          </legend>
-          <FormText
-            formGuid={ CREATE_SERVICE_INSTANCE_FORM_GUID }
-            classes={ ['test-create_service_instance_name'] }
-            label="Choose a name for the service instance"
-            name="name"
-            validator={ this.validateString }
-          />
-          <FormSelect
-            formGuid={ CREATE_SERVICE_INSTANCE_FORM_GUID }
-            classes={ ['test-create_service_instance_space'] }
-            label="Select the space for the service instance"
-            name="space"
-            options={ this.validSpaceTargets }
-            validator={ this.validateString }
-          />
-          { this.contextualAction }
-          <Action
-            label="cancel"
-            style="base"
-            type="outline"
-            clickHandler={ this._onCancelForm }
-          >
-            Cancel
-          </Action>
-        </Form>
+        { this.formContent }
       </div>
     );
   }
