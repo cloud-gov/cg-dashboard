@@ -16,6 +16,10 @@ import formActions from '../actions/form_actions';
 import { validateString } from '../util/validators';
 
 const CREATE_SERVICE_INSTANCE_FORM_GUID = 'create-service-form';
+
+// Note:
+// This is a temporary hardcoded solution to resolve the need
+// for multiple parameters when setting up service instances.
 const CF_CLI_SERVICE_DETAILS = {
   'cdn-route': 'https://cloud.gov/docs/services/cdn-route/',
   'cloud-gov-identity-provider': 'https://cloud.gov/docs/services/cloud-gov-identity-provider/',
