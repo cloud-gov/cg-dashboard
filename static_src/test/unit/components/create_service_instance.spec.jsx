@@ -7,8 +7,7 @@ import serviceActions from '../../../actions/service_actions';
 import { shallow } from 'enzyme';
 
 describe('<CreateServiceInstance />', () => {
-
-  const serviceProps = {
+  const serviceBaseProps = {
     service: {},
     servicePlan: {
       guid: 'some-plan-guid'
@@ -49,7 +48,7 @@ describe('<CreateServiceInstance />', () => {
       'must be created using the CF CLI. Please refer to <a href="https://cloud.gov/docs/' +
       'services/cdn-route/" target="_blank">https://cloud.gov/docs/services/cdn-route/</a> ' +
       'for more information.</legend></fieldset></form></div>';
-      const serviceProps = Object.assign({}, serviceProps, {
+      const serviceProps = Object.assign({}, serviceBaseProps, {
         service: { label: 'cdn-route' }
       });
       const wrapper = shallow(<CreateServiceInstance { ...serviceProps } />);
@@ -65,7 +64,7 @@ describe('<CreateServiceInstance />', () => {
       '//cloud.gov/docs/services/cloud-gov-identity-provider/" target="_blank">https://clo' +
       'ud.gov/docs/services/cloud-gov-identity-provider/</a> for more information.</legend>' +
       '</fieldset></form></div>';
-      const serviceProps = Object.assign({}, serviceProps, {
+      const serviceProps = Object.assign({}, serviceBaseProps, {
         service: { label: 'cloud-gov-identity-provider' }
       });
       const wrapper = shallow(<CreateServiceInstance { ...serviceProps } />);
@@ -81,7 +80,7 @@ describe('<CreateServiceInstance />', () => {
       'https://cloud.gov/docs/services/cloud-gov-service-account/" target="_blank">https://' +
       'cloud.gov/docs/services/cloud-gov-service-account/</a> for more information.</legend>' +
       '</fieldset></form></div>';
-      const serviceProps = Object.assign({}, serviceProps, {
+      const serviceProps = Object.assign({}, serviceBaseProps, {
         service: { label: 'cloud-gov-service-account' }
       });
       const wrapper = shallow(<CreateServiceInstance { ...serviceProps } />);
