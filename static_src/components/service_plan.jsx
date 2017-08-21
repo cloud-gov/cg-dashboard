@@ -12,6 +12,12 @@ const propTypes = {
   })
 };
 
+// This should be removed when solution is setup
+// for service instancemultiple params
+const CF_CLI_SERVICE_LIST = [
+  'cdn-route', 'cloud-gov-identity-provider', 'cloud-gov-service-account'
+];
+
 class ServicePlan extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +29,18 @@ class ServicePlan extends React.Component {
     const { plan, onAddInstance } = this.props;
 
     onAddInstance(plan.guid);
+  }
+
+  get buttonText() {
+    let text;
+    const { plan } = this.props;
+
+    if (CF_CLI_SERVICE_LIST.indexOf(plan.name) === -1) {
+      text = 'Create service instance';
+    } else {
+      text = 'Display documentation link';
+    }
+    return text;
   }
 
   render() {
@@ -39,7 +57,7 @@ class ServicePlan extends React.Component {
             clickHandler={ this.handleClick }
             label="create"
           >
-            Create service instance
+            { this.buttonText }
           </Action>
         </td>
       </tr>
