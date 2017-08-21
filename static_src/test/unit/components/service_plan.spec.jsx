@@ -55,3 +55,56 @@ describe('<ServicePlan />', () => {
     expect(props.onAddInstance.calledWith(props.plan.guid)).toBe(true);
   });
 });
+
+describe('<ServicePlan with multi param plan />', () => {
+  it('renders an action button for cdn-route', () => {
+    const props = {
+      cost: 'Free',
+      onAddInstance: sinon.spy(),
+      plan: {
+        guid: 'zgwefzexst4',
+        name: 'cdn-route',
+        description: 'in-memory key value store'
+      }
+    };
+    const wrapper = shallow(<ServicePlan { ...props } />);
+    const button = wrapper.find(Action);
+
+    expect(button.length).toBe(1);
+    expect(button.props().children).toBe('Display documentation link');
+  });
+
+  it('renders an action button for cloud-gov-identity-provider', () => {
+    const props = {
+      cost: 'Free',
+      onAddInstance: sinon.spy(),
+      plan: {
+        guid: 'zgwefzexst4',
+        name: 'cloud-gov-identity-provider',
+        description: 'in-memory key value store'
+      }
+    };
+    const wrapper = shallow(<ServicePlan { ...props } />);
+    const button = wrapper.find(Action);
+
+    expect(button.length).toBe(1);
+    expect(button.props().children).toBe('Display documentation link');
+  });
+
+  it('renders an action button for cloud-gov-service-account', () => {
+    const props = {
+      cost: 'Free',
+      onAddInstance: sinon.spy(),
+      plan: {
+        guid: 'zgwefzexst4',
+        name: 'cloud-gov-service-account',
+        description: 'in-memory key value store'
+      }
+    };
+    const wrapper = shallow(<ServicePlan { ...props } />);
+    const button = wrapper.find(Action);
+
+    expect(button.length).toBe(1);
+    expect(button.props().children).toBe('Display documentation link');
+  });
+});
