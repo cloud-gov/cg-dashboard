@@ -39,11 +39,11 @@ class ServiceInstanceTableRow extends React.Component {
       <ConfirmationBox
         style="nexto"
         confirmHandler={ this.handleConfirmDelete }
-        cancelHandler={ this.handlCancelDelete }
+        cancelHandler={ this.handleCancelDelete }
         disabled={ instance.deleting }
+        message={ null }
       />;
   }
-
 
   render() {
     const { instance } = this.props;

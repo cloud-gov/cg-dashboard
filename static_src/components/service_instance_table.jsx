@@ -70,7 +70,7 @@ export default class ServiceInstanceTable extends React.Component {
   get serviceInstances() {
     return this.state.serviceInstances.map(instance =>
       <ServiceInstanceTableRow
-        key={ instance. guid }
+        key={ instance.guid }
         instance={ instance }
         onBeginDelete={ serviceActions.deleteInstanceConfirm }
         onConfirmDelete={ serviceActions.deleteInstance }
