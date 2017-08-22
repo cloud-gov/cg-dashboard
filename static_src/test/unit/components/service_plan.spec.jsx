@@ -56,55 +56,32 @@ describe('<ServicePlan />', () => {
   });
 });
 
-describe('<ServicePlan with multi param plan />', () => {
-  it('renders an action button for cdn-route', () => {
+describe('with multi param plan', () => {
+  it('renders a link to documentation', () => {
+    let updatedProp;
+    let wrapper;
+    let button;
+    const plans = [
+      'cdn-route',
+      'cloud-gov-identity-provider',
+      'cloud-gov-service-account'
+    ];
     const props = {
       cost: 'Free',
       onAddInstance: sinon.spy(),
       plan: {
         guid: 'zgwefzexst4',
-        name: 'cdn-route',
         description: 'in-memory key value store'
       }
     };
-    const wrapper = shallow(<ServicePlan { ...props } />);
-    const button = wrapper.find(Action);
+    for (let i = plans.length - 1; i >= 0; i--) {
+      updatedProp = Object.assign(props);
+      updatedProp.plan.name = plans[i];
+      wrapper = shallow(<ServicePlan { ...props } />);
+      button = wrapper.find(Action);
 
-    expect(button.length).toBe(1);
-    expect(button.props().children).toBe('Display documentation link');
-  });
-
-  it('renders an action button for cloud-gov-identity-provider', () => {
-    const props = {
-      cost: 'Free',
-      onAddInstance: sinon.spy(),
-      plan: {
-        guid: 'zgwefzexst4',
-        name: 'cloud-gov-identity-provider',
-        description: 'in-memory key value store'
-      }
-    };
-    const wrapper = shallow(<ServicePlan { ...props } />);
-    const button = wrapper.find(Action);
-
-    expect(button.length).toBe(1);
-    expect(button.props().children).toBe('Display documentation link');
-  });
-
-  it('renders an action button for cloud-gov-service-account', () => {
-    const props = {
-      cost: 'Free',
-      onAddInstance: sinon.spy(),
-      plan: {
-        guid: 'zgwefzexst4',
-        name: 'cloud-gov-service-account',
-        description: 'in-memory key value store'
-      }
-    };
-    const wrapper = shallow(<ServicePlan { ...props } />);
-    const button = wrapper.find(Action);
-
-    expect(button.length).toBe(1);
-    expect(button.props().children).toBe('Display documentation link');
+      expect(button.length).toBe(1);
+      expect(button.props().children).toBe('Display documentation link');
+    }
   });
 });
