@@ -55,3 +55,33 @@ describe('<ServicePlan />', () => {
     expect(props.onAddInstance.calledWith(props.plan.guid)).toBe(true);
   });
 });
+
+describe('with multi param plan', () => {
+  it('renders a link to documentation', () => {
+    let updatedProp;
+    let wrapper;
+    let button;
+    const plans = [
+      'cdn-route',
+      'cloud-gov-identity-provider',
+      'cloud-gov-service-account'
+    ];
+    const props = {
+      cost: 'Free',
+      onAddInstance: sinon.spy(),
+      plan: {
+        guid: 'zgwefzexst4',
+        description: 'in-memory key value store'
+      }
+    };
+    for (let i = plans.length - 1; i >= 0; i--) {
+      updatedProp = Object.assign(props);
+      updatedProp.plan.name = plans[i];
+      wrapper = shallow(<ServicePlan { ...props } />);
+      button = wrapper.find(Action);
+
+      expect(button.length).toBe(1);
+      expect(button.props().children).toBe('Display documentation link');
+    }
+  });
+});
