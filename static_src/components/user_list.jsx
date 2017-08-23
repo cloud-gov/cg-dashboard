@@ -75,16 +75,27 @@ export default class UserList extends React.Component {
     return (this.props.userType === 'org_users') ? 'Organization' : 'Space';
   }
 
+  get inviteDocumentation() {
+    if (!config.docs.invite_user) return null;
+
+    return (
+      <span>
+        To invite a user and give them roles, see <a href={ config.docs.invite_user }>Managing Teammates</a>.&nbsp;
+        <b>
+          Removing all roles does not remove a user from an organization.
+          Users with no roles will remain in the organization, but they will be unable to perform any actions.
+        </b>
+      </span>
+    );
+  }
+
   get documentation() {
     return (
       <PanelDocumentation description>
         <p>
           { this.userTypePretty } Managers can change these roles. For details
             about these roles, see <a href="https://docs.cloudfoundry.org/concepts/roles.html#roles">Cloud Foundry roles and permissions</a>.
-          { config.docs.invite_user &&
-            <span> To invite a user and give them roles, see <a href={ config.docs.invite_user }>Managing Teammates</a>.
-            </span>
-          }
+          { this.inviteDocumentation }
         </p>
       </PanelDocumentation>
     );
