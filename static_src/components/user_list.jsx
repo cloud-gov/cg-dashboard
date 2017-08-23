@@ -83,7 +83,8 @@ export default class UserList extends React.Component {
         To invite a user and give them roles, see <a href={ config.docs.invite_user }>Managing Teammates</a>.&nbsp;
         <b>
           Removing all roles does not remove a user from an organization.
-          Users with no roles will remain in the organization, but they will be unable to perform any actions.
+          Users with no roles will remain in the organization until you remove them,
+          but they will be unable to perform any actions.
         </b>
       </span>
     );
