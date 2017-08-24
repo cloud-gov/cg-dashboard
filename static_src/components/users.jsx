@@ -46,7 +46,7 @@ function stateSetter() {
   let entityGuid;
   const inviteDisabled = UserStore.inviteDisabled();
   const usersSelectorDisabled = UserStore.usersSelectorDisabled();
-  const isOrgManager = UserStore.hasRole(currentUser.guid, currentOrgGuid,
+  const isOrgUserManager = UserStore.hasRole(currentUser.guid, currentOrgGuid,
                                           ORG_MANAGER);
 
   if (currentType === SPACE_NAME) {
@@ -58,8 +58,10 @@ function stateSetter() {
   } else {
     users = UserStore.getAllInOrg(currentOrgGuid);
     entityGuid = currentOrgGuid;
-    currentUserAccess = UserStore.hasRole(currentUser.guid, currentOrgGuid,
-                                          ORG_MANAGER);
+  }
+
+  if (isOrgUserManager === true) {
+    currentUserAccess = true;
   }
 
   return {
@@ -67,7 +69,6 @@ function stateSetter() {
     error: UserStore.getError(),
     inviteDisabled,
     usersSelectorDisabled,
-    isOrgManager,
     currentUserAccess,
     currentOrgGuid,
     currentSpaceGuid,
@@ -233,9 +234,14 @@ export default class Users extends React.Component {
   get userParentEntityUserSelector() {
     // only show something if in a space and if the user is a org manager
     // or space manager.
-    if (!this.isSpace ||
-      (!this.currentUserIsSpaceManager && !this.currentUserIsOrgManager)) {
+    if (!this.isSpace) {
       return null;
+    }
+
+    if (!this.currentUserIsOrgManager) {
+      if (!this.currentUserIsSpaceManager) {
+        return null;
+      }
     }
 
     return (
