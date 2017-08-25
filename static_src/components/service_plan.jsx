@@ -54,7 +54,7 @@ class ServicePlan extends React.Component {
       <tr>
         <td label="Name">{ plan.name }</td>
         <td label="Description">{ plan.description }</td>
-        <td label="Cost">{ cost }</td>
+        <td label="Cost">Free</td>
         <td label="Actions">
           <Action
             classes={ ['test-create_service_instance'] }
