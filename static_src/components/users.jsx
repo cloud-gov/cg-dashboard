@@ -43,9 +43,11 @@ function stateSetter() {
   let users = [];
   let parentEntityUsers;
   let currentUserAccess = false;
+  let entityGuid;
   const inviteDisabled = UserStore.inviteDisabled();
   const usersSelectorDisabled = UserStore.usersSelectorDisabled();
-  let entityGuid;
+  const isOrgUserManager = UserStore.hasRole(currentUser.guid, currentOrgGuid,
+                                          ORG_MANAGER);
 
   if (currentType === SPACE_NAME) {
     users = UserStore.getAllInSpace(currentSpaceGuid);
@@ -56,8 +58,10 @@ function stateSetter() {
   } else {
     users = UserStore.getAllInOrg(currentOrgGuid);
     entityGuid = currentOrgGuid;
-    currentUserAccess = UserStore.hasRole(currentUser.guid, currentOrgGuid,
-                                          ORG_MANAGER);
+  }
+
+  if (isOrgUserManager === true) {
+    currentUserAccess = true;
   }
 
   return {

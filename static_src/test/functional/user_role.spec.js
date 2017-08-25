@@ -230,6 +230,29 @@ describe('User roles', function () {
         expect(userRoleElement.isUserSpaceDeveloper(guidManagerOrgXSpaceYY)).toBe(true);
       });
     });
+
+    describe('As org manager X', function () {
+      beforeEach(function () {
+        // sets cookie to org Y manager
+        cookieValue = cookieManagerOrgX;
+      });
+
+      describe('should have permission to edit fields on space Y pages', function () {
+        it('should set url to org X space XX', function () {
+          browser.url(urlOrgXSpaceXX);
+        });
+
+        it('verifies that the current user is a user with only permissions to org X', function () {
+          cookieResult = userRoleElement.setAndGetUserRole(cookieValue);
+          expect(cookieResult).toBe(cookieManagerOrgX);
+        });
+
+        it('verify org X manager can modify space XX page', function () {
+          browser.waitForExist('.test-user-role-control');
+          expect(userRoleElement.isFirstUserRoleEnabled()).toBe(true);
+        });
+      });
+    });
   });
 
   describe('Testing space user roles', function () {
