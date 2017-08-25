@@ -27,12 +27,7 @@ export default class Disclaimer extends React.Component {
             { config.header.disclaimer }
             { flagImg }
           </span>
-          <span className={ this.styler('usa-disclaimer-stage') }>
-            This site is currently in alpha.&nbsp;
-            <a href="https://18f.gsa.gov/dashboard/stages/#alpha">
-              What’s alpha?
-            </a>
-          </span>
+
         </div>
       </div>
     );
