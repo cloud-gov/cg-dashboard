@@ -234,14 +234,9 @@ export default class Users extends React.Component {
   get userParentEntityUserSelector() {
     // only show something if in a space and if the user is a org manager
     // or space manager.
-    if (!this.isSpace) {
+    if (!this.isSpace ||
+      (!this.currentUserIsSpaceManager && !this.currentUserIsOrgManager)) {
       return null;
-    }
-
-    if (!this.currentUserIsOrgManager) {
-      if (!this.currentUserIsSpaceManager) {
-        return null;
-      }
     }
 
     return (
