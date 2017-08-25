@@ -90,19 +90,4 @@ done
 
 testCmd go tool cover -func profile.cov
 
-# Determine whether to upload to coveralls
-while getopts ":u" opt; do
-  case $opt in
-    u)
-      echo "-u was triggered!" >&2
-      go get -u github.com/axw/gocov/gocov
-      go get -u github.com/mattn/goveralls
-      goveralls -coverprofile=profile.cov -service=travis-ci
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      ;;
-  esac
-done
-
 exit $scriptreturn

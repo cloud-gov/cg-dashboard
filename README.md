@@ -16,7 +16,7 @@ Learn more about [cloud.gov](https://cloud.gov).
 
 ## Tech Stack
 
-### Backend Server [![Go Code Coverage Status](https://coveralls.io/repos/18F/cg-dashboard/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/cg-dashboard?branch=master)
+### Backend Server
 - `Go` (version 1.8)
 
 ### Front end application
