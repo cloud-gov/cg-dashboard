@@ -30,8 +30,6 @@ dependencies:
     - npm run build
 test:
   pre:
-    - go get github.com/axw/gocov/gocov
-    - go get github.com/mattn/goveralls
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   override:
     - export DISPLAY=:99.0 # taken from https://github.com/siddharthkp/lighthouse-ci/issues/1
@@ -41,7 +39,7 @@ test:
     - NODE_ENV=prod npm run build
     - sleep 5
     - cd $WS && npm run test-performance || true
-    - cd $WS && ./codecheck.sh -u
+    - cd $WS && ./codecheck.sh
 
 deployment:
   deploy:
