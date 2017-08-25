@@ -63,8 +63,9 @@ describe('with multi param plan', () => {
     let button;
     const plans = [
       'cdn-route',
-      'cloud-gov-identity-provider',
-      'cloud-gov-service-account'
+      'space-auditor',
+      'space-deployer',
+      'oauth-client'
     ];
     const props = {
       cost: 'Free',

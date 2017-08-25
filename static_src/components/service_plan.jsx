@@ -13,9 +13,13 @@ const propTypes = {
 };
 
 // This should be removed when solution is setup
-// for service instancemultiple params
-const CF_CLI_SERVICE_LIST = [
-  'cdn-route', 'cloud-gov-identity-provider', 'cloud-gov-service-account'
+// for service instance multiple params (e.g. cdn-route) or services
+// that only return information via the cf cli (e.g. space-deployer).
+const CF_CLI_SERVICE_PLAN_LIST = [
+  'cdn-route',
+  'space-auditor',
+  'space-deployer',
+  'oauth-client'
 ];
 
 class ServicePlan extends React.Component {
@@ -35,7 +39,7 @@ class ServicePlan extends React.Component {
     let text;
     const { plan } = this.props;
 
-    if (CF_CLI_SERVICE_LIST.indexOf(plan.name) === -1) {
+    if (CF_CLI_SERVICE_PLAN_LIST.indexOf(plan.name) === -1) {
       text = 'Create service instance';
     } else {
       text = 'Display documentation link';
