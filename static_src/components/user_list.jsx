@@ -126,47 +126,49 @@ export default class UserList extends React.Component {
         { this.documentation }
         <ComplexList>
           { this.props.users.map((user) => {
-            let actions;
-            if (this.props.onRemove) {
-              let button = <span></span>;
-              if (this.props.currentUserAccess) {
-                if (this.props.userType === 'org_users') {
-                  buttonText = 'Remove User From Org';
-                } else if (this.props.userType === 'space_users') {
-                  buttonText = 'Remove All Space Roles';
+            if (!!user.username) {
+              let actions;
+              if (this.props.onRemove) {
+                let button = <span></span>;
+                if (this.props.currentUserAccess) {
+                  if (this.props.userType === 'org_users') {
+                    buttonText = 'Remove User From Org';
+                  } else if (this.props.userType === 'space_users') {
+                    buttonText = 'Remove All Space Roles';
+                  }
+                  button = (
+                    <Action
+                      style="base"
+                      clickHandler={ this._handleDelete.bind(this, user.guid) }
+                      label="delete">
+                      <span>{ buttonText }</span>
+                    </Action>
+                  );
                 }
-                button = (
-                  <Action
-                    style="base"
-                    clickHandler={ this._handleDelete.bind(this, user.guid) }
-                    label="delete">
-                    <span>{ buttonText }</span>
-                  </Action>
+                actions = (
+                  <ElasticLineItem align="end">
+                    { button }
+                  </ElasticLineItem>
                 );
               }
-              actions = (
-                <ElasticLineItem align="end">
-                  { button }
-                </ElasticLineItem>
+
+              return (
+                <ElasticLine key={ user.guid }>
+                  <ElasticLineItem>{ user.username }</ElasticLineItem>
+                  <ElasticLineItem key={ `${user.guid}-role` } align="end">
+                    <UserRoleListControl
+                      userType={ this.props.userType }
+                      currentUserAccess={ this.props.currentUserAccess }
+                      onAddPermissions={ this.props.onAddPermissions }
+                      onRemovePermissions={ this.props.onRemovePermissions }
+                      entityGuid={ this.props.entityGuid }
+                      user={ user }
+                    />
+                  </ElasticLineItem>
+                  { actions }
+                </ElasticLine>
               );
             }
-
-            return (
-              <ElasticLine key={ user.guid }>
-                <ElasticLineItem>{ user.username }</ElasticLineItem>
-                <ElasticLineItem key={ `${user.guid}-role` } align="end">
-                  <UserRoleListControl
-                    userType={ this.props.userType }
-                    currentUserAccess={ this.props.currentUserAccess }
-                    onAddPermissions={ this.props.onAddPermissions }
-                    onRemovePermissions={ this.props.onRemovePermissions }
-                    entityGuid={ this.props.entityGuid }
-                    user={ user }
-                  />
-                </ElasticLineItem>
-                { actions }
-              </ElasticLine>
-              );
           })}
         </ComplexList>
       </div>
