@@ -15,6 +15,14 @@ export default class Disclaimer extends React.Component {
 
   render() {
     let flagImg;
+    let dotGovIconImg;
+    let httpsIconImg;
+    const dotGovIcon = require('cloudgov-style/img/icon-dot-gov.svg');
+    const dotGovAlt = 'Dot gov';
+    dotGovIconImg = <img src={ dotGovAlt } src={ dotGovIcon }</img>;
+    const httpsIcon = require('cloudgov-style/img/icon-https.svg');
+    const httpsAlt = 'Https';
+    httpsIconImg = <img src={ httpsAlt } src={ httpsIcon }</img>;
     if (config.header.show_flag) {
       const flag = require('cloudgov-style/img/us_flag_small.png');
       const flagAlt = 'US flag signifying that this is a United States Federal Government website';
@@ -34,7 +42,7 @@ export default class Disclaimer extends React.Component {
               </header>
               <div className={ this.styler('usa-banner-content','usa-grid','usa-accordion-content') } id='gov-banner'>
                   <div className={ this.styler('usa-banner-guidance-gov usa-width-one-half') }>
-                      <img className={ this.styler('usa-banner-icon usa-media_block-img') } src='../../dist/img/icon-dot-gov.svg' alt='Dot gov'>
+                      { dotGovImg }
                       <div className={ this.styler('usa-media_block-body') }>
                           <p>
                               <strong>{ config.header.disclaimer_reason_gov_header }</strong>
@@ -43,7 +51,7 @@ export default class Disclaimer extends React.Component {
                       </div>
                   </div>
                   <div className={ this.styler('usa-banner-guidance-ssl','usa-width-one-half') }>
-                      { flagImg }
+                      { httpsImg }
                       <div className={ this.styler('usa-media_block-body') }>
                           <p>
                               <strong>{ config.header.disclaimer_reason_https_header }</strong>
