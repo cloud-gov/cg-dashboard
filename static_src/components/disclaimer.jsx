@@ -19,10 +19,10 @@ export default class Disclaimer extends React.Component {
     let httpsIconImg;
     const dotGovIcon = require('cloudgov-style/img/icon-dot-gov.svg');
     const dotGovAlt = 'Dot gov';
-    dotGovIconImg = <img src={ dotGovAlt } src={ dotGovIcon }</img>;
+    dotGovIconImg = <img className={ this.styler('usa-banner-icon','usa-media_block-img') } src={ dotGovAlt } src={ dotGovIcon }</img>;
     const httpsIcon = require('cloudgov-style/img/icon-https.svg');
     const httpsAlt = 'Https';
-    httpsIconImg = <img src={ httpsAlt } src={ httpsIcon }</img>;
+    httpsIconImg = <img className={ this.styler('usa-banner-icon','usa-media_block-img') } src={ httpsAlt } src={ httpsIcon }</img>;
     if (config.header.show_flag) {
       const flag = require('cloudgov-style/img/us_flag_small.png');
       const flagAlt = 'US flag signifying that this is a United States Federal Government website';
