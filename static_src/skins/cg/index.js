@@ -65,11 +65,14 @@ export const config = {
     ]
   },
   header: {
-    disclaimer_link_text: 'Here's how you know',
+    disclaimer_link_text: 'Here\'s how you know',
     disclaimer_reason_gov_header: 'The .gov means it’s official.',
-    disclaimer_reason_gov_body: 'Federal government websites often end in .gov or .mil. Before sharing sensitive information, make sure you're on a federal government site.',
+    disclaimer_reason_gov_body: 'Federal government websites often end in .gov or .mil.' +
+      'Before sharing sensitive information, make sure you\'re on a federal government site.',
     disclaimer_reason_https_header: 'The site is secure. ',
-    disclaimer_reason_https_body: 'The https:// ensures that you are connecting to the official website and that any information you provide is encrypted and transmitted securely.',
+    disclaimer_reason_https_body: 'The https:// ensures that you are connecting to the' +
+      'official website and that any information you provide is encrypted and transmitted' +
+      'securely.',
     disclaimer: 'An official website of the United States government',
     show_flag: true,
     links: [
