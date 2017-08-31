@@ -2,8 +2,10 @@ import classnames from 'classnames';
 import React from 'react';
 import { config } from 'skin';
 
-const dotGovIcon = ''; // require('cloudgov-style/img/icon-dot-gov.svg');
-const httpsIcon = ''; //require('cloudgov-style/img/icon-https.svg');
+const arrowUpImg = require('../img/angle-arrow-down-primary.svg');
+const arrowDownImg = require('../img/angle-arrow-up-primary-hover.svg');
+const dotGovIcon = require('../img/icon-dot-gov.svg'); // require('cloudgov-style/img/icon-dot-gov.svg');
+const httpsIcon = require('../img/icon-https.svg'); //require('cloudgov-style/img/icon-https.svg');
 const flag = require('cloudgov-style/img/us_flag_small.png');
 
 const dotGovAlt = 'Dot gov';
@@ -34,18 +36,30 @@ export default class Disclaimer extends React.Component {
   render() {
     const { expanded } = this.state;
     const hidden = !expanded;
-    const panelClass = classnames('usa-grid', {
+    const panelClass = classnames('usa-banner-content usa-grid usa-accordion-content', {
       hide: hidden
+    });
+    const bannerBarClass = classnames('usa-banner usa-disclaimer disclaimer-no_sidebar', {
+      expanded: expanded
     });
 
     let flagImg;
+    let arrowImg;
+    let arrowImgAlt;
 
+    if (expanded) {
+      arrowImg = arrowDownImg;
+      arrowImgAlt = 'Down arrow';
+    } else {
+      arrowImg = arrowUpImg;
+      arrowImgAlt = 'Up arrow';
+    }
     if (config.header.show_flag) {
       flagImg = <img alt={ flagAlt } src={ flag } />;
     }
 
     return (
-      <div className="usa-banner usa-disclaimer disclaimer-no_sidebar">
+      <div className={ bannerBarClass }>
         <header className="grid">
             <span className='usa-disclaimer-official'>
               { config.header.disclaimer }
@@ -57,14 +71,14 @@ export default class Disclaimer extends React.Component {
                 onClick={ this.handleClick }
               >
                 <span className="p1">{ config.header.disclaimer_link_text }</span>
-                <span className="icon-chevron icon-chevron-down"></span>
+                <img className="rightArrow" alt={ arrowImgAlt } src={ arrowImg } />
               </a>
             </span>
 
         </header>
         <div className={ panelClass } id={ CONTROLS } aria-hidden={ hidden }>
-          <div className="usa-width-one-half">
-            <img className="usa-banner-icon usa-media_block-img" alt={ dotGovAlt } src={ dotGovIcon } />;
+          <div className="usa-banner-guidance-gov usa-width-one-half">
+            <img className="usa-banner-icon usa-media_block-img" alt={ dotGovAlt } src={ dotGovIcon } />
             <div className="usa-media_block-body">
               <p>
                 <strong>{ config.header.disclaimer_reason_gov_header }</strong>
@@ -74,7 +88,7 @@ export default class Disclaimer extends React.Component {
             </div>
           </div>
           <div className="usa-banner-guidance-ssl usa-width-one-half">
-            <img className="usa-banner-icon usa-media_block-img" alt={ httpsAlt } src={ httpsIcon } />;
+            <img className="usa-banner-icon usa-media_block-img" alt={ httpsAlt } src={ httpsIcon } />
             <div className="usa-media_block-body">
               <p>
                 <strong>{ config.header.disclaimer_reason_https_header }</strong>
