@@ -56,7 +56,7 @@ export default class ServiceInstanceTable extends React.Component {
     return (
       <PanelDocumentation description>
         <p>
-          To create service instances for this space, use this org’s marketplace (at left or on the command line). Then bind instances to apps using the command line.
+          To create service instances for this space, use this org’s marketplace (below or on the command line).
           { config.docs.managed_services &&
             <span>
               (<a href={ config.docs.managed_services }>Learn about using service instances and marketplaces</a>.)

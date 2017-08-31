@@ -42,12 +42,6 @@ describe('<ServicePlan />', () => {
     expect(description.text()).toBe(props.plan.description);
   });
 
-  it('renders the cost of the plan', () => {
-    const cost = findPlanNodeByLabel(wrapper, 'Cost');
-
-    expect(cost.text()).toBe(props.cost);
-  });
-
   it('calls its `onAddInstance` prop passing the plan guid from handler', () => {
     wrapper.instance().handleClick();
 

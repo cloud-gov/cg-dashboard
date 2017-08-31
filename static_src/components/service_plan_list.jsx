@@ -41,7 +41,6 @@ export default class ServicePlanList extends React.Component {
     const columns = [
       { label: 'Service Plan Name', key: 'label' },
       { label: 'Description', key: 'description' },
-      { label: 'Cost', key: 'extra.costs.amount.usd' },
       { label: 'Actions', key: 'actions' }
     ];
 

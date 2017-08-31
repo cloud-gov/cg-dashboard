@@ -48,13 +48,12 @@ class ServicePlan extends React.Component {
   }
 
   render() {
-    const { cost, plan } = this.props;
+    const { plan } = this.props;
 
     return (
       <tr>
         <td label="Name">{ plan.name }</td>
         <td label="Description">{ plan.description }</td>
-        <td label="Cost">{ cost }</td>
         <td label="Actions">
           <Action
             classes={ ['test-create_service_instance'] }
