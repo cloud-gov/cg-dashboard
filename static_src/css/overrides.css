@@ -20,3 +20,16 @@
   padding: 1.5rem;
   width: 888px;
 }
+
+.usa-disclaimer {
+  height: auto;
+  padding-bottom: .5rem;
+}
+
+.p1 {
+  padding-left: 1rem;
+}
+
+.action-secondary {
+  cursor: pointer;
+}
