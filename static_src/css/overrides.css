@@ -39,13 +39,11 @@
   font-weight: 500;
 }
 
-img.rightArrow{
+img.right-arrow{
+  color: white;
   float: right;
   width: 0.7rem;
 }
-
-
-
 
 .usa-width-one-half:first-child>:first-child{
   margin-top: 0px;

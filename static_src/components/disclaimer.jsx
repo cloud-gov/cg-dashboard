@@ -4,8 +4,8 @@ import { config } from 'skin';
 
 const arrowUpImg = require('../img/angle-arrow-down-primary.svg');
 const arrowDownImg = require('../img/angle-arrow-up-primary-hover.svg');
-const dotGovIcon = require('../img/icon-dot-gov.svg'); // require('cloudgov-style/img/icon-dot-gov.svg');
-const httpsIcon = require('../img/icon-https.svg'); //require('cloudgov-style/img/icon-https.svg');
+const dotGovIcon = require('../img/icon-dot-gov.svg');
+const httpsIcon = require('../img/icon-https.svg');
 const flag = require('cloudgov-style/img/us_flag_small.png');
 
 const dotGovAlt = 'Dot gov';
@@ -39,9 +39,6 @@ export default class Disclaimer extends React.Component {
     const panelClass = classnames('usa-banner-content usa-grid usa-accordion-content', {
       hide: hidden
     });
-    const bannerBarClass = classnames('usa-banner usa-disclaimer disclaimer-no_sidebar', {
-      expanded: expanded
-    });
 
     let flagImg;
     let arrowImg;
@@ -59,7 +56,7 @@ export default class Disclaimer extends React.Component {
     }
 
     return (
-      <div className={ bannerBarClass }>
+      <div className="usa-banner usa-disclaimer disclaimer-no_sidebar">
         <header className="grid">
             <span className='usa-disclaimer-official'>
               { config.header.disclaimer }
@@ -71,7 +68,7 @@ export default class Disclaimer extends React.Component {
                 onClick={ this.handleClick }
               >
                 <span className="p1">{ config.header.disclaimer_link_text }</span>
-                <img className="rightArrow" alt={ arrowImgAlt } src={ arrowImg } />
+                <img className="right-arrow" alt={ arrowImgAlt } src={ arrowImg } />
               </a>
             </span>
 
