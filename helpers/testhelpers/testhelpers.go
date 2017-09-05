@@ -3,7 +3,9 @@ package testhelpers
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -88,6 +90,23 @@ var ValidTokenData = map[string]interface{}{
 	"token": oauth2.Token{Expiry: time.Time{}, AccessToken: "sampletoken"},
 }
 
+// EchoResponseHandler is a normal handler for responses received from the proxy requests.
+func EchoResponseHandler(rw http.ResponseWriter, response *http.Response) {
+	for header := range response.Header {
+		// fmt.Println("DEBUG GENERIC HANDLER", header, response.Header.Get(header))
+		rw.Header().Add(header, response.Header.Get(header))
+	}
+
+	// Write the body into response that is going back to the frontend.
+	_, err := io.Copy(rw, response.Body)
+	if err != nil {
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte("unknown error. try again"))
+		return
+	}
+}
+
 // CreateRouterWithMockSession will create a settings with the appropriate envVars and load the mock session with the session data.
 func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars helpers.EnvVars) (*web.Router, *MockSessionStore) {
 	// Initialize settings.
@@ -134,6 +153,7 @@ type BasicSecureTest struct {
 	ExpectedCode     int
 	ExpectedResponse string
 	ExpectedLocation string
+	ExpectedHeaders  map[string]string
 }
 
 // Handler is a specific handler for the test server.
@@ -179,6 +199,7 @@ func GetMockCompleteEnvVars() helpers.EnvVars {
 		SMTPFrom:      "cloud@cloud.gov",
 		SMTPHost:      "localhost",
 		SecureCookies: "1",
+		TICSecret:     "tic",
 	}
 }
 
@@ -211,9 +232,15 @@ func CreateExternalServerForPrivileged(t *testing.T, test BasicProxyTest) *httpt
 			foundHandler := false
 			for _, handler := range test.Handlers {
 				if r.URL.RequestURI() == handler.ExpectedPath && r.Method == handler.RequestMethod {
+					// Echo request headers to response headers
+					for header := range r.Header {
+						w.Header().Add(header, r.Header.Get(header))
+					}
+
 					w.WriteHeader(handler.ResponseCode)
 					fmt.Fprintln(w, handler.Response)
 					foundHandler = true
+
 					// Check that we are using the privileged token
 					// This line here is why we can't use the generic CreateExternalServer.
 					// Could add a token parameter. TODO
@@ -240,6 +267,12 @@ func CreateExternalServer(t *testing.T, test *BasicProxyTest) *httptest.Server {
 		for _, handler := range test.Handlers {
 			if r.URL.RequestURI() == handler.ExpectedPath && r.Method == handler.RequestMethod {
 				foundHandler = true
+
+				// Echo request headers to response headers
+				for header := range r.Header {
+					w.Header().Add(header, r.Header.Get(header))
+				}
+
 				w.WriteHeader(handler.ResponseCode)
 				fmt.Fprintln(w, handler.Response)
 				headerAuth := r.Header.Get("Authorization")
@@ -275,6 +308,7 @@ func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testS
 		c.Settings = mockSettings
 
 		response, request := NewTestRequest(test.RequestMethod, fullURL, test.RequestBody)
+		request.RemoteAddr = httptest.DefaultRemoteAddr
 		request.URL.Scheme = "http"
 		request.URL.Host = request.Host
 		test.EnvVars.APIURL = testServer.URL
@@ -294,5 +328,11 @@ func VerifyExternalCallResponse(t *testing.T, response *httptest.ResponseRecorde
 	}
 	if response.Code != test.ExpectedCode {
 		t.Errorf("Test %s did not meet expected code. Expected %d. Found %d.\n", test.TestName, test.ExpectedCode, response.Code)
+	}
+	for header, value := range test.ExpectedHeaders {
+		observed := response.Header().Get(header)
+		if value != observed {
+			t.Errorf("Test %s request header %s mismatch. Expected %s. Found %s.\n", test.TestName, header, value, observed)
+		}
 	}
 }

@@ -65,11 +65,11 @@ func (c *SecureContext) LoginRequired(rw web.ResponseWriter, r *web.Request, nex
 // PrivilegedProxy is an internal function that will construct the client using
 // the credentials of the web app itself (not of the user) with the token in the headers and
 // then sends a request.
-func (c *SecureContext) PrivilegedProxy(rw http.ResponseWriter, req *http.Request, url string) {
+func (c *SecureContext) PrivilegedProxy(rw http.ResponseWriter, req *http.Request, url string, responseHandler ResponseHandler) {
 	// Acquire the http client and the refresh token if needed
 	// https://godoc.org/golang.org/x/oauth2#Config.Client
 	client := c.Settings.HighPrivilegedOauthConfig.Client(c.Settings.CreateContext())
-	c.submitRequest(rw, req, url, client, c.GenericResponseHandler)
+	c.submitRequest(rw, req, url, client, responseHandler)
 }
 
 // Proxy is an internal function that will construct the client with the token in the headers and
@@ -107,8 +107,8 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 
 	// Set headers for requests to CF API proxy
 	clientIP := strings.Split(req.RemoteAddr, ":")[0]
-	req.Header.Add("X-Client-IP", clientIP)
-	req.Header.Add("X-TIC-Secret", c.Settings.TICSecret)
+	request.Header.Add("X-Client-IP", clientIP)
+	request.Header.Add("X-TIC-Secret", c.Settings.TICSecret)
 
 	request.Close = true
 	// Send the request.
@@ -137,5 +137,4 @@ func (c *SecureContext) GenericResponseHandler(rw http.ResponseWriter, response 
 		rw.Write([]byte("unknown error. try again"))
 		return
 	}
-
 }
