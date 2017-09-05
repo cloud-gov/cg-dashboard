@@ -376,7 +376,7 @@ export default {
   },
 
   deleteUser(userGuid, orgGuid) {
-    return http.delete(`${APIV}/organizations/${orgGuid}/users/${userGuid}`)
+    return http.delete(`${APIV}/organizations/${orgGuid}/users/${userGuid}?recursive=true`)
     .then((res) => res.response);
     // TODO. should log catch if unable to parseError.
   },

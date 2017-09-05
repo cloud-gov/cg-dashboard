@@ -15,10 +15,6 @@ import SpaceStore from '../stores/space_store';
 const ORG_ENTITY = 'organization';
 const SPACE_ENTITY = 'space';
 const ORG_NAME = OrgStore.cfName;
-const MSG_USER_HAS_SPACE_ROLES = 'This user can\'t be removed because they still have a space ' +
-                  'role within the organization. Please remove all space ' +
-                  'associations before removing this user from the organization. ' +
-                  'To review how, click the "Managing Teammates" link below.';
 
 const userActions = {
   fetchOrgUsers(orgGuid) {
@@ -85,20 +81,6 @@ const userActions = {
       .then((orgSpaces) => userActions.receivedOrgSpacesToExtractSpaceUsers(orgSpaces));
   },
 
-  deleteUserOrDisplayNotice(spaceUsers, userGuid, orgGuid) {
-    const usersSpaces = spaceUsers.filter(spaceUser => spaceUser.guid === userGuid);
-    if (usersSpaces.length > 0) {
-      userActions.createUserSpaceAssociationNotification(MSG_USER_HAS_SPACE_ROLES);
-    } else {
-      userActions.deleteUser(userGuid, orgGuid);
-    }
-  },
-
-  deleteUserIfNoSpaceAssociation(userGuid, orgGuid) {
-    return Promise.resolve(userActions.fetchUserAssociationsToOrgSpaces(userGuid, orgGuid))
-      .then((spaceUsers) => userActions.deleteUserOrDisplayNotice(spaceUsers, userGuid, orgGuid));
-  },
-
   removeAllSpaceRoles(userGuid, spaceGuid) {
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_REMOVE_ALL_SPACE_ROLES,
@@ -131,20 +113,7 @@ const userActions = {
 
     return cfApi.deleteUser(userGuid, orgGuid)
       .then(() => userActions.deletedUser(userGuid, orgGuid))
-      .catch(error => {
-        // Check whether we got caught on user roles in spaces
-        const userHasSpaceRoles = (error &&
-          error.response &&
-          error.response.status === 400 &&
-          error.response.data.error_code === 'CF-AssociationNotEmpty'
-        );
-        if (userHasSpaceRoles) {
-          this.createUserSpaceAssociationNotification(MSG_USER_HAS_SPACE_ROLES);
-        } else {
-          // else use generic error
-          this.errorRemoveUser(userGuid, error.response.data);
-        }
-      });
+      .catch(error => this.errorRemoveUser(userGuid, error.response.data));
   },
 
   deletedUser(userGuid, orgGuid) {
