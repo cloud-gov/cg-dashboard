@@ -43,6 +43,7 @@ func loadEnvVars() helpers.EnvVars {
 	envVars.SMTPUser = os.Getenv(helpers.SMTPUserEnvVar)
 	envVars.SMTPPass = os.Getenv(helpers.SMTPPassEnvVar)
 	envVars.SMTPFrom = os.Getenv(helpers.SMTPFromEnvVar)
+	envVars.TICSecret = os.Getenv(helpers.TICSecretEnvVar)
 	return envVars
 }
 
@@ -71,6 +72,8 @@ func replaceEnvVar(envVars *helpers.EnvVars, envVar string, value interface{}) {
 			envVars.SMTPPass = stringValue
 		case helpers.SMTPFromEnvVar:
 			envVars.SMTPFrom = stringValue
+		case helpers.TICSecretEnvVar:
+			envVars.TICSecret = stringValue
 		}
 	}
 }
@@ -117,6 +120,10 @@ func loadUPSVars(envVars *helpers.EnvVars, cfEnv *cfenv.App) {
 		if smtpUser, found := cfUPS.Credentials[helpers.SMTPUserEnvVar]; found {
 			fmt.Println("Replacing " + helpers.SMTPUserEnvVar)
 			replaceEnvVar(envVars, helpers.SMTPUserEnvVar, smtpUser)
+		}
+		if ticSecret, found := cfUPS.Credentials[helpers.TICSecretEnvVar]; found {
+			fmt.Println("Replacing " + helpers.TICSecretEnvVar)
+			replaceEnvVar(envVars, helpers.TICSecretEnvVar, ticSecret)
 		}
 
 	} else {

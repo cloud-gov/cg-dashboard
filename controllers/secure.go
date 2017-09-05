@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/18F/cg-dashboard/helpers"
@@ -103,6 +104,12 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	if contentHeader := req.Header.Get("Content-Type"); len(contentHeader) > 0 {
 		request.Header.Set("Content-Type", contentHeader)
 	}
+
+	// Set headers for requests to CF API proxy
+	clientIP := strings.Split(req.RemoteAddr, ":")[0]
+	req.Header.Add("X-Client-IP", clientIP)
+	req.Header.Add("X-TIC-Secret", c.Settings.TICSecret)
+
 	request.Close = true
 	// Send the request.
 	res, err := client.Do(request)

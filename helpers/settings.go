@@ -69,6 +69,8 @@ type Settings struct {
 	SMTPPass string
 	// SMTP from address for UAA invites
 	SMTPFrom string
+	// Shared secret with CF API proxy
+	TICSecret string
 }
 
 // CreateContext returns a new context to be used for http connections.
@@ -118,6 +120,9 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	}
 	if len(envVars.SMTPHost) == 0 {
 		return errors.New("Unable to find '" + SMTPHostEnvVar + "' in environment. Exiting.\n")
+	}
+	if len(envVars.TICSecret) == 0 {
+		return errors.New("Unable to find '" + TICSecretEnvVar + "' in environment. Exiting.\n")
 	}
 
 	s.BasePath = envVars.BasePath
@@ -247,6 +252,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	s.SMTPPass = envVars.SMTPPass
 	s.SMTPPort = envVars.SMTPPort
 	s.SMTPUser = envVars.SMTPUser
+	s.TICSecret = envVars.TICSecret
 	return nil
 }
 

@@ -49,6 +49,8 @@ var (
 	SMTPPassEnvVar = "SMTP_PASS"
 	// SMTPFromEnvVar is SMTP from address for UAA invites
 	SMTPFromEnvVar = "SMTP_FROM"
+	// TICSecretEnvVar is the shared secret with CF API proxy for forwarding client IPs
+	TICSecretEnvVar = "TIC_SECRET"
 )
 
 // EnvVars holds all the environment variable values that a non-test server should have.
@@ -73,4 +75,5 @@ type EnvVars struct {
 	SMTPUser        string
 	SMTPPass        string
 	SMTPFrom        string
+	TICSecret       string
 }
