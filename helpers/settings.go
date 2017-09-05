@@ -135,7 +135,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	// Safe guard: shouldn't run with insecure cookies if we are
 	// in a non-development environment (i.e. production)
 	if s.LocalCF == false && s.SecureCookies == false {
-		return errors.New("cannot run with insecure cookies when targteing a production CF environment")
+		return errors.New("cannot run with insecure cookies when targeting a production CF environment")
 	}
 
 	// Setup OAuth2 Client Service.
