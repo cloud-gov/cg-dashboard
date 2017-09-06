@@ -1,7 +1,6 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
 import Action from './action.jsx';
 import AppActivity from './app_activity/app_activity.jsx';
 import ActivityStore from '../stores/activity_store';
@@ -9,9 +8,7 @@ import AppStore from '../stores/app_store.js';
 import DomainStore from '../stores/domain_store';
 import PanelActions from './panel_actions.jsx';
 import RouteStore from '../stores/route_store';
-import createStyler from '../util/create_styler';
 import ServiceInstanceStore from '../stores/service_instance_store';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 function stateSetter() {
   const appGuid = AppStore.currentAppGuid;
@@ -52,16 +49,13 @@ const defaultProps = {
 export default class ActivityLog extends React.Component {
   constructor(props) {
     super(props);
-    this.state = stateSetter(props);
-    this.state.maxItems = props.maxItems;
-    this.styler = createStyler(style);
+    this.state = Object.assign({}, stateSetter(props), { maxItems: props.maxItems });
 
     this._onChange = this._onChange.bind(this);
     this.handleMore = this.handleMore.bind(this);
   }
 
   componentDidMount() {
-    AppStore.addChangeListener(this._onChange);
     ActivityStore.addChangeListener(this._onChange);
     DomainStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
@@ -69,7 +63,6 @@ export default class ActivityLog extends React.Component {
   }
 
   componentWillUnmount() {
-    AppStore.removeChangeListener(this._onChange);
     ActivityStore.removeChangeListener(this._onChange);
     DomainStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
@@ -113,7 +106,7 @@ export default class ActivityLog extends React.Component {
         );
       content = (
         <div>
-          <ul className={ this.styler('activity_log') }>
+          <ul className="activity_log">
             { this.state.activity
                 .slice(0, this.state.maxItems)
                 .map(item => {
@@ -148,7 +141,7 @@ export default class ActivityLog extends React.Component {
     }
 
     return (
-      <div className={ this.styler('activity_log-container') }>
+      <div className="activity_log-container">
         { content }
       </div>
     );
