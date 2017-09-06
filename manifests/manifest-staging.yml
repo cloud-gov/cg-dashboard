@@ -1,7 +1,13 @@
 ---
 inherit: manifest-base.yml
+domain: fr-stage.cloud.gov
 applications:
-- name: cg-dashboard-staging
-  host: dashboard-staging
+- name: cg-dashboard
+  host: dashboard
+  instances: 3
   env:
-    CONSOLE_HOSTNAME: https://dashboard-staging.app.cloud.gov
+    CONSOLE_HOSTNAME: https://dashboard.fr-stage.cloud.gov
+    CONSOLE_LOGIN_URL: https://login.fr-stage.cloud.gov/
+    CONSOLE_UAA_URL: https://uaa.fr-stage.cloud.gov/
+    CONSOLE_API_URL: https://api.fr-stage.cloud.gov/
+    CONSOLE_LOG_URL: https://loggregator.fr-stage.cloud.gov/

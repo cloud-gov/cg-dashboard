@@ -18,42 +18,28 @@ cf install-plugin -f /home/ubuntu/.go_workspace/bin/autopilot
 # Only the organization, api, deployer account password differ.
 
 
+CF_APP="cg-dashboard"
+CF_SPACE="dashboard"
 
 if [[ "$CIRCLE_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)? ]]
 then
 	CF_MANIFEST="manifest-prod.yml"
-	CF_SPACE="dashboard-prod"
-	CF_APP="cg-dashboard"
+	CF_API="https://api.fr.cloud.gov"
+	CF_USERNAME=$CF_USERNAME_PROD_SPACE
+	CF_PASSWORD=$CF_PASSWORD_PROD_SPACE
 elif [ "$CIRCLE_BRANCH" == "master" ]
 then
 	CF_MANIFEST="manifest-staging.yml"
-	CF_SPACE="dashboard-stage"
-	CF_APP="cg-dashboard-staging"
+	CF_API="https://api.fr-stage.cloud.gov"
+	CF_USERNAME=$CF_USERNAME_STAGE_SPACE
+	CF_PASSWORD=$CF_PASSWORD_STAGE_SPACE
 elif [ "$CIRCLE_BRANCH" == "demo" ]
 then
 	CF_MANIFEST="manifest-demo.yml"
-	CF_SPACE="dashboard-stage"
 	CF_APP="cg-dashboard-demo"
 else
   echo Unknown environment, quitting. >&2
   exit 1
-fi
-
-# We use the deployer-account broker to get the credentials of
-# our deployer accounts.
-# Currently, the deployer accounts are scoped to a single space.
-# As a result, we will filter by space for which credentials to use.
-if [ "$CF_SPACE" == "dashboard-prod" ]
-then
-	CF_USERNAME=$CF_USERNAME_PROD_SPACE
-	CF_PASSWORD=$CF_PASSWORD_PROD_SPACE
-elif [ "$CF_SPACE" == "dashboard-stage" ]
-then
-	CF_USERNAME=$CF_USERNAME_STAGE_SPACE
-	CF_PASSWORD=$CF_PASSWORD_STAGE_SPACE
-else
-	echo "Unknown space. Do not know how to deploy $CF_SPACE."
-	exit 1
 fi
 
 echo manifest: $CF_MANIFEST

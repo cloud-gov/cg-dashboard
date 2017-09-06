@@ -9,3 +9,7 @@ applications:
     CONSOLE_HOSTNAME: https://dashboard.fr.cloud.gov
     NEW_RELIC_ID: "20390582"
     NEW_RELIC_BROWSER_LICENSE_KEY: "5d4bc714a6"
+    CONSOLE_LOGIN_URL: https://login.fr.cloud.gov/
+    CONSOLE_UAA_URL: https://uaa.fr.cloud.gov/
+    CONSOLE_API_URL: https://api.fr.cloud.gov/
+    CONSOLE_LOG_URL: https://loggregator.fr.cloud.gov/
