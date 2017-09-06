@@ -3,6 +3,7 @@ package controllers
 import (
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -105,10 +106,15 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 		request.Header.Set("Content-Type", contentHeader)
 	}
 
-	// Set headers for requests to CF API proxy
-	clientIP := strings.Split(req.RemoteAddr, ":")[0]
-	request.Header.Add("X-Client-IP", clientIP)
-	request.Header.Add("X-TIC-Secret", c.Settings.TICSecret)
+	// Get RemoteAddr from the request
+	clientIP, err := GetClientIP(req)
+	if err == nil {
+		// Set headers for requests to CF API proxy
+		request.Header.Add("X-Client-IP", clientIP)
+		request.Header.Add("X-TIC-Secret", c.Settings.TICSecret)
+	} else {
+		log.Println(err)
+	}
 
 	request.Close = true
 	// Send the request.
@@ -137,4 +143,16 @@ func (c *SecureContext) GenericResponseHandler(rw http.ResponseWriter, response 
 		rw.Write([]byte("unknown error. try again"))
 		return
 	}
+}
+
+// GetClientIP gets a Client IP address from either X-Forwarded-For or RemoteAddr
+func GetClientIP(req *http.Request) (string, error) {
+	addrs := strings.Split(req.Header.Get("X-Forwarded-For"), ", ")
+	for idx := len(addrs) - 1; idx >= 0; idx-- {
+		if net.ParseIP(addrs[idx]).IsGlobalUnicast() {
+			return addrs[idx], nil
+		}
+	}
+	host, _, err := net.SplitHostPort(req.RemoteAddr)
+	return host, err
 }

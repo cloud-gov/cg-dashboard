@@ -106,12 +106,15 @@ var proxyTests = []BasicProxyTest{
 			ExpectedCode:     http.StatusOK,
 			ExpectedHeaders: map[string]string{
 				"X-Tic-Secret": "tic",
-				"X-Client-IP":  httptest.DefaultRemoteAddr,
+				"X-Client-IP":  "4.3.2.1",
 			},
 		},
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "GET",
 		RequestPath:   "/test",
+		RequestHeaders: map[string]string{
+			"X-Forwarded-For": "1.2.3.4, 4.3.2.1, 127.0.0.1",
+		},
 		Handlers: []Handler{
 			{
 				RequestMethod: "GET",

@@ -181,6 +181,8 @@ type BasicProxyTest struct {
 	Handlers []Handler
 	// RequestMethod is the type of method that our test client should send.
 	RequestMethod string
+	// RequestHeaders is a map of headers that our test client should send.
+	RequestHeaders map[string]string
 }
 
 // GetMockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
@@ -308,9 +310,12 @@ func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testS
 		c.Settings = mockSettings
 
 		response, request := NewTestRequest(test.RequestMethod, fullURL, test.RequestBody)
-		request.RemoteAddr = httptest.DefaultRemoteAddr
+		request.RemoteAddr = httptest.DefaultRemoteAddr + ":81"
 		request.URL.Scheme = "http"
 		request.URL.Host = request.Host
+		for header, value := range test.RequestHeaders {
+			request.Header.Set(header, value)
+		}
 		test.EnvVars.APIURL = testServer.URL
 		test.EnvVars.UAAURL = testServer.URL
 		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
