@@ -121,9 +121,6 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	if len(envVars.SMTPHost) == 0 {
 		return errors.New("Unable to find '" + SMTPHostEnvVar + "' in environment. Exiting.\n")
 	}
-	if len(envVars.TICSecret) == 0 {
-		return errors.New("Unable to find '" + TICSecretEnvVar + "' in environment. Exiting.\n")
-	}
 
 	s.BasePath = envVars.BasePath
 	s.AppURL = envVars.Hostname

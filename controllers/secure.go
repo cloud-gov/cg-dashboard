@@ -107,13 +107,18 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 	}
 
 	// Get RemoteAddr from the request
-	clientIP, err := GetClientIP(req)
-	if err == nil {
-		// Set headers for requests to CF API proxy
-		request.Header.Add("X-Client-IP", clientIP)
-		request.Header.Add("X-TIC-Secret", c.Settings.TICSecret)
-	} else {
-		log.Println(err)
+	if c.Settings.TICSecret != "" {
+		clientIP, err := GetClientIP(req)
+		if err != nil {
+			log.Println(err)
+			rw.WriteHeader(http.StatusInternalServerError)
+			rw.Write([]byte("error parsing client ip"))
+		}
+		if clientIP != "" {
+			// Set headers for requests to CF API proxy
+			request.Header.Add("X-Client-IP", clientIP)
+			request.Header.Add("X-TIC-Secret", c.Settings.TICSecret)
+		}
 	}
 
 	request.Close = true
@@ -152,6 +157,9 @@ func GetClientIP(req *http.Request) (string, error) {
 		if net.ParseIP(addrs[idx]).IsGlobalUnicast() {
 			return addrs[idx], nil
 		}
+	}
+	if req.RemoteAddr == "" {
+		return "", nil
 	}
 	host, _, err := net.SplitHostPort(req.RemoteAddr)
 	return host, err
