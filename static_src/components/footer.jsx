@@ -26,9 +26,9 @@ export default class Header extends React.Component {
         </section>
         <section className={ this.styler('grid-width-6') }>
           <ul className={ this.styler('footer-info') }>
-            <li>{ config.footer.disclaimer }</li>
-            <li>{ config.footer.code_note }</li>
             <li>{ config.footer.author_note }</li>
+            <li>{ config.footer.code_note }</li>
+            <li>{ config.footer.disclaimer_note }</li>
           </ul>
         </section>
       </footer>
