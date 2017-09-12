@@ -1,5 +1,5 @@
-hash: 4fa33221e0ab33bf3850bee88bd2a41af94bd9cec69df67f2ab72337f68c6908
-updated: 2017-05-11T14:07:41.972759638-04:00
+hash: cb874f5dbbe7df979b97c0312f52cd9712fd8e5f00807e1be5e51b38190211b1
+updated: 2017-09-12T12:25:36.809555946+10:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: fa152c58bc15761d0200cb75fe958b89a9d4888e
@@ -102,6 +102,8 @@ imports:
   version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:
   - difflib
+- name: github.com/satori/go.uuid
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/Sirupsen/logrus
   version: 5b60b3d3ee017ed00bcd0225fcca7acab767844b
 - name: github.com/stretchr/objx

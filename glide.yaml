@@ -27,3 +27,5 @@ import:
 - package: github.com/stretchr/testify
   subpackages:
   - mock
+- package: github.com/satori/go.uuid
+  version: ^1.1.0
