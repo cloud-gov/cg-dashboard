@@ -13,6 +13,8 @@ import (
 	"net/url"
 
 	"github.com/gocraft/web"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 // UAAContext stores the session info and access token per user.
@@ -46,36 +48,55 @@ func (c *UAAContext) UserInfo(rw web.ResponseWriter, req *web.Request) {
 	c.uaaProxy(rw, req.Request, "/userinfo", false)
 }
 
-func readBodyToStruct(rawBody io.ReadCloser, obj interface{}) (err *UaaError) {
+func readBodyToStruct(rawBody io.ReadCloser, obj interface{}) *UaaError {
 	if rawBody == nil {
-		err = &UaaError{http.StatusBadRequest,
-			[]byte("{\"status\": \"failure\", \"data\": \"no body in request.\"}")}
-		return
+		return newUaaError(http.StatusBadRequest, "no body in request.")
 	}
 	defer rawBody.Close()
 	body, readErr := ioutil.ReadAll(rawBody)
 	if readErr != nil {
-		err = &UaaError{http.StatusBadRequest,
-			[]byte("{\"status\": \"failure\", \"data\": \"" +
-				readErr.Error() + "\"}")}
-		return
+		return newUaaError(http.StatusBadRequest, readErr.Error())
 	}
 
 	// Read the response from inviting the user.
 	jsonErr := json.Unmarshal(body, obj)
 	if jsonErr != nil {
-		err = &UaaError{http.StatusInternalServerError,
-			[]byte("{\"status\": \"failure\", \"data\": \"" +
-				jsonErr.Error() + "\"}")}
-		return
+		return newUaaError(http.StatusInternalServerError, jsonErr.Error())
 	}
-	return
+	return nil
 }
 
 // UaaError contains metadata for a particular UAA error.
 type UaaError struct {
 	statusCode int
 	err        []byte
+}
+
+func newUaaError(statusCode int, data string) *UaaError {
+	return newUaaErrorWithProxyData(statusCode, data, "")
+}
+
+func newUaaErrorWithProxyData(statusCode int, data, proxyData string) *UaaError {
+	jb, err := json.Marshal(struct {
+		Status    string `json:"status"`
+		Data      string `json:"data"`
+		ProxyData string `json:"proxy-data,omitempty"`
+	}{
+		Status:    "failure",
+		Data:      data,
+		ProxyData: proxyData,
+	})
+	if err != nil {
+		// If we get here, we're having a really bad day
+		return &UaaError{
+			statusCode: statusCode,
+			err:        []byte("cannot marshal proper error"),
+		}
+	}
+	return &UaaError{
+		statusCode: statusCode,
+		err:        jb,
+	}
 }
 
 func (e *UaaError) writeTo(rw http.ResponseWriter) {
@@ -117,15 +138,13 @@ func (c *UAAContext) InviteUAAuser(
 	inviteResponse InviteUAAUserResponse, err *UaaError) {
 	// Make request to UAA to invite user (which will create the user in the
 	// UAA database)
-	reqURL := fmt.Sprintf("%s%s",
-		"/invite_users?redirect_uri=", c.Settings.AppURL)
+	reqURL := fmt.Sprintf("/invite_users?%s", url.Values{
+		"redirect_uri": {c.Settings.AppURL},
+	}.Encode())
 	requestObj := inviteUAAUserRequest{[]string{inviteUserToOrgRequest.Email}}
 	inviteUAAUserBody, jsonErr := json.Marshal(requestObj)
 	if jsonErr != nil {
-		err = &UaaError{http.StatusInternalServerError,
-			[]byte("{\"status\": \"failure\", \"data\": \"" +
-				jsonErr.Error() + "\"}"),
-		}
+		err = newUaaError(http.StatusInternalServerError, jsonErr.Error())
 		return
 	}
 	req, _ := http.NewRequest("POST", reqURL,
@@ -137,10 +156,7 @@ func (c *UAAContext) InviteUAAuser(
 	if w.Code != http.StatusOK {
 		resp := w.Result()
 		body, _ := ioutil.ReadAll(resp.Body)
-		err = &UaaError{http.StatusInternalServerError,
-			[]byte("{\"status\": \"failure\", \"data\": \"" +
-				"unable to create user in UAA database.\", \"proxy-data\": \"" +
-				string(body) + "\"}")}
+		err = newUaaErrorWithProxyData(http.StatusInternalServerError, "unable to create user in UAA database.", string(body))
 		return
 	}
 	resp := w.Result()
@@ -162,10 +178,7 @@ func (c *UAAContext) CreateCFuser(userInvite NewInvite) (
 	cfCreateUserBody, jsonErr := json.Marshal(
 		createCFUser{GUID: userInvite.UserID})
 	if jsonErr != nil {
-		err = &UaaError{http.StatusInternalServerError,
-			[]byte("{\"status\": \"failure\", \"data\": \"" +
-				jsonErr.Error() + "\"}"),
-		}
+		err = newUaaError(http.StatusInternalServerError, jsonErr.Error())
 		return
 	}
 
@@ -180,11 +193,7 @@ func (c *UAAContext) CreateCFuser(userInvite NewInvite) (
 		if resp.Body != nil {
 			body, _ = ioutil.ReadAll(resp.Body)
 		}
-		err = &UaaError{http.StatusInternalServerError,
-			[]byte("{\"status\": \"failure\", " +
-				"\"data\": \"unable to create user in CF database.\", " +
-				"\"proxy-data\": \"" + string(body) + "\"}"),
-		}
+		err = newUaaErrorWithProxyData(http.StatusInternalServerError, "unable to create user in CF database.", string(body))
 	}
 	return
 }
@@ -228,9 +237,7 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 
 		// If we don't have a successful invite, we return an error.
 		if len(inviteResponse.NewInvites) < 1 {
-			rw.WriteHeader(http.StatusInternalServerError)
-			rw.Write([]byte("{\"status\": \"failure\", " +
-				"\"data\": \"no successful invites created.\"}"))
+			newUaaError(http.StatusInternalServerError, "no successful invites created.").writeTo(rw)
 			return
 		}
 		userInvite := inviteResponse.NewInvites[0]
@@ -256,9 +263,15 @@ func (c *UAAContext) InviteUserToOrg(rw web.ResponseWriter, req *web.Request) {
 	}
 
 	rw.WriteHeader(http.StatusOK)
-	rw.Write([]byte(fmt.Sprintf("{\"status\": \"success\", "+
-		"\"userGuid\": \"%s\", "+
-		"\"verified\": %t}", getUserResp.ID, getUserResp.Verified)))
+	json.NewEncoder(rw).Encode(struct {
+		Status   string `json:"status"`
+		UserGUID string `json:"userGuid"`
+		Verified bool   `json:"verified"`
+	}{
+		Status:   "success",
+		UserGUID: getUserResp.ID,
+		Verified: getUserResp.Verified,
+	})
 }
 
 // ListUAAUserResponse is the response representation of the User list query.
@@ -275,16 +288,21 @@ type ListUAAUserResponse struct {
 // Both special cases return no error.
 func (c *UAAContext) GetUAAUserByEmail(email string) (
 	userResponse GetUAAUserResponse, err *UaaError) {
-	filterQuery := fmt.Sprintf("email eq \"%s\"", email)
-	reqURL := fmt.Sprintf("/Users?filter=%s", url.QueryEscape(filterQuery))
+	// Per https://tools.ietf.org/html/rfc7644#section-3.4.2.2, the value format in a SCIM query is JSON format
+	emailJSONBytes, mErr := json.Marshal(email)
+	if mErr != nil {
+		err = newUaaError(http.StatusBadRequest, mErr.Error())
+		return
+	}
+	reqURL := fmt.Sprintf("/Users?%s", url.Values{
+		"filter": {fmt.Sprintf("email eq %s", emailJSONBytes)},
+	}.Encode())
 	reqVerify, _ := http.NewRequest("GET", reqURL, nil)
 	w := httptest.NewRecorder()
 	c.uaaProxy(w, reqVerify, reqURL, true)
 	// It will always return StatusOK even if it returns an empty resources list.
 	if w.Code != http.StatusOK {
-		err = &UaaError{http.StatusInternalServerError,
-			[]byte("{\"status\": \"failure\", \"data\": \"" +
-				"unable to find user.\"}")}
+		err = newUaaError(http.StatusInternalServerError, "unable to find user.")
 		return
 	}
 	resp := w.Result()
@@ -309,43 +327,39 @@ type inviteEmailRequest struct {
 }
 
 // TriggerInvite trigger the email.
-func (c *UAAContext) TriggerInvite(inviteReq inviteEmailRequest) (
-	err *UaaError) {
+func (c *UAAContext) TriggerInvite(inviteReq inviteEmailRequest) *UaaError {
 	if inviteReq.Email == "" || inviteReq.InviteURL == "" {
-		err = &UaaError{http.StatusBadRequest,
-			[]byte("{\"status\": \"failure\", " +
-				"\"data\": \"Missing correct params.\"}"),
-		}
-		return
+		return newUaaError(http.StatusBadRequest, "Missing correct params.")
 	}
 	emailHTML := new(bytes.Buffer)
 	tplErr := c.templates.GetInviteEmail(emailHTML, inviteReq.InviteURL)
 	if tplErr != nil {
-		err = &UaaError{http.StatusInternalServerError,
-			[]byte("{\"status\": \"failure\", \"data\": \"" +
-				tplErr.Error() + "\" }"),
-		}
-		return
+		return newUaaError(http.StatusInternalServerError, tplErr.Error())
 	}
 	emailErr := c.mailer.SendEmail(inviteReq.Email, "Invitation to join cloud.gov", emailHTML.Bytes())
 	if emailErr != nil {
-		err = &UaaError{http.StatusInternalServerError,
-			[]byte("{\"status\": \"failure\", \"data\": \"" +
-				emailErr.Error() + "\" }"),
-		}
-		return
+		return newUaaError(http.StatusInternalServerError, emailErr.Error())
 	}
-	return
+	return nil
 }
 
 // UaaInfo returns the UAA_API/Users/:id information for the logged in user.
 func (c *UAAContext) UaaInfo(rw web.ResponseWriter, req *web.Request) {
-	guid := req.URL.Query().Get("uaa_guid")
-	if len(guid) > 0 {
-		reqURL := fmt.Sprintf("%s%s", "/Users/", guid)
-		c.uaaProxy(rw, req.Request, reqURL, false)
-	} else {
+	// Parse and validate the UUID
+	guid, err := uuid.FromString(req.URL.Query().Get("uaa_guid"))
+	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
-		rw.Write([]byte("{\"status\": \"Bad request\", \"error_description\": \"Missing valid guid.\"}"))
+		json.NewEncoder(rw).Encode(struct {
+			Status      string `json:"status"`
+			Description string `json:"error_description"`
+		}{
+			Status:      "Bad request",
+			Description: "Missing valid guid.",
+		})
+		return
 	}
+
+	// This is safe, as this produces the canonical form
+	reqURL := fmt.Sprintf("/Users/%s", guid.String())
+	c.uaaProxy(rw, req.Request, reqURL, false)
 }
