@@ -3,6 +3,7 @@ package controllers_test
 import (
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 
@@ -86,7 +87,7 @@ func TestPrivilegedProxy(t *testing.T) {
 		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
 		c := &controllers.SecureContext{Context: &controllers.Context{}}
 		response, request, _ := PrepareExternalServerCall(t, c, testServer, fullURL, test)
-		c.PrivilegedProxy(response, request, fullURL)
+		c.PrivilegedProxy(response, request, fullURL, EchoResponseHandler)
 		VerifyExternalCallResponse(t, response, &test)
 
 		testServer.Close()
@@ -103,10 +104,17 @@ var proxyTests = []BasicProxyTest{
 			},
 			ExpectedResponse: "test",
 			ExpectedCode:     http.StatusOK,
+			ExpectedHeaders: map[string]string{
+				"X-Tic-Secret": "tic",
+				"X-Client-IP":  "4.3.2.1",
+			},
 		},
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "GET",
 		RequestPath:   "/test",
+		RequestHeaders: map[string]string{
+			"X-Forwarded-For": "1.2.3.4, 4.3.2.1, 127.0.0.1",
+		},
 		Handlers: []Handler{
 			{
 				RequestMethod: "GET",
@@ -125,6 +133,10 @@ var proxyTests = []BasicProxyTest{
 			},
 			ExpectedResponse: "hello%world",
 			ExpectedCode:     http.StatusOK,
+			ExpectedHeaders: map[string]string{
+				"X-Tic-Secret": "tic",
+				"X-Client-IP":  httptest.DefaultRemoteAddr,
+			},
 		},
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "GET",
@@ -148,7 +160,7 @@ func TestProxy(t *testing.T) {
 		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
 		c := &controllers.SecureContext{Context: new(controllers.Context)}
 		response, request, _ := PrepareExternalServerCall(t, c, testServer, fullURL, test)
-		c.Proxy(response, request, fullURL, c.GenericResponseHandler)
+		c.Proxy(response, request, fullURL, EchoResponseHandler)
 		VerifyExternalCallResponse(t, response, &test)
 		testServer.Close()
 	}

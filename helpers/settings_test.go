@@ -29,6 +29,7 @@ var initSettingsTests = []initSettingsTest{
 			SMTPFrom:      "blah@blah.com",
 			SMTPHost:      "localhost",
 			SecureCookies: "1",
+			TICSecret:     "tic",
 		},
 		returnValueNull: true,
 	},
@@ -47,6 +48,7 @@ var initSettingsTests = []initSettingsTest{
 			SMTPHost:      "localhost",
 			SecureCookies: "0",
 			LocalCF:       "1",
+			TICSecret:     "tic",
 		},
 		returnValueNull: true,
 	},
@@ -64,6 +66,7 @@ var initSettingsTests = []initSettingsTest{
 			SMTPFrom:     "blah@blah.com",
 			SMTPHost:     "localhost",
 			LocalCF:      "0",
+			TICSecret:    "tic",
 			// Let SecureCookies Default to false (similar to what would happen in real life).
 		},
 		returnValueNull: false,

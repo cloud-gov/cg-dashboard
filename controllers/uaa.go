@@ -30,7 +30,7 @@ func (c *UAAContext) uaaProxy(rw http.ResponseWriter, req *http.Request,
 	uaaEndpoint string, escalated bool) {
 	reqURL := fmt.Sprintf("%s%s", c.Settings.UaaURL, uaaEndpoint)
 	if escalated {
-		c.PrivilegedProxy(rw, req, reqURL)
+		c.PrivilegedProxy(rw, req, reqURL, c.GenericResponseHandler)
 	} else {
 		c.Proxy(rw, req, reqURL, c.GenericResponseHandler)
 	}
@@ -40,7 +40,7 @@ func (c *UAAContext) uaaProxy(rw http.ResponseWriter, req *http.Request,
 func (c *UAAContext) cfProxy(rw http.ResponseWriter, req *http.Request,
 	endpoint string) {
 	reqURL := fmt.Sprintf("%s%s", c.Settings.ConsoleAPI, endpoint)
-	c.PrivilegedProxy(rw, req, reqURL)
+	c.PrivilegedProxy(rw, req, reqURL, c.GenericResponseHandler)
 }
 
 // UserInfo returns the UAA_API/userinfo information for the logged in user.
