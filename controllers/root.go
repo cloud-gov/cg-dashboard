@@ -149,6 +149,8 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 		// TODO: Handle. Return 500.
 	}
 
+	// Drop refresh token because we can't it in session. TODO Fix!!!
+	token.RefreshToken = "" // in theory if we use opaque tokens, we'd be small enough. but CC controller doesn't support yet
 	session.Values["token"] = *token
 	delete(session.Values, "state")
 

@@ -35,8 +35,8 @@ var (
 	LocalCFEnvVar = "LOCAL_CF"
 	// SessionBackendEnvVar is the session backend type
 	SessionBackendEnvVar = "SESSION_BACKEND"
-	// SessionKeyEnvVar is the secret key used to protect session data
-	SessionKeyEnvVar = "SESSION_KEY"
+	// LegacySessionKeyEnvVar is the old name used for a value that double for both session authentication key and CSRF token encryption key. Do not set in new deployments.
+	LegacySessionKeyEnvVar = "SESSION_KEY"
 	// BasePathEnvVar is the path to the application root
 	BasePathEnvVar = "BASE_PATH"
 	// SMTPHostEnvVar is SMTP host for UAA invites
@@ -51,6 +51,12 @@ var (
 	SMTPFromEnvVar = "SMTP_FROM"
 	// TICSecretEnvVar is the shared secret with CF API proxy for forwarding client IPs
 	TICSecretEnvVar = "TIC_SECRET"
+	// CSRFKeyEnvVar used for CSRF token. Must be 32 bytes, hex-encoded, e.g. openssl rand -hex 32. If not set, defaults to SESSION_KEY (as cast, not hex decode) for backwards compatibility.
+	CSRFKeyEnvVar = "CSRF_KEY"
+	// SessionAuthenticationEnvVar must be set if using "securecookie". If not set, falls back to SESSION_KEY (as cast, not hex decode) for backwards compatbility. Must be 32 or 64 hex encoded bytes, e.g. openssl rand -hex 64
+	SessionAuthenticationEnvVar = "SESSION_AUTHENTICATION_KEY"
+	// SessionEncryptionKeyEnvVar must be set if using "securecookie". Must be 16, 24 or 32 hex encoded bytes, e.g. openssl rand -hex 32
+	SessionEncryptionKeyEnvVar = "SESSION_ENCRYPTION_KEY"
 )
 
 // EnvVars holds all the environment variable values that a non-test server should have.
@@ -68,7 +74,6 @@ type EnvVars struct {
 	SecureCookies   string
 	LocalCF         string
 	SessionBackend  string
-	SessionKey      string
 	BasePath        string
 	SMTPHost        string
 	SMTPPort        string
@@ -76,4 +81,8 @@ type EnvVars struct {
 	SMTPPass        string
 	SMTPFrom        string
 	TICSecret       string
+
+	CSRFKey                  []byte
+	SessionAuthenticationKey []byte
+	SessionEncryptionKey     []byte
 }

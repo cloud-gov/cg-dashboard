@@ -112,8 +112,8 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	if len(envVars.LogURL) == 0 {
 		return errors.New("Unable to find '" + LogURLEnvVar + "' in environment. Exiting.\n")
 	}
-	if len(envVars.SessionKey) == 0 {
-		return errors.New("Unable to find '" + SessionKeyEnvVar + "' in environment. Exiting.\n")
+	if len(envVars.CSRFKey) == 0 {
+		return errors.New("Unable to find '" + CSRFKeyEnvVar + "' in environment. Exiting.\n")
 	}
 	if len(envVars.SMTPFrom) == 0 {
 		return errors.New("Unable to find '" + SMTPFromEnvVar + "' in environment. Exiting.\n")
@@ -148,7 +148,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 		Scopes:       []string{"cloud_controller.read", "cloud_controller.write", "cloud_controller.admin", "scim.read", "openid"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  envVars.LoginURL + "/oauth/authorize",
-			TokenURL: envVars.UAAURL + "/oauth/token",
+			TokenURL: envVars.UAAURL + "/oauth/token", // TODO, once cc_ng actually supports it: ?token_format=opaque, - opaque tokens are small enough that we don't need a backing store for sessions
 		},
 	}
 
@@ -158,6 +158,22 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 
 	// Initialize Sessions.
 	switch envVars.SessionBackend {
+	case "securecookie":
+		if len(envVars.SessionAuthenticationKey) == 0 {
+			return errors.New("Must set a session authentication key")
+		}
+		if len(envVars.SessionEncryptionKey) == 0 {
+			return errors.New("Must set a session encryption key")
+		}
+
+		store := sessions.NewCookieStore(envVars.SessionAuthenticationKey, envVars.SessionEncryptionKey)
+		store.Options.HttpOnly = true
+		store.Options.Secure = s.SecureCookies
+
+		s.Sessions = store
+		s.SessionBackend = "securecookie"
+		s.SessionBackendHealthCheck = func() bool { return true }
+
 	case "redis":
 		address, password, err := getRedisSettings(env)
 		if err != nil {
@@ -193,7 +209,10 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 			},
 		}
 		// create our redis pool.
-		store, err := redistore.NewRediStoreWithPool(redisPool, []byte(envVars.SessionKey))
+		if len(envVars.SessionAuthenticationKey) == 0 {
+			return errors.New("Must set a session authentication key")
+		}
+		store, err := redistore.NewRediStoreWithPool(redisPool, envVars.SessionAuthenticationKey)
 		if err != nil {
 			return err
 		}
@@ -219,7 +238,10 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 			return true
 		}
 	default:
-		store := sessions.NewFilesystemStore("", []byte(envVars.SessionKey))
+		if len(envVars.SessionAuthenticationKey) == 0 {
+			return errors.New("Must set a session authentication key")
+		}
+		store := sessions.NewFilesystemStore("", envVars.SessionAuthenticationKey)
 		store.MaxLength(4096 * 4)
 		store.Options = &sessions.Options{
 			HttpOnly: true,
