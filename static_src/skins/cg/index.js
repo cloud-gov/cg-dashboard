@@ -46,21 +46,21 @@ import InfoLogs from '../../components/info_logs.jsx';
 
 export const config = {
   footer: {
-    author_note: <span>Built and maintained by <a href="https://18f.gsa.gov">18F</a></span>,
-    code_note: <span><a href="https://cloud.gov/docs/ops/repos/">Open source</a> and in the public domain</span>,
-    disclaimer: <span>A United States government platform</span>,
+    author_note: <span>A United States government platform</span>,
+    code_note: <a href="https://cloud.gov/docs/ops/repos/">Open source and in the public domain</a>,
+    disclaimer_note: <a href="https://18f.gsa.gov/vulnerability-disclosure-policy/">Vulnerability disclosure policy</a>,
     links: [
       {
         text: 'cloud.gov home',
         url: 'https://cloud.gov'
       },
       {
-        text: 'Contact',
-        url: 'https://cloud.gov/docs/help/'
+        text: 'Get help for customer issues',
+        url: 'https://cloud.gov/docs/help/#support-for-people-who-use-cloud-gov'
       },
       {
-        text: 'Contribute to cloud.gov',
-        url: 'https://cloud.gov/docs/ops/repos/'
+        text: 'Built and maintained by 18F',
+        url: 'https://18f.gsa.gov/'
       }
     ]
   },
