@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/18F/cg-dashboard/controllers"
@@ -21,7 +20,7 @@ var oauthTests = []BasicSecureTest{
 			TestName:    "Basic Valid OAuth Session",
 			SessionData: ValidTokenData,
 		},
-		ExpectedResponse: "test",
+		ExpectedResponse: NewStringContentTester("test"),
 		ExpectedCode:     200,
 		ExpectedLocation: "",
 	},
@@ -30,7 +29,7 @@ var oauthTests = []BasicSecureTest{
 			TestName:    "Basic Invalid OAuth Session",
 			SessionData: InvalidTokenData,
 		},
-		ExpectedResponse: `{"status": "unauthorized"}`,
+		ExpectedResponse: NewJSONResponseContentTester(`{"status": "unauthorized"}`),
 		ExpectedCode:     401,
 	},
 }
@@ -69,8 +68,8 @@ func TestOAuth(t *testing.T) {
 
 		// Make the request and check.
 		router.ServeHTTP(response, request)
-		if !strings.Contains(response.Body.String(), test.ExpectedResponse) {
-			t.Errorf("Test %s did not contain expected value.\nExpected %s.\n Found (%s)\n.", test.TestName, test.ExpectedResponse, response.Body.String())
+		if !test.ExpectedResponse.Check(t, response.Body.String()) {
+			t.Errorf("Test %s did not contain expected value.\nExpected %s.\n Found (%s)\n.", test.TestName, test.ExpectedResponse.Display(), response.Body.String())
 		}
 		if response.Code != test.ExpectedCode {
 			t.Errorf("Test %s did not meet expected code.\nExpected %d.\nFound %d.\n", test.TestName, test.ExpectedCode, response.Code)
@@ -102,7 +101,7 @@ var proxyTests = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "test",
+			ExpectedResponse: NewStringContentTester("test"),
 			ExpectedCode:     http.StatusOK,
 			ExpectedHeaders: map[string]string{
 				"X-Tic-Secret": "tic",
@@ -131,7 +130,7 @@ var proxyTests = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "hello%world",
+			ExpectedResponse: NewStringContentTester("hello%world"),
 			ExpectedCode:     http.StatusOK,
 			ExpectedHeaders: map[string]string{
 				"X-Tic-Secret": "tic",

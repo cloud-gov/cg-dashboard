@@ -127,14 +127,14 @@ var logoutTests = []BasicSecureTest{
 			EnvVars:     GetMockCompleteEnvVars(),
 			SessionData: ValidTokenData,
 		},
-		ExpectedResponse: "https://loginurl/logout.do",
+		ExpectedResponse: NewStringContentTester("https://loginurl/logout.do"),
 	},
 	{
 		BasicConsoleUnitTest: BasicConsoleUnitTest{
 			TestName: "Basic Unauthorized Profile To Logout",
 			EnvVars:  GetMockCompleteEnvVars(),
 		},
-		ExpectedResponse: "https://loginurl/logout.do",
+		ExpectedResponse: NewStringContentTester("https://loginurl/logout.do"),
 	},
 }
 
@@ -146,8 +146,8 @@ func TestLogout(t *testing.T) {
 		router, store := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		router.ServeHTTP(response, request)
 		location := response.Header().Get("location")
-		if location != test.ExpectedResponse {
-			t.Errorf("Logout route does not redirect to logout page (%s:%s)", location, test.ExpectedResponse)
+		if !test.ExpectedResponse.Check(t, location) {
+			t.Errorf("Logout route does not redirect to logout page (%s:%s)", location, test.ExpectedResponse.Display())
 		}
 		if store.Session.Options.MaxAge != -1 {
 			t.Errorf("Logout does not change MaxAge to -1")

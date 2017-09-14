@@ -1,12 +1,18 @@
 package controllers_test
 
 import (
+	"strings"
+
 	"github.com/18F/cg-dashboard/controllers"
 	. "github.com/18F/cg-dashboard/helpers/testhelpers"
 
 	"fmt"
 	"net/http"
 	"testing"
+)
+
+const (
+	testUserGUID = "3CE6B080-2C27-4ADF-B73E-ED93E6478CFE"
 )
 
 var userinfoTests = []BasicProxyTest{
@@ -17,7 +23,7 @@ var userinfoTests = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "test",
+			ExpectedResponse: NewStringContentTester("test"),
 			ExpectedCode:     http.StatusOK,
 		},
 		// What the "external" server will send back to the proxy.
@@ -56,7 +62,7 @@ var inviteUsersTest = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "{\"status\": \"failure\", \"data\": \"no body in request.\"}",
+			ExpectedResponse: NewJSONResponseContentTester("{\"status\": \"failure\", \"data\": \"no body in request.\"}"),
 			ExpectedCode:     http.StatusBadRequest,
 		},
 		// What the "external" server will send back to the proxy.
@@ -70,7 +76,7 @@ var inviteUsersTest = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "{\"status\": \"failure\", \"data\": \"Missing correct params.\"}",
+			ExpectedResponse: NewJSONResponseContentTester("{\"status\": \"failure\", \"data\": \"Missing correct params.\"}"),
 			ExpectedCode:     http.StatusBadRequest,
 		},
 		RequestMethod: "POST",
@@ -79,15 +85,15 @@ var inviteUsersTest = []BasicProxyTest{
 		Handlers: []Handler{
 			{
 				RequestMethod: "POST",
-				ExpectedPath:  "/invite_users?redirect_uri=https://hostname",
-				Response:      "{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"user-guid\"}]}",
+				ExpectedPath:  "/invite_users?redirect_uri=https%3A%2F%2Fhostname",
+				Response:      fmt.Sprintf("{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"%s\"}]}", testUserGUID),
 				ResponseCode:  http.StatusOK,
 			},
 			{
 				RequestMethod: "GET",
 				ExpectedPath:  "/Users?filter=email+eq+%22test%40example.com%22",
 				ResponseCode:  http.StatusOK,
-				Response:      "{\"resources\": [{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }]}",
+				Response:      fmt.Sprintf("{\"resources\": [{\"active\": true, \"verified\": false, \"id\": \"%s\", \"externalId\": \"user-guid@domain.com\" }]}", testUserGUID),
 			},
 			{
 				RequestMethod: "POST",
@@ -103,7 +109,7 @@ var inviteUsersTest = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "{\"status\": \"failure\", \"data\": \"Missing correct params.\"}",
+			ExpectedResponse: NewJSONResponseContentTester("{\"status\": \"failure\", \"data\": \"Missing correct params.\"}"),
 			ExpectedCode:     http.StatusBadRequest,
 		},
 		RequestMethod: "POST",
@@ -112,15 +118,15 @@ var inviteUsersTest = []BasicProxyTest{
 		Handlers: []Handler{
 			{
 				RequestMethod: "POST",
-				ExpectedPath:  "/invite_users?redirect_uri=https://hostname",
-				Response:      "{\"new_invites\": [{\"inviteLink\": \"http://some.link\", \"userId\": \"user-guid\"}]}",
+				ExpectedPath:  "/invite_users?redirect_uri=https%3A%2F%2Fhostname",
+				Response:      fmt.Sprintf("{\"new_invites\": [{\"inviteLink\": \"http://some.link\", \"userId\": \"%s\"}]}", testUserGUID),
 				ResponseCode:  http.StatusOK,
 			},
 			{
 				RequestMethod: "GET",
 				ExpectedPath:  "/Users?filter=email+eq+%22test%40example.com%22",
 				ResponseCode:  http.StatusOK,
-				Response:      "{\"resources\": [{\"active\": true, \"verified\": false, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }]}",
+				Response:      fmt.Sprintf("{\"resources\": [{\"active\": true, \"verified\": false, \"id\": \"%s\", \"externalId\": \"user-guid@domain.com\" }]}", testUserGUID),
 			},
 			{
 				RequestMethod: "POST",
@@ -136,7 +142,7 @@ var inviteUsersTest = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "{\"status\": \"success\", \"userGuid\": \"user-guid\", \"verified\": false}",
+			ExpectedResponse: NewJSONResponseContentTester(fmt.Sprintf("{\"status\": \"success\", \"userGuid\": \"%s\", \"verified\": false}", testUserGUID)),
 			ExpectedCode:     http.StatusOK,
 		},
 		RequestMethod: "POST",
@@ -145,8 +151,8 @@ var inviteUsersTest = []BasicProxyTest{
 		Handlers: []Handler{
 			{
 				RequestMethod: "POST",
-				ExpectedPath:  "/invite_users?redirect_uri=https://hostname",
-				Response:      "{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"user-guid\", \"inviteLink\": \"http://some.link\"}]}",
+				ExpectedPath:  "/invite_users?redirect_uri=https%3A%2F%2Fhostname",
+				Response:      fmt.Sprintf("{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"%s\", \"inviteLink\": \"http://some.link\"}]}", testUserGUID),
 				ResponseCode:  http.StatusOK,
 			},
 			{
@@ -169,7 +175,7 @@ var inviteUsersTest = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "{\"status\": \"success\", \"userGuid\": \"user-guid\", \"verified\": true}",
+			ExpectedResponse: NewJSONResponseContentTester(fmt.Sprintf("{\"status\": \"success\", \"userGuid\": \"%s\", \"verified\": true}", testUserGUID)),
 			ExpectedCode:     http.StatusOK,
 		},
 		RequestMethod: "POST",
@@ -178,15 +184,15 @@ var inviteUsersTest = []BasicProxyTest{
 		Handlers: []Handler{
 			{
 				RequestMethod: "POST",
-				ExpectedPath:  "/invite_users?redirect_uri=https://hostname",
-				Response:      "{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"user-guid\", \"inviteLink\": \"http://some.link\"}]}",
+				ExpectedPath:  "/invite_users?redirect_uri=https%3A%2F%2Fhostname",
+				Response:      fmt.Sprintf("{\"new_invites\": [{\"email\": \"test@example.com\", \"userId\": \"%s\", \"inviteLink\": \"http://some.link\"}]}", testUserGUID),
 				ResponseCode:  http.StatusOK,
 			},
 			{
 				RequestMethod: "GET",
 				ExpectedPath:  "/Users?filter=email+eq+%22test%40example.com%22",
 				ResponseCode:  http.StatusOK,
-				Response:      "{\"resources\": [{\"active\": true, \"verified\": true, \"id\": \"user-guid\", \"externalId\": \"user-guid@domain.com\" }]}",
+				Response:      fmt.Sprintf("{\"resources\": [{\"active\": true, \"verified\": true, \"id\": \"%s\", \"externalId\": \"user-guid@domain.com\" }]}", testUserGUID),
 			},
 		},
 	},
@@ -214,7 +220,7 @@ var uaainfoTests = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: fmt.Sprintf(`{"status": "Bad request", "error_description": "Missing valid guid."}`),
+			ExpectedResponse: NewJSONResponseContentTester(fmt.Sprintf(`{"status": "Bad request", "error_description": "Missing valid guid."}`)),
 			ExpectedCode:     http.StatusBadRequest,
 		},
 		// What the "external" server will send back to the proxy.
@@ -228,17 +234,17 @@ var uaainfoTests = []BasicProxyTest{
 				SessionData: ValidTokenData,
 				EnvVars:     GetMockCompleteEnvVars(),
 			},
-			ExpectedResponse: "success",
+			ExpectedResponse: NewStringContentTester("success"),
 			ExpectedCode:     http.StatusOK,
 		},
 		// What the "external" server will send back to the proxy.
 		RequestMethod: "GET",
-		RequestPath:   "/uaa/uaainfo?uaa_guid=test",
+		RequestPath:   fmt.Sprintf("/uaa/uaainfo?uaa_guid=%s", testUserGUID),
 		Handlers: []Handler{
 			{
 				RequestMethod: "GET",
 				Response:      "success",
-				ExpectedPath:  "/Users/test",
+				ExpectedPath:  fmt.Sprintf("/Users/%s", strings.ToLower(testUserGUID)), // our server will canonicalize the guid
 				ResponseCode:  http.StatusOK,
 			},
 		},

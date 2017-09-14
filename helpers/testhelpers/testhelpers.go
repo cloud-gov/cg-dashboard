@@ -16,6 +16,7 @@ import (
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/oauth2"
 
@@ -146,12 +147,61 @@ type BasicConsoleUnitTest struct {
 	SessionData map[string]interface{}
 }
 
+// ResponseContentTester can check a response for equivalency
+type ResponseContentTester interface {
+	// Check should return true if the resp matches the expected false, and false otherwise
+	Check(t assert.TestingT, resp string) bool
+
+	// Display returns the expected string suitable for an error message
+	Display() string
+}
+
+type jsonContentTester struct {
+	Expected string
+}
+
+func (jct *jsonContentTester) Check(t assert.TestingT, resp string) bool {
+	return assert.JSONEq(t, jct.Expected, resp)
+}
+
+func (jct *jsonContentTester) Display() string {
+	return jct.Expected
+}
+
+// NewJSONResponseContentTester creates a content matcher where the content
+// being tested is JSON.
+func NewJSONResponseContentTester(expected string) ResponseContentTester {
+	return &jsonContentTester{
+		Expected: expected,
+	}
+}
+
+type stringContentTester struct {
+	Expected string
+}
+
+func (sct *stringContentTester) Check(t assert.TestingT, resp string) bool {
+	return assert.Equal(t, sct.Expected, resp)
+}
+
+func (sct *stringContentTester) Display() string {
+	return sct.Expected
+}
+
+// NewStringContentTester returns an content matcher where the content
+// being tested is a string.
+func NewStringContentTester(expected string) ResponseContentTester {
+	return &stringContentTester{
+		Expected: expected,
+	}
+}
+
 // BasicSecureTest contains info like BasicConsoleUnitTest.
 // TODO consolidate BasicConsoleUnitTest and BasicSecureTest
 type BasicSecureTest struct {
 	BasicConsoleUnitTest
 	ExpectedCode     int
-	ExpectedResponse string
+	ExpectedResponse ResponseContentTester
 	ExpectedLocation string
 	ExpectedHeaders  map[string]string
 }
@@ -328,8 +378,8 @@ func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testS
 // VerifyExternalCallResponse will verify the test response with what was expected by the test.
 func VerifyExternalCallResponse(t *testing.T, response *httptest.ResponseRecorder, test *BasicProxyTest) {
 	// Check response.
-	if strings.TrimSpace(response.Body.String()) != test.ExpectedResponse {
-		t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.TestName, test.ExpectedResponse, response.Body.String())
+	if !test.ExpectedResponse.Check(t, strings.TrimSpace(response.Body.String())) {
+		t.Errorf("Test %s did not meet expected value. Expected %s. Found %s.\n", test.TestName, test.ExpectedResponse.Display(), response.Body.String())
 	}
 	if response.Code != test.ExpectedCode {
 		t.Errorf("Test %s did not meet expected code. Expected %d. Found %d.\n", test.TestName, test.ExpectedCode, response.Code)
