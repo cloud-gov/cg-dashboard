@@ -35,7 +35,7 @@ func TestGetInviteEmail(t *testing.T) {
 	}
 	inviteTpl, err := ioutil.ReadFile(filepath.Join(
 		os.Getenv(helpers.BasePathEnvVar),
-		"helpers", "testdata", "mail", "invite.tmpl"))
+		"helpers", "testdata", "mail", "invite.html"))
 	if err != nil {
 		t.Errorf("Expected no error reading the invite email. %s", err.Error())
 		return
@@ -45,10 +45,10 @@ func TestGetInviteEmail(t *testing.T) {
 		// Helpful for generating the new invite data.
 		ioutil.WriteFile(filepath.Join(
 			os.Getenv(helpers.BasePathEnvVar),
-			"helpers", "testdata", "mail", "invite.tmpl.returned"), body.Bytes(), 0444)
+			"helpers", "testdata", "mail", "invite.html.returned"), body.Bytes(), 0444)
 		t.Logf("writing expected file to %s", filepath.Join(
 			os.Getenv(helpers.BasePathEnvVar),
-			"helpers", "testdata", "mail", "invite.tmpl.returned"))
+			"helpers", "testdata", "mail", "invite.html.returned"))
 	}
 }
 
