@@ -27,7 +27,7 @@ const (
 
 // Settings is the object to hold global values and objects for the service.
 type Settings struct {
-	// OAuthConfig is the OAuth client with all the paramters to talk with CF's UAA OAuth Provider.
+	// OAuthConfig is the OAuth client with all the parameters to talk with CF's UAA OAuth Provider.
 	OAuthConfig *oauth2.Config
 	// Console API
 	ConsoleAPI string

@@ -25,7 +25,7 @@ func findTemplates(basePath string) map[string][]string {
 }
 
 // Templates serve as a mapping to various templates.
-// Each entry can be a compliation of multiple files mapped to a string entry.
+// Each entry can be a compilation of multiple files mapped to a string entry.
 // This works if we ever want to use the .define blocks which are good for
 // creating a main template with swappable content.
 // Similar to https://hackernoon.com/golang-template-2-template-composition-and-how-to-organize-template-files-4cb40bcdf8f6
