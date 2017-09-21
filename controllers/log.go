@@ -80,6 +80,9 @@ func (c *LogContext) ParseLogMessages(body *io.ReadCloser, contentType string) (
 		}{
 			Message: string(msg.GetMessage()),
 		})
+		if err != nil {
+			return nil, err
+		}
 		// Write it to our buffer.
 		messages.Write(json)
 		part.Close()
