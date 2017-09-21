@@ -18,14 +18,14 @@ const (
 // given the basePath of where to look.
 func findTemplates(basePath string) map[string][]string {
 	return map[string][]string{
-		IndexTemplate: []string{filepath.Join(basePath, "static", "index.html")},
-		InviteEmailTemplate: []string{filepath.Join(basePath,
+		IndexTemplate: {filepath.Join(basePath, "static", "index.html")},
+		InviteEmailTemplate: {filepath.Join(basePath,
 			"templates", "mail", "invite.tmpl")},
 	}
 }
 
 // Templates serve as a mapping to various templates.
-// Each entry can be a compliation of multiple files mapped to a string entry.
+// Each entry can be a compilation of multiple files mapped to a string entry.
 // This works if we ever want to use the .define blocks which are good for
 // creating a main template with swappable content.
 // Similar to https://hackernoon.com/golang-template-2-template-composition-and-how-to-organize-template-files-4cb40bcdf8f6
