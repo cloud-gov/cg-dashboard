@@ -18,8 +18,8 @@ const (
 // given the basePath of where to look.
 func findTemplates(basePath string) map[string][]string {
 	return map[string][]string{
-		IndexTemplate: []string{filepath.Join(basePath, "static", "index.html")},
-		InviteEmailTemplate: []string{filepath.Join(basePath,
+		IndexTemplate: {filepath.Join(basePath, "static", "index.html")},
+		InviteEmailTemplate: {filepath.Join(basePath,
 			"templates", "mail", "invite.tmpl")},
 	}
 }
