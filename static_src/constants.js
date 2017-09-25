@@ -31,6 +31,11 @@ const entityHealth = keymirror({
   unknown: null
 });
 
+const envActionTypes = keymirror({
+  ENV_FOR_APP_FETCH: null,
+  ENV_FOR_APP_RECEIVED: null
+});
+
 // All global error action types
 const errorActionTypes = keymirror({
   FETCH: null,
@@ -369,6 +374,7 @@ export {
   activityActionTypes,
   appActionTypes,
   entityHealth,
+  envActionTypes,
   appStates,
   domainActionTypes,
   errorActionTypes,
