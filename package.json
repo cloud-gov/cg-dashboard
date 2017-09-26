@@ -27,7 +27,9 @@
     "watch-server": "npm run testing-server & npm run watch",
     "watch-test": "NODE_ENV=test karma start --browsers Chrome",
     "watch-test-functional": "npm run test-functional -- --watch",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "Marco Segreto (marco.segreto@gsa.gov)",
   "contributors": [
@@ -104,7 +106,8 @@
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
     "watch": "^0.16.0",
-    "webpack": "^2.3.2"
+    "webpack": "^2.3.2",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "babel-register": "^6.18.0",
@@ -123,5 +126,6 @@
     "wdio-jasmine-framework": "^0.2.19",
     "wdio-selenium-standalone-service": "0.0.7",
     "webdriverio": "^4.6.1"
-  }
+  },
+  "snyk": true
 }
