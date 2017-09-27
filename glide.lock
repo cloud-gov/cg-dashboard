@@ -1,5 +1,5 @@
-hash: cb874f5dbbe7df979b97c0312f52cd9712fd8e5f00807e1be5e51b38190211b1
-updated: 2017-09-12T12:25:36.809555946+10:00
+hash: b0d7c592059b98fda6993dbf05f254d376284452ad6b142986307226ca044ddb
+updated: 2017-09-25T14:23:28.865157647-04:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: fa152c58bc15761d0200cb75fe958b89a9d4888e
@@ -9,6 +9,8 @@ imports:
   version: fc113767cd6b051980f260d6dbe84b2740c46ab0
 - name: github.com/cenk/backoff
   version: 32cd0c5b3aef12c76ed64aaf678f6c79736be7dc
+- name: github.com/cloudfoundry-community/go-cfclient
+  version: 983f0bf32d53fef86f65c095ecb693acf8a8d95e
 - name: github.com/cloudfoundry-community/go-cfenv
   version: 96ad7376813bfd13c95af69ca5b4ef5725f6b335
 - name: github.com/cloudfoundry/loggregatorlib
@@ -79,10 +81,14 @@ imports:
   version: 667fe4e3466a040b780561fe9b51a83a3753eefc
 - name: github.com/gorilla/sessions
   version: ca9ada44574153444b00d3fd9c8559e4cc95f896
+- name: github.com/h2non/gock
+  version: 1f16348c8df0d8dd5685bfff61023d834e480658
 - name: github.com/hashicorp/go-cleanhttp
   version: 3573b8b52aa7b37b9358d966a898feb387f62437
 - name: github.com/jordan-wright/email
   version: 09f803b133a9229292871a003eb1a5b077fb32b2
+- name: github.com/Masterminds/vcs
+  version: 6f1c6d150500e452704e9863f68c2559f58616bf
 - name: github.com/Microsoft/go-winio
   version: d311c76e775b5092c023569caacdbb4e569c3243
 - name: github.com/mitchellh/mapstructure
