@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import envActions from '../actions/env_actions';
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import Loading from './loading.jsx';
+import ErrorMessage from './error_message.jsx';
 import EnvVarForm from './env_var_form.jsx';
 
 export default class EnvVarListItem extends Component {
@@ -27,18 +29,23 @@ export default class EnvVarListItem extends Component {
 
   handleDeleteConfirm(e) {
     e.preventDefault();
-    const { name } = this.props;
+    const { name, app } = this.props;
+    envActions.invalidateDeleteError(app.guid);
     this.props.onDelete(name);
   }
 
   handleDeleteDismiss(e) {
     e.preventDefault();
     this.setState(() => ({ deleting: false }));
+    const { app } = this.props;
+    envActions.invalidateDeleteError(app.guid);
   }
 
   handleEditToggle(e) {
     e.preventDefault();
     this.setState(({ editing }) => ({ editing: !editing }));
+    const { app } = this.props;
+    envActions.invalidateUpdateError(app.guid);
   }
 
   renderDeleteAction() {
@@ -83,31 +90,37 @@ export default class EnvVarListItem extends Component {
   }
 
   render() {
-    const { name, value, app, onUpdate } = this.props;
+    const { name, value, app, updateError, deleteError, onUpdate } = this.props;
     const { editing, deleting } = this.state;
     const { updating } = app;
 
     if (editing) {
       return (
-        <EnvVarForm
-          name={name}
-          value={value}
-          onDismiss={this.handleEditToggle}
-          onSubmit={onUpdate}
-        />
+        <div>
+          <EnvVarForm
+            name={name}
+            value={value}
+            onDismiss={this.handleEditToggle}
+            onSubmit={onUpdate}
+          />
+          {updateError && <ErrorMessage error={updateError} />}
+        </div>
       );
     }
 
     if (deleting) {
       return (
-        <ConfirmationBox
-          style="over"
-          message={`Delete environment variable "${name}" from ${app.name}?`}
-          confirmationText={'Yes, delete'}
-          confirmHandler={this.handleDeleteConfirm}
-          cancelHandler={this.handleDeleteDismiss}
-          disabled={updating}
-        />
+        <div>
+          <ConfirmationBox
+            style="over"
+            message={`Delete environment variable "${name}" from ${app.name}?`}
+            confirmationText={'Yes, delete'}
+            confirmHandler={this.handleDeleteConfirm}
+            cancelHandler={this.handleDeleteDismiss}
+            disabled={updating}
+          />
+          {deleteError && <ErrorMessage error={deleteError} />}
+        </div>
       );
     }
 
@@ -127,6 +140,16 @@ EnvVarListItem.propTypes = {
     name: PropTypes.string.isRequired,
     updating: PropTypes.bool
   }).isRequired,
+  updateError: PropTypes.shape({
+    code: PropTypes.number.isRequired,
+    description: PropTypes.string.isRequired,
+    errorCode: PropTypes.string.isRequired
+  }),
+  deleteError: PropTypes.shape({
+    code: PropTypes.number.isRequired,
+    description: PropTypes.string.isRequired,
+    errorCode: PropTypes.string.isRequired
+  }),
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired
 };

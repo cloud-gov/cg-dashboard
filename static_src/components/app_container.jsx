@@ -36,7 +36,8 @@ function mapStoreToState() {
   let route;
   const currentAppGuid = AppStore.currentAppGuid;
   const app = AppStore.get(currentAppGuid);
-  const env = EnvStore.getEnvForApp(currentAppGuid);
+  const env = EnvStore.getEnv(currentAppGuid);
+  const envUpdateError = EnvStore.getUpdateError(currentAppGuid);
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
 
@@ -57,6 +58,7 @@ function mapStoreToState() {
     currentSpaceName: SpaceStore.currentSpaceName,
     empty: !AppStore.loading && !appReady(app) && !QuotaStore.loading,
     env,
+    envUpdateError,
     loading: AppStore.loading || QuotaStore.loading,
     org,
     route,
@@ -191,7 +193,7 @@ export default class AppContainer extends React.Component {
 
 
   render() {
-    const { app, env } = this.state;
+    const { app, env, envUpdateError } = this.state;
 
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
@@ -230,7 +232,7 @@ export default class AppContainer extends React.Component {
           </Panel>
 
           <Panel title="Environment variables">
-            {env && <EnvPanel app={app} env={env} />}
+            {env && <EnvPanel app={app} env={env} updateError={envUpdateError} />}
           </Panel>
 
           <Panel title="Recent activity">

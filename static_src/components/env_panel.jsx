@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import appActions from '../actions/app_actions';
 import envActions from '../actions/env_actions';
 import Action from './action.jsx';
+import ErrorMessage from './error_message.jsx';
 import ComplexList from './complex_list.jsx';
 import PanelActions from './panel_actions.jsx';
 import EnvVarListItem from './env_var_list_item.jsx';
@@ -63,12 +64,15 @@ export default class EnvPanel extends Component {
   handleAddClick(e) {
     e.preventDefault();
     this.setState(({ showAddForm }) => ({ showAddForm: !showAddForm }));
+    const { app } = this.props;
+    envActions.invalidateUpdateError(app.guid);
   }
 
   handleUpdate({ name, value }) {
     const { app, env } = this.props;
     const { environment_json: envVars } = env;
 
+    envActions.invalidateUpdateError(app.guid);
     appActions
       .updateApp(app.guid, {
         environment_json: {
@@ -91,6 +95,8 @@ export default class EnvPanel extends Component {
   handleAddFormDismiss(e) {
     e.preventDefault();
     this.setState(() => ({ showAddForm: false }));
+    const { app } = this.props;
+    envActions.invalidateUpdateError(app.guid);
   }
 
   handleShowEnvClick(e) {
@@ -99,7 +105,7 @@ export default class EnvPanel extends Component {
   }
 
   renderUserVarItems() {
-    const { app, env } = this.props;
+    const { app, env, updateError } = this.props;
     const { environment_json: envVars } = env;
 
     return Object.keys(envVars).map(name => (
@@ -108,6 +114,8 @@ export default class EnvPanel extends Component {
         name={name}
         value={envVars[name]}
         app={app}
+        updateError={updateError}
+        deleteError={updateError}
         onUpdate={this.handleUpdate}
         onDelete={this.handleDelete}
       />
@@ -146,7 +154,7 @@ export default class EnvPanel extends Component {
 
   render() {
     const { styler } = this;
-    const { app, env } = this.props;
+    const { app, env, updateError } = this.props;
     const { showUserEnv, showAddForm, showEnv } = this.state;
     const { updating } = app;
 
@@ -171,6 +179,7 @@ export default class EnvPanel extends Component {
                 onSubmit={this.handleUpdate}
               />
             )}
+            {showAddForm && updateError && <ErrorMessage error={updateError} />}
             <ComplexList>{this.renderUserVarItems()}</ComplexList>
           </div>
         )}
@@ -201,5 +210,10 @@ EnvPanel.propTypes = {
   }).isRequired,
   env: PropTypes.shape({
     environment_json: PropTypes.object.isRequired
-  }).isRequired
+  }).isRequired,
+  updateError: PropTypes.shape({
+    code: PropTypes.number.isRequired,
+    description: PropTypes.string.isRequired,
+    errorCode: PropTypes.string.isRequired
+  })
 };

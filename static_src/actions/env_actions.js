@@ -15,5 +15,16 @@ export default {
       env,
       appGuid
     });
+  },
+
+  invalidateUpdateError(appGuid) {
+    AppDispatcher.handleViewAction({
+      type: envActionTypes.INVALIDATE_UPDATE_ERROR,
+      appGuid
+    });
+  },
+
+  invalidateDeleteError(appGuid) {
+    this.invalidateUpdateError(appGuid);
   }
 };

@@ -1,16 +1,29 @@
 import BaseStore from './base_store';
 import cfApi from '../util/cf_api';
-import { envActionTypes } from '../constants';
+import { appActionTypes, envActionTypes } from '../constants';
 
 class EnvStore extends BaseStore {
   constructor() {
     super();
     this.env = {};
+    this.updateError = {};
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
-  getEnvForApp(appGuid) {
+  getEnv(appGuid) {
     return this.env[appGuid];
+  }
+
+  getUpdateError(appGuid) {
+    const error = this.updateError[appGuid];
+    if (!error) {
+      return null;
+    }
+    const { error_code: errorCode } = error;
+    return {
+      ...error,
+      errorCode
+    };
   }
 
   _registerToActions(action) {
@@ -21,6 +34,18 @@ class EnvStore extends BaseStore {
       case envActionTypes.ENV_FOR_APP_RECEIVED: {
         const { appGuid, env } = action;
         this.env[appGuid] = env;
+        this.emitChange();
+        break;
+      }
+      case appActionTypes.APP_ERROR: {
+        const { appGuid, error: { response: { data: error } } } = action;
+        this.updateError[appGuid] = error;
+        this.emitChange();
+        break;
+      }
+      case envActionTypes.INVALIDATE_UPDATE_ERROR: {
+        const { appGuid } = action;
+        delete this.updateError[appGuid];
         this.emitChange();
         break;
       }
