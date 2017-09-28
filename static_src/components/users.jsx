@@ -14,7 +14,7 @@ import UsersInvite from './users_invite.jsx';
 import UsersSelector from './users_selector.jsx';
 import Notification from './notification.jsx';
 import UserStore from '../stores/user_store.js';
-import ErrorMessage from './error_message.jsx';
+import SystemErrorMessage from './system_error_message.jsx';
 import PanelDocumentation from './panel_documentation.jsx';
 
 const propTypes = {};
@@ -268,7 +268,7 @@ export default class Users extends React.Component {
 
     return (
       <div className="test-users">
-        <ErrorMessage error={this.state.error} />
+        <SystemErrorMessage error={this.state.error} />
         { this.userInvite }
         { this.userParentEntityUserSelector }
         { this.notification }

@@ -12,7 +12,7 @@ import DomainStore from '../stores/domain_store.js';
 import EnvStore from '../stores/env_store.js';
 import RouteStore from '../stores/route_store.js';
 import EntityIcon from './entity_icon.jsx';
-import ErrorMessage from './error_message.jsx';
+import SystemErrorMessage from './system_error_message.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
@@ -178,7 +178,7 @@ export default class AppContainer extends React.Component {
 
     if (this.state.app.error) {
       error = (
-        <ErrorMessage error={ this.state.app.error } />
+        <SystemErrorMessage error={ this.state.app.error } />
       );
     }
 
