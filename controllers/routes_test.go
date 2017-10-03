@@ -13,7 +13,7 @@ import (
 
 type initAppTest struct {
 	testName          string
-	envVars           helpers.EnvVars
+	envVars           map[string]string
 	returnRouterNil   bool
 	returnSettingsNil bool
 	returnErrorNil    bool
@@ -29,7 +29,7 @@ var initAppTests = []initAppTest{
 	},
 	{
 		testName:          "Blank EnvVars",
-		envVars:           helpers.EnvVars{},
+		envVars:           map[string]string{},
 		returnRouterNil:   true,
 		returnSettingsNil: true,
 		returnErrorNil:    false,
@@ -39,7 +39,7 @@ var initAppTests = []initAppTest{
 func TestInitApp(t *testing.T) {
 	for _, test := range initAppTests {
 		env, _ := cfenv.Current()
-		router, settings, err := controllers.InitApp(test.envVars, env)
+		router, settings, err := controllers.InitApp(helpers.NewEnvVarsFromPath(helpers.NewEnvLookupFromMap(test.envVars)), env)
 		if (router == nil) != test.returnRouterNil {
 			t.Errorf("Test %s did not return correct router value. Expected %t, Actual %t", test.testName, test.returnRouterNil, (router == nil))
 		} else if (settings == nil) != test.returnSettingsNil {

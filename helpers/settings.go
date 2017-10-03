@@ -90,50 +90,32 @@ func (s *Settings) CreateContext() context.Context {
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
 // otherwise it returns nil for success.
-func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
-	if len(envVars.ClientID) == 0 {
-		return errors.New("Unable to find '" + ClientIDEnvVar + "' in environment. Exiting.\n")
-	}
-	if len(envVars.ClientSecret) == 0 {
-		return errors.New("Unable to find '" + ClientSecretEnvVar + "' in environment. Exiting.\n")
-	}
-	if len(envVars.Hostname) == 0 {
-		return errors.New("Unable to find '" + HostnameEnvVar + "' in environment. Exiting.\n")
-	}
-	if len(envVars.LoginURL) == 0 {
-		return errors.New("Unable to find '" + LoginURLEnvVar + "' in environment. Exiting.\n")
-	}
-	if len(envVars.UAAURL) == 0 {
-		return errors.New("Unable to find '" + UAAURLEnvVar + "' in environment. Exiting.\n")
-	}
-	if len(envVars.APIURL) == 0 {
-		return errors.New("Unable to find '" + APIURLEnvVar + "' in environment. Exiting.\n")
-	}
-	if len(envVars.LogURL) == 0 {
-		return errors.New("Unable to find '" + LogURLEnvVar + "' in environment. Exiting.\n")
-	}
-	if len(envVars.SessionKey) == 0 {
-		return errors.New("Unable to find '" + SessionKeyEnvVar + "' in environment. Exiting.\n")
-	}
-	if len(envVars.SMTPFrom) == 0 {
-		return errors.New("Unable to find '" + SMTPFromEnvVar + "' in environment. Exiting.\n")
-	}
-	if len(envVars.SMTPHost) == 0 {
-		return errors.New("Unable to find '" + SMTPHostEnvVar + "' in environment. Exiting.\n")
-	}
+func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error) {
+	defer func() {
+		// While .MustGet() is convenient in readability below, we'd prefer to convert this
+		// to an error for upstream callers.
+		if r := recover(); r != nil {
+			missingErr, ok := r.(*ErrMissingEnvVar)
+			if !ok {
+				// We don't know what this is, re-panic
+				panic(r)
+			}
 
-	s.BasePath = envVars.BasePath
-	s.AppURL = envVars.Hostname
-	s.ConsoleAPI = envVars.APIURL
-	s.LoginURL = envVars.LoginURL
-	s.UaaURL = envVars.UAAURL
-	s.LogURL = envVars.LogURL
-	s.PProfEnabled = ((envVars.PProfEnabled == "true") || (envVars.PProfEnabled == "1"))
-	if s.BuildInfo = envVars.BuildInfo; len(s.BuildInfo) == 0 {
-		s.BuildInfo = "developer-build"
-	}
-	s.LocalCF = ((envVars.LocalCF == "true") || (envVars.LocalCF == "1"))
-	s.SecureCookies = ((envVars.SecureCookies == "true") || (envVars.SecureCookies == "1"))
+			// Set return code to the actual error
+			retErr = missingErr
+		}
+	}()
+
+	s.BasePath = envVars.Get(BasePathEnvVar, "")
+	s.AppURL = envVars.MustGet(HostnameEnvVar)
+	s.ConsoleAPI = envVars.MustGet(APIURLEnvVar)
+	s.LoginURL = envVars.MustGet(LoginURLEnvVar)
+	s.UaaURL = envVars.MustGet(UAAURLEnvVar)
+	s.LogURL = envVars.MustGet(LogURLEnvVar)
+	s.PProfEnabled = envVars.BoolGet(PProfEnabledEnvVar)
+	s.BuildInfo = envVars.Get(BuildInfoEnvVar, "developer-build")
+	s.LocalCF = envVars.BoolGet(LocalCFEnvVar)
+	s.SecureCookies = envVars.BoolGet(SecureCookiesEnvVar)
 	// Safe guard: shouldn't run with insecure cookies if we are
 	// in a non-development environment (i.e. production)
 	if s.LocalCF == false && s.SecureCookies == false {
@@ -142,13 +124,13 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 
 	// Setup OAuth2 Client Service.
 	s.OAuthConfig = &oauth2.Config{
-		ClientID:     envVars.ClientID,
-		ClientSecret: envVars.ClientSecret,
+		ClientID:     envVars.MustGet(ClientIDEnvVar),
+		ClientSecret: envVars.MustGet(ClientSecretEnvVar),
 		RedirectURL:  s.AppURL + "/oauth2callback",
 		Scopes:       []string{"cloud_controller.read", "cloud_controller.write", "cloud_controller.admin", "scim.read", "openid"},
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  envVars.LoginURL + "/oauth/authorize",
-			TokenURL: envVars.UAAURL + "/oauth/token",
+			AuthURL:  envVars.MustGet(LoginURLEnvVar) + "/oauth/authorize",
+			TokenURL: envVars.MustGet(UAAURLEnvVar) + "/oauth/token",
 		},
 	}
 
@@ -157,7 +139,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	}
 
 	// Initialize Sessions.
-	switch envVars.SessionBackend {
+	switch envVars.Get(SessionBackendEnvVar, "") {
 	case "redis":
 		address, password, err := getRedisSettings(env)
 		if err != nil {
@@ -193,7 +175,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 			},
 		}
 		// create our redis pool.
-		store, err := redistore.NewRediStoreWithPool(redisPool, []byte(envVars.SessionKey))
+		store, err := redistore.NewRediStoreWithPool(redisPool, []byte(envVars.MustGet(SessionKeyEnvVar)))
 		if err != nil {
 			return err
 		}
@@ -205,7 +187,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 			Secure:   s.SecureCookies,
 		}
 		s.Sessions = store
-		s.SessionBackend = envVars.SessionBackend
+		s.SessionBackend = "redis"
 
 		// Use health check function where we do a PING.
 		s.SessionBackendHealthCheck = func() bool {
@@ -219,7 +201,7 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 			return true
 		}
 	default:
-		store := sessions.NewFilesystemStore("", []byte(envVars.SessionKey))
+		store := sessions.NewFilesystemStore("", []byte(envVars.MustGet(SessionKeyEnvVar)))
 		store.MaxLength(4096 * 4)
 		store.Options = &sessions.Options{
 			HttpOnly: true,
@@ -238,18 +220,18 @@ func (s *Settings) InitSettings(envVars EnvVars, env *cfenv.App) error {
 	gob.Register(oauth2.Token{})
 
 	s.HighPrivilegedOauthConfig = &clientcredentials.Config{
-		ClientID:     envVars.ClientID,
-		ClientSecret: envVars.ClientSecret,
+		ClientID:     envVars.MustGet(ClientIDEnvVar),
+		ClientSecret: envVars.MustGet(ClientSecretEnvVar),
 		Scopes:       []string{"scim.invite", "cloud_controller.admin", "scim.read"},
-		TokenURL:     envVars.UAAURL + "/oauth/token",
+		TokenURL:     envVars.MustGet(UAAURLEnvVar) + "/oauth/token",
 	}
 
-	s.SMTPFrom = envVars.SMTPFrom
-	s.SMTPHost = envVars.SMTPHost
-	s.SMTPPass = envVars.SMTPPass
-	s.SMTPPort = envVars.SMTPPort
-	s.SMTPUser = envVars.SMTPUser
-	s.TICSecret = envVars.TICSecret
+	s.SMTPFrom = envVars.MustGet(SMTPFromEnvVar)
+	s.SMTPHost = envVars.MustGet(SMTPHostEnvVar)
+	s.SMTPPass = envVars.Get(SMTPPassEnvVar, "")
+	s.SMTPPort = envVars.Get(SMTPPortEnvVar, "")
+	s.SMTPUser = envVars.Get(SMTPUserEnvVar, "")
+	s.TICSecret = envVars.Get(TICSecretEnvVar, "")
 	return nil
 }
 

@@ -1,5 +1,12 @@
 package helpers
 
+import (
+	"fmt"
+	"log"
+
+	cfenv "github.com/cloudfoundry-community/go-cfenv"
+)
+
 var (
 	// ClientIDEnvVar is the environment variable key that represents the registered
 	// Client ID for this web app.
@@ -53,27 +60,96 @@ var (
 	TICSecretEnvVar = "TIC_SECRET"
 )
 
-// EnvVars holds all the environment variable values that a non-test server should have.
+// EnvVars provides a convenient method to access environment variables
 type EnvVars struct {
-	ClientID        string
-	ClientSecret    string
-	Hostname        string
-	LoginURL        string
-	UAAURL          string
-	APIURL          string
-	LogURL          string
-	PProfEnabled    string
-	BuildInfo       string
-	NewRelicLicense string
-	SecureCookies   string
-	LocalCF         string
-	SessionBackend  string
-	SessionKey      string
-	BasePath        string
-	SMTPHost        string
-	SMTPPort        string
-	SMTPUser        string
-	SMTPPass        string
-	SMTPFrom        string
-	TICSecret       string
+	path []EnvLookup
+}
+
+// Get returns value for key if present, else returns defaultVal if not found
+func (el *EnvVars) Get(key, defaultVal string) string {
+	rv, found := el.load(key)
+	if !found {
+		return defaultVal
+	}
+	return rv
+}
+
+// MustGet will panic if value is not set, otherwise it returns the value.
+func (el *EnvVars) MustGet(key string) string {
+	rv, found := el.load(key)
+	if !found {
+		panic(&ErrMissingEnvVar{EnvVar: key})
+	}
+	return rv
+}
+
+// BoolGet returns true if and only the value "true" or "1" is set for the key, else defaults to false
+func (el *EnvVars) BoolGet(key string) bool {
+	val, _ := el.load(key)
+	return val == "true" || val == "1"
+}
+
+// load is an internal method that looks for a given key within
+// all elements in the path, and if none found, returns "", false.
+func (el *EnvVars) load(key string) (string, bool) {
+	for _, env := range el.path {
+		rv, found := env(key)
+		if found {
+			return rv, true
+		}
+	}
+	return "", false
+}
+
+// NewEnvVarsFromPath create an EnvVars object, where the elements in the path
+// are searched in order to load a given variable.
+func NewEnvVarsFromPath(path ...EnvLookup) *EnvVars {
+	return &EnvVars{path: path}
+}
+
+// EnvLookup must return the value for the given key and whether it was found or not
+type EnvLookup func(key string) (string, bool)
+
+// ErrMissingEnvVar is panicked if a MustGet fails.
+type ErrMissingEnvVar struct {
+	// EnvVar is the key that was not found
+	EnvVar string
+}
+
+// Error returns an error string
+func (err *ErrMissingEnvVar) Error() string {
+	return fmt.Sprintf("missing env variable: %s", err.EnvVar)
+}
+
+// NewEnvLookupFromMap creates a lookup based on a map
+func NewEnvLookupFromMap(m map[string]string) EnvLookup {
+	return func(name string) (string, bool) {
+		rv, found := m[name]
+		return rv, found
+	}
+}
+
+// NewEnvLookupFromCFAppNamedService looks for a CloudFoundry bound service
+// with the given name, and will allow sourcing of environment variables
+// from there. If no service is found, a warning is printed, but no error thrown.
+func NewEnvLookupFromCFAppNamedService(cfApp *cfenv.App, namedService string) EnvLookup {
+	service, err := cfApp.Services.WithName(namedService)
+	if err != nil {
+		log.Printf("Warning: No bound service found with name: %s, will not be used for sourcing env variables.\n", namedService)
+	}
+	return func(name string) (string, bool) {
+		if service == nil { // no service
+			return "", false
+		}
+		serviceVar, found := service.Credentials[name]
+		if !found {
+			return "", false
+		}
+		serviceVarAsString, ok := serviceVar.(string)
+		if !ok {
+			log.Printf("Warning: variable found in service for %s, but unable to cast as string, so ignoring.\n", name)
+			return "", false
+		}
+		return serviceVarAsString, true
+	}
 }
