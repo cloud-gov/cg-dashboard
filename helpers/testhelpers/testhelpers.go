@@ -238,20 +238,20 @@ type BasicProxyTest struct {
 // GetMockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
 func GetMockCompleteEnvVars() map[string]string {
 	return map[string]string{
-		helpers.ClientIDEnvVar:      "ID",
-		helpers.ClientSecretEnvVar:  "Secret",
-		helpers.HostnameEnvVar:      "https://hostname",
-		helpers.LoginURLEnvVar:      "https://loginurl",
-		helpers.UAAURLEnvVar:        "https://uaaurl",
-		helpers.APIURLEnvVar:        "https://apiurl",
-		helpers.LogURLEnvVar:        "https://logurl",
-		helpers.PProfEnabledEnvVar:  "true",
-		helpers.SessionKeyEnvVar:    "lalala",
-		helpers.BasePathEnvVar:      os.Getenv(helpers.BasePathEnvVar),
-		helpers.SMTPFromEnvVar:      "cloud@cloud.gov",
-		helpers.SMTPHostEnvVar:      "localhost",
-		helpers.SecureCookiesEnvVar: "1",
-		helpers.TICSecretEnvVar:     "tic",
+		helpers.ClientIDEnvVar:         "ID",
+		helpers.ClientSecretEnvVar:     "Secret",
+		helpers.HostnameEnvVar:         "https://hostname",
+		helpers.LoginURLEnvVar:         "https://loginurl",
+		helpers.UAAURLEnvVar:           "https://uaaurl",
+		helpers.APIURLEnvVar:           "https://apiurl",
+		helpers.LogURLEnvVar:           "https://logurl",
+		helpers.PProfEnabledEnvVar:     "true",
+		helpers.LegacySessionKeyEnvVar: "lalala",
+		helpers.BasePathEnvVar:         os.Getenv(helpers.BasePathEnvVar),
+		helpers.SMTPFromEnvVar:         "cloud@cloud.gov",
+		helpers.SMTPHostEnvVar:         "localhost",
+		helpers.SecureCookiesEnvVar:    "1",
+		helpers.TICSecretEnvVar:        "tic",
 	}
 }
 
