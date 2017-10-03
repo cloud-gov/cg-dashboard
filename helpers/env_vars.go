@@ -121,14 +121,6 @@ func (err *ErrMissingEnvVar) Error() string {
 	return fmt.Sprintf("missing env variable: %s", err.EnvVar)
 }
 
-// NewEnvLookupFromMap creates a lookup based on a map
-func NewEnvLookupFromMap(m map[string]string) EnvLookup {
-	return func(name string) (string, bool) {
-		rv, found := m[name]
-		return rv, found
-	}
-}
-
 // NewEnvLookupFromCFAppNamedService looks for a CloudFoundry bound service
 // with the given name, and will allow sourcing of environment variables
 // from there. If no service is found, a warning is printed, but no error thrown.
