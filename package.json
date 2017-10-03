@@ -102,7 +102,7 @@
     "react-jasmine-matchers": "^2.0.0",
     "smocks": "^4.0.6",
     "style-loader": "^0.13.0",
-    "url-loader": "^0.5.7",
+    "url-loader": "^0.6.0",
     "watch": "^0.16.0",
     "webpack": "^2.3.2"
   },
