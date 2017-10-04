@@ -1,0 +1,13 @@
+---
+buildpack: go_buildpack
+memory: 256M
+services:
+- dashboard-ups
+env:
+  SECURE_COOKIES: true
+  GOVERSION: go1.8
+  GOPACKAGENAME: github.com/18F/cg-dashboard
+  SESSION_BACKEND: securecookie
+  CF_SKIN: govau
+applications:
+- name: dashboard

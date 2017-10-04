@@ -13,6 +13,7 @@ import OrgContainer from './components/org_container.jsx';
 import pageActions from './actions/page_actions.js';
 import quotaActions from './actions/quota_actions.js';
 import routeActions from './actions/route_actions.js';
+import envActions from './actions/env_actions.js';
 import spaceActions from './actions/space_actions.js';
 import serviceActions from './actions/service_actions.js';
 import SpaceContainer from './components/space_container.jsx';
@@ -21,6 +22,7 @@ import { entityHealth } from './constants.js';
 import windowUtil from './util/window';
 import userActions from './actions/user_actions.js';
 import routerActions from './actions/router_actions.js';
+import upsActions from './actions/upsi_actions.js';
 
 const MAX_OVERVIEW_SPACES = 10;
 
@@ -105,9 +107,11 @@ export function app(orgGuid, spaceGuid, appGuid, next) {
   });
   routeActions.fetchRoutesForSpace(spaceGuid);
   routeActions.fetchRoutesForApp(appGuid);
+  envActions.fetchEnv(appGuid);
   serviceActions.fetchAllInstances(spaceGuid);
   serviceActions.fetchServiceBindings();
   routerActions.navigate(AppContainer);
+  upsActions.fetchAllForSpace(spaceGuid);
   next();
 }
 

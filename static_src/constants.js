@@ -31,6 +31,12 @@ const entityHealth = keymirror({
   unknown: null
 });
 
+const envActionTypes = keymirror({
+  ENV_FOR_APP_FETCH: null,
+  ENV_FOR_APP_RECEIVED: null,
+  INVALIDATE_UPDATE_ERROR: null
+});
+
 // All global error action types
 const errorActionTypes = keymirror({
   FETCH: null,
@@ -365,10 +371,18 @@ const activityActionTypes = keymirror({
   LOGS_RECEIVED: null
 });
 
+const upsActionTypes = keymirror({
+  UPSI_FETCH_ALL: null,
+  UPSI_RECEIVED_ALL: null,
+  UPSI_FETCH_ALL_FOR_SPACE: null,
+  UPSI_RECEIVED_ALL_FOR_SPACE: null
+});
+
 export {
   activityActionTypes,
   appActionTypes,
   entityHealth,
+  envActionTypes,
   appStates,
   domainActionTypes,
   errorActionTypes,
@@ -381,5 +395,6 @@ export {
   routerActionTypes,
   spaceActionTypes,
   serviceActionTypes,
+  upsActionTypes,
   userActionTypes
 };

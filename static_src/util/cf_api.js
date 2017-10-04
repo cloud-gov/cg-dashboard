@@ -1,7 +1,9 @@
 import http from 'axios';
+import queryString from 'query-string';
 
 import { noticeError } from '../util/analytics.js';
 import domainActions from '../actions/domain_actions.js';
+import envActions from '../actions/env_actions.js';
 import errorActions from '../actions/error_actions.js';
 import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
@@ -307,6 +309,22 @@ export default {
     return http.delete(serviceInstance.url);
   },
 
+  fetchAllUPSI({ action, ...args }, params = {}) {
+    const q = (params.q || []).map(({ filter, op, value }) =>
+      [filter, op === 'IN' ? ` ${op} ` : op, value].join('')
+    );
+
+    return this.fetchMany(
+      `/user_provided_service_instances?${queryString.stringify({
+        ...params,
+        q
+      })}`
+    ).then(items => {
+      action(items, args);
+      return items;
+    });
+  },
+
   fetchAppAll(appGuid) {
     return Promise.all([
       this.fetchApp(appGuid),
@@ -541,6 +559,14 @@ export default {
     }).catch((err) => {
       handleError(err, routeActions.error.bind(this, routeGuid));
     });
+  },
+
+  fetchEnv(appGuid) {
+    return http.get(`${APIV}/apps/${appGuid}/env`)
+      .then(res => {
+        envActions.receivedEnv(res.data, appGuid);
+        return res;
+      });
   },
 
   fetchPrivateDomain(domainGuid) {

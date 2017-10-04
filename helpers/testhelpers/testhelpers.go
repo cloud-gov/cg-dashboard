@@ -238,20 +238,21 @@ type BasicProxyTest struct {
 // GetMockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
 func GetMockCompleteEnvVars() helpers.EnvVars {
 	return helpers.EnvVars{
-		ClientID:      "ID",
-		ClientSecret:  "Secret",
-		Hostname:      "https://hostname",
-		LoginURL:      "https://loginurl",
-		UAAURL:        "https://uaaurl",
-		APIURL:        "https://apiurl",
-		LogURL:        "https://logurl",
-		PProfEnabled:  "true",
-		SessionKey:    "lalala",
-		BasePath:      os.Getenv(helpers.BasePathEnvVar),
-		SMTPFrom:      "cloud@cloud.gov",
-		SMTPHost:      "localhost",
-		SecureCookies: "1",
-		TICSecret:     "tic",
+		ClientID:                 "ID",
+		ClientSecret:             "Secret",
+		Hostname:                 "https://hostname",
+		LoginURL:                 "https://loginurl",
+		UAAURL:                   "https://uaaurl",
+		APIURL:                   "https://apiurl",
+		LogURL:                   "https://logurl",
+		PProfEnabled:             "true",
+		CSRFKey:                  []byte("lalala"),
+		SessionAuthenticationKey: []byte("lalala"),
+		BasePath:                 os.Getenv(helpers.BasePathEnvVar),
+		SMTPFrom:                 "cloud@cloud.gov",
+		SMTPHost:                 "localhost",
+		SecureCookies:            "1",
+		TICSecret:                "tic",
 	}
 }
 
