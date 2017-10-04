@@ -10,6 +10,27 @@ import Loading from '../loading.jsx';
 import ErrorMessage from '../error_message.jsx';
 import EnvVarForm from './env_var_form';
 
+const propTypes = {
+  name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  app: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    updating: PropTypes.bool
+  }).isRequired,
+  updateError: PropTypes.shape({
+    code: PropTypes.number.isRequired,
+    description: PropTypes.string.isRequired,
+    errorCode: PropTypes.string.isRequired
+  }),
+  deleteError: PropTypes.shape({
+    code: PropTypes.number.isRequired,
+    description: PropTypes.string.isRequired,
+    errorCode: PropTypes.string.isRequired
+  }),
+  onUpdate: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
+};
+
 export default class EnvVarListItem extends Component {
   constructor(props) {
     super(props);
@@ -133,23 +154,4 @@ export default class EnvVarListItem extends Component {
   }
 }
 
-EnvVarListItem.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  app: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    updating: PropTypes.bool
-  }).isRequired,
-  updateError: PropTypes.shape({
-    code: PropTypes.number.isRequired,
-    description: PropTypes.string.isRequired,
-    errorCode: PropTypes.string.isRequired
-  }),
-  deleteError: PropTypes.shape({
-    code: PropTypes.number.isRequired,
-    description: PropTypes.string.isRequired,
-    errorCode: PropTypes.string.isRequired
-  }),
-  onUpdate: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired
-};
+EnvVarListItem.propTypes = propTypes;

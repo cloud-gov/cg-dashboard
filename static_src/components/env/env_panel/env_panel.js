@@ -12,6 +12,20 @@ import EnvVarForm from '../env_var_form';
 import Header from './header';
 import Section from './section';
 
+const propTypes = {
+  app: PropTypes.shape({
+    guid: PropTypes.string.isRequired
+  }).isRequired,
+  env: PropTypes.shape({
+    environment_json: PropTypes.object.isRequired
+  }).isRequired,
+  updateError: PropTypes.shape({
+    code: PropTypes.number.isRequired,
+    description: PropTypes.string.isRequired,
+    errorCode: PropTypes.string.isRequired
+  })
+};
+
 export default class EnvPanel extends Component {
   constructor(props) {
     super(props);
@@ -188,16 +202,4 @@ export default class EnvPanel extends Component {
   }
 }
 
-EnvPanel.propTypes = {
-  app: PropTypes.shape({
-    guid: PropTypes.string.isRequired
-  }).isRequired,
-  env: PropTypes.shape({
-    environment_json: PropTypes.object.isRequired
-  }).isRequired,
-  updateError: PropTypes.shape({
-    code: PropTypes.number.isRequired,
-    description: PropTypes.string.isRequired,
-    errorCode: PropTypes.string.isRequired
-  })
-};
+EnvPanel.propTypes = propTypes;

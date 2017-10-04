@@ -5,9 +5,7 @@ const propTypes = {
   children: PropTypes.any.isRequired
 };
 
-const Section = ({ children }) => (
-  <div className="panel-row">{children}</div>
-);
+const Section = ({ children }) => <div className="panel-row">{children}</div>;
 
 Section.propTypes = propTypes;
 

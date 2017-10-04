@@ -5,6 +5,20 @@ import { generateId } from '../../util/element_id';
 import PanelActions from '../panel_actions.jsx';
 import Action from '../action.jsx';
 
+const propTypes = {
+  name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  disabled: PropTypes.bool.isRequired,
+  onDismiss: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired
+};
+
+const defaultProps = {
+  name: '',
+  value: '',
+  disabled: false
+};
+
 export default class EnvVarForm extends Component {
   constructor(props) {
     super(props);
@@ -89,16 +103,6 @@ export default class EnvVarForm extends Component {
   }
 }
 
-EnvVarForm.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  disabled: PropTypes.bool.isRequired,
-  onDismiss: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired
-};
+EnvVarForm.propTypes = propTypes;
 
-EnvVarForm.defaultProps = {
-  name: '',
-  value: '',
-  disabled: false
-};
+EnvVarForm.defaultProps = defaultProps;
