@@ -36,7 +36,7 @@ export default class EnvPanel extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = { showUserEnv: false, showAddForm: false, showEnv: false };
     this.styler = createStyler(style);
 
     this.handleUpdate = this.handleUpdate.bind(this);

@@ -14,7 +14,7 @@ export default class EnvVarListItem extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = { editing: false, deleting: false };
 
     this.handleEditToggle = this.handleEditToggle.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
