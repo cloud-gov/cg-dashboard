@@ -22,6 +22,7 @@ import { entityHealth } from './constants.js';
 import windowUtil from './util/window';
 import userActions from './actions/user_actions.js';
 import routerActions from './actions/router_actions.js';
+import upsiActions from './actions/upsi_actions';
 
 const MAX_OVERVIEW_SPACES = 10;
 
@@ -110,6 +111,7 @@ export function app(orgGuid, spaceGuid, appGuid, next) {
   serviceActions.fetchAllInstances(spaceGuid);
   serviceActions.fetchServiceBindings();
   routerActions.navigate(AppContainer);
+  upsiActions.fetchAllForSpace(spaceGuid);
   next();
 }
 

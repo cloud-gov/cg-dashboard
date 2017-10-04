@@ -5,7 +5,11 @@ import http from 'axios';
 import Immutable from 'immutable';
 import moxios from 'moxios';
 
-import cfApi, { tryParseJson } from '../../../util/cf_api.js';
+import cfApi, {
+  tryParseJson,
+  encodeFilter,
+  encodeFilters
+} from '../../../util/cf_api';
 import domainActions from '../../../actions/domain_actions.js';
 import errorActions from '../../../actions/error_actions.js';
 import loginActions from '../../../actions/login_actions.js';
@@ -1502,6 +1506,40 @@ describe('cfApi', function() {
       expect(fetchAllPagesStub).toHaveBeenCalledOnce();
       expect(fetchAllPagesStub).toHaveBeenCalledWith(
         `/users/${userGuid}/organizations`);
+    });
+  });
+
+  describe('encodeFilter()', function() {
+    const tests = [
+      {
+        f: { filter: 'name', op: ':', value: 'a' },
+        out: 'name:a'
+      },
+      {
+        f: { filter: 'name', op: '>', value: 'a' },
+        out: 'name>a'
+      },
+      {
+        f: { filter: 'name', op: '>=', value: 'a' },
+        out: 'name>=a'
+      },
+      {
+        f: { filter: 'name', op: 'IN', value: ['a', 'b', 'c'] },
+        out: 'name IN a,b,c'
+      }
+    ];
+    for (const { f, out } of tests) {
+      it('encodes the filters correctly', function() {
+        expect(encodeFilter(f)).toEqual(out);
+      });
+    }
+  });
+
+  describe('encodeFilters()', function() {
+    it('encodes the equal to filter correctly', function() {
+      expect(encodeFilters([{ filter: 'name', op: ':', value: 'a' }])).toEqual([
+        'name:a'
+      ]);
     });
   });
 });

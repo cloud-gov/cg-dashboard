@@ -1,30 +1,31 @@
-
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-const ALIGN_STYLES = [
-  'start',
-  'end'
-];
+const alignStyles = ['start', 'end'];
 
 const propTypes = {
-  align: PropTypes.oneOf(ALIGN_STYLES),
-  children: PropTypes.any
+  children: PropTypes.any,
+  align: PropTypes.oneOf(alignStyles),
+  title: PropTypes.string.isRequired
 };
 
 const defaultProps = {
-  align: ALIGN_STYLES[0]
+  align: alignStyles[0],
+  title: ''
 };
 
-export default class ElasticLineItem extends React.Component {
-  render() {
-    return (
-      <div className={ `elastic_line-item elastic_line-item-${this.props.align}` }>
-        { this.props.children }
-      </div>
-    );
-  }
-}
+const ElasticLineItem = ({ children, align, title }) => (
+  <div
+    className={classNames('elastic_line-item', {
+      [`elastic_line-item-${align}`]: !!align
+    })}
+    title={title}
+  >
+    {children}
+  </div>
+);
 
 ElasticLineItem.propTypes = propTypes;
+
 ElasticLineItem.defaultProps = defaultProps;

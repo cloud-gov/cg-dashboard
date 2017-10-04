@@ -20,7 +20,9 @@ import EnvPanel from './env/env_panel';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
+import UPSIPanel from './upsi/upsi_panel';
 import SpaceStore from '../stores/space_store.js';
+import UPSIStore from '../stores/upsi_store';
 import UsageLimits from './usage_and_limits.jsx';
 import appActions from '../actions/app_actions.js';
 
@@ -37,6 +39,7 @@ function mapStoreToState() {
   const envUpdateError = EnvStore.getUpdateError(currentAppGuid);
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
+  const upsisRequest = space ? UPSIStore.getAllForSpaceRequest(space.guid) : null;
 
   if (app) {
   // This depends on DomainStore
@@ -60,7 +63,8 @@ function mapStoreToState() {
     org,
     route,
     quota,
-    space
+    space,
+    upsisRequest
   };
 }
 
@@ -83,6 +87,7 @@ export default class AppContainer extends React.Component {
     QuotaStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
+    UPSIStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
@@ -93,6 +98,7 @@ export default class AppContainer extends React.Component {
     QuotaStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
     SpaceStore.removeChangeListener(this._onChange);
+    UPSIStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
@@ -189,7 +195,14 @@ export default class AppContainer extends React.Component {
 
 
   render() {
-    const { org, space, app, envRequest, envUpdateError } = this.state;
+    const {
+      org,
+      space,
+      app,
+      envRequest,
+      envUpdateError,
+      upsisRequest
+    } = this.state;
 
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
@@ -226,6 +239,13 @@ export default class AppContainer extends React.Component {
           <Panel title="Services">
             <ServiceInstancePanel />
           </Panel>
+
+          {upsisRequest && (
+            <UPSIPanel
+              app={app}
+              upsisRequest={upsisRequest}
+            />
+          )}
 
           {envRequest && (
             <EnvPanel
