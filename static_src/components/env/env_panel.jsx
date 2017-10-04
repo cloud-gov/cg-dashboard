@@ -152,9 +152,26 @@ export default class EnvPanel extends Component {
     );
   }
 
+  renderEnv() {
+    const { env } = this.props;
+
+    return (
+      <pre>
+        {JSON.stringify(
+          {
+            ...env,
+            environment_json: '<omitted>'
+          },
+          null,
+          2
+        )}
+      </pre>
+    );
+  }
+
   render() {
     const { styler } = this;
-    const { app, env, updateError } = this.props;
+    const { app, updateError } = this.props;
     const { showUserEnv, showAddForm, showEnv } = this.state;
     const { updating } = app;
 
@@ -186,18 +203,7 @@ export default class EnvPanel extends Component {
         <Section styler={styler}>
           <Header styler={styler}>System-defined environment variables</Header>
           {this.renderShowHideAction(showEnv, this.handleShowEnvClick)}
-          {showEnv && (
-            <pre>
-              {JSON.stringify(
-                {
-                  ...env,
-                  environment_json: '<omitted>'
-                },
-                null,
-                2
-              )}
-            </pre>
-          )}
+          {showEnv && this.renderEnv()}
         </Section>
       </div>
     );
