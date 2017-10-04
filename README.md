@@ -113,7 +113,7 @@ key. These are public and can be set in your manifest file. Note that your
 Browser license key is different than your New Relic License Key (which should
 be treated as confidential).
 
-```bash
+```yaml
 # manifest.yml
 env:
   NEW_RELIC_ID: 12345
@@ -125,7 +125,7 @@ env:
 If you have a GA site configured, specify your tracking ID as `GA_TRACKING_ID`
 in your environment.
 
-```bash
+```yaml
 # manifest.yml
 env:
   GA_TRACKING_ID: UA-123456-11

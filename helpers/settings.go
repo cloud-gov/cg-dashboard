@@ -152,6 +152,9 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 	// Fall back to legacy key variable and format - consider printing deprecation warning
 	if len(s.CSRFKey) == 0 {
 		s.CSRFKey = []byte(envVars.String(LegacySessionKeyEnvVar, ""))
+		if len(s.CSRFKey) != 0 {
+			log.Println("Warning: Use of deprecated SESSION_KEY. Please switch to CSRF_KEY (note new value is hex-encoded, see docs).")
+		}
 	}
 
 	// Return error if not found
@@ -169,6 +172,9 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 	// Fall back to legacy key variable and format
 	if len(sessionAuthenticationKey) == 0 {
 		sessionAuthenticationKey = []byte(envVars.String(LegacySessionKeyEnvVar, ""))
+		if len(sessionAuthenticationKey) != 0 {
+			log.Println("Warning: Use of deprecated SESSION_KEY. Please switch to SESSION_AUTHENTICATION_KEY (note new value is hex-encoded, see docs).")
+		}
 	}
 
 	// Return error if not found

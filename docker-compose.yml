@@ -31,8 +31,8 @@ services:
             "credentials": {
                "CONSOLE_CLIENT_ID": "dashboard-local",
                "CONSOLE_CLIENT_SECRET": "notarealsecret",
-               "CSRF_KEY": "notarealcsrfkey",
-               "SESSION_AUTHENTICATION_KEY": "notarealsessionauthenticationkey",
+               "CSRF_KEY": "00112233445566778899aabbccddeeff",
+               "SESSION_AUTHENTICATION_KEY": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
                "SMTP_FROM": "no-reply@cloud.gov",
                "SMTP_HOST": "smtp.fake.com",
                "SMTP_PASS": "",
