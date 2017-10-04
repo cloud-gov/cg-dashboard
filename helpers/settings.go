@@ -92,7 +92,7 @@ func (s *Settings) CreateContext() context.Context {
 // otherwise it returns nil for success.
 func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error) {
 	defer func() {
-		// While .MustGet() is convenient in readability below, we'd prefer to convert this
+		// While .MustString() is convenient in readability below, we'd prefer to convert this
 		// to an error for upstream callers.
 		if r := recover(); r != nil {
 			missingErr, ok := r.(*ErrMissingEnvVar)
@@ -106,16 +106,16 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 		}
 	}()
 
-	s.BasePath = envVars.Get(BasePathEnvVar, "")
-	s.AppURL = envVars.MustGet(HostnameEnvVar)
-	s.ConsoleAPI = envVars.MustGet(APIURLEnvVar)
-	s.LoginURL = envVars.MustGet(LoginURLEnvVar)
-	s.UaaURL = envVars.MustGet(UAAURLEnvVar)
-	s.LogURL = envVars.MustGet(LogURLEnvVar)
-	s.PProfEnabled = envVars.BoolGet(PProfEnabledEnvVar)
-	s.BuildInfo = envVars.Get(BuildInfoEnvVar, "developer-build")
-	s.LocalCF = envVars.BoolGet(LocalCFEnvVar)
-	s.SecureCookies = envVars.BoolGet(SecureCookiesEnvVar)
+	s.BasePath = envVars.String(BasePathEnvVar, "")
+	s.AppURL = envVars.MustString(HostnameEnvVar)
+	s.ConsoleAPI = envVars.MustString(APIURLEnvVar)
+	s.LoginURL = envVars.MustString(LoginURLEnvVar)
+	s.UaaURL = envVars.MustString(UAAURLEnvVar)
+	s.LogURL = envVars.MustString(LogURLEnvVar)
+	s.PProfEnabled = envVars.Bool(PProfEnabledEnvVar)
+	s.BuildInfo = envVars.String(BuildInfoEnvVar, "developer-build")
+	s.LocalCF = envVars.Bool(LocalCFEnvVar)
+	s.SecureCookies = envVars.Bool(SecureCookiesEnvVar)
 	// Safe guard: shouldn't run with insecure cookies if we are
 	// in a non-development environment (i.e. production)
 	if s.LocalCF == false && s.SecureCookies == false {
@@ -124,13 +124,13 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 
 	// Setup OAuth2 Client Service.
 	s.OAuthConfig = &oauth2.Config{
-		ClientID:     envVars.MustGet(ClientIDEnvVar),
-		ClientSecret: envVars.MustGet(ClientSecretEnvVar),
+		ClientID:     envVars.MustString(ClientIDEnvVar),
+		ClientSecret: envVars.MustString(ClientSecretEnvVar),
 		RedirectURL:  s.AppURL + "/oauth2callback",
 		Scopes:       []string{"cloud_controller.read", "cloud_controller.write", "cloud_controller.admin", "scim.read", "openid"},
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  envVars.MustGet(LoginURLEnvVar) + "/oauth/authorize",
-			TokenURL: envVars.MustGet(UAAURLEnvVar) + "/oauth/token",
+			AuthURL:  envVars.MustString(LoginURLEnvVar) + "/oauth/authorize",
+			TokenURL: envVars.MustString(UAAURLEnvVar) + "/oauth/token",
 		},
 	}
 
@@ -139,7 +139,7 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 	}
 
 	// Initialize Sessions.
-	switch envVars.Get(SessionBackendEnvVar, "") {
+	switch envVars.String(SessionBackendEnvVar, "") {
 	case "redis":
 		address, password, err := getRedisSettings(env)
 		if err != nil {
@@ -175,7 +175,7 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 			},
 		}
 		// create our redis pool.
-		store, err := redistore.NewRediStoreWithPool(redisPool, []byte(envVars.MustGet(SessionKeyEnvVar)))
+		store, err := redistore.NewRediStoreWithPool(redisPool, []byte(envVars.MustString(SessionKeyEnvVar)))
 		if err != nil {
 			return err
 		}
@@ -201,7 +201,7 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 			return true
 		}
 	default:
-		store := sessions.NewFilesystemStore("", []byte(envVars.MustGet(SessionKeyEnvVar)))
+		store := sessions.NewFilesystemStore("", []byte(envVars.MustString(SessionKeyEnvVar)))
 		store.MaxLength(4096 * 4)
 		store.Options = &sessions.Options{
 			HttpOnly: true,
@@ -220,18 +220,18 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 	gob.Register(oauth2.Token{})
 
 	s.HighPrivilegedOauthConfig = &clientcredentials.Config{
-		ClientID:     envVars.MustGet(ClientIDEnvVar),
-		ClientSecret: envVars.MustGet(ClientSecretEnvVar),
+		ClientID:     envVars.MustString(ClientIDEnvVar),
+		ClientSecret: envVars.MustString(ClientSecretEnvVar),
 		Scopes:       []string{"scim.invite", "cloud_controller.admin", "scim.read"},
-		TokenURL:     envVars.MustGet(UAAURLEnvVar) + "/oauth/token",
+		TokenURL:     envVars.MustString(UAAURLEnvVar) + "/oauth/token",
 	}
 
-	s.SMTPFrom = envVars.MustGet(SMTPFromEnvVar)
-	s.SMTPHost = envVars.MustGet(SMTPHostEnvVar)
-	s.SMTPPass = envVars.Get(SMTPPassEnvVar, "")
-	s.SMTPPort = envVars.Get(SMTPPortEnvVar, "")
-	s.SMTPUser = envVars.Get(SMTPUserEnvVar, "")
-	s.TICSecret = envVars.Get(TICSecretEnvVar, "")
+	s.SMTPFrom = envVars.MustString(SMTPFromEnvVar)
+	s.SMTPHost = envVars.MustString(SMTPHostEnvVar)
+	s.SMTPPass = envVars.String(SMTPPassEnvVar, "")
+	s.SMTPPort = envVars.String(SMTPPortEnvVar, "")
+	s.SMTPUser = envVars.String(SMTPUserEnvVar, "")
+	s.TICSecret = envVars.String(TICSecretEnvVar, "")
 	return nil
 }
 

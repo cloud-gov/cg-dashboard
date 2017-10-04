@@ -3,6 +3,7 @@ package helpers
 import (
 	"fmt"
 	"log"
+	"strconv"
 
 	cfenv "github.com/cloudfoundry-community/go-cfenv"
 )
@@ -65,8 +66,8 @@ type EnvVars struct {
 	path []EnvLookup
 }
 
-// Get returns value for key if present, else returns defaultVal if not found
-func (el *EnvVars) Get(key, defaultVal string) string {
+// String returns value for key if present, else returns defaultVal if not found
+func (el *EnvVars) String(key, defaultVal string) string {
 	rv, found := el.load(key)
 	if !found {
 		return defaultVal
@@ -74,19 +75,31 @@ func (el *EnvVars) Get(key, defaultVal string) string {
 	return rv
 }
 
-// MustGet will panic if value is not set, otherwise it returns the value.
-func (el *EnvVars) MustGet(key string) string {
+// MustString will panic if value is not set, otherwise it returns the value.
+func (el *EnvVars) MustString(key string) string {
 	rv, found := el.load(key)
 	if !found {
-		panic(&ErrMissingEnvVar{EnvVar: key})
+		panic(&ErrMissingEnvVar{Name: key})
 	}
 	return rv
 }
 
-// BoolGet returns true if and only the value "true" or "1" is set for the key, else defaults to false
-func (el *EnvVars) BoolGet(key string) bool {
-	val, _ := el.load(key)
-	return val == "true" || val == "1"
+// Bool looks for the key, and if found, parses it using strconv.ParseBool and returns
+// the result. If not found, returns false. If found and won't parse, panics.
+func (el *EnvVars) Bool(key string) bool {
+	val, found := el.load(key)
+	if !found {
+		return false
+	}
+
+	rv, err := strconv.ParseBool(val)
+	if err != nil {
+		// invalid values will now return an error
+		// previous behavior defaulted to false
+		panic(err)
+	}
+
+	return rv
 }
 
 // load is an internal method that looks for a given key within
@@ -112,13 +125,13 @@ type EnvLookup func(key string) (string, bool)
 
 // ErrMissingEnvVar is panicked if a MustGet fails.
 type ErrMissingEnvVar struct {
-	// EnvVar is the key that was not found
-	EnvVar string
+	// Name of the key that was not found
+	Name string
 }
 
 // Error returns an error string
 func (err *ErrMissingEnvVar) Error() string {
-	return fmt.Sprintf("missing env variable: %s", err.EnvVar)
+	return fmt.Sprintf("missing env variable: %s", err.Name)
 }
 
 // NewEnvLookupFromCFAppNamedService looks for a CloudFoundry bound service
