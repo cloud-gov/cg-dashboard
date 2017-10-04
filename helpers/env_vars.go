@@ -66,6 +66,8 @@ var (
 	CSRFKeyEnvVar = "CSRF_KEY"
 	// SessionAuthenticationEnvVar used to sign user sessions. Must be 32 or 64 hex-encoded bytes, e.g. openssl rand -hex 64
 	SessionAuthenticationEnvVar = "SESSION_AUTHENTICATION_KEY"
+	// SessionEncryptionEnvVar used to encrypt user sessions. Used by "SESSION_BACKEND=cookiestore". Must be 16, 24 or 32 hex-encoded bytes, e.g. openssl rand -hex 32
+	SessionEncryptionEnvVar = "SESSION_ENCRYPTION_KEY"
 )
 
 // EnvVars provides a convenient method to access environment variables

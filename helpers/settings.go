@@ -185,6 +185,23 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 	}
 
 	switch envVars.String(SessionBackendEnvVar, "") {
+	case "cookiestore":
+		sessionEncryptionKey, err := hex.DecodeString(envVars.MustString(SessionEncryptionEnvVar))
+		if err != nil {
+			return err
+		}
+		store := sessions.NewCookieStore(sessionAuthenticationKey, sessionEncryptionKey)
+		store.Options.HttpOnly = true
+		store.Options.Secure = s.SecureCookies
+
+		s.Sessions = store
+		s.SessionBackend = "cookiestore"
+		s.SessionBackendHealthCheck = func() bool { return true }
+
+		// When using cookiestore, we need our cookies to be under 4096 bytes, or they cannot
+		// be stored. Opaque UAA tokens gets us small enough.
+		// See: https://godoc.org/github.com/gorilla/securecookie#SecureCookie.MaxLength
+		s.OpaqueUAATokens = true
 	case "redis":
 		address, password, err := getRedisSettings(env)
 		if err != nil {
