@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { generateId } from '../util/element_id';
-import PanelActions from './panel_actions.jsx';
-import Action from './action.jsx';
+import { generateId } from '../../util/element_id';
+import PanelActions from '../panel_actions.jsx';
+import Action from '../action.jsx';
 
 export default class EnvVarForm extends Component {
   constructor(props) {

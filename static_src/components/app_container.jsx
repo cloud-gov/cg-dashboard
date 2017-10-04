@@ -17,7 +17,7 @@ import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
-import EnvPanel from './env_panel.jsx';
+import EnvPanel from './env/env_panel.jsx';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
