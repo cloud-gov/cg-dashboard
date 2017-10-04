@@ -8,7 +8,7 @@ import ElasticLine from '../elastic_line.jsx';
 import ElasticLineItem from '../elastic_line_item.jsx';
 import Loading from '../loading.jsx';
 import ErrorMessage from '../error_message.jsx';
-import EnvVarForm from './env_var_form.jsx';
+import EnvVarForm from './env_var_form';
 
 export default class EnvVarListItem extends Component {
   constructor(props) {

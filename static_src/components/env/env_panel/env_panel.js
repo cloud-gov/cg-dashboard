@@ -1,36 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import appActions from '../../actions/app_actions';
-import envActions from '../../actions/env_actions';
-import Action from '../action.jsx';
-import ErrorMessage from '../error_message.jsx';
-import ComplexList from '../complex_list.jsx';
-import PanelActions from '../panel_actions.jsx';
-import EnvVarListItem from './env_var_list_item.jsx';
-import EnvVarForm from './env_var_form.jsx';
-import createStyler from '../../util/create_styler';
+import appActions from '../../../actions/app_actions';
+import envActions from '../../../actions/env_actions';
+import Action from '../../action.jsx';
+import ErrorMessage from '../../error_message.jsx';
+import ComplexList from '../../complex_list.jsx';
+import PanelActions from '../../panel_actions.jsx';
+import EnvVarListItem from '../env_var_list_item';
+import EnvVarForm from '../env_var_form';
+import createStyler from '../../../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
-
-const Section = ({ styler, children }) => (
-  <div className={styler('panel-row')}>{children}</div>
-);
-
-Section.propTypes = {
-  styler: PropTypes.func.isRequired,
-  children: PropTypes.any.isRequired
-};
-
-const Header = ({ styler, children }) => (
-  <header>
-    <h4 className={styler('panel-row-header')}>{children}</h4>
-  </header>
-);
-
-Header.propTypes = {
-  styler: PropTypes.func.isRequired,
-  children: PropTypes.any.isRequired
-};
+import Header from './header';
+import Section from './section';
 
 export default class EnvPanel extends Component {
   constructor(props) {
