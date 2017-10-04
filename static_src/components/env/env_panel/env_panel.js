@@ -9,8 +9,6 @@ import ComplexList from '../../complex_list.jsx';
 import PanelActions from '../../panel_actions.jsx';
 import EnvVarListItem from '../env_var_list_item';
 import EnvVarForm from '../env_var_form';
-import createStyler from '../../../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import Header from './header';
 import Section from './section';
 
@@ -19,7 +17,6 @@ export default class EnvPanel extends Component {
     super(props);
 
     this.state = { showUserEnv: false, showAddForm: false, showEnv: false };
-    this.styler = createStyler(style);
 
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -152,15 +149,14 @@ export default class EnvPanel extends Component {
   }
 
   render() {
-    const { styler } = this;
     const { app, updateError } = this.props;
     const { showUserEnv, showAddForm, showEnv } = this.state;
     const { updating } = app;
 
     return (
       <div>
-        <Section styler={styler}>
-          <Header styler={styler}>User-defined environment variables</Header>
+        <Section>
+          <Header>User-defined environment variables</Header>
           <PanelActions>
             {this.renderShowHideAction(
               showUserEnv,
@@ -182,8 +178,8 @@ export default class EnvPanel extends Component {
             <ComplexList>{this.renderUserVarItems()}</ComplexList>
           </div>
         )}
-        <Section styler={styler}>
-          <Header styler={styler}>System-defined environment variables</Header>
+        <Section>
+          <Header>System-defined environment variables</Header>
           {this.renderShowHideAction(showEnv, this.handleShowEnvClick)}
           {showEnv && this.renderEnv()}
         </Section>
