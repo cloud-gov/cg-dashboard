@@ -246,6 +246,8 @@ func GetMockCompleteEnvVars() map[string]string {
 		helpers.APIURLEnvVar:                "https://apiurl",
 		helpers.LogURLEnvVar:                "https://logurl",
 		helpers.PProfEnabledEnvVar:          "true",
+		helpers.SessionBackendEnvVar:        "cookiestore",
+		helpers.SessionEncryptionEnvVar:     "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 		helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 		helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 		helpers.BasePathEnvVar:              os.Getenv(helpers.BasePathEnvVar),

@@ -26,6 +26,8 @@ var initSettingsTests = []initSettingsTest{
 			helpers.UAAURLEnvVar:                "uaaurl",
 			helpers.APIURLEnvVar:                "apiurl",
 			helpers.LogURLEnvVar:                "logurl",
+			helpers.SessionBackendEnvVar:        "cookiestore",
+			helpers.SessionEncryptionEnvVar:     "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 			helpers.SMTPFromEnvVar:              "blah@blah.com",
@@ -63,6 +65,8 @@ var initSettingsTests = []initSettingsTest{
 			helpers.UAAURLEnvVar:                "uaaurl",
 			helpers.APIURLEnvVar:                "apiurl",
 			helpers.LogURLEnvVar:                "logurl",
+			helpers.SessionBackendEnvVar:        "cookiestore",
+			helpers.SessionEncryptionEnvVar:     "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 			helpers.SMTPFromEnvVar:              "blah@blah.com",
@@ -235,9 +239,9 @@ var initSettingsTests = []initSettingsTest{
 }
 
 func TestInitSettings(t *testing.T) {
-	s := helpers.Settings{}
 	env, _ := cfenv.Current()
 	for _, test := range initSettingsTests {
+		s := helpers.Settings{}
 		ret := s.InitSettings(helpers.NewEnvVarsFromPath(testhelpers.NewEnvLookupFromMap(test.envVars)), env)
 		if (ret == nil) != test.returnValueNull {
 			t.Errorf("Test %s did not return correct value. Expected %t, Actual %t", test.testName, test.returnValueNull, (ret == nil))
