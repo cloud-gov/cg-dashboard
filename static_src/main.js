@@ -44,4 +44,5 @@ const cRouter = {
 };
 
 initCSRFHeader(document.querySelector('meta[name="gorilla.csrf.Token"]'));
-cRouter.run(routes, document.querySelector('.js-app'));
+
+cRouter.run(routes, document.getElementById('root'));
