@@ -109,11 +109,11 @@ func EchoResponseHandler(rw http.ResponseWriter, response *http.Response) {
 }
 
 // CreateRouterWithMockSession will create a settings with the appropriate envVars and load the mock session with the session data.
-func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars helpers.EnvVars) (*web.Router, *MockSessionStore) {
+func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars map[string]string) (*web.Router, *MockSessionStore) {
 	// Initialize settings.
 	settings := helpers.Settings{}
 	env, _ := cfenv.Current()
-	settings.InitSettings(envVars, env)
+	settings.InitSettings(helpers.NewEnvVarsFromPath(NewEnvLookupFromMap(envVars)), env)
 
 	// Initialize a new session store.
 	store := MockSessionStore{}
@@ -140,7 +140,7 @@ type BasicConsoleUnitTest struct {
 	// Name of the tests
 	TestName string
 	// Set of env vars to set up the settings.
-	EnvVars helpers.EnvVars
+	EnvVars map[string]string
 	// Ending location of request.
 	Location    string
 	Code        int
@@ -236,22 +236,22 @@ type BasicProxyTest struct {
 }
 
 // GetMockCompleteEnvVars is just a commonly used env vars object that contains non-empty values for all the fields of the EnvVars struct.
-func GetMockCompleteEnvVars() helpers.EnvVars {
-	return helpers.EnvVars{
-		ClientID:      "ID",
-		ClientSecret:  "Secret",
-		Hostname:      "https://hostname",
-		LoginURL:      "https://loginurl",
-		UAAURL:        "https://uaaurl",
-		APIURL:        "https://apiurl",
-		LogURL:        "https://logurl",
-		PProfEnabled:  "true",
-		SessionKey:    "lalala",
-		BasePath:      os.Getenv(helpers.BasePathEnvVar),
-		SMTPFrom:      "cloud@cloud.gov",
-		SMTPHost:      "localhost",
-		SecureCookies: "1",
-		TICSecret:     "tic",
+func GetMockCompleteEnvVars() map[string]string {
+	return map[string]string{
+		helpers.ClientIDEnvVar:      "ID",
+		helpers.ClientSecretEnvVar:  "Secret",
+		helpers.HostnameEnvVar:      "https://hostname",
+		helpers.LoginURLEnvVar:      "https://loginurl",
+		helpers.UAAURLEnvVar:        "https://uaaurl",
+		helpers.APIURLEnvVar:        "https://apiurl",
+		helpers.LogURLEnvVar:        "https://logurl",
+		helpers.PProfEnabledEnvVar:  "true",
+		helpers.SessionKeyEnvVar:    "lalala",
+		helpers.BasePathEnvVar:      os.Getenv(helpers.BasePathEnvVar),
+		helpers.SMTPFromEnvVar:      "cloud@cloud.gov",
+		helpers.SMTPHostEnvVar:      "localhost",
+		helpers.SecureCookiesEnvVar: "1",
+		helpers.TICSecretEnvVar:     "tic",
 	}
 }
 
@@ -273,7 +273,7 @@ func CreateExternalServerForPrivileged(t *testing.T, test BasicProxyTest) *httpt
 			if err != nil {
 				t.Errorf("failed reading request body: %s.", err)
 			}
-			expectedRequestBody := "client_id=" + GetMockCompleteEnvVars().ClientID + "&grant_type=client_credentials&scope=scim.invite+cloud_controller.admin+scim.read"
+			expectedRequestBody := "client_id=" + GetMockCompleteEnvVars()[helpers.ClientIDEnvVar] + "&grant_type=client_credentials&scope=scim.invite+cloud_controller.admin+scim.read"
 			if string(body) != expectedRequestBody {
 				t.Errorf("payload = %q; want %q", string(body), expectedRequestBody)
 			}
@@ -356,7 +356,7 @@ func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testS
 		// Assign settings to context
 		mockSettings := &helpers.Settings{}
 		env, _ := cfenv.Current()
-		mockSettings.InitSettings(test.EnvVars, env)
+		mockSettings.InitSettings(helpers.NewEnvVarsFromPath(NewEnvLookupFromMap(test.EnvVars)), env)
 		c.Settings = mockSettings
 
 		response, request := NewTestRequest(test.RequestMethod, fullURL, test.RequestBody)
@@ -366,8 +366,8 @@ func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testS
 		for header, value := range test.RequestHeaders {
 			request.Header.Set(header, value)
 		}
-		test.EnvVars.APIURL = testServer.URL
-		test.EnvVars.UAAURL = testServer.URL
+		test.EnvVars[helpers.APIURLEnvVar] = testServer.URL
+		test.EnvVars[helpers.UAAURLEnvVar] = testServer.URL
 		router, _ := CreateRouterWithMockSession(test.SessionData, test.EnvVars)
 		return response, request, router
 	}
@@ -389,5 +389,13 @@ func VerifyExternalCallResponse(t *testing.T, response *httptest.ResponseRecorde
 		if value != observed {
 			t.Errorf("Test %s request header %s mismatch. Expected %s. Found %s.\n", test.TestName, header, value, observed)
 		}
+	}
+}
+
+// NewEnvLookupFromMap creates a lookup based on a map
+func NewEnvLookupFromMap(m map[string]string) helpers.EnvLookup {
+	return func(name string) (string, bool) {
+		rv, found := m[name]
+		return rv, found
 	}
 }

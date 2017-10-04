@@ -81,7 +81,7 @@ func TestPrivilegedProxy(t *testing.T) {
 	for _, test := range proxyTests {
 		// We can only get this after the server has started.
 		testServer := CreateExternalServerForPrivileged(t, test)
-		test.EnvVars.UAAURL = testServer.URL
+		test.EnvVars[helpers.UAAURLEnvVar] = testServer.URL
 		// Construct full url for the proxy.
 		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
 		c := &controllers.SecureContext{Context: &controllers.Context{}}
