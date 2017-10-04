@@ -27,7 +27,7 @@ type ResponseHandler func(http.ResponseWriter, *http.Response)
 // If the token is 1) present and expired or 2) not present, it will return unauthorized.
 func (c *SecureContext) OAuth(rw web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
 	// Get valid token if it exists from session store.
-	if token := helpers.GetValidToken(req.Request, c.Settings); token != nil {
+	if token := helpers.GetValidToken(req.Request, rw, c.Settings); token != nil {
 		c.Token = *token
 	} else {
 		// If no token, return unauthorized.
@@ -53,7 +53,7 @@ func (c *SecureContext) LoginRequired(rw web.ResponseWriter, r *web.Request, nex
 	rw.Header().Set("pragma", "no-cache")
 	rw.Header().Set("expires", "-1")
 
-	token := helpers.GetValidToken(r.Request, c.Settings)
+	token := helpers.GetValidToken(r.Request, rw, c.Settings)
 	if token != nil {
 		next(rw, r)
 	} else {

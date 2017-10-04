@@ -1,6 +1,8 @@
 package helpers_test
 
 import (
+	"net/http/httptest"
+
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/18F/cg-dashboard/helpers/testhelpers"
 
@@ -41,6 +43,7 @@ var getValidTokenTests = []tokenTestData{
 func TestGetValidToken(t *testing.T) {
 	mockRequest, _ := http.NewRequest("GET", "", nil)
 	mockSettings := helpers.Settings{}
+	mockResponse := httptest.NewRecorder()
 
 	for _, test := range getValidTokenTests {
 		// Initialize a new session store.
@@ -48,7 +51,7 @@ func TestGetValidToken(t *testing.T) {
 		store.ResetSessionData(test.sessionData, test.sessionName)
 		mockSettings.Sessions = store
 
-		value := helpers.GetValidToken(mockRequest, &mockSettings)
+		value := helpers.GetValidToken(mockRequest, mockResponse, &mockSettings)
 		if (value == nil) == test.returnValueNull {
 		} else {
 			t.Errorf("Test %s did not meet expected value. Expected: %t. Actual: %t\n", test.testName, test.returnValueNull, (value == nil))
