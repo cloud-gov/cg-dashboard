@@ -9,13 +9,15 @@ import { config } from 'skin';
 import AppStore from '../stores/app_store.js';
 import Breadcrumbs from './breadcrumbs.jsx';
 import DomainStore from '../stores/domain_store.js';
+import EnvStore from '../stores/env_store.js';
 import RouteStore from '../stores/route_store.js';
 import EntityIcon from './entity_icon.jsx';
-import ErrorMessage from './error_message.jsx';
+import SystemErrorMessage from './system_error_message.jsx';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import RoutesPanel from './routes_panel.jsx';
+import EnvPanel from './env_panel.jsx';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
@@ -30,10 +32,12 @@ function appReady(app) {
   return !!app && !!app.name;
 }
 
-function stateSetter() {
+function mapStoreToState() {
   let route;
   const currentAppGuid = AppStore.currentAppGuid;
   const app = AppStore.get(currentAppGuid);
+  const env = EnvStore.getEnv(currentAppGuid);
+  const envUpdateError = EnvStore.getUpdateError(currentAppGuid);
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
 
@@ -53,6 +57,8 @@ function stateSetter() {
     currentOrgName: OrgStore.currentOrgName,
     currentSpaceName: SpaceStore.currentSpaceName,
     empty: !AppStore.loading && !appReady(app) && !QuotaStore.loading,
+    env,
+    envUpdateError,
     loading: AppStore.loading || QuotaStore.loading,
     org,
     route,
@@ -65,7 +71,7 @@ export default class AppContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = stateSetter();
+    this.state = mapStoreToState();
 
     this._onChange = this._onChange.bind(this);
     this._onRestart = this._onRestart.bind(this);
@@ -76,6 +82,7 @@ export default class AppContainer extends React.Component {
   componentDidMount() {
     AppStore.addChangeListener(this._onChange);
     DomainStore.addChangeListener(this._onChange);
+    EnvStore.addChangeListener(this._onChange);
     OrgStore.addChangeListener(this._onChange);
     QuotaStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
@@ -85,6 +92,7 @@ export default class AppContainer extends React.Component {
   componentWillUnmount() {
     AppStore.removeChangeListener(this._onChange);
     DomainStore.removeChangeListener(this._onChange);
+    EnvStore.removeChangeListener(this._onChange);
     OrgStore.removeChangeListener(this._onChange);
     QuotaStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
@@ -92,7 +100,7 @@ export default class AppContainer extends React.Component {
   }
 
   _onChange() {
-    this.setState(stateSetter());
+    this.setState(mapStoreToState());
   }
 
   _onRestart() {
@@ -172,7 +180,7 @@ export default class AppContainer extends React.Component {
 
     if (this.state.app.error) {
       error = (
-        <ErrorMessage error={ this.state.app.error } />
+        <SystemErrorMessage error={ this.state.app.error } />
       );
     }
 
@@ -185,6 +193,8 @@ export default class AppContainer extends React.Component {
 
 
   render() {
+    const { app, env, envUpdateError } = this.state;
+
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
     const title = (
@@ -219,6 +229,10 @@ export default class AppContainer extends React.Component {
 
           <Panel title="Services">
             <ServiceInstancePanel />
+          </Panel>
+
+          <Panel title="Environment variables">
+            {env && <EnvPanel app={app} env={env} updateError={envUpdateError} />}
           </Panel>
 
           <Panel title="Recent activity">
