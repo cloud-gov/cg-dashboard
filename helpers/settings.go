@@ -74,6 +74,8 @@ type Settings struct {
 	TICSecret string
 	// CSRFKey used for gorilla CSRF validation
 	CSRFKey []byte
+	// OpaqueUAATokens if set requests smaller opaque tokens from UAA
+	OpaqueUAATokens bool
 }
 
 // CreateContext returns a new context to be used for http connections.

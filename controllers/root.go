@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/18F/cg-dashboard/helpers"
 	"github.com/18F/cg-dashboard/mailer"
@@ -141,12 +142,49 @@ func (c *Context) OAuthCallback(rw web.ResponseWriter, req *web.Request) {
 		return
 	}
 
+	// Assume we'll use the standard config
+	tokenExchangeConfig := c.Settings.OAuthConfig
+
+	// Unless we want an opaque token. In this case, we'll clone the normal config
+	// but add a parameter the URL requesting the token format be opaque (smaller).
+	if c.Settings.OpaqueUAATokens {
+		tokenExchangeConfig = &oauth2.Config{
+			ClientID:     c.Settings.OAuthConfig.ClientID,
+			ClientSecret: c.Settings.OAuthConfig.ClientSecret,
+			RedirectURL:  c.Settings.OAuthConfig.RedirectURL,
+			Scopes:       c.Settings.OAuthConfig.Scopes,
+			Endpoint: oauth2.Endpoint{
+				TokenURL: c.Settings.OAuthConfig.Endpoint.TokenURL + "?token_format=opaque",
+			},
+		}
+	}
+
 	// Exchange the code for a token.
-	token, err := c.Settings.OAuthConfig.Exchange(c.Settings.CreateContext(), code)
+	token, err := tokenExchangeConfig.Exchange(c.Settings.CreateContext(), code)
 	if err != nil {
 		fmt.Println("Unable to get access token from code " + code + " error " + err.Error())
 		return
 		// TODO: Handle. Return 500.
+	}
+
+	if c.Settings.OpaqueUAATokens {
+		// Now, since CF (unlike UAA) hasn't yet been updated to understand an opaque access token,
+		// we'll use our new opaque refresh token to immediately refresh a standard JWT access token.
+		// The combined size of an opaque refresh token + a JWT access token is small enough to meet
+		// our needs (fits in a secure cookie).
+		originalRefreshToken := token.RefreshToken
+
+		token.AccessToken = ""     // wipe out our access token
+		token.Expiry = time.Time{} // and to be sure, force an expiry
+		token, err = c.Settings.OAuthConfig.TokenSource(c.Settings.CreateContext(), token).Token()
+		if err != nil {
+			fmt.Println("Unable to get access token from code " + code + " error " + err.Error())
+			return
+			// TODO: Handle. Return 500.
+		}
+
+		// Now, keep our original refresh token, it was smaller (and can be used over and over)
+		token.RefreshToken = originalRefreshToken
 	}
 
 	session.Values["token"] = *token
