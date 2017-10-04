@@ -38,7 +38,7 @@ class EnvStore extends BaseStore {
         break;
       }
       case appActionTypes.APP_ERROR: {
-        const { appGuid, error: { response: { data: error } } } = action;
+        const { appGuid, error: { response: { data: error } = {} } } = action;
         this.updateError[appGuid] = error;
         this.emitChange();
         break;
