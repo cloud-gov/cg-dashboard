@@ -21,7 +21,9 @@ import EnvPanel from './env_panel.jsx';
 import PageHeader from './page_header.jsx';
 import Panel from './panel.jsx';
 import ServiceInstancePanel from './service_instance_panel.jsx';
+import UPSIPanel from './upsi_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
+import UPSIStore from '../stores/upsi_store.js';
 import UsageLimits from './usage_and_limits.jsx';
 import appActions from '../actions/app_actions.js';
 import createStyler from '../util/create_styler';
@@ -40,6 +42,10 @@ function mapStoreToState() {
   const envUpdateError = EnvStore.getUpdateError(currentAppGuid);
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
+  let upsis;
+  if (space) {
+    upsis = UPSIStore.getAllForSpace(space.guid);
+  }
 
   if (app) {
   // This depends on DomainStore
@@ -63,7 +69,8 @@ function mapStoreToState() {
     org,
     route,
     quota,
-    space
+    space,
+    upsis
   };
 }
 
@@ -87,6 +94,7 @@ export default class AppContainer extends React.Component {
     QuotaStore.addChangeListener(this._onChange);
     RouteStore.addChangeListener(this._onChange);
     SpaceStore.addChangeListener(this._onChange);
+    UPSIStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
@@ -97,6 +105,7 @@ export default class AppContainer extends React.Component {
     QuotaStore.removeChangeListener(this._onChange);
     RouteStore.removeChangeListener(this._onChange);
     SpaceStore.removeChangeListener(this._onChange);
+    UPSIStore.removeChangeListener(this._onChange);
   }
 
   _onChange() {
@@ -193,7 +202,7 @@ export default class AppContainer extends React.Component {
 
 
   render() {
-    const { app, env, envUpdateError } = this.state;
+    const { app, env, envUpdateError, upsis } = this.state;
 
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
@@ -229,6 +238,10 @@ export default class AppContainer extends React.Component {
 
           <Panel title="Services">
             <ServiceInstancePanel />
+          </Panel>
+
+          <Panel title="User-provided service instances">
+            <UPSIPanel app={app} upsis={upsis} />
           </Panel>
 
           <Panel title="Environment variables">

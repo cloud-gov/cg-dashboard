@@ -371,6 +371,13 @@ const activityActionTypes = keymirror({
   LOGS_RECEIVED: null
 });
 
+const upsActionTypes = keymirror({
+  UPSI_FETCH_ALL: null,
+  UPSI_RECEIVED_ALL: null,
+  UPSI_FETCH_ALL_FOR_SPACE: null,
+  UPSI_RECEIVED_ALL_FOR_SPACE: null
+});
+
 export {
   activityActionTypes,
   appActionTypes,
@@ -388,5 +395,6 @@ export {
   routerActionTypes,
   spaceActionTypes,
   serviceActionTypes,
+  upsActionTypes,
   userActionTypes
 };

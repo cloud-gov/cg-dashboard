@@ -1,4 +1,5 @@
 import http from 'axios';
+import queryString from 'query-string';
 
 import { noticeError } from '../util/analytics.js';
 import domainActions from '../actions/domain_actions.js';
@@ -306,6 +307,22 @@ export default {
 
   deleteUnboundServiceInstance(serviceInstance) {
     return http.delete(serviceInstance.url);
+  },
+
+  fetchAllUPSI({ action, ...args }, params = {}) {
+    const q = (params.q || []).map(({ filter, op, value }) =>
+      [filter, op === 'IN' ? ` ${op} ` : op, value].join('')
+    );
+
+    return this.fetchMany(
+      `/user_provided_service_instances?${queryString.stringify({
+        ...params,
+        q
+      })}`
+    ).then(items => {
+      action(items, args);
+      return items;
+    });
   },
 
   fetchAppAll(appGuid) {
