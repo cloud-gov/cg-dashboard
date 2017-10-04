@@ -3,7 +3,6 @@ package helpers
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -16,7 +15,7 @@ import (
 var TimeoutConstant = time.Second * 20
 
 // GetValidToken is a helper function that returns a token struct only if it finds a non expired token for the session.
-func GetValidToken(req *http.Request, settings *Settings) *oauth2.Token {
+func GetValidToken(req *http.Request, rw http.ResponseWriter, settings *Settings) *oauth2.Token {
 	// Get session from session store.
 	session, _ := settings.Sessions.Get(req, "session")
 	// If for some reason we can't get or create a session, bail out.
@@ -25,33 +24,24 @@ func GetValidToken(req *http.Request, settings *Settings) *oauth2.Token {
 	}
 
 	// Attempt to get the token from this session.
-	if token, ok := session.Values["token"].(oauth2.Token); ok {
-		// If valid, just return.
-		if token.Valid() {
-			return &token
-		}
-
-		// Attempt to refresh token using oauth2 Client
-		// https://godoc.org/golang.org/x/oauth2#Config.Client
-		reqURL := fmt.Sprintf("%s%s", settings.ConsoleAPI, "/v2/info")
-		request, _ := http.NewRequest("GET", reqURL, nil)
-		request.Close = true
-		client := settings.OAuthConfig.Client(settings.CreateContext(), &token)
-		// Prevents lingering goroutines from living forever.
-		// http://stackoverflow.com/questions/16895294/how-to-set-timeout-for-http-get-requests-in-golang/25344458#25344458
-		client.Timeout = TimeoutConstant
-		resp, err := client.Do(request)
-		if resp != nil {
-			defer resp.Body.Close()
-		}
-		if err != nil {
-			return nil
-		}
-		return &token
+	token, ok := session.Values["token"].(oauth2.Token)
+	if !ok {
+		return nil
 	}
 
-	// If couldn't find token or if it's expired, return nil
-	return nil
+	// Will ensure not expired
+	rv, err := settings.OAuthConfig.TokenSource(settings.CreateContext(), &token).Token()
+	if err != nil {
+		return nil
+	}
+
+	// Did it change? if so save it in our cookie so we don't have to refresh again on every request
+	if rv.AccessToken != token.AccessToken || !rv.Expiry.Equal(token.Expiry) {
+		session.Values["token"] = *rv
+		session.Save(req, rw)
+	}
+
+	return rv
 }
 
 // GenerateRandomBytes returns securely generated random bytes.
