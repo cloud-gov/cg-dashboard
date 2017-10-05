@@ -1,17 +1,40 @@
+import PropTypes from 'prop-types';
+
 import BaseStore from './base_store';
-import cfApi from '../util/cf_api';
 import { appActionTypes, envActionTypes } from '../constants';
+
+export const envPropType = PropTypes.shape({
+  environment_json: PropTypes.object.isRequired
+});
+
+export const envRequestPropType = PropTypes.shape({
+  isFetching: PropTypes.bool.isRequired,
+  error: PropTypes.bool.isRequired,
+  result: envPropType
+});
+
+export const updateErrorPropType = PropTypes.shape({
+  code: PropTypes.number.isRequired,
+  description: PropTypes.string.isRequired,
+  errorCode: PropTypes.string.isRequired
+});
+
+export const deleteErrorPropType = updateErrorPropType;
 
 class EnvStore extends BaseStore {
   constructor() {
     super();
-    this.env = {};
+    this.envRequests = {};
     this.updateError = {};
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
   getEnv(appGuid) {
-    return this.env[appGuid];
+    return (this.envRequests[appGuid] || {}).result;
+  }
+
+  getEnvRequest(appGuid) {
+    return this.envRequests[appGuid];
   }
 
   getUpdateError(appGuid) {
@@ -28,12 +51,33 @@ class EnvStore extends BaseStore {
 
   _registerToActions(action) {
     switch (action.type) {
-      case envActionTypes.ENV_FOR_APP_FETCH:
-        cfApi.fetchEnv(action.appGuid);
+      case envActionTypes.ENV_FETCH_ENV_REQUEST: {
+        const { appGuid } = action;
+        this.envRequests[appGuid] = {
+          ...this.envRequests[appGuid],
+          isFetching: true,
+          error: false
+        };
+        this.emitChange();
         break;
-      case envActionTypes.ENV_FOR_APP_RECEIVED: {
+      }
+      case envActionTypes.ENV_FETCH_ENV_SUCCESS: {
         const { appGuid, env } = action;
-        this.env[appGuid] = env;
+        this.envRequests[appGuid] = {
+          ...this.envRequests[appGuid],
+          isFetching: false,
+          result: env
+        };
+        this.emitChange();
+        break;
+      }
+      case envActionTypes.ENV_FETCH_ENV_FAILURE: {
+        const { appGuid } = action;
+        this.envRequests[appGuid] = {
+          ...this.envRequests[appGuid],
+          isFetching: false,
+          error: true
+        };
         this.emitChange();
         break;
       }
@@ -43,7 +87,7 @@ class EnvStore extends BaseStore {
         this.emitChange();
         break;
       }
-      case envActionTypes.INVALIDATE_UPDATE_ERROR: {
+      case envActionTypes.ENV_INVALIDATE_UPDATE_ERROR: {
         const { appGuid } = action;
         delete this.updateError[appGuid];
         this.emitChange();

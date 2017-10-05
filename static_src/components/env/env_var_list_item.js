@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { appPropType } from '../../stores/app_store';
+import {
+  updateErrorPropType,
+  deleteErrorPropType
+} from '../../stores/env_store';
 import envActions from '../../actions/env_actions';
 import Action from '../action.jsx';
 import ConfirmationBox from '../confirmation_box.jsx';
@@ -13,20 +18,9 @@ import EnvVarForm from './env_var_form';
 const propTypes = {
   name: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
-  app: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    updating: PropTypes.bool
-  }).isRequired,
-  updateError: PropTypes.shape({
-    code: PropTypes.number.isRequired,
-    description: PropTypes.string.isRequired,
-    errorCode: PropTypes.string.isRequired
-  }),
-  deleteError: PropTypes.shape({
-    code: PropTypes.number.isRequired,
-    description: PropTypes.string.isRequired,
-    errorCode: PropTypes.string.isRequired
-  }),
+  app: appPropType.isRequired,
+  updateError: updateErrorPropType,
+  deleteError: deleteErrorPropType,
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired
 };

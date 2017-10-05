@@ -32,9 +32,10 @@ const entityHealth = keymirror({
 });
 
 const envActionTypes = keymirror({
-  ENV_FOR_APP_FETCH: null,
-  ENV_FOR_APP_RECEIVED: null,
-  INVALIDATE_UPDATE_ERROR: null
+  ENV_FETCH_ENV_REQUEST: null,
+  ENV_FETCH_ENV_SUCCESS: null,
+  ENV_FETCH_ENV_FAILURE: null,
+  ENV_INVALIDATE_UPDATE_ERROR: null
 });
 
 // All global error action types

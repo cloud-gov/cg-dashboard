@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
+import { appPropType } from '../../../stores/app_store';
 import appActions from '../../../actions/app_actions';
+import {
+  envRequestPropType,
+  updateErrorPropType
+} from '../../../stores/env_store';
 import envActions from '../../../actions/env_actions';
 import Action from '../../action.jsx';
+import Loading from '../../loading.jsx';
 import ErrorMessage from '../../error_message.jsx';
 import ComplexList from '../../complex_list.jsx';
+import Panel from '../../panel.jsx';
 import PanelActions from '../../panel_actions.jsx';
 import EnvVarListItem from '../env_var_list_item';
 import EnvVarForm from '../env_var_form';
@@ -13,17 +19,9 @@ import Header from './header';
 import Section from './section';
 
 const propTypes = {
-  app: PropTypes.shape({
-    guid: PropTypes.string.isRequired
-  }).isRequired,
-  env: PropTypes.shape({
-    environment_json: PropTypes.object.isRequired
-  }).isRequired,
-  updateError: PropTypes.shape({
-    code: PropTypes.number.isRequired,
-    description: PropTypes.string.isRequired,
-    errorCode: PropTypes.string.isRequired
-  })
+  app: appPropType.isRequired,
+  envRequest: envRequestPropType.isRequired,
+  updateError: updateErrorPropType
 };
 
 export default class EnvPanel extends Component {
@@ -41,8 +39,8 @@ export default class EnvPanel extends Component {
   }
 
   handleDelete(name) {
-    const { app, env } = this.props;
-    const { environment_json: envVars } = env;
+    const { app, envRequest: { result } } = this.props;
+    const { environment_json: envVars } = result;
 
     appActions
       .updateApp(app.guid, {
@@ -62,8 +60,8 @@ export default class EnvPanel extends Component {
   }
 
   handleUpdate({ name, value }) {
-    const { app, env } = this.props;
-    const { environment_json: envVars } = env;
+    const { app, envRequest: { result } } = this.props;
+    const { environment_json: envVars } = result;
 
     envActions.invalidateUpdateError(app.guid);
     appActions
@@ -98,8 +96,8 @@ export default class EnvPanel extends Component {
   }
 
   renderUserVarItems() {
-    const { app, env, updateError } = this.props;
-    const { environment_json: envVars } = env;
+    const { app, envRequest: { result }, updateError } = this.props;
+    const { environment_json: envVars } = result;
 
     return Object.keys(envVars).map(name => (
       <EnvVarListItem
@@ -146,13 +144,13 @@ export default class EnvPanel extends Component {
   }
 
   renderEnv() {
-    const { env } = this.props;
+    const { envRequest: { result } } = this.props;
 
     return (
       <pre>
         {JSON.stringify(
           {
-            ...env,
+            ...result,
             environment_json: '<omitted>'
           },
           null,
@@ -162,10 +160,23 @@ export default class EnvPanel extends Component {
     );
   }
 
-  render() {
-    const { app, updateError } = this.props;
-    const { showUserEnv, showAddForm, showEnv } = this.state;
+  renderContents() {
+    const { app, envRequest, updateError } = this.props;
     const { updating } = app;
+    const { isFetching, error } = envRequest;
+    const { showUserEnv, showAddForm, showEnv } = this.state;
+
+    if (isFetching) {
+      return <Loading style="inline" />;
+    }
+
+    if (error) {
+      return (
+        <ErrorMessage
+          error={{ message: 'Could not load environment details.' }}
+        />
+      );
+    }
 
     return (
       <div>
@@ -199,6 +210,10 @@ export default class EnvPanel extends Component {
         </Section>
       </div>
     );
+  }
+
+  render() {
+    return <Panel title="Environment variables">{this.renderContents()}</Panel>;
   }
 }
 

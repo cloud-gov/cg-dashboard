@@ -2,7 +2,6 @@ import http from 'axios';
 
 import { noticeError } from '../util/analytics.js';
 import domainActions from '../actions/domain_actions.js';
-import envActions from '../actions/env_actions.js';
 import errorActions from '../actions/error_actions.js';
 import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
@@ -545,11 +544,7 @@ export default {
   },
 
   fetchEnv(appGuid) {
-    return http.get(`${APIV}/apps/${appGuid}/env`)
-      .then(res => {
-        envActions.receivedEnv(res.data, appGuid);
-        return res;
-      });
+    return http.get(`${APIV}/apps/${appGuid}/env`);
   },
 
   fetchPrivateDomain(domainGuid) {

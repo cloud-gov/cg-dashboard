@@ -5,10 +5,16 @@
  */
 
 import Immutable from 'immutable';
+import PropTypes from 'prop-types';
 
 import BaseStore from './base_store.js';
 import { appStates, appActionTypes } from '../constants.js';
 
+export const appPropType = PropTypes.shape({
+  guid: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  updating: PropTypes.bool
+});
 
 export class AppStore extends BaseStore {
   constructor() {

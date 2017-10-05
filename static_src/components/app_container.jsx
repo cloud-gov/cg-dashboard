@@ -36,7 +36,7 @@ function mapStoreToState() {
   let route;
   const currentAppGuid = AppStore.currentAppGuid;
   const app = AppStore.get(currentAppGuid);
-  const env = EnvStore.getEnv(currentAppGuid);
+  const envRequest = EnvStore.getEnvRequest(currentAppGuid);
   const envUpdateError = EnvStore.getUpdateError(currentAppGuid);
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
@@ -57,7 +57,7 @@ function mapStoreToState() {
     currentOrgName: OrgStore.currentOrgName,
     currentSpaceName: SpaceStore.currentSpaceName,
     empty: !AppStore.loading && !appReady(app) && !QuotaStore.loading,
-    env,
+    envRequest,
     envUpdateError,
     loading: AppStore.loading || QuotaStore.loading,
     org,
@@ -193,7 +193,7 @@ export default class AppContainer extends React.Component {
 
 
   render() {
-    const { app, env, envUpdateError } = this.state;
+    const { app, envRequest, envUpdateError } = this.state;
 
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
@@ -231,9 +231,13 @@ export default class AppContainer extends React.Component {
             <ServiceInstancePanel />
           </Panel>
 
-          <Panel title="Environment variables">
-            {env && <EnvPanel app={app} env={env} updateError={envUpdateError} />}
-          </Panel>
+          {envRequest && (
+            <EnvPanel
+              app={app}
+              envRequest={envRequest}
+              updateError={envUpdateError}
+            />
+          )}
 
           <Panel title="Recent activity">
             { this.logsDocumentation }
