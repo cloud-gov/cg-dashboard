@@ -78,7 +78,7 @@ func startApp(port string, env *cfenv.App) {
 	fmt.Println("starting app now...")
 
 	// TODO add better timeout message. By default it will just say "Timeout"
-	protect := csrf.Protect([]byte(envVars.MustString(helpers.SessionKeyEnvVar)), csrf.Secure(settings.SecureCookies))
+	protect := csrf.Protect(settings.CSRFKey, csrf.Secure(settings.SecureCookies))
 	http.ListenAndServe(":"+port, protect(
 		http.TimeoutHandler(context.ClearHandler(app), helpers.TimeoutConstant, ""),
 	))

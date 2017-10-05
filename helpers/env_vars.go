@@ -43,8 +43,11 @@ var (
 	LocalCFEnvVar = "LOCAL_CF"
 	// SessionBackendEnvVar is the session backend type
 	SessionBackendEnvVar = "SESSION_BACKEND"
-	// SessionKeyEnvVar is the secret key used to protect session data
-	SessionKeyEnvVar = "SESSION_KEY"
+	// LegacySessionKeyEnvVar should not be used for new installations,
+	// instead CSRF_KEY or SESSION_AUTHENTICATION_KEY should be used.
+	// For compatibility with legacy environments, if the new variables
+	// are not set, we fallback to this variable, and cast it to []byte.
+	LegacySessionKeyEnvVar = "SESSION_KEY"
 	// BasePathEnvVar is the path to the application root
 	BasePathEnvVar = "BASE_PATH"
 	// SMTPHostEnvVar is SMTP host for UAA invites
@@ -59,6 +62,10 @@ var (
 	SMTPFromEnvVar = "SMTP_FROM"
 	// TICSecretEnvVar is the shared secret with CF API proxy for forwarding client IPs
 	TICSecretEnvVar = "TIC_SECRET"
+	// CSRFKeyEnvVar is used for CSRF token. Must be 32 bytes, hex-encoded, e.g. openssl rand -hex 32
+	CSRFKeyEnvVar = "CSRF_KEY"
+	// SessionAuthenticationEnvVar used to sign user sessions. Must be 32 or 64 hex-encoded bytes, e.g. openssl rand -hex 64
+	SessionAuthenticationEnvVar = "SESSION_AUTHENTICATION_KEY"
 )
 
 // EnvVars provides a convenient method to access environment variables

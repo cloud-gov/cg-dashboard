@@ -3,6 +3,7 @@ package helpers
 import (
 	"crypto/tls"
 	"encoding/gob"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"log"
@@ -71,6 +72,8 @@ type Settings struct {
 	SMTPFrom string
 	// Shared secret with CF API proxy
 	TICSecret string
+	// CSRFKey used for gorilla CSRF validation
+	CSRFKey []byte
 }
 
 // CreateContext returns a new context to be used for http connections.
@@ -138,7 +141,47 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 		return GenerateRandomString(32)
 	}
 
+	// Initialize CSRF key
+	var err error
+	// First, try the new env variable
+	s.CSRFKey, err = hex.DecodeString(envVars.String(CSRFKeyEnvVar, ""))
+	if err != nil {
+		return err
+	}
+
+	// Fall back to legacy key variable and format - consider printing deprecation warning
+	if len(s.CSRFKey) == 0 {
+		s.CSRFKey = []byte(envVars.String(LegacySessionKeyEnvVar, ""))
+		if len(s.CSRFKey) != 0 {
+			log.Println("Warning: Use of deprecated SESSION_KEY. Please switch to CSRF_KEY (note new value is hex-encoded, see docs).")
+		}
+	}
+
+	// Return error if not found
+	if len(s.CSRFKey) == 0 {
+		return &ErrMissingEnvVar{Name: CSRFKeyEnvVar}
+	}
+
 	// Initialize Sessions.
+	// First, try the new env variable
+	sessionAuthenticationKey, err := hex.DecodeString(envVars.String(SessionAuthenticationEnvVar, ""))
+	if err != nil {
+		return err
+	}
+
+	// Fall back to legacy key variable and format
+	if len(sessionAuthenticationKey) == 0 {
+		sessionAuthenticationKey = []byte(envVars.String(LegacySessionKeyEnvVar, ""))
+		if len(sessionAuthenticationKey) != 0 {
+			log.Println("Warning: Use of deprecated SESSION_KEY. Please switch to SESSION_AUTHENTICATION_KEY (note new value is hex-encoded, see docs).")
+		}
+	}
+
+	// Return error if not found
+	if len(sessionAuthenticationKey) == 0 {
+		return &ErrMissingEnvVar{Name: SessionAuthenticationEnvVar}
+	}
+
 	switch envVars.String(SessionBackendEnvVar, "") {
 	case "redis":
 		address, password, err := getRedisSettings(env)
@@ -175,7 +218,7 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 			},
 		}
 		// create our redis pool.
-		store, err := redistore.NewRediStoreWithPool(redisPool, []byte(envVars.MustString(SessionKeyEnvVar)))
+		store, err := redistore.NewRediStoreWithPool(redisPool, sessionAuthenticationKey)
 		if err != nil {
 			return err
 		}
@@ -201,7 +244,7 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 			return true
 		}
 	default:
-		store := sessions.NewFilesystemStore("", []byte(envVars.MustString(SessionKeyEnvVar)))
+		store := sessions.NewFilesystemStore("", sessionAuthenticationKey)
 		store.MaxLength(4096 * 4)
 		store.Options = &sessions.Options{
 			HttpOnly: true,
