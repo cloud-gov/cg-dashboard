@@ -14,6 +14,7 @@
   "rules": {
     "comma-dangle": [2, "never"],
     "react/no-deprecated": 0,
-    "react/prefer-stateless-function": 0
+    "react/prefer-stateless-function": 0,
+    "space-before-function-paren": [1, "never"]
   }
 }
