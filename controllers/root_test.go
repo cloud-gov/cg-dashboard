@@ -34,7 +34,7 @@ func TestPingWithRedis(t *testing.T) {
 	// Create a request
 	response, request := NewTestRequest("GET", "/ping", nil)
 	// Start up redis.
-	redisURI, cleanUpRedis, pauseRedis, unapuaseRedis := CreateTestRedis()
+	redisURI, cleanUpRedis, pauseRedis, unapuaseRedis := CreateTestRedis(t)
 	os.Setenv("REDIS_URI", redisURI)
 	// Remove redis when finished.
 	defer cleanUpRedis()

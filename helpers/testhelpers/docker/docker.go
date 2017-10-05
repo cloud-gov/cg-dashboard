@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"testing"
 
 	dockerclient "github.com/fsouza/go-dockerclient"
 	"github.com/garyburd/redigo/redis"
@@ -45,9 +46,17 @@ func connectToDockerNetwork(pool *dockertest.Pool,
 	return "", false
 }
 
+// skipIfNoDocker will detect if Docker is unable to run, and if not, will skip the test
+func skipIfNoDocker(t *testing.T) {
+	if os.Getenv("SKIP_DOCKER") == "1" {
+		t.Skip("No support for docker")
+	}
+}
+
 // CreateTestRedis creates a actual redis instance with docker.
 // Useful for unit tests.
-func CreateTestRedis() (string, func(), func(), func()) {
+func CreateTestRedis(t *testing.T) (string, func(), func(), func()) {
+	skipIfNoDocker(t)
 	pool, err := dockertest.NewPool("")
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
@@ -89,7 +98,8 @@ func CreateTestRedis() (string, func(), func(), func()) {
 
 // CreateTestMailCatcher creates a actual redis instance with docker.
 // Useful for unit tests.
-func CreateTestMailCatcher() (string, string, string, func()) {
+func CreateTestMailCatcher(t *testing.T) (string, string, string, func()) {
+	skipIfNoDocker(t)
 	pool, err := dockertest.NewPool("")
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
