@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
-import createStyler from '../util/create_styler';
+import classNames from 'classnames';
 
 const displayTypeInline = 'inline';
 const displayTypeGlobal = 'global';
@@ -19,12 +17,6 @@ const defaultProps = {
 };
 
 export default class SystemErrorMessage extends Component {
-  constructor(props) {
-    super(props);
-
-    this.styler = createStyler(style);
-  }
-
   get errorMessage() {
     const { error } = this.props;
     const message = (error && error.message) || error.description;
@@ -59,7 +51,10 @@ export default class SystemErrorMessage extends Component {
 
     return (
       <div
-        className={this.styler('error_message', `error-${displayType}`)}
+        className={classNames(
+          'error_message',
+          displayType ? `error-${displayType}` : false
+        )}
         role="alert"
       >
         {this.errorMessage}

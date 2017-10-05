@@ -1,30 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
-import createStyler from '../util/create_styler';
-
-const displayTypeInline = 'inline';
-const displayTypeGlobal = 'global';
-const displayTypes = [displayTypeInline, displayTypeGlobal];
+import classNames from 'classnames';
 
 const propTypes = {
   error: PropTypes.object,
-  displayType: PropTypes.oneOf(displayTypes).isRequired
+  inline: PropTypes.bool.isRequired
 };
 
 const defaultProps = {
   error: null,
-  displayType: displayTypeInline
+  inline: false
 };
 
 export default class ErrorMessage extends Component {
-  constructor(props) {
-    super(props);
-
-    this.styler = createStyler(style);
-  }
-
   renderMessage() {
     const { error } = this.props;
     if (!error) {
@@ -35,7 +23,7 @@ export default class ErrorMessage extends Component {
   }
 
   render() {
-    const { displayType, error } = this.props;
+    const { error, inline } = this.props;
 
     if (!error) {
       return null;
@@ -43,7 +31,9 @@ export default class ErrorMessage extends Component {
 
     return (
       <div
-        className={this.styler('error_message', `error-${displayType}`)}
+        className={classNames('error_message', {
+          'error-inline': inline
+        })}
         role="alert"
       >
         {this.renderMessage()}
