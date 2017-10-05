@@ -109,13 +109,17 @@ In general, commit messages can be written in whatever way the author decides, b
 - [Airbnb styleguide for JS](https://github.com/airbnb/javascript)
   - Re-add deprecation warnings on linter when upgrade react.
 - [18F styleguide for CSS](https://pages.18f.gov/frontend/css-coding-styleguide/), through [stylelint](https://github.com/18F/stylelint-rules).
-- Linting will be run before tests run, so will fail the tests if files are not linted.
-- Additionally, linting should always
-  - fail on CI
-  - should not stop watching commands
-  - should not fail builds
-  - should fail test runs
-- Documentation will not be a focus right now.
+
+#### Formatting
+[Prettier](https://github.com/prettier/prettier) is used to automatically format a range of files (particularly `.css`, `.js`, `.jsx`, `.json`). See prettier's docs for how to enable automatic formatting on save for your editor.
+
+If it's necessary to manually run prettier, you can use the package script:
+
+```sh
+npm run prettier
+```
+
+Note: it's highly recommended to format on save, so the package script should generally not need to be used.
 
 ### Linting
 The code base includes linting configurations and tools, but is currently not fully linted. This means that there's an "opt-in" policy to linting: you decide when to add a file to linting.
@@ -123,6 +127,15 @@ The code base includes linting configurations and tools, but is currently not fu
 - If you touch another file that isn't linted yet, you should generally fix it and remove it from the lint ignore.
   - Unless under strict time constraints.
 - No new files should be added to the lint ignore. Consequently, all new files should be linted.
+- Linting will be run before tests run, so will fail the tests if files are not linted.
+- Additionally, linting should always
+  - fail on CI
+  - should not stop watching commands
+  - should not fail builds
+  - should fail test runs
+
+### Documentation
+Documentation is not a focus right now.
 
 ### Dependency management
 - The only language level dependencies should be `nodejs` and `go`.

@@ -5078,6 +5078,12 @@
       "from": "preserve@>=0.2.0 <0.3.0",
       "resolved": "https://registry.npmjs.org/preserve/-/preserve-0.2.0.tgz"
     },
+    "prettier": {
+      "version": "1.7.4",
+      "from": "prettier@1.7.4",
+      "resolved": "https://registry.npmjs.org/prettier/-/prettier-1.7.4.tgz",
+      "dev": true
+    },
     "prismjs": {
       "version": "1.6.0",
       "from": "prismjs@>=1.5.1 <2.0.0",
