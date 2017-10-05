@@ -50,7 +50,7 @@ A feature is a higher-level epic that will encompass multiple smaller units of w
 - A product owner or team member will check a story waiting acceptance and put it into "done" if it meets the criteria.
 - The feature has been usability tested with at least two current or potential cloud.gov users.
 
-For more information, see the high-level [cloud.gov respository](https://github.com/18F/cg-product) and [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md).
+For more information, see the high-level [cloud.gov repository](https://github.com/18F/cg-product) and [delivery process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md).
 
 
 ## Code standards
@@ -135,7 +135,7 @@ The code base includes linting configurations and tools, but is currently not fu
 
 To upgrade all dependencies to version stipulated in package.json
 
-- Ensure cloudgov-style or other dependencies are unlinked by runnging `npm unlink cloudgov-style`.
+- Ensure cloudgov-style or other dependencies are unlinked by running `npm unlink cloudgov-style`.
 - Remove `npm-shrinkwrap.json`.
 - Use `npm update --save --saveDev` to update all dependencies.
 - Make sure it works (run linting, tests, and acceptance tests).
@@ -143,10 +143,10 @@ To upgrade all dependencies to version stipulated in package.json
 
 To update a single package to a specific version
 
-- Ensure cloudgov-style or other dependencies are unlinked by runnging `npm unlink cloudgov-style`.
+- Ensure cloudgov-style or other dependencies are unlinked by running `npm unlink cloudgov-style`.
 - Run `npm install --save[Dev] {package name}@{version}` where package name is the name of the package to update and version is the version you want to update to.
 - If there are errors related to peer dependencies, continue installing them in the same fashion.
-- If there are no errors, both package.json and npm-shrinkwrap.json should have changes that can be commited.
+- If there are no errors, both package.json and npm-shrinkwrap.json should have changes that can be committed.
 
 ### Code review
 - When doing code reviews, the reviewer should pull down the code and test on their local computer. This is because the staging site is not often used, meaning bugs could be present for long amounts of time.
@@ -156,7 +156,7 @@ To update a single package to a specific version
 ### Device support
 - Browser support is all major browsers and Internet Explorer 10 and up.
 - Pages and views should work on different device screen-sizes, and should work as specified in design mockups.
-  - If making a feature work on mobile is time-consuming, and there isnt' an official design for the mobile view of the feature yet, the mobile view can be held off until a design becomes available.
+  - If making a feature work on mobile is time-consuming, and there isn't an official design for the mobile view of the feature yet, the mobile view can be held off until a design becomes available.
 - Support for browsers not running javascript should be attempted if it's easy, but not a major focus
   - Eventually the react code base will allow server-side, isomorphic rendering
     for both performance and support reasons. This means code should attempt to
@@ -215,7 +215,7 @@ Here are some basic rules to work with action creators successfully:
 
 #### Stores
 
-Stores are meant to hold all the data of the application such as the Cloud Foundry entities such as organizations, spaces, apps, etc as well as UI data such as loading states, current pages, and current user info. They use [Immutable.js](https://facebook.github.io/immutable-js) as their main data structure to limit accidental manipulation of the data. They bind to certain actions and change their data. When they change their data, they emit a changed which is listend to by the components that require their data, which in turn render.
+Stores are meant to hold all the data of the application such as the Cloud Foundry entities such as organizations, spaces, apps, etc as well as UI data such as loading states, current pages, and current user info. They use [Immutable.js](https://facebook.github.io/immutable-js) as their main data structure to limit accidental manipulation of the data. They bind to certain actions and change their data. When they change their data, they emit a changed which is listened to by the components that require their data, which in turn render.
 
 Here are some basic rules to work with stores successfully:
 
@@ -352,7 +352,7 @@ Here are some basic rules to work with components successfully:
    Things.propTypes = propTypes;
    Things.defaultProps = defaultProps;
    ```
-- If UI displaying is dependant on a certian amount of time, this should be set in the component rather then the store, see [Loading component](https://github.com/18F/cg-dashboard/blob/master/static_src/components/loading.jsx#L44) as an example.
+- If UI displaying is dependent on a certain amount of time, this should be set in the component rather then the store, see [Loading component](https://github.com/18F/cg-dashboard/blob/master/static_src/components/loading.jsx#L44) as an example.
 - If a component's prop types is technically an enum, use `oneOf` rather then the underlying data structure.
   ```js
   // Good
