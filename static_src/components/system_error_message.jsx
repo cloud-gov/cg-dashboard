@@ -2,18 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-const displayTypeInline = 'inline';
-const displayTypeGlobal = 'global';
-const displayTypes = [displayTypeInline, displayTypeGlobal];
-
 const propTypes = {
   error: PropTypes.object,
-  displayType: PropTypes.oneOf(displayTypes).isRequired
+  inline: PropTypes.bool.isRequired
 };
 
 const defaultProps = {
   error: null,
-  displayType: displayTypeInline
+  inline: true
 };
 
 export default class SystemErrorMessage extends Component {
@@ -43,7 +39,7 @@ export default class SystemErrorMessage extends Component {
   }
 
   render() {
-    const { displayType, error } = this.props;
+    const { error, inline } = this.props;
 
     if (!error) {
       return null;
@@ -51,10 +47,9 @@ export default class SystemErrorMessage extends Component {
 
     return (
       <div
-        className={classNames(
-          'error_message',
-          displayType ? `error-${displayType}` : false
-        )}
+        className={classNames('error_message', {
+          'error-inline': inline
+        })}
         role="alert"
       >
         {this.errorMessage}
