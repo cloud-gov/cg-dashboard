@@ -16,8 +16,6 @@ import ServiceInstanceTable from './service_instance_table.jsx';
 import SpaceStore from '../stores/space_store.js';
 import Users from './users.jsx';
 import UserStore from '../stores/user_store';
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 function stateSetter() {
   return {
@@ -44,7 +42,6 @@ export default class SpaceContainer extends React.Component {
 
     this.state = stateSetter();
     this._onChange = this._onChange.bind(this);
-    this.styler = createStyler(style);
   }
 
   componentDidMount() {
@@ -88,19 +85,19 @@ export default class SpaceContainer extends React.Component {
       const space = this.state.space;
       main = (
       <div>
-        <div className={ this.styler('grid') }>
-          <div className={ this.styler('grid-width-12') }>
+        <div className="grid">
+          <div className="grid-width-12">
             <Breadcrumbs />
             <PageHeader title={ title } />
           </div>
         </div>
         <Panel title="">
-          <div className={ this.styler('grid', 'panel-overview-header') }>
-            <div className={ this.styler('grid-width-8') }>
-              <h1 className={ this.styler('panel-title') }>Space overview</h1>
+          <div className="grid panel-overview-header">
+            <div className="grid-width-8">
+              <h1 className="panel-title">Space overview</h1>
             </div>
-            <div className={ this.styler('grid-width-4') }>
-              <div className={ this.styler('count_status_container') }>
+            <div className="grid-width-4">
+              <div className="count_status_container">
                 <AppCountStatus apps={ space.apps } appCount={ space.apps && space.apps.length } />
                 <ServiceCountStatus services={ space.services }
                   serviceCount={ space.services && space.services.length }

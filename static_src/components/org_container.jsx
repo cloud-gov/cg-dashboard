@@ -2,10 +2,6 @@
 import React from 'react';
 
 import { config } from 'skin';
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
-
 import AppCountStatus from './app_count_status.jsx';
 import Breadcrumbs from './breadcrumbs.jsx';
 import EntityIcon from './entity_icon.jsx';
@@ -50,7 +46,6 @@ export default class OrgContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = stateSetter();
-    this.styler = createStyler(style);
     this._onChange = this._onChange.bind(this);
   }
 
@@ -153,20 +148,20 @@ export default class OrgContainer extends React.Component {
 
       // TODO repeated pattern space_container, overview
       content = (
-      <div className={ this.styler('grid') }>
-        <div className={ this.styler('grid') }>
-          <div className={ this.styler('grid-width-12') }>
+      <div className="grid">
+        <div className="grid">
+          <div className="grid-width-12">
             <Breadcrumbs />
             <PageHeader title={ title } />
           </div>
         </div>
         <Panel title="">
-          <div className={ this.styler('grid', 'panel-overview-header') }>
-            <div className={ this.styler('grid-width-6') }>
-              <h1 className={ this.styler('panel-title') }>Organization overview</h1>
+          <div className="grid panel-overview-header">
+            <div className="grid-width-6">
+              <h1 className="panel-title">Organization overview</h1>
             </div>
-            <div className={ this.styler('grid-width-6') }>
-              <div className={ this.styler('count_status_container') } >
+            <div className="grid-width-6">
+              <div className="count_status_container">
                 <SpaceCountStatus spaces={ state.spaces } />
                 <AppCountStatus apps={ allApps } appCount={ allApps && allApps.length } />
                 <ServiceCountStatus services={ allServices }

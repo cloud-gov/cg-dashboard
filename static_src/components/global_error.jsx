@@ -3,11 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Notification from './notification.jsx';
-import createStyler from '../util/create_styler';
 import { config } from 'skin';
 import errorActions from '../actions/error_actions.js';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
 
 const propTypes = {
   err: PropTypes.object
@@ -18,8 +15,6 @@ const defaultProps = {};
 export default class GlobalError extends React.Component {
   constructor(props) {
     super(props);
-
-    this.styler = createStyler(style);
 
     this.onNotificationDismiss = this.onNotificationDismiss.bind(this);
     this.onNotificationRefresh = this.onNotificationRefresh.bind(this);

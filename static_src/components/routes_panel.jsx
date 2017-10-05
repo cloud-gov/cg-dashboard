@@ -1,5 +1,4 @@
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import AppStore from '../stores/app_store.js';
@@ -15,8 +14,6 @@ import RouteStore from '../stores/route_store.js';
 import QuotaStore from '../stores/quota_store.js';
 import SpaceStore from '../stores/space_store.js';
 import { spaceHref } from '../util/url';
-
-import createStyler from '../util/create_styler';
 
 function stateSetter() {
   const appGuid = AppStore.currentAppGuid;
@@ -63,7 +60,6 @@ export default class RoutesPanel extends React.Component {
     super(props);
 
     this.state = stateSetter();
-    this.styler = createStyler(style);
 
     this._onChange = this._onChange.bind(this);
     this._createRouteAndAssociate = this._createRouteAndAssociate.bind(this);
@@ -147,7 +143,7 @@ export default class RoutesPanel extends React.Component {
 
     return (
       <a href={ spaceHref(this.state.orgGuid, this.state.spaceGuid) }
-        className={this.styler('space-link')}
+        className="space-link"
       >
         { this.state.spaceName }
       </a>

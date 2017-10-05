@@ -1,10 +1,6 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
-import createStyler from '../util/create_styler';
 import { entityHealth } from '../constants.js';
 import EntityIcon from './entity_icon.jsx';
 
@@ -30,8 +26,6 @@ const defaultProps = {
 export default class CountStatus extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
-    this.styler = createStyler(style);
   }
 
   render() {
@@ -39,11 +33,11 @@ export default class CountStatus extends React.Component {
     const statusClass = `count_status-${props.health.toLowerCase()}`;
 
     return (
-      <div className={ this.styler('count_status', statusClass) }>
-        <div className={ this.styler('count_status-icon') }>
+      <div className={`count_status ${statusClass}`}>
+        <div className="count_status-icon">
           <EntityIcon entity={ props.iconType } health={ props.health } iconSize="medium" />
         </div>
-        <div className={ this.styler('count_status-text') }>
+        <div className="count_status-text">
           <strong>{ props.count }</strong> { props.name }
         </div>
       </div>

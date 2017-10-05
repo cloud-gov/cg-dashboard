@@ -1,8 +1,5 @@
 
 import React from 'react';
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
 import AppStore from '../stores/app_store.js';
 import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
@@ -13,7 +10,6 @@ import ServicePlanStore from '../stores/service_plan_store.js';
 import SpaceStore from '../stores/space_store.js';
 import { spaceHref } from '../util/url';
 
-import createStyler from '../util/create_styler';
 
 const propTypes = {
 };
@@ -81,7 +77,6 @@ export default class ServiceInstancePanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = stateSetter();
-    this.styler = createStyler(style);
 
     this._onChange = this._onChange.bind(this);
   }

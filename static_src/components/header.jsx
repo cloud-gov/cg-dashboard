@@ -1,19 +1,15 @@
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import React from 'react';
 
 import LoginStore from '../stores/login_store.js';
 import HeaderLink from './header_link.jsx';
 
 import Action from './action.jsx';
-import createStyler from '../util/create_styler';
 import { config } from 'skin';
 
 export default class Header extends React.Component {
 
   constructor(props) {
     super(props);
-    this.styler = createStyler(style);
   }
 
   getImagePath(iconName) {
@@ -35,21 +31,21 @@ export default class Header extends React.Component {
       </Action>
     </HeaderLink>;
     return (
-    <header className={ this.styler('header', 'header-no_sidebar', 'test-header') }>
-      <div className={ this.styler('header-wrap') }>
-        <div className={ this.styler('header-title') }>
-          <a href="/#/" className={ this.styler('logo') } title="Home">
-            <svg className={ this.styler('logo-img') }>
+    <header className="header header-no_sidebar test-header">
+      <div className="header-wrap">
+        <div className="header-title">
+          <a href="/#/" className="logo" title="Home">
+            <svg className="logo-img">
               <use
                 xlinkHref={ this.getImagePath('logo-dashboard') }
               >
               </use>
             </svg>
           </a>
-          <h1 className={ this.styler('usa-sr-only') }>cloud.gov</h1>
+          <h1 className="usa-sr-only">cloud.gov</h1>
         </div>
-        <nav className={ this.styler('header-side') }>
-          <ul className={ this.styler('nav') }>
+        <nav className="header-side">
+          <ul className="nav">
             { config.header.links.map((link, index) =>
                 <HeaderLink url={link.url} text={link.text} key={index} />)
             }

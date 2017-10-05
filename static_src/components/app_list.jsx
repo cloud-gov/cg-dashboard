@@ -1,9 +1,6 @@
 
 import React from 'react';
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
-import createStyler from '../util/create_styler';
 import AppQuicklook from './app_quicklook.jsx';
 import ComplexList from './complex_list.jsx';
 import EntityEmpty from './entity_empty.jsx';
@@ -13,7 +10,6 @@ import Loading from './loading.jsx';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
 import UserStore from '../stores/user_store';
-
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
@@ -42,7 +38,6 @@ export default class AppList extends React.Component {
 
     this.state = stateSetter();
     this._onChange = this._onChange.bind(this);
-    this.styler = createStyler(style);
   }
 
   componentDidMount() {

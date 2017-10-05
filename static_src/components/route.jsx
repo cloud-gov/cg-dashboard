@@ -1,7 +1,6 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
 import Action from './action.jsx';
 import ConfirmationBox from './confirmation_box.jsx';
 import DomainStore from '../stores/domain_store.js';
@@ -10,11 +9,8 @@ import ElasticLineItem from './elastic_line_item.jsx';
 import Loading from './loading.jsx';
 import RouteForm from './route_form.jsx';
 import RouteStore from '../stores/route_store.js';
-import createStyler from '../util/create_styler';
 import formatRoute from '../util/format_route';
 import routeActions from '../actions/route_actions.js';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
 
 const propTypes = {
   appGuid: PropTypes.string.isRequired,
@@ -36,7 +32,6 @@ export default class Route extends React.Component {
   constructor(props) {
     super(props);
 
-    this.styler = createStyler(style);
     this.state = stateSetter(props);
 
     this._deleteHandler = this._deleteHandler.bind(this);
@@ -216,7 +211,7 @@ export default class Route extends React.Component {
             <a
               href={ `//${url}` }
               title="See app route"
-              className={this.styler('route-link')}
+              className="route-link"
             >{ url }</a>
           );
         }

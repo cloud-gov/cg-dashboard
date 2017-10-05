@@ -2,9 +2,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
-import createStyler from '../util/create_styler';
-
 import AppQuicklook from './app_quicklook.jsx';
 import ComplexList from './complex_list.jsx';
 import EntityEmpty from './entity_empty.jsx';
@@ -25,12 +22,6 @@ const defaultProps = {
 };
 
 export default class SpaceQuicklook extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.styler = createStyler(style);
-  }
-
   spaceHref() {
     const props = this.props;
     return spaceHref(props.orgGuid, props.space.guid);
@@ -67,7 +58,7 @@ export default class SpaceQuicklook extends React.Component {
 
     return (
       <ComplexList className="test-space-quicklook">
-        <h3 className={ this.styler('contents-primary') }>
+        <h3 className="contents-primary">
           <EntityIcon entity="space" iconSize="medium" />
           <a href={ this.spaceHref() }>{ space.name }</a>
         </h3>

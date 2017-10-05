@@ -1,5 +1,3 @@
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -15,7 +13,6 @@ import ResourceUsage from './resource_usage.jsx';
 import { appHealth } from '../util/health';
 import { entityHealth } from '../constants';
 import appActions from '../actions/app_actions.js';
-import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
 
 // Calculates the running average based on a fixed n number of items To average
@@ -66,8 +63,6 @@ export default class UsageAndLimits extends React.Component {
   constructor(props) {
     super(props);
 
-    this.styler = createStyler(style);
-
     // Create the form instance in the store
     const { instances, memory, disk_quota } = this.props.app;
     const form = FormStore.create(formGuid(props.app), {
@@ -114,7 +109,7 @@ export default class UsageAndLimits extends React.Component {
 
     // For instance usage, we average the instances together
     return (
-    <div className={ this.styler('stat-group') }>
+    <div className="stat-group">
       <ResourceUsage title="Instance disk used"
         amountUsed={ this.getStat('disk', average.bind(null, this.props.app.running_instances)) }
         amountTotal={ this.getStat('disk_quota') }
@@ -139,7 +134,7 @@ export default class UsageAndLimits extends React.Component {
 
     // For instance usage, we average the instances together
     return (
-    <div className={ this.styler('stat-group') }>
+    <div className="stat-group">
       <ResourceUsage title="Instance memory used"
         amountUsed={ this.getStat('mem', average.bind(null, this.props.app.running_instances)) }
         amountTotal={ this.getStat('mem_quota') }
@@ -185,7 +180,7 @@ export default class UsageAndLimits extends React.Component {
 
 
     let instances = (
-      <span className={ this.styler('stat-primary')}>
+      <span className="stat-primary">
 	{ instanceCount }
       </span>
     );
@@ -193,7 +188,7 @@ export default class UsageAndLimits extends React.Component {
     if (this.state.editing) {
       instances = (
         <FormNumber
-          className={ this.styler('stat-input', 'stat-input-text', 'stat-input-text-scale') }
+          className="stat-input stat-input-text stat-input-text-scale"
           formGuid={ formGuid(this.props.app) }
           id="scale"
           inline
@@ -206,11 +201,11 @@ export default class UsageAndLimits extends React.Component {
     }
 
     return (
-      <div className={ this.styler('stat', 'stat-single_box') }>
-        <h2 className={ this.styler('stat-header')}>Instances</h2>
+      <div className="stat stat-single_box">
+        <h2 className="stat-header">Instances</h2>
 	{ instances }
         <br />
-        <span className={ this.styler('subtext') }>
+        <span className="subtext">
           Instance applies to memory and disk
         </span>
       </div>

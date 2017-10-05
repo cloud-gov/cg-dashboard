@@ -1,9 +1,5 @@
-
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 import CountStatus from './count_status.jsx';
 import { entityHealth } from '../constants.js';
@@ -22,8 +18,6 @@ const defaultProps = {
 export default class AppCountStatus extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
-    this.styler = createStyler(style);
   }
 
   render() {

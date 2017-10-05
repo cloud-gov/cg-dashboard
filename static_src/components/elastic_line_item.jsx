@@ -2,9 +2,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
 const ALIGN_STYLES = [
   'start',
   'end'
@@ -22,8 +19,6 @@ const defaultProps = {
 export default class ElasticLineItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
-    this.styler = createStyler(style);
   }
 
   render() {
@@ -31,7 +26,7 @@ export default class ElasticLineItem extends React.Component {
     const alignClass = `elastic_line-item-${props.align}`;
 
     return (
-      <div className={ this.styler('elastic_line-item', alignClass) }>
+      <div className={ `elastic_line-item ${alignClass}`}>
         { this.props.children }
       </div>
     );

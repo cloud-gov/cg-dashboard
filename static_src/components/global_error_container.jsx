@@ -4,8 +4,6 @@ import React from 'react';
 
 import ErrorStore from '../stores/error_store.js';
 import GlobalError from './global_error.jsx';
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const propTypes = {
   maxItems: PropTypes.number
@@ -27,7 +25,6 @@ export default class GlobalErrorContainer extends React.Component {
     super(props);
 
     this.state = stateSetter();
-    this.styler = createStyler(style);
 
     this._onChange = this._onChange.bind(this);
   }

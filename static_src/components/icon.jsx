@@ -2,9 +2,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
 const ICON_TYPES = [
   'fill',
   'stroke'
@@ -42,8 +39,6 @@ const defaultProps = {
 export default class Icon extends React.Component {
   constructor(props) {
     super(props);
-
-    this.styler = createStyler(style);
   }
 
   getImagePath(iconName) {
@@ -58,8 +53,7 @@ export default class Icon extends React.Component {
     const sizeClass = this.props.iconSize && `icon-${this.props.iconSize}`;
     const borderedClass = (this.props.bordered) &&
       'icon-bordered';
-    const iconClasses = this.styler(mainClass, styleClass, sizeClass,
-                                    borderedClass);
+    const iconClasses = `${mainClass} ${styleClass} ${sizeClass} ${borderedClass}`;
 
     return (
       <span>

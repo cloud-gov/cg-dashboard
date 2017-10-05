@@ -1,9 +1,6 @@
 
 import React from 'react';
 
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
 import { config } from 'skin';
 import EntityEmpty from './entity_empty.jsx';
 import Icon from './icon.jsx';
@@ -33,7 +30,6 @@ export default class OverviewContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = stateSetter();
-    this.styler = createStyler(style);
     this._onChange = this._onChange.bind(this);
   }
 
@@ -110,7 +106,7 @@ export default class OverviewContainer extends React.Component {
     }
 
     return (
-      <div className={ this.styler('grid') }>
+      <div className="grid">
         <PageHeader title={ title } />
         <Panel title="Your organizations">
           { content }

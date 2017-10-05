@@ -1,22 +1,18 @@
 
 import React from 'react';
 
-import createStyler from '../util/create_styler';
 import { config } from 'skin';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 export default class Header extends React.Component {
-
   constructor(props) {
     super(props);
-    this.styler = createStyler(style);
   }
 
   render() {
     return (
-      <footer className={ this.styler('grid', 'footer', 'footer-no_sidebar') }>
-        <section className={ this.styler('grid-width-6') }>
-          <ul className={ this.styler('footer-links') }>
+      <footer className="grid footer footer-no_sidebar">
+        <section className="grid-width-6">
+          <ul className="footer-links">
             { config.footer.links.map((link) =>
               <li key={ link.url }>
                 <a href={ link.url }>{ link.text }</a>
@@ -24,8 +20,8 @@ export default class Header extends React.Component {
             )}
           </ul>
         </section>
-        <section className={ this.styler('grid-width-6') }>
-          <ul className={ this.styler('footer-info') }>
+        <section className="grid-width-6">
+          <ul className="footer-info">
             <li>{ config.footer.author_note }</li>
             <li>{ config.footer.code_note }</li>
             <li>{ config.footer.disclaimer_note }</li>

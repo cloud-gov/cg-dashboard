@@ -1,15 +1,10 @@
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-
 import Action from './action.jsx';
 import { FormError } from './form';
 import PanelActions from './panel_actions.jsx';
-
-import createStyler from '../util/create_styler';
 import formatRoute from '../util/format_route';
-
 import routeFormCss from '../css/route_form.css';
 
 const propTypes = {
@@ -41,7 +36,6 @@ export default class RouteForm extends React.Component {
     };
     this._onChange = this._onChange.bind(this);
     this._onSubmit = this._onSubmit.bind(this);
-    this.styler = createStyler(style, routeFormCss);
   }
 
 
@@ -110,26 +104,25 @@ export default class RouteForm extends React.Component {
     if (routeLimit > -1) {
       // TODO move form notification into own component.
       limit = (
-        <span className={ this.styler('form-notification', 'form-notification-info') }>
+        <span className="form-notification form-notification-info">
           <strong>{routeLimit}</strong> routes remain in your space quota
         </span>
       );
     }
 
     return (
-      <form className={ this.styler('route-form','panel-form-replace') }
-        onSubmit={ this._onSubmit } action="javascript:void(0);">
+      <form className="route-form panel-form-replace" } onSubmit={ this._onSubmit }>
         { limit }
         <fieldset>
-          <div className={ this.styler('route-fields') }>
-            <div className={ this.styler('route-field-host') }>
+          <div className="route-fields">
+            <div className="route-field-host">
               <label htmlFor={`${route.guid}-host`}>Host</label>
               <input type="text" id={`${route.guid}-host`}
                 name="host" value={ this.state.host }
                 onChange={ this._onChange }
               />
             </div>
-            <div className={ this.styler('route-field-domain') }>
+            <div className="route-field-domain">
               <label htmlFor={`${route.guid}-domain`}>Domain</label>
               <select id={`${route.guid}-domain`} name="domain_guid"
                 onChange={ this._onChange }
@@ -145,7 +138,7 @@ export default class RouteForm extends React.Component {
                 })}
               </select>
             </div>
-            <div className={ this.styler('route-field-path') }>
+            <div className="route-field-path">
               <label htmlFor={`${route.guid}-path`}>Path (optional)</label>
               <input type="text" id={`${route.guid}-path`}
                 name="path" value={ this.state.path }
@@ -157,7 +150,7 @@ export default class RouteForm extends React.Component {
         <div>
           <label htmlFor="route-preview">Route preview</label>
           <input type="text" readOnly id="route-preview"
-            className={ this.styler('route-form-preview') }
+            className="route-form-preview"
             value={ this.fullUrl }
           ></input>
           <div>
@@ -172,7 +165,7 @@ export default class RouteForm extends React.Component {
             })()}
           </div>
         </div>
-        <div className={ this.styler('route-form-actions') }>
+        <div className="route-form-actions">
           <PanelActions>
             <Action clickHandler={ this.props.cancelHandler } label="Cancel"
               style="base" type="outline"
