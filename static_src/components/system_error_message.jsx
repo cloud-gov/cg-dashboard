@@ -8,6 +8,16 @@ const displayTypeInline = 'inline';
 const displayTypeGlobal = 'global';
 const displayTypes = [displayTypeInline, displayTypeGlobal];
 
+const propTypes = {
+  error: PropTypes.object,
+  displayType: PropTypes.oneOf(displayTypes).isRequired
+};
+
+const defaultProps = {
+  error: null,
+  displayType: displayTypeInline
+};
+
 export default class SystemErrorMessage extends Component {
   constructor(props) {
     super(props);
@@ -58,12 +68,6 @@ export default class SystemErrorMessage extends Component {
   }
 }
 
-SystemErrorMessage.propTypes = {
-  error: PropTypes.object,
-  displayType: PropTypes.oneOf(displayTypes).isRequired
-};
+SystemErrorMessage.propTypes = propTypes;
 
-SystemErrorMessage.defaultProps = {
-  error: null,
-  displayType: displayTypeInline
-};
+SystemErrorMessage.defaultProps = defaultProps;
