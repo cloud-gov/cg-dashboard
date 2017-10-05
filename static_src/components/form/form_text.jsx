@@ -1,17 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import FormElement from './form_element.jsx';
 import FormError from './form_error.jsx';
-import createStyler from '../../util/create_styler';
+import classnames from 'classnames';
 
 export default class FormText extends FormElement {
-  constructor(props) {
-    super(props);
-    this.state = this.state || {};
-    this.styler = createStyler(style);
-  }
-
   get error() {
     if (!this.state.err) {
       return null;
@@ -21,20 +14,15 @@ export default class FormText extends FormElement {
   }
 
   render() {
-    const classes = [];
-
-    if (this.props.inline) {
-      classes.push('form_text-inline');
-    }
-
-    if (!!this.error) {
-      classes.push('error');
-    }
+    const classes = classnames({
+      'form_text-inline': this.props.inline,
+      error: !!this.error
+    });
 
     // Spaces in label give a healthy space for inline forms
     const label = <label htmlFor={ this.key }> { this.props.label } </label>;
     return (
-      <div className={ this.styler(classes) }>
+      <div className={ classes }>
         { !this.props.labelAfter && label }
         <input type="text" id={ this.key } value={ this.state.value }
           onChange={ this.onChange } className={ this.classes }

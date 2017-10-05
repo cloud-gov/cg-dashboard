@@ -24,10 +24,6 @@ const defaultProps = {
 };
 
 export default class CountStatus extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const props = this.props;
     const statusClass = `count_status-${props.health.toLowerCase()}`;

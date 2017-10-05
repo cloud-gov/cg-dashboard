@@ -21,10 +21,6 @@ const defaultProps = {
 };
 
 export default class ComplexList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   hasAnyTitle() {
     return !!(this.props.title || this.props.titleElement);
   }

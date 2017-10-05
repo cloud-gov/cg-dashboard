@@ -7,11 +7,6 @@ import Action from './action.jsx';
 import { config } from 'skin';
 
 export default class Header extends React.Component {
-
-  constructor(props) {
-    super(props);
-  }
-
   getImagePath(iconName) {
     const img = require('cloudgov-style/img/cloudgov-sprite.svg');
     return `/assets/${img}#${iconName}`;

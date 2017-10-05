@@ -10,11 +10,6 @@ const propTypes = {
 };
 
 export default class HeaderLink extends React.Component {
-
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     let linkContent = (<a href={this.props.url} className={ this.props.classes }>
       {this.props.text}</a>);

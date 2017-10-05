@@ -7,10 +7,6 @@ const propTypes = {
 };
 
 export default class PageHeader extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   get actions() {
     if (!this.props.children) {
       return null;

@@ -11,10 +11,6 @@ const defaultProps = {
 };
 
 export default class InfoSandbox extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <section className={ this.props.className }>

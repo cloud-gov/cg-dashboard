@@ -5,10 +5,6 @@ import { config } from 'skin';
 import PanelActions from './panel_actions.jsx';
 
 export default class InfoLogs extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <PanelActions>

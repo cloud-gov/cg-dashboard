@@ -27,10 +27,6 @@ const defaultProps = {
 };
 
 export default class AppQuicklook extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   appHref() {
     const props = this.props;
     const appGuid = props.app.guid;

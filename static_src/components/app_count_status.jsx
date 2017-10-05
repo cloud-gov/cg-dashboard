@@ -16,10 +16,6 @@ const defaultProps = {
 };
 
 export default class AppCountStatus extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const props = this.props;
     let health = entityHealth.inactive;

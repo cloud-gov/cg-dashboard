@@ -18,14 +18,10 @@ const defaultProps = {
 };
 
 export default class ExpandableBox extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const expandedClass = this.props.isExpanded && 'expandable_box-is_expanded';
     return (
-      <div className={[expandable_box, expandedClass, ...this.props.classes].join(' ')}>
+      <div className={['expandable_box', expandedClass, ...this.props.classes].join(' ')}>
         <div className="expandable_box-click" onClick={ this.props.clickHandler }>
           { this.props.clickableContent }
         </div>

@@ -111,7 +111,7 @@ export default class RouteForm extends React.Component {
     }
 
     return (
-      <form className="route-form panel-form-replace" } onSubmit={ this._onSubmit }>
+      <form className="route-form panel-form-replace" onSubmit={ this._onSubmit }>
         { limit }
         <fieldset>
           <div className="route-fields">

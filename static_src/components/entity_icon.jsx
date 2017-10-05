@@ -19,10 +19,6 @@ const defaultProps = {
 };
 
 export default class EntityIcon extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const statusClass = this.props.health;
 

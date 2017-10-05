@@ -37,10 +37,6 @@ const defaultProps = {
 };
 
 export default class Icon extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   getImagePath(iconName) {
     const img = require('cloudgov-style/img/cloudgov-sprite.svg');
     const fill = this.props.iconType === 'fill' ? 'fill-' : '';

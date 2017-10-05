@@ -10,10 +10,6 @@ const defaultProps = {
 };
 
 export default class InfoActivities extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <section className={ this.props.className }>

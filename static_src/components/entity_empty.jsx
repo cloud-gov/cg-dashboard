@@ -13,10 +13,6 @@ const defaultProps = {
 };
 
 export default class EntityEmpty extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const props = this.props;
     return (

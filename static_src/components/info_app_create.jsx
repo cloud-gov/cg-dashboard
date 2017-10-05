@@ -17,10 +17,6 @@ const defaultProps = {
 
 
 export default class InfoAppCreate extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   get noPermission() {
     return (
       <p>

@@ -4,10 +4,6 @@ import React from 'react';
 import { config } from 'skin';
 
 export default class Header extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <footer className="grid footer footer-no_sidebar">

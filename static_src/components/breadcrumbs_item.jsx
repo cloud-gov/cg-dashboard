@@ -8,10 +8,6 @@ const propTypes = {
 };
 
 export default class BreadcrumbsItem extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const url = this.props.url;
     const content = url ?
