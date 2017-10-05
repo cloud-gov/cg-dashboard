@@ -145,8 +145,16 @@ func (err *ErrMissingEnvVar) Error() string {
 // with the given name, and will allow sourcing of environment variables
 // from there. If no service is found, a warning is printed, but no error thrown.
 func NewEnvLookupFromCFAppNamedService(cfApp *cfenv.App, namedService string) EnvLookup {
-	service, err := cfApp.Services.WithName(namedService)
-	if err != nil {
+	var service *cfenv.Service
+	if cfApp != nil {
+		var err error
+		service, err = cfApp.Services.WithName(namedService)
+		if err != nil {
+			// swallow error, as we'll print message below anyway, but ensure service hasn't been assigned to
+			service = nil
+		}
+	}
+	if service == nil {
 		log.Printf("Warning: No bound service found with name: %s, will not be used for sourcing env variables.\n", namedService)
 	}
 	return func(name string) (string, bool) {
