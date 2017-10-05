@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Fail fast on errors
+set -e
+
+# Download the fgt tool which returns a non-zero value if a command prints anything to stdout
+# And grab coverage / lint tools
+go get \
+	github.com/GeertJohan/fgt \
+	github.com/golang/lint/golint \
+	golang.org/x/tools/cmd/cover
+
+
 export BASE_PATH=$(cd $(dirname $0); pwd -P)
 
 # The value of the exit status for the script.
@@ -18,20 +29,15 @@ function testCmd() {
 # This will set the return to non zero if output is returned. useful for go fmt.
 # uses fgt instead of eval
 function testCmdOutput() {
+	set +e
 	fgt "$@"
 	ret=$?
+	set -e
 	if (($ret > 0)); then
 		scriptreturn=$ret
 		echo "FAILURE: $@"
 	fi
 }
-
-# Download the fgt tool which returns a non-zero value if a command prints anything to stdout
-go get github.com/GeertJohan/fgt
-go install github.com/GeertJohan/fgt
-
-# Golint install
-go get -u github.com/golang/lint/golint
 
 # Get the list of packages.
 pkgs=`glide novendor -x`
@@ -70,7 +76,6 @@ do
 done
 
 # Coverage Check
-go get golang.org/x/tools/cmd/cover
 echo
 echo
 echo '---------------------------------------------------------'
