@@ -543,6 +543,10 @@ export default {
     });
   },
 
+  fetchEnv(appGuid) {
+    return http.get(`${APIV}/apps/${appGuid}/env`);
+  },
+
   fetchPrivateDomain(domainGuid) {
     return this.fetchOne(`/private_domains/${domainGuid}`,
       domainActions.receivedDomain);
