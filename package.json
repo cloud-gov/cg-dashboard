@@ -2,8 +2,8 @@
   "name": "cloudgov-dashboard",
   "version": "1.17.1",
   "engines": {
-    "node": "6.x.x",
-    "npm": "3.x.x"
+    "node": "8.x.x",
+    "npm": "5.x.x"
   },
   "description": "A web dashboard for managing Cloud Foundry apps",
   "main": "null",
@@ -71,9 +71,11 @@
     "css-loader": "^0.23.0",
     "dedent": "^0.6.0",
     "director": "^1.2.8",
-    "eslint": "^2.7.0",
-    "eslint-config-airbnb": "^6.2.0",
-    "eslint-plugin-react": "^4.2.3",
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.2.0",
     "events": "^1.0.2",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.8.5",
