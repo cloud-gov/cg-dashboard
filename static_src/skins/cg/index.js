@@ -6,13 +6,18 @@
  * * Import this configuration
  * * Override any variables you wish to change
  * * Export the new configuration as a `const` called `config`
- * * Set the CF_SKIN environment variable to the name of your new skin directory
+ * * Export a `lang` variable
+ * * Set the SKIN_NAME environment variable to the name of your new skin directory
+ * * If the skin contains translation files, set the SKIN_PROVIDES_TRANSLATIONS
+ * * environment variable to true
  *
  * Example
  *
  * ```
  * import merge from 'deepmerge';
  * import { config as baseConfig } from '../cg';
+ *
+ * export const lang = 'en-GB';
  *
  * const newConfig = merge(baseConfig, {
  *   header: {
@@ -43,6 +48,8 @@ import InfoEnvironments from '../../components/info_environments.jsx';
 import InfoSandbox from '../../components/info_sandbox.jsx';
 import InfoStructure from '../../components/info_structure.jsx';
 import InfoLogs from '../../components/info_logs.jsx';
+
+export const lang = 'en-US';
 
 export const config = {
   footer: {
