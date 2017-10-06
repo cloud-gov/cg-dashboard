@@ -1,6 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import classNames from 'classnames';
 import ComplexListItem from './complex_list_item.jsx';
 
 const propTypes = {
@@ -26,7 +27,6 @@ export default class ComplexList extends React.Component {
   }
 
   render() {
-    const props = this.props;
     const emptyMessage = this.props.emptyMessage && (
       <div className="complex_list-empty">
         { this.props.emptyMessage }
@@ -36,8 +36,8 @@ export default class ComplexList extends React.Component {
 
     if (this.hasAnyTitle()) {
       let title;
-      if (props.titleElement) {
-        title = props.titleElement;
+      if (this.props.titleElement) {
+        title = this.props.titleElement;
       } else {
         title = this.props.title;
       }
@@ -50,8 +50,12 @@ export default class ComplexList extends React.Component {
       );
     }
 
+    const classes = classNames('complex_list', {
+      [this.props.className]: this.props.className
+    });
+
     return (
-      <div className={ [this.props.className, 'complex_list'].join(' ') }>
+      <div className={ classes }>
         { header }
         { emptyMessage }
         { this.props.children.length > 0 && this.props.children.map((child, i) => {

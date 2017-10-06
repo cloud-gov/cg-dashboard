@@ -15,9 +15,8 @@ const defaultProps = {
 
 export default class PanelActions extends React.Component {
   render() {
-    const alignClass = `panel-actions-${this.props.align}`;
     return (
-      <span className={ `panel-actions ${alignClass}` }>
+      <span className={ `panel-actions panel-actions-${this.props.align}` }>
         { this.props.children }
       </span>
     );

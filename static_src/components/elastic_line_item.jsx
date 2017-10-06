@@ -18,11 +18,8 @@ const defaultProps = {
 
 export default class ElasticLineItem extends React.Component {
   render() {
-    const props = this.props;
-    const alignClass = `elastic_line-item-${props.align}`;
-
     return (
-      <div className={ `elastic_line-item ${alignClass}`}>
+      <div className={ `elastic_line-item elastic_line-item-${this.props.align}` }>
         { this.props.children }
       </div>
     );

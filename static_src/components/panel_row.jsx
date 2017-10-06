@@ -1,7 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 const STYLES = [
   'bordered',
@@ -21,15 +21,15 @@ const defaultProps = {};
 
 export default class PanelRow extends React.Component {
   render() {
-    const { props } = this;
-    const classes = classnames({
-      [`panel-row-${props.styleClass}`]: props.styleClass,
-      'panel-row': props.styleClass !== 'boxed'
+    const { styleClass, id, children, className } = this.props;
+    const classes = classNames(className, {
+      [`panel-row-${styleClass}`]: styleClass,
+      'panel-row': styleClass !== 'boxed'
     });
 
     return (
-      <div id={ this.props.id } className={ classes }>
-        { this.props.children }
+      <div id={ id } className={ classes }>
+        { children }
       </div>
     );
   }

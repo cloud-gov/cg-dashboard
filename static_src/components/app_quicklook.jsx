@@ -1,7 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
+import classNames from 'classnames';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import EntityIcon from './entity_icon.jsx';
@@ -35,20 +35,19 @@ export default class AppQuicklook extends React.Component {
 
   appState(app) {
     const health = appHealth(app);
-    const statusClass = `status-${health}`;
+
     return (
-      <span className={`status ${statusClass}`}>
+      <span className={ `status status-${health}` }>
         { app.state.toLowerCase() }
       </span>
     );
   }
 
   appName() {
-    const app = this.props.app;
-    const statusClass = !isHealthyApp(app) && 'status-error';
+    const { app } = this.props;
 
     return (
-      <a className={ statusClass } href={ this.appHref() }>
+      <a className={ classNames({ 'status-error': !isHealthyApp(app) }) } href={ this.appHref() }>
         { app.name }
       </a>
     );

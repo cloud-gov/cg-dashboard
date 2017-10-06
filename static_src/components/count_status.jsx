@@ -25,16 +25,15 @@ const defaultProps = {
 
 export default class CountStatus extends React.Component {
   render() {
-    const props = this.props;
-    const statusClass = `count_status-${props.health.toLowerCase()}`;
+    const { health, iconType, count, name } = this.props;
 
     return (
-      <div className={`count_status ${statusClass}`}>
+      <div className={ `count_status count_status-${health.toLowerCase()}` }>
         <div className="count_status-icon">
-          <EntityIcon entity={ props.iconType } health={ props.health } iconSize="medium" />
+          <EntityIcon entity={ iconType } health={ health } iconSize="medium" />
         </div>
         <div className="count_status-text">
-          <strong>{ props.count }</strong> { props.name }
+          <strong>{ count }</strong> { name }
         </div>
       </div>
     );

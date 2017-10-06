@@ -37,8 +37,6 @@ export default class Notification extends React.Component {
   }
 
   render() {
-    const statusClass = `notification-${this.props.status}`;
-    let content = <span>{ this.props.message }</span>;
     let actionElements;
 
     if (this.props.actions.length) {
@@ -53,10 +51,10 @@ export default class Notification extends React.Component {
     }
 
     return (
-    <div className={ `notification ${statusClass} test-notification` }>
+    <div className={ `notification notification-${this.props.status} test-notification` }>
       <div className="notification-wrap">
         <p className="notification-message test-notification-message">
-          { content }
+          { this.props.message }
         </p>
         { actionElements }
         <a className="notification-dismiss test-notification-dismiss"

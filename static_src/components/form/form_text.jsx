@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import FormElement from './form_element.jsx';
 import FormError from './form_error.jsx';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 export default class FormText extends FormElement {
   get error() {
@@ -14,7 +14,7 @@ export default class FormText extends FormElement {
   }
 
   render() {
-    const classes = classnames({
+    const classes = classNames({
       'form_text-inline': this.props.inline,
       error: !!this.error
     });

@@ -1,6 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import classNames from 'classnames';
 
 const propTypes = {
   children: PropTypes.any,
@@ -13,10 +14,12 @@ const defaultProps = {
 
 export default class PanelDocumentation extends React.Component {
   render() {
-    const descClass = this.props.description && 'panel-documentation-desc';
+    const classes = classNames('panel-documentation', {
+      'panel-documentation-desc': this.props.description
+    });
 
     return (
-      <div className={ `panel-documentation ${descClass}` }>
+      <div className={ classes }>
         { this.props.children }
       </div>
     );
