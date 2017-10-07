@@ -75,7 +75,7 @@ export default class OverviewContainer extends React.Component {
       <EntityEmpty callout="We can’t find any of your organizations.">
         <p>
           If you just joined, your organization may not yet be ready. Sometimes
-          organizations can take up to 20 minutes to appear on your first login.
+          organizations can take up to 5 minutes to appear on your first login.
           { contactMsg }
         </p>
       </EntityEmpty>
