@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import eventLogTypes from '../../util/event_log_types';
 import ElasticLine from '../elastic_line.jsx';
 import ElasticLineItem from '../elastic_line_item.jsx';
-import Timestamp from './timestamp.jsx';
+import Timestamp from './timestamp';
 import LogItem from './log_item.jsx';
 import CrashEventItem from './crash_event_item.jsx';
 import RouteEventItem from './route_event_item.jsx';
