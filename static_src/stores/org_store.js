@@ -1,14 +1,15 @@
-
-/*
- * Store for org data. Will store and update org data on changes from UI and
- * server.
- */
+import PropTypes from 'prop-types';
 
 import AppDispatcher from '../dispatcher';
 import BaseStore from './base_store.js';
 import LoginStore from './login_store.js';
 import { orgActionTypes } from '../constants.js';
 import Quicklook from '../models/quicklook';
+
+export const orgPropType = PropTypes.shape({
+  guid: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired
+});
 
 export class OrgStore extends BaseStore {
   constructor() {

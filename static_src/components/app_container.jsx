@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 import Action from './action.jsx';
@@ -7,7 +6,7 @@ import { appHealth, worstAppInstanceState } from '../util/health';
 import { appStates } from '../constants';
 import { config } from 'skin';
 import AppStore from '../stores/app_store.js';
-import Breadcrumbs from './breadcrumbs.jsx';
+import Breadcrumbs from './breadcrumbs';
 import DomainStore from '../stores/domain_store.js';
 import EnvStore from '../stores/env_store.js';
 import RouteStore from '../stores/route_store.js';
@@ -190,7 +189,7 @@ export default class AppContainer extends React.Component {
 
 
   render() {
-    const { app, envRequest, envUpdateError } = this.state;
+    const { org, space, app, envRequest, envUpdateError } = this.state;
 
     let loading = <Loading text="Loading app" />;
     let content = <div>{ loading }</div>;
@@ -208,7 +207,7 @@ export default class AppContainer extends React.Component {
         <div>
           <div className="grid">
             <div className="grid-width-12">
-              <Breadcrumbs />
+              <Breadcrumbs org={org} space={space} app={app} />
               <PageHeader title={ title }>
                 { this.error }
                 { this.openApp }

@@ -1,10 +1,9 @@
-
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import AppCountStatus from './app_count_status.jsx';
 import AppList from '../components/app_list.jsx';
-import Breadcrumbs from './breadcrumbs.jsx';
+import Breadcrumbs from './breadcrumbs';
 import EntityIcon from './entity_icon.jsx';
 import Loading from './loading.jsx';
 import Marketplace from './marketplace.jsx';
@@ -74,20 +73,21 @@ export default class SpaceContainer extends React.Component {
       return <Loading />;
     }
 
+    const { currentOrg: org, space } = this.state;
+
     let main = <div></div>;
     const title = (
       <span>
-        <EntityIcon entity="space" iconSize="large" /> { this.state.space.name }
+        <EntityIcon entity="space" iconSize="large" /> { space.name }
       </span>
     );
 
-    if (this.state.space && this.state.space.guid) {
-      const space = this.state.space;
+    if (space && space.guid) {
       main = (
       <div>
         <div className="grid">
           <div className="grid-width-12">
-            <Breadcrumbs />
+            <Breadcrumbs org={org} space={space} />
             <PageHeader title={ title } />
           </div>
         </div>
