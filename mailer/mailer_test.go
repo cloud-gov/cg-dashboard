@@ -11,7 +11,7 @@ import (
 )
 
 func TestSendEmail(t *testing.T) {
-	hostname, smtpPort, apiPort, cleanup := CreateTestMailCatcher()
+	hostname, smtpPort, apiPort, cleanup := CreateTestMailCatcher(t)
 	// Test InitSMTPMailer with valid path for templates.
 	settings := helpers.Settings{
 		BasePath: os.Getenv(helpers.BasePathEnvVar),
