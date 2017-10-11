@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gorilla/context"
@@ -50,18 +51,29 @@ func startMonitoring(license string) {
 }
 
 func startApp(port string, env *cfenv.App) {
-	// Allow environment variable to override default name for user provided service
-	userProvidedServiceName := os.Getenv("UPS_NAME")
-	if userProvidedServiceName == "" {
-		userProvidedServiceName = cfUserProvidedService
+	// Allow environment variable to override default name for user provided service.
+	// Should be a colon separated list of user provided service names.
+	// They will be searched in that order
+	userProvidedServicePath := os.Getenv("UPS_PATH")
+	if userProvidedServicePath == "" {
+		userProvidedServicePath = cfUserProvidedService
 	}
+	userProvidedServicePathElements := strings.Split(userProvidedServicePath, ":")
+	lookupPath := make([]helpers.EnvLookup, len(userProvidedServicePathElements)+1)
+	for i, name := range userProvidedServicePathElements {
+		lookupPath[i] = helpers.NewEnvLookupFromCFAppNamedService(env, name)
+	}
+
+	// Fallback to the environment if not found in the path.
+	// TODO -> consider whether this behavior is correct - it is likely that
+	// it would be more intuitive for an environment variable to override what
+	// is set in a user provided service, however we keep this ordering for now
+	// to match previous behavior.
+	lookupPath[len(lookupPath)-1] = os.LookupEnv
 
 	// Look for env vars first in a user provided service (if available), and if not found,
 	// fallback to the environment.
-	envVars := helpers.NewEnvVarsFromPath(
-		helpers.NewEnvLookupFromCFAppNamedService(env, userProvidedServiceName),
-		os.LookupEnv,
-	)
+	envVars := helpers.NewEnvVarsFromPath(lookupPath...)
 
 	app, settings, err := controllers.InitApp(envVars, env)
 	if err != nil {
