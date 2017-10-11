@@ -50,6 +50,8 @@ var (
 	LegacySessionKeyEnvVar = "SESSION_KEY"
 	// BasePathEnvVar is the path to the application root
 	BasePathEnvVar = "BASE_PATH"
+	// TemplatesPathEnvVar is the path to the templates directory.
+	TemplatesPathEnvVar = "TEMPLATES_PATH"
 	// SMTPHostEnvVar is SMTP host for UAA invites
 	SMTPHostEnvVar = "SMTP_HOST"
 	// SMTPPortEnvVar is SMTP post for UAA invites

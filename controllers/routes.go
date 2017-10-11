@@ -82,7 +82,7 @@ func InitApp(envVars *helpers.EnvVars, env *cfenv.App) (*web.Router, *helpers.Se
 	}
 
 	// Cache templates
-	templates, err := helpers.InitTemplates(settings.BasePath)
+	templates, err := helpers.InitTemplates(settings.TemplatesPath)
 	if err != nil {
 		return nil, nil, err
 	}

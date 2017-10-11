@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/boj/redistore"
@@ -44,6 +45,8 @@ type Settings struct {
 	LogURL string
 	// Path to root of project.
 	BasePath string
+	// TemplatesPath is the path to the templates directory.
+	TemplatesPath string
 	// High Privileged OauthConfig
 	HighPrivilegedOauthConfig *clientcredentials.Config
 	// A flag to indicate whether profiling should be included (debug purposes).
@@ -110,6 +113,10 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 	}()
 
 	s.BasePath = envVars.String(BasePathEnvVar, "")
+	s.TemplatesPath = envVars.String(
+		TemplatesPathEnvVar,
+		filepath.Join(s.BasePath, "templates"),
+	)
 	s.AppURL = envVars.MustString(HostnameEnvVar)
 	s.ConsoleAPI = envVars.MustString(APIURLEnvVar)
 	s.LoginURL = envVars.MustString(LoginURLEnvVar)

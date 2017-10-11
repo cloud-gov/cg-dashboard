@@ -199,16 +199,16 @@ var inviteUsersTest = []BasicProxyTest{
 }
 
 func TestInviteUsers(t *testing.T) {
-	for _, test := range inviteUsersTest {
-		// Create the external server that the proxy will send the request to.
-		testServer := CreateExternalServerForPrivileged(t, test)
-		// Construct full url for the proxy.
-		fullURL := fmt.Sprintf("%s%s", testServer.URL, test.RequestPath)
-		c := &controllers.UAAContext{SecureContext: &controllers.SecureContext{Context: &controllers.Context{}}}
-		response, request, router := PrepareExternalServerCall(t, c.SecureContext, testServer, fullURL, test)
-		router.ServeHTTP(response, request)
-		VerifyExternalCallResponse(t, response, &test)
-		testServer.Close()
+	for _, tt := range inviteUsersTest {
+		t.Run(tt.BasicSecureTest.TestName, func(t *testing.T) {
+			testServer := CreateExternalServerForPrivileged(t, tt)
+			defer testServer.Close()
+			fullURL := fmt.Sprintf("%s%s", testServer.URL, tt.RequestPath)
+			c := &controllers.UAAContext{SecureContext: &controllers.SecureContext{Context: &controllers.Context{}}}
+			response, request, router := PrepareExternalServerCall(t, c.SecureContext, testServer, fullURL, tt)
+			router.ServeHTTP(response, request)
+			VerifyExternalCallResponse(t, response, &tt)
+		})
 	}
 }
 

@@ -3,7 +3,6 @@ package helpers_test
 import (
 	"bytes"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -12,19 +11,19 @@ import (
 
 func TestInitTemplates(t *testing.T) {
 	// Valid case: correct base path to templates.
-	_, err := helpers.InitTemplates(os.Getenv(helpers.BasePathEnvVar))
+	_, err := helpers.InitTemplates("testdata")
 	if err != nil {
 		t.Errorf("Expected to find the templates. %s", err.Error())
 	}
 	// Invalid case: incorrect base path to templates.
-	_, err = helpers.InitTemplates("blah")
+	_, err = helpers.InitTemplates("non-existent-path")
 	if err == nil {
 		t.Error("Expected not to find the templates")
 	}
 }
 
 func TestGetInviteEmail(t *testing.T) {
-	templates, err := helpers.InitTemplates(os.Getenv(helpers.BasePathEnvVar))
+	templates, err := helpers.InitTemplates("testdata")
 	if err != nil {
 		t.Errorf("Expected to find the templates. %s", err.Error())
 	}
@@ -33,9 +32,7 @@ func TestGetInviteEmail(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error getting the invite email. %s", err.Error())
 	}
-	inviteTpl, err := ioutil.ReadFile(filepath.Join(
-		os.Getenv(helpers.BasePathEnvVar),
-		"helpers", "testdata", "mail", "invite.html"))
+	inviteTpl, err := ioutil.ReadFile(filepath.Join("testdata", "mail", "invite.html"))
 	if err != nil {
 		t.Errorf("Expected no error reading the invite email. %s", err.Error())
 		return
@@ -43,17 +40,13 @@ func TestGetInviteEmail(t *testing.T) {
 	if string(inviteTpl) != string(body.Bytes()) {
 		t.Error("Expected invite e-mail template does not match generated invite e-mail template.")
 		// Helpful for generating the new invite data.
-		ioutil.WriteFile(filepath.Join(
-			os.Getenv(helpers.BasePathEnvVar),
-			"helpers", "testdata", "mail", "invite.html.returned"), body.Bytes(), 0444)
-		t.Logf("writing expected file to %s", filepath.Join(
-			os.Getenv(helpers.BasePathEnvVar),
-			"helpers", "testdata", "mail", "invite.html.returned"))
+		ioutil.WriteFile(filepath.Join("testdata", "mail", "invite.html.returned"), body.Bytes(), 0444)
+		t.Logf("writing expected file to %s", filepath.Join("testdata", "mail", "invite.html.returned"))
 	}
 }
 
 func TestGetIndex(t *testing.T) {
-	templates, err := helpers.InitTemplates(os.Getenv(helpers.BasePathEnvVar))
+	templates, err := helpers.InitTemplates("testdata")
 	if err != nil {
 		t.Errorf("Expected to find the templates. %s", err.Error())
 	}
@@ -63,9 +56,7 @@ func TestGetIndex(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error getting the index html. %s", err.Error())
 	}
-	inviteTpl, err := ioutil.ReadFile(filepath.Join(
-		os.Getenv(helpers.BasePathEnvVar),
-		"helpers", "testdata", "index.html"))
+	inviteTpl, err := ioutil.ReadFile(filepath.Join("testdata", "web", "index.html"))
 	if err != nil {
 		t.Errorf("Expected no error reading the index.html. %s", err.Error())
 		return
@@ -73,11 +64,7 @@ func TestGetIndex(t *testing.T) {
 	if string(inviteTpl) != string(body.Bytes()) {
 		t.Error("Expected index.html template does not match generated index.html template.")
 		// Helpful for generating the new invite data.
-		ioutil.WriteFile(filepath.Join(
-			os.Getenv(helpers.BasePathEnvVar),
-			"helpers", "testdata", "index.html.returned"), body.Bytes(), 0444)
-		t.Logf("writing expected file to %s", filepath.Join(
-			os.Getenv(helpers.BasePathEnvVar),
-			"helpers", "testdata", "index.html.returned"))
+		ioutil.WriteFile(filepath.Join("testdata", "web", "index.html.returned"), body.Bytes(), 0444)
+		t.Logf("writing expected file to %s", filepath.Join("testdata", "web", "index.html.returned"))
 	}
 }
