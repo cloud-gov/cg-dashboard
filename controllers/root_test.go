@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/cloudfoundry-community/go-cfenv"
+	cfcommon "github.com/govau/cf-common"
 
 	"github.com/18F/cg-dashboard/controllers"
 	"github.com/18F/cg-dashboard/helpers"
@@ -16,7 +17,7 @@ import (
 func TestPing(t *testing.T) {
 	response, request := NewTestRequest("GET", "/ping", nil)
 	env, _ := cfenv.Current()
-	router, _, err := controllers.InitApp(helpers.NewEnvVarsFromPath(NewEnvLookupFromMap(GetMockCompleteEnvVars())), env)
+	router, _, err := controllers.InitApp(cfcommon.NewEnvVarsFromPath(NewEnvLookupFromMap(GetMockCompleteEnvVars())), env)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,7 +45,7 @@ func TestPingWithRedis(t *testing.T) {
 	env, _ := cfenv.Current()
 
 	// Setup router.
-	router, _, err := controllers.InitApp(helpers.NewEnvVarsFromPath(NewEnvLookupFromMap(envVars)), env)
+	router, _, err := controllers.InitApp(cfcommon.NewEnvVarsFromPath(NewEnvLookupFromMap(envVars)), env)
 	if err != nil {
 		t.Fatal(err)
 	}

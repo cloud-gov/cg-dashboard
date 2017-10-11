@@ -16,6 +16,7 @@ import (
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/sessions"
+	cfcommon "github.com/govau/cf-common"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
@@ -95,12 +96,12 @@ func (s *Settings) CreateContext() context.Context {
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
 // otherwise it returns nil for success.
-func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error) {
+func (s *Settings) InitSettings(envVars *cfcommon.EnvVars, env *cfenv.App) (retErr error) {
 	defer func() {
 		// While .MustString() is convenient in readability below, we'd prefer to convert this
 		// to an error for upstream callers.
 		if r := recover(); r != nil {
-			missingErr, ok := r.(*ErrMissingEnvVar)
+			missingErr, ok := r.(*cfcommon.ErrMissingEnvVar)
 			if !ok {
 				// We don't know what this is, re-panic
 				panic(r)
@@ -161,7 +162,7 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 
 	// Return error if not found
 	if len(s.CSRFKey) == 0 {
-		return &ErrMissingEnvVar{Name: CSRFKeyEnvVar}
+		return &cfcommon.ErrMissingEnvVar{Name: CSRFKeyEnvVar}
 	}
 
 	// Initialize Sessions.
@@ -181,7 +182,7 @@ func (s *Settings) InitSettings(envVars *EnvVars, env *cfenv.App) (retErr error)
 
 	// Return error if not found
 	if len(sessionAuthenticationKey) == 0 {
-		return &ErrMissingEnvVar{Name: SessionAuthenticationEnvVar}
+		return &cfcommon.ErrMissingEnvVar{Name: SessionAuthenticationEnvVar}
 	}
 
 	switch envVars.String(SessionBackendEnvVar, "") {

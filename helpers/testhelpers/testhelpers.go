@@ -17,6 +17,7 @@ import (
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
+	cfcommon "github.com/govau/cf-common"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/oauth2"
@@ -114,7 +115,7 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars map
 	// Initialize settings.
 	settings := helpers.Settings{}
 	env, _ := cfenv.Current()
-	settings.InitSettings(helpers.NewEnvVarsFromPath(NewEnvLookupFromMap(envVars)), env)
+	settings.InitSettings(cfcommon.NewEnvVarsFromPath(NewEnvLookupFromMap(envVars)), env)
 
 	// Initialize a new session store.
 	store := MockSessionStore{}
@@ -363,7 +364,7 @@ func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testS
 		// Assign settings to context
 		mockSettings := &helpers.Settings{}
 		env, _ := cfenv.Current()
-		mockSettings.InitSettings(helpers.NewEnvVarsFromPath(NewEnvLookupFromMap(test.EnvVars)), env)
+		mockSettings.InitSettings(cfcommon.NewEnvVarsFromPath(NewEnvLookupFromMap(test.EnvVars)), env)
 		c.Settings = mockSettings
 
 		response, request := NewTestRequest(test.RequestMethod, fullURL, test.RequestBody)
@@ -400,7 +401,7 @@ func VerifyExternalCallResponse(t *testing.T, response *httptest.ResponseRecorde
 }
 
 // NewEnvLookupFromMap creates a lookup based on a map
-func NewEnvLookupFromMap(m map[string]string) helpers.EnvLookup {
+func NewEnvLookupFromMap(m map[string]string) cfcommon.EnvLookup {
 	return func(name string) (string, bool) {
 		rv, found := m[name]
 		return rv, found
