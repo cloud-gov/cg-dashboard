@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import { config } from 'skin';
+import { config, homePage } from 'skin';
 import EntityEmpty from './entity_empty.jsx';
 import Icon from './icon.jsx';
 import Loading from './loading.jsx';
@@ -10,9 +10,7 @@ import OrgStore from '../stores/org_store.js';
 import PageHeader from './page_header.jsx';
 import PageStore from '../stores/page_store.js';
 import Panel from './panel.jsx';
-import PanelGroup from './panel_group.jsx';
 import SpaceStore from '../stores/space_store.js';
-
 
 function stateSetter() {
   const orgs = OrgStore.getAll() || [];
@@ -105,33 +103,15 @@ export default class OverviewContainer extends React.Component {
       );
     }
 
+    const { panels = [] } = homePage;
+
     return (
       <div className="grid">
         <PageHeader title={ title } />
         <Panel title="Your organizations">
           { content }
         </Panel>
-        <Panel title="Cheatsheet">
-          { config.home.tiles.map((Tile, i) => {
-            let cheatContent;
-            if (i % 2 === 0) {
-              cheatContent = (
-                <div key={ `tile-${i}` }>
-                  <PanelGroup columns={ 6 }>
-                    <Tile />
-                  </PanelGroup>
-                </div>
-              );
-            } else {
-              cheatContent = (
-                <PanelGroup columns={ 6 } key={ `tile-${i}` }>
-                  <Tile />
-                </PanelGroup>
-              );
-            }
-            return cheatContent;
-          })}
-        </Panel>
+        {panels.map((render, i) => <div key={i}>{render()}</div>)}
       </div>
     );
   }
