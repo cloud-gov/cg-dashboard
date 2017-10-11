@@ -50,10 +50,16 @@ func startMonitoring(license string) {
 }
 
 func startApp(port string, env *cfenv.App) {
+	// Allow environment variable to override default name for user provided service
+	userProvidedServiceName := os.Getenv("UPS_NAME")
+	if userProvidedServiceName == "" {
+		userProvidedServiceName = cfUserProvidedService
+	}
+
 	// Look for env vars first in a user provided service (if available), and if not found,
 	// fallback to the environment.
 	envVars := helpers.NewEnvVarsFromPath(
-		helpers.NewEnvLookupFromCFAppNamedService(env, cfUserProvidedService),
+		helpers.NewEnvLookupFromCFAppNamedService(env, userProvidedServiceName),
 		os.LookupEnv,
 	)
 
