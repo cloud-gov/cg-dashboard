@@ -52,7 +52,9 @@ cf create-user-provided-service dashboard-ups -p @<(cat <<EOF
   "CONSOLE_CLIENT_ID": "your-client-id",
   "CONSOLE_CLIENT_SECRET": "your-client-secret",
   "CSRF_KEY": "$(openssl rand -hex 32)",
+  "SESSION_BACKEND": "cookiestore",
   "SESSION_AUTHENTICATION_KEY": "$(openssl rand -hex 64)",
+  "SESSION_ENCRYPTION_KEY": "$(openssl rand -hex 32)",
   "SMTP_HOST": "smtp.host.com",
   "SMTP_PORT": "25",
   "SMTP_USER": "username",
@@ -62,12 +64,6 @@ cf create-user-provided-service dashboard-ups -p @<(cat <<EOF
 }
 EOF
 )
-```
-
-Create a redis service instance:
-
-```bash
-cf create-service redis28 standard dashboard-redis
 ```
 
 ### Create a Client with UAAC

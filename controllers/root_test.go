@@ -21,7 +21,7 @@ func TestPing(t *testing.T) {
 		t.Fatal(err)
 	}
 	router.ServeHTTP(response, request)
-	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"file","store-up":true}}`
+	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"cookiestore","store-up":true}}`
 	if response.Body.String() != expectedResponse {
 		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
 	}
