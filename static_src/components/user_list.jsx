@@ -17,7 +17,6 @@ import PanelDocumentation from './panel_documentation.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
 import createStyler from '../util/create_styler';
 import { config } from 'skin';
-import formatDateTime from '../util/format_date';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const propTypes = {

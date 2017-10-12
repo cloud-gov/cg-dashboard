@@ -1,15 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment-timezone';
+import { format } from 'date-fns/esm';
 
 const propTypes = { timestamp: PropTypes.string };
-const formatTimestamp = timestamp =>
-  moment(timestamp).tz(moment.tz.guess()).format('MMM DD YYYY HH:mm:ss z');
 
-const Timestamp = ({ timestamp }) =>
+const formatTimestamp = timestamp =>
+  format(timestamp, 'MMM DD YYYY HH:mm:ss ZZ');
+
+const Timestamp = ({ timestamp }) => (
   <span className="activity_log-item_timestamp">
-    { formatTimestamp(timestamp) }
-  </span>;
+    {formatTimestamp(timestamp)}
+  </span>
+);
 
 Timestamp.propTypes = propTypes;
 
