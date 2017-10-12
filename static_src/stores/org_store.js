@@ -1,3 +1,7 @@
+/*
+ * Store for org data. Will store and update org data on changes from UI and
+ * server.
+ */
 import PropTypes from 'prop-types';
 
 import AppDispatcher from '../dispatcher';
