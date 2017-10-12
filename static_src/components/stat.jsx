@@ -1,13 +1,8 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
 import { FormNumber } from './form';
-import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
-
 
 const STATES = [
   'error',
@@ -53,7 +48,6 @@ const convert = {
 export default class Stat extends React.Component {
   constructor(props) {
     super(props);
-    this.styler = createStyler(style);
     this.onValidate = this.onValidate.bind(this);
     this.state = stateSetter(props);
   }
@@ -88,7 +82,7 @@ export default class Stat extends React.Component {
   render() {
     const stateClass = `stat-${this.props.statState}`;
     let primaryStat = (
-      <span className={ this.styler('stat-primary')}>
+      <span className="stat-primary">
         { formatBytes(this.state.primaryStat) }
       </span>
     );
@@ -96,7 +90,7 @@ export default class Stat extends React.Component {
     // Avoid rendering 0 or non-numbers
     if (!this.state.primaryStat) {
       primaryStat = (
-        <span className={ this.styler('stat-primary')}>
+        <span className="stat-primary">
           N/A
         </span>
       );
@@ -104,10 +98,10 @@ export default class Stat extends React.Component {
 
     if (this.props.editable) {
       primaryStat = (
-        <div className={ this.styler('stat-primary')}>
+        <div className="stat-primary">
           <FormNumber
             formGuid={ this.props.formGuid }
-            className={ this.styler('stat-input', 'stat-input-text') }
+            className="stat-input stat-input-text"
             type="text"
             id={ this.props.name }
             inline
@@ -124,10 +118,10 @@ export default class Stat extends React.Component {
     }
 
     return (
-      <div className={ this.styler('stat', stateClass) }>
-        <h2 className={ this.styler('stat-header')}>{ this.props.title }</h2>
+      <div className={ `stat ${stateClass}` }>
+        <h2 className="stat-header">{ this.props.title }</h2>
         { primaryStat }
-        <span className={ this.styler('stat-info')}>
+        <span className="stat-info">
           { this.props.secondaryInfo }
         </span>
       </div>

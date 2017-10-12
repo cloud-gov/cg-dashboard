@@ -361,7 +361,7 @@ Here are some basic rules to work with components successfully:
   // Bad
   const propTypes = { status: PropTypes.string };
   ```
- - Use `createStyler` for adding cg-style CSS classes to components.
+
  - Components should usually have either `state` or `props`, but usually not both. See [Container component](#container-component).
    - The only time it should have both when there's a prop for a configurable part of the UI.
 

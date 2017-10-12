@@ -15,10 +15,8 @@ import EntityEmpty from './entity_empty.jsx';
 import Loading from './loading.jsx';
 import PanelDocumentation from './panel_documentation.jsx';
 import UserRoleListControl from './user_role_list_control.jsx';
-import createStyler from '../util/create_styler';
 import { config } from 'skin';
 import formatDateTime from '../util/format_date';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const propTypes = {
   users: PropTypes.array,
@@ -49,7 +47,6 @@ export default class UserList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.styler = createStyler(style);
     this._handleDelete = this._handleDelete.bind(this);
   }
 
@@ -174,7 +171,7 @@ export default class UserList extends React.Component {
     }
 
     return (
-    <div className={ this.styler('tableWrapper') }>
+    <div className="tableWrapper">
       { content }
     </div>
     );

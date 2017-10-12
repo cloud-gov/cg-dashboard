@@ -1,4 +1,5 @@
 import 'cloudgov-style/css/base.css';
+import 'cloudgov-style/css/cloudgov-style.css';
 import './css/main.css';
 // Icon used in cg-uaa.
 import './img/dashboard-uaa-icon.jpg';

@@ -1,10 +1,6 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
-import createStyler from '../util/create_styler';
-
 import AppCountStatus from './app_count_status.jsx';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
@@ -28,8 +24,6 @@ const defaultProps = {
 export default class OrgQuicklook extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
-    this.styler = createStyler(style);
 
     this.onRowClick = this.onRowClick.bind(this);
     this.onOrgClick = this.onOrgClick.bind(this);
@@ -92,7 +86,7 @@ export default class OrgQuicklook extends React.Component {
         clickableContent={(
           <ElasticLine>
             <ElasticLineItem>
-              <h2 className={ this.styler('card-title-primary') }>
+              <h2 className="card-title-primary">
                 <EntityIcon entity="org" iconSize="medium" />
                 <a onClick={ this.onOrgClick } className="test-org-quicklook-title">
                   { props.org.name }
@@ -100,7 +94,7 @@ export default class OrgQuicklook extends React.Component {
               </h2>
             </ElasticLineItem>
             <ElasticLineItem align="end">
-              <div className={ this.styler('count_status_container') }>
+              <div className="count_status_container">
                 <SpaceCountStatus spaces={ props.org.spaces } />
                 <AppCountStatus appCount={ this.totalAppCount(props.org.spaces) }
                   apps={ this.allApps() }

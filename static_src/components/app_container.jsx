@@ -24,8 +24,6 @@ import ServiceInstancePanel from './service_instance_panel.jsx';
 import SpaceStore from '../stores/space_store.js';
 import UsageLimits from './usage_and_limits.jsx';
 import appActions from '../actions/app_actions.js';
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 
 function appReady(app) {
@@ -76,7 +74,6 @@ export default class AppContainer extends React.Component {
     this._onChange = this._onChange.bind(this);
     this._onRestart = this._onRestart.bind(this);
     this._onStart = this._onStart.bind(this);
-    this.styler = createStyler(style);
   }
 
   componentDidMount() {
@@ -122,7 +119,7 @@ export default class AppContainer extends React.Component {
     }
 
     if (worstState) {
-      label = <span className={ this.styler('usa-label') }>{ worstState }</span>;
+      label = <span className="usa-label">{ worstState }</span>;
     }
 
     return label;
@@ -209,8 +206,8 @@ export default class AppContainer extends React.Component {
     } else if (!this.state.loading && appReady(this.state.app)) {
       content = (
         <div>
-          <div className={ this.styler('grid') }>
-            <div className={ this.styler('grid-width-12') }>
+          <div className="grid">
+            <div className="grid-width-12">
               <Breadcrumbs />
               <PageHeader title={ title }>
                 { this.error }

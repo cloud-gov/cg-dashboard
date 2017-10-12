@@ -2,10 +2,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
-import createStyler from '../util/create_styler';
-
 const ALIGN_TYPES = ['left', 'right', 'both'];
 
 const propTypes = {
@@ -18,16 +14,9 @@ const defaultProps = {
 };
 
 export default class PanelActions extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.styler = createStyler(style);
-  }
-
   render() {
-    const alignClass = `panel-actions-${this.props.align}`;
     return (
-      <span className={ this.styler('panel-actions', alignClass) }>
+      <span className={ `panel-actions panel-actions-${this.props.align}` }>
         { this.props.children }
       </span>
     );

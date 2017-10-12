@@ -1,10 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
-import createStyler from '../util/create_styler';
+import classNames from 'classnames';
 
 const propTypes = {
   children: PropTypes.any,
@@ -16,17 +13,13 @@ const defaultProps = {
 };
 
 export default class PanelDocumentation extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.styler = createStyler(style);
-  }
-
   render() {
-    const descClass = this.props.description && 'panel-documentation-desc';
+    const classes = classNames('panel-documentation', {
+      'panel-documentation-desc': this.props.description
+    });
 
     return (
-      <div className={ this.styler('panel-documentation', descClass) }>
+      <div className={ classes }>
         { this.props.children }
       </div>
     );

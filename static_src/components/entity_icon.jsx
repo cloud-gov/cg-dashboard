@@ -4,8 +4,6 @@ import React from 'react';
 
 import Icon from './icon.jsx';
 import { entityHealth } from '../constants.js';
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const ENTITIES = ['app', 'service', 'space', 'org'];
 
@@ -21,12 +19,6 @@ const defaultProps = {
 };
 
 export default class EntityIcon extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.styler = createStyler(style);
-  }
-
   render() {
     const statusClass = this.props.health;
 

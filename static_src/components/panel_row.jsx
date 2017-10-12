@@ -1,10 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
-import createStyler from '../util/create_styler';
+import classNames from 'classnames';
 
 const STYLES = [
   'bordered',
@@ -23,22 +20,16 @@ const propTypes = {
 const defaultProps = {};
 
 export default class PanelRow extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.styler = createStyler(style);
-  }
-
   render() {
-    const props = this.props;
-    const styleClass = props.styleClass && `panel-row-${this.props.styleClass}`;
-    const mainClass = props.styleClass !== 'boxed' && 'panel-row';
+    const { styleClass, id, children, className } = this.props;
+    const classes = classNames(className, {
+      [`panel-row-${styleClass}`]: styleClass,
+      'panel-row': styleClass !== 'boxed'
+    });
 
     return (
-      <div id={ this.props.id }
-        className={ [this.props.className, this.styler(mainClass, styleClass)].join(' ') }
-      >
-        { this.props.children }
+      <div id={ id } className={ classes }>
+        { children }
       </div>
     );
   }

@@ -1,12 +1,5 @@
-
-
 import PropTypes from 'prop-types';
-
 import React from 'react';
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
-import createStyler from '../util/create_styler';
 import formatBytes from '../util/format_bytes';
 import Stat from './stat.jsx';
 
@@ -30,12 +23,6 @@ const defaultProps = {
 };
 
 export default class ResourceUsage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.styler = createStyler(style);
-  }
-
   available() {
     return formatBytes(this.props.amountTotal - this.props.amountUsed);
   }

@@ -1,11 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import { config } from 'skin';
-
-import createStyler from '../util/create_styler';
 import UserStore from '../stores/user_store';
 
 const propTypes = {
@@ -21,11 +17,6 @@ const defaultProps = {
 
 
 export default class InfoAppCreate extends React.Component {
-  constructor(props) {
-    super(props);
-    this.styler = createStyler(style);
-  }
-
   get noPermission() {
     return (
       <p>
@@ -49,7 +40,7 @@ export default class InfoAppCreate extends React.Component {
         <a href={ config.docs.deploying_apps}>Read more about adding apps</a>;
 
       content = (
-      <div className={ this.styler('info', 'info-app_create') }>
+      <div className="info info-app_create">
         <p>
           Add a new app to this space in the { cliLink }
         </p>
@@ -62,12 +53,12 @@ export default class InfoAppCreate extends React.Component {
       );
     } else {
       content = (
-      <div className={ this.styler('info', 'info-app_create') }>
+      <div className="info info-app_create">
         <p>
           Learn how to <a href={ config.docs.deploying_apps }>deploy a new app</a>.
         </p>
 
-        <h5 className={ this.styler('info-header') }>
+        <h5 className="info-header">
           Set up the Cloud Foundry CLI
         </h5>
         <p>
@@ -82,7 +73,7 @@ export default class InfoAppCreate extends React.Component {
           <code>$ cf login -a { config.platform.api_host } --sso</code>
         </pre>
 
-        <h5 className={ this.styler('info-header') }>
+        <h5 className="info-header">
           Push your app
         </h5>
         <p>
@@ -108,7 +99,7 @@ export default class InfoAppCreate extends React.Component {
       this.noPermission;
 
     return (
-      <div className={ this.styler('info', 'info-app_create') }>
+      <div className="info info-app_create">
         { content }
       </div>
     );

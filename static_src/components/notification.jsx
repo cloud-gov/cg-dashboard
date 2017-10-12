@@ -2,11 +2,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import keymirror from 'keymirror';
-
 import Action from './action.jsx';
-import createStyler from '../util/create_styler';
 import { entityHealth } from '../constants.js';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const STATUSES = Object.assign({}, entityHealth, keymirror({
   info: null
@@ -31,8 +28,6 @@ export default class Notification extends React.Component {
   constructor(props) {
     super(props);
 
-    this.styler = createStyler(style);
-
     this.onCloseClick = this.onCloseClick.bind(this);
   }
 
@@ -42,8 +37,6 @@ export default class Notification extends React.Component {
   }
 
   render() {
-    const statusClass = `notification-${this.props.status}`;
-    let content = <span>{ this.props.message }</span>;
     let actionElements;
 
     if (this.props.actions.length) {
@@ -58,18 +51,18 @@ export default class Notification extends React.Component {
     }
 
     return (
-    <div className={ this.styler('notification', statusClass, 'test-notification') }>
-      <div className={ this.styler('notification-wrap') }>
-        <p className={ this.styler('notification-message', 'test-notification-message') }>
-          { content }
+    <div className={ `notification notification-${this.props.status} test-notification` }>
+      <div className="notification-wrap">
+        <p className="notification-message test-notification-message">
+          { this.props.message }
         </p>
         { actionElements }
-        <a className={ this.styler('notification-dismiss', 'test-notification-dismiss') }
+        <a className="notification-dismiss test-notification-dismiss"
           onClick={ this.onCloseClick }
           title="Dismiss notification"
           href="#"
         >
-          <span className={ this.styler('usa-sr-only') }>Close</span>
+          <span className="usa-sr-only">Close</span>
         </a>
       </div>
     </div>

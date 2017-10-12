@@ -1,9 +1,6 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import style from 'cloudgov-style/css/cloudgov-style.css';
-
-import createStyler from '../util/create_styler';
 
 const propTypes = {
   children: PropTypes.node.isRequired,
@@ -11,23 +8,18 @@ const propTypes = {
 };
 
 export default class BreadcrumbsItem extends React.Component {
-  constructor(props) {
-    super(props);
-    this.styler = createStyler(style);
-  }
-
   render() {
     const url = this.props.url;
     const content = url ?
       (
-        <a className={ this.styler('breadcrumbs-item-link') } href={ url }>
+        <a className="breadcrumbs-item-link" href={ url }>
           { this.props.children }
         </a>
       )
-      : <span className={ this.styler('breadcrumbs-item-current') }>{ this.props.children }</span>;
+      : <span className="breadcrumbs-item-current">{ this.props.children }</span>;
 
     return (
-      <li className={ this.styler('breadcrumbs-item') }>
+      <li className="breadcrumbs-item">
         { content }
       </li>
     );

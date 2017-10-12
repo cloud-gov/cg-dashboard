@@ -1,9 +1,8 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
+import classNames from 'classnames';
+import iconImg from 'cloudgov-style/img/cloudgov-sprite.svg';
 
 const ICON_TYPES = [
   'fill',
@@ -40,30 +39,22 @@ const defaultProps = {
 };
 
 export default class Icon extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.styler = createStyler(style);
-  }
-
   getImagePath(iconName) {
-    const img = require('cloudgov-style/img/cloudgov-sprite.svg');
     const fill = this.props.iconType === 'fill' ? 'fill-' : '';
-    return `assets/${img}#i-${fill}${iconName}`;
+    return `assets/${iconImg}#i-${fill}${iconName}`;
   }
 
   render() {
-    const mainClass = this.props.iconType === 'fill' ? 'icon-fill' : 'icon';
-    const styleClass = `icon-${this.props.styleType}`;
-    const sizeClass = this.props.iconSize && `icon-${this.props.iconSize}`;
-    const borderedClass = (this.props.bordered) &&
-      'icon-bordered';
-    const iconClasses = this.styler(mainClass, styleClass, sizeClass,
-                                    borderedClass);
+    const classes = classNames(`icon-${this.props.styleType}`, {
+      [`icon-${this.props.iconSize}`]: this.props.iconSize,
+      'icon-bordered': this.props.bordered,
+      icon: !this.props.iconType,
+      'icon-fill': this.props.iconType
+    });
 
     return (
       <span>
-        <svg className={ iconClasses }>
+        <svg className={ classes }>
           <use xlinkHref={ this.getImagePath(this.props.name) }>
           </use>
         </svg> { this.props.children }

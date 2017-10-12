@@ -1,9 +1,8 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import classNames from 'classnames';
 import ComplexListItem from './complex_list_item.jsx';
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 
 const propTypes = {
   children: PropTypes.oneOfType([
@@ -23,20 +22,13 @@ const defaultProps = {
 };
 
 export default class ComplexList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.styler = createStyler(style);
-  }
-
   hasAnyTitle() {
     return !!(this.props.title || this.props.titleElement);
   }
 
   render() {
-    const props = this.props;
     const emptyMessage = this.props.emptyMessage && (
-      <div className={ this.styler('complex_list-empty') }>
+      <div className="complex_list-empty">
         { this.props.emptyMessage }
       </div>
     );
@@ -44,22 +36,26 @@ export default class ComplexList extends React.Component {
 
     if (this.hasAnyTitle()) {
       let title;
-      if (props.titleElement) {
-        title = props.titleElement;
+      if (this.props.titleElement) {
+        title = this.props.titleElement;
       } else {
         title = this.props.title;
       }
       header = (
-        <header className={ this.styler('complex_list-header') }>
-          <h4 className={ this.styler('complex_list-title') }>
+        <header className="complex_list-header">
+          <h4 className="complex_list-title">
             { title }
           </h4>
         </header>
       );
     }
 
+    const classes = classNames('complex_list', {
+      [this.props.className]: this.props.className
+    });
+
     return (
-      <div className={ [this.props.className, this.styler('complex_list')].join(' ') }>
+      <div className={ classes }>
         { header }
         { emptyMessage }
         { this.props.children.length > 0 && this.props.children.map((child, i) => {

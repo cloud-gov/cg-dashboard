@@ -1,12 +1,10 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
+import classNames from 'classnames';
 import ElasticLine from './elastic_line.jsx';
 import ElasticLineItem from './elastic_line_item.jsx';
 import EntityIcon from './entity_icon.jsx';
-import createStyler from '../util/create_styler';
-import style from 'cloudgov-style/css/cloudgov-style.css';
 import { appHref } from '../util/url';
 import { appHealth, isHealthyApp } from '../util/health';
 
@@ -29,12 +27,6 @@ const defaultProps = {
 };
 
 export default class AppQuicklook extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.styler = createStyler(style);
-  }
-
   appHref() {
     const props = this.props;
     const appGuid = props.app.guid;
@@ -43,20 +35,19 @@ export default class AppQuicklook extends React.Component {
 
   appState(app) {
     const health = appHealth(app);
-    const statusClass = `status-${health}`;
+
     return (
-      <span className={ this.styler('status', statusClass) }>
+      <span className={ `status status-${health}` }>
         { app.state.toLowerCase() }
       </span>
     );
   }
 
   appName() {
-    const app = this.props.app;
-    const statusClass = !isHealthyApp(app) && 'status-error';
+    const { app } = this.props;
 
     return (
-      <a className={ this.styler(statusClass) } href={ this.appHref() }>
+      <a className={ classNames({ 'status-error': !isHealthyApp(app) }) } href={ this.appHref() }>
         { app.name }
       </a>
     );
@@ -82,7 +73,7 @@ export default class AppQuicklook extends React.Component {
       info.push(
         <ElasticLineItem key="2" align="end">
           { app.memory } MB <br />
-          <span className={ this.styler('subtext') }>memory allocated</span>
+          <span className="subtext">memory allocated</span>
         </ElasticLineItem>
       );
     }
@@ -90,7 +81,7 @@ export default class AppQuicklook extends React.Component {
       info.push(
         <ElasticLineItem key="3" align="end">
           { app.disk_quota } MB <br />
-          <span className={ this.styler('subtext') }>disk quota</span>
+          <span className="subtext">disk quota</span>
         </ElasticLineItem>
       );
     }
@@ -98,9 +89,9 @@ export default class AppQuicklook extends React.Component {
     return (
       <ElasticLine>
         <ElasticLineItem>
-          <h3 className={ this.styler('contents-secondary') }>
+          <h3 className="contents-secondary">
             <EntityIcon entity="app" health={ appHealth(app) } iconSize="medium" />
-            <span className={ this.styler('contents-path') }>
+            <span className="contents-path">
               { this.props.spaceName } / </span>{ this.appName() }
           </h3>
         </ElasticLineItem>
