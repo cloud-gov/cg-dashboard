@@ -136,8 +136,6 @@ services:
     image: golang:1.8.3
     environment:
       - GOPATH=/go
-      # not a GO convention but useful for running go tests.
-      - BASE_PATH=/go/src/github.com/18F/cg-dashboard
       - DOCKER_IN_DOCKER=1
     volumes:
       - .:/go/src/github.com/18F/cg-dashboard

@@ -2,7 +2,6 @@ package mailer
 
 import (
 	"bytes"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,7 +13,6 @@ func TestSendEmail(t *testing.T) {
 	hostname, smtpPort, apiPort, cleanup := CreateTestMailCatcher()
 	// Test InitSMTPMailer with valid path for templates.
 	settings := helpers.Settings{
-		BasePath: os.Getenv(helpers.BasePathEnvVar),
 		SMTPHost: hostname,
 		SMTPPort: smtpPort,
 		SMTPFrom: "test@dashboard.com",
@@ -57,10 +55,7 @@ func TestSendEmail(t *testing.T) {
 }
 
 func TestInitSMTPMailer(t *testing.T) {
-	// Test InitSMTPMailer with valid path for templates.
-	settings := helpers.Settings{
-		BasePath: os.Getenv(helpers.BasePathEnvVar),
-	}
+	settings := helpers.Settings{}
 	mailer, err := InitSMTPMailer(settings)
 	if mailer == nil {
 		t.Error("Expected non nil mailer.")

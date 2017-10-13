@@ -106,12 +106,18 @@ Now when you're done, you'll want to stop the `testing-server` that is running i
 To kill that process, run `kill %N` where "N" is the number from the line.
 
 ## Unit Testing
+
 ### Running Go unit tests
-- `go test $(glide nv)`
+
+```sh
+TEST_ROOT_PATH=`pwd` go test $(glide nv)
+```
 
 ### Running Javascript unit tests
+
 Test can then be run with the command:
-```
+
+```sh
 npm run test
 ```
 
