@@ -111,12 +111,12 @@ In general, commit messages can be written in whatever way the author decides, b
 - [18F styleguide for CSS](https://pages.18f.gov/frontend/css-coding-styleguide/), through [stylelint](https://github.com/18F/stylelint-rules).
 
 #### Formatting
-[Prettier](https://github.com/prettier/prettier) is used to automatically format a range of files (particularly `.css`, `.js`, `.jsx`, `.json`). See prettier's docs for how to enable automatic formatting on save for your editor.
+[Prettier](https://github.com/prettier/prettier) is used to automatically format a range of files (particularly `.css`, `.js`, `.jsx`, `.json` and `.md`). See prettier's docs for how to enable automatic formatting on save for your editor.
 
 If it's necessary to manually run prettier, you can use the package script:
 
 ```sh
-npm run prettier
+npm run format
 ```
 
 Note: it's highly recommended to format on save, so the package script should generally not need to be used.
