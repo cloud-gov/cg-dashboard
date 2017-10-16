@@ -29,3 +29,5 @@ const ElasticLineItem = ({ children, align, title }) => (
 ElasticLineItem.propTypes = propTypes;
 
 ElasticLineItem.defaultProps = defaultProps;
+
+export default ElasticLineItem;
