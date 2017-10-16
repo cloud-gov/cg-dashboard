@@ -2,7 +2,7 @@ import AppDispatcher from '../dispatcher';
 import { upsiActionTypes } from '../constants';
 import cfApi from '../util/cf_api';
 
-const fetchAllSuccess = items => {
+export const fetchAllSuccess = items => {
   AppDispatcher.handleServerAction({
     type: upsiActionTypes.UPSI_FETCH_ALL_SUCCESS,
     items
@@ -11,7 +11,9 @@ const fetchAllSuccess = items => {
   return Promise.resolve({ items });
 };
 
-const fetchAllFailure = err => {
+fetchAllSuccess.exportTest = true;
+
+export const fetchAllFailure = err => {
   AppDispatcher.handleServerAction({
     type: upsiActionTypes.UPSI_FETCH_ALL_FAILURE
   });
@@ -19,7 +21,9 @@ const fetchAllFailure = err => {
   return Promise.resolve({ err });
 };
 
-const fetchAllForSpaceSuccess = (spaceGuid, items) => {
+fetchAllFailure.exportTest = true;
+
+export const fetchAllForSpaceSuccess = (spaceGuid, items) => {
   AppDispatcher.handleServerAction({
     type: upsiActionTypes.UPSI_FETCH_ALL_FOR_SPACE_SUCCESS,
     spaceGuid,
@@ -29,7 +33,9 @@ const fetchAllForSpaceSuccess = (spaceGuid, items) => {
   return Promise.resolve({ spaceGuid, items });
 };
 
-const fetchAllForSpaceFailure = (spaceGuid, err) => {
+fetchAllForSpaceSuccess.exportTest = true;
+
+export const fetchAllForSpaceFailure = (spaceGuid, err) => {
   AppDispatcher.handleServerAction({
     type: upsiActionTypes.UPSI_FETCH_ALL_FOR_SPACE_FAILURE,
     spaceGuid
@@ -37,6 +43,8 @@ const fetchAllForSpaceFailure = (spaceGuid, err) => {
 
   return Promise.resolve({ spaceGuid, err });
 };
+
+fetchAllForSpaceFailure.exportTest = true;
 
 export default {
   fetchAll() {
