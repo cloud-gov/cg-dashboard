@@ -37,7 +37,7 @@ export default class UPSIPanel extends Component {
     );
   }
 
-  renderOther() {
+  renderOthersInSpace() {
     const { app, upsisRequest } = this.props;
     const { items: upsis } = upsisRequest;
 
@@ -78,7 +78,7 @@ export default class UPSIPanel extends Component {
     return (
       <div>
         {this.renderBound()}
-        {this.renderOther()}
+        {this.renderOthersInSpace()}
       </div>
     );
   }
