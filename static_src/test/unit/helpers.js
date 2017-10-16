@@ -18,10 +18,14 @@ export function unwrapOfRes(entities) {
   });
 }
 
-export function assertAction(spy, type, params) {
+export function assertAction(spy, type, params = {}) {
   expect(type).toBeDefined();
   expect(spy).toHaveBeenCalledOnce();
-  let actionInfo = spy.getCall(0).args[0];
+  const call = spy.getCall(0);
+  if (!call) {
+    return;
+  }
+  let actionInfo = call.args[0];
   expect(actionInfo.type).toEqual(type);
 
   for (let param in params) {
