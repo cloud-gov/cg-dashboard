@@ -19,9 +19,11 @@ export default {
 
     return cfApi.fetchSpace(spaceGuid)
       .then(this.receivedSpace)
-      .catch((err) =>
-        errorActions.importantDataFetchError(err, 'unable to fetch space')
-      );
+      .catch((err) => {
+        errorActions.importantDataFetchError(err, 'unable to fetch space');
+
+        throw err;
+      });
   },
 
   fetchAll() {
@@ -31,9 +33,11 @@ export default {
 
     return cfApi.fetchSpaces()
       .then(this.receivedSpaces)
-      .catch((err) =>
-        errorActions.importantDataFetchError(err, 'space data may be incomplete')
-      );
+      .catch((err) => {
+        errorActions.importantDataFetchError(err, 'space data may be incomplete');
+
+        throw err;
+      });
   },
 
   fetchAllForOrg(orgGuid) {
@@ -46,9 +50,11 @@ export default {
       .filter(space => space.organization_guid === orgGuid)
       .map(space => this.fetch(space.guid))
     )
-    .catch((err) =>
-      errorActions.importantDataFetchError(err, 'space data may be incomplete')
-    );
+    .catch((err) => {
+      errorActions.importantDataFetchError(err, 'space data may be incomplete');
+
+      throw err;
+    });
   },
 
   receivedSpace(space) {

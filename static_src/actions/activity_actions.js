@@ -32,7 +32,10 @@ const activityActions = {
 
     return cfApi.fetchAppLogs(appGuid)
       .then(logs => activityActions.receivedAppLogs(appGuid, logs))
-      .catch(err => activityActions.errorAppLogs(appGuid, err));
+      .catch(err => {
+        activityActions.errorAppLogs(appGuid, err);
+        throw err;
+      });
   },
 
   receivedAppLogs(appGuid, logs) {

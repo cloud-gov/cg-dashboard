@@ -29,12 +29,14 @@ const orgActions = {
 
     return cfApi.fetchOrg(orgGuid)
       .then(orgActions.receivedOrg)
-      .catch((err) =>
+      .catch((err) => {
         errorActions.importantDataFetchError(
           err,
           'organization data may be incomplete'
-        )
-      );
+        );
+
+        throw err;
+      });
   },
 
   fetchAll() {
@@ -52,12 +54,14 @@ const orgActions = {
         )
       )
       .then(orgActions.receivedOrgs)
-      .catch((err) =>
+      .catch((err) => {
         errorActions.importantDataFetchError(
           err,
           'unable to fetch organizations'
-        )
-      );
+        );
+
+        throw err;
+      });
   },
 
   receivedOrg(org) {

@@ -16,7 +16,10 @@ const loginActions = {
 
     return cfApi.getAuthStatus()
       .then(loginActions.receivedStatus)
-      .catch(loginActions.errorStatus);
+      .catch(err => {
+        loginActions.errorStatus();
+        throw err;
+      });
   },
 
   receivedStatus(authStatus) {
