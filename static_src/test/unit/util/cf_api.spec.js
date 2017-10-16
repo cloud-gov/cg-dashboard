@@ -1509,7 +1509,7 @@ describe('cfApi', function() {
     });
   });
 
-  describe('encodeFilter()', function() {
+  describe('encodeFilter()', () => {
     const tests = [
       {
         f: { filter: 'name', op: ':', value: 'a' },
@@ -1529,14 +1529,14 @@ describe('cfApi', function() {
       }
     ];
     for (const { f, out } of tests) {
-      it('encodes the filters correctly', function() {
+      it('encodes the filters correctly', () => {
         expect(encodeFilter(f)).toEqual(out);
       });
     }
   });
 
-  describe('encodeFilters()', function() {
-    it('encodes the equal to filter correctly', function() {
+  describe('encodeFilters()', () => {
+    it('encodes the equal to filter correctly', () => {
       expect(encodeFilters([{ filter: 'name', op: ':', value: 'a' }])).toEqual([
         'name:a'
       ]);
