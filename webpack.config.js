@@ -66,7 +66,9 @@ const config = {
     modules: ['node_modules'],
     // Required for some module configs which use these fields
     // See https://github.com/flatiron/director/issues/349
-    mainFields: ['browserify', 'browser', 'module', 'main']
+    mainFields: ['browserify', 'browser', 'module', 'main'],
+
+    symlinks: false
   },
 
   plugins: [

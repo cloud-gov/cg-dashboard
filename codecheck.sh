@@ -11,7 +11,7 @@ go get \
 	golang.org/x/tools/cmd/cover
 
 
-export BASE_PATH=$(cd $(dirname $0); pwd -P)
+export TEST_ROOT_PATH=$(cd $(dirname $0); pwd -P)
 
 # The value of the exit status for the script.
 scriptreturn=0

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -122,7 +123,10 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars map
 	// Override the session store.
 	settings.Sessions = store
 
-	templates, _ := helpers.InitTemplates(settings.BasePath)
+	templates, err := helpers.InitTemplates(settings.TemplatesPath)
+	if err != nil {
+		log.Fatalf("failed to init templates: %v", err)
+	}
 
 	// Create the router.
 	mockMailer := new(mocks.Mailer)
@@ -250,7 +254,7 @@ func GetMockCompleteEnvVars() map[string]string {
 		helpers.SessionEncryptionEnvVar:     "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 		helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 		helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
-		helpers.BasePathEnvVar:              os.Getenv(helpers.BasePathEnvVar),
+		helpers.TemplatesPathEnvVar:         filepath.Join(os.Getenv("TEST_ROOT_PATH"), "templates"),
 		helpers.SMTPFromEnvVar:              "cloud@cloud.gov",
 		helpers.SMTPHostEnvVar:              "localhost",
 		helpers.SecureCookiesEnvVar:         "1",

@@ -43,10 +43,30 @@ export function start(...args) {
   // serve static assets
   server.route({
     method: 'get',
+    path: '/assets/{p*}',
+    handler: {
+      directory: {
+        path: 'static/assets'
+      }
+    }
+  });
+
+  server.route({
+    method: 'get',
+    path: '/skins/{p*}',
+    handler: {
+      directory: {
+        path: 'static/skins'
+      }
+    }
+  });
+
+  server.route({
+    method: 'get',
     path: '/{p*}',
     handler: {
       directory: {
-        path: 'static'
+        path: 'templates/web'
       }
     }
   });
