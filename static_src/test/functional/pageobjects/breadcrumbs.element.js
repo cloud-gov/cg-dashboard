@@ -1,19 +1,12 @@
-
 import BaseElement from './base.element';
 
-// https://www.martinfowler.com/bliki/PageObject.html
-//
-// Represents a DOM element for making assertions against. This makes it
-// easier to abstract some of the webdriver details from the UI component.
-
-// TODO attach to class as static property
-const breadcrumbs = '.test-breadcrumbs';
+const breadcrumbs = '[data-test="breadcrumbs"]';
 
 const selectors = {
   primary: breadcrumbs,
-  overview: `${breadcrumbs} li:first-child a`,
-  org: `${breadcrumbs} li:nth-child(1) a`,
-  space: `${breadcrumbs} li:last-child a`
+  overview: `${breadcrumbs} [data-test="overview"]`,
+  org: `${breadcrumbs} [data-test="org"]`,
+  space: `${breadcrumbs} [data-test="space"]`
 };
 
 export default class Breadcrumbs extends BaseElement {
@@ -40,4 +33,3 @@ export default class Breadcrumbs extends BaseElement {
 }
 
 Breadcrumbs.primarySelector = selectors.primary;
-

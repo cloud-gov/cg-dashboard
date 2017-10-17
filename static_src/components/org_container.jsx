@@ -1,9 +1,8 @@
-
 import React from 'react';
 
 import { config } from 'skin';
 import AppCountStatus from './app_count_status.jsx';
-import Breadcrumbs from './breadcrumbs.jsx';
+import Breadcrumbs from './breadcrumbs';
 import EntityIcon from './entity_icon.jsx';
 import EntityEmpty from './entity_empty.jsx';
 import Loading from './loading.jsx';
@@ -121,12 +120,13 @@ export default class OrgContainer extends React.Component {
   }
 
   render() {
+    const { org } = this.state;
     const state = this.state;
     let loading = <Loading text="Loading organization" />;
     let content = <div>{ loading }</div>;
     const title = (
       <span>
-        <EntityIcon entity="org" iconSize="large" /> { state.org.name }
+        <EntityIcon entity="org" iconSize="large" /> { org.name }
       </span>
     );
     const spaces = !state.spaces.length ? this.emptyState :
@@ -142,7 +142,7 @@ export default class OrgContainer extends React.Component {
 
     if (state.empty) {
       content = <h4 className="test-none_message">No organizations</h4>;
-    } else if (!state.loading && state.org) {
+    } else if (!state.loading && org) {
       const allApps = this.allApps();
       const allServices = this.allServices();
 
@@ -151,7 +151,7 @@ export default class OrgContainer extends React.Component {
       <div className="grid">
         <div className="grid">
           <div className="grid-width-12">
-            <Breadcrumbs />
+            <Breadcrumbs org={org} />
             <PageHeader title={ title } />
           </div>
         </div>

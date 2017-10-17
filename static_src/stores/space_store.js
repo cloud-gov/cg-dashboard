@@ -4,9 +4,15 @@
  */
 
 import Immutable from 'immutable';
+import PropTypes from 'prop-types';
 
 import BaseStore from './base_store.js';
 import { orgActionTypes, spaceActionTypes } from '../constants.js';
+
+export const spacePropType = PropTypes.shape({
+  guid: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired
+});
 
 class SpaceStore extends BaseStore {
   constructor() {
