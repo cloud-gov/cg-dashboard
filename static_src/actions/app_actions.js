@@ -23,8 +23,6 @@ const appActions = {
           err,
           'unable to fetch app'
         );
-
-        throw err;
       });
   },
 

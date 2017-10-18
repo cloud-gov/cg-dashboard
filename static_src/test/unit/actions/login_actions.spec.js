@@ -43,13 +43,10 @@ describe('loginActions', function () {
         const err = new Error('failure');
         cfApi.getAuthStatus.returns(Promise.reject(err));
 
-        loginActions.fetchStatus().then(
-          () => done.fail('expected promise to not resolve'),
-          () => {
-            expect(loginActions.errorStatus).toHaveBeenCalled();
-            done();
-          }
-        );
+        loginActions.fetchStatus().then(() => {
+          expect(loginActions.errorStatus).toHaveBeenCalled();
+          done();
+        });
       });
     });
   });
