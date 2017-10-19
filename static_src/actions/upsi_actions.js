@@ -11,8 +11,6 @@ export const fetchAllSuccess = items => {
   return Promise.resolve({ items });
 };
 
-fetchAllSuccess.exportTest = true;
-
 export const fetchAllFailure = err => {
   AppDispatcher.handleServerAction({
     type: upsiActionTypes.UPSI_FETCH_ALL_FAILURE
@@ -20,8 +18,6 @@ export const fetchAllFailure = err => {
 
   return Promise.resolve({ err });
 };
-
-fetchAllFailure.exportTest = true;
 
 export const fetchAllForSpaceSuccess = (spaceGuid, items) => {
   AppDispatcher.handleServerAction({
@@ -33,8 +29,6 @@ export const fetchAllForSpaceSuccess = (spaceGuid, items) => {
   return Promise.resolve({ spaceGuid, items });
 };
 
-fetchAllForSpaceSuccess.exportTest = true;
-
 export const fetchAllForSpaceFailure = (spaceGuid, err) => {
   AppDispatcher.handleServerAction({
     type: upsiActionTypes.UPSI_FETCH_ALL_FOR_SPACE_FAILURE,
@@ -43,8 +37,6 @@ export const fetchAllForSpaceFailure = (spaceGuid, err) => {
 
   return Promise.resolve({ spaceGuid, err });
 };
-
-fetchAllForSpaceFailure.exportTest = true;
 
 export default {
   fetchAll() {
