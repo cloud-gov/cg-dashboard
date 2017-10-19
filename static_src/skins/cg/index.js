@@ -1,6 +1,7 @@
 import React from 'react';
 
 export { default as header } from './header';
+import 'cloudgov-style/img/favicon.ico';
 import InfoActivities from '../../components/info_activities.jsx';
 import InfoEnvironments from '../../components/info_environments.jsx';
 import InfoSandbox from '../../components/info_sandbox.jsx';
