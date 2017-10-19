@@ -1,43 +1,6 @@
-/**
- * This file provides deployment specific configuration and content for the
- * dashboard. If you wish to override anything in this file:
- *
- * * Create a new configuration file in `skins/<name>/index.js`
- * * Import this configuration
- * * Override any variables you wish to change
- * * Export the new configuration as a `const` called `config`
- * * Set the CF_SKIN environment variable to the name of your new skin directory
- *
- * Example
- *
- * ```
- * import merge from 'deepmerge';
- * import { config as baseConfig } from '../cg';
- *
- * const newConfig = merge(baseConfig, {
- *   header: {
- *     disclaimer: 'My awesome disclaimer',
- *   },
- *   github: {
- *     url: 'https://github.com/best-username/cg-dashboard'
- *   }
- * });
- *
- * // override the entire list of links
- * newConfig.header.links = [
- *   {
- *     text: 'Help',
- *     url: 'http://google.com'
- *   }
- * ]
- * ;
- *
- * export const config = newConfig;
- * ```
- */
-
 import React from 'react';
 
+export { default as header } from './header';
 import InfoActivities from '../../components/info_activities.jsx';
 import InfoEnvironments from '../../components/info_environments.jsx';
 import InfoSandbox from '../../components/info_sandbox.jsx';
@@ -61,36 +24,6 @@ export const config = {
       {
         text: 'Built and maintained by 18F',
         url: 'https://18f.gsa.gov/'
-      }
-    ]
-  },
-  header: {
-    disclaimer_link_text: 'Here\'s how you know',
-    disclaimer_reason_gov_header: 'The .gov means it’s official.',
-    disclaimer_reason_gov_body: 'Federal government websites often end in .gov or .mil. ' +
-      'Before sharing sensitive information, make sure you\'re on a federal government site.',
-    disclaimer_reason_https_header: 'The site is secure. ',
-    disclaimer_reason_https_body: 'The https:// ensures that you are connecting to the ' +
-      'official website and that any information you provide is encrypted and transmitted ' +
-      'securely.',
-    disclaimer: 'An official website of the United States government',
-    show_flag: true,
-    links: [
-      {
-        text: 'Documentation',
-        url: 'https://cloud.gov/docs/'
-      },
-      {
-        text: 'Updates',
-        url: 'https://cloud.gov/updates/'
-      },
-      {
-        text: 'Status',
-        url: 'https://cloudgov.statuspage.io/'
-      },
-      {
-        text: 'Contact',
-        url: 'https://cloud.gov/docs/help/'
       }
     ]
   },

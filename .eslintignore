@@ -9,7 +9,6 @@ static_src/test/server/fixtures/
 /static_src/components/button.jsx
 /static_src/components/confirmation_box.jsx
 /static_src/components/create_service_instance.jsx
-/static_src/components/disclaimer.jsx
 /static_src/components/dropdown.jsx
 /static_src/components/home.jsx
 /static_src/components/login.jsx

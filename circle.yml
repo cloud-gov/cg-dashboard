@@ -27,6 +27,10 @@ dependencies:
   override:
     - cd $WS && go build
     - npm run build
+    # chromedriver
+    - wget https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip
+    - unzip chromedriver_linux64.zip
+    - sudo cp chromedriver /usr/local/bin/chromedriver
 test:
   pre:
     - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
