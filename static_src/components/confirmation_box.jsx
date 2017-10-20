@@ -1,4 +1,3 @@
-
 /**
  * A component that renders a box with a different style and background
  */
