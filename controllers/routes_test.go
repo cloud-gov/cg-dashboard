@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/cloudfoundry-community/go-cfenv"
-	cfcommon "github.com/govau/cf-common"
+	"github.com/govau/cf-common/env"
 
 	"github.com/18F/cg-dashboard/controllers"
 	"github.com/18F/cg-dashboard/helpers"
@@ -39,8 +39,11 @@ var initAppTests = []initAppTest{
 
 func TestInitApp(t *testing.T) {
 	for _, test := range initAppTests {
-		env, _ := cfenv.Current()
-		router, settings, err := controllers.InitApp(cfcommon.NewEnvVarsFromPath(NewEnvLookupFromMap(test.envVars)), env)
+		app, _ := cfenv.Current()
+		router, settings, err := controllers.InitApp(
+			env.NewVarSet(env.WithMapLookup(test.envVars)),
+			app,
+		)
 		if (router == nil) != test.returnRouterNil {
 			t.Errorf("Test %s did not return correct router value. Expected %t, Actual %t", test.testName, test.returnRouterNil, (router == nil))
 		} else if (settings == nil) != test.returnSettingsNil {

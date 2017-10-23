@@ -16,7 +16,7 @@ import (
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/sessions"
-	cfcommon "github.com/govau/cf-common"
+	"github.com/govau/cf-common/env"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
@@ -96,19 +96,21 @@ func (s *Settings) CreateContext() context.Context {
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
 // otherwise it returns nil for success.
-func (s *Settings) InitSettings(envVars *cfcommon.EnvVars, env *cfenv.App) (retErr error) {
+func (s *Settings) InitSettings(envVars *env.VarSet, app *cfenv.App) (retErr error) {
 	defer func() {
-		// While .MustString() is convenient in readability below, we'd prefer to convert this
-		// to an error for upstream callers.
+		// While .MustString() is convenient in readability below, we'd prefer
+		// to convert this to an error for upstream callers.
 		if r := recover(); r != nil {
-			missingErr, ok := r.(*cfcommon.ErrMissingEnvVar)
-			if !ok {
-				// We don't know what this is, re-panic
+			switch err := r.(type) {
+			case error:
+				if !env.IsVarNotFound(err) {
+					panic(r)
+				}
+				// Set return code to the actual error
+				retErr = err
+			default:
 				panic(r)
 			}
-
-			// Set return code to the actual error
-			retErr = missingErr
 		}
 	}()
 
@@ -118,10 +120,10 @@ func (s *Settings) InitSettings(envVars *cfcommon.EnvVars, env *cfenv.App) (retE
 	s.LoginURL = envVars.MustString(LoginURLEnvVar)
 	s.UaaURL = envVars.MustString(UAAURLEnvVar)
 	s.LogURL = envVars.MustString(LogURLEnvVar)
-	s.PProfEnabled = envVars.Bool(PProfEnabledEnvVar)
+	s.PProfEnabled = envVars.MustBool(PProfEnabledEnvVar)
 	s.BuildInfo = envVars.String(BuildInfoEnvVar, "developer-build")
-	s.LocalCF = envVars.Bool(LocalCFEnvVar)
-	s.SecureCookies = envVars.Bool(SecureCookiesEnvVar)
+	s.LocalCF = envVars.MustBool(LocalCFEnvVar)
+	s.SecureCookies = envVars.MustBool(SecureCookiesEnvVar)
 	// Safe guard: shouldn't run with insecure cookies if we are
 	// in a non-development environment (i.e. production)
 	if s.LocalCF == false && s.SecureCookies == false {
@@ -144,12 +146,13 @@ func (s *Settings) InitSettings(envVars *cfcommon.EnvVars, env *cfenv.App) (retE
 		return GenerateRandomString(32)
 	}
 
-	// Initialize CSRF key
 	var err error
+
+	// Initialize CSRF key
 	// First, try the new env variable
 	s.CSRFKey, err = hex.DecodeString(envVars.String(CSRFKeyEnvVar, ""))
 	if err != nil {
-		return err
+		return fmt.Errorf("could not decode hex env var %q: %v", CSRFKeyEnvVar, err)
 	}
 
 	// Fall back to legacy key variable and format - consider printing deprecation warning
@@ -162,14 +165,14 @@ func (s *Settings) InitSettings(envVars *cfcommon.EnvVars, env *cfenv.App) (retE
 
 	// Return error if not found
 	if len(s.CSRFKey) == 0 {
-		return &cfcommon.ErrMissingEnvVar{Name: CSRFKeyEnvVar}
+		return env.NewVarNotFoundErr(CSRFKeyEnvVar)
 	}
 
 	// Initialize Sessions.
 	// First, try the new env variable
 	sessionAuthenticationKey, err := hex.DecodeString(envVars.String(SessionAuthenticationEnvVar, ""))
 	if err != nil {
-		return err
+		return fmt.Errorf("could not decode hex env var %q: %v", SessionAuthenticationEnvVar, err)
 	}
 
 	// Fall back to legacy key variable and format
@@ -182,7 +185,7 @@ func (s *Settings) InitSettings(envVars *cfcommon.EnvVars, env *cfenv.App) (retE
 
 	// Return error if not found
 	if len(sessionAuthenticationKey) == 0 {
-		return &cfcommon.ErrMissingEnvVar{Name: SessionAuthenticationEnvVar}
+		return env.NewVarNotFoundErr(SessionAuthenticationEnvVar)
 	}
 
 	switch envVars.String(SessionBackendEnvVar, "") {
@@ -204,7 +207,7 @@ func (s *Settings) InitSettings(envVars *cfcommon.EnvVars, env *cfenv.App) (retE
 		// See: https://godoc.org/github.com/gorilla/securecookie#SecureCookie.MaxLength
 		s.OpaqueUAATokens = true
 	case "redis":
-		address, password, err := getRedisSettings(env)
+		address, password, err := getRedisSettings(app)
 		if err != nil {
 			return err
 		}

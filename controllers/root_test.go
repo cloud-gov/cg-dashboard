@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/cloudfoundry-community/go-cfenv"
-	cfcommon "github.com/govau/cf-common"
+	"github.com/govau/cf-common/env"
 
 	"github.com/18F/cg-dashboard/controllers"
 	"github.com/18F/cg-dashboard/helpers"
@@ -16,8 +16,11 @@ import (
 
 func TestPing(t *testing.T) {
 	response, request := NewTestRequest("GET", "/ping", nil)
-	env, _ := cfenv.Current()
-	router, _, err := controllers.InitApp(cfcommon.NewEnvVarsFromPath(NewEnvLookupFromMap(GetMockCompleteEnvVars())), env)
+	app, _ := cfenv.Current()
+	router, _, err := controllers.InitApp(
+		env.NewVarSet(env.WithMapLookup(GetMockCompleteEnvVars())),
+		app,
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,17 +38,20 @@ func TestPingWithRedis(t *testing.T) {
 	// Create a request
 	response, request := NewTestRequest("GET", "/ping", nil)
 	// Start up redis.
-	redisURI, cleanUpRedis, pauseRedis, unapuaseRedis := CreateTestRedis(t)
+	redisURI, cleanUpRedis, pauseRedis, unpauseRedis := CreateTestRedis(t)
 	os.Setenv("REDIS_URI", redisURI)
 	// Remove redis when finished.
 	defer cleanUpRedis()
 	// Override the mock env vars to use redis for session backend.
 	envVars := GetMockCompleteEnvVars()
 	envVars[helpers.SessionBackendEnvVar] = "redis"
-	env, _ := cfenv.Current()
+	app, _ := cfenv.Current()
 
 	// Setup router.
-	router, _, err := controllers.InitApp(cfcommon.NewEnvVarsFromPath(NewEnvLookupFromMap(envVars)), env)
+	router, _, err := controllers.InitApp(
+		env.NewVarSet(env.WithMapLookup(envVars)),
+		app,
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -75,7 +81,7 @@ func TestPingWithRedis(t *testing.T) {
 	}
 
 	// we unpause the instance.
-	unapuaseRedis()
+	unpauseRedis()
 
 	// Retry to ping with a new healthy Redis instance.
 	response, request = NewTestRequest("GET", "/ping", nil)

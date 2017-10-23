@@ -17,7 +17,7 @@ import (
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
-	cfcommon "github.com/govau/cf-common"
+	"github.com/govau/cf-common/env"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/oauth2"
@@ -114,8 +114,8 @@ func EchoResponseHandler(rw http.ResponseWriter, response *http.Response) {
 func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars map[string]string) (*web.Router, *MockSessionStore) {
 	// Initialize settings.
 	settings := helpers.Settings{}
-	env, _ := cfenv.Current()
-	settings.InitSettings(cfcommon.NewEnvVarsFromPath(NewEnvLookupFromMap(envVars)), env)
+	app, _ := cfenv.Current()
+	settings.InitSettings(env.NewVarSet(env.WithMapLookup(envVars)), app)
 
 	// Initialize a new session store.
 	store := MockSessionStore{}
@@ -363,8 +363,11 @@ func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testS
 
 		// Assign settings to context
 		mockSettings := &helpers.Settings{}
-		env, _ := cfenv.Current()
-		mockSettings.InitSettings(cfcommon.NewEnvVarsFromPath(NewEnvLookupFromMap(test.EnvVars)), env)
+		app, _ := cfenv.Current()
+		mockSettings.InitSettings(
+			env.NewVarSet(env.WithMapLookup(test.EnvVars)),
+			app,
+		)
 		c.Settings = mockSettings
 
 		response, request := NewTestRequest(test.RequestMethod, fullURL, test.RequestBody)
@@ -397,13 +400,5 @@ func VerifyExternalCallResponse(t *testing.T, response *httptest.ResponseRecorde
 		if value != observed {
 			t.Errorf("Test %s request header %s mismatch. Expected %s. Found %s.\n", test.TestName, header, value, observed)
 		}
-	}
-}
-
-// NewEnvLookupFromMap creates a lookup based on a map
-func NewEnvLookupFromMap(m map[string]string) cfcommon.EnvLookup {
-	return func(name string) (string, bool) {
-		rv, found := m[name]
-		return rv, found
 	}
 }
