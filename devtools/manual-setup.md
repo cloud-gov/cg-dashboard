@@ -72,7 +72,7 @@ To lint the code (also run as part of tests):
 npm run lint
 ```
 
-In order to get correct synatax highlighting with vim, install the following
+In order to get correct syntax highlighting with vim, install the following
 npm modules globally:
 
 ```

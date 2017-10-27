@@ -43,7 +43,7 @@ and the `testSpace01` space.
 
 1. Go to `/` and ensure everything looks OK.
 1. Click on an organization on the right hand side nav.
-  - Ensure that the correct organization get's highlighted in the sidenav.
+  - Ensure that the correct organization gets highlighted in the sidenav.
   - Ensure the menu correctly opens.
 1. Click on `Marketplace` in the sidenav and ensure the page appears and looks OK.
 1. Click `Create service instance` on any of the rds service plans.
@@ -55,8 +55,8 @@ and the `testSpace01` space.
 1. Repeat the last few steps to open the `Create service instance` form again filled out.
 1. Click the `Create service instance` button and ensure the form disappears.
 1. Click on the `spaces` link and ensure the all spaces page appears and looks OK.
-1. Click on a space on the sidnav in the list of spaces.
-  - Ensure the space get's correctly highlighted in the sidenav.
+1. Click on a space on the sidenav in the list of spaces.
+  - Ensure the space gets correctly highlighted in the sidenav.
   - Ensure the specific space page appears and looks OK.
 1. Click on the `Service instances` link in the subnav.
   - Ensure the page appears and looks OK.
@@ -73,7 +73,7 @@ and the `testSpace01` space.
   - Ensure the checkbox becomes unchecked after a second of clicking on it.
 1. Click on the 'All organization users` link in the subnav.
 1 Repeat steps to check a user permission.
-1. Techinically, we should test removing a user from an org here, but will not because theres no easy way to add them back.
+1. Technically, we should test removing a user from an org here, but will not because theres no easy way to add them back.
 1. Click on the `Apps` link in the subnav
 1. Click on `testapp01` or any app available and ensure the page appears and looks OK.
   - Ensure app state, memory and disk usage are correct.

@@ -136,7 +136,7 @@ docker-compose restart watch
 #### Recompile the Backend
 
 The frontend will automatically recompile upon changing the source.
-That is not the case for the backend. Unforunately, the Go watchers
+That is not the case for the backend. Unfortunately, the Go watchers
 tried caused the CPU to spike up very high.
 
 In order to recompile, just run:
