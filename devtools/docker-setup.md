@@ -163,7 +163,7 @@ Format: `docker-compose run --rm frontend <COMMAND>`
 Examples
 - Add dependency: `docker-compose run --rm frontend npm install <dep> --save`
 - Frontend unit tests: `docker-compose run --rm frontend npm run test-unit`
-- Watch test suite: `docker-compose run --rm frontend npm run watch-test`
+- Watch test suite: `docker-compose run --rm frontend npm run watch-test-unit`
 - Frontend functional tests (w/o visual debugging):
 `docker-compose run --rm frontend npm run test-functional`
 
