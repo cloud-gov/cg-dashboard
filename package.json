@@ -6,7 +6,6 @@
     "npm": "3.x.x"
   },
   "description": "A web dashboard for managing Cloud Foundry apps",
-  "main": "null",
   "scripts": {
     "build": "npm run clean && webpack --config webpack.config.js",
     "build-prod": "npm run clean && webpack -p --config webpack.config.js",
