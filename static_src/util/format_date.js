@@ -1,18 +1,17 @@
 import moment from 'moment-timezone';
 
-const invalidMsg = 'Invalid datetimes cannot be formatted.';
+const makeInvalidDateTimeValueError = str =>
+  new Error(`could not format invalid date/time value: ${str}`);
 
-/**
- * Returns a formated datetime string
- * @params {String} datetime as a string
- * @params {String} timezone abbreviation - defaults to UTC
- *
- * @returns {String} A "MM/DD/YYYY H:mma z" formatted string
- *                    i.e. 03/21/2016 10:39am PDT
-*/
-export default function formatDateTime(dateString, timezone = 'Etc/UTC') {
-  const d = moment(dateString);
+const formatDateTime = (str, timezone = 'Etc/UTC') => {
+  if (!str) {
+    throw makeInvalidDateTimeValueError(str);
+  }
+  const d = moment(str);
+  if (!d.isValid()) {
+    throw makeInvalidDateTimeValueError(str);
+  }
+  return d.tz(timezone).format('MMM DD YYYY hh:mma z');
+};
 
-  if (!d.isValid()) throw new Error(invalidMsg);
-  return d.tz(timezone).format('MM/DD/YYYY hh:mma z');
-}
+export default formatDateTime;
