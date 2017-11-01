@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import userProvider from './user_provider.jsx';
@@ -9,7 +8,6 @@ import Header from './header';
 import LoginStore from '../stores/login_store.js';
 import OrgStore from '../stores/org_store.js';
 import SpaceStore from '../stores/space_store.js';
-import { Nav } from './navbar.jsx';
 
 const propTypes = {
   children: PropTypes.any
