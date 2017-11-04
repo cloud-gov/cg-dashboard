@@ -38,16 +38,15 @@ describe('loginActions', function () {
       expect(loginActions.receivedStatus).toHaveBeenCalledWith('success');
     });
 
-    describe('on failure', function () {
-      beforeEach(function (done) {
-        cfApi.getAuthStatus.returns(Promise.reject('failure'));
+    describe('on failure', () => {
+      it('calls errorStatus', done => {
+        const err = new Error('failure');
+        cfApi.getAuthStatus.returns(Promise.reject(err));
 
-        loginActions.fetchStatus()
-          .then(done, done.fail);
-      });
-
-      it('calls errorStatus', function () {
-        expect(loginActions.errorStatus).toHaveBeenCalledWith('failure');
+        loginActions.fetchStatus().then(() => {
+          expect(loginActions.errorStatus).toHaveBeenCalled();
+          done();
+        });
       });
     });
   });

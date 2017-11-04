@@ -13,7 +13,12 @@ import { appStates, appActionTypes } from '../constants.js';
 export const appPropType = PropTypes.shape({
   guid: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  updating: PropTypes.bool
+  updating: PropTypes.bool,
+  services: PropTypes.arrayOf(
+    PropTypes.shape({
+      guid: PropTypes.string.isRequired
+    })
+  ).isRequired
 });
 
 export class AppStore extends BaseStore {

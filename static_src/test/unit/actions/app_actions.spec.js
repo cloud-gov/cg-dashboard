@@ -17,22 +17,17 @@ describe('appActions', function () {
     sandbox.restore();
   });
 
-  describe('fetch()', function () {
-    let expectedAppGuid, viewSpy;
+  describe('fetch()', () => {
+    it('should dispatch a view event of type app fetch', done => {
+      const app = { guid: '1234' };
+      const viewSpy = setupViewSpy(sandbox);
 
-    beforeEach(function (done) {
-      expectedAppGuid = 'asdflkjz';
-      viewSpy = setupViewSpy(sandbox);
+      sandbox.stub(cfApi, 'fetchApp').returns(Promise.resolve(app));
 
-      appActions.fetch(expectedAppGuid).then(done, done.fail);
-    });
-
-    it('should dispatch a view event of type app fetch', function () {
-      const expectedParams = {
-        appGuid: expectedAppGuid
-      };
-
-      assertAction(viewSpy, appActionTypes.APP_FETCH, expectedParams);
+      appActions.fetch(app.guid).then(() => {
+        assertAction(viewSpy, appActionTypes.APP_FETCH, { appGuid: app.guid });
+        done();
+      }, done.fail);
     });
   });
 

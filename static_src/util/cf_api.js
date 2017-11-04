@@ -1,4 +1,5 @@
 import http from 'axios';
+import queryString from 'query-string';
 
 import { noticeError } from '../util/analytics.js';
 import domainActions from '../actions/domain_actions.js';
@@ -103,6 +104,11 @@ export function tryParseJson(serialized) {
 
   return Promise.resolve(parsed);
 }
+
+export const encodeFilter = ({ filter, op, value }) =>
+  [filter, op === 'IN' ? ` ${op} ` : op, value].join('');
+
+export const encodeFilters = (filters = []) => filters.map(encodeFilter);
 
 export default {
   version: APIV,
@@ -305,6 +311,17 @@ export default {
 
   deleteUnboundServiceInstance(serviceInstance) {
     return http.delete(serviceInstance.url);
+  },
+
+  fetchAllUPSI(params = {}) {
+    const q = encodeFilters(params.q || []);
+
+    return this.fetchMany(
+      `/user_provided_service_instances?${queryString.stringify({
+        ...params,
+        q
+      })}`
+    );
   },
 
   fetchAppAll(appGuid) {
