@@ -33,7 +33,7 @@ type smtpMailer struct {
 
 func (s *smtpMailer) SendEmail(emailAddress, subject string, body []byte) error {
 	e := email.NewEmail()
-	e.From = "cloud.gov <" + s.smtpFrom + ">"
+	e.From = s.smtpFrom
 	e.To = []string{" <" + emailAddress + ">"}
 	e.HTML = body
 	e.Subject = subject
