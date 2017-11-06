@@ -36,9 +36,7 @@ const config = {
           presets: ['es2015', 'react'],
           plugins: ['transform-object-rest-spread', 'transform-runtime']
         },
-        exclude: [
-          path.resolve(__dirname, 'node_modules')
-        ]
+        exclude: /node_modules/
       },
       {
         test: /\.css$/,
