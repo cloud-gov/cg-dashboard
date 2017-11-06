@@ -14,7 +14,6 @@ static_src/test/server/fixtures/
 /static_src/components/login.jsx
 /static_src/components/main_container.jsx
 /static_src/components/marketplace.jsx
-/static_src/components/navbar.jsx
 /static_src/components/org_list.jsx
 /static_src/components/panel_group.jsx
 /static_src/components/panel_header.jsx
