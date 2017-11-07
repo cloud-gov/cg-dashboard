@@ -64,7 +64,7 @@ npm run test
 ```
 or to continually watch for changes and run test suite:
 ```
-npm run watch-test
+npm run watch-test-unit
 ```
 
 To lint the code (also run as part of tests):

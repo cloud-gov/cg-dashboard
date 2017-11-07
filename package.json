@@ -6,7 +6,6 @@
     "npm": "3.x.x"
   },
   "description": "A web dashboard for managing Cloud Foundry apps",
-  "main": "null",
   "scripts": {
     "build": "npm run clean && webpack --config webpack.config.js",
     "build-prod": "npm run clean && webpack -p --config webpack.config.js",
@@ -17,15 +16,15 @@
     "dev-stop": "cf dev stop && docker-compose stop",
     "lint": "eslint --ext .js --ext .jsx ./static_src",
     "test": "npm run lint && npm run test-unit && npm run test-functional",
-    "test-functional": "NODE_ENV=test npm run testing-server-run -- wdio wdio.conf.js",
-    "test-performance": "NODE_ENV=test JASMINE_CONFIG_PATH=./static_src/test/perf/jasmine.json  npm run testing-server-run -- jasmine",
-    "test-unit": "NODE_ENV=test karma start --single-run",
+    "test-functional": "npm run testing-server-run -- wdio wdio.conf.js",
+    "test-performance": "JASMINE_CONFIG_PATH=./static_src/test/perf/jasmine.json npm run testing-server-run -- jasmine",
+    "test-unit": "TZ=UTC NODE_ENV=test karma start --single-run",
     "test-selenium-install": "selenium-standalone install",
     "testing-server": "PORT=8001 npm run testing-server-run",
-    "testing-server-run": "node ./static_src/test/server/server.js",
+    "testing-server-run": "TZ=UTC NODE_ENV=test node ./static_src/test/server/server.js",
     "track-performance": "PORT=8002 npm run testing-server-run -- lighthouse http://localhost:8002/#/ --config-path ./static_src/test/perf/audits.json --output 'json' --output-path '$CIRCLE_ARTIFACTS/perf-$CIRCLE_BUILD_NUM.json' --verbose",
     "watch-server": "npm run testing-server & npm run watch",
-    "watch-test": "NODE_ENV=test karma start --browsers Chrome",
+    "watch-test-unit": "TZ=UTC NODE_ENV=test karma start --browsers Chrome",
     "watch-test-functional": "npm run test-functional -- --watch",
     "watch": "webpack --watch"
   },
