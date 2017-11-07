@@ -56,36 +56,13 @@ func startMonitoring(license string) {
 }
 
 func startApp(port string, app *cfenv.App) {
-	var opts []env.VarSetOpt
+	var envVars *env.VarSet
 
-	upsNames := os.Getenv(envUPSNames)
-
-	switch {
-	// Look for UPS names in a delimited environment variable.
-	case upsNames != "":
-		opts = append(opts, env.WithOSLookup())
-
-		// TODO(jonathaningram): we already have an app. Is this so we're making
-		// sure that we definitely have it?
-		app, err := cfenv.Current()
-		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
-		for _, name := range strings.Split(upsNames, upsNamesEnvDelimiter) {
-			if name = strings.TrimSpace(name); name != "" {
-				opts = append(opts, env.WithUPSLookup(app, name))
-			}
-		}
-	// Use the hard-coded UPS named `defaultUPSName` followed by the OS.
-	default:
-		opts = append(opts,
-			env.WithUPSLookup(app, defaultUPSName),
-			env.WithOSLookup(),
-		)
+	if upsNames := os.Getenv(envUPSNames); upsNames != "" && app != nil {
+		envVars = makeUPSEnvVarSet(app, upsNames)
+	} else {
+		envVars = makeDefaultEnvVarSet(app)
 	}
-
-	envVars := env.NewVarSet(opts...)
 
 	router, settings, err := controllers.InitApp(envVars, app)
 	if err != nil {
@@ -111,4 +88,27 @@ func startApp(port string, app *cfenv.App) {
 	http.ListenAndServe(":"+port, protect(
 		http.TimeoutHandler(context.ClearHandler(router), helpers.TimeoutConstant, ""),
 	))
+}
+
+// makeDefaultEnvVarSet makes an env var set using the hard-coded UPS named
+// defaultUPSName followed by the OS.
+func makeDefaultEnvVarSet(app *cfenv.App) *env.VarSet {
+	opts := []env.VarSetOpt{}
+	if app != nil {
+		opts = append(opts, env.WithUPSLookup(app, defaultUPSName))
+	}
+	opts = append(opts, env.WithOSLookup())
+	return env.NewVarSet(opts...)
+}
+
+// makeUPSEnvVarSet makes an env var set from UPS names in the delimited
+// environment variable upsNames.
+func makeUPSEnvVarSet(app *cfenv.App, upsNames string) *env.VarSet {
+	opts := []env.VarSetOpt{env.WithOSLookup()}
+	for _, name := range strings.Split(upsNames, upsNamesEnvDelimiter) {
+		if name = strings.TrimSpace(name); name != "" {
+			opts = append(opts, env.WithUPSLookup(app, name))
+		}
+	}
+	return env.NewVarSet(opts...)
 }
