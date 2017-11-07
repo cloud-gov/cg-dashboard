@@ -4,15 +4,15 @@ import (
 	"testing"
 
 	"github.com/cloudfoundry-community/go-cfenv"
+	"github.com/govau/cf-common/env"
 
 	"github.com/18F/cg-dashboard/helpers"
-	"github.com/18F/cg-dashboard/helpers/testhelpers"
 )
 
 type initSettingsTest struct {
-	testName        string
-	envVars         map[string]string
-	returnValueNull bool
+	testName     string
+	envVars      map[string]string
+	wantNilError bool
 }
 
 var initSettingsTests = []initSettingsTest{
@@ -35,7 +35,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SecureCookiesEnvVar:         "1",
 			helpers.TICSecretEnvVar:             "tic",
 		},
-		returnValueNull: true,
+		wantNilError: true,
 	},
 	{
 		testName: "Basic Valid Legacy Session Key CF Settings",
@@ -53,7 +53,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SecureCookiesEnvVar:    "1",
 			helpers.TICSecretEnvVar:        "tic",
 		},
-		returnValueNull: true,
+		wantNilError: true,
 	},
 	{
 		testName: "Basic Valid Local CF Settings",
@@ -75,7 +75,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.LocalCFEnvVar:               "1",
 			helpers.TICSecretEnvVar:             "tic",
 		},
-		returnValueNull: true,
+		wantNilError: true,
 	},
 	{
 		testName: "Basic Invalid Prod CF Settings",
@@ -95,7 +95,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.TICSecretEnvVar:             "tic",
 			// Let SecureCookies Default to false (similar to what would happen in real life).
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 	{
 		testName: "Missing Client ID check",
@@ -109,7 +109,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 	{
 		testName: "Missing Client Secret check",
@@ -123,7 +123,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 	{
 		testName: "Missing Hostname check",
@@ -137,7 +137,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 	{
 		testName: "Missing Auth URL check",
@@ -151,7 +151,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 	{
 		testName: "Missing Token URL check",
@@ -165,7 +165,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 	{
 		testName: "Missing API URL check",
@@ -179,7 +179,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 	{
 		testName: "Missing Log URL check",
@@ -193,7 +193,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 	{
 		testName: "Missing Session Key check",
@@ -205,7 +205,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.UAAURLEnvVar:       "uaaurl",
 			helpers.APIURLEnvVar:       "apiurl",
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 	{
 		testName: "Missing SMTP From",
@@ -219,7 +219,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 	{
 		testName: "Missing SMTP Host",
@@ -234,17 +234,22 @@ var initSettingsTests = []initSettingsTest{
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 			helpers.SMTPFromEnvVar:              "blah@blah.com",
 		},
-		returnValueNull: false,
+		wantNilError: false,
 	},
 }
 
 func TestInitSettings(t *testing.T) {
-	env, _ := cfenv.Current()
-	for _, test := range initSettingsTests {
-		s := helpers.Settings{}
-		ret := s.InitSettings(helpers.NewEnvVarsFromPath(testhelpers.NewEnvLookupFromMap(test.envVars)), env)
-		if (ret == nil) != test.returnValueNull {
-			t.Errorf("Test %s did not return correct value. Expected %t, Actual %t", test.testName, test.returnValueNull, (ret == nil))
-		}
+	app, _ := cfenv.Current()
+	for _, tt := range initSettingsTests {
+		t.Run(tt.testName, func(t *testing.T) {
+			s := helpers.Settings{}
+			err := s.InitSettings(
+				env.NewVarSet(env.WithMapLookup(tt.envVars)),
+				app,
+			)
+			if (err == nil) != tt.wantNilError {
+				t.Errorf("return value: got %t, want %t", (err == nil), tt.wantNilError)
+			}
+		})
 	}
 }

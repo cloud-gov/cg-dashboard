@@ -1,5 +1,5 @@
-hash: cb874f5dbbe7df979b97c0312f52cd9712fd8e5f00807e1be5e51b38190211b1
-updated: 2017-09-12T12:25:36.809555946+10:00
+hash: 9ff0a3ed7332056ccb82fbf276024e6e871968405c0bd57b471f4fd2ac80b06f
+updated: 2017-10-24T20:35:00.140809273+11:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: fa152c58bc15761d0200cb75fe958b89a9d4888e
@@ -79,6 +79,10 @@ imports:
   version: 667fe4e3466a040b780561fe9b51a83a3753eefc
 - name: github.com/gorilla/sessions
   version: ca9ada44574153444b00d3fd9c8559e4cc95f896
+- name: github.com/govau/cf-common
+  version: 5c1de868d3662201c4f8ff529479e6153624fbf8
+  subpackages:
+  - env
 - name: github.com/hashicorp/go-cleanhttp
   version: 3573b8b52aa7b37b9358d966a898feb387f62437
 - name: github.com/jordan-wright/email

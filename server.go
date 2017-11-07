@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gorilla/context"
 	"github.com/gorilla/csrf"
+	"github.com/govau/cf-common/env"
 	"github.com/yvasiyarov/gorelic"
 
 	"github.com/18F/cg-dashboard/controllers"
@@ -16,8 +18,12 @@ import (
 )
 
 const (
-	defaultPort           = "9999"
-	cfUserProvidedService = "dashboard-ups"
+	defaultPort    = "9999"
+	defaultUPSName = "dashboard-ups"
+
+	envUPSNames = "UPS_NAMES"
+
+	upsNamesEnvDelimiter = ":"
 )
 
 func main() {
@@ -49,24 +55,24 @@ func startMonitoring(license string) {
 	}
 }
 
-func startApp(port string, env *cfenv.App) {
-	// Look for env vars first in a user provided service (if available), and if not found,
-	// fallback to the environment.
-	envVars := helpers.NewEnvVarsFromPath(
-		helpers.NewEnvLookupFromCFAppNamedService(env, cfUserProvidedService),
-		os.LookupEnv,
-	)
+func startApp(port string, app *cfenv.App) {
+	var envVars *env.VarSet
 
-	app, settings, err := controllers.InitApp(envVars, env)
+	if upsNames := os.Getenv(envUPSNames); upsNames != "" && app != nil {
+		envVars = makeUPSEnvVarSet(app, upsNames)
+	} else {
+		envVars = makeDefaultEnvVarSet(app)
+	}
+
+	router, settings, err := controllers.InitApp(envVars, app)
 	if err != nil {
-		// Print the error.
 		fmt.Println(err.Error())
 		// Terminate the program with a non-zero value number.
 		// Need this for testing purposes.
 		os.Exit(1)
 	}
 	if settings.PProfEnabled {
-		pprof.InitPProfRouter(app)
+		pprof.InitPProfRouter(router)
 	}
 
 	nrLicense := envVars.String(helpers.NewRelicLicenseEnvVar, "")
@@ -80,6 +86,29 @@ func startApp(port string, env *cfenv.App) {
 	// TODO add better timeout message. By default it will just say "Timeout"
 	protect := csrf.Protect(settings.CSRFKey, csrf.Secure(settings.SecureCookies))
 	http.ListenAndServe(":"+port, protect(
-		http.TimeoutHandler(context.ClearHandler(app), helpers.TimeoutConstant, ""),
+		http.TimeoutHandler(context.ClearHandler(router), helpers.TimeoutConstant, ""),
 	))
+}
+
+// makeDefaultEnvVarSet makes an env var set using the hard-coded UPS named
+// defaultUPSName followed by the OS.
+func makeDefaultEnvVarSet(app *cfenv.App) *env.VarSet {
+	opts := []env.VarSetOpt{}
+	if app != nil {
+		opts = append(opts, env.WithUPSLookup(app, defaultUPSName))
+	}
+	opts = append(opts, env.WithOSLookup())
+	return env.NewVarSet(opts...)
+}
+
+// makeUPSEnvVarSet makes an env var set from UPS names in the delimited
+// environment variable upsNames.
+func makeUPSEnvVarSet(app *cfenv.App, upsNames string) *env.VarSet {
+	opts := []env.VarSetOpt{env.WithOSLookup()}
+	for _, name := range strings.Split(upsNames, upsNamesEnvDelimiter) {
+		if name = strings.TrimSpace(name); name != "" {
+			opts = append(opts, env.WithUPSLookup(app, name))
+		}
+	}
+	return env.NewVarSet(opts...)
 }
