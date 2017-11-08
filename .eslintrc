@@ -24,7 +24,7 @@
     "import/newline-after-import": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-named-as-default": 0,
-    "import/no-unresolved": [2, { "ignore": ["skin"] }],
+    "import/no-unresolved": [2, { "ignore": ["skin", "dashboard"] }],
     "import/prefer-default-export": 0,
     "jsx-a11y/href-no-hash": 0,
     "jsx-a11y/img-has-alt": 0,
