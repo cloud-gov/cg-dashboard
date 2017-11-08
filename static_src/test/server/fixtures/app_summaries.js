@@ -1,5 +1,3 @@
-
-
 const appSummaries = [
   {
     guid: "2f684200-b9da-4ea6-a3c8-01a1df5ef2d3",

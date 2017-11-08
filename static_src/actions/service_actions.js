@@ -1,4 +1,3 @@
-
 /*
  * Actions for service entities. Any actions such as fetching, creating,
  * updating, etc should go here.
@@ -7,11 +6,11 @@
 // TODO consider splitting this up into separate files for bind, instance, and
 // plan actions similar to how stores are divided
 
-import AppDispatcher from '../dispatcher.js';
-import cfApi from '../util/cf_api.js';
-import errorActions from './error_actions.js';
-import { serviceActionTypes } from '../constants';
-import ServiceInstanceStore from '../stores/service_instance_store';
+import AppDispatcher from "../dispatcher.js";
+import cfApi from "../util/cf_api.js";
+import errorActions from "./error_actions.js";
+import { serviceActionTypes } from "../constants";
+import ServiceInstanceStore from "../stores/service_instance_store";
 
 const formatError = error => {
   const { response } = error;
@@ -26,15 +25,17 @@ const serviceActions = {
       orgGuid
     });
 
-    return cfApi.fetchAllServices(orgGuid)
+    return cfApi
+      .fetchAllServices(orgGuid)
       .then(services => {
         serviceActions.receivedServices(services);
         // Fetch associated service plans
-        return Promise.all(services.map(service => serviceActions.fetchAllPlans(service.guid)))
-          .then(() => services);
+        return Promise.all(
+          services.map(service => serviceActions.fetchAllPlans(service.guid))
+        ).then(() => services);
       })
-      .catch((err) =>
-        errorActions.importantDataFetchError(err, 'unable to fetch marketplace')
+      .catch(err =>
+        errorActions.importantDataFetchError(err, "unable to fetch marketplace")
       );
   },
 
@@ -53,7 +54,8 @@ const serviceActions = {
       servicePlanGuid
     });
 
-    return cfApi.fetchServicePlan(servicePlanGuid)
+    return cfApi
+      .fetchServicePlan(servicePlanGuid)
       .then(serviceActions.receivedPlan);
   },
 
@@ -72,10 +74,14 @@ const serviceActions = {
       serviceGuid
     });
 
-    return cfApi.fetchAllServicePlans(serviceGuid)
+    return cfApi
+      .fetchAllServicePlans(serviceGuid)
       .then(serviceActions.receivedPlans)
-      .catch((err) =>
-        errorActions.importantDataFetchError(err, 'unable to fetch service plans')
+      .catch(err =>
+        errorActions.importantDataFetchError(
+          err,
+          "unable to fetch service plans"
+        )
       );
   },
 
@@ -94,21 +100,30 @@ const serviceActions = {
       spaceGuid
     });
 
-    return cfApi.fetchServiceInstances(spaceGuid)
+    return cfApi
+      .fetchServiceInstances(spaceGuid)
       .then(serviceInstances => {
         serviceActions.receivedInstances(serviceInstances);
-        return Promise.all(serviceInstances.map(
-           serviceInstance => serviceActions.fetchPlan(serviceInstance.service_plan_guid)
-        ))
-        .then(() => serviceInstances)
-        .catch((err) => {
-          errorActions.importantDataFetchError(err, 'unable to fetch service plans');
-          // Still return completed service instances
-          return serviceInstances;
-        });
+        return Promise.all(
+          serviceInstances.map(serviceInstance =>
+            serviceActions.fetchPlan(serviceInstance.service_plan_guid)
+          )
+        )
+          .then(() => serviceInstances)
+          .catch(err => {
+            errorActions.importantDataFetchError(
+              err,
+              "unable to fetch service plans"
+            );
+            // Still return completed service instances
+            return serviceInstances;
+          });
       })
-      .catch((err) =>
-        errorActions.importantDataFetchError(err, 'unable to fetch service instances')
+      .catch(err =>
+        errorActions.importantDataFetchError(
+          err,
+          "unable to fetch service instances"
+        )
       );
   },
 
@@ -138,8 +153,11 @@ const serviceActions = {
       servicePlanGuid
     });
 
-    return cfApi.createServiceInstance(name, spaceGuid, servicePlanGuid)
-      .then(serviceInstance => serviceActions.fetchInstance(serviceInstance.guid))
+    return cfApi
+      .createServiceInstance(name, spaceGuid, servicePlanGuid)
+      .then(serviceInstance =>
+        serviceActions.fetchInstance(serviceInstance.guid)
+      )
       .then(serviceActions.createdInstance)
       .catch(serviceActions.errorCreateInstance);
   },
@@ -170,7 +188,8 @@ const serviceActions = {
       serviceInstanceGuid
     });
 
-    return cfApi.fetchServiceInstance(serviceInstanceGuid)
+    return cfApi
+      .fetchServiceInstance(serviceInstanceGuid)
       .then(serviceActions.receivedInstance);
   },
 
@@ -213,7 +232,9 @@ const serviceActions = {
   deleteInstance(instanceGuid) {
     const toDelete = ServiceInstanceStore.get(instanceGuid);
     if (!toDelete) {
-      return Promise.reject(new Error(`ServiceInstance ${instanceGuid} is not in store`));
+      return Promise.reject(
+        new Error(`ServiceInstance ${instanceGuid} is not in store`)
+      );
     }
 
     AppDispatcher.handleViewAction({
@@ -221,10 +242,13 @@ const serviceActions = {
       serviceInstanceGuid: instanceGuid
     });
 
-    return cfApi.deleteUnboundServiceInstance(toDelete)
-      .then(() => serviceActions.deletedInstance(instanceGuid))
-      // TODO if the delete fails, we want to expose it to the user
-      .catch(() => serviceActions.deletedInstance(instanceGuid)); // Swallow the error
+    return (
+      cfApi
+        .deleteUnboundServiceInstance(toDelete)
+        .then(() => serviceActions.deletedInstance(instanceGuid))
+        // TODO if the delete fails, we want to expose it to the user
+        .catch(() => serviceActions.deletedInstance(instanceGuid))
+    ); // Swallow the error
   },
 
   deletedInstance(serviceInstanceGuid) {
@@ -260,10 +284,11 @@ const serviceActions = {
       appGuid
     });
 
-    return cfApi.fetchServiceBindings(appGuid)
+    return cfApi
+      .fetchServiceBindings(appGuid)
       .then(serviceActions.receivedServiceBindings)
-      .catch((err) =>
-        errorActions.importantDataFetchError(err, 'unable to fetch services')
+      .catch(err =>
+        errorActions.importantDataFetchError(err, "unable to fetch services")
       );
   },
 
@@ -283,7 +308,8 @@ const serviceActions = {
       serviceInstanceGuid
     });
 
-    return cfApi.createServiceBinding(appGuid, serviceInstanceGuid)
+    return cfApi
+      .createServiceBinding(appGuid, serviceInstanceGuid)
       .then(serviceActions.boundService)
       .catch(err => serviceActions.instanceError(serviceInstanceGuid, err));
   },
@@ -294,9 +320,12 @@ const serviceActions = {
       serviceBinding
     });
 
-    return cfApi.deleteServiceBinding(serviceBinding)
+    return cfApi
+      .deleteServiceBinding(serviceBinding)
       .then(() => serviceActions.unboundService(serviceBinding))
-      .catch(err => serviceActions.instanceError(serviceBinding.service_instance_guid, err));
+      .catch(err =>
+        serviceActions.instanceError(serviceBinding.service_instance_guid, err)
+      );
   },
 
   boundService(serviceBinding) {

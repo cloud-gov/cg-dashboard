@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
   children: PropTypes.any,
@@ -10,16 +10,24 @@ const propTypes = {
   type: PropTypes.string
 };
 
-const button = ({ className, label, clickHandler, disabled, type, children }) =>
+const button = ({
+  className,
+  label,
+  clickHandler,
+  disabled,
+  type,
+  children
+}) => (
   <button
-    className={ className }
-    aria-label={ label }
-    onClick={ clickHandler }
-    disabled={ disabled }
+    className={className}
+    aria-label={label}
+    onClick={clickHandler}
+    disabled={disabled}
     type={type}
   >
-    { children }
-  </button>;
+    {children}
+  </button>
+);
 
 button.propTypes = propTypes;
 

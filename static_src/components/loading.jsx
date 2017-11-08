@@ -1,16 +1,15 @@
-
-import PropTypes from 'prop-types';
-import React from 'react';
-import loadingImg from 'cloudgov-style/img/loading.gif';
+import PropTypes from "prop-types";
+import React from "react";
+import loadingImg from "cloudgov-style/img/loading.gif";
 
 const LOADING_TIME = 300;
 const STYLES = [
   // globalSaving is applied to saving notifications inside panels
-  'globalSaving',
+  "globalSaving",
   // inline is applied when displaying an inline panel loading status
-  'inline',
+  "inline",
   // cover is used to show a full page loading status
-  'cover'
+  "cover"
 ];
 
 const propTypes = {
@@ -21,10 +20,10 @@ const propTypes = {
 };
 
 const defaultProps = {
-  text: 'Loading',
+  text: "Loading",
   active: true,
   loadingDelayMS: LOADING_TIME,
-  style: 'cover'
+  style: "cover"
 };
 
 class Loading extends React.Component {
@@ -58,14 +57,14 @@ class Loading extends React.Component {
 
   get containerClasses() {
     switch (this.props.style) {
-      case 'globalSaving': {
-        return 'saving saving-relative';
+      case "globalSaving": {
+        return "saving saving-relative";
       }
-      case 'cover': {
-        return 'loading loading-relative';
+      case "cover": {
+        return "loading loading-relative";
       }
       default: {
-        return 'loading-inline';
+        return "loading-inline";
       }
     }
   }
@@ -76,40 +75,40 @@ class Loading extends React.Component {
     if (!this.props.active || this.state.waitTimer) return null;
 
     return (
-      <div className={ this.containerClasses }
+      <div
+        className={this.containerClasses}
         role="alertdialog"
         aria-live="assertive"
-        aria-busy={ this.props.active }
+        aria-busy={this.props.active}
       >
         {(() => {
           switch (style) {
-            case 'globalSaving': {
-              return (
-                <div>{ this.props.text }</div>
-              );
+            case "globalSaving": {
+              return <div>{this.props.text}</div>;
             }
-            case 'cover': {
+            case "cover": {
               return (
-                <img className="loading-indicator"
-                  src={ `/assets/${loadingImg}` } alt={ this.props.text }
+                <img
+                  className="loading-indicator"
+                  src={`/assets/${loadingImg}`}
+                  alt={this.props.text}
                 />
               );
             }
-            case 'inline': {
+            case "inline": {
               return (
                 <div>
                   <span className="loading-inline-dot">•</span>
                   <span className="loading-inline-dot">•</span>
                   <span className="loading-inline-dot">•</span>
-                  <span className="loading-inline-text">
-                    { this.props.text }
-                  </span>
+                  <span className="loading-inline-text">{this.props.text}</span>
                 </div>
               );
             }
-            default: return null;
+            default:
+              return null;
           }
-        })() }
+        })()}
       </div>
     );
   }

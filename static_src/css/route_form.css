@@ -1,10 +1,9 @@
-
 /* TODO use main shared colors */
 :root {
-  --primary: #157DE6;
-  --background-light: #F3F4F8;
+  --primary: #157de6;
+  --background-light: #f3f4f8;
   --breathing-room: 1em;
-  --warning: #F16031;
+  --warning: #f16031;
 }
 
 /* TODO make global */
@@ -51,7 +50,7 @@
 }
 
 .route-field-host:after {
-  content: '.';
+  content: ".";
   font-size: 4.1rem;
   position: absolute;
   right: -1.4rem;
@@ -59,7 +58,7 @@
 }
 
 .route-field-domain:after {
-  content: '/';
+  content: "/";
   font-size: 2.1rem;
   position: absolute;
   right: -1.4rem;
@@ -109,7 +108,7 @@
 }
 
 .route-form .error_message {
-  padding-left: .75rem;
+  padding-left: 0.75rem;
 }
 
 /* TODO move to global */

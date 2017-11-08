@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Action from './action.jsx';
+import React from "react";
+import PropTypes from "prop-types";
+import Action from "./action.jsx";
 
 const propTypes = {
   cost: PropTypes.string,
@@ -16,10 +16,10 @@ const propTypes = {
 // for service instance multiple params (e.g. cdn-route) or services
 // that only return information via the cf cli (e.g. space-deployer).
 const CF_CLI_SERVICE_PLAN_LIST = [
-  'cdn-route',
-  'space-auditor',
-  'space-deployer',
-  'oauth-client'
+  "cdn-route",
+  "space-auditor",
+  "space-deployer",
+  "oauth-client"
 ];
 
 class ServicePlan extends React.Component {
@@ -40,9 +40,9 @@ class ServicePlan extends React.Component {
     const { plan } = this.props;
 
     if (CF_CLI_SERVICE_PLAN_LIST.indexOf(plan.name) === -1) {
-      text = 'Create service instance';
+      text = "Create service instance";
     } else {
-      text = 'Display documentation link';
+      text = "Display documentation link";
     }
     return text;
   }
@@ -52,15 +52,15 @@ class ServicePlan extends React.Component {
 
     return (
       <tr>
-        <td label="Name">{ plan.name }</td>
-        <td label="Description">{ plan.description }</td>
+        <td label="Name">{plan.name}</td>
+        <td label="Description">{plan.description}</td>
         <td label="Actions">
           <Action
-            classes={ ['test-create_service_instance'] }
-            clickHandler={ this.handleClick }
+            classes={["test-create_service_instance"]}
+            clickHandler={this.handleClick}
             label="create"
           >
-            { this.buttonText }
+            {this.buttonText}
           </Action>
         </td>
       </tr>

@@ -1,14 +1,18 @@
+import "../../global_setup.js";
 
-import '../../global_setup.js';
+import AppDispatcher from "../../../dispatcher.js";
+import {
+  assertAction,
+  setupViewSpy,
+  setupUISpy,
+  setupServerSpy,
+  wrapInRes
+} from "../helpers.js";
+import cfApi from "../../../util/cf_api.js";
+import spaceActions from "../../../actions/space_actions.js";
+import { spaceActionTypes } from "../../../constants.js";
 
-import AppDispatcher from '../../../dispatcher.js';
-import { assertAction, setupViewSpy, setupUISpy, setupServerSpy, wrapInRes }
-  from '../helpers.js';
-import cfApi from '../../../util/cf_api.js';
-import spaceActions from '../../../actions/space_actions.js';
-import { spaceActionTypes } from '../../../constants.js';
-
-describe('spaceActions', () => {
+describe("spaceActions", () => {
   var sandbox;
 
   beforeEach(() => {
@@ -19,7 +23,7 @@ describe('spaceActions', () => {
     sandbox.restore();
   });
 
-  describe('fetch()', () => {
+  describe("fetch()", () => {
     let expectedSpace,
       dispatcherSpy,
       fetchSpaceStub,
@@ -28,36 +32,38 @@ describe('spaceActions', () => {
 
     beforeEach(function(done) {
       dispatcherSpy = setupViewSpy(sandbox);
-      fetchSpaceStub = sandbox.stub(cfApi, 'fetchSpace').returns(Promise.resolve(expectedSpace));
-      receivedSpaceStub = sandbox.stub(spaceActions, 'receivedSpace');
-      expectedGuid = 'abc1';
+      fetchSpaceStub = sandbox
+        .stub(cfApi, "fetchSpace")
+        .returns(Promise.resolve(expectedSpace));
+      receivedSpaceStub = sandbox.stub(spaceActions, "receivedSpace");
+      expectedGuid = "abc1";
       expectedSpace = { guid: expectedGuid };
       spaceActions.fetch(expectedGuid).then(done, done.fail);
     });
 
-    it('dispatches SPACE_FETCH action', function() {
+    it("dispatches SPACE_FETCH action", function() {
       const [action] = dispatcherSpy.getCall(0).args;
       expect(dispatcherSpy).toHaveBeenCalledOnce();
       expect(action.type).toBe(spaceActionTypes.SPACE_FETCH);
     });
 
-    it('calls api method once', function() {
+    it("calls api method once", function() {
       expect(fetchSpaceStub).toHaveBeenCalledOnce();
     });
 
-    it('calls api with the guid', function() {
+    it("calls api with the guid", function() {
       expect(fetchSpaceStub).toHaveBeenCalledWith(expectedGuid);
     });
 
-    it('calls the receivedSpace action creator', function() {
+    it("calls the receivedSpace action creator", function() {
       expect(receivedSpaceStub).toHaveBeenCalledWith(expectedSpace);
     });
   });
 
-  describe('fetchAll()', () => {
-    it('should dispatch a view event to fetch all spaces', () => {
+  describe("fetchAll()", () => {
+    it("should dispatch a view event to fetch all spaces", () => {
       let spy = setupViewSpy(sandbox);
-      const receivedSpaceStub = sandbox.stub(spaceActions, 'receivedSpace');
+      const receivedSpaceStub = sandbox.stub(spaceActions, "receivedSpace");
 
       spaceActions.fetchAll();
 
@@ -66,11 +72,11 @@ describe('spaceActions', () => {
     });
   });
 
-  describe('fetchAllForOrg()', () => {
-    it('should dispatch a view event to fetch all spaces for org', () => {
+  describe("fetchAllForOrg()", () => {
+    it("should dispatch a view event to fetch all spaces for org", () => {
       let spy = setupViewSpy(sandbox);
 
-      spaceActions.fetchAllForOrg('sdf');
+      spaceActions.fetchAllForOrg("sdf");
 
       expect(spy).toHaveBeenCalledOnce();
       let arg = spy.getCall(0).args[0];
@@ -78,13 +84,13 @@ describe('spaceActions', () => {
     });
   });
 
-  describe('receivedSpace()', () => {
-    it('should dispatch server event of type space received', () => {
-      var expected = { guid: 'asdf' },
-          spy = setupServerSpy(sandbox),
-          expectedParams = {
-            space: expected
-          };
+  describe("receivedSpace()", () => {
+    it("should dispatch server event of type space received", () => {
+      var expected = { guid: "asdf" },
+        spy = setupServerSpy(sandbox),
+        expectedParams = {
+          space: expected
+        };
 
       spaceActions.receivedSpace(expected);
 
@@ -92,9 +98,9 @@ describe('spaceActions', () => {
     });
   });
 
-  describe('receivedSpaces()', () => {
-    it('should dispatch a server event for all spaces received', () => {
-      const expected = wrapInRes([{ guid: 'fake-guid-one' }]);
+  describe("receivedSpaces()", () => {
+    it("should dispatch a server event for all spaces received", () => {
+      const expected = wrapInRes([{ guid: "fake-guid-one" }]);
       const expectedParams = false;
       const spy = setupServerSpy(sandbox);
 
@@ -108,9 +114,9 @@ describe('spaceActions', () => {
     });
   });
 
-  describe('changeCurrentSpace()', function() {
-    it('should dispatch a ui even of type current space changed', function() {
-      const expected = 'asdf';
+  describe("changeCurrentSpace()", function() {
+    it("should dispatch a ui even of type current space changed", function() {
+      const expected = "asdf";
       const spy = setupUISpy(sandbox);
       const expectedParams = {
         spaceGuid: expected

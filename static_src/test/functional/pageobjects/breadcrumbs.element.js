@@ -1,4 +1,4 @@
-import BaseElement from './base.element';
+import BaseElement from "./base.element";
 
 const breadcrumbs = '[data-test="breadcrumbs"]';
 

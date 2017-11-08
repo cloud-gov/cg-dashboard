@@ -1,11 +1,10 @@
-
-import PropTypes from 'prop-types';
-import React from 'react';
-import Action from './action.jsx';
-import { FormError } from './form';
-import PanelActions from './panel_actions.jsx';
-import formatRoute from '../util/format_route';
-import routeFormCss from '../css/route_form.css';
+import PropTypes from "prop-types";
+import React from "react";
+import Action from "./action.jsx";
+import { FormError } from "./form";
+import PanelActions from "./panel_actions.jsx";
+import formatRoute from "../util/format_route";
+import routeFormCss from "../css/route_form.css";
 
 const propTypes = {
   domains: PropTypes.array.isRequired,
@@ -20,8 +19,12 @@ const defaultProps = {
   route: {},
   routeLimit: -1,
   error: null,
-  submitHandler: (ev) => {ev.preventDefault()},
-  cancelHandler: (ev) => {ev.preventDefault()}
+  submitHandler: ev => {
+    ev.preventDefault();
+  },
+  cancelHandler: ev => {
+    ev.preventDefault();
+  }
 };
 
 export default class RouteForm extends React.Component {
@@ -38,7 +41,6 @@ export default class RouteForm extends React.Component {
     this._onSubmit = this._onSubmit.bind(this);
   }
 
-
   // TODO: If there are multiple route forms on the page, does it matter if
   // they all have elements with the same names? IDs are unique
   _onChange(event) {
@@ -46,8 +48,8 @@ export default class RouteForm extends React.Component {
     const newValue = {};
     newValue[event.target.name] = event.target.value;
 
-    if (event.target.name === 'domain_guid') {
-      newValue.domain_name = this.props.domains.find((domain) => {
+    if (event.target.name === "domain_guid") {
+      newValue.domain_name = this.props.domains.find(domain => {
         return domain.guid === event.target.value;
       }).name;
     }
@@ -58,12 +60,12 @@ export default class RouteForm extends React.Component {
   _onSubmit(event) {
     event.preventDefault();
     const payload = {};
-    Object.keys(this.state).forEach((key) => {
+    Object.keys(this.state).forEach(key => {
       let value = this.state[key];
       // path needs to start with a / per the cf api docs
-      if (key === 'path' && !value) {
-        value = '';
-      } else if (key === 'path' && value[0] !== '/' && value !== '') {
+      if (key === "path" && !value) {
+        value = "";
+      } else if (key === "path" && value[0] !== "/" && value !== "") {
         value = `/${value}`;
       }
       payload[key] = value;
@@ -91,8 +93,8 @@ export default class RouteForm extends React.Component {
   }
 
   get submitActionText() {
-    if (this.props.route.guid) return 'OK';
-    return 'Create';
+    if (this.props.route.guid) return "OK";
+    return "Create";
   }
 
   render() {
@@ -111,28 +113,33 @@ export default class RouteForm extends React.Component {
     }
 
     return (
-      <form className="route-form panel-form-replace" onSubmit={ this._onSubmit }>
-        { limit }
+      <form className="route-form panel-form-replace" onSubmit={this._onSubmit}>
+        {limit}
         <fieldset>
           <div className="route-fields">
             <div className="route-field-host">
               <label htmlFor={`${route.guid}-host`}>Host</label>
-              <input type="text" id={`${route.guid}-host`}
-                name="host" value={ this.state.host }
-                onChange={ this._onChange }
+              <input
+                type="text"
+                id={`${route.guid}-host`}
+                name="host"
+                value={this.state.host}
+                onChange={this._onChange}
               />
             </div>
             <div className="route-field-domain">
               <label htmlFor={`${route.guid}-domain`}>Domain</label>
-              <select id={`${route.guid}-domain`} name="domain_guid"
-                onChange={ this._onChange }
-                value={ this.props.route.domain_guid }
+              <select
+                id={`${route.guid}-domain`}
+                name="domain_guid"
+                onChange={this._onChange}
+                value={this.props.route.domain_guid}
               >
                 <option key="none">---</option>
-                { domains.map((domain) => {
+                {domains.map(domain => {
                   return (
-                    <option key={ domain.guid } value={ domain.guid } >
-                      { domain.name }
+                    <option key={domain.guid} value={domain.guid}>
+                      {domain.name}
                     </option>
                   );
                 })}
@@ -140,25 +147,31 @@ export default class RouteForm extends React.Component {
             </div>
             <div className="route-field-path">
               <label htmlFor={`${route.guid}-path`}>Path (optional)</label>
-              <input type="text" id={`${route.guid}-path`}
-                name="path" value={ this.state.path }
-                onChange={ this._onChange }
+              <input
+                type="text"
+                id={`${route.guid}-path`}
+                name="path"
+                value={this.state.path}
+                onChange={this._onChange}
               />
             </div>
           </div>
         </fieldset>
         <div>
           <label htmlFor="route-preview">Route preview</label>
-          <input type="text" readOnly id="route-preview"
+          <input
+            type="text"
+            readOnly
+            id="route-preview"
             className="route-form-preview"
-            value={ this.fullUrl }
-          ></input>
+            value={this.fullUrl}
+          />
           <div>
             {(() => {
               // Props error is non-specific when error happens at route creation.
               if (this.props.error) {
                 return <FormError message={this.props.error.description} />;
-              // Route error is a error when updating/deleting a specific route.
+                // Route error is a error when updating/deleting a specific route.
               } else if (route.error) {
                 return <FormError message={route.error.description} />;
               }
@@ -167,16 +180,21 @@ export default class RouteForm extends React.Component {
         </div>
         <div className="route-form-actions">
           <PanelActions>
-            <Action clickHandler={ this.props.cancelHandler } label="Cancel"
-              style="base" type="outline"
+            <Action
+              clickHandler={this.props.cancelHandler}
+              label="Cancel"
+              style="base"
+              type="outline"
             >
               Cancel
             </Action>
-            <Action clickHandler={ this._onSubmit }
-              label={ this.submitActionText } style="finish"
-              disabled={ !this.hasChanged }
+            <Action
+              clickHandler={this._onSubmit}
+              label={this.submitActionText}
+              style="finish"
+              disabled={!this.hasChanged}
             >
-              { this.submitActionText }
+              {this.submitActionText}
             </Action>
           </PanelActions>
         </div>

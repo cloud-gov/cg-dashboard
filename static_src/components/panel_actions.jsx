@@ -1,8 +1,7 @@
+import PropTypes from "prop-types";
+import React from "react";
 
-import PropTypes from 'prop-types';
-import React from 'react';
-
-const ALIGN_TYPES = ['left', 'right', 'both'];
+const ALIGN_TYPES = ["left", "right", "both"];
 
 const propTypes = {
   children: PropTypes.any,
@@ -16,8 +15,8 @@ const defaultProps = {
 export default class PanelActions extends React.Component {
   render() {
     return (
-      <span className={ `panel-actions panel-actions-${this.props.align}` }>
-        { this.props.children }
+      <span className={`panel-actions panel-actions-${this.props.align}`}>
+        {this.props.children}
       </span>
     );
   }

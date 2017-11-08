@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
 const propTypes = {
   children: PropTypes.node,
@@ -12,16 +12,16 @@ export default class PageHeader extends React.Component {
       return null;
     }
 
-    return <div className="page-header-actions">{ this.props.children }</div>;
+    return <div className="page-header-actions">{this.props.children}</div>;
   }
 
   render() {
     return (
       <div className="page-header">
         <h1 className="page-header-title test-page-header-title">
-          { this.props.title }
+          {this.props.title}
         </h1>
-        { this.actions }
+        {this.actions}
       </div>
     );
   }

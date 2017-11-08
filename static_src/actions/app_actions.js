@@ -1,14 +1,13 @@
-
 /*
  * Actions for app entities. Any actions such as fetching, creating, updating,
  * etc should go here.
  */
 
-import AppDispatcher from '../dispatcher.js';
-import { appActionTypes } from '../constants';
-import errorActions from './error_actions.js';
-import cfApi from '../util/cf_api.js';
-import poll from '../util/poll.js';
+import AppDispatcher from "../dispatcher.js";
+import { appActionTypes } from "../constants";
+import errorActions from "./error_actions.js";
+import cfApi from "../util/cf_api.js";
+import poll from "../util/poll.js";
 
 const appActions = {
   fetch(appGuid) {
@@ -17,12 +16,11 @@ const appActions = {
       appGuid
     });
 
-    return cfApi.fetchApp(appGuid).then(appActions.receivedApp)
-      .catch((err) => {
-        errorActions.importantDataFetchError(
-          err,
-          'unable to fetch app'
-        );
+    return cfApi
+      .fetchApp(appGuid)
+      .then(appActions.receivedApp)
+      .catch(err => {
+        errorActions.importantDataFetchError(err, "unable to fetch app");
       });
   },
 
@@ -42,8 +40,9 @@ const appActions = {
       appGuid
     });
 
-    return cfApi.putApp(appGuid, appPartial)
-      .then((app) =>
+    return cfApi
+      .putApp(appGuid, appPartial)
+      .then(app =>
         // Setup a poll so that we know when the app is back up.
         poll(
           appStatus => appStatus.running_instances > 0,
@@ -51,7 +50,8 @@ const appActions = {
           // give richer information from the poll
           cfApi.fetchAppStatus.bind(cfApi, app.guid)
         )
-      ).then(appActions.updatedApp, (err) => appActions.error(appGuid, err));
+      )
+      .then(appActions.updatedApp, err => appActions.error(appGuid, err));
   },
 
   updatedApp(app) {
@@ -69,12 +69,15 @@ const appActions = {
       appGuid
     });
 
-    return cfApi.fetchAppStats(appGuid)
+    return cfApi
+      .fetchAppStats(appGuid)
       .then(app => appActions.receivedAppStats(appGuid, app))
-      .catch((err) => {
+      .catch(err => {
         appActions.fetchError(appGuid);
-        return errorActions.importantDataFetchError(err,
-          'app usage data may be incomplete');
+        return errorActions.importantDataFetchError(
+          err,
+          "app usage data may be incomplete"
+        );
       });
   },
 
@@ -94,7 +97,9 @@ const appActions = {
       appGuid
     });
 
-    return cfApi.fetchAppAll(appGuid).then(() => appActions.receivedAppAll(appGuid));
+    return cfApi
+      .fetchAppAll(appGuid)
+      .then(() => appActions.receivedAppAll(appGuid));
   },
 
   receivedAppAll(appGuid) {
@@ -121,7 +126,8 @@ const appActions = {
       appGuid
     });
 
-    return cfApi.putApp(appGuid, { state: 'STARTED' })
+    return cfApi
+      .putApp(appGuid, { state: "STARTED" })
       .then(() => appActions.restarted(appGuid))
       .catch(err => appActions.error(appGuid, err));
   },
@@ -132,18 +138,20 @@ const appActions = {
       appGuid
     });
 
-    return cfApi.postAppRestart(appGuid)
+    return cfApi
+      .postAppRestart(appGuid)
       .then(() =>
         poll(
-          (app) => app.running_instances > 0,
+          app => app.running_instances > 0,
           cfApi.fetchAppStatus.bind(cfApi, appGuid)
-        ).then((app) =>
+        ).then(app =>
           Promise.all([
             appActions.fetchStats(appGuid),
             appActions.receivedApp(app)
           ])
         )
-      ).then(() => appActions.restarted(appGuid));
+      )
+      .then(() => appActions.restarted(appGuid));
   },
 
   restarted(appGuid) {

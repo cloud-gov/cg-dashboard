@@ -1,6 +1,5 @@
-
-import BaseStore from './base_store.js';
-import { pageActionTypes } from '../constants.js';
+import BaseStore from "./base_store.js";
+import { pageActionTypes } from "../constants.js";
 
 class PageStore extends BaseStore {
   constructor() {

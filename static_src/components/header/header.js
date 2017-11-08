@@ -1,10 +1,10 @@
-import React from 'react';
-import classNames from 'classnames';
+import React from "react";
+import classNames from "classnames";
 
-import { header } from 'skin';
-import LoginStore from '../../stores/login_store.js';
-import HeaderLink from './header_link';
-import Action from '../action.jsx';
+import { header } from "skin";
+import LoginStore from "../../stores/login_store.js";
+import HeaderLink from "./header_link";
+import Action from "../action.jsx";
 
 const Header = () => {
   const loginLink = LoginStore.isLoggedIn() ? (
@@ -22,7 +22,7 @@ const Header = () => {
   );
 
   return (
-    <header className={classNames('header', 'header-no_sidebar')}>
+    <header className={classNames("header", "header-no_sidebar")}>
       <div className="header-wrap">
         {header.logo.render()}
         <nav className="header-side">

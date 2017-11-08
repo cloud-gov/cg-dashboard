@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import BaseStore from './base_store';
-import { appActionTypes, envActionTypes } from '../constants';
+import BaseStore from "./base_store";
+import { appActionTypes, envActionTypes } from "../constants";
 
 export const envPropType = PropTypes.shape({
   environment_json: PropTypes.object.isRequired

@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { appPropType } from '../../stores/app_store';
-import { upsisRequestPropType } from '../../stores/upsi_store';
-import Loading from '../loading.jsx';
-import ErrorMessage from '../error_message.jsx';
-import Panel from '../panel.jsx';
-import ComplexList from '../complex_list.jsx';
-import ElasticLine from '../elastic_line.jsx';
-import ElasticLineItem from '../elastic_line_item.jsx';
+import { appPropType } from "../../stores/app_store";
+import { upsisRequestPropType } from "../../stores/upsi_store";
+import Loading from "../loading.jsx";
+import ErrorMessage from "../error_message.jsx";
+import Panel from "../panel.jsx";
+import ComplexList from "../complex_list.jsx";
+import ElasticLine from "../elastic_line.jsx";
+import ElasticLineItem from "../elastic_line_item.jsx";
 
 const propTypes = {
   app: appPropType.isRequired,
@@ -70,7 +70,7 @@ export default class UPSIPanel extends Component {
     if (error) {
       return (
         <ErrorMessage
-          error={{ message: 'Could not load user-provided service instances.' }}
+          error={{ message: "Could not load user-provided service instances." }}
         />
       );
     }

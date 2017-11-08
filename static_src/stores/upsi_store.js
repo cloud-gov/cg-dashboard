@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import BaseStore from './base_store';
-import { upsiActionTypes } from '../constants';
+import BaseStore from "./base_store";
+import { upsiActionTypes } from "../constants";
 
 export const upsisPropType = PropTypes.arrayOf(
   PropTypes.shape({

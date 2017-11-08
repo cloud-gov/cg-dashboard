@@ -1,6 +1,6 @@
-import AppDispatcher from '../dispatcher';
-import { envActionTypes } from '../constants';
-import cfApi from '../util/cf_api';
+import AppDispatcher from "../dispatcher";
+import { envActionTypes } from "../constants";
+import cfApi from "../util/cf_api";
 
 const fetchEnvSuccess = (appGuid, env) => {
   AppDispatcher.handleServerAction({

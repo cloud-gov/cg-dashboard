@@ -1,10 +1,9 @@
-
 function guidFromEntity(entity) {
   if (!entity) {
-    throw new Error('Entity must be provided.');
+    throw new Error("Entity must be provided.");
   }
 
-  if (typeof entity === 'string') {
+  if (typeof entity === "string") {
     return entity;
   }
 

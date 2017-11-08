@@ -1,4 +1,3 @@
-
 const appRoutes = [
   {
     metadata: {
@@ -17,9 +16,10 @@ const appRoutes = [
       domain_url: "/v2/shared_domains/97435c2f-d5bb-4c10-8393-55d7d7169932",
       space_url: "/v2/spaces/82af0edb-8540-4064-82f2-d74df612b794",
       apps_url: "/v2/routes/228342e9-2c9d-4874-95fe-0a06ac5ceb43/apps",
-      route_mappings_url: "/v2/routes/228342e9-2c9d-4874-95fe-0a06ac5ceb43/route_mappings"
+      route_mappings_url:
+        "/v2/routes/228342e9-2c9d-4874-95fe-0a06ac5ceb43/route_mappings"
     }
   }
-]
+];
 
 module.exports = appRoutes;

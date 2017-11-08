@@ -1,13 +1,12 @@
+import Immutable from "immutable";
 
-import Immutable from 'immutable';
-
-import BaseStore from './base_store.js';
-import { activityActionTypes } from '../constants.js';
+import BaseStore from "./base_store.js";
+import { activityActionTypes } from "../constants.js";
 
 function parseLogTimestamp(timestamp) {
-  const split = timestamp.split(':');
-  const splitDate = split[0].split('/');
-  const splitOffset = split[3].split(' ');
+  const split = timestamp.split(":");
+  const splitDate = split[0].split("/");
+  const splitOffset = split[3].split(" ");
   const date = `${splitDate[2]}-${splitDate[1]}-${splitDate[0]}`;
   const time = `${split[1]}:${split[2]}`;
   return `${date} ${time} ${splitOffset[1]}`;
@@ -15,13 +14,13 @@ function parseLogTimestamp(timestamp) {
 
 function parseLogItem(log) {
   const parseMessage = [
-    '(.*)\\s-\\s\\[(.*)\]\\s"([^"]*)(HTTP\/.*)"\\s(\\d+)\\s.*',
+    '(.*)\\s-\\s\\[(.*)]\\s"([^"]*)(HTTP/.*)"\\s(\\d+)\\s.*',
     'x_forwarded_for:"(.*)"\\sx_forwarded_proto:"(\\w+)"\\',
-    'svcap_request_id:(.*)\\sresponse_time:(.*)\\sapp_id:(.*)'
-  ].join('');
-  const matches = (new RegExp(parseMessage)).exec(log.message);
+    "svcap_request_id:(.*)\\sresponse_time:(.*)\\sapp_id:(.*)"
+  ].join("");
+  const matches = new RegExp(parseMessage).exec(log.message);
 
-  if (!matches) throw new Error('log item parsing failed');
+  if (!matches) throw new Error("log item parsing failed");
 
   const host = matches[1];
   const timestamp = parseLogTimestamp(matches[2]);
@@ -39,7 +38,6 @@ function parseLogItem(log) {
     vcap_request_id: vcapRequestId,
     response_time: responseTime
   };
-
 
   return {
     host,
@@ -90,13 +88,13 @@ class ActivityStore extends BaseStore {
       case activityActionTypes.EVENTS_RECEIVED:
         this._eventsFetching = false;
         this._eventsFetched = true;
-        activity = action.events.map((event) => {
+        activity = action.events.map(event => {
           const item = Object.assign({}, event, {
-            activity_type: 'event'
+            activity_type: "event"
           });
           return item;
         });
-        this.mergeMany('guid', activity, () => {});
+        this.mergeMany("guid", activity, () => {});
         this.emitChange();
         break;
 
@@ -110,13 +108,13 @@ class ActivityStore extends BaseStore {
       case activityActionTypes.LOGS_RECEIVED:
         this._logsFetching = false;
         this._logsFetched = true;
-        activity = action.logs.map((log) => {
+        activity = action.logs.map(log => {
           const parsed = Object.assign({}, parseLogItem(log), {
-            activity_type: 'log'
+            activity_type: "log"
           });
           return parsed;
         });
-        this.mergeMany('guid', activity, () => {});
+        this.mergeMany("guid", activity, () => {});
         this.emitChange();
         break;
 

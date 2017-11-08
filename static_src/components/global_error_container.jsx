@@ -1,9 +1,8 @@
+import PropTypes from "prop-types";
+import React from "react";
 
-import PropTypes from 'prop-types';
-import React from 'react';
-
-import ErrorStore from '../stores/error_store.js';
-import GlobalError from './global_error.jsx';
+import ErrorStore from "../stores/error_store.js";
+import GlobalError from "./global_error.jsx";
 
 const propTypes = {
   maxItems: PropTypes.number
@@ -46,21 +45,13 @@ export default class GlobalErrorContainer extends React.Component {
 
     if (this.state.errs.length) {
       errNotifications = [];
-      this.state.errs
-        .slice(0, this.props.maxItems)
-        .forEach((err, i) => {
-          const errorMessage = (
-            <GlobalError key={ `error-${i}` }err={ err } />
-          );
-          errNotifications.push(errorMessage);
-        });
+      this.state.errs.slice(0, this.props.maxItems).forEach((err, i) => {
+        const errorMessage = <GlobalError key={`error-${i}`} err={err} />;
+        errNotifications.push(errorMessage);
+      });
     }
 
-    return (
-      <div className="test-global-errors">
-        { errNotifications }
-      </div>
-    );
+    return <div className="test-global-errors">{errNotifications}</div>;
   }
 }
 

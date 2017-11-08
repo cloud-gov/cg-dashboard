@@ -1,5 +1,5 @@
-import BaseStore from './base_store.js';
-import { routerActionTypes } from '../constants.js';
+import BaseStore from "./base_store.js";
+import { routerActionTypes } from "../constants.js";
 
 class RouterStore extends BaseStore {
   constructor() {

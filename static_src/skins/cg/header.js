@@ -1,18 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import flagSrc from 'cloudgov-style/img/us_flag_small.png';
-import arrowUpSrc from './angle-arrow-up-primary-hover.svg';
-import arrowDownSrc from './angle-arrow-down-primary.svg';
-import dotGovIconSrc from './icon-dot-gov.svg';
-import httpsIconSrc from './icon-https.svg';
-import logoSrc from 'cloudgov-style/img/cloudgov-sprite.svg';
+import flagSrc from "cloudgov-style/img/us_flag_small.png";
+import arrowUpSrc from "./angle-arrow-up-primary-hover.svg";
+import arrowDownSrc from "./angle-arrow-down-primary.svg";
+import dotGovIconSrc from "./icon-dot-gov.svg";
+import httpsIconSrc from "./icon-https.svg";
+import logoSrc from "cloudgov-style/img/cloudgov-sprite.svg";
 
 const renderToggleIcon = ({ expanded }) => (
   <img
     className="right-arrow"
     src={expanded ? arrowUpSrc : arrowDownSrc}
-    alt={expanded ? 'Up arrow' : 'Down arrow'}
+    alt={expanded ? "Up arrow" : "Down arrow"}
   />
 );
 
@@ -23,13 +23,13 @@ const disclaimer = {
   flag: {
     src: flagSrc,
     alt:
-      'US flag signifying that this is a United States Federal Government website'
+      "US flag signifying that this is a United States Federal Government website"
   },
-  text: 'An official website of the United States government',
-  linkText: 'Here’s how you know',
+  text: "An official website of the United States government",
+  linkText: "Here’s how you know",
   renderToggleIcon,
   guidance1: {
-    heading: 'The .gov means it’s official.',
+    heading: "The .gov means it’s official.",
     content: (
       <span>
         Federal government websites often end in .gov or .mil. Before sharing
@@ -45,7 +45,7 @@ const disclaimer = {
     )
   },
   guidance2: {
-    heading: 'The site is secure.',
+    heading: "The site is secure.",
     content: (
       <span>
         The https:// ensures that you are connecting to the official website and
@@ -79,20 +79,20 @@ const logo = {
 
 const links = [
   {
-    text: 'Documentation',
-    url: 'https://cloud.gov/docs/'
+    text: "Documentation",
+    url: "https://cloud.gov/docs/"
   },
   {
-    text: 'Updates',
-    url: 'https://cloud.gov/updates/'
+    text: "Updates",
+    url: "https://cloud.gov/updates/"
   },
   {
-    text: 'Status',
-    url: 'https://cloudgov.statuspage.io/'
+    text: "Status",
+    url: "https://cloudgov.statuspage.io/"
   },
   {
-    text: 'Contact',
-    url: 'https://cloud.gov/docs/help/'
+    text: "Contact",
+    url: "https://cloud.gov/docs/help/"
   }
 ];
 

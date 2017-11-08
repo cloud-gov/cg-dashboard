@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
   className: PropTypes.string
 };
 
 const defaultProps = {
-  className: ''
+  className: ""
 };
 
 const InfoSandbox = ({ className }) => (
@@ -18,11 +18,11 @@ const InfoSandbox = ({ className }) => (
       </a>.
     </p>
     <p>
-      Then see{' '}
+      Then see{" "}
       <a href="https://cloud.gov/overview/pricing/free-limited-sandbox/#a-few-things-you-can-try-in-your-sandbox">
         what else you can do
-      </a>{' '}
-      and the{' '}
+      </a>{" "}
+      and the{" "}
       <a href="https://cloud.gov/overview/pricing/free-limited-sandbox/#sandbox-limitations">
         sandbox policies
       </a>.

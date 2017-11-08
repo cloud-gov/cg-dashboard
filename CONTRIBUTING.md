@@ -404,12 +404,12 @@ export class OrgStore extends BaseStore {
   ```js
   // Good
   this.isFetchingAll = false;
-  this.mergeMany('guid', updates, () => {});
+  this.mergeMany("guid", updates, () => {});
   this.emitChange();
 
   // Bad
   this.isFetchingAll = false;
-  this.mergeMany('guid', updates, changed => {
+  this.mergeMany("guid", updates, changed => {
     if (changed) this.emitChange();
   });
   ```

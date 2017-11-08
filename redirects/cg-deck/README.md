@@ -2,7 +2,6 @@
 
 Small static app to redirect traffic from one domain to another.
 
-
 ## Deploy
 
 This redirect is deployed to east/west and govcloud.

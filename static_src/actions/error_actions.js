@@ -1,30 +1,29 @@
-
 /*
  * Actions for global errors across the whole application.
  */
 
-import AppDispatcher from '../dispatcher.js';
-import { errorActionTypes } from '../constants';
+import AppDispatcher from "../dispatcher.js";
+import { errorActionTypes } from "../constants";
 
 /* eslint-disable no-alert, no-console */
 export default {
   errorDelete(err) {
-    console.error('delete failure', err);
+    console.error("delete failure", err);
     // throw err;
   },
 
   errorFetch(err) {
-    console.error('fetch failure', err);
+    console.error("fetch failure", err);
     // throw err;
   },
 
   errorPost(err) {
-    console.error('post failure', err);
+    console.error("post failure", err);
     // throw err;
   },
 
   errorPut(err) {
-    console.error('put failure', err);
+    console.error("put failure", err);
     // throw err;
   },
 
@@ -47,8 +46,9 @@ export default {
   },
 
   importantDataFetchError(err, entityMessage) {
-    const msg = 'There was an issue connecting to the dashboard, ' +
-      `${entityMessage || 'please try again later.'}`;
+    const msg =
+      "There was an issue connecting to the dashboard, " +
+      `${entityMessage || "please try again later."}`;
 
     AppDispatcher.handleServerAction({
       type: errorActionTypes.IMPORTANT_FETCH,

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
 const propTypes = {
   error: PropTypes.object,
@@ -16,7 +16,7 @@ export default class ErrorMessage extends Component {
   renderMessage() {
     const { error } = this.props;
     if (!error) {
-      return 'An error occurred';
+      return "An error occurred";
     }
     const { message, description } = error;
     return message || description;
@@ -31,8 +31,8 @@ export default class ErrorMessage extends Component {
 
     return (
       <div
-        className={classNames('error_message', {
-          'error-inline': inline
+        className={classNames("error_message", {
+          "error-inline": inline
         })}
         role="alert"
       >
