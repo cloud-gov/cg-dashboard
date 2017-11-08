@@ -1,12 +1,12 @@
 import React from 'react';
 
 export { default as header } from './header';
-import 'cloudgov-style/img/favicon.ico';
-import InfoActivities from '../../components/info_activities.jsx';
-import InfoEnvironments from '../../components/info_environments.jsx';
-import InfoSandbox from '../../components/info_sandbox.jsx';
-import InfoStructure from '../../components/info_structure.jsx';
-import InfoLogs from '../../components/info_logs.jsx';
+
+import * as homePage from './home_page';
+
+export { homePage };
+
+import InfoLogs from 'dashboard/components/info_logs.jsx';
 
 export const config = {
   footer: {
@@ -53,8 +53,5 @@ export const config = {
       name: 'logs.fr.cloud.gov',
       url: 'https://logs.fr.cloud.gov'
     }
-  },
-  home: {
-    tiles: [InfoActivities, InfoStructure, InfoSandbox, InfoEnvironments]
   }
 };

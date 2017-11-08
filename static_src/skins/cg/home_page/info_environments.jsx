@@ -1,6 +1,5 @@
-
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const propTypes = {
   className: PropTypes.string
@@ -10,14 +9,10 @@ const defaultProps = {
   className: ''
 };
 
-export default class InfoEnvironment extends React.Component {
-  render() {
-    return (
-      <section className={ this.props.className }></section>
-    );
-  }
-}
+const InfoEnvironment = ({ className }) => <section className={className} />;
 
 InfoEnvironment.propTypes = propTypes;
 
 InfoEnvironment.defaultProps = defaultProps;
+
+export default InfoEnvironment;
