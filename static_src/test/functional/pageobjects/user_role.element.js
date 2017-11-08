@@ -1,5 +1,4 @@
-
-import BaseElement from './base.element';
+import BaseElement from "./base.element";
 
 // https://www.martinfowler.com/bliki/PageObject.html
 //
@@ -17,40 +16,40 @@ export default class UserRoleElement extends BaseElement {
   }
 
   setUserRole(cookieValue) {
-    this.browser.setCookie({ name: 'testing_user_role', value: cookieValue });
+    this.browser.setCookie({ name: "testing_user_role", value: cookieValue });
     this.browser.refresh();
   }
 
   getUserRole() {
-    return this.browser.getCookie('testing_user_role').value;
+    return this.browser.getCookie("testing_user_role").value;
   }
 
   isFirstUserRoleEnabled() {
-    return this.browser.isEnabled('.test-user-role-control input')[0];
+    return this.browser.isEnabled(".test-user-role-control input")[0];
   }
 
   isUserOrgManager(guid) {
-    return !!this.browser.getAttribute(`#org_manager${guid}`, 'checked');
+    return !!this.browser.getAttribute(`#org_manager${guid}`, "checked");
   }
 
   isUserBillingManager(guid) {
-    return !!this.browser.getAttribute(`#billing_manager${guid}`, 'checked');
+    return !!this.browser.getAttribute(`#billing_manager${guid}`, "checked");
   }
 
   isUserOrgAuditor(guid) {
-    return !!this.browser.getAttribute(`#org_auditor${guid}`, 'checked');
+    return !!this.browser.getAttribute(`#org_auditor${guid}`, "checked");
   }
 
   isUserSpaceManager(guid) {
-    return !!this.browser.getAttribute(`#space_manager${guid}`, 'checked');
+    return !!this.browser.getAttribute(`#space_manager${guid}`, "checked");
   }
 
   isUserSpaceDeveloper(guid) {
-    return !!this.browser.getAttribute(`#space_developer${guid}`, 'checked');
+    return !!this.browser.getAttribute(`#space_developer${guid}`, "checked");
   }
 
   isUserSpaceAuditor(guid) {
-    return !!this.browser.getAttribute(`#space_auditor${guid}`, 'checked');
+    return !!this.browser.getAttribute(`#space_auditor${guid}`, "checked");
   }
 
   toggleAccess(selector, state) {

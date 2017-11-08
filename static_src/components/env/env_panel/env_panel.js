@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { appPropType } from '../../../stores/app_store';
-import appActions from '../../../actions/app_actions';
+import { appPropType } from "../../../stores/app_store";
+import appActions from "../../../actions/app_actions";
 import {
   envRequestPropType,
   updateErrorPropType
-} from '../../../stores/env_store';
-import envActions from '../../../actions/env_actions';
-import Action from '../../action.jsx';
-import Loading from '../../loading.jsx';
-import ErrorMessage from '../../error_message.jsx';
-import ComplexList from '../../complex_list.jsx';
-import Panel from '../../panel.jsx';
-import PanelActions from '../../panel_actions.jsx';
-import EnvVarListItem from '../env_var_list_item';
-import EnvVarForm from '../env_var_form';
-import Header from './header';
-import Section from './section';
+} from "../../../stores/env_store";
+import envActions from "../../../actions/env_actions";
+import Action from "../../action.jsx";
+import Loading from "../../loading.jsx";
+import ErrorMessage from "../../error_message.jsx";
+import ComplexList from "../../complex_list.jsx";
+import Panel from "../../panel.jsx";
+import PanelActions from "../../panel_actions.jsx";
+import EnvVarListItem from "../env_var_list_item";
+import EnvVarForm from "../env_var_form";
+import Header from "./header";
+import Section from "./section";
 
 const propTypes = {
   app: appPropType.isRequired,
@@ -117,7 +117,7 @@ export default class EnvPanel extends Component {
     const { app } = this.props;
     const { updating } = app;
 
-    const label = 'Add env var';
+    const label = "Add env var";
     return (
       <Action
         clickHandler={this.handleAddClick}
@@ -135,10 +135,10 @@ export default class EnvPanel extends Component {
       <Action
         style="primary"
         clickHandler={handler}
-        label={show ? 'Hide' : 'Reveal'}
+        label={show ? "Hide" : "Reveal"}
         type="outline"
       >
-        {show ? 'Hide' : 'Reveal'}
+        {show ? "Hide" : "Reveal"}
       </Action>
     );
   }
@@ -151,7 +151,7 @@ export default class EnvPanel extends Component {
         {JSON.stringify(
           {
             ...result,
-            environment_json: '<omitted>'
+            environment_json: "<omitted>"
           },
           null,
           2
@@ -173,7 +173,7 @@ export default class EnvPanel extends Component {
     if (error) {
       return (
         <ErrorMessage
-          error={{ message: 'Could not load environment details.' }}
+          error={{ message: "Could not load environment details." }}
         />
       );
     }

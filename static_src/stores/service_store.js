@@ -1,13 +1,12 @@
-
 /*
  * Store for services data. Will store and update services data on changes from
  * UI and server.
  */
 
-import AppDispatcher from '../dispatcher';
-import BaseStore from './base_store.js';
-import { serviceActionTypes } from '../constants.js';
-import ServicePlanStore from './service_plan_store.js';
+import AppDispatcher from "../dispatcher";
+import BaseStore from "./base_store.js";
+import { serviceActionTypes } from "../constants.js";
+import ServicePlanStore from "./service_plan_store.js";
 
 export class ServiceStore extends BaseStore {
   constructor() {
@@ -31,7 +30,7 @@ export class ServiceStore extends BaseStore {
         this._fetchAll = false;
         AppDispatcher.waitFor([ServicePlanStore.dispatchToken]);
         const services = action.services;
-        this.mergeMany('guid', services, () => {
+        this.mergeMany("guid", services, () => {
           // Always emitchange as fetch state was changed.
           this.emitChange();
         });
@@ -40,7 +39,6 @@ export class ServiceStore extends BaseStore {
 
       default:
         break;
-
     }
   }
 }

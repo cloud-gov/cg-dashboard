@@ -1,14 +1,10 @@
-
-import PropTypes from 'prop-types';
-import React from 'react';
-import classNames from 'classnames';
-import ComplexListItem from './complex_list_item.jsx';
+import PropTypes from "prop-types";
+import React from "react";
+import classNames from "classnames";
+import ComplexListItem from "./complex_list_item.jsx";
 
 const propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.object
-  ]),
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   className: PropTypes.string,
   title: PropTypes.string,
   titleElement: PropTypes.element,
@@ -28,9 +24,7 @@ export default class ComplexList extends React.Component {
 
   render() {
     const emptyMessage = this.props.emptyMessage && (
-      <div className="complex_list-empty">
-        { this.props.emptyMessage }
-      </div>
+      <div className="complex_list-empty">{this.props.emptyMessage}</div>
     );
     let header;
 
@@ -43,31 +37,26 @@ export default class ComplexList extends React.Component {
       }
       header = (
         <header className="complex_list-header">
-          <h4 className="complex_list-title">
-            { title }
-          </h4>
+          <h4 className="complex_list-title">{title}</h4>
         </header>
       );
     }
 
-    const classes = classNames('complex_list', {
+    const classes = classNames("complex_list", {
       [this.props.className]: this.props.className
     });
 
     return (
-      <div className={ classes }>
-        { header }
-        { emptyMessage }
-        { this.props.children.length > 0 && this.props.children.map((child, i) => {
-          if (child.type === ComplexList) {
-            return child;
-          }
-          return (
-            <ComplexListItem key={ i }>
-              { child }
-            </ComplexListItem>
-          );
-        })}
+      <div className={classes}>
+        {header}
+        {emptyMessage}
+        {this.props.children.length > 0 &&
+          this.props.children.map((child, i) => {
+            if (child.type === ComplexList) {
+              return child;
+            }
+            return <ComplexListItem key={i}>{child}</ComplexListItem>;
+          })}
       </div>
     );
   }

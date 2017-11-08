@@ -1,13 +1,12 @@
-
 /*
  * Store for service plans data. Service plans belong to a service so there's
  * separate functionality to get all plans under a particiular service.
  */
 
-import AppDispatcher from '../dispatcher';
-import BaseStore from './base_store.js';
-import { serviceActionTypes } from '../constants.js';
-import ServiceStore from './service_store.js';
+import AppDispatcher from "../dispatcher";
+import BaseStore from "./base_store.js";
+import { serviceActionTypes } from "../constants.js";
+import ServiceStore from "./service_store.js";
 
 export class ServicePlanStore extends BaseStore {
   constructor() {
@@ -21,26 +20,31 @@ export class ServicePlanStore extends BaseStore {
   }
 
   getAllFromService(serviceGuid) {
-    const fromService = this._data.filter((servicePlan) =>
-      servicePlan.get('service_guid') === serviceGuid
+    const fromService = this._data.filter(
+      servicePlan => servicePlan.get("service_guid") === serviceGuid
     );
 
     return fromService.toJS();
   }
 
   getCost(servicePlan) {
-    return (servicePlan.extra &&
-      servicePlan.extra.costs &&
-      servicePlan.extra.costs[0].amount &&
-      servicePlan.extra.costs[0].amount.usd || 0);
+    return (
+      (servicePlan.extra &&
+        servicePlan.extra.costs &&
+        servicePlan.extra.costs[0].amount &&
+        servicePlan.extra.costs[0].amount.usd) ||
+      0
+    );
   }
 
   _registerToActions(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_PLAN_FETCH: {
         const servicePlan = this.get(action.servicePlanGuid) || {};
-        const servicePlanFetching = Object.assign({}, servicePlan, { fetching: true });
-        this.merge('guid', servicePlanFetching);
+        const servicePlanFetching = Object.assign({}, servicePlan, {
+          fetching: true
+        });
+        this.merge("guid", servicePlanFetching);
         break;
       }
 
@@ -53,8 +57,10 @@ export class ServicePlanStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_PLAN_RECEIVED: {
         const servicePlan = action.servicePlan;
-        const servicePlanReceived = Object.assign({}, servicePlan, { fetching: false });
-        this.merge('guid', servicePlanReceived);
+        const servicePlanReceived = Object.assign({}, servicePlan, {
+          fetching: false
+        });
+        this.merge("guid", servicePlanReceived);
         break;
       }
 
@@ -62,7 +68,7 @@ export class ServicePlanStore extends BaseStore {
         this._fetchAll = false;
         if (action.servicePlans) {
           const servicePlans = action.servicePlans;
-          this.mergeMany('guid', servicePlans, () => { });
+          this.mergeMany("guid", servicePlans, () => {});
         }
         this.emitChange();
         break;
@@ -70,7 +76,6 @@ export class ServicePlanStore extends BaseStore {
 
       default:
         break;
-
     }
   }
 }

@@ -3,11 +3,11 @@
  * server.
  */
 
-import Immutable from 'immutable';
-import PropTypes from 'prop-types';
+import Immutable from "immutable";
+import PropTypes from "prop-types";
 
-import BaseStore from './base_store.js';
-import { orgActionTypes, spaceActionTypes } from '../constants.js';
+import BaseStore from "./base_store.js";
+import { orgActionTypes, spaceActionTypes } from "../constants.js";
 
 export const spacePropType = PropTypes.shape({
   guid: PropTypes.string.isRequired,
@@ -21,16 +21,12 @@ class SpaceStore extends BaseStore {
     this._currentSpaceGuid = null;
     this._loading = [];
     this._fetchAll = false;
-    this._cfName = 'space_users';
+    this._cfName = "space_users";
     this.subscribe(() => this._registerToActions.bind(this));
   }
 
   viewPermissionRoles() {
-    return [
-      'space_manager',
-      'space_developer',
-      'space_auditor'
-    ];
+    return ["space_manager", "space_developer", "space_auditor"];
   }
 
   get loading() {
@@ -55,12 +51,12 @@ class SpaceStore extends BaseStore {
     switch (action.type) {
       case orgActionTypes.ORG_RECEIVED: {
         const spaces = action.org.spaces || [];
-        const spacesWithOrgGuid = spaces.map((space) => {
+        const spacesWithOrgGuid = spaces.map(space => {
           const org = { org: action.org.guid };
           return Object.assign({}, space, org);
         });
         if (spacesWithOrgGuid.length > 0) {
-          this.mergeMany('guid', spacesWithOrgGuid, (changed) => {
+          this.mergeMany("guid", spacesWithOrgGuid, changed => {
             if (changed) this.emitChange();
           });
         }
@@ -81,14 +77,14 @@ class SpaceStore extends BaseStore {
 
       case spaceActionTypes.SPACE_RECEIVED: {
         this._completeLoading(action.space.guid);
-        this.merge('guid', action.space, () => { });
+        this.merge("guid", action.space, () => {});
         this.emitChange();
         break;
       }
 
       case spaceActionTypes.SPACES_RECEIVED: {
         this._fetchAll = false;
-        this.mergeMany('guid', action.spaces, () => {
+        this.mergeMany("guid", action.spaces, () => {
           this.emitChange();
         });
         break;
@@ -119,7 +115,7 @@ class SpaceStore extends BaseStore {
 
   get currentSpaceName() {
     const space = this.get(this._currentSpaceGuid);
-    if (!space) return '';
+    if (!space) return "";
     return space.name;
   }
 }

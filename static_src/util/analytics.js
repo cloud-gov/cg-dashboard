@@ -1,8 +1,8 @@
 export function trackAction(action) {
   if (!window.ga) return;
 
-  window.ga('send', {
-    hitType: 'event',
+  window.ga("send", {
+    hitType: "event",
     eventCategory: action.source,
     eventAction: action.type
   });
@@ -11,8 +11,8 @@ export function trackAction(action) {
 export function trackPageView(url) {
   if (!window.ga) return;
 
-  window.ga('send', {
-    hitType: 'pageview',
+  window.ga("send", {
+    hitType: "pageview",
     page: url
   });
 }

@@ -1,14 +1,16 @@
+import PropTypes from "prop-types";
+import React from "react";
+import keymirror from "keymirror";
+import Action from "./action.jsx";
+import { entityHealth } from "../constants.js";
 
-import PropTypes from 'prop-types';
-import React from 'react';
-import keymirror from 'keymirror';
-import Action from './action.jsx';
-import { entityHealth } from '../constants.js';
-
-const STATUSES = Object.assign({}, entityHealth, keymirror({
-  info: null
-}));
-
+const STATUSES = Object.assign(
+  {},
+  entityHealth,
+  keymirror({
+    info: null
+  })
+);
 
 const propTypes = {
   message: PropTypes.node,
@@ -18,7 +20,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  message: 'There was a problem',
+  message: "There was a problem",
   status: entityHealth.warning,
   actions: [],
   onDismiss: () => {}
@@ -41,31 +43,39 @@ export default class Notification extends React.Component {
 
     if (this.props.actions.length) {
       actionElements = this.props.actions.map((action, i) => (
-        <Action key={ `notificationAction-${i}` } type="outline" style="white"
-          clickHandler={ action.clickHandler }
-          classes={ ['notification-action', 'test-notification-action'] }
+        <Action
+          key={`notificationAction-${i}`}
+          type="outline"
+          style="white"
+          clickHandler={action.clickHandler}
+          classes={["notification-action", "test-notification-action"]}
         >
-          { action.text }
+          {action.text}
         </Action>
       ));
     }
 
     return (
-    <div className={ `notification notification-${this.props.status} test-notification` }>
-      <div className="notification-wrap">
-        <p className="notification-message test-notification-message">
-          { this.props.message }
-        </p>
-        { actionElements }
-        <a className="notification-dismiss test-notification-dismiss"
-          onClick={ this.onCloseClick }
-          title="Dismiss notification"
-          href="#"
-        >
-          <span className="usa-sr-only">Close</span>
-        </a>
+      <div
+        className={`notification notification-${
+          this.props.status
+        } test-notification`}
+      >
+        <div className="notification-wrap">
+          <p className="notification-message test-notification-message">
+            {this.props.message}
+          </p>
+          {actionElements}
+          <a
+            className="notification-dismiss test-notification-dismiss"
+            onClick={this.onCloseClick}
+            title="Dismiss notification"
+            href="#"
+          >
+            <span className="usa-sr-only">Close</span>
+          </a>
+        </div>
       </div>
-    </div>
     );
   }
 }

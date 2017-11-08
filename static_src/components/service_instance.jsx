@@ -1,17 +1,16 @@
+import PropTypes from "prop-types";
+import React from "react";
+import Action from "./action.jsx";
+import ConfirmationBox from "./confirmation_box.jsx";
+import ElasticLine from "./elastic_line.jsx";
+import ElasticLineItem from "./elastic_line_item.jsx";
+import FormError from "./form/form_error.jsx";
+import Loading from "./loading.jsx";
+import ServicePlanStore from "../stores/service_plan_store.js";
+import ServiceInstanceStore from "../stores/service_instance_store.js";
+import serviceActions from "../actions/service_actions.js";
 
-import PropTypes from 'prop-types';
-import React from 'react';
-import Action from './action.jsx';
-import ConfirmationBox from './confirmation_box.jsx';
-import ElasticLine from './elastic_line.jsx';
-import ElasticLineItem from './elastic_line_item.jsx';
-import FormError from './form/form_error.jsx';
-import Loading from './loading.jsx';
-import ServicePlanStore from '../stores/service_plan_store.js';
-import ServiceInstanceStore from '../stores/service_instance_store.js';
-import serviceActions from '../actions/service_actions.js';
-
-import { OPERATION_FAILED } from '../stores/service_instance_store.js';
+import { OPERATION_FAILED } from "../stores/service_instance_store.js";
 
 const propTypes = {
   currentAppGuid: PropTypes.string.isRequired,
@@ -38,7 +37,8 @@ export default class ServiceInstance extends React.Component {
     ev.preventDefault();
     const appBinding = ServiceInstanceStore.getServiceBindingForApp(
       this.props.currentAppGuid,
-      this.props.serviceInstance);
+      this.props.serviceInstance
+    );
     serviceActions.unbindService(appBinding);
   }
 
@@ -54,8 +54,10 @@ export default class ServiceInstance extends React.Component {
 
   bindHandler(ev) {
     ev.preventDefault();
-    serviceActions.bindService(this.props.currentAppGuid,
-      this.props.serviceInstance.guid);
+    serviceActions.bindService(
+      this.props.currentAppGuid,
+      this.props.serviceInstance.guid
+    );
   }
 
   get instanceState() {
@@ -64,14 +66,18 @@ export default class ServiceInstance extends React.Component {
     if (!this.props.serviceInstance) return content;
 
     const instanceState = ServiceInstanceStore.getInstanceState(
-      this.props.serviceInstance);
+      this.props.serviceInstance
+    );
 
     if (instanceState === OPERATION_FAILED) {
       content = (
-        <span style={{ marginLeft: '0.5rem', display: 'inline' }}
-          className="error_message">
-          { ServiceInstanceStore.getInstanceReadableState(
-            this.props.serviceInstance) }
+        <span
+          style={{ marginLeft: "0.5rem", display: "inline" }}
+          className="error_message"
+        >
+          {ServiceInstanceStore.getInstanceReadableState(
+            this.props.serviceInstance
+          )}
         </span>
       );
     }
@@ -80,9 +86,11 @@ export default class ServiceInstance extends React.Component {
   }
 
   get cost() {
-    if (!this.props.serviceInstance.servicePlan) return '';
-    const cost = ServicePlanStore.getCost(this.props.serviceInstance.servicePlan);
-    if (cost === 0) return 'Free';
+    if (!this.props.serviceInstance.servicePlan) return "";
+    const cost = ServicePlanStore.getCost(
+      this.props.serviceInstance.servicePlan
+    );
+    if (cost === 0) return "Free";
     return `$${cost.toFixed(2)} monthly`;
   }
 
@@ -92,15 +100,15 @@ export default class ServiceInstance extends React.Component {
     if (this.props.serviceInstance.loading) {
       content = (
         <Loading
-          text={ this.props.serviceInstance.loading }
-          loadingDelayMS={ 100 }
+          text={this.props.serviceInstance.loading}
+          loadingDelayMS={100}
           style="inline"
         />
       );
     } else if (this.props.bound) {
       content = (
         <Action
-          clickHandler={ this.unbindHandler }
+          clickHandler={this.unbindHandler}
           label="Unbind"
           style="warning"
           type="link"
@@ -110,11 +118,7 @@ export default class ServiceInstance extends React.Component {
       );
     } else {
       content = (
-        <Action
-          clickHandler={ this.bindHandler }
-          label="Bind"
-          type="outline"
-        >
+        <Action clickHandler={this.bindHandler} label="Bind" type="outline">
           Bind
         </Action>
       );
@@ -125,10 +129,12 @@ export default class ServiceInstance extends React.Component {
 
   get confirmation() {
     if (this.props.serviceInstance.changing) {
-      const style = { color: '#595959' };
+      const style = { color: "#595959" };
       const message = (
         <div>
-          <h3 style={ style }>Unbind { this.props.serviceInstance.name } service?</h3>
+          <h3 style={style}>
+            Unbind {this.props.serviceInstance.name} service?
+          </h3>
           <span>Unbinding a service may break your application.</span>
         </div>
       );
@@ -136,10 +142,10 @@ export default class ServiceInstance extends React.Component {
         <form>
           <ConfirmationBox
             style="over"
-            message={ message }
+            message={message}
             confirmationText="Yes, unbind"
-            confirmHandler={ this.unbindConfirmedHandler }
-            cancelHandler={ this.unbindCancelHandler }
+            confirmHandler={this.unbindConfirmedHandler}
+            cancelHandler={this.unbindCancelHandler}
           />
         </form>
       );
@@ -153,48 +159,43 @@ export default class ServiceInstance extends React.Component {
     if (instance.error) {
       return (
         <ElasticLineItem align="end">
-          <FormError message={ instance.error.description } />
+          <FormError message={instance.error.description} />
         </ElasticLineItem>
       );
     }
   }
 
   render() {
-    let content = <div></div>;
+    let content = <div />;
     const serviceInstance = this.props.serviceInstance;
 
     if (serviceInstance) {
       const confirmation = this.confirmation;
-      const statusClass = (ServiceInstanceStore.getInstanceState(
-        this.props.serviceInstance) === OPERATION_FAILED) ? 'form-error' : null;
+      const statusClass =
+        ServiceInstanceStore.getInstanceState(this.props.serviceInstance) ===
+        OPERATION_FAILED
+          ? "form-error"
+          : null;
 
       if (confirmation) {
-        content = (
-        <ElasticLineItem>
-          { confirmation }
-        </ElasticLineItem>
-        );
+        content = <ElasticLineItem>{confirmation}</ElasticLineItem>;
       } else {
         content = (
           <ElasticLine>
             <ElasticLineItem>
-              { serviceInstance.servicePlan &&
-                <strong>{ serviceInstance.servicePlan.name }</strong>
-              }
-              { this.instanceState }
+              {serviceInstance.servicePlan && (
+                <strong>{serviceInstance.servicePlan.name}</strong>
+              )}
+              {this.instanceState}
               <br />
-              <span>
-                { serviceInstance.name }
-              </span>
+              <span>{serviceInstance.name}</span>
             </ElasticLineItem>
             <ElasticLineItem>
-              <span>{ this.cost }</span>
+              <span>{this.cost}</span>
             </ElasticLineItem>
-            { this.displayError }
-            <ElasticLineItem align="end">
-              { this.actions }
-            </ElasticLineItem>
-            { confirmation }
+            {this.displayError}
+            <ElasticLineItem align="end">{this.actions}</ElasticLineItem>
+            {confirmation}
           </ElasticLine>
         );
       }

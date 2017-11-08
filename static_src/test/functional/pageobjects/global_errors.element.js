@@ -1,6 +1,5 @@
-
-import BaseElement from './base.element';
-import NotificationElement from './notification.element';
+import BaseElement from "./base.element";
+import NotificationElement from "./notification.element";
 
 // https://www.martinfowler.com/bliki/PageObject.html
 //
@@ -9,8 +8,8 @@ import NotificationElement from './notification.element';
 
 // TODO attach to class as static property
 const selectors = {
-  notifications: '.test-notification',
-  firstNotification: '.test-notification:first-child'
+  notifications: ".test-notification",
+  firstNotification: ".test-notification:first-child"
 };
 
 export default class GlobalErrorsElement extends BaseElement {
@@ -29,4 +28,3 @@ export default class GlobalErrorsElement extends BaseElement {
     return !!this.isVisible();
   }
 }
-

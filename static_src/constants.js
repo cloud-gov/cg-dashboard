@@ -1,17 +1,16 @@
-
-import keymirror from 'keymirror';
+import keymirror from "keymirror";
 
 const appStates = {
-  crashed: 'CRASHED',
-  down: 'DOWN',
-  flapping: 'FLAPPING',
-  unknown: 'UNKNOWN',
-  restarting: 'RESTARTING',
-  running: 'RUNNING',
-  started: 'STARTED',
-  starting: 'STARTING',
-  stopped: 'STOPPED',
-  default: 'STOPPED'
+  crashed: "CRASHED",
+  down: "DOWN",
+  flapping: "FLAPPING",
+  unknown: "UNKNOWN",
+  restarting: "RESTARTING",
+  running: "RUNNING",
+  started: "STARTED",
+  starting: "STARTING",
+  stopped: "STOPPED",
+  default: "STOPPED"
 };
 
 // Descriptive states to represent entity health
@@ -55,7 +54,6 @@ const formActionTypes = keymirror({
   // The form field change is not a valid input
   FORM_FIELD_CHANGE_ERROR: null
 });
-
 
 const loginActionTypes = keymirror({
   // Action of fetching a login status, whether the user is logged in or not.

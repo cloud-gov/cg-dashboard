@@ -1,13 +1,12 @@
-
 /*
  * Includes basic functionality that all stores need.
  */
 
-import { EventEmitter } from 'events';
-import Immutable from 'immutable';
+import { EventEmitter } from "events";
+import Immutable from "immutable";
 
-import AppDispatcher from '../dispatcher.js';
-import LoadingStatus from '../util/loading_status.js';
+import AppDispatcher from "../dispatcher.js";
+import LoadingStatus from "../util/loading_status.js";
 
 // TODO clean up the listeners and reduce the MAX_LISTENERS to 15
 const MAX_LISTENERS = 20;
@@ -18,12 +17,11 @@ function defaultChangedCallback(changed) {
 }
 
 export default class BaseStore extends EventEmitter {
-
   constructor() {
     super();
     this._loadingStatus = new LoadingStatus();
-    this._loadingStatus.on('loading', () => this.emitChange());
-    this._loadingStatus.on('loaded', () => this.emitChange());
+    this._loadingStatus.on("loading", () => this.emitChange());
+    this._loadingStatus.on("loaded", () => this.emitChange());
     this._data = new Immutable.List();
     this._listenerCount = 0;
     this.setMaxListeners(MAX_LISTENERS);
@@ -60,9 +58,7 @@ export default class BaseStore extends EventEmitter {
 
   get(guid) {
     if (guid && !this.isEmpty()) {
-      const item = this._data.find((space) =>
-        space.get('guid') === guid
-      );
+      const item = this._data.find(space => space.get("guid") === guid);
 
       if (item) return item.toJS();
     }
@@ -79,9 +75,7 @@ export default class BaseStore extends EventEmitter {
   }
 
   deleteProp(guid, prop, cb = defaultChangedCallback.bind(this)) {
-    const index = this._data.findIndex((d) =>
-      d.get('guid') === guid
-    );
+    const index = this._data.findIndex(d => d.get("guid") === guid);
 
     if (index === -1) return cb(false);
 
@@ -90,9 +84,7 @@ export default class BaseStore extends EventEmitter {
   }
 
   delete(guid, cb = defaultChangedCallback.bind(this)) {
-    const index = this._data.findIndex((d) =>
-      d.get('guid') === guid
-    );
+    const index = this._data.findIndex(d => d.get("guid") === guid);
 
     if (index === -1) return cb(false);
 
@@ -107,17 +99,17 @@ export default class BaseStore extends EventEmitter {
   }
 
   formatSplitResponse(resources) {
-    return resources.map((r) => Object.assign(r.entity, r.metadata));
+    return resources.map(r => Object.assign(r.entity, r.metadata));
   }
 
   emitChange() {
-    this.emit('CHANGE');
+    this.emit("CHANGE");
   }
 
   addChangeListener(cb) {
     if (++this._listenerCount > MAX_LISTENERS_THRESHOLD) {
       /* eslint-disable no-console */
-      console.warn('listener count is above threshold', {
+      console.warn("listener count is above threshold", {
         store: this.constructor.name,
         count: this._listenerCount
       });
@@ -125,11 +117,11 @@ export default class BaseStore extends EventEmitter {
       /* eslint-enable no-console */
     }
 
-    this.on('CHANGE', cb);
+    this.on("CHANGE", cb);
   }
 
   removeChangeListener(cb) {
-    this.removeListener('CHANGE', cb);
+    this.removeListener("CHANGE", cb);
     this._listenerCount--;
   }
 
@@ -153,8 +145,8 @@ export default class BaseStore extends EventEmitter {
   */
   merge(mergeKey, dataToMerge, cb = defaultChangedCallback.bind(this)) {
     const toMerge = Immutable.fromJS(dataToMerge);
-    const oldDataItem = this._data.find((d) =>
-      d.get(mergeKey) === toMerge.get(mergeKey)
+    const oldDataItem = this._data.find(
+      d => d.get(mergeKey) === toMerge.get(mergeKey)
     );
 
     if (oldDataItem) {
@@ -162,7 +154,7 @@ export default class BaseStore extends EventEmitter {
         return cb(false);
       }
 
-      this._data = this._data.map((d) => {
+      this._data = this._data.map(d => {
         if (Immutable.is(d, oldDataItem)) {
           return oldDataItem.merge(toMerge);
         }
@@ -195,14 +187,14 @@ export default class BaseStore extends EventEmitter {
   mergeAll(mergeKey, dataToMerge, cb = defaultChangedCallback.bind(this)) {
     let dataHasChanged = false;
     const toMerge = Immutable.fromJS(dataToMerge);
-    const matches = this._data.find((d) =>
-      d.get(mergeKey) === toMerge.get(mergeKey)
+    const matches = this._data.find(
+      d => d.get(mergeKey) === toMerge.get(mergeKey)
     );
 
     if (!matches) return cb(false);
 
-    this._data = this._data.map((d) => {
-      const shouldMerge = (d.get(mergeKey) === toMerge.get(mergeKey));
+    this._data = this._data.map(d => {
+      const shouldMerge = d.get(mergeKey) === toMerge.get(mergeKey);
       if (!shouldMerge) return d;
 
       const merged = d.merge(toMerge);
@@ -217,10 +209,14 @@ export default class BaseStore extends EventEmitter {
     return cb(dataHasChanged);
   }
 
-  mergeMany(mergeKey, arrayOfDataToMerge, cb = defaultChangedCallback.bind(this)) {
+  mergeMany(
+    mergeKey,
+    arrayOfDataToMerge,
+    cb = defaultChangedCallback.bind(this)
+  ) {
     let dataHasChanged = false;
-    arrayOfDataToMerge.forEach((newData) => {
-      this.merge(mergeKey, newData, (changed) => {
+    arrayOfDataToMerge.forEach(newData => {
+      this.merge(mergeKey, newData, changed => {
         if (changed) dataHasChanged = true;
       });
     });

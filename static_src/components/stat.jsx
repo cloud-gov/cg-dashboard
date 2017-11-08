@@ -1,16 +1,9 @@
+import PropTypes from "prop-types";
+import React from "react";
+import { FormNumber } from "./form";
+import formatBytes from "../util/format_bytes";
 
-import PropTypes from 'prop-types';
-import React from 'react';
-import { FormNumber } from './form';
-import formatBytes from '../util/format_bytes';
-
-const STATES = [
-  'error',
-  'warning',
-  'info',
-  'success',
-  'none'
-];
+const STATES = ["error", "warning", "info", "success", "none"];
 
 const propTypes = {
   formGuid: PropTypes.string,
@@ -28,9 +21,9 @@ const propTypes = {
 const defaultProps = {
   editable: false,
   onChange: () => {},
-  statState: 'none',
-  secondaryInfo: <span></span>,
-  unit: 'MB'
+  statState: "none",
+  secondaryInfo: <span />,
+  unit: "MB"
 };
 
 function stateSetter(props) {
@@ -83,47 +76,41 @@ export default class Stat extends React.Component {
     const stateClass = `stat-${this.props.statState}`;
     let primaryStat = (
       <span className="stat-primary">
-        { formatBytes(this.state.primaryStat) }
+        {formatBytes(this.state.primaryStat)}
       </span>
     );
 
     // Avoid rendering 0 or non-numbers
     if (!this.state.primaryStat) {
-      primaryStat = (
-        <span className="stat-primary">
-          N/A
-        </span>
-      );
+      primaryStat = <span className="stat-primary">N/A</span>;
     }
 
     if (this.props.editable) {
       primaryStat = (
         <div className="stat-primary">
           <FormNumber
-            formGuid={ this.props.formGuid }
+            formGuid={this.props.formGuid}
             className="stat-input stat-input-text"
             type="text"
-            id={ this.props.name }
+            id={this.props.name}
             inline
             label="MB"
             labelAfter
-            name={ this.props.name }
-            value={ this.fromBytes(this.state.primaryStat) }
-            min={ this.props.min }
-            max={ this.props.max }
-            onValidate={ this.onValidate }
+            name={this.props.name}
+            value={this.fromBytes(this.state.primaryStat)}
+            min={this.props.min}
+            max={this.props.max}
+            onValidate={this.onValidate}
           />
         </div>
       );
     }
 
     return (
-      <div className={ `stat ${stateClass}` }>
-        <h2 className="stat-header">{ this.props.title }</h2>
-        { primaryStat }
-        <span className="stat-info">
-          { this.props.secondaryInfo }
-        </span>
+      <div className={`stat ${stateClass}`}>
+        <h2 className="stat-header">{this.props.title}</h2>
+        {primaryStat}
+        <span className="stat-info">{this.props.secondaryInfo}</span>
       </div>
     );
   }

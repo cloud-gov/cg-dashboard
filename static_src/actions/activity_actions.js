@@ -1,8 +1,6 @@
-
-
-import AppDispatcher from '../dispatcher.js';
-import { activityActionTypes } from '../constants';
-import cfApi from '../util/cf_api.js';
+import AppDispatcher from "../dispatcher.js";
+import { activityActionTypes } from "../constants";
+import cfApi from "../util/cf_api.js";
 
 const activityActions = {
   fetchSpaceEvents(spaceGuid, appGuid) {
@@ -11,7 +9,8 @@ const activityActions = {
       spaceGuid
     });
 
-    return cfApi.fetchSpaceEvents(spaceGuid, { appGuid })
+    return cfApi
+      .fetchSpaceEvents(spaceGuid, { appGuid })
       .then(activityActions.receivedSpaceEvents);
   },
 
@@ -30,7 +29,8 @@ const activityActions = {
       appGuid
     });
 
-    return cfApi.fetchAppLogs(appGuid)
+    return cfApi
+      .fetchAppLogs(appGuid)
       .then(logs => activityActions.receivedAppLogs(appGuid, logs))
       .catch(err => activityActions.errorAppLogs(appGuid, err));
   },

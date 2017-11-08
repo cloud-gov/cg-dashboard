@@ -1,4 +1,3 @@
-
 const spaceRoutes = [
   {
     metadata: {
@@ -17,7 +16,8 @@ const spaceRoutes = [
       domain_url: "/v2/shared_domains/97435c2f-d5bb-4c10-8393-55d7d7169932",
       space_url: "/v2/spaces/82af0edb-8540-4064-82f2-d74df612b794",
       apps_url: "/v2/routes/228342e9-2c9d-4874-95fe-0a06ac5ceb43/apps",
-      route_mappings_url: "/v2/routes/228342e9-2c9d-4874-95fe-0a06ac5ceb43/route_mappings"
+      route_mappings_url:
+        "/v2/routes/228342e9-2c9d-4874-95fe-0a06ac5ceb43/route_mappings"
     }
   },
   {
@@ -37,7 +37,8 @@ const spaceRoutes = [
       domain_url: "/v2/shared_domains/97435c2f-d5bb-4c10-8393-55d7d7169932",
       space_url: "/v2/spaces/82af0edb-8540-4064-82f2-d74df612b794",
       apps_url: "/v2/routes/b0a7fd97-ce44-4aeb-9bd8-204d17cdf9ef/apps",
-      route_mappings_url: "/v2/routes/b0a7fd97-ce44-4aeb-9bd8-204d17cdf9ef/route_mappings"
+      route_mappings_url:
+        "/v2/routes/b0a7fd97-ce44-4aeb-9bd8-204d17cdf9ef/route_mappings"
     }
   }
 ];

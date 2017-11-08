@@ -1,13 +1,12 @@
-
 // Whhhhaaat? Yeah, you can import and use as you like.
 
-const dedent = require('dedent');
-const lighthouse = require('lighthouse');
-const { ChromeLauncher } = require('lighthouse/lighthouse-cli/chrome-launcher');
-const Printer = require('lighthouse/lighthouse-cli/printer');
+const dedent = require("dedent");
+const lighthouse = require("lighthouse");
+const { ChromeLauncher } = require("lighthouse/lighthouse-cli/chrome-launcher");
+const Printer = require("lighthouse/lighthouse-cli/printer");
 
 // Output both JSON and HTML versions
-const outputPath = process.env.CIRCLE_ARTIFACTS || '.';
+const outputPath = process.env.CIRCLE_ARTIFACTS || ".";
 const jsonOut = `${outputPath}/perf-results.json`;
 const htmlOut = `${outputPath}/perf-results.html`;
 
@@ -20,7 +19,7 @@ const testUrl = `http://localhost:${port}`;
 const lighthouseOptions = {
   mobile: true,
   loadPage: true,
-  output: 'json',
+  output: "json",
   outputPath: `${outputPath}/perf-results.json`,
   verbose: true
 };
@@ -29,9 +28,9 @@ const lighthouseOptions = {
 // You could also import pre-existing defines in the lighthouse repo, see:
 // https://github.com/GoogleChrome/lighthouse/tree/master/lighthouse-core/config
 // const perfConfig = require('lighthouse/lighthouse-core/config/perf.json');
-const auditConfig = require('./config.json');
+const auditConfig = require("./config.json");
 
-const budgets = require('./budgets');
+const budgets = require("./budgets");
 
 function pullBudget(name) {
   return budgets[name].expectedValue;
@@ -40,7 +39,8 @@ function pullBudget(name) {
 function launchChromeRunLighthouse(url, flags) {
   const launcher = new ChromeLauncher({ port: 9222, autoSelectChrome: true });
 
-  return launcher.isDebuggerReady()
+  return launcher
+    .isDebuggerReady()
     .catch(() => {
       if (flags.skipAutolaunch) {
         return Promise.resolve();
@@ -57,33 +57,32 @@ function launchChromeRunLighthouse(url, flags) {
     );
 }
 
-
 // We'll process the results and then pass to our tests
 // Based on Paul Irish's PWMetric sample
 // https://github.com/paulirish/pwmetrics/
 
-describe('Lighthouse speed test', function () {
+describe("Lighthouse speed test", function() {
   // We'll run our lighthouse set once and store for compare in this sample
   // you could very easily build a different sort of runner
   let result;
-  let pullResult = function () {};
+  let pullResult = function() {};
   jasmine.getEnv().defaultTimeoutInterval = 150000;
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
 
-  beforeAll((done) => {
+  beforeAll(done => {
     launchChromeRunLighthouse(testUrl, {}, lighthouseOptions)
-      .then((res) => {
+      .then(res => {
         result = res.audits;
-        pullResult = function (name) {
+        pullResult = function(name) {
           return result[name].rawValue;
         };
         const toWrite = res;
         toWrite.artifacts = undefined; // Causes problems when writing.
-        const htmlWrite = Printer.write(toWrite, 'html', htmlOut);
-        const jsonWrite = Printer.write(toWrite, 'json', jsonOut);
+        const htmlWrite = Printer.write(toWrite, "html", htmlOut);
+        const jsonWrite = Printer.write(toWrite, "json", jsonOut);
         Promise.all([jsonWrite, htmlWrite]).then(done, done.fail);
       })
-      .catch((err) => {
+      .catch(err => {
         done.fail(err);
       });
   });
@@ -96,36 +95,41 @@ describe('Lighthouse speed test', function () {
     `);
   });
 
-  it('should successfully run the test and have results', () => {
+  it("should successfully run the test and have results", () => {
     expect(result).toBeDefined();
   });
 
-  it(`should have a speed index under ${pullBudget('speed-index-metric')}`,
-  () => {
-    expect(pullResult('speed-index-metric'))
-      .toBeLessThan(pullBudget('speed-index-metric'));
+  it(`should have a speed index under ${pullBudget(
+    "speed-index-metric"
+  )}`, () => {
+    expect(pullResult("speed-index-metric")).toBeLessThan(
+      pullBudget("speed-index-metric")
+    );
   });
 
-  it(`should have a input latency under ${pullBudget('estimated-input-latency')}`,
-  () => {
+  it(`should have a input latency under ${pullBudget(
+    "estimated-input-latency"
+  )}`, () => {
     // Disabled as measurement is currently innacurate.
   });
 
-  it(`should have a time to interactive under ${pullBudget('time-to-interactive')}`,
-  () => {
-    expect(pullResult('time-to-interactive'))
-      .toBeLessThan(pullBudget('time-to-interactive'));
+  it(`should have a time to interactive under ${pullBudget(
+    "time-to-interactive"
+  )}`, () => {
+    expect(pullResult("time-to-interactive")).toBeLessThan(
+      pullBudget("time-to-interactive")
+    );
   });
 
-  it(`should have a page weight under ${pullBudget('total-byte-weight')}`,
-  () => {
-    expect(pullResult('total-byte-weight'))
-      .toBeLessThan(pullBudget('total-byte-weight'));
+  it(`should have a page weight under ${pullBudget(
+    "total-byte-weight"
+  )}`, () => {
+    expect(pullResult("total-byte-weight")).toBeLessThan(
+      pullBudget("total-byte-weight")
+    );
   });
 
-  it(`should have less then ${pullBudget('dom-size')} dom nodes`,
-  () => {
-    expect(pullResult('dom-size'))
-      .toBeLessThan(pullBudget('dom-size'));
+  it(`should have less then ${pullBudget("dom-size")} dom nodes`, () => {
+    expect(pullResult("dom-size")).toBeLessThan(pullBudget("dom-size"));
   });
 });

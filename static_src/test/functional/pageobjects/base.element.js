@@ -1,4 +1,3 @@
-
 // https://www.martinfowler.com/bliki/PageObject.html
 
 /**
@@ -10,19 +9,22 @@
  * to deal with a single component.
  **/
 
-import assert from 'assert';
+import assert from "assert";
 
 export default class BaseElement {
   constructor(browser, webElementOrSelector) {
     this.browser = browser;
 
     let webElement = webElementOrSelector;
-    if (typeof webElementOrSelector === 'string') {
+    if (typeof webElementOrSelector === "string") {
       browser.waitForExist(webElementOrSelector);
       webElement = browser.element(webElementOrSelector);
     }
 
-    assert(webElement.value, `Element '${webElement.selector}' does not exist in the DOM.`);
+    assert(
+      webElement.value,
+      `Element '${webElement.selector}' does not exist in the DOM.`
+    );
     this.webElementId = webElement.value.ELEMENT;
   }
 

@@ -1,6 +1,6 @@
-import React from 'react';
-import RouterStore from '../../stores/router_store.js';
-import Loading from '../loading.jsx';
+import React from "react";
+import RouterStore from "../../stores/router_store.js";
+import Loading from "../loading.jsx";
 
 class RouteProvider extends React.Component {
   constructor() {
@@ -25,7 +25,7 @@ class RouteProvider extends React.Component {
 
   render() {
     const { component: Component, props } = this.state;
-    return Component ? <Component { ...props } /> : <Loading />;
+    return Component ? <Component {...props} /> : <Loading />;
   }
 }
 

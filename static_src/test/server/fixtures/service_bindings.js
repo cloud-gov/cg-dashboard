@@ -1,4 +1,3 @@
-
 const serviceBindings = [
   {
     metadata: {
@@ -22,7 +21,8 @@ const serviceBindings = [
       syslog_drain_url: null,
       volume_mounts: [],
       app_url: "/v2/apps/b44c91fc-f85b-4c6d-9623-e72babfe0f29",
-      service_instance_url: "/v2/service_instances/8ea75b19-167d-453d-b55e-b995840a322b"
+      service_instance_url:
+        "/v2/service_instances/8ea75b19-167d-453d-b55e-b995840a322b"
     }
   },
   {
@@ -48,7 +48,8 @@ const serviceBindings = [
       syslog_drain_url: null,
       volume_mounts: [],
       app_url: "/v2/apps/b44c91fc-f85b-4c6d-9623-e72babfe0f29",
-      service_instance_url: "/v2/service_instances/1bf0f2c8-9761-4bf3-928d-a52440805fc6"
+      service_instance_url:
+        "/v2/service_instances/1bf0f2c8-9761-4bf3-928d-a52440805fc6"
     }
   },
   {
@@ -74,7 +75,8 @@ const serviceBindings = [
       syslog_drain_url: null,
       volume_mounts: [],
       app_url: "/v2/apps/2f684200-b9da-4ea6-a3c8-01a1df5ef2d3",
-      service_instance_url: "/v2/service_instances/3f6b7712-3c72-48ff-9774-c7b0895c4489"
+      service_instance_url:
+        "/v2/service_instances/3f6b7712-3c72-48ff-9774-c7b0895c4489"
     }
   },
   {
@@ -98,7 +100,8 @@ const serviceBindings = [
       syslog_drain_url: 0,
       volume_mounts: [],
       app_url: "/v2/apps/2300adbc-e83e-4e04-81a5-f8e25295f540",
-      service_instance_url: "/v2/user_provided_service_instances/08f2a9e8-d527-43b5-b223-e383c28d1c51"
+      service_instance_url:
+        "/v2/user_provided_service_instances/08f2a9e8-d527-43b5-b223-e383c28d1c51"
     }
   },
   {
@@ -122,7 +125,8 @@ const serviceBindings = [
       syslog_drain_url: 0,
       volume_mounts: [],
       app_url: "/v2/apps/d2881206-7f65-4b8d-a027-ae9519c7646a",
-      service_instance_url: "/v2/user_provided_service_instances/7d637f49-3979-448e-bc24-b3f3caf10711"
+      service_instance_url:
+        "/v2/user_provided_service_instances/7d637f49-3979-448e-bc24-b3f3caf10711"
     }
   },
   {
@@ -146,7 +150,8 @@ const serviceBindings = [
       syslog_drain_url: 0,
       volume_mounts: [],
       app_url: "/v2/apps/f7682aef-1c1c-4105-a12b-76a10760f97f",
-      service_instance_url: "/v2/user_provided_service_instances/08f2a9e8-d527-43b5-b223-e383c28d1c51"
+      service_instance_url:
+        "/v2/user_provided_service_instances/08f2a9e8-d527-43b5-b223-e383c28d1c51"
     }
   }
 ];

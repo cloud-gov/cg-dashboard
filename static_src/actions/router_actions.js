@@ -1,5 +1,5 @@
-import AppDispatcher from '../dispatcher.js';
-import { routerActionTypes } from '../constants';
+import AppDispatcher from "../dispatcher.js";
+import { routerActionTypes } from "../constants";
 
 const routerActions = {
   navigate(component, props) {

@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
-const alignStyles = ['start', 'end'];
+const alignStyles = ["start", "end"];
 
 const propTypes = {
   children: PropTypes.any,
@@ -12,12 +12,12 @@ const propTypes = {
 
 const defaultProps = {
   align: alignStyles[0],
-  title: ''
+  title: ""
 };
 
 const ElasticLineItem = ({ children, align, title }) => (
   <div
-    className={classNames('elastic_line-item', {
+    className={classNames("elastic_line-item", {
       [`elastic_line-item-${align}`]: !!align
     })}
     title={title}

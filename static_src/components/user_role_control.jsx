@@ -1,6 +1,5 @@
-
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
 const propTypes = {
   userId: PropTypes.string.isRequired,
@@ -11,9 +10,10 @@ const propTypes = {
   onChange: PropTypes.func
 };
 
-const dangerousRole = 'org_manager';
+const dangerousRole = "org_manager";
 
-const warningMessage = 'Performing this action will remove your ability to adjust user roles! Are you sure you want to continue?';
+const warningMessage =
+  "Performing this action will remove your ability to adjust user roles! Are you sure you want to continue?";
 
 export default class UserRoleControl extends React.Component {
   constructor(props, context) {
@@ -44,22 +44,21 @@ export default class UserRoleControl extends React.Component {
   }
 
   render() {
-    const {
-      roleKey, roleName, userId, value, enableControl
-    } = this.props;
+    const { roleKey, roleName, userId, value, enableControl } = this.props;
     const inputId = roleKey + userId;
 
     return (
       <span className="test-user-role-control">
-        <label htmlFor={ inputId }>
-          <input type="checkbox"
-            onChange={ this._handleChange }
-            name={ roleKey }
-            checked={ value }
-            disabled={ !enableControl }
-            id={ inputId }
+        <label htmlFor={inputId}>
+          <input
+            type="checkbox"
+            onChange={this._handleChange}
+            name={roleKey}
+            checked={value}
+            disabled={!enableControl}
+            id={inputId}
           />
-          { roleName }
+          {roleName}
         </label>
       </span>
     );
@@ -74,5 +73,5 @@ UserRoleControl.propTypes = propTypes;
 UserRoleControl.defaultProps = {
   value: false,
   enableControl: false,
-  onChange: function() { }
+  onChange: function() {}
 };

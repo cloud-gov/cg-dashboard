@@ -1,18 +1,21 @@
 /* eslint-disable jasmine/no-global-setup,no-console */
-require('babel-polyfill');
+require("babel-polyfill");
 
-import jasmineEnzyme from 'jasmine-enzyme';
-import LoginStore from '../stores/login_store';
-import UserStore from '../stores/user_store';
+import jasmineEnzyme from "jasmine-enzyme";
+import LoginStore from "../stores/login_store";
+import UserStore from "../stores/user_store";
 
-Function.prototype.bind = Function.prototype.bind || function (thisp) { // eslint-disable-line
-  const fn = this;
-  return function (...args) {
-    return fn.apply(thisp, args);
+Function.prototype.bind =
+  Function.prototype.bind ||
+  function(thisp) {
+    // eslint-disable-line
+    const fn = this;
+    return function(...args) {
+      return fn.apply(thisp, args);
+    };
   };
-};
 
-beforeEach(function () {
+beforeEach(function() {
   jasmineEnzyme();
 });
 
@@ -20,15 +23,17 @@ beforeEach(() => {
   // Any call to console.warn or console.error should fail the test. If
   // console.warn or console.error is expected, they should be stubbed
   // appropriately.
-  sinon.stub(console, 'warn').throws(
-    new Error(
-      'Unexpected call to console.warn during a test. Please add an expectation or fix the test.'
-    )
-  );
+  sinon
+    .stub(console, "warn")
+    .throws(
+      new Error(
+        "Unexpected call to console.warn during a test. Please add an expectation or fix the test."
+      )
+    );
   // TODO enable the same for console.error
 });
 
-afterEach(function () {
+afterEach(function() {
   console.warn.restore();
 });
 

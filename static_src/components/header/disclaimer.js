@@ -1,8 +1,8 @@
-import React from 'react';
-import classNames from 'classnames';
+import React from "react";
+import classNames from "classnames";
 
-import { header } from 'skin';
-import { generateId } from '../../util/element_id';
+import { header } from "skin";
+import { generateId } from "../../util/element_id";
 
 const { disclaimer } = header;
 
@@ -14,7 +14,7 @@ export default class Disclaimer extends React.Component {
 
     this.handleClick = this.handleClick.bind(this);
 
-    this.panelId = generateId('header_disclaimer_panel_');
+    this.panelId = generateId("header_disclaimer_panel_");
   }
 
   handleClick(e) {
@@ -51,7 +51,7 @@ export default class Disclaimer extends React.Component {
     const { expanded } = this.state;
     const hidden = !expanded;
     const panelClass = classNames(
-      'usa-banner-content usa-grid usa-accordion-content',
+      "usa-banner-content usa-grid usa-accordion-content",
       {
         hide: hidden
       }

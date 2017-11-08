@@ -1,4 +1,3 @@
-
 const spaceSummaries = [
   {
     guid: "a791b3c3-88c0-4954-9dd5-5f798a914db7",
@@ -12,9 +11,7 @@ const spaceSummaries = [
     apps: [
       {
         guid: "7fa78964-4d44-4a2a-8d26-7468b7cbf67d",
-        urls: [
-          "adfake-node-crashed.apps.cloud.gov"
-        ],
+        urls: ["adfake-node-crashed.apps.cloud.gov"],
         routes: [
           {
             guid: "b0a7fd97-ce44-4aeb-9bd8-204d17cdf9ef",
@@ -65,9 +62,7 @@ const spaceSummaries = [
       },
       {
         guid: "2f684200-b9da-4ea6-a3c8-01a1df5ef2d3",
-        urls: [
-          "adfake-node.apps.cloud.gov"
-        ],
+        urls: ["adfake-node.apps.cloud.gov"],
         routes: [
           {
             guid: "228342e9-2c9d-4874-95fe-0a06ac5ceb43",
@@ -81,9 +76,7 @@ const spaceSummaries = [
           }
         ],
         service_count: 1,
-        service_names: [
-          "fake-abcdef"
-        ],
+        service_names: ["fake-abcdef"],
         running_instances: 2,
         name: "fake-adfake-node",
         production: false,
@@ -134,7 +127,7 @@ const spaceSummaries = [
         detected_buildpack_guid: null,
         environment_json: {
           AUTH_PASS: "pass",
-          AUTH_USER: "user",
+          AUTH_USER: "user"
         },
         memory: 24,
         instances: 1,
@@ -214,34 +207,26 @@ const spaceSummaries = [
   {
     guid: "user_role-org_x-space_xx-4064-82f2-d74df612b794",
     name: "user_role-org_x-space_xx",
-    apps: [
-    ],
-    services: [
-    ]
+    apps: [],
+    services: []
   },
   {
     guid: "user_role-org_x-space_yy-4064-82f2-d74df612b794",
     name: "user_role-org_x-space_yy",
-    apps: [
-    ],
-    services: [
-    ]
+    apps: [],
+    services: []
   },
   {
     guid: "user_role-org_y-space_xx-4064-82f2-d74df612b794",
     name: "user_role-org_y-space_xx",
-    apps: [
-    ],
-    services: [
-    ]
+    apps: [],
+    services: []
   },
   {
     guid: "user_role-org_y-space_yy-4064-82f2-d74df612b794",
     name: "user_role-org_y-space_yy",
-    apps: [
-    ],
-    services: [
-    ]
+    apps: [],
+    services: []
   },
   {
     guid: "48e18795-de67-467b-aebb-150cb097a168",
@@ -267,9 +252,7 @@ const spaceSummaries = [
     apps: [
       {
         guid: "b44c91fc-f85b-4c6d-9623-e72babfe0f29",
-        urls: [
-          "testapp01test.18f.gov/path"
-        ],
+        urls: ["testapp01test.18f.gov/path"],
         routes: [
           {
             guid: "75f29b94-de11-4da9-9bc1-9d2bad1f0746",
@@ -283,10 +266,7 @@ const spaceSummaries = [
           }
         ],
         service_count: 2,
-        service_names: [
-          "fake-marco",
-          "fake-test-alpha"
-        ],
+        service_names: ["fake-marco", "fake-test-alpha"],
         running_instances: 0,
         name: "fake-testapp01",
         production: false,
@@ -371,7 +351,7 @@ const spaceSummaries = [
       },
       {
         guid: "662c7ebb-a618-4517-9a3d-dbd4828d894f",
-        name: 'fake-5555',
+        name: "fake-5555",
         bound_app_count: 0,
         last_operation: {
           type: "create",
@@ -394,7 +374,7 @@ const spaceSummaries = [
       },
       {
         guid: "4a85af65-7ea7-4651-b686-3e7ebc82ef91",
-        name: 'fake-6666',
+        name: "fake-6666",
         bound_app_count: 0,
         last_operation: {
           type: "create",
@@ -417,7 +397,7 @@ const spaceSummaries = [
       },
       {
         guid: "f61dde99-1bd4-4f78-94bc-0e6c7fef2976",
-        name: 'fake-4444',
+        name: "fake-4444",
         bound_app_count: 0,
         last_operation: {
           type: "create",
@@ -486,7 +466,7 @@ const spaceSummaries = [
       },
       {
         guid: "b4679fb4-67a2-4e0d-affc-460064ce674d",
-        name: 'fake-3333',
+        name: "fake-3333",
         bound_app_count: 0,
         last_operation: {
           type: "create",
@@ -515,9 +495,7 @@ const spaceSummaries = [
     apps: [
       {
         guid: "d2881206-7f65-4b8d-a027-ae9519c7646a",
-        urls: [
-          "dashboard.cloud.gov"
-        ],
+        urls: ["dashboard.cloud.gov"],
         routes: [
           {
             guid: "a43dbd2b-42ae-4f8f-89a8-da37bcb39dad",
@@ -531,9 +509,7 @@ const spaceSummaries = [
           }
         ],
         service_count: 1,
-        service_names: [
-          "fake-dashboard-ups"
-        ],
+        service_names: ["fake-dashboard-ups"],
         running_instances: 1,
         name: "fake-cg-dashboard",
         production: false,
@@ -579,9 +555,7 @@ const spaceSummaries = [
       },
       {
         guid: "a249aed7-9da1-4c39-bcf7-dfe115da6335",
-        urls: [
-          "console.cloud.gov"
-        ],
+        urls: ["console.cloud.gov"],
         routes: [
           {
             guid: "080acc69-b213-45de-b2b3-666dfa5767b9",
@@ -653,9 +627,7 @@ const spaceSummaries = [
     apps: [
       {
         guid: "6e7edf4d-1801-4948-9436-b3adcf89ce95",
-        urls: [
-          "dashboard-staging.apps.cloud.gov"
-        ],
+        urls: ["dashboard-staging.apps.cloud.gov"],
         routes: [
           {
             guid: "2bce599f-114d-4fe6-b055-1f0f37a9a90c",
@@ -669,9 +641,7 @@ const spaceSummaries = [
           }
         ],
         service_count: 1,
-        service_names: [
-          "dashboard-ups"
-        ],
+        service_names: ["dashboard-ups"],
         running_instances: 1,
         name: "fake-cg-dashboard-staging",
         production: false,
@@ -717,9 +687,7 @@ const spaceSummaries = [
       },
       {
         guid: "2300adbc-e83e-4e04-81a5-f8e25295f540",
-        urls: [
-          "dashboard-demo.apps.cloud.gov"
-        ],
+        urls: ["dashboard-demo.apps.cloud.gov"],
         routes: [
           {
             guid: "1d49a639-d82b-4a7d-8493-7c4697c4bd47",
@@ -733,9 +701,7 @@ const spaceSummaries = [
           }
         ],
         service_count: 1,
-        service_names: [
-          "dashboard-ups"
-        ],
+        service_names: ["dashboard-ups"],
         running_instances: 1,
         name: "fake-cg-dashboard-demo",
         production: false,

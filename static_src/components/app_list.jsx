@@ -1,15 +1,14 @@
+import React from "react";
 
-import React from 'react';
-
-import AppQuicklook from './app_quicklook.jsx';
-import ComplexList from './complex_list.jsx';
-import EntityEmpty from './entity_empty.jsx';
-import EntityIcon from './entity_icon.jsx';
-import InfoAppCreate from './info_app_create.jsx';
-import Loading from './loading.jsx';
-import OrgStore from '../stores/org_store.js';
-import SpaceStore from '../stores/space_store.js';
-import UserStore from '../stores/user_store';
+import AppQuicklook from "./app_quicklook.jsx";
+import ComplexList from "./complex_list.jsx";
+import EntityEmpty from "./entity_empty.jsx";
+import EntityIcon from "./entity_icon.jsx";
+import InfoAppCreate from "./info_app_create.jsx";
+import Loading from "./loading.jsx";
+import OrgStore from "../stores/org_store.js";
+import SpaceStore from "../stores/space_store.js";
+import UserStore from "../stores/user_store";
 
 function stateSetter() {
   const currentOrgGuid = OrgStore.currentOrgGuid;
@@ -17,7 +16,7 @@ function stateSetter() {
   const currentUser = UserStore.currentUser;
 
   const space = SpaceStore.get(currentSpaceGuid);
-  const apps = (space && space.apps) ? space.apps : [];
+  const apps = space && space.apps ? space.apps : [];
 
   return {
     currentOrg: OrgStore.get(currentOrgGuid),
@@ -58,11 +57,11 @@ export default class AppList extends React.Component {
 
   render() {
     let loading = <Loading text="Loading apps" />;
-    let content = <div>{ loading }</div>;
+    let content = <div>{loading}</div>;
     const title = (
       <span>
         <span>Apps in</span> <EntityIcon entity="space" iconSize="medium" />
-        <span> { this.state.currentSpaceName }</span>
+        <span> {this.state.currentSpaceName}</span>
       </span>
     );
 
@@ -70,25 +69,25 @@ export default class AppList extends React.Component {
       content = (
         <EntityEmpty callout="You have no apps in this space">
           <InfoAppCreate
-            space={ this.state.currentSpace }
-            org={ this.state.currentOrg }
-            user={ this.state.currentUser }
+            space={this.state.currentSpace}
+            org={this.state.currentOrg}
+            user={this.state.currentUser}
           />
         </EntityEmpty>
       );
     } else if (!this.state.loading && this.state.apps.length > 0) {
       content = (
-        <ComplexList titleElement={ title }>
-          { this.state.apps.map((app) =>
+        <ComplexList titleElement={title}>
+          {this.state.apps.map(app => (
             <AppQuicklook
-              key={ app.guid }
-              app={ app }
-              orgGuid={ this.state.currentOrgGuid }
-              spaceGuid={ this.state.currentSpaceGuid }
-              spaceName={ this.state.currentSpaceName }
-              extraInfo={ ['state', 'memory', 'diskQuota'] }
+              key={app.guid}
+              app={app}
+              orgGuid={this.state.currentOrgGuid}
+              spaceGuid={this.state.currentSpaceGuid}
+              spaceName={this.state.currentSpaceName}
+              extraInfo={["state", "memory", "diskQuota"]}
             />
-          )}
+          ))}
         </ComplexList>
       );
     }

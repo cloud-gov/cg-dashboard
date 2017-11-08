@@ -3,8 +3,8 @@
  * instances.
  */
 
-import BaseStore from './base_store.js';
-import { serviceActionTypes } from '../constants.js';
+import BaseStore from "./base_store.js";
+import { serviceActionTypes } from "../constants.js";
 
 export class ServiceBindingStore extends BaseStore {
   constructor() {
@@ -18,9 +18,7 @@ export class ServiceBindingStore extends BaseStore {
   }
 
   getAllByApp(appGuid) {
-    return this.getAll().filter((binding) =>
-      binding.app_guid === appGuid
-    );
+    return this.getAll().filter(binding => binding.app_guid === appGuid);
   }
 
   _registerToActions(action) {
@@ -34,7 +32,7 @@ export class ServiceBindingStore extends BaseStore {
       case serviceActionTypes.SERVICE_BINDINGS_RECEIVED: {
         this._fetching = false;
         const bindings = action.serviceBindings;
-        this.mergeMany('guid', bindings, () => { });
+        this.mergeMany("guid", bindings, () => {});
         this.emitChange();
         break;
       }
@@ -46,14 +44,16 @@ export class ServiceBindingStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_UNBIND: {
         const binding = this.get(action.serviceBinding.guid);
-        const unbindingService = Object.assign({}, binding, { unbinding: true });
-        this.merge('guid', unbindingService);
+        const unbindingService = Object.assign({}, binding, {
+          unbinding: true
+        });
+        this.merge("guid", unbindingService);
         break;
       }
 
       case serviceActionTypes.SERVICE_BOUND: {
         const binding = action.serviceBinding;
-        this.merge('guid', binding);
+        this.merge("guid", binding);
         break;
       }
 

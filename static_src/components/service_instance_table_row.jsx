@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import Action from './action.jsx';
-import ConfirmationBox from './confirmation_box.jsx';
-import formatDateTime from '../util/format_date';
+import PropTypes from "prop-types";
+import React from "react";
+import Action from "./action.jsx";
+import ConfirmationBox from "./confirmation_box.jsx";
+import formatDateTime from "../util/format_date";
 
 const propTypes = {
   instance: PropTypes.object,
@@ -35,14 +35,15 @@ class ServiceInstanceTableRow extends React.Component {
   get confirmationBox() {
     const { instance } = this.props;
 
-    return !instance.confirmDelete ? null :
+    return !instance.confirmDelete ? null : (
       <ConfirmationBox
         style="nexto"
-        confirmHandler={ this.handleConfirmDelete }
-        cancelHandler={ this.handleCancelDelete }
-        disabled={ instance.deleting }
-        message={ null }
-      />;
+        confirmHandler={this.handleConfirmDelete}
+        cancelHandler={this.handleCancelDelete}
+        disabled={instance.deleting}
+        message={null}
+      />
+    );
   }
 
   render() {
@@ -50,28 +51,28 @@ class ServiceInstanceTableRow extends React.Component {
     const { last_operation: lastOp } = instance;
     const lastOpTime = lastOp.updated_at || lastOp.created_at;
     const specialtdStyles = {
-      whiteSpace: 'nowrap',
-      width: '25%'
+      whiteSpace: "nowrap",
+      width: "25%"
     };
 
     return (
       <tr>
-        <td>{ instance.name }</td>
-        <td>{ lastOp.type }</td>
-        <td>{ formatDateTime(lastOpTime) }</td>
-        <td style={ specialtdStyles }>
+        <td>{instance.name}</td>
+        <td>{lastOp.type}</td>
+        <td>{formatDateTime(lastOpTime)}</td>
+        <td style={specialtdStyles}>
           <div>
             <Action
               style="base"
-              classes={ ['test-delete_instance'] }
-              disabled={ instance.confirmDelete }
-              clickHandler={ this.handleBeginDelete }
+              classes={["test-delete_instance"]}
+              disabled={instance.confirmDelete}
+              clickHandler={this.handleBeginDelete}
               label="delete"
             >
               <span>Delete Instance</span>
             </Action>
           </div>
-          { this.confirmationBox }
+          {this.confirmationBox}
         </td>
       </tr>
     );

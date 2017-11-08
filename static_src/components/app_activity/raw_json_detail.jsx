@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
   item: PropTypes.object,
@@ -13,9 +13,7 @@ const RawJSONDetail = ({ item, visible }) => {
     <div className="activity_log-item_raw">
       <div>Raw event log</div>
       <code>
-        <pre>
-          { JSON.stringify(item, null, 2) }
-        </pre>
+        <pre>{JSON.stringify(item, null, 2)}</pre>
       </code>
     </div>
   );

@@ -1,12 +1,11 @@
-
 /*
  * Actions for login information such as login status. Actions for getting and
  * modifying login information should go here.
  */
 
-import AppDispatcher from '../dispatcher.js';
-import cfApi from '../util/cf_api';
-import { loginActionTypes } from '../constants';
+import AppDispatcher from "../dispatcher.js";
+import cfApi from "../util/cf_api";
+import { loginActionTypes } from "../constants";
 
 const loginActions = {
   fetchStatus() {
@@ -14,7 +13,8 @@ const loginActions = {
       type: loginActionTypes.FETCH_STATUS
     });
 
-    return cfApi.getAuthStatus()
+    return cfApi
+      .getAuthStatus()
       .then(loginActions.receivedStatus)
       .catch(loginActions.errorStatus);
   },

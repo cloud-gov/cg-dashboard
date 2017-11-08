@@ -1,7 +1,6 @@
-
-import PropTypes from 'prop-types';
-import React from 'react';
-import PanelDocumentation from './panel_documentation.jsx';
+import PropTypes from "prop-types";
+import React from "react";
+import PanelDocumentation from "./panel_documentation.jsx";
 
 const propTypes = {
   callout: PropTypes.node,
@@ -18,9 +17,8 @@ export default class EntityEmpty extends React.Component {
     return (
       <PanelDocumentation>
         <div className="empty">
-          <h4>{ props.callout }</h4>
-          { props.children }
-
+          <h4>{props.callout}</h4>
+          {props.children}
         </div>
       </PanelDocumentation>
     );

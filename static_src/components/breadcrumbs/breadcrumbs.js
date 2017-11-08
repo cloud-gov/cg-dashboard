@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
-import { appPropType } from '../../stores/app_store';
-import { orgPropType } from '../../stores/org_store';
-import { spacePropType } from '../../stores/space_store';
-import BreadcrumbsItem from './breadcrumbs_item';
-import { orgHref, spaceHref } from '../../util/url';
+import { appPropType } from "../../stores/app_store";
+import { orgPropType } from "../../stores/org_store";
+import { spacePropType } from "../../stores/space_store";
+import BreadcrumbsItem from "./breadcrumbs_item";
+import { orgHref, spaceHref } from "../../util/url";
 
 const propTypes = {
   org: orgPropType.isRequired,
