@@ -1,5 +1,5 @@
 {
-  "extends": "plugin:jasmine/recommended",
+  "extends": ["plugin:jasmine/recommended"],
   "env": {
     "jasmine": true
   },
@@ -13,9 +13,7 @@
     },
     "sourceType": "module"
   },
-  "plugins": [
-    "jasmine"
-  ],
+  "plugins": ["jasmine"],
   "rules": {
     "comma-dangle": [2, "never"],
     "func-names": [0, "always"],
@@ -23,6 +21,17 @@
     "jasmine/no-suite-dupes": [2, "branch"],
     "one-var": 0,
     "one-var-declaration-per-line": 0,
-    "prefer-arrow-callback": 0
+    "prefer-arrow-callback": 0,
+    // TODO(jonathaningram): the following rules are turned off to quiet the
+    // linter during a transition between an old version of airbnb/javascript,
+    // introducing prettier and upgrading to the latest version of
+    // airbnb/javascript.
+    // The existence of these rules does not indicate that they should be
+    // ignored. It simply means that they should be slowly re-enabled as the
+    // codebase is updated.
+    "jasmine/new-line-before-expect": 0,
+    "jasmine/new-line-between-declarations": 0,
+    "jasmine/prefer-toHaveBeenCalledWith": 0,
+    "no-extend-native": 0
   }
 }
