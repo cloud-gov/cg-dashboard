@@ -9,7 +9,6 @@ import OrgStore from "../stores/org_store.js";
 import PageHeader from "./page_header.jsx";
 import PageStore from "../stores/page_store.js";
 import Panel from "./panel.jsx";
-import PanelGroup from "./panel_group.jsx";
 import SpaceStore from "../stores/space_store.js";
 
 function stateSetter() {
