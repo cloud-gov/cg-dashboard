@@ -31,10 +31,12 @@ func (c *LogContext) RecentLogs(rw web.ResponseWriter, req *web.Request) {
 func (c *LogContext) logMessageResponseHandler(rw http.ResponseWriter, response *http.Response) {
 	messages, err := c.ParseLogMessages(&(response.Body), response.Header.Get("Content-Type"))
 	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
 		rw.Write([]byte(err.Error()))
 		return
 	}
-	rw.Write([]byte(messages.String()))
+	rw.WriteHeader(response.StatusCode)
+	rw.Write(messages.Bytes())
 	return
 
 }

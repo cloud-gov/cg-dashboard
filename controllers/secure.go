@@ -133,13 +133,14 @@ func (c *SecureContext) submitRequest(rw http.ResponseWriter, req *http.Request,
 		rw.Write([]byte("unknown error. try again"))
 		return
 	}
-	// Should return the same status.
-	rw.WriteHeader(res.StatusCode)
 	responseHandler(rw, res)
 }
 
 // GenericResponseHandler is a normal handler for responses received from the proxy requests.
 func (c *SecureContext) GenericResponseHandler(rw http.ResponseWriter, response *http.Response) {
+	// Should return the same status.
+	rw.WriteHeader(response.StatusCode)
+
 	// Write the body into response that is going back to the frontend.
 	_, err := io.Copy(rw, response.Body)
 	if err != nil {
