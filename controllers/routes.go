@@ -77,7 +77,7 @@ func InitApp(envVars *env.VarSet, app *cfenv.App) (*web.Router, *helpers.Setting
 	if err := settings.InitSettings(envVars, app); err != nil {
 		return nil, nil, err
 	}
-	mailer, err := mailer.InitSMTPMailer(settings)
+	mailer, err := mailer.NewSMTPMailer(settings)
 	if err != nil {
 		return nil, nil, err
 	}
