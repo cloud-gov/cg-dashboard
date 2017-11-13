@@ -8,13 +8,14 @@ type Mailer struct {
 	mock.Mock
 }
 
-// SendEmail provides a mock function with given fields: emailAddress, subject, body
-func (_m *Mailer) SendEmail(emailAddress string, subject string, body []byte) error {
-	ret := _m.Called(emailAddress, subject, body)
+// SendEmail provides a mock function with given fields:
+// emailAddress, subject, html, text.
+func (_m *Mailer) SendEmail(emailAddress string, subject string, html, text []byte) error {
+	ret := _m.Called(emailAddress, subject, html, text)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, []byte) error); ok {
-		r0 = rf(emailAddress, subject, body)
+	if rf, ok := ret.Get(0).(func(string, string, []byte, []byte) error); ok {
+		r0 = rf(emailAddress, subject, html, text)
 	} else {
 		r0 = ret.Error(0)
 	}

@@ -336,9 +336,13 @@ func (c *UAAContext) TriggerInvite(inviteReq inviteEmailRequest) *UaaError {
 	if tplErr != nil {
 		return newUaaError(http.StatusInternalServerError, tplErr.Error())
 	}
-	emailErr := c.mailer.SendEmail(inviteReq.Email, "Invitation to join cloud.gov", emailHTML.Bytes())
-	if emailErr != nil {
-		return newUaaError(http.StatusInternalServerError, emailErr.Error())
+	if err := c.mailer.SendEmail(
+		inviteReq.Email,
+		"Invitation to join cloud.gov",
+		emailHTML.Bytes(),
+		nil,
+	); err != nil {
+		return newUaaError(http.StatusInternalServerError, err.Error())
 	}
 	return nil
 }
