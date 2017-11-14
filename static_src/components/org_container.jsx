@@ -127,7 +127,7 @@ export default class OrgContainer extends React.Component {
   render() {
     const { org } = this.state;
     const state = this.state;
-    let loading = <Loading text="Loading organization" />;
+    const loading = <Loading text="Loading organization" />;
     let content = <div>{loading}</div>;
     const title = (
       <span>

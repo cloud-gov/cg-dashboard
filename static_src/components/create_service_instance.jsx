@@ -108,7 +108,6 @@ export default class CreateServiceInstance extends React.Component {
         <Form
           guid={CREATE_SERVICE_INSTANCE_FORM_GUID}
           classes={["test-create_service_instance_form"]}
-          ref="form"
           onSubmit={this._onValidForm}
         >
           <legend>
@@ -129,7 +128,6 @@ export default class CreateServiceInstance extends React.Component {
         <Form
           guid={CREATE_SERVICE_INSTANCE_FORM_GUID}
           classes={["test-create_service_instance_form"]}
-          ref="form"
           onSubmit={this._onValidForm}
         >
           <legend>

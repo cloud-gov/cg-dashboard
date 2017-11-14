@@ -70,7 +70,7 @@ export default class Notification extends React.Component {
             className="notification-dismiss test-notification-dismiss"
             onClick={this.onCloseClick}
             title="Dismiss notification"
-            href="#"
+            href=""
           >
             <span className="usa-sr-only">Close</span>
           </a>

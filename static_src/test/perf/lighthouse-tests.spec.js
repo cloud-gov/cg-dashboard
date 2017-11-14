@@ -49,11 +49,12 @@ function launchChromeRunLighthouse(url, flags) {
     })
     .then(() => lighthouse(testUrl, lighthouseOptions, auditConfig)) // Run Lighthouse.
     .then(results => launcher.kill().then(() => results)) // Kill Chrome and return results.
-    .catch(err =>
-      // Kill Chrome if there's an error.
-      launcher.kill().then(() => {
-        throw err;
-      }, console.error)
+    .catch(
+      err =>
+        // Kill Chrome if there's an error.
+        launcher.kill().then(() => {
+          throw err;
+        }, console.error) // eslint-disable-line no-console
     );
 }
 
@@ -88,11 +89,13 @@ describe("Lighthouse speed test", function() {
   });
 
   afterAll(() => {
+    /* eslint-disable no-console */
     console.log(dedent`\n
     🏎 ____🏎 ____🏎____🏎____🏎____🏎
     Performance testing complete.
     See detailed results at: ${htmlOut} or ${jsonOut}
     `);
+    /* eslint-enable no-console */
   });
 
   it("should successfully run the test and have results", () => {

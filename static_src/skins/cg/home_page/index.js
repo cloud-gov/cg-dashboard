@@ -31,3 +31,5 @@ export const panels = [
     </Panel>
   )
 ];
+
+export default {};

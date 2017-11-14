@@ -112,7 +112,7 @@ export default class ServiceInstancePanel extends React.Component {
   }
 
   render() {
-    let loading = <Loading text="Loading services" />;
+    const loading = <Loading text="Loading services" />;
     let content = <div>{loading}</div>;
 
     if (!this.state.loading) {

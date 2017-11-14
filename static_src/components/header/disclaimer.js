@@ -62,7 +62,7 @@ export default class Disclaimer extends React.Component {
         <header className="grid">
           <span className="usa-disclaimer-official">
             {text}
-            {flag && <img {...flag} />}
+            {flag && <img alt={flag.alt} {...flag} />}
             <a
               className="action action-link action-secondary"
               aria-expanded={expanded}

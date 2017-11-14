@@ -129,12 +129,12 @@ export default class Route extends React.Component {
     return (
       <Action
         key="unbind"
-        label={!!unbind ? "Unbind" : "Bind"}
-        style={!!unbind ? "warning" : "primary"}
-        type={!!unbind ? "link" : "button"}
-        clickHandler={!!unbind ? this._toggleRemove : this._bindHandler}
+        label={unbind ? "Unbind" : "Bind"}
+        style={unbind ? "warning" : "primary"}
+        type={unbind ? "link" : "button"}
+        clickHandler={unbind ? this._toggleRemove : this._bindHandler}
       >
-        {!!unbind ? "Unbind" : "Bind"}
+        {unbind ? "Unbind" : "Bind"}
       </Action>
     );
   }

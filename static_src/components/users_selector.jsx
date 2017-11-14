@@ -106,7 +106,6 @@ export default class UsersSelector extends React.Component {
         <Form
           guid={USERS_SELECTOR_GUID}
           classes={["users_selector"]}
-          ref="form"
           onSubmit={this._onSubmitForm}
         >
           {this.userSelector}

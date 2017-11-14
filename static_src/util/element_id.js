@@ -4,3 +4,5 @@ export const generateId = prefix => {
   const id = ++idCounter;
   return `${prefix || ""}${id}`;
 };
+
+export default {};

@@ -208,7 +208,7 @@ export default class AppContainer extends React.Component {
       upsisRequest
     } = this.state;
 
-    let loading = <Loading text="Loading app" />;
+    const loading = <Loading text="Loading app" />;
     let content = <div>{loading}</div>;
     const title = (
       <span>

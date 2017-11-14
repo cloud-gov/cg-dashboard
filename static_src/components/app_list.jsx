@@ -56,7 +56,7 @@ export default class AppList extends React.Component {
   }
 
   render() {
-    let loading = <Loading text="Loading apps" />;
+    const loading = <Loading text="Loading apps" />;
     let content = <div>{loading}</div>;
     const title = (
       <span>

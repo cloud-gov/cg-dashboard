@@ -23,9 +23,7 @@ export default class ServiceCountStatus extends React.Component {
     if (props.services.length) {
       health = appInstanceHealth(
         worstAppInstanceState(
-          props.services.map(
-            ServiceInstanceStore.getMappedAppState.bind(ServiceInstanceStore)
-          )
+          props.services.map(si => ServiceInstanceStore.getMappedAppState(si))
         )
       );
     }
