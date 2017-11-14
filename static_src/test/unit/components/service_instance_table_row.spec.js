@@ -6,7 +6,7 @@ import Action from "../../../components/action.jsx";
 import ConfirmationBox from "../../../components/confirmation_box.jsx";
 
 describe("<ServiceInstanceTableRow/>", () => {
-  let baseInstance = {
+  const baseInstance = {
     deleting: false,
     name: "service",
     last_operation: {

@@ -5,6 +5,10 @@ import smocks from "smocks";
 import authstatus from "./authstatus";
 import api from "./api";
 
+// configure smocks as a hapi plugin
+const smocksplugin = require("smocks/hapi").toPlugin();
+const pkg = require("../../../package.json");
+
 smocks.id("cg-dashboard-testing");
 
 // add auth status route
@@ -18,7 +22,7 @@ api(smocks);
  * @param port (optional) the system will choose a port automatically
  * @param cb (optional) callback to notify when server starts
  **/
-export function start(...args) {
+export default function start(...args) {
   const cb = args.pop();
   const port = args[0];
 
@@ -28,10 +32,8 @@ export function start(...args) {
     port
   });
 
-  // configure smocks as a hapi plugin
-  const smocksplugin = require("smocks/hapi").toPlugin();
   smocksplugin.attributes = {
-    pkg: require("../../../package.json")
+    pkg
   };
 
   server.register([inert, smocksplugin]);
@@ -73,12 +75,13 @@ export function start(...args) {
       throw err;
     }
 
+    /* eslint-disable no-console */
     console.log(
-      // eslint-disable-line no-console
       `Started smocks server on ${server.info.port}. Visit ${
         server.info.uri
       }/_admin to configure.`
     );
+    /* eslint-enable no-console */
   }
 
   server.start(cb || __cb);

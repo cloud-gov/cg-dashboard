@@ -95,7 +95,6 @@ export default class UsersInvite extends React.Component {
         <Form
           guid={USERS_INVITE_FORM_GUID}
           classes={["users_invite_form"]}
-          ref="form"
           onSubmit={this._onValidForm}
           errorOverride={this.errorMessage}
         >

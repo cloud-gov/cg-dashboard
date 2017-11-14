@@ -106,7 +106,7 @@ export default class ActivityLog extends React.Component {
     } else if (this.state.empty) {
       content = <h5 className="test-none_message">No recent activity</h5>;
     } else {
-      let showMore = this.showMoreActivity() && (
+      const showMore = this.showMoreActivity() && (
         <PanelActions>
           <Action
             label="View more"

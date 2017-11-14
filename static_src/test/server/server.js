@@ -10,7 +10,7 @@ var child_process = require("child_process");
 
 require("babel-register");
 
-var start = require("./index").start;
+var start = require("./index");
 
 var port = process.env.PORT;
 

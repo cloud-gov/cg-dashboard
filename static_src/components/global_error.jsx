@@ -34,8 +34,7 @@ export default class GlobalError extends React.Component {
     const link = config.docs.status && (
       <span>
         {" "}
-        check{" "}
-        <a target="_blank" href={config.docs.status}>
+        check <a href={config.docs.status}>
           {config.platform.name}'s status
         </a>{" "}
         or

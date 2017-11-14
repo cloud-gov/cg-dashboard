@@ -1,4 +1,9 @@
 {
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
   "extends": ["airbnb", "prettier"],
   "parserOptions": {
     "ecmaVersion": 6,
@@ -11,32 +16,20 @@
   "plugins": ["react"],
   "rules": {
     "react/no-deprecated": 0,
+    "import/no-unresolved": [2, { "ignore": ["skin", "dashboard"] }],
     "react/prefer-stateless-function": 0,
     // TODO(jonathaningram): the following rules are turned off to quiet the
     // linter during a transition between an old version of airbnb/javascript,
     // introducing prettier and upgrading to the latest version of
     // airbnb/javascript.
     // The existence of these rules does not indicate that they should be
-    // ignored. It simply means that they should be slowly re-enabled as the
-    // codebase is updated.
-    "global-require": 0,
+    // ignored. It simply means that they should be re-enabled as the codebase
+    // is updated.
     "import/imports-first": 0,
-    "import/newline-after-import": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-named-as-default": 0,
-    "import/no-unresolved": [2, { "ignore": ["skin", "dashboard"] }],
-    "import/prefer-default-export": 0,
-    "jsx-a11y/href-no-hash": 0,
-    "jsx-a11y/img-has-alt": 0,
-    "no-console": 0,
-    "no-extra-boolean-cast": 0,
-    "no-undef": 0,
     "no-underscore-dangle": 0,
-    "prefer-const": 0,
     "react/jsx-filename-extension": 0,
-    "react/jsx-indent": 0,
-    "react/jsx-no-bind": 0,
-    "react/jsx-no-target-blank": 0,
-    "react/no-string-refs": 0
+    "react/jsx-indent": 0
   }
 }

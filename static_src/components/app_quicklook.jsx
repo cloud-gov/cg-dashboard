@@ -53,7 +53,7 @@ export default class AppQuicklook extends React.Component {
 
   render() {
     const app = this.props.app;
-    let info = [];
+    const info = [];
 
     if (this.props.extraInfo.includes("state")) {
       const oneInfo = this.props.extraInfo.length === 1;
