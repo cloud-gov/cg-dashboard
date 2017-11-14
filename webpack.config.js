@@ -9,6 +9,26 @@ const CG_STYLE_PATH = process.env.CG_STYLE_PATH;
 
 const SKIN_NAME = process.env.SKIN_NAME || 'cg';
 
+// getSkinEnv looks in the skin module for an `env.js` file which is expected to
+// contain an array of additional environment variable names that should be
+// added to the webpack DefinePlugin.
+// If the skin's env module is not found, an empty array is returned: this
+// makes the feature opt-in for skins.
+const getSkinEnv = () => {
+  const mod = path.resolve(
+    __dirname,
+    `static_src/skins/${SKIN_NAME}/env`
+  );
+
+  try {
+    require.resolve(mod);
+  } catch (e) {
+    return [];
+  }
+
+  return require(mod); // eslint-disable-line import/no-dynamic-require, global-require
+};
+
 const srcDir = './static_src';
 const compiledDir = './static/assets';
 
@@ -101,6 +121,12 @@ const processEnv = {
 if (PRODUCTION) {
   processEnv.NODE_ENV = JSON.stringify('production');
 }
+
+const skinEnv = getSkinEnv();
+
+skinEnv.forEach((env) => {
+  processEnv[env] = JSON.stringify(process.env[env]);
+});
 
 config.plugins.push(
   new webpack.DefinePlugin({
