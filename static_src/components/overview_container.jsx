@@ -16,8 +16,8 @@ function stateSetter() {
   const spaces = SpaceStore.getAll() || [];
 
   return {
-    empty: !PageStore.loading && !orgs.length,
-    loading: PageStore.loading,
+    empty: !PageStore.isLoading && !orgs.length,
+    loading: PageStore.isLoading,
     orgs: orgs.sort((a, b) => a.name.localeCompare(b.name)),
     spaces
   };
