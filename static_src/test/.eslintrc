@@ -15,6 +15,7 @@
   },
   "plugins": ["jasmine"],
   "rules": {
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "func-names": [0, "always"],
     "jasmine/no-spec-dupes": [2, "branch"],
     "jasmine/no-suite-dupes": [2, "branch"],
