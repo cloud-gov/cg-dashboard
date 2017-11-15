@@ -30,7 +30,6 @@
     // ignored. It simply means that they should be slowly re-enabled as the
     // codebase is updated.
     "jasmine/new-line-before-expect": 0,
-    "jasmine/new-line-between-declarations": 0,
-    "no-extend-native": 0
+    "jasmine/new-line-between-declarations": 0
   }
 }

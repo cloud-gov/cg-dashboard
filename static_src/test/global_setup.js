@@ -5,16 +5,6 @@ import jasmineEnzyme from "jasmine-enzyme";
 import LoginStore from "../stores/login_store";
 import UserStore from "../stores/user_store";
 
-Function.prototype.bind =
-  Function.prototype.bind ||
-  function(thisp) {
-    // eslint-disable-line
-    const fn = this;
-    return function(...args) {
-      return fn.apply(thisp, args);
-    };
-  };
-
 beforeEach(function() {
   jasmineEnzyme();
 });
