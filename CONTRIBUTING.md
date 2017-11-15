@@ -345,32 +345,25 @@ Here are some basic rules to work with stores successfully:
 * Stores should not call action creators.
 * The data in stores should be an
   [Immutable.List](https://facebook.github.io/immutable-js/docs/#/List).
-* Secondary properties, such as loading state, error state, current GUIDs,
-  should be stored as read-only properties on the store by having underscored
-  variables that are accessible with JS getters. [See
-  more](https://github.com/18F/cg-dashboard/blob/master/static_src/stores/app_store.js#L17).
 
-  ```js
-  // Good
-  export class OrgStore extends BaseStore {
-    constructor() {
-      super();
-      this.currentOrgGUID = null;
-      this.isFetchingOrg = false;
-    }
+```js
+// Good
+export class OrgStore extends BaseStore {
+  constructor() {
+    super();
 
-    get loading() {
-      return this.isFetchingOrg || this.isFetchingAll;
-    }
-
-    get currentOrgGuid() {
-      return this.currentOrgGUID;
-    }
+    this.currentOrgGUID = null;
+    this.isFetchingOrg = false;
   }
-  ```
 
-* Stores should generally not access their `storeData` directly but should attempt
-  to use the data manipulation functions in the
+  get loading() {
+    return this.isFetchingOrg || this.isFetchingAll;
+  }
+}
+```
+
+* Stores should generally not access their `storeData` directly but should
+  attempt to use the data manipulation functions in the
   [BaseStore](https://github.com/18F/cg-dashboard/blob/master/static_src/stores/base_store.js),
   such as `push`, `merge`, `mergeAll`, etc.
 
