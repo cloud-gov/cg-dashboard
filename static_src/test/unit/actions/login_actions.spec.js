@@ -44,7 +44,7 @@ describe("loginActions", function() {
         cfApi.getAuthStatus.returns(Promise.reject(err));
 
         loginActions.fetchStatus().then(() => {
-          expect(loginActions.errorStatus).toHaveBeenCalled();
+          expect(loginActions.errorStatus).toHaveBeenCalledWith();
           done();
         });
       });

@@ -15,7 +15,6 @@
   },
   "plugins": ["jasmine"],
   "rules": {
-    "comma-dangle": [2, "never"],
     "func-names": [0, "always"],
     "jasmine/no-spec-dupes": [2, "branch"],
     "jasmine/no-suite-dupes": [2, "branch"],
@@ -31,7 +30,6 @@
     // codebase is updated.
     "jasmine/new-line-before-expect": 0,
     "jasmine/new-line-between-declarations": 0,
-    "jasmine/prefer-toHaveBeenCalledWith": 0,
     "no-extend-native": 0
   }
 }
