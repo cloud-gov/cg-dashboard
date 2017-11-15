@@ -123,6 +123,7 @@
     "prettier": "1.8.1",
     "prop-types": "^15.5.10",
     "react-addons-test-utils": "^15.4.2",
+    "react-test-renderer": "^15.4.2",
     "selenium-standalone": "^5.11.0",
     "sinon": "^2.1.0",
     "wdio-jasmine-framework": "^0.2.19",
