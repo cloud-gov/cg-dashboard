@@ -71,8 +71,6 @@ type Settings struct {
 	TICSecret string
 	// CSRFKey used for gorilla CSRF validation
 	CSRFKey []byte
-	// OpaqueUAATokens if set requests smaller opaque tokens from UAA
-	OpaqueUAATokens bool
 }
 
 // CreateContext returns a new context to be used for http connections.
@@ -168,11 +166,6 @@ func (s *Settings) InitSettings(envVars *env.VarSet, app *cfenv.App) (retErr err
 	s.Sessions = store
 	s.SessionBackend = "cookiestore"
 	s.SessionBackendHealthCheck = func() bool { return true }
-
-	// When using cookiestore, we need our cookies to be under 4096 bytes, or they cannot
-	// be stored. Opaque UAA tokens gets us small enough.
-	// See: https://godoc.org/github.com/gorilla/securecookie#SecureCookie.MaxLength
-	s.OpaqueUAATokens = true
 
 	// Want to save a struct into the session. Have to register it.
 	gob.Register(oauth2.Token{})
