@@ -65,7 +65,7 @@ class ActivityStore extends BaseStore {
   }
 
   get fetched() {
-    return this.didFetchLogs && this.didFetchLogs;
+    return this.didFetchEvents && this.didFetchLogs;
   }
 
   get fetching() {
