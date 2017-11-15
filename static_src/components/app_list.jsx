@@ -36,11 +36,11 @@ export default class AppList extends React.Component {
     super(props);
 
     this.state = stateSetter();
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    SpaceStore.addChangeListener(this._onChange);
+    SpaceStore.addChangeListener(this.handleChange);
   }
 
   componentWillReceiveProps() {
@@ -48,10 +48,10 @@ export default class AppList extends React.Component {
   }
 
   componentWillUnmount() {
-    SpaceStore.removeChangeListener(this._onChange);
+    SpaceStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter(this.props));
   }
 

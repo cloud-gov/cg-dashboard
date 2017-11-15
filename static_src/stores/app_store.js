@@ -23,16 +23,16 @@ export const appPropType = PropTypes.shape({
 export class AppStore extends BaseStore {
   constructor() {
     super();
-    this._data = new Immutable.List();
-    this._currentAppGuid = null;
-    this._fetchAll = false;
-    this._fetchApp = false;
-    this._fetchAppStats = false;
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.storeData = new Immutable.List();
+    this.currentAppGuid = null;
+    this.isFetchingAll = false;
+    this.isFetchingApp = false;
+    this.isFetchingAppStats = false;
+    this.subscribe(() => this.handleAction.bind(this));
   }
 
   get loading() {
-    return this._fetchAll || this._fetchApp || this._fetchAppStats;
+    return this.isFetchingAll || this.isFetchingApp || this.isFetchingAppStats;
   }
 
   isStarting(app) {
@@ -51,10 +51,10 @@ export class AppStore extends BaseStore {
     return !!app.updating;
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case appActionTypes.APP_FETCH:
-        this._fetchApp = true;
+        this.isFetchingApp = true;
         this.emitChange();
         break;
 
@@ -78,12 +78,12 @@ export class AppStore extends BaseStore {
       }
 
       case appActionTypes.APP_STATS_FETCH:
-        this._fetchAppStats = true;
+        this.isFetchingAppStats = true;
         this.emitChange();
         break;
 
       case appActionTypes.APP_RECEIVED:
-        this._fetchApp = false;
+        this.isFetchingApp = false;
         this.merge("guid", action.app || {}, () => {
           // Emit regardless because the loading state has changed
           this.emitChange();
@@ -91,7 +91,7 @@ export class AppStore extends BaseStore {
         break;
 
       case appActionTypes.APP_STATS_RECEIVED: {
-        this._fetchAppStats = false;
+        this.isFetchingAppStats = false;
         const app = Object.assign({}, action.app, { guid: action.appGuid });
         this.merge("guid", app, () => {
           // Emit change regardless of app because loading state changed
@@ -101,19 +101,19 @@ export class AppStore extends BaseStore {
       }
 
       case appActionTypes.APP_ALL_FETCH: {
-        this._fetchAll = true;
+        this.isFetchingAll = true;
         this.emitChange();
         break;
       }
 
       case appActionTypes.APP_ALL_RECEIVED: {
-        this._fetchAll = false;
+        this.isFetchingAll = false;
         this.emitChange();
         break;
       }
 
       case appActionTypes.APP_CHANGE_CURRENT: {
-        this._currentAppGuid = action.appGuid;
+        this.currentAppGuid = action.appGuid;
         this.emitChange();
         break;
       }
@@ -149,9 +149,9 @@ export class AppStore extends BaseStore {
       }
 
       case appActionTypes.APP_FETCH_ERROR: {
-        this._fetchAll = false;
-        this._fetchApp = false;
-        this._fetchAppStats = false;
+        this.isFetchingAll = false;
+        this.isFetchingApp = false;
+        this.isFetchingAppStats = false;
         this.emitChange();
         break;
       }
@@ -173,12 +173,6 @@ export class AppStore extends BaseStore {
         break;
     }
   }
-
-  get currentAppGuid() {
-    return this._currentAppGuid;
-  }
 }
 
-const _AppStore = new AppStore();
-
-export default _AppStore;
+export default new AppStore();

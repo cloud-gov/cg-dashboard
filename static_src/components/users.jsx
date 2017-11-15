@@ -46,8 +46,7 @@ function stateSetter() {
   let parentEntityUsers;
   let currentUserAccess = false;
   let entityGuid;
-  const inviteDisabled = UserStore.inviteDisabled();
-  const usersSelectorDisabled = UserStore.usersSelectorDisabled();
+  const { inviteDisabled, usersSelectorDisabled } = UserStore;
   const isOrgUserManager = UserStore.hasRole(
     currentUser.guid,
     currentOrgGuid,
@@ -87,8 +86,8 @@ function stateSetter() {
     empty: !UserStore.loading && !users.length,
     users,
     parentEntityUsers,
-    userListNotices: UserStore._userListNotification,
-    userListNoticeError: UserStore.getUserListNotificationError()
+    userListNotices: UserStore.userListNotification,
+    userListNoticeError: UserStore.userListNotificationError
   };
 }
 
@@ -98,18 +97,18 @@ export default class Users extends React.Component {
 
     this.state = stateSetter();
 
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleRemoveUser = this.handleRemoveUser.bind(this);
     this.handleAddPermissions = this.handleAddPermissions.bind(this);
     this.handleRemovePermissions = this.handleRemovePermissions.bind(this);
   }
 
   componentDidMount() {
-    UserStore.addChangeListener(this._onChange);
+    UserStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    UserStore.removeChangeListener(this._onChange);
+    UserStore.removeChangeListener(this.handleChange);
   }
 
   onNotificationDismiss(ev) {
@@ -256,7 +255,7 @@ export default class Users extends React.Component {
     );
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
   }
 

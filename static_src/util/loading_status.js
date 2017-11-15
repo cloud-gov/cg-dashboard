@@ -5,22 +5,22 @@ import { EventEmitter } from "events";
 class LoadingStatus extends EventEmitter {
   constructor() {
     super();
-    this._requests = 0; // Our semaphore
-    this._initialized = false; // Initialize on first load
+    this.requestCount = 0; // Our semaphore
+    this.isInitialized = false; // Initialize on first load
   }
 
   get isLoaded() {
     // We are loaded when we are initialized and no requests are in flight
-    return this._initialized && !this._requests;
+    return this.isInitialized && !this.requestCount;
   }
 
-  _addRequest(promise) {
+  doAddRequest(promise) {
     // Increment the semaphore, requests in flight
-    this._requests++;
+    this.requestCount++;
 
     // On complete, decrement the semaphore
     const onComplete = result => {
-      this._requests--;
+      this.requestCount--;
 
       if (this.isLoaded) {
         this.emit("loaded");
@@ -34,10 +34,10 @@ class LoadingStatus extends EventEmitter {
 
   load(promises) {
     promises.forEach(promise => {
-      this._addRequest(promise);
+      this.doAddRequest(promise);
     });
 
-    this._initialized = true;
+    this.isInitialized = true;
     if (promises.length) {
       this.emit("loading");
     }

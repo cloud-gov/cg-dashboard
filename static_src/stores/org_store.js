@@ -18,34 +18,34 @@ export const orgPropType = PropTypes.shape({
 export class OrgStore extends BaseStore {
   constructor() {
     super();
-    this.subscribe(() => this._registerToActions.bind(this));
-    this._currentOrgGuid = null;
-    this._fetchOrg = false;
-    this._fetchAll = false;
-    this._cfName = "org_users";
+    this.subscribe(() => this.handleAction.bind(this));
+    this.currentOrgGUID = null;
+    this.isFetchingOrg = false;
+    this.isFetchingAll = false;
+    this.cfName = "org_users";
   }
 
   get loading() {
-    return this._fetchOrg || this._fetchAll;
+    return this.isFetchingOrg || this.isFetchingAll;
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case orgActionTypes.ORG_FETCH: {
-        this._fetchOrg = true;
+        this.isFetchingOrg = true;
         this.emitChange();
         break;
       }
 
       case orgActionTypes.ORGS_FETCH: {
         AppDispatcher.waitFor([LoginStore.dispatchToken]);
-        this._fetchAll = true;
+        this.isFetchingAll = true;
         this.emitChange();
         break;
       }
 
       case orgActionTypes.ORG_RECEIVED: {
-        this._fetchOrg = false;
+        this.isFetchingOrg = false;
         this.merge("guid", action.org || {}, () => {
           // Emit change regardless because loading state is updated
           this.emitChange();
@@ -54,7 +54,7 @@ export class OrgStore extends BaseStore {
       }
 
       case orgActionTypes.ORGS_RECEIVED: {
-        this._fetchAll = false;
+        this.isFetchingAll = false;
         const updates = action.orgs.map(d => {
           if (d.spaces) {
             return d;
@@ -70,7 +70,7 @@ export class OrgStore extends BaseStore {
       case orgActionTypes.ORGS_SUMMARIES_RECEIVED: {
         this.mergeMany("guid", action.orgs, changed => {
           if (changed) {
-            const orgUpdates = this.updateOpenOrgs(this._currentOrgGuid);
+            const orgUpdates = this.updateOpenOrgs(this.currentOrgGUID);
             this.mergeMany("guid", orgUpdates, () => {});
           }
         });
@@ -79,7 +79,7 @@ export class OrgStore extends BaseStore {
       }
 
       case orgActionTypes.ORG_TOGGLE_SPACE_MENU: {
-        this._currentOrgGuid = action.orgGuid;
+        this.currentOrgGUID = action.orgGuid;
         const updates = this.updateOpenOrgs(action.orgGuid);
         this.mergeMany("guid", updates, changed => {
           if (changed) this.emitChange();
@@ -138,19 +138,15 @@ export class OrgStore extends BaseStore {
   }
 
   currentOrg() {
-    return this.get(this._currentOrgGuid);
-  }
-
-  get cfName() {
-    return this._cfName;
+    return this.get(this.currentOrgGUID);
   }
 
   get currentOrgGuid() {
-    return this._currentOrgGuid;
+    return this.currentOrgGUID;
   }
 
   get currentOrgName() {
-    const org = this.get(this._currentOrgGuid);
+    const org = this.get(this.currentOrgGUID);
     if (!org) return "";
     return org.name;
   }
@@ -167,8 +163,8 @@ export class OrgStore extends BaseStore {
   }
 }
 
-const _OrgStore = new OrgStore();
+const orgStore = new OrgStore();
 
-window.orgstore = _OrgStore;
+window.orgstore = orgStore;
 
-export default _OrgStore;
+export default orgStore;

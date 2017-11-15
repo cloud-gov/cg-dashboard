@@ -26,18 +26,18 @@ class App extends React.Component {
     super(props);
 
     this.state = stateSetter();
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    LoginStore.addChangeListener(this._onChange);
+    LoginStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    LoginStore.removeChangeListener(this._onChange);
+    LoginStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
   }
 

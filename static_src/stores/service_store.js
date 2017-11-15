@@ -11,23 +11,23 @@ import ServicePlanStore from "./service_plan_store.js";
 export class ServiceStore extends BaseStore {
   constructor() {
     super();
-    this.subscribe(() => this._registerToActions.bind(this));
-    this._fetchAll = false;
+    this.subscribe(() => this.handleAction.bind(this));
+    this.isFetchingAll = false;
   }
 
   get loading() {
-    return this._fetchAll;
+    return this.isFetchingAll;
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICES_FETCH: {
-        this._fetchAll = true;
+        this.isFetchingAll = true;
         break;
       }
 
       case serviceActionTypes.SERVICES_RECEIVED: {
-        this._fetchAll = false;
+        this.isFetchingAll = false;
         AppDispatcher.waitFor([ServicePlanStore.dispatchToken]);
         const services = action.services;
         this.mergeMany("guid", services, () => {
@@ -43,6 +43,4 @@ export class ServiceStore extends BaseStore {
   }
 }
 
-const _ServiceStore = new ServiceStore();
-
-export default _ServiceStore;
+export default new ServiceStore();

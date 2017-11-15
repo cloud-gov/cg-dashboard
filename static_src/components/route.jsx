@@ -33,17 +33,17 @@ export default class Route extends React.Component {
 
     this.state = stateSetter(props);
 
-    this._deleteHandler = this._deleteHandler.bind(this);
-    this._unbindHandler = this._unbindHandler.bind(this);
-    this._bindHandler = this._bindHandler.bind(this);
-    this._editHandler = this._editHandler.bind(this);
-    this._updateHandler = this._updateHandler.bind(this);
-    this._toggleRemove = this._toggleRemove.bind(this);
-    this._onChange = this._onChange.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleUnbind = this.handleUnbind.bind(this);
+    this.handleBind = this.handleBind.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentWillMount() {
-    DomainStore.addChangeListener(this._onChange);
+    DomainStore.addChangeListener(this.handleChange);
   }
 
   componentWillReceiveProps(props) {
@@ -51,41 +51,41 @@ export default class Route extends React.Component {
   }
 
   componentWillUnmount() {
-    DomainStore.removeChangeListener(this._onChange);
+    DomainStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter(this.props));
   }
 
-  _toggleRemove(ev) {
+  handleRemove(ev) {
     ev.preventDefault();
     routeActions.toggleRemove(this.state.route.guid);
   }
 
-  _deleteHandler(ev) {
+  handleDelete(ev) {
     ev.preventDefault();
     routeActions.deleteRoute(this.state.route.guid);
   }
 
-  _editHandler(ev) {
+  handleEdit(ev) {
     ev.preventDefault();
     routeActions.toggleEdit(this.state.route.guid);
   }
 
-  _bindHandler(ev) {
+  handleBind(ev) {
     ev.preventDefault();
     const route = this.state.route;
     routeActions.associateApp(route.guid, this.props.appGuid);
   }
 
-  _unbindHandler(ev) {
+  handleUnbind(ev) {
     ev.preventDefault();
     const route = this.state.route;
     routeActions.unassociateApp(route.guid, route.app_guid);
   }
 
-  _updateHandler(route) {
+  handleUpdate(route) {
     const routeGuid = this.state.route.guid;
     const domainGuid = route.domain_guid;
     const spaceGuid = route.space_guid;
@@ -104,7 +104,7 @@ export default class Route extends React.Component {
         label="Delete route"
         type="link"
         style="warning"
-        clickHandler={this._toggleRemove}
+        clickHandler={this.handleRemove}
       >
         Delete
       </Action>
@@ -118,7 +118,7 @@ export default class Route extends React.Component {
         label="Edit route"
         type="link"
         style="primary"
-        clickHandler={this._editHandler}
+        clickHandler={this.handleEdit}
       >
         Edit
       </Action>
@@ -132,7 +132,7 @@ export default class Route extends React.Component {
         label={unbind ? "Unbind" : "Bind"}
         style={unbind ? "warning" : "primary"}
         type={unbind ? "link" : "button"}
-        clickHandler={unbind ? this._toggleRemove : this._bindHandler}
+        clickHandler={unbind ? this.handleRemove : this.handleBind}
       >
         {unbind ? "Unbind" : "Bind"}
       </Action>
@@ -196,8 +196,8 @@ export default class Route extends React.Component {
           <RouteForm
             route={route}
             domains={this.state.domains}
-            cancelHandler={this._editHandler}
-            submitHandler={this._updateHandler}
+            cancelHandler={this.handleEdit}
+            submitHandler={this.handleUpdate}
           />
         );
       } else if (route.removing) {
@@ -205,8 +205,8 @@ export default class Route extends React.Component {
           ? "unbind"
           : "delete";
         const confirmHandler = RouteStore.isRouteBoundToApp(route)
-          ? this._unbindHandler
-          : this._deleteHandler;
+          ? this.handleUnbind
+          : this.handleDelete;
         content = (
           <div>
             <ConfirmationBox
@@ -214,7 +214,7 @@ export default class Route extends React.Component {
               message={this.confirmationMsg}
               confirmationText={`Yes, ${currentAction}`}
               confirmHandler={confirmHandler}
-              cancelHandler={this._toggleRemove}
+              cancelHandler={this.handleRemove}
             />
           </div>
         );

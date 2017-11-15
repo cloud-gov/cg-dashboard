@@ -55,25 +55,25 @@ export default class ActivityLog extends React.Component {
       maxItems: props.maxItems
     });
 
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleMore = this.handleMore.bind(this);
   }
 
   componentDidMount() {
-    ActivityStore.addChangeListener(this._onChange);
-    DomainStore.addChangeListener(this._onChange);
-    RouteStore.addChangeListener(this._onChange);
-    ServiceInstanceStore.addChangeListener(this._onChange);
+    ActivityStore.addChangeListener(this.handleChange);
+    DomainStore.addChangeListener(this.handleChange);
+    RouteStore.addChangeListener(this.handleChange);
+    ServiceInstanceStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    ActivityStore.removeChangeListener(this._onChange);
-    DomainStore.removeChangeListener(this._onChange);
-    RouteStore.removeChangeListener(this._onChange);
-    ServiceInstanceStore.removeChangeListener(this._onChange);
+    ActivityStore.removeChangeListener(this.handleChange);
+    DomainStore.removeChangeListener(this.handleChange);
+    RouteStore.removeChangeListener(this.handleChange);
+    ServiceInstanceStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter(this.props));
   }
 

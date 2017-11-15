@@ -11,47 +11,47 @@ import { userActionTypes, errorActionTypes } from "../constants.js";
 export class UserStore extends BaseStore {
   constructor() {
     super();
-    this.subscribe(() => this._registerToActions.bind(this));
-    this._data = new Immutable.List();
-    this._currentViewedType = "space_users";
-    this._currentUserGuid = null;
-    this._currentUserIsAdmin = false;
-    this._error = null;
-    this._saving = false;
-    this._inviteDisabled = false;
-    this._usersSelectorDisabled = false;
-    this._userListNotification = {};
-    this._loading = {};
+    this.subscribe(() => this.handleAction.bind(this));
+    this.storeData = new Immutable.List();
+    this.currentViewedType = "space_users";
+    this.currentUserGUID = null;
+    this.isCurrentUserAdmin = false;
+    this.error = null;
+    this.saving = false;
+    this.inviteDisabled = false;
+    this.usersSelectorDisabled = false;
+    this.userListNotification = {};
+    this.loadingRequests = {};
   }
 
   get loading() {
     return (
-      !this._loading ||
-      this._loading.currentUser ||
-      this._loading.entityUsers ||
-      this._loading.entityRoles
+      !this.loadingRequests ||
+      this.loadingRequests.currentUser ||
+      this.loadingRequests.entityUsers ||
+      this.loadingRequests.entityRoles
     );
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case userActionTypes.ORG_USERS_FETCH: {
-        this._loading.entityUsers = true;
+        this.loadingRequests.entityUsers = true;
         break;
       }
 
       case userActionTypes.ORG_USER_ROLES_FETCH: {
-        this._loading.entityRoles = true;
+        this.loadingRequests.entityRoles = true;
         break;
       }
 
       case userActionTypes.SPACE_USER_ROLES_FETCH: {
-        this._loading.entityRoles = true;
+        this.loadingRequests.entityRoles = true;
         break;
       }
 
       case userActionTypes.ORG_USER_ROLES_RECEIVED: {
-        this._loading.entityRoles = false;
+        this.loadingRequests.entityRoles = false;
         this.associateUsersAndRolesToEntity(
           action.orgUserRoles,
           action.orgGuid,
@@ -64,8 +64,8 @@ export class UserStore extends BaseStore {
       case userActionTypes.SPACE_USER_ROLES_RECEIVED: {
         // There is no SPACE_USERS_RECEIVED for now unlike orgs,
         // so we will set both loading entity rules to false.
-        this._loading.entityUsers = false;
-        this._loading.entityRoles = false;
+        this.loadingRequests.entityUsers = false;
+        this.loadingRequests.entityRoles = false;
 
         const { users, spaceGuid } = action;
         this.associateUsersAndRolesToEntity(users, spaceGuid, "space_roles");
@@ -74,26 +74,23 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_INVITE_TRIGGER: {
-        this._inviteDisabled = true;
-        this._userListNotificationError = null;
+        this.inviteDisabled = true;
+        this.userListNotificationError = null;
         this.emitChange();
         break;
       }
 
       case userActionTypes.USER_ORG_ASSOCIATE: {
-        this._inviteInputActive = false;
         this.emitChange();
         break;
       }
 
       case userActionTypes.USER_SPACE_ASSOCIATE: {
-        this._inviteInputActive = false;
         this.emitChange();
         break;
       }
 
       case userActionTypes.USER_ORG_ASSOCIATED: {
-        this._inviteInputActive = true;
         const user = Object.assign(
           {},
           {
@@ -111,7 +108,6 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_SPACE_ASSOCIATED: {
-        this._inviteInputActive = true;
         const user = Object.assign({}, action.user, {
           guid: action.userGuid
         });
@@ -125,13 +121,13 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_ADD: {
-        this._saving = true;
+        this.saving = true;
         this.emitChange();
         break;
       }
 
       case userActionTypes.USER_ROLES_ADDED: {
-        this._saving = false;
+        this.saving = false;
         const user = this.get(action.userGuid);
         this.addUserRole(
           user,
@@ -144,7 +140,7 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_DELETE: {
-        this._saving = true;
+        this.saving = true;
         const user = this.get(action.userGuid);
         if (user) {
           const savingUser = Object.assign({}, user, { saving: true });
@@ -155,7 +151,7 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_ROLES_DELETED: {
-        this._saving = false;
+        this.saving = false;
         const user = this.get(action.userGuid);
         this.deleteUserRole(
           user,
@@ -168,7 +164,7 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.ORG_USERS_RECEIVED: {
-        this._loading.entityUsers = false;
+        this.loadingRequests.entityUsers = false;
         const orgGuid = action.orgGuid;
         const orgUsers = action.users;
 
@@ -178,7 +174,7 @@ export class UserStore extends BaseStore {
 
         this.mergeMany("guid", updatedUsers, changed => {
           if (changed) {
-            this._error = null;
+            this.error = null;
           }
           this.emitChange();
         });
@@ -209,23 +205,23 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.ERROR_REMOVE_USER: {
-        this._error = action.error;
+        this.error = action.error;
         this.emitChange();
         break;
       }
 
       case userActionTypes.USER_INVITE_ERROR: {
-        this._userListNotificationError = Object.assign({}, action.err, {
+        this.userListNotificationError = Object.assign({}, action.err, {
           contextualMessage: action.contextualMessage
         });
-        this._usersSelectorDisabled = false;
+        this.usersSelectorDisabled = false;
         this.emitChange();
         break;
       }
 
       case userActionTypes.USER_ROLE_CHANGE_ERROR: {
-        this._saving = false;
-        this._error = Object.assign({}, action.error, {
+        this.saving = false;
+        this.error = Object.assign({}, action.error, {
           description: action.message
         });
 
@@ -234,17 +230,17 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.USER_LIST_NOTICE_CREATED: {
-        this._inviteDisabled = false;
+        this.inviteDisabled = false;
         const noticeType = action.noticeType;
         const description = action.description;
         const notice = Object.assign({}, { noticeType }, { description });
-        this._userListNotification = notice;
+        this.userListNotification = notice;
         this.emitChange();
         break;
       }
 
       case userActionTypes.USER_LIST_NOTICE_DISMISSED: {
-        this._userListNotification = {};
+        this.userListNotification = {};
         this.emitChange();
         break;
       }
@@ -253,7 +249,7 @@ export class UserStore extends BaseStore {
         const guid = action.currentUser.user_id;
         const userInfo = Object.assign({}, action.currentUser, { guid });
         this.merge("guid", userInfo, () => {
-          this._currentUserGuid = guid;
+          this.currentUserGUID = guid;
 
           // Always emit change
           this.emitChange();
@@ -263,7 +259,7 @@ export class UserStore extends BaseStore {
 
       case userActionTypes.CURRENT_UAA_INFO_RECEIVED: {
         const uaaInfo = action.currentUaaInfo;
-        this._currentUserIsAdmin = false;
+        this.isCurrentUserAdmin = false;
 
         if (uaaInfo.groups) {
           // Check for UAA permissions here.
@@ -271,7 +267,7 @@ export class UserStore extends BaseStore {
           // with a display key that equals 'cloud_controller.admin',
           // then return is false.
           // If there is a proper response, then the return is true.
-          this._currentUserIsAdmin = !!uaaInfo.groups.find(
+          this.isCurrentUserAdmin = !!uaaInfo.groups.find(
             group => group.display === "cloud_controller.admin"
           );
         }
@@ -297,31 +293,31 @@ export class UserStore extends BaseStore {
       }
 
       case userActionTypes.CURRENT_USER_FETCH: {
-        this._loading.currentUser = true;
+        this.loadingRequests.currentUser = true;
         this.emitChange();
         break;
       }
 
       case userActionTypes.CURRENT_USER_RECEIVED: {
-        this._loading.currentUser = false;
+        this.loadingRequests.currentUser = false;
         this.emitChange();
         break;
       }
 
       case userActionTypes.USER_CHANGE_VIEWED_TYPE: {
-        if (this._currentViewedType !== action.userType) {
-          this._currentViewedType = action.userType;
+        if (this.currentViewedType !== action.userType) {
+          this.currentViewedType = action.userType;
           this.emitChange();
         }
         break;
       }
 
       case errorActionTypes.CLEAR: {
-        this._error = null;
-        this._saving = false;
-        this._userListNotification = {};
-        this._userListNotificationError = null;
-        this._loading = {};
+        this.error = null;
+        this.saving = false;
+        this.userListNotification = {};
+        this.userListNotificationError = null;
+        this.loadingRequests = {};
         this.emitChange();
         break;
       }
@@ -379,7 +375,7 @@ export class UserStore extends BaseStore {
    * Get all users in a certain space
    */
   getAllInSpace(spaceGuid) {
-    const usersInSpace = this._data.filter(
+    const usersInSpace = this.storeData.filter(
       user =>
         !!user.get("space_roles") && !!user.get("space_roles").get(spaceGuid)
     );
@@ -387,7 +383,7 @@ export class UserStore extends BaseStore {
   }
 
   getAllInOrg(orgGuid) {
-    const usersInOrg = this._data.filter(
+    const usersInOrg = this.storeData.filter(
       user => !!user.get("roles") && !!user.get("roles").get(orgGuid)
     );
 
@@ -395,17 +391,17 @@ export class UserStore extends BaseStore {
   }
 
   getAllInOrgAndNotSpace() {
-    const usersInOrg = this._data.toJS().filter(user => !user.space_roles);
+    const usersInOrg = this.storeData.toJS().filter(user => !user.space_roles);
 
     return usersInOrg;
   }
 
   getError() {
-    return this._error;
+    return this.error;
   }
 
   get isLoadingCurrentUser() {
-    return this._loading.currentUser === true;
+    return this.loadingRequests.currentUser === true;
   }
 
   getDefaultUserInfo(user) {
@@ -460,39 +456,21 @@ export class UserStore extends BaseStore {
     return !!roles.find(role => wrappedRoles.includes(role));
   }
 
-  usersSelectorDisabled() {
-    return this._usersSelectorDisabled;
-  }
-
-  inviteDisabled() {
-    return this._inviteDisabled;
-  }
-
   isAdmin() {
-    return this._currentUserIsAdmin;
-  }
-
-  getUserListNotification() {
-    return this._userListNotification;
-  }
-
-  getUserListNotificationError() {
-    return this._userListNotificationError;
+    return this.isCurrentUserAdmin;
   }
 
   get isSaving() {
-    return this._saving;
+    return this.saving;
   }
 
   get currentUser() {
-    return this.get(this._currentUserGuid);
+    return this.get(this.currentUserGUID);
   }
 
   get currentlyViewedType() {
-    return this._currentViewedType;
+    return this.currentViewedType;
   }
 }
 
-const _UserStore = new UserStore();
-
-export default _UserStore;
+export default new UserStore();

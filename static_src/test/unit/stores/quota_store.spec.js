@@ -11,7 +11,7 @@ describe("QuotaStore", function() {
   var sandbox;
 
   beforeEach(() => {
-    QuotaStore._data = Immutable.List();
+    QuotaStore.storeData = Immutable.List();
     sandbox = sinon.sandbox.create();
   });
 

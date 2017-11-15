@@ -29,23 +29,23 @@ LoginError.prototype.constructor = Error;
 export class LoginStore extends BaseStore {
   constructor() {
     super();
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.subscribe(() => this.handleAction.bind(this));
     // TODO this should probably be false, but we need to account for the
     // initial state (not loaded/unknown).
-    this._isAuthenticated = true;
-    this._error = null;
+    this.isAuthenticated = true;
+    this.error = null;
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case loginActionTypes.FETCH_STATUS:
         // Reset any error
-        this._error = null;
+        this.error = null;
         this.emitChange();
         break;
 
       case loginActionTypes.RECEIVED_STATUS:
-        this._isAuthenticated = action.authStatus.status === "authorized";
+        this.isAuthenticated = action.authStatus.status === "authorized";
         this.emitChange();
         break;
 
@@ -58,7 +58,7 @@ export class LoginStore extends BaseStore {
           error = new LoginError(action.err);
         }
 
-        this._error = error;
+        this.error = error;
         break;
       }
 
@@ -67,15 +67,9 @@ export class LoginStore extends BaseStore {
     }
   }
 
-  get error() {
-    return this._error;
-  }
-
   isLoggedIn() {
-    return !!this._isAuthenticated;
+    return !!this.isAuthenticated;
   }
 }
 
-const _LoginStore = new LoginStore();
-
-export default _LoginStore;
+export default new LoginStore();

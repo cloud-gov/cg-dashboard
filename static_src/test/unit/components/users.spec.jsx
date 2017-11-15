@@ -28,12 +28,12 @@ describe("<Users />", () => {
 
   let users;
 
-  SpaceStore._currentSpaceGuid = spaceGuid;
-  UserStore._currentUserGuid = userGuid;
+  SpaceStore.currentSpaceGUID = spaceGuid;
+  UserStore.currentUserGUID = userGuid;
 
   describe("with a user", () => {
     beforeEach(() => {
-      UserStore._data = Immutable.fromJS([user]);
+      UserStore.storeData = Immutable.fromJS([user]);
       users = shallow(<Users />);
     });
 
@@ -86,7 +86,7 @@ describe("<Users />", () => {
         });
 
         beforeEach(() => {
-          UserStore._data = Immutable.fromJS([spaceUser]);
+          UserStore.storeData = Immutable.fromJS([spaceUser]);
           users = shallow(<Users />);
           users.setState({ currentType: "org_users" });
           const stub = sinon.stub(UserStore, "hasRole");
@@ -161,7 +161,7 @@ describe("<Users />", () => {
         });
 
         beforeEach(() => {
-          UserStore._data = Immutable.fromJS([spaceUser]);
+          UserStore.storeData = Immutable.fromJS([spaceUser]);
           users = shallow(<Users />);
           const stub = sinon.stub(UserStore, "hasRole");
           stub
@@ -199,7 +199,7 @@ describe("<Users />", () => {
         });
 
         beforeEach(() => {
-          UserStore._data = Immutable.fromJS([spaceUser]);
+          UserStore.storeData = Immutable.fromJS([spaceUser]);
           users = shallow(<Users />);
           const stub = sinon.stub(UserStore, "hasRole");
           stub.withArgs(userGuid, sinon.match.any, "org_manager").returns(true);

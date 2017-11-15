@@ -37,13 +37,13 @@ export default class RouteForm extends React.Component {
       host: props.route.host,
       path: props.route.path
     };
-    this._onChange = this._onChange.bind(this);
-    this._onSubmit = this._onSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   // TODO: If there are multiple route forms on the page, does it matter if
   // they all have elements with the same names? IDs are unique
-  _onChange(event) {
+  handleChange(event) {
     event.preventDefault();
     const newValue = {};
     newValue[event.target.name] = event.target.value;
@@ -57,7 +57,7 @@ export default class RouteForm extends React.Component {
     this.setState(newValue);
   }
 
-  _onSubmit(event) {
+  handleSubmit(event) {
     event.preventDefault();
     const payload = {};
     Object.keys(this.state).forEach(key => {
@@ -113,7 +113,10 @@ export default class RouteForm extends React.Component {
     }
 
     return (
-      <form className="route-form panel-form-replace" onSubmit={this._onSubmit}>
+      <form
+        className="route-form panel-form-replace"
+        onSubmit={this.handleSubmit}
+      >
         {limit}
         <fieldset>
           <div className="route-fields">
@@ -124,7 +127,7 @@ export default class RouteForm extends React.Component {
                 id={`${route.guid}-host`}
                 name="host"
                 value={this.state.host}
-                onChange={this._onChange}
+                onChange={this.handleChange}
               />
             </div>
             <div className="route-field-domain">
@@ -132,7 +135,7 @@ export default class RouteForm extends React.Component {
               <select
                 id={`${route.guid}-domain`}
                 name="domain_guid"
-                onChange={this._onChange}
+                onChange={this.handleChange}
                 value={this.props.route.domain_guid}
               >
                 <option key="none">---</option>
@@ -152,7 +155,7 @@ export default class RouteForm extends React.Component {
                 id={`${route.guid}-path`}
                 name="path"
                 value={this.state.path}
-                onChange={this._onChange}
+                onChange={this.handleChange}
               />
             </div>
           </div>
@@ -189,7 +192,7 @@ export default class RouteForm extends React.Component {
               Cancel
             </Action>
             <Action
-              clickHandler={this._onSubmit}
+              clickHandler={this.handleSubmit}
               label={this.submitActionText}
               style="finish"
               disabled={!this.hasChanged}

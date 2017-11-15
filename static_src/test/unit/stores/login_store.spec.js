@@ -62,7 +62,7 @@ describe("LoginStore", () => {
 
   describe("FETCH_STATUS", function() {
     beforeEach(function() {
-      LoginStore._error = new Error("error");
+      LoginStore.error = new Error("error");
 
       AppDispatcher.handleViewAction({
         type: loginActionTypes.FETCH_STATUS
@@ -70,7 +70,6 @@ describe("LoginStore", () => {
     });
 
     it("clears errors", function() {
-      expect(LoginStore._error).toBe(null);
       expect(LoginStore.error).toBe(null);
     });
   });
@@ -79,7 +78,7 @@ describe("LoginStore", () => {
     let err;
     beforeEach(function() {
       err = new LoginError("error");
-      LoginStore._isAuthenticated = "authorized";
+      LoginStore.isAuthenticated = "authorized";
 
       AppDispatcher.handleViewAction({
         type: loginActionTypes.ERROR_STATUS,
@@ -88,13 +87,12 @@ describe("LoginStore", () => {
     });
 
     it("sets error", function() {
-      expect(LoginStore._error).toBe(err);
       expect(LoginStore.error).toBe(err);
     });
 
     it("does not affect isLoggedIn", function() {
       expect(LoginStore.isLoggedIn()).toBe(true);
-      expect(LoginStore._isAuthenticated).toBe("authorized");
+      expect(LoginStore.isAuthenticated).toBe("authorized");
     });
   });
 

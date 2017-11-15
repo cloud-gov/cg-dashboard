@@ -70,7 +70,7 @@ export function start(...args) {
   });
 
   // Default callback
-  function __cb(err) {
+  function defaultCallback(err) {
     if (err) {
       throw err;
     }
@@ -84,7 +84,7 @@ export function start(...args) {
     /* eslint-enable no-console */
   }
 
-  server.start(cb || __cb);
+  server.start(cb || defaultCallback);
 
   return server;
 }

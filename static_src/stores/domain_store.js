@@ -12,11 +12,11 @@ import { domainActionTypes } from "../constants.js";
 class DomainStore extends BaseStore {
   constructor() {
     super();
-    this._data = new Immutable.List();
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.storeData = new Immutable.List();
+    this.subscribe(() => this.handleAction.bind(this));
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case domainActionTypes.DOMAIN_FETCH: {
         cfApi.fetchPrivateDomain(action.domainGuid);
@@ -36,6 +36,4 @@ class DomainStore extends BaseStore {
   }
 }
 
-const _DomainStore = new DomainStore();
-
-export default _DomainStore;
+export default new DomainStore();

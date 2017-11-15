@@ -43,7 +43,7 @@ describe("cfApi", function() {
   };
 
   beforeEach(() => {
-    OrgStore._data = new Immutable.List();
+    OrgStore.storeData = new Immutable.List();
     sandbox = sinon.sandbox.create();
     moxios.install();
   });

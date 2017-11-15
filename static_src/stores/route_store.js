@@ -14,10 +14,10 @@ import { routeActionTypes } from "../constants.js";
 class RouteStore extends BaseStore {
   constructor() {
     super();
-    this._data = new Immutable.List();
+    this.storeData = new Immutable.List();
     this.showCreateRouteForm = false;
     this.error = null;
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.subscribe(() => this.handleAction.bind(this));
   }
 
   getAllForSpace(spaceGuid) {
@@ -61,7 +61,7 @@ class RouteStore extends BaseStore {
     return url;
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case routeActionTypes.ROUTES_RECEIVED: {
         const routes = action.routes;
@@ -261,6 +261,4 @@ class RouteStore extends BaseStore {
   }
 }
 
-const _RouteStore = new RouteStore();
-
-export default _RouteStore;
+export default new RouteStore();

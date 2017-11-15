@@ -17,23 +17,13 @@ describe("BaseStore", () => {
   });
 
   describe("constructor()", () => {
-    it("should set _data to empty list", () => {
-      expect(store._data).toEqual(Immutable.List());
+    it("should set storeData to empty list", () => {
+      expect(store.storeData).toEqual(Immutable.List());
     });
   });
 
   describe("subscribe()", function() {
     it("it should set the dispatch token to an app dispatcher register", function() {});
-  });
-
-  describe("get dispatchToken()", function() {
-    it("should return the hidden dispatch token", function() {
-      var expected = {};
-
-      store._dispatchToken = expected;
-
-      expect(store.dispatchToken).toEqual(expected);
-    });
   });
 
   describe("emitChange()", function() {
@@ -140,7 +130,7 @@ describe("BaseStore", () => {
 
     it("should convert any pushed data to immutable types", function() {
       store.push({ guid: "pushtest" });
-      let pushed = store._data.get(0);
+      let pushed = store.storeData.get(0);
 
       expect(pushed.asImmutable).toBeDefined();
     });
@@ -148,7 +138,7 @@ describe("BaseStore", () => {
 
   describe("dataHasChanged()", function() {
     describe("passed regular JS objects", function() {
-      it("should return true if new data is different from _data", function() {
+      it("should return true if new data is different from storeData", function() {
         let oldData = { guid: "pushtest" };
         let newData = { guid: "pushtestyetagain" };
 
@@ -157,7 +147,7 @@ describe("BaseStore", () => {
         expect(store.dataHasChanged(newData)).toBe(true);
       });
 
-      it("should return false if the data is the same as _data", function() {
+      it("should return false if the data is the same as storeData", function() {
         let oldData = { guid: "pushtest" };
         let newData = Immutable.fromJS([oldData]);
 
@@ -168,7 +158,7 @@ describe("BaseStore", () => {
     });
 
     describe("passed ImmutableJS objects", function() {
-      it("should return true if new data is different from _data", function() {
+      it("should return true if new data is different from storeData", function() {
         let oldData = { guid: "pushtest" };
         let newData = { guid: "pushtestyetagain" };
 
@@ -183,7 +173,7 @@ describe("BaseStore", () => {
     it("should remove items that match the guid and call .emitChange()", function() {
       var spy = sandbox.spy(store, "emitChange");
       var guid = "deleteFakeGuid";
-      store._data = Immutable.fromJS([{ guid }]);
+      store.storeData = Immutable.fromJS([{ guid }]);
 
       expect(store.getAll().length).toEqual(1);
 
@@ -196,7 +186,7 @@ describe("BaseStore", () => {
     it("should do nothing if the guid does not match", function() {
       var spy = sandbox.spy(store, "emitChange");
       var guid = "deleteFakeGuid";
-      store._data = Immutable.fromJS([{ guid }]);
+      store.storeData = Immutable.fromJS([{ guid }]);
 
       expect(store.getAll().length).toEqual(1);
 

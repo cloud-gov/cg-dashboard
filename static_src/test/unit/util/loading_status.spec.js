@@ -11,11 +11,11 @@ describe("LoadingStatus", function() {
     });
 
     it("is not initialized", function() {
-      expect(loadingStatus._initialized).toBe(false);
+      expect(loadingStatus.isInitialized).toBe(false);
     });
 
     it("has zero requests in flight", function() {
-      expect(loadingStatus._requests).toBe(0);
+      expect(loadingStatus.requestCount).toBe(0);
     });
 
     it("is not loaded", function() {
@@ -44,11 +44,11 @@ describe("LoadingStatus", function() {
     });
 
     it("is initialized", function() {
-      expect(loadingStatus._initialized).toBe(true);
+      expect(loadingStatus.isInitialized).toBe(true);
     });
 
     it("has two requests in flight", function() {
-      expect(loadingStatus._requests).toBe(2);
+      expect(loadingStatus.requestCount).toBe(2);
     });
 
     it("is not loaded after the first promise", function(done) {

@@ -26,7 +26,7 @@ class EnvStore extends BaseStore {
     super();
     this.envRequests = {};
     this.updateError = {};
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.subscribe(() => this.handleAction.bind(this));
   }
 
   getEnv(appGuid) {
@@ -49,7 +49,7 @@ class EnvStore extends BaseStore {
     };
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case envActionTypes.ENV_FETCH_ENV_REQUEST: {
         const { appGuid } = action;

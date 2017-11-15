@@ -42,6 +42,4 @@ class AppDispatcher extends Dispatcher {
   }
 }
 
-const _AppDispatcher = new AppDispatcher();
-
-export default _AppDispatcher;
+export default new AppDispatcher();
