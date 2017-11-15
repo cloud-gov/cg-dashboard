@@ -115,6 +115,7 @@
     "eslint-plugin-jasmine": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.1.0",
     "eslint-plugin-react": "^6.0.0",
+    "hapi": "https://registry.npmjs.org/hapi/-/hapi-14.2.0.tgz",
     "jasmine": "^2.5.3",
     "jasmine-enzyme": "^2.1.0",
     "jasmine-sinon": "^0.4.0",
