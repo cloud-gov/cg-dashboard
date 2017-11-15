@@ -124,31 +124,42 @@ export default class OrgContainer extends React.Component {
     }, []);
   }
 
+  renderSpaces() {
+    const { currentUser, currentOrgGuid, spaces } = this.state;
+
+    if (!spaces.length) {
+      return this.emptyState;
+    }
+
+    return spaces.map(s => (
+      <SpaceQuicklook
+        key={s.guid}
+        space={s}
+        orgGuid={currentOrgGuid}
+        user={currentUser}
+        showAppDetail
+      />
+    ));
+  }
+
   render() {
-    const { org } = this.state;
-    const state = this.state;
-    const loading = <Loading text="Loading organization" />;
-    let content = <div>{loading}</div>;
+    const { org, spaces, loading, empty } = this.state;
+
+    let content = (
+      <div>
+        <Loading text="Loading organization" />
+      </div>
+    );
+
     const title = (
       <span>
         <EntityIcon entity="org" iconSize="large" /> {org.name}
       </span>
     );
-    const spaces = !state.spaces.length
-      ? this.emptyState
-      : state.spaces.map(space => (
-          <SpaceQuicklook
-            key={space.guid}
-            space={space}
-            orgGuid={state.currentOrgGuid}
-            user={state.currentUser}
-            showAppDetail
-          />
-        ));
 
-    if (state.empty) {
+    if (empty) {
       content = <h4 className="test-none_message">No organizations</h4>;
-    } else if (!state.loading && org) {
+    } else if (!loading && org) {
       const allApps = this.allApps();
       const allServices = this.allServices();
 
@@ -168,7 +179,7 @@ export default class OrgContainer extends React.Component {
               </div>
               <div className="grid-width-6">
                 <div className="count_status_container">
-                  <SpaceCountStatus spaces={state.spaces} />
+                  <SpaceCountStatus spaces={spaces} />
                   <AppCountStatus
                     apps={allApps}
                     appCount={allApps && allApps.length}
@@ -180,7 +191,7 @@ export default class OrgContainer extends React.Component {
                 </div>
               </div>
             </div>
-            {spaces}
+            {this.renderSpaces()}
           </Panel>
 
           <Panel title="Organization users">
