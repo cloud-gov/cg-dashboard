@@ -38,24 +38,6 @@ var initSettingsTests = []initSettingsTest{
 		wantNilError: true,
 	},
 	{
-		testName: "Basic Valid Legacy Session Key CF Settings",
-		envVars: map[string]string{
-			helpers.ClientIDEnvVar:         "ID",
-			helpers.ClientSecretEnvVar:     "Secret",
-			helpers.HostnameEnvVar:         "hostname",
-			helpers.LoginURLEnvVar:         "loginurl",
-			helpers.UAAURLEnvVar:           "uaaurl",
-			helpers.APIURLEnvVar:           "apiurl",
-			helpers.LogURLEnvVar:           "logurl",
-			helpers.LegacySessionKeyEnvVar: "lalala",
-			helpers.SMTPFromEnvVar:         "blah@blah.com",
-			helpers.SMTPHostEnvVar:         "localhost",
-			helpers.SecureCookiesEnvVar:    "1",
-			helpers.TICSecretEnvVar:        "tic",
-		},
-		wantNilError: true,
-	},
-	{
 		testName: "Basic Valid Local CF Settings",
 		envVars: map[string]string{
 			helpers.ClientIDEnvVar:              "ID",

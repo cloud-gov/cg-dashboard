@@ -6,15 +6,11 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"time"
 
-	"github.com/boj/redistore"
 	"github.com/cloudfoundry-community/go-cfenv"
-	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/sessions"
 	"github.com/govau/cf-common/env"
 	"golang.org/x/net/context"
@@ -149,138 +145,34 @@ func (s *Settings) InitSettings(envVars *env.VarSet, app *cfenv.App) (retErr err
 	var err error
 
 	// Initialize CSRF key
-	// First, try the new env variable
-	s.CSRFKey, err = hex.DecodeString(envVars.String(CSRFKeyEnvVar, ""))
+	s.CSRFKey, err = hex.DecodeString(envVars.MustString(CSRFKeyEnvVar))
 	if err != nil {
 		return fmt.Errorf("could not decode hex env var %q: %v", CSRFKeyEnvVar, err)
 	}
 
-	// Fall back to legacy key variable and format - consider printing deprecation warning
-	if len(s.CSRFKey) == 0 {
-		s.CSRFKey = []byte(envVars.String(LegacySessionKeyEnvVar, ""))
-		if len(s.CSRFKey) != 0 {
-			log.Println("Warning: Use of deprecated SESSION_KEY. Please switch to CSRF_KEY (note new value is hex-encoded, see docs).")
-		}
-	}
-
-	// Return error if not found
-	if len(s.CSRFKey) == 0 {
-		return env.NewVarNotFoundErr(CSRFKeyEnvVar)
-	}
-
 	// Initialize Sessions.
-	// First, try the new env variable
-	sessionAuthenticationKey, err := hex.DecodeString(envVars.String(SessionAuthenticationEnvVar, ""))
+	sessionAuthenticationKey, err := hex.DecodeString(envVars.MustString(SessionAuthenticationEnvVar))
 	if err != nil {
 		return fmt.Errorf("could not decode hex env var %q: %v", SessionAuthenticationEnvVar, err)
 	}
 
-	// Fall back to legacy key variable and format
-	if len(sessionAuthenticationKey) == 0 {
-		sessionAuthenticationKey = []byte(envVars.String(LegacySessionKeyEnvVar, ""))
-		if len(sessionAuthenticationKey) != 0 {
-			log.Println("Warning: Use of deprecated SESSION_KEY. Please switch to SESSION_AUTHENTICATION_KEY (note new value is hex-encoded, see docs).")
-		}
+	// Initialize cookiestore
+	sessionEncryptionKey, err := hex.DecodeString(envVars.MustString(SessionEncryptionEnvVar))
+	if err != nil {
+		return err
 	}
+	store := sessions.NewCookieStore(sessionAuthenticationKey, sessionEncryptionKey)
+	store.Options.HttpOnly = true
+	store.Options.Secure = s.SecureCookies
 
-	// Return error if not found
-	if len(sessionAuthenticationKey) == 0 {
-		return env.NewVarNotFoundErr(SessionAuthenticationEnvVar)
-	}
+	s.Sessions = store
+	s.SessionBackend = "cookiestore"
+	s.SessionBackendHealthCheck = func() bool { return true }
 
-	switch envVars.String(SessionBackendEnvVar, "") {
-	case "cookiestore":
-		sessionEncryptionKey, err := hex.DecodeString(envVars.MustString(SessionEncryptionEnvVar))
-		if err != nil {
-			return err
-		}
-		store := sessions.NewCookieStore(sessionAuthenticationKey, sessionEncryptionKey)
-		store.Options.HttpOnly = true
-		store.Options.Secure = s.SecureCookies
-
-		s.Sessions = store
-		s.SessionBackend = "cookiestore"
-		s.SessionBackendHealthCheck = func() bool { return true }
-
-		// When using cookiestore, we need our cookies to be under 4096 bytes, or they cannot
-		// be stored. Opaque UAA tokens gets us small enough.
-		// See: https://godoc.org/github.com/gorilla/securecookie#SecureCookie.MaxLength
-		s.OpaqueUAATokens = true
-	case "redis":
-		address, password, err := getRedisSettings(app)
-		if err != nil {
-			return err
-		}
-		// Create a common redis pool of connections.
-		redisPool := &redis.Pool{
-			MaxIdle:     10,
-			IdleTimeout: 240 * time.Second,
-			TestOnBorrow: func(c redis.Conn, t time.Time) error {
-				_, pingErr := c.Do("PING")
-				return pingErr
-			},
-			Dial: func() (redis.Conn, error) {
-				// We need to control how long connections are attempted.
-				// Currently will limit how long redis should respond back to
-				// 10 seconds. Any time less than the overall connection timeout of 60
-				// seconds is good.
-				c, dialErr := redis.Dial("tcp", address,
-					redis.DialConnectTimeout(10*time.Second),
-					redis.DialWriteTimeout(10*time.Second),
-					redis.DialReadTimeout(10*time.Second))
-				if dialErr != nil {
-					return nil, dialErr
-				}
-				if password != "" {
-					if _, authErr := c.Do("AUTH", password); err != nil {
-						c.Close()
-						return nil, authErr
-					}
-				}
-				return c, nil
-			},
-		}
-		// create our redis pool.
-		store, err := redistore.NewRediStoreWithPool(redisPool, sessionAuthenticationKey)
-		if err != nil {
-			return err
-		}
-		store.SetMaxLength(4096 * 4)
-		store.Options = &sessions.Options{
-			HttpOnly: true,
-			MaxAge:   expirationConstant,
-			Path:     "/",
-			Secure:   s.SecureCookies,
-		}
-		s.Sessions = store
-		s.SessionBackend = "redis"
-
-		// Use health check function where we do a PING.
-		s.SessionBackendHealthCheck = func() bool {
-			c := redisPool.Get()
-			defer c.Close()
-			_, err := c.Do("PING")
-			if err != nil {
-				log.Printf("{\"health-check-error\": \"%s\"}", err)
-				return false
-			}
-			return true
-		}
-	default:
-		store := sessions.NewFilesystemStore("", sessionAuthenticationKey)
-		store.MaxLength(4096 * 4)
-		store.Options = &sessions.Options{
-			HttpOnly: true,
-			// TODO remove this; work-around for
-			// https://github.com/gorilla/sessions/issues/96
-			MaxAge: expirationConstant,
-			Path:   "/",
-			Secure: s.SecureCookies,
-		}
-		s.Sessions = store
-		s.SessionBackend = "file"
-		s.SessionBackendHealthCheck = func() bool { return true }
-	}
+	// When using cookiestore, we need our cookies to be under 4096 bytes, or they cannot
+	// be stored. Opaque UAA tokens gets us small enough.
+	// See: https://godoc.org/github.com/gorilla/securecookie#SecureCookie.MaxLength
+	s.OpaqueUAATokens = true
 
 	// Want to save a struct into the session. Have to register it.
 	gob.Register(oauth2.Token{})
