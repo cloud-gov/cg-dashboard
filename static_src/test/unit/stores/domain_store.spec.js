@@ -12,7 +12,7 @@ describe("DomainStore", function() {
   var sandbox;
 
   beforeEach(() => {
-    DomainStore._data = Immutable.List();
+    DomainStore.storeData = Immutable.List();
     sandbox = sinon.sandbox.create();
   });
 

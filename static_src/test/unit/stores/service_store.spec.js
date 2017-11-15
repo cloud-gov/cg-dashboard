@@ -39,7 +39,7 @@ describe("ServiceStore", function() {
       ];
 
       const testRes = expected;
-      ServiceStore._data = Immutable.fromJS([{ guid: sharedGuid }]);
+      ServiceStore.storeData = Immutable.fromJS([{ guid: sharedGuid }]);
       sandbox.spy(ServiceStore, "emitChange");
 
       AppDispatcher.handleViewAction({

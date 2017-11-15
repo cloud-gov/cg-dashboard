@@ -82,22 +82,22 @@ export default class ServiceInstancePanel extends React.Component {
     super(props);
     this.state = stateSetter();
 
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    ServiceInstanceStore.addChangeListener(this._onChange);
-    ServiceBindingStore.addChangeListener(this._onChange);
-    ServicePlanStore.addChangeListener(this._onChange);
+    ServiceInstanceStore.addChangeListener(this.handleChange);
+    ServiceBindingStore.addChangeListener(this.handleChange);
+    ServicePlanStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    ServiceInstanceStore.removeChangeListener(this._onChange);
-    ServiceBindingStore.removeChangeListener(this._onChange);
-    ServicePlanStore.removeChangeListener(this._onChange);
+    ServiceInstanceStore.removeChangeListener(this.handleChange);
+    ServiceBindingStore.removeChangeListener(this.handleChange);
+    ServicePlanStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
   }
 

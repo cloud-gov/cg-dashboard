@@ -18,16 +18,16 @@ describe("ServiceInstanceStore", function() {
 
   const addServiceInstanceToStore = (guid, store) => {
     const instance = { guid: guid, url: "/" + guid };
-    store._data = Immutable.fromJS([instance]);
+    store.storeData = Immutable.fromJS([instance]);
 
     return instance;
   };
 
   beforeEach(() => {
-    ServiceInstanceStore._data = Immutable.List();
-    ServiceInstanceStore._createError = null;
-    ServiceInstanceStore._createLoading = false;
-    ServiceInstanceStore._updating = false;
+    ServiceInstanceStore.storeData = Immutable.List();
+    ServiceInstanceStore.createError = null;
+    ServiceInstanceStore.createLoading = false;
+    ServiceInstanceStore.isUpdating = false;
     sandbox = sinon.sandbox.create();
   });
 
@@ -36,20 +36,20 @@ describe("ServiceInstanceStore", function() {
   });
 
   describe("constructor()", () => {
-    it("should set _data to empty array", () => {
+    it("should set storeData to empty array", () => {
       expect(ServiceInstanceStore.getAll()).toBeEmptyArray();
     });
 
-    it("should set _updating to false", () => {
+    it("should set isUpdating to false", () => {
       expect(ServiceInstanceStore.updating).toBe(false);
     });
   });
 
   describe("updating()", () => {
-    it("should return the value of the _updating property", () => {
+    it("should return the value of the isUpdating property", () => {
       expect(ServiceInstanceStore.updating).toBe(false);
-      ServiceInstanceStore._updating = true;
-      expect(ServiceInstanceStore._updating).toBe(true);
+      ServiceInstanceStore.isUpdating = true;
+      expect(ServiceInstanceStore.isUpdating).toBe(true);
     });
   });
 
@@ -59,7 +59,7 @@ describe("ServiceInstanceStore", function() {
       let actual = ServiceInstanceStore.createError;
 
       expect(actual).toBeFalsy();
-      ServiceInstanceStore._createError = expected;
+      ServiceInstanceStore.createError = expected;
       actual = ServiceInstanceStore.createError;
       expect(actual).toEqual(expected);
     });
@@ -233,7 +233,7 @@ describe("ServiceInstanceStore", function() {
     });
 
     it("should set the create instance form to null", function() {
-      ServiceInstanceStore._createInstanceForm = true;
+      ServiceInstanceStore.createInstanceForm = true;
 
       serviceActions.createInstanceFormCancel();
 
@@ -313,21 +313,21 @@ describe("ServiceInstanceStore", function() {
       let actual;
 
       serviceActions.errorCreateInstance(serverError);
-      actual = ServiceInstanceStore._createInstanceForm.error;
+      actual = ServiceInstanceStore.createInstanceForm.error;
 
       expect(actual).toEqual({
         description: serverErrorMsg
       });
 
       serviceActions.errorCreateInstance(argumentError);
-      actual = ServiceInstanceStore._createInstanceForm.error;
+      actual = ServiceInstanceStore.createInstanceForm.error;
 
       expect(actual).toEqual({
         description: SERVICE_INSTANCE_CREATE_ERROR_MAP["CF-MessageParseError"]
       });
 
       serviceActions.errorCreateInstance(spaceError);
-      actual = ServiceInstanceStore._createInstanceForm.error;
+      actual = ServiceInstanceStore.createInstanceForm.error;
 
       expect(actual).toEqual({
         description:
@@ -335,7 +335,7 @@ describe("ServiceInstanceStore", function() {
       });
 
       serviceActions.errorCreateInstance(configError);
-      actual = ServiceInstanceStore._createInstanceForm.error;
+      actual = ServiceInstanceStore.createInstanceForm.error;
 
       expect(actual).toEqual({
         description:
@@ -343,7 +343,7 @@ describe("ServiceInstanceStore", function() {
       });
 
       serviceActions.errorCreateInstance(dupeNameError);
-      actual = ServiceInstanceStore._createInstanceForm.error;
+      actual = ServiceInstanceStore.createInstanceForm.error;
 
       expect(actual).toEqual({
         description:
@@ -388,7 +388,7 @@ describe("ServiceInstanceStore", function() {
       expect(spy).not.toHaveBeenCalled();
     });
 
-    it("should set _updating flag to true", () => {
+    it("should set isUpdating flag to true", () => {
       addServiceInstanceToStore("2903fdkhgasd980", ServiceInstanceStore);
 
       AppDispatcher.handleViewAction({
@@ -396,7 +396,7 @@ describe("ServiceInstanceStore", function() {
         serviceInstanceGuid: "adsf"
       });
 
-      expect(ServiceInstanceStore._updating).toBe(true);
+      expect(ServiceInstanceStore.isUpdating).toBe(true);
     });
   });
 
@@ -460,7 +460,7 @@ describe("ServiceInstanceStore", function() {
       service = addServiceInstanceToStore(expectedGuid, ServiceInstanceStore);
     });
 
-    it("should toggle _updating flag to false", () => {
+    it("should toggle isUpdating flag to false", () => {
       AppDispatcher.handleServerAction({
         type: serviceActionTypes.SERVICE_INSTANCE_DELETED,
         serviceInstanceGuid: expectedGuid
@@ -510,7 +510,7 @@ describe("ServiceInstanceStore", function() {
     };
 
     it("should set change check, error on instance to false", function() {
-      ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
+      ServiceInstanceStore.storeData = Immutable.fromJS([testInstance]);
 
       const binding = {
         guid: "zxc",
@@ -527,7 +527,7 @@ describe("ServiceInstanceStore", function() {
     });
 
     it("should emit a change", function() {
-      ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
+      ServiceInstanceStore.storeData = Immutable.fromJS([testInstance]);
       const spy = sandbox.spy(ServiceInstanceStore, "emitChange");
 
       const binding = {
@@ -545,7 +545,7 @@ describe("ServiceInstanceStore", function() {
         guid: testGuid,
         loading: "Binding"
       };
-      ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
+      ServiceInstanceStore.storeData = Immutable.fromJS([testInstance]);
 
       const binding = {
         guid: "zxc",
@@ -566,7 +566,7 @@ describe("ServiceInstanceStore", function() {
     };
 
     it("should set change check on instance to true", function() {
-      ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
+      ServiceInstanceStore.storeData = Immutable.fromJS([testInstance]);
 
       serviceActions.changeServiceInstanceCheck(testGuid);
 
@@ -577,7 +577,7 @@ describe("ServiceInstanceStore", function() {
     });
 
     it("should emit a change", function() {
-      ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
+      ServiceInstanceStore.storeData = Immutable.fromJS([testInstance]);
       const spy = sandbox.spy(ServiceInstanceStore, "emitChange");
 
       serviceActions.changeServiceInstanceCheck(testGuid);
@@ -594,7 +594,7 @@ describe("ServiceInstanceStore", function() {
     };
 
     it("should set change check on instance to false", function() {
-      ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
+      ServiceInstanceStore.storeData = Immutable.fromJS([testInstance]);
 
       serviceActions.changeServiceInstanceCancel(testGuid);
 
@@ -604,7 +604,7 @@ describe("ServiceInstanceStore", function() {
     });
 
     it("should emit a change", function() {
-      ServiceInstanceStore._data = Immutable.fromJS([testInstance]);
+      ServiceInstanceStore.storeData = Immutable.fromJS([testInstance]);
       const spy = sandbox.spy(ServiceInstanceStore, "emitChange");
 
       serviceActions.changeServiceInstanceCancel(testGuid);
@@ -629,11 +629,11 @@ describe("ServiceInstanceStore", function() {
       const instance = { guid: instanceGuid };
 
       beforeEach(() => {
-        ServiceInstanceStore._data = Immutable.fromJS([instance]);
+        ServiceInstanceStore.storeData = Immutable.fromJS([instance]);
       });
 
       afterEach(() => {
-        ServiceInstanceStore._data = null;
+        ServiceInstanceStore.storeData = null;
       });
 
       it("should toggle the `error` and `loading` value of the instance", function() {
@@ -724,13 +724,15 @@ describe("ServiceInstanceStore", function() {
 
   describe("on errorActionTypes.CLEAR", () => {
     it("removes all errors from store and service instances", () => {
-      ServiceInstanceStore._data = Immutable.fromJS([{ error: {} }]);
-      ServiceInstanceStore._createError = "An error!";
+      ServiceInstanceStore.storeData = Immutable.fromJS([{ error: {} }]);
+      ServiceInstanceStore.createError = "An error!";
 
       errorActions.clearErrors();
 
       expect(ServiceInstanceStore.createError).toBe(null);
-      expect(ServiceInstanceStore._data.toArray()[0].get("error")).toBe(null);
+      expect(ServiceInstanceStore.storeData.toArray()[0].get("error")).toBe(
+        null
+      );
     });
   });
 });

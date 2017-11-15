@@ -14,7 +14,7 @@ describe("<ServiceInstanceStore />", () => {
   let wrapper;
 
   beforeEach(() => {
-    ServiceInstanceStore._data = Immutable.fromJS(instances);
+    ServiceInstanceStore.storeData = Immutable.fromJS(instances);
     wrapper = shallow(<ServiceInstanceTable />);
     wrapper.setState(
       {

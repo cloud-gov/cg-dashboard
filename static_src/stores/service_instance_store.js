@@ -65,39 +65,23 @@ const getFriendlyError = (error, errorMap) => {
 export class ServiceInstanceStore extends BaseStore {
   constructor() {
     super();
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.subscribe(() => this.handleAction.bind(this));
 
-    this._createInstanceForm = null;
-    this._createError = null;
-    this._createLoading = false;
-    this._createdTempNotification = false;
-    this._fetchAll = false;
-    this._fetching = false;
-    this._updating = false;
-  }
-
-  get createInstanceForm() {
-    return this._createInstanceForm;
-  }
-
-  get createError() {
-    return this._createError;
-  }
-
-  get createLoading() {
-    return this._createLoading;
-  }
-
-  get createdTempNotification() {
-    return this._createdTempNotification;
+    this.createInstanceForm = null;
+    this.createError = null;
+    this.createLoading = false;
+    this.createdTempNotification = false;
+    this.isFetchingAll = false;
+    this.isFetching = false;
+    this.isUpdating = false;
   }
 
   get updating() {
-    return this._updating;
+    return this.isUpdating;
   }
 
   get loading() {
-    return this._fetchAll || this._fetching;
+    return this.isFetchingAll || this.isFetching;
   }
 
   getAllBySpaceGuid(spaceGuid) {
@@ -155,10 +139,10 @@ export class ServiceInstanceStore extends BaseStore {
     return isBound;
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_INSTANCES_FETCH: {
-        this._fetchAll = true;
+        this.isFetchingAll = true;
         this.emitChange();
         break;
       }
@@ -167,13 +151,13 @@ export class ServiceInstanceStore extends BaseStore {
         // TODO this isn't really correct, because if fetching multiple
         // instances they will clobber state. When fetching individual
         // entities, we should store the fetch state on the entity itself
-        this._fetching = true;
+        this.isFetching = true;
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_RECEIVED: {
-        this._fetching = false;
+        this.isFetching = false;
         const instance = action.serviceInstance;
         this.merge("guid", instance, () => {
           // Always emitchange as fetch state was changed.
@@ -183,7 +167,7 @@ export class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCES_RECEIVED: {
-        this._fetchAll = false;
+        this.isFetchingAll = false;
         const services = action.serviceInstances;
         this.mergeMany("guid", services, () => {
           // Always emitchange as fetch state was changed.
@@ -195,7 +179,7 @@ export class ServiceInstanceStore extends BaseStore {
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM: {
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
 
-        this._createInstanceForm = {
+        this.createInstanceForm = {
           error: null,
           service: ServiceStore.get(action.serviceGuid),
           servicePlan: ServicePlanStore.get(action.servicePlanGuid)
@@ -206,35 +190,35 @@ export class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_FORM_CANCEL:
-        this._createInstanceForm = null;
+        this.createInstanceForm = null;
 
         this.emitChange();
         break;
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE: {
-        this._createLoading = true;
+        this.createLoading = true;
         // TODO create a "creating" service instance in the UI to update later
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATED: {
-        this._createError = null;
-        this._createLoading = false;
-        this._createdTempNotification = true;
+        this.createError = null;
+        this.createLoading = false;
+        this.createdTempNotification = true;
         this.emitChange();
         setTimeout(() => {
-          this._createInstanceForm = null;
-          this._createdTempNotification = false;
+          this.createInstanceForm = null;
+          this.createdTempNotification = false;
           this.emitChange();
         }, CREATED_NOTIFICATION_TIME_MS);
         break;
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_CREATE_ERROR: {
-        this._createInstanceForm = Object.assign(
+        this.createInstanceForm = Object.assign(
           {},
-          this._createInstanceForm || {},
+          this.createInstanceForm || {},
           {
             error: {
               description: getFriendlyError(
@@ -244,7 +228,7 @@ export class ServiceInstanceStore extends BaseStore {
             }
           }
         );
-        this._createLoading = false;
+        this.createLoading = false;
 
         this.emitChange();
 
@@ -281,7 +265,7 @@ export class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_DELETE: {
-        this._updating = true;
+        this.isUpdating = true;
         const serviceInstance = this.get(action.serviceInstanceGuid);
         const toDelete = Object.assign({}, serviceInstance, { deleting: true });
         this.merge("guid", toDelete);
@@ -289,7 +273,7 @@ export class ServiceInstanceStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_INSTANCE_DELETED: {
-        this._updating = false;
+        this.isUpdating = false;
         this.delete(action.serviceInstanceGuid);
         break;
       }
@@ -376,11 +360,11 @@ export class ServiceInstanceStore extends BaseStore {
       }
 
       case errorActionTypes.CLEAR: {
-        const clearedInstances = this._data
+        const clearedInstances = this.storeData
           .filter(val => val.has("error"))
           .map(instance => instance.update("error", () => null));
 
-        this._createError = null;
+        this.createError = null;
         this.mergeMany("guid", clearedInstances, () => {
           this.emitChange();
         });
@@ -394,10 +378,10 @@ export class ServiceInstanceStore extends BaseStore {
   }
 }
 
-const _ServiceInstanceStore = new ServiceInstanceStore();
+const serviceInstanceStore = new ServiceInstanceStore();
 
-_ServiceInstanceStore.OPERATION_STATES = OPERATION_STATES;
+serviceInstanceStore.OPERATION_STATES = OPERATION_STATES;
 
-export default _ServiceInstanceStore;
+export default serviceInstanceStore;
 
 export { SERVICE_INSTANCE_CREATE_ERROR_MAP, BINDING_ERROR_MAP };

@@ -4,7 +4,7 @@ import { formActionTypes } from "../constants.js";
 export class FormStore extends BaseStore {
   constructor() {
     super();
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.subscribe(() => this.handleAction.bind(this));
   }
 
   getFormField(formGuid, fieldName) {
@@ -30,7 +30,7 @@ export class FormStore extends BaseStore {
     return form;
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case formActionTypes.FORM_FIELD_CHANGE: {
         // Update the form field value
@@ -80,6 +80,4 @@ export class FormStore extends BaseStore {
   }
 }
 
-const _formStore = new FormStore();
-
-export default _formStore;
+export default new FormStore();

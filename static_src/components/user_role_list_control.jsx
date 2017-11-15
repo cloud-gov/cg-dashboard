@@ -70,14 +70,14 @@ export default class UserRoleListControl extends React.Component {
   constructor(props) {
     super(props);
 
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   checkRole(roleKey) {
     return this.roles().indexOf(roleKey) > -1;
   }
 
-  _onChange(roleKey, checked) {
+  handleChange(roleKey, checked) {
     const handler = !checked
       ? this.props.onRemovePermissions
       : this.props.onAddPermissions;
@@ -111,7 +111,7 @@ export default class UserRoleListControl extends React.Component {
                 roleKey={role.key}
                 value={this.checkRole(role.key)}
                 enableControl={this.props.currentUserAccess}
-                onChange={this._onChange}
+                onChange={this.handleChange}
                 userId={this.props.user.guid}
               />
             </ElasticLineItem>

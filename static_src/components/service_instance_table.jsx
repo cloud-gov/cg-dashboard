@@ -28,18 +28,18 @@ export default class ServiceInstanceTable extends React.Component {
 
     this.state = stateSetter();
 
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    ServiceInstanceStore.addChangeListener(this._onChange);
+    ServiceInstanceStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    ServiceInstanceStore.removeChangeListener(this._onChange);
+    ServiceInstanceStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
   }
 

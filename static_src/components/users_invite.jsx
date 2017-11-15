@@ -40,10 +40,10 @@ export default class UsersInvite extends React.Component {
     this.state = stateSetter(props);
 
     this.validateEmail = validateEmail().bind(this);
-    this._onValidForm = this._onValidForm.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  _onValidForm(errs, values) {
+  handleSubmit(errs, values) {
     let email = "";
 
     if (values.email) {
@@ -95,7 +95,7 @@ export default class UsersInvite extends React.Component {
         <Form
           guid={USERS_INVITE_FORM_GUID}
           classes={["users_invite_form"]}
-          onSubmit={this._onValidForm}
+          onSubmit={this.handleSubmit}
           errorOverride={this.errorMessage}
         >
           <FormText

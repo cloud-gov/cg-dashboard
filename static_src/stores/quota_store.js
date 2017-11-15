@@ -11,11 +11,11 @@ import { quotaActionTypes } from "../constants.js";
 class QuotaStore extends BaseStore {
   constructor() {
     super();
-    this._data = new Immutable.List();
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.storeData = new Immutable.List();
+    this.subscribe(() => this.handleAction.bind(this));
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case quotaActionTypes.ORGS_QUOTAS_FETCH: {
         this.load([cfApi.fetchOrgsQuotas()]);
@@ -51,6 +51,4 @@ class QuotaStore extends BaseStore {
   }
 }
 
-const _QuotaStore = new QuotaStore();
-
-export default _QuotaStore;
+export default new QuotaStore();

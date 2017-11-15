@@ -21,7 +21,7 @@ describe("ServicePlanStore", function() {
   });
 
   describe("constructor()", () => {
-    it("should set _data to empty array", () => {
+    it("should set storeData to empty array", () => {
       expect(ServicePlanStore.getAll()).toBeEmptyArray();
     });
   });
@@ -35,7 +35,7 @@ describe("ServicePlanStore", function() {
       ];
       let unexpectedService = { service_guid: "zxklcjv", guid: "qwpoerui" };
 
-      ServicePlanStore._data = Immutable.fromJS(expectedServices);
+      ServicePlanStore.storeData = Immutable.fromJS(expectedServices);
       ServicePlanStore.push(unexpectedService);
 
       let actual = ServicePlanStore.getAllFromService(expectedServiceGuid);
@@ -128,7 +128,7 @@ describe("ServicePlanStore", function() {
 
     it("should set loading state false", function() {
       sandbox.spy(ServicePlanStore, "emitChange");
-      ServicePlanStore._fetchAll = true;
+      ServicePlanStore.isFetchingAll = true;
 
       AppDispatcher.handleViewAction({
         type: serviceActionTypes.SERVICE_PLANS_RECEIVED,

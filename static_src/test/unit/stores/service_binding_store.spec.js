@@ -47,7 +47,7 @@ describe("ServiceBindingStore", function() {
       const bindingA = { guid: "binda", app_guid: appGuid };
       const bindingB = { guid: "bindb", app_guid: appGuid };
 
-      ServiceBindingStore._data = Immutable.fromJS([bindingA, bindingB]);
+      ServiceBindingStore.storeData = Immutable.fromJS([bindingA, bindingB]);
 
       const actual = ServiceBindingStore.getAllByApp(appGuid);
 
@@ -150,7 +150,7 @@ describe("ServiceBindingStore", function() {
         service_instance_guid: "zxcv234bvc"
       };
 
-      ServiceBindingStore._data = Immutable.fromJS([testBinding]);
+      ServiceBindingStore.storeData = Immutable.fromJS([testBinding]);
       sandbox.spy(ServiceBindingStore, "emitChange");
 
       AppDispatcher.handleViewAction({

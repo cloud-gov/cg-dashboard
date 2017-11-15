@@ -62,16 +62,16 @@ export default class RoutesPanel extends React.Component {
 
     this.state = stateSetter();
 
-    this._onChange = this._onChange.bind(this);
-    this._createRouteAndAssociate = this._createRouteAndAssociate.bind(this);
-    this._addCreateRouteForm = this._addCreateRouteForm.bind(this);
-    this._removeCreateRouteForm = this._removeCreateRouteForm.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleShow = this.handleShow.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
   }
 
   componentDidMount() {
-    DomainStore.addChangeListener(this._onChange);
-    QuotaStore.addChangeListener(this._onChange);
-    RouteStore.addChangeListener(this._onChange);
+    DomainStore.addChangeListener(this.handleChange);
+    QuotaStore.addChangeListener(this.handleChange);
+    RouteStore.addChangeListener(this.handleChange);
   }
 
   componentWillReceiveProps() {
@@ -79,26 +79,26 @@ export default class RoutesPanel extends React.Component {
   }
 
   componentWillUnmount() {
-    DomainStore.removeChangeListener(this._onChange);
-    QuotaStore.removeChangeListener(this._onChange);
-    RouteStore.removeChangeListener(this._onChange);
+    DomainStore.removeChangeListener(this.handleChange);
+    QuotaStore.removeChangeListener(this.handleChange);
+    RouteStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
   }
 
-  _addCreateRouteForm(ev) {
+  handleShow(ev) {
     if (ev) ev.preventDefault();
     routeActions.showCreateForm();
   }
 
-  _removeCreateRouteForm(ev) {
+  handleCancel(ev) {
     if (ev) ev.preventDefault();
     routeActions.hideCreateForm();
   }
 
-  _createRouteAndAssociate(route, ev) {
+  handleSubmit(route, ev) {
     if (ev) ev.preventDefault();
     const { appGuid, spaceGuid } = this.state;
     const domainGuid = route.domain_guid;
@@ -109,7 +109,7 @@ export default class RoutesPanel extends React.Component {
     if (this.state.showCreateForm) return null;
     return (
       <Action
-        clickHandler={this._addCreateRouteForm}
+        clickHandler={this.handleShow}
         label="Create a new route for this app"
         type="outline"
       >
@@ -135,8 +135,8 @@ export default class RoutesPanel extends React.Component {
         domains={DomainStore.getAll()}
         routeLimit={routeLimit}
         error={this.state.error}
-        cancelHandler={() => this._removeCreateRouteForm()}
-        submitHandler={this._createRouteAndAssociate}
+        cancelHandler={() => this.handleCancel()}
+        submitHandler={this.handleSubmit}
       />
     );
   }

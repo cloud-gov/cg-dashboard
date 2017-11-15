@@ -102,7 +102,7 @@ describe("routes", function() {
       beforeEach(function(done) {
         next = sandbox.spy(done);
         error = new Error("network error");
-        LoginStore._error = error;
+        LoginStore.error = error;
         loginActions.fetchStatus.returns(Promise.resolve(null));
         sandbox.stub(errorActions, "noticeError").returns(Promise.resolve());
 
@@ -110,7 +110,7 @@ describe("routes", function() {
       });
 
       afterEach(function() {
-        LoginStore._error = null;
+        LoginStore.error = null;
       });
 
       it("calls next", function() {

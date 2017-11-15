@@ -36,21 +36,20 @@ class Loading extends React.Component {
   }
 
   componentWillMount() {
-    const timer = window.setTimeout(() => {
+    this.timer = window.setTimeout(() => {
       this.showLoader();
     }, this.props.loadingDelayMS);
-    this._timer = timer;
     this.setState({ waitTimer: true });
   }
 
   componentWillUnmount() {
-    window.clearTimeout(this._timer);
-    this._timer = null;
+    window.clearTimeout(this.timer);
+    this.timer = null;
   }
 
   showLoader() {
-    if (this._timer) {
-      window.clearTimeout(this._timer);
+    if (this.timer) {
+      window.clearTimeout(this.timer);
       this.setState({ waitTimer: false });
     }
   }

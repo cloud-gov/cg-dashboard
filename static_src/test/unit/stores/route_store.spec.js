@@ -13,7 +13,7 @@ describe("RouteStore", function() {
   var sandbox;
 
   beforeEach(() => {
-    RouteStore._data = Immutable.List();
+    RouteStore.storeData = Immutable.List();
     RouteStore.error = null;
     sandbox = sinon.sandbox.create();
   });
@@ -193,7 +193,7 @@ describe("RouteStore", function() {
     const appGuid = "zcxv98xcv234";
 
     it("should remove the app guid route if found", function() {
-      RouteStore._data = Immutable.fromJS([
+      RouteStore.storeData = Immutable.fromJS([
         { guid: routeGuid, appGuid: appGuid }
       ]);
 
@@ -205,7 +205,7 @@ describe("RouteStore", function() {
     });
 
     it("should emit a change", function() {
-      RouteStore._data = Immutable.fromJS([
+      RouteStore.storeData = Immutable.fromJS([
         { guid: routeGuid, appGuid: appGuid }
       ]);
 
@@ -393,7 +393,7 @@ describe("RouteStore", function() {
       const routeGuid = "fake-route-guid";
       const spy = sandbox.spy(RouteStore, "emitChange");
 
-      RouteStore._data = Immutable.fromJS([{ guid: routeGuid }]);
+      RouteStore.storeData = Immutable.fromJS([{ guid: routeGuid }]);
 
       AppDispatcher.handleViewAction({
         type: routeActionTypes.ROUTE_DELETED,

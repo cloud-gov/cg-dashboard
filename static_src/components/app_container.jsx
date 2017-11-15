@@ -81,42 +81,42 @@ export default class AppContainer extends React.Component {
 
     this.state = mapStoreToState();
 
-    this._onChange = this._onChange.bind(this);
-    this._onRestart = this._onRestart.bind(this);
-    this._onStart = this._onStart.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleRestart = this.handleRestart.bind(this);
+    this.handleStart = this.handleStart.bind(this);
   }
 
   componentDidMount() {
-    AppStore.addChangeListener(this._onChange);
-    DomainStore.addChangeListener(this._onChange);
-    EnvStore.addChangeListener(this._onChange);
-    OrgStore.addChangeListener(this._onChange);
-    QuotaStore.addChangeListener(this._onChange);
-    RouteStore.addChangeListener(this._onChange);
-    SpaceStore.addChangeListener(this._onChange);
-    UPSIStore.addChangeListener(this._onChange);
+    AppStore.addChangeListener(this.handleChange);
+    DomainStore.addChangeListener(this.handleChange);
+    EnvStore.addChangeListener(this.handleChange);
+    OrgStore.addChangeListener(this.handleChange);
+    QuotaStore.addChangeListener(this.handleChange);
+    RouteStore.addChangeListener(this.handleChange);
+    SpaceStore.addChangeListener(this.handleChange);
+    UPSIStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    AppStore.removeChangeListener(this._onChange);
-    DomainStore.removeChangeListener(this._onChange);
-    EnvStore.removeChangeListener(this._onChange);
-    OrgStore.removeChangeListener(this._onChange);
-    QuotaStore.removeChangeListener(this._onChange);
-    RouteStore.removeChangeListener(this._onChange);
-    SpaceStore.removeChangeListener(this._onChange);
-    UPSIStore.removeChangeListener(this._onChange);
+    AppStore.removeChangeListener(this.handleChange);
+    DomainStore.removeChangeListener(this.handleChange);
+    EnvStore.removeChangeListener(this.handleChange);
+    OrgStore.removeChangeListener(this.handleChange);
+    QuotaStore.removeChangeListener(this.handleChange);
+    RouteStore.removeChangeListener(this.handleChange);
+    SpaceStore.removeChangeListener(this.handleChange);
+    UPSIStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(mapStoreToState());
   }
 
-  _onRestart() {
+  handleRestart() {
     appActions.restart(this.state.app.guid);
   }
 
-  _onStart() {
+  handleStart() {
     appActions.start(this.state.app.guid);
   }
 
@@ -155,10 +155,10 @@ export default class AppContainer extends React.Component {
   get restart() {
     let loading;
 
-    let handler = this._onRestart;
+    let handler = this.handleRestart;
     let actionText = "Restart app";
     if (!AppStore.isRunning(this.state.app)) {
-      handler = this._onStart;
+      handler = this.handleStart;
       actionText = "Start app";
     }
 

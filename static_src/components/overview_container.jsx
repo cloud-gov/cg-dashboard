@@ -27,22 +27,22 @@ export default class OverviewContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = stateSetter();
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    OrgStore.addChangeListener(this._onChange);
-    PageStore.addChangeListener(this._onChange);
-    SpaceStore.addChangeListener(this._onChange);
+    OrgStore.addChangeListener(this.handleChange);
+    PageStore.addChangeListener(this.handleChange);
+    SpaceStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    OrgStore.removeChangeListener(this._onChange);
-    PageStore.removeChangeListener(this._onChange);
-    SpaceStore.removeChangeListener(this._onChange);
+    OrgStore.removeChangeListener(this.handleChange);
+    PageStore.removeChangeListener(this.handleChange);
+    SpaceStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
   }
 

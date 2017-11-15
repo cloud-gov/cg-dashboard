@@ -11,16 +11,16 @@ import ServiceStore from "./service_store.js";
 export class ServicePlanStore extends BaseStore {
   constructor() {
     super();
-    this.subscribe(() => this._registerToActions.bind(this));
-    this._fetchAll = false;
+    this.subscribe(() => this.handleAction.bind(this));
+    this.isFetchingAll = false;
   }
 
   get loading() {
-    return this._fetchAll;
+    return this.isFetchingAll;
   }
 
   getAllFromService(serviceGuid) {
-    const fromService = this._data.filter(
+    const fromService = this.storeData.filter(
       servicePlan => servicePlan.get("service_guid") === serviceGuid
     );
 
@@ -37,7 +37,7 @@ export class ServicePlanStore extends BaseStore {
     );
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_PLAN_FETCH: {
         const servicePlan = this.get(action.servicePlanGuid) || {};
@@ -50,7 +50,7 @@ export class ServicePlanStore extends BaseStore {
 
       case serviceActionTypes.SERVICE_PLANS_FETCH: {
         AppDispatcher.waitFor([ServiceStore.dispatchToken]);
-        this._fetchAll = true;
+        this.isFetchingAll = true;
         this.emitChange();
         break;
       }
@@ -65,7 +65,7 @@ export class ServicePlanStore extends BaseStore {
       }
 
       case serviceActionTypes.SERVICE_PLANS_RECEIVED: {
-        this._fetchAll = false;
+        this.isFetchingAll = false;
         if (action.servicePlans) {
           const servicePlans = action.servicePlans;
           this.mergeMany("guid", servicePlans, () => {});
@@ -80,6 +80,4 @@ export class ServicePlanStore extends BaseStore {
   }
 }
 
-const _ServicePlanStore = new ServicePlanStore();
-
-export default _ServicePlanStore;
+export default new ServicePlanStore();

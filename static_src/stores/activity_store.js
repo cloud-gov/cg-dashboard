@@ -55,39 +55,39 @@ function parseLogItem(log) {
 class ActivityStore extends BaseStore {
   constructor() {
     super();
-    this._data = new Immutable.List();
-    this.subscribe(() => this._registerToActions.bind(this));
-    this._eventsFetched = false;
-    this._eventsFetching = false;
-    this._logsFetched = false;
-    this._logsFetching = false;
+    this.storeData = new Immutable.List();
+    this.subscribe(() => this.handleAction.bind(this));
+    this.didFetchEvents = false;
+    this.isFetchingEvents = false;
+    this.didFetchLogs = false;
+    this.isFetchingLogs = false;
     this.errors = {};
   }
 
   get fetched() {
-    return this._eventsFetched && this._logsFetched;
+    return this.didFetchLogs && this.didFetchLogs;
   }
 
   get fetching() {
-    return this._eventsFetching || this._logsFetching;
+    return this.isFetchingEvents || this.isFetchingLogs;
   }
 
   get hasErrors() {
     return this.errors.log || this.errors.event;
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     let activity;
     switch (action.type) {
       case activityActionTypes.EVENTS_FETCH:
-        this._eventsFetching = true;
-        this._eventsFetched = false;
+        this.isFetchingEvents = true;
+        this.didFetchEvents = false;
         this.emitChange();
         break;
 
       case activityActionTypes.EVENTS_RECEIVED:
-        this._eventsFetching = false;
-        this._eventsFetched = true;
+        this.isFetchingEvents = false;
+        this.didFetchEvents = true;
         activity = action.events.map(event => {
           const item = Object.assign({}, event, {
             activity_type: "event"
@@ -99,15 +99,15 @@ class ActivityStore extends BaseStore {
         break;
 
       case activityActionTypes.LOGS_FETCH:
-        this._logsFetching = true;
-        this._logsFetched = false;
+        this.isFetchingLogs = true;
+        this.didFetchLogs = false;
         this.errors.log = null;
         this.emitChange();
         break;
 
       case activityActionTypes.LOGS_RECEIVED:
-        this._logsFetching = false;
-        this._logsFetched = true;
+        this.isFetchingLogs = false;
+        this.didFetchLogs = true;
         activity = action.logs.map(log => {
           const parsed = Object.assign({}, parseLogItem(log), {
             activity_type: "log"
@@ -119,8 +119,8 @@ class ActivityStore extends BaseStore {
         break;
 
       case activityActionTypes.LOGS_ERROR:
-        this._logsFetching = false;
-        this._logsFetched = true;
+        this.isFetchingLogs = false;
+        this.didFetchLogs = true;
         this.errors.log = action.err;
         this.emitChange();
         break;
@@ -131,6 +131,4 @@ class ActivityStore extends BaseStore {
   }
 }
 
-const _ActivityStore = new ActivityStore();
-
-export default _ActivityStore;
+export default new ActivityStore();

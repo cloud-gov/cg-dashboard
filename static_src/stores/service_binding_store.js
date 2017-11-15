@@ -9,28 +9,28 @@ import { serviceActionTypes } from "../constants.js";
 export class ServiceBindingStore extends BaseStore {
   constructor() {
     super();
-    this.subscribe(() => this._registerToActions.bind(this));
-    this._fetching = false;
+    this.subscribe(() => this.handleAction.bind(this));
+    this.isFetching = false;
   }
 
   get loading() {
-    return this._fetching;
+    return this.isFetching;
   }
 
   getAllByApp(appGuid) {
     return this.getAll().filter(binding => binding.app_guid === appGuid);
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case serviceActionTypes.SERVICE_BINDINGS_FETCH: {
-        this._fetching = true;
+        this.isFetching = true;
         this.emitChange();
         break;
       }
 
       case serviceActionTypes.SERVICE_BINDINGS_RECEIVED: {
-        this._fetching = false;
+        this.isFetching = false;
         const bindings = action.serviceBindings;
         this.mergeMany("guid", bindings, () => {});
         this.emitChange();
@@ -71,6 +71,4 @@ export class ServiceBindingStore extends BaseStore {
   }
 }
 
-const _ServiceBindingStore = new ServiceBindingStore();
-
-export default _ServiceBindingStore;
+export default new ServiceBindingStore();

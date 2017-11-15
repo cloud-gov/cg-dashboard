@@ -49,22 +49,22 @@ export default class OrgContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = stateSetter();
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    OrgStore.addChangeListener(this._onChange);
-    SpaceStore.addChangeListener(this._onChange);
-    UserStore.addChangeListener(this._onChange);
+    OrgStore.addChangeListener(this.handleChange);
+    SpaceStore.addChangeListener(this.handleChange);
+    UserStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    OrgStore.removeChangeListener(this._onChange);
-    SpaceStore.removeChangeListener(this._onChange);
-    UserStore.removeChangeListener(this._onChange);
+    OrgStore.removeChangeListener(this.handleChange);
+    SpaceStore.removeChangeListener(this.handleChange);
+    UserStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
   }
 

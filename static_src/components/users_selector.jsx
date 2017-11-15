@@ -36,14 +36,14 @@ export default class UsersSelector extends React.Component {
     super(props);
 
     this.validateString = validateString().bind(this);
-    this._onSubmitForm = this._onSubmitForm.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
     FormStore.create(USERS_SELECTOR_GUID);
   }
 
-  _onSubmitForm(errs, values) {
+  handleSubmit(errs, values) {
     const { currentEntity } = this.props;
     const { currentEntityGuid } = this.props;
     const userRole = AUDITOR_NAME;
@@ -106,7 +106,7 @@ export default class UsersSelector extends React.Component {
         <Form
           guid={USERS_SELECTOR_GUID}
           classes={["users_selector"]}
-          onSubmit={this._onSubmitForm}
+          onSubmit={this.handleSubmit}
         >
           {this.userSelector}
           <Action label="submit" type="submit" disabled={usersSelectorDisabled}>

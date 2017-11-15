@@ -355,21 +355,21 @@ Here are some basic rules to work with stores successfully:
   export class OrgStore extends BaseStore {
     constructor() {
       super();
-      this._currentOrgGuid = null;
-      this._fetchOrg = false;
+      this.currentOrgGUID = null;
+      this.isFetchingOrg = false;
     }
 
     get loading() {
-      return this._fetchOrg || this._fetchAll;
+      return this.isFetchingOrg || this.isFetchingAll;
     }
 
     get currentOrgGuid() {
-      return this._currentOrgGuid;
+      return this.currentOrgGUID;
     }
   }
   ```
 
-* Stores should generally not access their `_data` directly but should attempt
+* Stores should generally not access their `storeData` directly but should attempt
   to use the data manipulation functions in the
   [BaseStore](https://github.com/18F/cg-dashboard/blob/master/static_src/stores/base_store.js),
   such as `push`, `merge`, `mergeAll`, etc.
@@ -382,7 +382,7 @@ Here are some basic rules to work with stores successfully:
 
   // Bad
   case orgActions.ORGS.RECEIVED: {
-    this._data = new Immutable.List(this._data, action.orgs);
+    this.storeData = new Immutable.List(this.storeData, action.orgs);
   }
   ```
 
@@ -393,12 +393,12 @@ Here are some basic rules to work with stores successfully:
 
   ```js
   // Good
-  this._fetchAll = false;
+  this.isFetchingAll = false;
   this.mergeMany("guid", updates, () => {});
   this.emitChange();
 
   // Bad
-  this._fetchAll = false;
+  this.isFetchingAll = false;
   this.mergeMany("guid", updates, changed => {
     if (changed) this.emitChange();
   });

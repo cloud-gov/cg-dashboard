@@ -25,18 +25,18 @@ export default class GlobalErrorContainer extends React.Component {
 
     this.state = stateSetter();
 
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    ErrorStore.addChangeListener(this._onChange);
+    ErrorStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    ErrorStore.removeChangeListener(this._onChange);
+    ErrorStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
   }
 

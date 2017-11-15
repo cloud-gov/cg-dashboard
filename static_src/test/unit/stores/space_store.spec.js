@@ -14,7 +14,7 @@ describe("SpaceStore", function() {
 
   beforeEach(function() {
     sandbox = sinon.sandbox.create();
-    SpaceStore._data = Immutable.List();
+    SpaceStore.storeData = Immutable.List();
   });
 
   afterEach(function() {
@@ -22,7 +22,7 @@ describe("SpaceStore", function() {
   });
 
   describe("constructor()", function() {
-    it("should set _data to empty array", () => {
+    it("should set storeData to empty array", () => {
       expect(SpaceStore.getAll()).toBeEmptyArray();
     });
   });
@@ -141,7 +141,7 @@ describe("SpaceStore", function() {
     it("should should change the current space to the passed in guid", function() {
       const spaceGuid = "zcxvadsjfcvbnm";
 
-      SpaceStore._currentSpaceGuid = "adskfjxvb";
+      SpaceStore.currentSpaceGUID = "adskfjxvb";
 
       spaceActions.changeCurrentSpace(spaceGuid);
 
@@ -164,7 +164,7 @@ describe("SpaceStore", function() {
       const space = { guid: guid, name: expected };
 
       SpaceStore.push(space);
-      SpaceStore._currentSpaceGuid = guid;
+      SpaceStore.currentSpaceGUID = guid;
 
       const actual = SpaceStore.currentSpaceName;
 

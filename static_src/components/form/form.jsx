@@ -44,23 +44,23 @@ export default class Form extends React.Component {
 
     this.state = stateSetter(props);
 
-    this._onStoreChange = this._onStoreChange.bind(this);
-    this._onSubmit = this._onSubmit.bind(this);
+    this.handleStoreChange = this.handleStoreChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
-    FormStore.addChangeListener(this._onStoreChange);
+    FormStore.addChangeListener(this.handleStoreChange);
   }
 
   componentWillUnmount() {
-    FormStore.removeChangeListener(this._onStoreChange);
+    FormStore.removeChangeListener(this.handleStoreChange);
   }
 
-  _onStoreChange() {
+  handleStoreChange() {
     this.setState(stateSetter(this.props));
   }
 
-  _onSubmit(e) {
+  handleSubmit(e) {
     if (!this.props.onSubmit) {
       // Without an onSubmit, just default to normal form behavior
       return;
@@ -94,7 +94,7 @@ export default class Form extends React.Component {
         id={this.props.guid}
         action={this.props.action}
         method={this.props.method}
-        onSubmit={this._onSubmit}
+        onSubmit={this.handleSubmit}
         className={classes}
       >
         {errorMsg}

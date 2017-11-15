@@ -32,7 +32,7 @@ describe("OrgStore", () => {
 
     it("should return the current org its on", function() {
       const expected = "asdlfkja;";
-      OrgStore._currentOrgGuid = expected;
+      OrgStore.currentOrgGUID = expected;
       expect(OrgStore.currentOrgGuid).toEqual(expected);
     });
   });
@@ -46,7 +46,7 @@ describe("OrgStore", () => {
 
     it("should set the org to open", function() {
       const guid = "orgguid";
-      OrgStore._data = Immutable.fromJS([{ guid }]);
+      OrgStore.storeData = Immutable.fromJS([{ guid }]);
       const expected = [{ guid, space_menu_open: true }];
       const actual = OrgStore.updateOpenOrgs(guid);
 
@@ -61,7 +61,7 @@ describe("OrgStore", () => {
         { guid: guid * 2, space_menu_open: false },
         { guid: guid * 3, space_menu_open: false }
       ];
-      OrgStore._data = Immutable.fromJS(initial);
+      OrgStore.storeData = Immutable.fromJS(initial);
       const actual = OrgStore.updateOpenOrgs(guid);
       expect(actual).toEqual(expected);
     });
@@ -88,7 +88,7 @@ describe("OrgStore", () => {
         ],
         current = [{ guid: "aaa1", memory: 1024 }];
 
-      OrgStore._data = Immutable.fromJS(current);
+      OrgStore.storeData = Immutable.fromJS(current);
       AppDispatcher.handleViewAction({
         type: orgActionTypes.ORGS_RECEIVED,
         orgs: updates
@@ -183,7 +183,7 @@ describe("OrgStore", () => {
       const org = { guid, name: expected };
 
       OrgStore.push(org);
-      OrgStore._currentOrgGuid = guid;
+      OrgStore.currentOrgGUID = guid;
 
       const actual = OrgStore.currentOrgName;
 

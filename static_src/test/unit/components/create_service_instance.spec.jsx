@@ -23,7 +23,7 @@ describe("<CreateServiceInstance />", () => {
     expect(wrapper.find(FormError).length).toBe(1);
   });
 
-  describe("._onValidForm()", () => {
+  describe(".handleSubmit()", () => {
     it("calls serviceActions.createInstance with the proper arguments", () => {
       const plan = { guid: "123abc" };
       const spy = sinon.spy(serviceActions, "createInstance");
@@ -34,7 +34,7 @@ describe("<CreateServiceInstance />", () => {
         }
       };
 
-      wrapper.instance()._onValidForm({}, form);
+      wrapper.instance().handleSubmit({}, form);
 
       expect(spy).toHaveBeenCalledOnce();
       expect(spy).toHaveBeenCalledWith(form.name.value, null, plan.guid);

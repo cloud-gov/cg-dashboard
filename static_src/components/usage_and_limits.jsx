@@ -26,8 +26,7 @@ function sum(s, value) {
   return s + value;
 }
 
-function getStat(statName, props, accumulator) {
-  const _accumulator = accumulator || sum;
+function getStat(statName, props, accumulator = sum) {
   if (statName.indexOf("quota") > -1) {
     return (
       (props.app.app_instances &&
@@ -42,7 +41,7 @@ function getStat(statName, props, accumulator) {
   // want the total. Use the accumulator to delegate this to the caller
   return (props.app.app_instances || [])
     .map(instance => (instance.stats && instance.stats.usage[statName]) || 0)
-    .reduce((cumulative, value) => _accumulator(cumulative, value || 0), 0);
+    .reduce((cumulative, value) => accumulator(cumulative, value || 0), 0);
 }
 
 function formGuid(app) {
@@ -78,29 +77,29 @@ export default class UsageAndLimits extends React.Component {
       form
     };
     this.getStat = this.getStat.bind(this);
-    this._onChange = this._onChange.bind(this);
-    this._onSubmit = this._onSubmit.bind(this);
-    this._onToggleEdit = this._onToggleEdit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleToggleEdit = this.handleToggleEdit.bind(this);
   }
 
   componentDidMount() {
-    FormStore.addChangeListener(this._onChange);
+    FormStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    FormStore.removeChangeListener(this._onChange);
+    FormStore.removeChangeListener(this.handleChange);
   }
 
   getStat(statName, accumulator) {
     return getStat(statName, this.props, accumulator);
   }
 
-  _onChange() {
+  handleChange() {
     const form = FormStore.get(formGuid(this.props.app));
     this.setState({ form });
   }
 
-  _onToggleEdit() {
+  handleToggleEdit() {
     this.setState({ editing: !this.state.editing });
   }
 
@@ -222,7 +221,7 @@ export default class UsageAndLimits extends React.Component {
     );
   }
 
-  _onSubmit(errors, form) {
+  handleSubmit(errors, form) {
     if (errors.length) {
       return;
     }
@@ -249,7 +248,7 @@ export default class UsageAndLimits extends React.Component {
         style="primary"
         type="outline"
         label="Modify allocation and scale"
-        clickHandler={this._onToggleEdit}
+        clickHandler={this.handleToggleEdit}
       >
         <span>Modify allocation and scale</span>
       </Action>
@@ -268,7 +267,7 @@ export default class UsageAndLimits extends React.Component {
           <Action
             type="outline"
             label="Cancel"
-            clickHandler={this._onToggleEdit}
+            clickHandler={this.handleToggleEdit}
           >
             <span>Cancel</span>
           </Action>
@@ -300,7 +299,7 @@ export default class UsageAndLimits extends React.Component {
     if (this.props.app && this.state.editing) {
       // Wrap content in a form element
       content = (
-        <Form guid={formGuid(this.props.app)} onSubmit={this._onSubmit}>
+        <Form guid={formGuid(this.props.app)} onSubmit={this.handleSubmit}>
           {content}
         </Form>
       );

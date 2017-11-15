@@ -37,24 +37,24 @@ export default class Marketplace extends React.Component {
 
     this.state = stateSetter();
 
-    this._onChange = this._onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    OrgStore.addChangeListener(this._onChange);
-    ServiceStore.addChangeListener(this._onChange);
-    ServicePlanStore.addChangeListener(this._onChange);
-    ServiceInstanceStore.addChangeListener(this._onChange);
+    OrgStore.addChangeListener(this.handleChange);
+    ServiceStore.addChangeListener(this.handleChange);
+    ServicePlanStore.addChangeListener(this.handleChange);
+    ServiceInstanceStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    OrgStore.removeChangeListener(this._onChange);
-    ServiceStore.removeChangeListener(this._onChange);
-    ServicePlanStore.removeChangeListener(this._onChange);
-    ServiceInstanceStore.removeChangeListener(this._onChange);
+    OrgStore.removeChangeListener(this.handleChange);
+    ServiceStore.removeChangeListener(this.handleChange);
+    ServicePlanStore.removeChangeListener(this.handleChange);
+    ServiceInstanceStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
   }
 

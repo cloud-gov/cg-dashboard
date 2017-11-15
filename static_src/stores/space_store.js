@@ -17,12 +17,12 @@ export const spacePropType = PropTypes.shape({
 class SpaceStore extends BaseStore {
   constructor() {
     super();
-    this._data = new Immutable.List();
-    this._currentSpaceGuid = null;
-    this._loading = [];
-    this._fetchAll = false;
-    this._cfName = "space_users";
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.storeData = new Immutable.List();
+    this.currentSpaceGUID = null;
+    this.loadingGUIDs = [];
+    this.isFetchingAll = false;
+    this.cfName = "space_users";
+    this.subscribe(() => this.handleAction.bind(this));
   }
 
   viewPermissionRoles() {
@@ -30,24 +30,24 @@ class SpaceStore extends BaseStore {
   }
 
   get loading() {
-    return !!this._loading.length || this._fetchAll;
+    return !!this.loadingGUIDs.length || this.isFetchingAll;
   }
 
   // TODO this could be moved to a helper
-  _startLoading(guid) {
-    this._loading.push(guid);
+  startLoading(guid) {
+    this.loadingGUIDs.push(guid);
   }
 
   // TODO this could be moved to a helper
-  _completeLoading(guid) {
-    const index = this._loading.indexOf(guid);
+  completeLoading(guid) {
+    const index = this.loadingGUIDs.indexOf(guid);
     if (index > -1) {
       // Maybe throw an error if the item isn't in the array
-      this._loading.splice(index, 1);
+      this.loadingGUIDs.splice(index, 1);
     }
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case orgActionTypes.ORG_RECEIVED: {
         const spaces = action.org.spaces || [];
@@ -64,26 +64,26 @@ class SpaceStore extends BaseStore {
       }
 
       case spaceActionTypes.SPACE_FETCH: {
-        this._startLoading(action.spaceGuid);
+        this.startLoading(action.spaceGuid);
         this.emitChange();
         break;
       }
 
       case spaceActionTypes.SPACES_FETCH: {
-        this._fetchAll = true;
+        this.isFetchingAll = true;
         this.emitChange();
         break;
       }
 
       case spaceActionTypes.SPACE_RECEIVED: {
-        this._completeLoading(action.space.guid);
+        this.completeLoading(action.space.guid);
         this.merge("guid", action.space, () => {});
         this.emitChange();
         break;
       }
 
       case spaceActionTypes.SPACES_RECEIVED: {
-        this._fetchAll = false;
+        this.isFetchingAll = false;
         this.mergeMany("guid", action.spaces, () => {
           this.emitChange();
         });
@@ -91,7 +91,7 @@ class SpaceStore extends BaseStore {
       }
 
       case spaceActionTypes.SPACE_CHANGE_CURRENT: {
-        this._currentSpaceGuid = action.spaceGuid;
+        this.currentSpaceGUID = action.spaceGuid;
         this.emitChange();
         break;
       }
@@ -102,24 +102,18 @@ class SpaceStore extends BaseStore {
   }
 
   currentSpace() {
-    return this.get(this._currentSpaceGuid);
-  }
-
-  get cfName() {
-    return this._cfName;
+    return this.get(this.currentSpaceGUID);
   }
 
   get currentSpaceGuid() {
-    return this._currentSpaceGuid;
+    return this.currentSpaceGUID;
   }
 
   get currentSpaceName() {
-    const space = this.get(this._currentSpaceGuid);
+    const space = this.get(this.currentSpaceGUID);
     if (!space) return "";
     return space.name;
   }
 }
 
-const _SpaceStore = new SpaceStore();
-
-export default _SpaceStore;
+export default new SpaceStore();

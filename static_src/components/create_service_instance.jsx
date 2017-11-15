@@ -56,33 +56,33 @@ export default class CreateServiceInstance extends React.Component {
     };
 
     this.validateString = validateString().bind(this);
-    this._onChange = this._onChange.bind(this);
-    this._onValidForm = this._onValidForm.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this._onCancelForm = this._onCancelForm.bind(this);
   }
 
   componentDidMount() {
     FormStore.create(CREATE_SERVICE_INSTANCE_FORM_GUID);
-    SpaceStore.addChangeListener(this._onChange);
-    ServiceInstanceStore.addChangeListener(this._onChange);
+    SpaceStore.addChangeListener(this.handleChange);
+    ServiceInstanceStore.addChangeListener(this.handleChange);
     this.scrollIntoView();
   }
 
   componentWillUnmount() {
-    SpaceStore.removeChangeListener(this._onChange);
-    ServiceInstanceStore.removeChangeListener(this._onChange);
+    SpaceStore.removeChangeListener(this.handleChange);
+    ServiceInstanceStore.removeChangeListener(this.handleChange);
   }
 
   scrollIntoView() {
     ReactDOM.findDOMNode(this).scrollIntoView(true);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
     this.scrollIntoView();
   }
 
-  _onValidForm(errs, values) {
+  handleSubmit(errs, values) {
     this.setState({ errs }, () => {
       const { name, space } = values;
       const instanceName = (name && name.value) || null;
@@ -108,7 +108,7 @@ export default class CreateServiceInstance extends React.Component {
         <Form
           guid={CREATE_SERVICE_INSTANCE_FORM_GUID}
           classes={["test-create_service_instance_form"]}
-          onSubmit={this._onValidForm}
+          onSubmit={this.handleSubmit}
         >
           <legend>
             The
@@ -128,7 +128,7 @@ export default class CreateServiceInstance extends React.Component {
         <Form
           guid={CREATE_SERVICE_INSTANCE_FORM_GUID}
           classes={["test-create_service_instance_form"]}
-          onSubmit={this._onValidForm}
+          onSubmit={this.handleSubmit}
         >
           <legend>
             Create a service instance for
