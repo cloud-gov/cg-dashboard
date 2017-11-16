@@ -18,10 +18,10 @@ dependencies:
   pre:
     - sudo apt-get update; sudo apt-get install libicu52
     - go version
-    - go get github.com/Masterminds/glide
+    - go get -u github.com/golang/dep/cmd/dep
     - rm -rf $WS
     - mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
-    - cd $WS && glide install
+    - cd $WS && dep ensure
     - npm install
     - npm run test-selenium-install
   override:

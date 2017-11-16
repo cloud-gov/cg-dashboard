@@ -1,12 +1,12 @@
 #!/bin/sh
 
-if [ ! -x $GOPATH/bin/glide ]; then
-  go get github.com/Masterminds/glide
+if [ ! -x $GOPATH/bin/dep ]; then
+  go get -u github.com/golang/dep/cmd/dep
 fi
 
 export PATH=$GOPATH/bin:$PATH
 if [ ! -x vendor ]; then
-  glide install
+  dep ensure
 fi
 
 prgm=$1

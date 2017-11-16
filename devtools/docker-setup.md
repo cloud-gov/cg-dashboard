@@ -193,7 +193,7 @@ the Dockerfile in the `devtools/node` directory. Then rebuild the image with:
 Format: `docker-compose run --rm backend <COMMAND>`
 
 Examples:
-- Add dependency: `docker-compose run --rm backend glide get github.com/some/repo`
+- Add dependency: `docker-compose run --rm backend dep ensure -add github.com/some/repo`
 - Run `./codecheck.sh`: `docker-compose run --rm backend ./codecheck.sh`
 
 #### UAA One-Offs

@@ -83,8 +83,8 @@ npm install -g eslint-plugin-react
 
 ## Running locally
 - Make sure all of your environment variables are set and you are using the Go version as mentioned above.
-- Install [glide](https://github.com/Masterminds/glide)
-- Run `glide install` to get all third party code
+- Install [dep](https://github.com/golang/dep)
+- Run `dep ensure` to get all third party code
 - `go run server.go`
 - Navigate browser to [`http://localhost:9999`](http://localhost:9999)
 
@@ -110,7 +110,7 @@ To kill that process, run `kill %N` where "N" is the number from the line.
 ### Running Go unit tests
 
 ```sh
-TEST_ROOT_PATH=`pwd` go test $(glide nv)
+TEST_ROOT_PATH=`pwd` go test ./...
 ```
 
 ### Running Javascript unit tests
