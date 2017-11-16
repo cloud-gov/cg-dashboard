@@ -104,7 +104,7 @@
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
     "watch": "^0.16.0",
-    "webpack": "^2.3.2"
+    "webpack": "^3.8.1"
   },
   "devDependencies": {
     "babel-register": "^6.18.0",
