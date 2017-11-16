@@ -17,7 +17,7 @@ Learn more about [cloud.gov](https://cloud.gov).
 
 ### Backend Server
 
-- `Go` (version 1.8)
+- `Go` (version 1.9)
 
 ### Front end application
 

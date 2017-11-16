@@ -133,7 +133,7 @@ services:
     working_dir: /cg-dashboard
     command: 'node devtools/node/cleanup.js'
   backend:
-    image: golang:1.8.3
+    image: golang:1.9.2
     environment:
       - GOPATH=/go
       - DOCKER_IN_DOCKER=1
