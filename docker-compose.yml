@@ -19,7 +19,6 @@ services:
       CONSOLE_LOGIN_URL: https://uaa.local.pcfdev.io
       CONSOLE_LOG_URL: https://loggregator.local.pcfdev.io
       CONSOLE_UAA_URL: https://uaa.local.pcfdev.io
-      SESSION_BACKEND: cookiestore
       LOCAL_CF: "1"
       PORT: 8002
       VCAP_APPLICATION: '{}'

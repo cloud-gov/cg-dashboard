@@ -33,13 +33,6 @@ var (
 	SecureCookiesEnvVar = "SECURE_COOKIES"
 	// LocalCFEnvVar is set to true or 1, then we indicate that we are using a local CF env.
 	LocalCFEnvVar = "LOCAL_CF"
-	// SessionBackendEnvVar is the session backend type
-	SessionBackendEnvVar = "SESSION_BACKEND"
-	// LegacySessionKeyEnvVar should not be used for new installations,
-	// instead CSRF_KEY or SESSION_AUTHENTICATION_KEY should be used.
-	// For compatibility with legacy environments, if the new variables
-	// are not set, we fallback to this variable, and cast it to []byte.
-	LegacySessionKeyEnvVar = "SESSION_KEY"
 	// TemplatesPathEnvVar is the path to the templates directory.
 	TemplatesPathEnvVar = "TEMPLATES_PATH"
 	// SMTPHostEnvVar is SMTP host for UAA invites
@@ -58,6 +51,6 @@ var (
 	CSRFKeyEnvVar = "CSRF_KEY"
 	// SessionAuthenticationEnvVar used to sign user sessions. Must be 32 or 64 hex-encoded bytes, e.g. openssl rand -hex 64
 	SessionAuthenticationEnvVar = "SESSION_AUTHENTICATION_KEY"
-	// SessionEncryptionEnvVar used to encrypt user sessions. Used by "SESSION_BACKEND=cookiestore". Must be 16, 24 or 32 hex-encoded bytes, e.g. openssl rand -hex 32
+	// SessionEncryptionEnvVar used to encrypt user sessions. Must be 16, 24 or 32 hex-encoded bytes, e.g. openssl rand -hex 32
 	SessionEncryptionEnvVar = "SESSION_ENCRYPTION_KEY"
 )

@@ -53,10 +53,6 @@ type Settings struct {
 	LocalCF bool
 	// URL where this app is hosted
 	AppURL string
-	// Type of session backend
-	SessionBackend string
-	// Returns whether the backend is up.
-	SessionBackendHealthCheck func() bool
 	// SMTP host for UAA invites
 	SMTPHost string
 	// SMTP post for UAA invites
@@ -164,8 +160,6 @@ func (s *Settings) InitSettings(envVars *env.VarSet, app *cfenv.App) (retErr err
 	store.Options.Secure = s.SecureCookies
 
 	s.Sessions = store
-	s.SessionBackend = "cookiestore"
-	s.SessionBackendHealthCheck = func() bool { return true }
 
 	// Want to save a struct into the session. Have to register it.
 	gob.Register(oauth2.Token{})

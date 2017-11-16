@@ -44,14 +44,12 @@ func (c *Context) Index(w web.ResponseWriter, r *web.Request) {
 }
 
 type pingData struct {
-	Status             string             `json:"status"`
-	BuildInfo          string             `json:"build-info"`
-	SessionStoreHealth sessionStoreHealth `json:"session-store-health"`
+	Status    string `json:"status"`
+	BuildInfo string `json:"build-info"`
 }
 
 const (
-	pingDataStatusAlive  = "alive"
-	pingDataStatusOutage = "outage"
+	pingDataStatusAlive = "alive"
 )
 
 func (p pingData) isSystemHealthy() bool {
@@ -73,24 +71,10 @@ func (p pingData) toJSON() ([]byte, bool) {
 	return pingBody, true
 }
 
-type sessionStoreHealth struct {
-	StoreType string `json:"store-type"`
-	StoreUp   bool   `json:"store-up"`
-}
-
 func createPingData(c *Context) pingData {
-	storeUp := c.Settings.SessionBackendHealthCheck()
-	overallStatus := pingDataStatusAlive
-	// if the session storage is out, we have an outage.
-	if !storeUp {
-		overallStatus = pingDataStatusOutage
-	}
-	return pingData{Status: overallStatus,
+	return pingData{
+		Status:    pingDataStatusAlive,
 		BuildInfo: c.Settings.BuildInfo,
-		SessionStoreHealth: sessionStoreHealth{
-			StoreType: c.Settings.SessionBackend,
-			StoreUp:   storeUp,
-		},
 	}
 }
 
