@@ -40,12 +40,10 @@ func GetValidToken(req *http.Request, rw http.ResponseWriter, settings *Settings
 
 	// Did it change? if so save it in our cookie so we don't have to refresh again on every request
 	if rv.AccessToken != token.AccessToken || !rv.Expiry.Equal(token.Expiry) {
-		// If we are using opaque UAA tokens, then make sure we replace any new refresh
+		// We are using opaque UAA tokens, so make sure we replace any new refresh
 		// token received with the smaller opaque one that we saved off earlier, or we
 		// may hit session storage limits.
-		if settings.OpaqueUAATokens {
-			rv.RefreshToken = originalRefreshToken
-		}
+		rv.RefreshToken = originalRefreshToken
 		session.Values["token"] = *rv
 		session.Save(req, rw)
 	}

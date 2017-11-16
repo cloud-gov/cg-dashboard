@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	dockerclient "github.com/fsouza/go-dockerclient"
-	"github.com/garyburd/redigo/redis"
 	"github.com/ory/dockertest"
 )
 
@@ -51,49 +50,6 @@ func skipIfNoDocker(t *testing.T) {
 	if os.Getenv("SKIP_DOCKER") == "1" {
 		t.Skip("No support for docker")
 	}
-}
-
-// CreateTestRedis creates a actual redis instance with docker.
-// Useful for unit tests.
-func CreateTestRedis(t *testing.T) (string, func(), func(), func()) {
-	skipIfNoDocker(t)
-	pool, err := dockertest.NewPool("")
-	if err != nil {
-		log.Fatalf("Could not connect to docker: %s", err)
-	}
-
-	resource, err := pool.Run("redis", "2.8", nil)
-	if err != nil {
-		log.Fatalf("Could not start resource: %s", err)
-	}
-	// Get the hostname of the Docker Host.
-	u, _ := url.Parse(pool.Client.Endpoint())
-	host := u.Hostname()
-
-	// Get the exposed port of the docker container which uses 6379 internally.
-	port := resource.GetPort("6379/tcp")
-
-	// Create a docker network if necessary.
-	// refer to connectToDockerNetwork
-	internalHost, connected := connectToDockerNetwork(pool, resource, "test-redis")
-	if connected {
-		// If network created, reassign the hostname and port to use.
-		host = internalHost
-		port = "6379"
-	}
-
-	hostnameAndPort := host + ":" + port
-	if err = pool.Retry(func() error {
-		_, dialErr := redis.Dial("tcp", hostnameAndPort)
-
-		return dialErr
-	}); err != nil {
-		log.Fatalf("Could not connect to docker: %s", err)
-	}
-	return "redis://" + hostnameAndPort,
-		func() { pool.Purge(resource) },
-		func() { pool.Client.PauseContainer(resource.Container.ID) },
-		func() { pool.Client.UnpauseContainer(resource.Container.ID) }
 }
 
 // CreateTestMailCatcher creates a actual redis instance with docker.

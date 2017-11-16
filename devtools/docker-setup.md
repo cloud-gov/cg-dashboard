@@ -87,6 +87,8 @@ docker-compose up -d app frontend watch
 # [Optional] In the second terminal, you can tail
 # the logs of the containers
 docker-compose logs -f
+
+# Once the app is up at http://localhost:8002, it will be unresponsive for a few minutes until all the assets are compiled.
 ```
 
 You can navigate to three components:

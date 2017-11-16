@@ -7,8 +7,6 @@ services:
     depends_on:
       mail:
         condition: service_started
-      redis:
-        condition: service_started
       frontend:
         condition: service_healthy
     ports:
@@ -21,7 +19,6 @@ services:
       CONSOLE_LOGIN_URL: https://uaa.local.pcfdev.io
       CONSOLE_LOG_URL: https://loggregator.local.pcfdev.io
       CONSOLE_UAA_URL: https://uaa.local.pcfdev.io
-      SESSION_BACKEND: redis
       LOCAL_CF: "1"
       PORT: 8002
       VCAP_APPLICATION: '{}'
@@ -33,6 +30,7 @@ services:
                "CONSOLE_CLIENT_SECRET": "notarealsecret",
                "CSRF_KEY": "00112233445566778899aabbccddeeff",
                "SESSION_AUTHENTICATION_KEY": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
+               "SESSION_ENCRYPTION_KEY": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
                "SMTP_FROM": "no-reply@cloud.gov",
                "SMTP_HOST": "smtp.fake.com",
                "SMTP_PASS": "",
@@ -41,30 +39,8 @@ services:
             },
             "name": "dashboard-ups",
             "label": "user-provided"
-          }],
-          "redis28": [{
-            "credentials": {
-               "hostname": "redis.service.fake.kubernetes",
-               "password": "",
-               "port": "6379"
-            },
-            "uri": "redis://:@redis.service.fake.kubernetes:6379",
-            "label": "redis28",
-            "name": "dashboard-redis",
-            "tags": [
-             "redis28",
-             "redis"
-            ]
           }]
         }
-  redis:
-    image: "redis:2.8"
-    volumes:
-      - redis-data:/data
-    networks:
-      servicesNetwork:
-        aliases:
-          - redis.service.fake.kubernetes
   mail:
     image: tophfr/mailcatcher
     ports:
@@ -161,7 +137,6 @@ volumes:
   global-node-modules:
   go-bins:
   go-dep-tool-src:
-  redis-data:
   frontend-home:
 
 networks:

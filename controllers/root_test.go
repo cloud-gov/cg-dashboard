@@ -1,7 +1,6 @@
 package controllers_test
 
 import (
-	"os"
 	"strings"
 	"testing"
 
@@ -9,9 +8,7 @@ import (
 	"github.com/govau/cf-common/env"
 
 	"github.com/18F/cg-dashboard/controllers"
-	"github.com/18F/cg-dashboard/helpers"
 	. "github.com/18F/cg-dashboard/helpers/testhelpers"
-	. "github.com/18F/cg-dashboard/helpers/testhelpers/docker"
 )
 
 func TestPing(t *testing.T) {
@@ -25,68 +22,7 @@ func TestPing(t *testing.T) {
 		t.Fatal(err)
 	}
 	router.ServeHTTP(response, request)
-	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"cookiestore","store-up":true}}`
-	if response.Body.String() != expectedResponse {
-		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
-	}
-	if response.Code != 200 {
-		t.Errorf("Expected code %d. Found %d", 200, response.Code)
-	}
-}
-
-func TestPingWithRedis(t *testing.T) {
-	// Create a request
-	response, request := NewTestRequest("GET", "/ping", nil)
-	// Start up redis.
-	redisURI, cleanUpRedis, pauseRedis, unpauseRedis := CreateTestRedis(t)
-	os.Setenv("REDIS_URI", redisURI)
-	// Remove redis when finished.
-	defer cleanUpRedis()
-	// Override the mock env vars to use redis for session backend.
-	envVars := GetMockCompleteEnvVars()
-	envVars[helpers.SessionBackendEnvVar] = "redis"
-	app, _ := cfenv.Current()
-
-	// Setup router.
-	router, _, err := controllers.InitApp(
-		env.NewVarSet(env.WithMapLookup(envVars)),
-		app,
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Submit PING with healthy Redis instance.
-	router.ServeHTTP(response, request)
-	expectedResponse := `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":true}}`
-	if response.Body.String() != expectedResponse {
-		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
-	}
-	if response.Code != 200 {
-		t.Errorf("Expected code %d. Found %d", 200, response.Code)
-	}
-
-	// pause the instance from responding.
-	pauseRedis()
-
-	// Try ping again with unhealthy Redis instance.
-	response, request = NewTestRequest("GET", "/ping", nil)
-	router.ServeHTTP(response, request)
-	expectedResponse = `{"status":"outage","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":false}}`
-	if response.Body.String() != expectedResponse {
-		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
-	}
-	if response.Code != 500 {
-		t.Errorf("Expected code %d. Found %d", 500, response.Code)
-	}
-
-	// we unpause the instance.
-	unpauseRedis()
-
-	// Retry to ping with a new healthy Redis instance.
-	response, request = NewTestRequest("GET", "/ping", nil)
-	router.ServeHTTP(response, request)
-	expectedResponse = `{"status":"alive","build-info":"developer-build","session-store-health":{"store-type":"redis","store-up":true}}`
+	expectedResponse := `{"status":"alive","build-info":"developer-build"}`
 	if response.Body.String() != expectedResponse {
 		t.Errorf("Expected %s. Found %s\n", expectedResponse, response.Body.String())
 	}
