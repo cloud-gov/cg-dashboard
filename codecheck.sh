@@ -40,7 +40,7 @@ function testCmdOutput() {
 }
 
 # Get the list of packages.
-pkgs=`glide novendor -x`
+pkgs=`go list ./...`
 
 # Lint check
 echo

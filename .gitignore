@@ -22,4 +22,3 @@ context/selenium-logs/selenium-standalone.txt
 # only exclude these index.html files from the VNC service.
 # they only appear in the root folder.
 /index.html*
-/.glide*

@@ -133,14 +133,14 @@ services:
     working_dir: /cg-dashboard
     command: 'node devtools/node/cleanup.js'
   backend:
-    image: golang:1.8.3
+    image: golang:1.9.2
     environment:
       - GOPATH=/go
       - DOCKER_IN_DOCKER=1
     volumes:
       - .:/go/src/github.com/18F/cg-dashboard
       - go-bins:/go/bin/
-      - go-dep-tool-src:/go/src/github.com/Masterminds
+      - go-dep-tool-src:/go/src/github.com/golang
       # needed for running go tests that use https://github.com/ory/dockertest
       - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /go/src/github.com/18F/cg-dashboard
