@@ -24,12 +24,6 @@
   revision = "5b60b3d3ee017ed00bcd0225fcca7acab767844b"
 
 [[projects]]
-  name = "github.com/boj/redistore"
-  packages = ["."]
-  revision = "fc113767cd6b051980f260d6dbe84b2740c46ab0"
-  version = "v1.2"
-
-[[projects]]
   name = "github.com/cenk/backoff"
   packages = ["."]
   revision = "32cd0c5b3aef12c76ed64aaf678f6c79736be7dc"
@@ -72,11 +66,6 @@
   name = "github.com/fsouza/go-dockerclient"
   packages = ["."]
   revision = "30d142bbfdec74e09ecb4bdb89a44440ae4662ac"
-
-[[projects]]
-  name = "github.com/garyburd/redigo"
-  packages = ["internal","redis"]
-  revision = "827b38687c49d680c6bd9ac6114111b98cc16cdf"
 
 [[projects]]
   name = "github.com/gocraft/web"
@@ -216,6 +205,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0567b978a21868df415db0cbe0753aa59460b36af18ce6a9a00ef76d62807019"
+  inputs-digest = "0ed688a8f12ee484dd1e6bd446a00f055b45f0696013ff2a5b2d990becc68242"
   solver-name = "gps-cdcl"
   solver-version = 1
