@@ -7,8 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
-	"os"
 
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gorilla/sessions"
@@ -178,71 +176,4 @@ func (s *Settings) InitSettings(envVars *env.VarSet, app *cfenv.App) (retErr err
 	s.SMTPUser = envVars.String(SMTPUserEnvVar, "")
 	s.TICSecret = envVars.String(TICSecretEnvVar, "")
 	return nil
-}
-
-func getRedisSettings(env *cfenv.App) (string, string, error) {
-	var err error
-	// Try to read directly from REDIS_URI first.
-	uri := os.Getenv("REDIS_URI")
-	if uri == "" {
-		// If no direct REDIS_URI, parse VCAP_SERVICES
-		uri, err = getRedisService(env)
-	}
-	// If nothing worked so far, default to localhost
-	if uri == "" || err != nil {
-		uri = "redis://localhost:6379"
-	}
-
-	u, err := url.Parse(uri)
-	if err != nil {
-		return "", "", err
-	}
-
-	password := ""
-	if u.User != nil {
-		password, _ = u.User.Password()
-	}
-
-	return u.Host, password, nil
-}
-
-func getRedisService(env *cfenv.App) (string, error) {
-	if env == nil {
-		return "", errors.New("Empty Cloud Foundry environment")
-	}
-	services, err := env.Services.WithTag("redis")
-	if err != nil {
-		return "", err
-	}
-	if len(services) == 0 {
-		return "", errors.New(`Could not find service with tag "redis"`)
-	}
-	uri, ok := services[0].Credentials["uri"].(string)
-	if !ok {
-		if uri, err = getRedisURIFromParts(services[0]); err == nil {
-			return uri, nil
-		}
-		return "", errors.New("Could not parse redis uri")
-	}
-	return uri, nil
-}
-
-// TODO: Delete after east-west is retired
-func getRedisURIFromParts(service cfenv.Service) (string, error) {
-	host, ok := service.Credentials["hostname"].(string)
-	if !ok {
-		return "", errors.New(`Could not find "host" key`)
-	}
-
-	port, ok := service.Credentials["port"].(string)
-	if !ok {
-		return "", errors.New(`Could not find "port" key`)
-	}
-
-	password, ok := service.Credentials["password"].(string)
-	if !ok {
-		return "", errors.New(`Could not find "password" key`)
-	}
-
-	return fmt.Sprintf("redis://:%s@%s:%s", password, host, port), nil
 }

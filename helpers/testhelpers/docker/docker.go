@@ -52,7 +52,7 @@ func skipIfNoDocker(t *testing.T) {
 	}
 }
 
-// CreateTestMailCatcher creates a actual redis instance with docker.
+// CreateTestMailCatcher creates a actual MailCatcher instance with docker.
 // Useful for unit tests.
 func CreateTestMailCatcher(t *testing.T) (string, string, string, func()) {
 	skipIfNoDocker(t)
