@@ -30,11 +30,18 @@ For all others changes, use the [full setup guide](#full-setup).
 ### Quick-Start: Running
 
 ```sh
-docker-compose up frontend_testing_server
+docker-compose up frontend_testing_server watch
 ```
 
-It will say the server is up when everything is done. At the point, you can
-navigate to `http://localhost:8001` and see the testing server.
+This will take about 10 minutes to fully install, build and compile. Once you see the `watch` container report that it has compiled the CSS, as shown below, then you can navigate to `http://localhost:8001` and see the testing server.
+
+```
+watch_1                    |       [99] ./~/css-loader!./~/cloudgov-style/css/base.css 122 kB {0} [built]
+watch_1                    |         + 85 hidden modules
+watch_1                    | Child extract-text-webpack-plugin:
+watch_1                    |        [0] ./~/css-loader/lib/css-base.js 1.51 kB {0} [built]
+watch_1                    |        [1] ./~/css-loader!./static_src/css/route_form.css 1.67 kB {0} [built]
+```
 
 ## Full Setup
 
