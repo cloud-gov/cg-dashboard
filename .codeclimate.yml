@@ -1,6 +1,6 @@
 ---
+# version: 2
 engines:
-
   duplication:
     enabled: false
   govet:
@@ -26,3 +26,12 @@ ratings:
 
 exclude_paths:
   - static_src/test/*
+  - screenshots/
+  - "**/node_modules/"
+  - "**/spec/"
+  - "**/tests/"
+  - "**/vendor/"
+  - static/bower_components/
+  - static/assets/
+  - .DS_Store/
+
