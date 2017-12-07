@@ -1,6 +1,6 @@
 ---
-# version: 2
-engines:
+version: 2
+plugins:
   duplication:
     enabled: false
   govet:
@@ -24,7 +24,7 @@ ratings:
   - "**.go"
   - "**.js"
 
-exclude_paths:
+exclude_patterns:
   - static_src/test/*
   - screenshots/
   - "**/node_modules/"
