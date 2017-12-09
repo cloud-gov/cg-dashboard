@@ -34,4 +34,5 @@ exclude_patterns:
   - static/bower_components/
   - static/assets/
   - .DS_Store/
+  - helpers/debug.test
 
