@@ -126,7 +126,7 @@ The code base includes linting configurations and tools, but is currently not fu
 
 ### Testing
 
-All pull requests are validated with [CircleCI](https://circleci.com/gh/18F/cg-dashboard) and [CodeClimate](https://codeclimate.com/github/18F/cg-dashboard). To run the CodeClimate tests locally, you can use the  [CodeClimate CLI](https://github.com/codeclimate/codeclimate) with Docker, by invoking `codeclimate analyze`. Only the `nodesecurity` tests will block acceptance, and these are run with `codeclimate analyze -e nodesecurity`.
+All pull requests are tested with [CircleCI](https://circleci.com/gh/18F/cg-dashboard) and [CodeClimate](https://codeclimate.com/github/18F/cg-dashboard). To run the CodeClimate tests locally, you can use the  [CodeClimate CLI](https://github.com/codeclimate/codeclimate) with Docker by invoking: `codeclimate analyze`. Only the `nodesecurity` tests will block acceptance, which you can isolate by running: `codeclimate analyze -e nodesecurity`.
 
 The CirleCI tests are described in the `circle.yml` stanza for `test:`, but in short
 
