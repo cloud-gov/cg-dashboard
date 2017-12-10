@@ -5360,9 +5360,9 @@
       "resolved": "https://registry.npmjs.org/preserve/-/preserve-0.2.0.tgz"
     },
     "prettier": {
-      "version": "1.8.1",
-      "from": "prettier@1.8.1",
-      "resolved": "https://registry.npmjs.org/prettier/-/prettier-1.8.1.tgz",
+      "version": "1.9.1",
+      "from": "prettier@1.9.1",
+      "resolved": "https://registry.npmjs.org/prettier/-/prettier-1.9.1.tgz",
       "dev": true
     },
     "private": {
