@@ -24,9 +24,7 @@ describe("formatDateTime", () => {
       output: "Jul 13 2015 09:02pm PDT"
     }
   ]) {
-    it(`should return a formatted datetime when given a valid value › ${
-      val
-    }`, () => {
+    it(`should return a formatted datetime when given a valid value › ${val}`, () => {
       expect(formatDateTime(val, tz)).toEqual(output);
     });
   }

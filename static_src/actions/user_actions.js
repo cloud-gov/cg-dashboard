@@ -291,9 +291,7 @@ const userActions = {
     } else {
       description =
         `An email invite was sent to ${email}. Their account ` +
-        `has been associated to this ${entity}, and their ${
-          entity
-        } roles can ` +
+        `has been associated to this ${entity}, and their ${entity} roles can ` +
         "be controlled below.";
     }
 
@@ -372,9 +370,7 @@ const userActions = {
 
     if (!user) {
       const err = new Error("User was not associated");
-      const message = `The user ${userGuid} was not associated in ${
-        entityGuid
-      }.`;
+      const message = `The user ${userGuid} was not associated in ${entityGuid}.`;
       return Promise.resolve(userActions.userInviteCreateError(err, message));
     }
 

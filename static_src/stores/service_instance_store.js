@@ -57,9 +57,7 @@ const getFriendlyError = (error, errorMap) => {
     return errorMap[errorCode];
   }
 
-  return `Error #${
-    code
-  }. Please contact cloud.gov support for help troubleshooting this issue.`;
+  return `Error #${code}. Please contact cloud.gov support for help troubleshooting this issue.`;
 };
 
 export class ServiceInstanceStore extends BaseStore {

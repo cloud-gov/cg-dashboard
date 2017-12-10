@@ -178,9 +178,7 @@ describe("userActions", function() {
         .returns(Promise.resolve({ guid: "" }));
     });
 
-    it("calls receivedOrgSpacesToExtractSpaceUsers once when org has one space", function(
-      done
-    ) {
+    it("calls receivedOrgSpacesToExtractSpaceUsers once when org has one space", function(done) {
       orgSpaces = [orgSpace];
       userActions
         .receivedOrgSpacesToExtractSpaceUsers(orgSpaces)
@@ -188,9 +186,7 @@ describe("userActions", function() {
       expect(cfApi.fetchSpaceUserRoles).toHaveBeenCalledOnce();
     });
 
-    it("calls receivedOrgSpacesToExtractSpaceUsers three times when org has three spaces", function(
-      done
-    ) {
+    it("calls receivedOrgSpacesToExtractSpaceUsers three times when org has three spaces", function(done) {
       orgSpaces = [orgSpace, orgSpace, orgSpace];
       userActions
         .receivedOrgSpacesToExtractSpaceUsers(orgSpaces)
@@ -469,9 +465,7 @@ describe("userActions", function() {
       sandbox.stub(UserStore, "get").returns("org_user");
     });
 
-    it("should dispatch a view event of type create invite notification with false", function(
-      done
-    ) {
+    it("should dispatch a view event of type create invite notification with false", function(done) {
       description =
         "An email invite was sent to this@that.com. Their account has been associated to this space, and their space roles can be controlled below.";
       var expected = {
@@ -485,9 +479,7 @@ describe("userActions", function() {
       done();
     });
 
-    it("should dispatch a view event of type create invite notification with true", function(
-      done
-    ) {
+    it("should dispatch a view event of type create invite notification with true", function(done) {
       description =
         "The cloud.gov account for this@that.com is now associated to this space. Control their space roles below.";
       var expected = {

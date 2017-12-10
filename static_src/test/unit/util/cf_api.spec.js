@@ -86,9 +86,7 @@ describe("cfApi", function() {
   });
 
   describe("postCreateNewUserWithGuid()", function() {
-    it("create a new user through a post request to cloud foundry", function(
-      done
-    ) {
+    it("create a new user through a post request to cloud foundry", function(done) {
       const userGuid = "fake-user-guid";
       const expectedPayload = {
         guid: userGuid
@@ -204,9 +202,7 @@ describe("cfApi", function() {
   });
 
   describe("createRoute()", function() {
-    it("should POST to the versioned /routes endpoint with data", function(
-      done
-    ) {
+    it("should POST to the versioned /routes endpoint with data", function(done) {
       const domainGuid = "fake-domain-guid";
       const spaceGuid = "fake-space-guid";
       const host = "fake-host";
@@ -233,9 +229,7 @@ describe("cfApi", function() {
         .catch(done.fail);
     });
 
-    it("should call routeActions.createdRoute with response data", function(
-      done
-    ) {
+    it("should call routeActions.createdRoute with response data", function(done) {
       const domainGuid = "fake-domain-guid";
       const spaceGuid = "fake-space-guid";
       const host = "fake-host";
@@ -262,9 +256,7 @@ describe("cfApi", function() {
         .catch(done.fail);
     });
 
-    it("should call route actions create error on request failure", function(
-      done
-    ) {
+    it("should call route actions create error on request failure", function(done) {
       const spy = sandbox.stub(routeActions, "errorCreateRoute");
       const stub = sandbox.stub(http, "post");
       stub.returns(createPromise(true, fakeCFErrorRes));
@@ -277,9 +269,7 @@ describe("cfApi", function() {
   });
 
   describe("deleteRoute()", function() {
-    it("should DELETE to the versioned /routes/:routeGuid endpoint with data", function(
-      done
-    ) {
+    it("should DELETE to the versioned /routes/:routeGuid endpoint with data", function(done) {
       const routeGuid = "fake-route-guid";
       const spy = sandbox.stub(http, "delete");
       spy.returns(Promise.resolve());
@@ -295,9 +285,7 @@ describe("cfApi", function() {
         .catch(done.fail);
     });
 
-    it("should call routeActions.deletedRoute with response data", function(
-      done
-    ) {
+    it("should call routeActions.deletedRoute with response data", function(done) {
       const routeGuid = "fake-route-guid";
       const stub = sandbox.stub(http, "delete");
       const spy = sandbox.spy(routeActions, "deletedRoute");
@@ -314,9 +302,7 @@ describe("cfApi", function() {
         .catch(done.fail);
     });
 
-    it("should call route actions error with guid on request failure", function(
-      done
-    ) {
+    it("should call route actions error with guid on request failure", function(done) {
       const spy = sandbox.stub(routeActions, "error");
       const stub = sandbox.stub(http, "delete");
       stub.returns(createPromise(true, fakeCFErrorRes));
@@ -337,9 +323,7 @@ describe("cfApi", function() {
   });
 
   describe("fetchOne()", function() {
-    it("should call an http get request with the versioned url", function(
-      done
-    ) {
+    it("should call an http get request with the versioned url", function(done) {
       const stub = sandbox.stub(http, "get");
       const expectedUrl = "/org/asldfkj";
 
@@ -354,9 +338,7 @@ describe("cfApi", function() {
       });
     });
 
-    it("should call the action with the response data on success", function(
-      done
-    ) {
+    it("should call the action with the response data on success", function(done) {
       const expected = { data: { metadata: { guid: "q39g08hgdih" } } };
       const stub = sandbox.stub(http, "get");
       const spy = sandbox.spy();
@@ -854,9 +836,7 @@ describe("cfApi", function() {
   });
 
   describe("deleteUnboundServiceInstance()", function() {
-    it("should call http delete request on service route with service guid", function(
-      done
-    ) {
+    it("should call http delete request on service route with service guid", function(done) {
       var spy = sandbox.stub(http, "delete").returns(Promise.resolve()),
         expectedGuid = "yyasdflkjayybbaal1",
         expected = { guid: expectedGuid, url: "/" + expectedGuid };
@@ -1042,9 +1022,7 @@ describe("cfApi", function() {
   });
 
   describe("deleteOrgUserCategory()", function() {
-    it("should call a http delete request on the org user with category ", function(
-      done
-    ) {
+    it("should call a http delete request on the org user with category ", function(done) {
       var spy = sandbox.stub(http, "delete").returns(Promise.resolve({})),
         expectedUserGuid = "zvmxncznv-9u8qwphu",
         expectedOrgGuid = "0291kdvakjbdfvhp",
@@ -1069,9 +1047,7 @@ describe("cfApi", function() {
   });
 
   describe("deleteOrgUserPermissions()", function() {
-    it("should call an http delete request on org user with permissions", function(
-      done
-    ) {
+    it("should call an http delete request on org user with permissions", function(done) {
       var spy = sandbox.stub(http, "delete").returns(Promise.resolve({})),
         expectedUserGuid = "zvmxncznv-9u8qwphu",
         expectedOrgGuid = "0291kdvakjbdfvhp",
@@ -1107,9 +1083,7 @@ describe("cfApi", function() {
         };
       moxios.stubOnce(
         "DELETE",
-        `/v2/organizations/${expectedOrgGuid}/${expectedApiKey}/${
-          expectedUserGuid
-        }`,
+        `/v2/organizations/${expectedOrgGuid}/${expectedApiKey}/${expectedUserGuid}`,
         {
           status: 400,
           response: expectedResponse
@@ -1313,9 +1287,7 @@ describe("cfApi", function() {
   });
 
   describe("putAppRouteAssociation()", function() {
-    it("should PUT to the versioned /routes/:routeGuid/apps/:appGuid", function(
-      done
-    ) {
+    it("should PUT to the versioned /routes/:routeGuid/apps/:appGuid", function(done) {
       const appGuid = "fake-app-guid";
       const routeGuid = "fake-route-guid";
 
@@ -1334,9 +1306,7 @@ describe("cfApi", function() {
         .catch(done.fail);
     });
 
-    it("should call routeActions.associatedApp() with the routeGuid and appGuid", function(
-      done
-    ) {
+    it("should call routeActions.associatedApp() with the routeGuid and appGuid", function(done) {
       const appGuid = "fake-app-guid";
       const routeGuid = "fake-route-guid";
 
@@ -1357,9 +1327,7 @@ describe("cfApi", function() {
         .catch(done.fail);
     });
 
-    it("should call route actions error with guid on request failure", function(
-      done
-    ) {
+    it("should call route actions error with guid on request failure", function(done) {
       const spy = sandbox.stub(routeActions, "error");
       const stub = sandbox.stub(http, "put");
       stub.returns(createPromise(true, fakeCFErrorRes));
@@ -1396,9 +1364,7 @@ describe("cfApi", function() {
         .catch(done.fail);
     });
 
-    it("should call routeActions.unassociatedApp() with the routeGuid and appGuid", function(
-      done
-    ) {
+    it("should call routeActions.unassociatedApp() with the routeGuid and appGuid", function(done) {
       const appGuid = "fake-app-guid";
       const routeGuid = "fake-route-guid";
 
@@ -1419,9 +1385,7 @@ describe("cfApi", function() {
         .catch(done.fail);
     });
 
-    it("should call route actions error with guid on request failure", function(
-      done
-    ) {
+    it("should call route actions error with guid on request failure", function(done) {
       const spy = sandbox.stub(routeActions, "error");
       const stub = sandbox.stub(http, "delete");
       stub.returns(createPromise(true, fakeCFErrorRes));
@@ -1442,9 +1406,7 @@ describe("cfApi", function() {
   });
 
   describe("putRouteUpdate()", function() {
-    it("should call routeActions.updatedRoute() with the routeGuid and route", function(
-      done
-    ) {
+    it("should call routeActions.updatedRoute() with the routeGuid and route", function(done) {
       const routeGuid = "fake-route-guid";
       const domainGuid = "fake-dommain-guid";
       const spaceGuid = "fake-space-guid";
@@ -1477,9 +1439,7 @@ describe("cfApi", function() {
         .catch(done.fail);
     });
 
-    it("should call route actions error with guid on request failure", function(
-      done
-    ) {
+    it("should call route actions error with guid on request failure", function(done) {
       const spy = sandbox.stub(routeActions, "error");
       const stub = sandbox.stub(http, "put");
       stub.returns(createPromise(true, fakeCFErrorRes));

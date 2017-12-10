@@ -26,8 +26,7 @@ proper data. If you've never used environment variables before, you can run the
 following: `mkdir ~/.env && cp ./env.sample ~/.env/cg-dashboard`
 
 Then edit the file `~/.env/cg-dashboard` and provide the proper values. When you
-want to set all the environment variables, just run `source
-~/.env/cg-dashboard`. You'll have to do this every time you open a new shell. If
+want to set all the environment variables, just run `source ~/.env/cg-dashboard`. You'll have to do this every time you open a new shell. If
 you work at 18F, ask a team member to send you the secret credentials.
 
 * `GOPATH`: The absolute path to your code directory, one level up from the root
