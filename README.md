@@ -15,15 +15,15 @@ Learn more about [cloud.gov](https://cloud.gov).
 
 ### Backend Server
 
-- `Go` (version 1.9)
+* `Go` (version 1.9)
 
 ### Front end application
 
-- `Node` (version 6.x.x)
-- `React` (version ^15.0.0)
-- `Babel` (version ^6.x.x)
-- `Karma` (version ^1.4.x)
-- `Webpack` (version ^1.x.x)
+* `Node` (version 6.x.x)
+* `React` (version ^15.0.0)
+* `Babel` (version ^6.x.x)
+* `Karma` (version ^1.4.x)
+* `Webpack` (version ^1.x.x)
 
 ## Setup Local Environment
 
@@ -65,10 +65,10 @@ EOF
 
 ### Create a Client with UAAC
 
-- Make sure [UAAC](https://github.com/cloudfoundry/cf-uaac) is installed.
-- Target your UAA server. `uaac target <uaa.your-domain.com>`
-- Login with your current UAA account. `uaac token client get <your admin account> -s <your uaa admin password>`
-- Create client account:
+* Make sure [UAAC](https://github.com/cloudfoundry/cf-uaac) is installed.
+* Target your UAA server. `uaac target <uaa.your-domain.com>`
+* Login with your current UAA account. `uaac token client get <your admin account> -s <your uaa admin password>`
+* Create client account:
 
 ```bash
 uaac client add <your-client-id> \
@@ -79,21 +79,21 @@ uaac client add <your-client-id> \
 -s <your-client-secret>
 ```
 
-- Unable to create an account still? Troubleshoot [here](https://docs.cloudfoundry.org/adminguide/uaa-user-management.html#creating-admin-users)
+* Unable to create an account still? Troubleshoot [here](https://docs.cloudfoundry.org/adminguide/uaa-user-management.html#creating-admin-users)
 
 ### CI
 
 This project uses CircleCI.
 
-- You will need to set up the credentials to deploy to the `dashboard-prod` and `dashboard-stage` spaces.
-  - In both spaces run: `cf create-service cloud-gov-service-account space-deployer dashboard-deployer`.
-  - You will get the link for that space's credentials by running `cf service dashboard-deployer`.
-  - You will need to set these [**secret**](https://circleci.com/docs/1.0/environment-variables/#setting-environment-variables-for-all-commands-without-adding-them-to-git) variables in the [CircleCI UI](https://circleci.com/gh/18F/cg-dashboard/edit#env-vars).
-    - `CF_USERNAME_PROD_SPACE` - The username for the `dashboard-prod` deployer
-    - `CF_PASSWORD_PROD_SPACE` - The password for the `dashboard-prod` deployer
-    - `CF_USERNAME_STAGE_SPACE` - The username for the `dashboard-stage` deployer
-    - `CF_PASSWORD_STAGE_SPACE` - The password for the `dashboard-stage` deployer
-- If you fork this project for your own use, you will need to use the CircleCI CLI UI to set the variables. (If you're forking just to make a pull request, there's no need to do this.)
+* You will need to set up the credentials to deploy to the `dashboard-prod` and `dashboard-stage` spaces.
+  * In both spaces run: `cf create-service cloud-gov-service-account space-deployer dashboard-deployer`.
+  * You will get the link for that space's credentials by running `cf service dashboard-deployer`.
+  * You will need to set these [**secret**](https://circleci.com/docs/1.0/environment-variables/#setting-environment-variables-for-all-commands-without-adding-them-to-git) variables in the [CircleCI UI](https://circleci.com/gh/18F/cg-dashboard/edit#env-vars).
+    * `CF_USERNAME_PROD_SPACE` - The username for the `dashboard-prod` deployer
+    * `CF_PASSWORD_PROD_SPACE` - The password for the `dashboard-prod` deployer
+    * `CF_USERNAME_STAGE_SPACE` - The username for the `dashboard-stage` deployer
+    * `CF_PASSWORD_STAGE_SPACE` - The password for the `dashboard-stage` deployer
+* If you fork this project for your own use, you will need to use the CircleCI CLI UI to set the variables. (If you're forking just to make a pull request, there's no need to do this.)
 
 ### Optional features
 

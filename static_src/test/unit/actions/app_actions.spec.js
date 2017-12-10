@@ -109,9 +109,7 @@ describe("appActions", function() {
   });
 
   describe("changeCurrentApp()", function() {
-    it("should dispatch a ui event of type app changed with guid", function(
-      done
-    ) {
+    it("should dispatch a ui event of type app changed with guid", function(done) {
       const appGuid = "testingAppGuid";
       const expectedParams = {
         appGuid
@@ -185,9 +183,7 @@ describe("appActions", function() {
       assertAction(spy, appActionTypes.APP_START, expectedParams);
     });
 
-    it("should call cf api put app with state started to restart the app", function(
-      done
-    ) {
+    it("should call cf api put app with state started to restart the app", function(done) {
       const spy = sandbox.stub(cfApi, "putApp").returns(Promise.resolve());
       sandbox.stub(appActions, "restarted").returns(Promise.resolve());
       const expectedGuid = "asdfasd2vdamcdksa";

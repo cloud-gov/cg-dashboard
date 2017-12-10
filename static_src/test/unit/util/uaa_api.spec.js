@@ -59,9 +59,7 @@ describe("uaaApi", function() {
   });
 
   describe("inviteUaaUser()", function() {
-    it("should make invite uaa request and receive proper payload", function(
-      done
-    ) {
+    it("should make invite uaa request and receive proper payload", function(done) {
       const email = "email@domain.com";
       const expectedPayload = { email: "email@domain.com" };
       const spy = sandbox.stub(http, "post");

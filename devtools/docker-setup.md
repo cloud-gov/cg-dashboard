@@ -173,17 +173,14 @@ Examples
 
 * Add dependency: `docker-compose run --rm frontend npm install <dep> --save`
 * Frontend unit tests: `docker-compose run --rm frontend npm run test-unit`
-* Watch frontend unit tests: `docker-compose run --rm frontend npm run
-  watch-test-unit`
-* Frontend functional tests (w/o visual debugging): `docker-compose run --rm
-  frontend npm run test-functional`
+* Watch frontend unit tests: `docker-compose run --rm frontend npm run watch-test-unit`
+* Frontend functional tests (w/o visual debugging): `docker-compose run --rm frontend npm run test-functional`
 
 For more possible commands, refer to the package.json.
 
 ##### Visual Debugging
 
-Once the `frontend` service is up and running (via `docker-compose up -d
-frontend`), you can use the docker-compose `exec` command to attach to the
+Once the `frontend` service is up and running (via `docker-compose up -d frontend`), you can use the docker-compose `exec` command to attach to the
 existing container. While viewing the container via the HTML VNC Viewer (refer
 to the table above), you will see the container's Chrome browser open and
 execute the commands.
@@ -192,8 +189,7 @@ Format: `docker-compose exec frontend bash -c "<COMMAND>"`
 
 Examples:
 
-* Frontend functional tests: `docker-compose exec frontend bash -c "npm run
-  test-functional"`
+* Frontend functional tests: `docker-compose exec frontend bash -c "npm run test-functional"`
 
 ##### Updating the node version.
 
@@ -208,8 +204,7 @@ Format: `docker-compose run --rm backend <COMMAND>`
 
 Examples:
 
-* Add dependency: `docker-compose run --rm backend dep ensure -add
-  github.com/some/repo`
+* Add dependency: `docker-compose run --rm backend dep ensure -add github.com/some/repo`
 * Run `./codecheck.sh`: `docker-compose run --rm backend ./codecheck.sh`
 
 #### UAA One-Offs

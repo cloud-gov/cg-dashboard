@@ -306,9 +306,7 @@ describe("BaseStore", () => {
       });
     });
 
-    it("should update a single existing entity with the same guid ", function(
-      done
-    ) {
+    it("should update a single existing entity with the same guid ", function(done) {
       var updateA = {
         guid: existingEntityA.guid,
         name: "zzz",

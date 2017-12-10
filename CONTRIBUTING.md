@@ -135,8 +135,7 @@ process](https://github.com/18F/cg-product/blob/master/DeliveryProcess.md).
 * The team prefers rebasing over merging, though we use GitHub to close out pull
   requests. This means that PRs will be merged, but if you're refreshing a local
   branch make sure to use rebase. For example, if you want to update your
-  `new-feature` branch to reflect the most recent changes on GitHub use `git
-  pull --rebase origin new-feature`.
+  `new-feature` branch to reflect the most recent changes on GitHub use `git pull --rebase origin new-feature`.
 
 ### Branches
 
@@ -217,8 +216,7 @@ Documentation is not a focus right now.
 
 To upgrade all dependencies to version stipulated in package.json
 
-* Ensure cloudgov-style or other dependencies are unlinked by running `npm
-  unlink cloudgov-style`.
+* Ensure cloudgov-style or other dependencies are unlinked by running `npm unlink cloudgov-style`.
 * Remove `npm-shrinkwrap.json`.
 * Use `npm update --save --saveDev` to update all dependencies.
 * Make sure it works (run linting, tests, and acceptance tests).
@@ -226,8 +224,7 @@ To upgrade all dependencies to version stipulated in package.json
 
 To update a single package to a specific version
 
-* Ensure cloudgov-style or other dependencies are unlinked by running `npm
-  unlink cloudgov-style`.
+* Ensure cloudgov-style or other dependencies are unlinked by running `npm unlink cloudgov-style`.
 * Run `npm install --save[Dev] {package name}@{version}` where package name is
   the name of the package to update and version is the version you want to
   update to.
