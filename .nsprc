@@ -1,0 +1,10 @@
+{
+    "exceptions": [
+        "https://nodesecurity.io/advisories/550",
+        "https://nodesecurity.io/advisories/535"
+    ],
+    "comments": { 
+      "550": "ws 1.1.2 <- karma@1.7.1 (unpatched) excluded as dev/test dependency",
+      "535": "mime 1.3.4 <- karma-webpack@1.8.1 excluded as dev/test dependency"
+    }
+}
