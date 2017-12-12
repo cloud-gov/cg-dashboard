@@ -9,9 +9,6 @@ engines:
     enabled: true
   nodesecurity:
     enabled: true
-    exclude_fingerprints:
-      - db2b925f6a46b556ffeaf17fa6a26952 https://github.com/hueniverse/hawk/issues/168
-      - ccfee66849da0982a0bc703f19b3d57d tough-cookie ReDoS via long string of semicolons
   eslint:
     enabled: false
   fixme:
