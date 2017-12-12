@@ -136,6 +136,7 @@ The code base includes linting configurations and tools, but is currently not fu
 To upgrade all dependencies to version stipulated in package.json
 
 - Ensure cloudgov-style or other dependencies are unlinked by running `npm unlink cloudgov-style`.
+  - Dependencies you unlink may need to be manually replaced with, say, `npm install --save cloudgov-style`
 - Remove `npm-shrinkwrap.json`.
 - Use `npm update --save --saveDev` to update all dependencies.
 - Make sure it works (run linting, tests, and acceptance tests).
