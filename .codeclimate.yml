@@ -1,8 +1,6 @@
 ---
-engines:
-
-  duplication:
-    enabled: false
+version: 2
+plugins:
   govet:
     enabled: true
   golint:
@@ -15,11 +13,22 @@ engines:
     enabled: false
   csslint:
     enabled: false
+    
+checks:
+  similar-code:
+    enabled: false
+  identical-code:
+    enabled: false
 
-ratings:
-  paths:
-  - "**.go"
-  - "**.js"
-
-exclude_paths:
+exclude_patterns:
   - static_src/test/*
+  - screenshots/
+  - "**/node_modules/"
+  - "**/spec/"
+  - "**/tests/"
+  - "**/vendor/"
+  - static/bower_components/
+  - static/assets/
+  - .DS_Store/
+  - helpers/debug.test
+

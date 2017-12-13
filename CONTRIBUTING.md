@@ -124,6 +124,28 @@ The code base includes linting configurations and tools, but is currently not fu
   - Unless under strict time constraints.
 - No new files should be added to the lint ignore. Consequently, all new files should be linted.
 
+### Testing
+
+All pull requests are tested with [CircleCI](https://circleci.com/gh/18F/cg-dashboard) and [CodeClimate](https://codeclimate.com/github/18F/cg-dashboard). To run the CodeClimate tests locally, you can use the  [CodeClimate CLI](https://github.com/codeclimate/codeclimate) with Docker by invoking: `codeclimate analyze`. Only the `nodesecurity` tests will block acceptance, which you can isolate by running: `codeclimate analyze -e nodesecurity`.
+
+The CirleCI tests are described in the `circle.yml` stanza for `test:`, but in short
+
+
+* **FrontEnd tests**: If you followed the [Manual Setup](./devtools/manual-setup.md), tests are invoked with `npm run test`. If you're using the recommended [Docker setup](/devtools/docker-setup.md), then you'd invoke:
+  ```
+  docker-compose up -d frontend
+  docker-compose exec frontend bash -c "npm run test"
+  ```
+  The Docker image `consol/ubuntu-xfce-vnc` may encounter a ChromeDriver bug that results in errors like the one below: 
+  ```
+  Error: An unknown server-side error occurred while processing the command.
+      at cookie("DELETE", "testing_user_role") - deleteCookie.js
+  ```
+  Failures related to these errors can be ignored, as they're not present in the CircleCI tests.
+* **Backend Tests**: The Go server test suites are invoked with `./codecheck.sh`. 
+
+
+
 ### Dependency management
 - The only language level dependencies should be `nodejs` and `go`.
 - Front end dependencies (as in `package.json`) should be pinned to minor versions and below under most circumstances.
