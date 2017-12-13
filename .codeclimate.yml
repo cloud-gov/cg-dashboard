@@ -1,8 +1,6 @@
 ---
 version: 2
 plugins:
-  duplication:
-    enabled: false
   govet:
     enabled: true
   golint:
@@ -18,11 +16,6 @@ plugins:
     enabled: false
   csslint:
     enabled: false
-
-ratings:
-  paths:
-  - "**.go"
-  - "**.js"
 
 exclude_patterns:
   - static_src/test/*
