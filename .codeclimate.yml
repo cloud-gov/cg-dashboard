@@ -1,8 +1,6 @@
 ---
 version: 2
 plugins:
-  duplication:
-    enabled: false
   govet:
     enabled: true
   golint:
@@ -17,6 +15,12 @@ plugins:
   fixme:
     enabled: false
   csslint:
+    enabled: false
+    
+checks:
+  similar-code:
+    enabled: false
+  identical-code:
     enabled: false
 
 exclude_patterns:
