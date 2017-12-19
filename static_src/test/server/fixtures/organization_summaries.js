@@ -1,4 +1,3 @@
-
 const organizationSummaries = [
   {
     guid: "48b3f8a1-ffe7-4aa8-8e85-94768d6bd250",

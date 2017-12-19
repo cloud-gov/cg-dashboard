@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
 const propTypes = {
   error: PropTypes.object,
@@ -47,8 +47,8 @@ export default class SystemErrorMessage extends Component {
 
     return (
       <div
-        className={classNames('error_message', {
-          'error-inline': inline
+        className={classNames("error_message", {
+          "error-inline": inline
         })}
         role="alert"
       >

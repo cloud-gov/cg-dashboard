@@ -1,12 +1,15 @@
+import hapi from "hapi";
+import inert from "inert";
+import smocks from "smocks";
 
-import hapi from 'hapi';
-import inert from 'inert';
-import smocks from 'smocks';
+import authstatus from "./authstatus";
+import api from "./api";
 
-import authstatus from './authstatus';
-import api from './api';
+// configure smocks as a hapi plugin
+const smocksplugin = require("smocks/hapi").toPlugin();
+const pkg = require("../../../package.json");
 
-smocks.id('cg-dashboard-testing');
+smocks.id("cg-dashboard-testing");
 
 // add auth status route
 authstatus(smocks);
@@ -29,60 +32,61 @@ export function start(...args) {
     port
   });
 
-  // configure smocks as a hapi plugin
-  const smocksplugin = require('smocks/hapi').toPlugin();
   smocksplugin.attributes = {
-    pkg: require('../../../package.json')
+    pkg
   };
 
-  server.register([
-    inert,
-    smocksplugin
-  ]);
+  server.register([inert, smocksplugin]);
 
   // serve static assets
   server.route({
-    method: 'get',
-    path: '/assets/{p*}',
+    method: "get",
+    path: "/assets/{p*}",
     handler: {
       directory: {
-        path: 'static/assets'
+        path: "static/assets"
       }
     }
   });
 
   server.route({
-    method: 'get',
-    path: '/skins/{p*}',
+    method: "get",
+    path: "/skins/{p*}",
     handler: {
       directory: {
-        path: 'static/skins'
+        path: "static/skins"
       }
     }
   });
 
   server.route({
-    method: 'get',
-    path: '/{p*}',
+    method: "get",
+    path: "/{p*}",
     handler: {
       directory: {
-        path: 'templates/web'
+        path: "templates/web"
       }
     }
   });
 
   // Default callback
-  function __cb(err) {
+  function defaultCallback(err) {
     if (err) {
       throw err;
     }
 
-    console.log( // eslint-disable-line no-console
-      `Started smocks server on ${server.info.port}. Visit ${server.info.uri}/_admin to configure.`
+    /* eslint-disable no-console */
+    console.log(
+      `Started smocks server on ${server.info.port}. Visit ${
+        server.info.uri
+      }/_admin to configure.`
     );
+    /* eslint-enable no-console */
   }
 
-  server.start(cb || __cb);
+  server.start(cb || defaultCallback);
 
   return server;
 }
+
+export default {};

@@ -1,31 +1,30 @@
-import React from 'react';
+import React from "react";
 
-import Action from './action.jsx';
-import ActivityLog from './activity_log.jsx';
-import { appHealth, worstAppInstanceState } from '../util/health';
-import { appStates } from '../constants';
-import { config } from 'skin';
-import AppStore from '../stores/app_store.js';
-import Breadcrumbs from './breadcrumbs';
-import DomainStore from '../stores/domain_store.js';
-import EnvStore from '../stores/env_store.js';
-import RouteStore from '../stores/route_store.js';
-import EntityIcon from './entity_icon.jsx';
-import SystemErrorMessage from './system_error_message.jsx';
-import Loading from './loading.jsx';
-import OrgStore from '../stores/org_store.js';
-import QuotaStore from '../stores/quota_store.js';
-import RoutesPanel from './routes_panel.jsx';
-import EnvPanel from './env/env_panel';
-import PageHeader from './page_header.jsx';
-import Panel from './panel.jsx';
-import ServiceInstancePanel from './service_instance_panel.jsx';
-import UPSIPanel from './upsi/upsi_panel';
-import SpaceStore from '../stores/space_store.js';
-import UPSIStore from '../stores/upsi_store';
-import UsageLimits from './usage_and_limits.jsx';
-import appActions from '../actions/app_actions.js';
-
+import Action from "./action.jsx";
+import ActivityLog from "./activity_log.jsx";
+import { appHealth, worstAppInstanceState } from "../util/health";
+import { appStates } from "../constants";
+import { config } from "skin";
+import AppStore from "../stores/app_store.js";
+import Breadcrumbs from "./breadcrumbs";
+import DomainStore from "../stores/domain_store.js";
+import EnvStore from "../stores/env_store.js";
+import RouteStore from "../stores/route_store.js";
+import EntityIcon from "./entity_icon.jsx";
+import SystemErrorMessage from "./system_error_message.jsx";
+import Loading from "./loading.jsx";
+import OrgStore from "../stores/org_store.js";
+import QuotaStore from "../stores/quota_store.js";
+import RoutesPanel from "./routes_panel.jsx";
+import EnvPanel from "./env/env_panel";
+import PageHeader from "./page_header.jsx";
+import Panel from "./panel.jsx";
+import ServiceInstancePanel from "./service_instance_panel.jsx";
+import UPSIPanel from "./upsi/upsi_panel";
+import SpaceStore from "../stores/space_store.js";
+import UPSIStore from "../stores/upsi_store";
+import UsageLimits from "./usage_and_limits.jsx";
+import appActions from "../actions/app_actions.js";
 
 function appReady(app) {
   return !!app && !!app.name;
@@ -39,15 +38,19 @@ function mapStoreToState() {
   const envUpdateError = EnvStore.getUpdateError(currentAppGuid);
   const space = SpaceStore.get(SpaceStore.currentSpaceGuid);
   const org = OrgStore.get(OrgStore.currentOrgGuid);
-  const upsisRequest = space ? UPSIStore.getAllForSpaceRequest(space.guid) : null;
+  const upsisRequest = space
+    ? UPSIStore.getAllForSpaceRequest(space.guid)
+    : null;
 
   if (app) {
-  // This depends on DomainStore
+    // This depends on DomainStore
     route = RouteStore.getRouteURLForApp(app);
   }
 
-  const quotaGuid = (space && space.space_quota_definition_guid) ||
-    (org && org.quota_definition_guid) || null;
+  const quotaGuid =
+    (space && space.space_quota_definition_guid) ||
+    (org && org.quota_definition_guid) ||
+    null;
 
   const quota = QuotaStore.get(quotaGuid);
 
@@ -78,42 +81,42 @@ export default class AppContainer extends React.Component {
 
     this.state = mapStoreToState();
 
-    this._onChange = this._onChange.bind(this);
-    this._onRestart = this._onRestart.bind(this);
-    this._onStart = this._onStart.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleRestart = this.handleRestart.bind(this);
+    this.handleStart = this.handleStart.bind(this);
   }
 
   componentDidMount() {
-    AppStore.addChangeListener(this._onChange);
-    DomainStore.addChangeListener(this._onChange);
-    EnvStore.addChangeListener(this._onChange);
-    OrgStore.addChangeListener(this._onChange);
-    QuotaStore.addChangeListener(this._onChange);
-    RouteStore.addChangeListener(this._onChange);
-    SpaceStore.addChangeListener(this._onChange);
-    UPSIStore.addChangeListener(this._onChange);
+    AppStore.addChangeListener(this.handleChange);
+    DomainStore.addChangeListener(this.handleChange);
+    EnvStore.addChangeListener(this.handleChange);
+    OrgStore.addChangeListener(this.handleChange);
+    QuotaStore.addChangeListener(this.handleChange);
+    RouteStore.addChangeListener(this.handleChange);
+    SpaceStore.addChangeListener(this.handleChange);
+    UPSIStore.addChangeListener(this.handleChange);
   }
 
   componentWillUnmount() {
-    AppStore.removeChangeListener(this._onChange);
-    DomainStore.removeChangeListener(this._onChange);
-    EnvStore.removeChangeListener(this._onChange);
-    OrgStore.removeChangeListener(this._onChange);
-    QuotaStore.removeChangeListener(this._onChange);
-    RouteStore.removeChangeListener(this._onChange);
-    SpaceStore.removeChangeListener(this._onChange);
-    UPSIStore.removeChangeListener(this._onChange);
+    AppStore.removeChangeListener(this.handleChange);
+    DomainStore.removeChangeListener(this.handleChange);
+    EnvStore.removeChangeListener(this.handleChange);
+    OrgStore.removeChangeListener(this.handleChange);
+    QuotaStore.removeChangeListener(this.handleChange);
+    RouteStore.removeChangeListener(this.handleChange);
+    SpaceStore.removeChangeListener(this.handleChange);
+    UPSIStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(mapStoreToState());
   }
 
-  _onRestart() {
+  handleRestart() {
     appActions.restart(this.state.app.guid);
   }
 
-  _onStart() {
+  handleStart() {
     appActions.start(this.state.app.guid);
   }
 
@@ -123,12 +126,12 @@ export default class AppContainer extends React.Component {
     if (this.state.app.state === appStates.started) {
       // If the app is started, use the instance state
       worstState = worstAppInstanceState(
-	(this.state.app.app_instances || []).map(instance => instance.state)
+        (this.state.app.app_instances || []).map(instance => instance.state)
       );
     }
 
     if (worstState) {
-      label = <span className="usa-label">{ worstState }</span>;
+      label = <span className="usa-label">{worstState}</span>;
     }
 
     return label;
@@ -140,7 +143,7 @@ export default class AppContainer extends React.Component {
     return (
       <Action
         style="primary"
-        href={ `https://${route}` }
+        href={`https://${route}`}
         label="open app"
         type="outline"
       >
@@ -152,11 +155,11 @@ export default class AppContainer extends React.Component {
   get restart() {
     let loading;
 
-    let handler = this._onRestart;
-    let actionText = 'Restart app';
+    let handler = this.handleRestart;
+    let actionText = "Restart app";
     if (!AppStore.isRunning(this.state.app)) {
-      handler = this._onStart;
-      actionText = 'Start app';
+      handler = this.handleStart;
+      actionText = "Start app";
     }
 
     if (AppStore.isStarting(this.state.app)) {
@@ -170,11 +173,11 @@ export default class AppContainer extends React.Component {
     const action = loading || (
       <Action
         style="primary"
-        clickHandler={ handler }
-        label={ actionText }
+        clickHandler={handler}
+        label={actionText}
         type="outline"
       >
-        <span>{ actionText }</span>
+        <span>{actionText}</span>
       </Action>
     );
 
@@ -185,9 +188,7 @@ export default class AppContainer extends React.Component {
     let error;
 
     if (this.state.app.error) {
-      error = (
-        <SystemErrorMessage error={ this.state.app.error } />
-      );
+      error = <SystemErrorMessage error={this.state.app.error} />;
     }
 
     return error;
@@ -196,7 +197,6 @@ export default class AppContainer extends React.Component {
   get logsDocumentation() {
     return <config.snippets.logs />;
   }
-
 
   render() {
     const {
@@ -208,13 +208,17 @@ export default class AppContainer extends React.Component {
       upsisRequest
     } = this.state;
 
-    let loading = <Loading text="Loading app" />;
-    let content = <div>{ loading }</div>;
+    const loading = <Loading text="Loading app" />;
+    let content = <div>{loading}</div>;
     const title = (
       <span>
-       <EntityIcon entity="app" health={ appHealth(this.state.app) } iconSize="large" />
-       { this.state.app.name } { this.statusUI }
-     </span>
+        <EntityIcon
+          entity="app"
+          health={appHealth(this.state.app)}
+          iconSize="large"
+        />
+        {this.state.app.name} {this.statusUI}
+      </span>
     );
 
     if (this.state.empty) {
@@ -225,15 +229,15 @@ export default class AppContainer extends React.Component {
           <div className="grid">
             <div className="grid-width-12">
               <Breadcrumbs org={org} space={space} app={app} />
-              <PageHeader title={ title }>
-                { this.error }
-                { this.openApp }
-                { this.restart }
+              <PageHeader title={title}>
+                {this.error}
+                {this.openApp}
+                {this.restart}
               </PageHeader>
             </div>
           </div>
           <Panel title="Usage and allocation">
-            <UsageLimits app={ this.state.app } quota={ this.state.quota } />
+            <UsageLimits app={this.state.app} quota={this.state.quota} />
           </Panel>
 
           <Panel title="Routes">
@@ -244,12 +248,7 @@ export default class AppContainer extends React.Component {
             <ServiceInstancePanel />
           </Panel>
 
-          {upsisRequest && (
-            <UPSIPanel
-              app={app}
-              upsisRequest={upsisRequest}
-            />
-          )}
+          {upsisRequest && <UPSIPanel app={app} upsisRequest={upsisRequest} />}
 
           {envRequest && (
             <EnvPanel
@@ -260,19 +259,15 @@ export default class AppContainer extends React.Component {
           )}
 
           <Panel title="Recent activity">
-            { this.logsDocumentation }
+            {this.logsDocumentation}
             <ActivityLog />
           </Panel>
         </div>
       );
     }
 
-    return (
-      <div>
-        { content }
-      </div>
-    );
+    return <div>{content}</div>;
   }
 }
 
-AppContainer.propTypes = { };
+AppContainer.propTypes = {};

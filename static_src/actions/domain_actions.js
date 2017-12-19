@@ -1,11 +1,10 @@
-
 /*
  * Actions for domain entities. Any actions such as fetching, creating,
  * etc should go here.
  */
 
-import AppDispatcher from '../dispatcher.js';
-import { domainActionTypes } from '../constants';
+import AppDispatcher from "../dispatcher.js";
+import { domainActionTypes } from "../constants";
 
 export default {
   fetch(domainGuid) {

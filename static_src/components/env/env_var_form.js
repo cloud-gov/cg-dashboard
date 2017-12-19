@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import { generateId } from '../../util/element_id';
-import PanelActions from '../panel_actions.jsx';
-import Action from '../action.jsx';
+import { generateId } from "../../util/element_id";
+import PanelActions from "../panel_actions.jsx";
+import Action from "../action.jsx";
 
 const propTypes = {
   name: PropTypes.string.isRequired,
@@ -14,8 +14,8 @@ const propTypes = {
 };
 
 const defaultProps = {
-  name: '',
-  value: '',
+  name: "",
+  value: "",
   disabled: false
 };
 
@@ -30,8 +30,8 @@ export default class EnvVarForm extends Component {
     this.handleValueChange = this.handleValueChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
-    this.nameInputId = generateId('env_var_form_name_');
-    this.valueInputId = generateId('env_var_form_value_');
+    this.nameInputId = generateId("env_var_form_name_");
+    this.valueInputId = generateId("env_var_form_value_");
   }
 
   handleNameChange(e) {

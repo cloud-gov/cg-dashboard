@@ -1,5 +1,4 @@
-
-import BaseElement from './base.element';
+import BaseElement from "./base.element";
 
 // https://www.martinfowler.com/bliki/PageObject.html
 //
@@ -8,8 +7,8 @@ import BaseElement from './base.element';
 
 // TODO attach to class as static property
 const selectors = {
-  title: '.test-org-quicklook-title',
-  spaceQuicklookRow: '.test-space-quicklook'
+  title: ".test-org-quicklook-title",
+  spaceQuicklookRow: ".test-space-quicklook"
 };
 
 export default class OrgQuicklookElement extends BaseElement {

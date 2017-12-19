@@ -1,4 +1,3 @@
-
 const organizationQuotaDefinitions = [
   {
     metadata: {
@@ -22,6 +21,6 @@ const organizationQuotaDefinitions = [
       total_reserved_route_ports: 0
     }
   }
-]
+];
 
 module.exports = organizationQuotaDefinitions;

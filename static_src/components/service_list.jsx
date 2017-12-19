@@ -1,11 +1,10 @@
-
 /**
  * Renders a list of services
  */
-import PropTypes from 'prop-types';
-import React from 'react';
-import ServiceListItem from './service_list_item.jsx';
-import ServiceStore from '../stores/service_store.js';
+import PropTypes from "prop-types";
+import React from "react";
+import ServiceListItem from "./service_list_item.jsx";
+import ServiceStore from "../stores/service_store.js";
 
 const propTypes = {
   services: PropTypes.array
@@ -21,17 +20,23 @@ const ServiceList = ({ services }) => {
   } else if (services.length) {
     content = (
       <div>
-        { services.map((service) => {
-          const { servicePlans, guid, label, description, updated_at } = service;
+        {services.map(service => {
+          const {
+            servicePlans,
+            guid,
+            label,
+            description,
+            updated_at
+          } = service;
 
           return (
             <ServiceListItem
-              key={ guid }
-              guid={ guid }
-              label={ label }
-              description={ description }
-              updatedAt={ updated_at }
-              servicePlans={ servicePlans }
+              key={guid}
+              guid={guid}
+              label={label}
+              description={description}
+              updatedAt={updated_at}
+              servicePlans={servicePlans}
             />
           );
         })}
@@ -39,11 +44,7 @@ const ServiceList = ({ services }) => {
     );
   }
 
-  return (
-    <div>
-      { content }
-    </div>
-  );
+  return <div>{content}</div>;
 };
 
 ServiceList.propTypes = propTypes;

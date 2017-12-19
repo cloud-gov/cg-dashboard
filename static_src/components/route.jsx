@@ -1,16 +1,15 @@
-
-import PropTypes from 'prop-types';
-import React from 'react';
-import Action from './action.jsx';
-import ConfirmationBox from './confirmation_box.jsx';
-import DomainStore from '../stores/domain_store.js';
-import ElasticLine from './elastic_line.jsx';
-import ElasticLineItem from './elastic_line_item.jsx';
-import Loading from './loading.jsx';
-import RouteForm from './route_form.jsx';
-import RouteStore from '../stores/route_store.js';
-import formatRoute from '../util/format_route';
-import routeActions from '../actions/route_actions.js';
+import PropTypes from "prop-types";
+import React from "react";
+import Action from "./action.jsx";
+import ConfirmationBox from "./confirmation_box.jsx";
+import DomainStore from "../stores/domain_store.js";
+import ElasticLine from "./elastic_line.jsx";
+import ElasticLineItem from "./elastic_line_item.jsx";
+import Loading from "./loading.jsx";
+import RouteForm from "./route_form.jsx";
+import RouteStore from "../stores/route_store.js";
+import formatRoute from "../util/format_route";
+import routeActions from "../actions/route_actions.js";
 
 const propTypes = {
   appGuid: PropTypes.string.isRequired,
@@ -34,17 +33,17 @@ export default class Route extends React.Component {
 
     this.state = stateSetter(props);
 
-    this._deleteHandler = this._deleteHandler.bind(this);
-    this._unbindHandler = this._unbindHandler.bind(this);
-    this._bindHandler = this._bindHandler.bind(this);
-    this._editHandler = this._editHandler.bind(this);
-    this._updateHandler = this._updateHandler.bind(this);
-    this._toggleRemove = this._toggleRemove.bind(this);
-    this._onChange = this._onChange.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleUnbind = this.handleUnbind.bind(this);
+    this.handleBind = this.handleBind.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentWillMount() {
-    DomainStore.addChangeListener(this._onChange);
+    DomainStore.addChangeListener(this.handleChange);
   }
 
   componentWillReceiveProps(props) {
@@ -52,46 +51,46 @@ export default class Route extends React.Component {
   }
 
   componentWillUnmount() {
-    DomainStore.removeChangeListener(this._onChange);
+    DomainStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter(this.props));
   }
 
-  _toggleRemove(ev) {
+  handleRemove(ev) {
     ev.preventDefault();
     routeActions.toggleRemove(this.state.route.guid);
   }
 
-  _deleteHandler(ev) {
+  handleDelete(ev) {
     ev.preventDefault();
     routeActions.deleteRoute(this.state.route.guid);
   }
 
-  _editHandler(ev) {
+  handleEdit(ev) {
     ev.preventDefault();
     routeActions.toggleEdit(this.state.route.guid);
   }
 
-  _bindHandler(ev) {
+  handleBind(ev) {
     ev.preventDefault();
     const route = this.state.route;
     routeActions.associateApp(route.guid, this.props.appGuid);
   }
 
-  _unbindHandler(ev) {
+  handleUnbind(ev) {
     ev.preventDefault();
     const route = this.state.route;
     routeActions.unassociateApp(route.guid, route.app_guid);
   }
 
-  _updateHandler(route) {
+  handleUpdate(route) {
     const routeGuid = this.state.route.guid;
     const domainGuid = route.domain_guid;
     const spaceGuid = route.space_guid;
     let path = route.path;
-    if (route.path && (route.path[0] !== '/')) {
+    if (route.path && route.path[0] !== "/") {
       path = `/${route.path}`;
     }
     const updatedRoute = Object.assign({}, route, { path });
@@ -100,8 +99,12 @@ export default class Route extends React.Component {
 
   get deleteAction() {
     return (
-      <Action key="delete" label="Delete route" type="link" style="warning"
-        clickHandler={this._toggleRemove}
+      <Action
+        key="delete"
+        label="Delete route"
+        type="link"
+        style="warning"
+        clickHandler={this.handleRemove}
       >
         Delete
       </Action>
@@ -110,8 +113,12 @@ export default class Route extends React.Component {
 
   get editAction() {
     return (
-      <Action key="edit" label="Edit route" type="link" style="primary"
-        clickHandler={this._editHandler}
+      <Action
+        key="edit"
+        label="Edit route"
+        type="link"
+        style="primary"
+        clickHandler={this.handleEdit}
       >
         Edit
       </Action>
@@ -120,11 +127,14 @@ export default class Route extends React.Component {
 
   bindAction(unbind) {
     return (
-      <Action key="unbind" label={ (!!unbind) ? 'Unbind' : 'Bind' }
-        style={ (!!unbind) ? 'warning' : 'primary' } type={ (!!unbind) ? 'link' : 'button' }
-        clickHandler={ (!!unbind) ? this._toggleRemove : this._bindHandler }
+      <Action
+        key="unbind"
+        label={unbind ? "Unbind" : "Bind"}
+        style={unbind ? "warning" : "primary"}
+        type={unbind ? "link" : "button"}
+        clickHandler={unbind ? this.handleRemove : this.handleBind}
       >
-        { (!!unbind) ? 'Unbind' : 'Bind' }
+        {unbind ? "Unbind" : "Bind"}
       </Action>
     );
   }
@@ -136,11 +146,7 @@ export default class Route extends React.Component {
 
     if (route.loading) {
       return (
-        <Loading
-          text={ route.loading }
-          loadingDelayMS={ 100 }
-          style="inline"
-        />
+        <Loading text={route.loading} loadingDelayMS={100} style="inline" />
       );
     }
 
@@ -157,24 +163,28 @@ export default class Route extends React.Component {
   get confirmationMsg() {
     const { domain_name, host, path } = this.state.route;
     const url = formatRoute(domain_name, host, path);
-    const displayUrl = <a href={ `//${url}` } title="See app route">{ url }</a>;
-    return (RouteStore.isRouteBoundToApp(this.state.route)) ?
-        <span>Unbind {displayUrl} route from this app?</span> :
-        <span>Delete {displayUrl} route from this space?</span>;
+    const displayUrl = (
+      <a href={`//${url}`} title="See app route">
+        {url}
+      </a>
+    );
+    return RouteStore.isRouteBoundToApp(this.state.route) ? (
+      <span>Unbind {displayUrl} route from this app?</span>
+    ) : (
+      <span>Delete {displayUrl} route from this space?</span>
+    );
   }
 
   get displayError() {
     const route = this.state.route;
     if (route.error) {
-      return (
-        <span>{ route.error.description }</span>
-      );
+      return <span>{route.error.description}</span>;
     }
     return null;
   }
 
   render() {
-    let content = <div></div>;
+    let content = <div />;
 
     if (this.state.route) {
       const route = this.state.route;
@@ -183,49 +193,45 @@ export default class Route extends React.Component {
 
       if (route.editing) {
         content = (
-          <RouteForm route={ route } domains={ this.state.domains }
-            cancelHandler={ this._editHandler }
-            submitHandler={ this._updateHandler }
+          <RouteForm
+            route={route}
+            domains={this.state.domains}
+            cancelHandler={this.handleEdit}
+            submitHandler={this.handleUpdate}
           />
         );
       } else if (route.removing) {
-        const currentAction = RouteStore.isRouteBoundToApp(route) ? 'unbind' :
-          'delete';
-        const confirmHandler = RouteStore.isRouteBoundToApp(route) ?
-          this._unbindHandler : this._deleteHandler;
+        const currentAction = RouteStore.isRouteBoundToApp(route)
+          ? "unbind"
+          : "delete";
+        const confirmHandler = RouteStore.isRouteBoundToApp(route)
+          ? this.handleUnbind
+          : this.handleDelete;
         content = (
           <div>
             <ConfirmationBox
               style="over"
-              message={ this.confirmationMsg }
-              confirmationText={ `Yes, ${currentAction}` }
-              confirmHandler={ confirmHandler }
-              cancelHandler={ this._toggleRemove }
+              message={this.confirmationMsg}
+              confirmationText={`Yes, ${currentAction}`}
+              confirmHandler={confirmHandler}
+              cancelHandler={this.handleRemove}
             />
           </div>
         );
       } else {
-        let displayUrl = <span>{ url }</span>;
+        let displayUrl = <span>{url}</span>;
         if (RouteStore.isRouteBoundToApp(route)) {
           displayUrl = (
-            <a
-              href={ `//${url}` }
-              title="See app route"
-              className="route-link"
-            >{ url }</a>
+            <a href={`//${url}`} title="See app route" className="route-link">
+              {url}
+            </a>
           );
         }
         content = (
           <ElasticLine>
-            <ElasticLineItem>
-              { displayUrl }
-            </ElasticLineItem>
-            <ElasticLineItem align="end">
-              { this.displayError }
-            </ElasticLineItem>
-            <ElasticLineItem align="end">
-              { this.actions }
-            </ElasticLineItem>
+            <ElasticLineItem>{displayUrl}</ElasticLineItem>
+            <ElasticLineItem align="end">{this.displayError}</ElasticLineItem>
+            <ElasticLineItem align="end">{this.actions}</ElasticLineItem>
           </ElasticLine>
         );
       }

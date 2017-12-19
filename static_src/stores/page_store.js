@@ -1,29 +1,24 @@
-
-import BaseStore from './base_store.js';
-import { pageActionTypes } from '../constants.js';
+import BaseStore from "./base_store.js";
+import { pageActionTypes } from "../constants.js";
 
 class PageStore extends BaseStore {
   constructor() {
     super();
-    this._loading = false;
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.isLoading = false;
+    this.subscribe(() => this.handleAction.bind(this));
   }
 
-  get loading() {
-    return this._loading;
-  }
-
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case pageActionTypes.PAGE_LOAD_STARTED: {
-        this._loading = true;
+        this.isLoading = true;
         this.emitChange();
         break;
       }
 
       case pageActionTypes.PAGE_LOAD_ERROR:
       case pageActionTypes.PAGE_LOAD_SUCCESS: {
-        this._loading = false;
+        this.isLoading = false;
         this.emitChange();
         break;
       }

@@ -1,11 +1,10 @@
-
 /*
  * Actions for app entities. Any actions such as fetching, creating, updating,
  * etc should go here.
  */
 
-import AppDispatcher from '../dispatcher.js';
-import { formActionTypes } from '../constants';
+import AppDispatcher from "../dispatcher.js";
+import { formActionTypes } from "../constants";
 
 const formActions = {
   changeField(formGuid, fieldName, fieldValue) {

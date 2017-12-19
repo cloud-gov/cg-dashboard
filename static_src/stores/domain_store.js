@@ -1,23 +1,22 @@
-
 /*
  * Store for domain data. Will store and update domain data on changes from UI and
  * server.
  */
 
-import Immutable from 'immutable';
+import Immutable from "immutable";
 
-import BaseStore from './base_store.js';
-import cfApi from '../util/cf_api.js';
-import { domainActionTypes } from '../constants.js';
+import BaseStore from "./base_store.js";
+import cfApi from "../util/cf_api.js";
+import { domainActionTypes } from "../constants.js";
 
 class DomainStore extends BaseStore {
   constructor() {
     super();
-    this._data = new Immutable.List();
-    this.subscribe(() => this._registerToActions.bind(this));
+    this.storeData = new Immutable.List();
+    this.subscribe(() => this.handleAction.bind(this));
   }
 
-  _registerToActions(action) {
+  handleAction(action) {
     switch (action.type) {
       case domainActionTypes.DOMAIN_FETCH: {
         cfApi.fetchPrivateDomain(action.domainGuid);
@@ -25,7 +24,7 @@ class DomainStore extends BaseStore {
       }
 
       case domainActionTypes.DOMAIN_RECEIVED: {
-        this.merge('guid', action.domain, (changed) => {
+        this.merge("guid", action.domain, changed => {
           if (changed) this.emitChange();
         });
         break;
@@ -37,6 +36,4 @@ class DomainStore extends BaseStore {
   }
 }
 
-const _DomainStore = new DomainStore();
-
-export default _DomainStore;
+export default new DomainStore();

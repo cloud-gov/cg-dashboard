@@ -1,10 +1,6 @@
+import { appStates, entityHealth } from "../constants";
 
-import { appStates, entityHealth } from '../constants';
-
-const HEALTHY_STATES = [
-  entityHealth.inactive,
-  entityHealth.ok
-];
+const HEALTHY_STATES = [entityHealth.inactive, entityHealth.ok];
 
 const HEALTH_RANKED = [
   entityHealth.error,
@@ -23,13 +19,15 @@ const APP_INSTANCE_STATE_RANKED = [
   appStates.stopped
 ];
 
-
 export function appHealth(app) {
   if (!app) {
-    throw new Error('`app` must be provided.');
+    throw new Error("`app` must be provided.");
   }
 
-  if (app.state === appStates.started && app.running_instances === app.instances) {
+  if (
+    app.state === appStates.started &&
+    app.running_instances === app.instances
+  ) {
     return entityHealth.ok;
   }
 
@@ -44,7 +42,10 @@ export function appHealth(app) {
     return entityHealth.inactive;
   }
 
-  if (app.state === appStates.started && app.running_instances !== app.instances) {
+  if (
+    app.state === appStates.started &&
+    app.running_instances !== app.instances
+  ) {
     // Restarting
     return entityHealth.warning;
   }

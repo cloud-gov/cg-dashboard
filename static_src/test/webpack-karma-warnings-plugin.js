@@ -24,8 +24,10 @@ var RawSource = require("webpack/lib/RawSource");
 WebpackKarmaWarningsPlugin.prototype.apply = function(compiler) {
   compiler.plugin("compilation", function(compilation) {
     compilation.plugin("failed-module", function(module) {
-      var moduleErrorMessage = module.error.error.toString()
-      module._source = new RawSource(`throw new Error(${JSON.stringify(moduleErrorMessage)});`);
+      var moduleErrorMessage = module.error.error.toString();
+      module._source = new RawSource(
+        `throw new Error(${JSON.stringify(moduleErrorMessage)});`
+      );
       module.error = null;
       throw new Error(JSON.stringify(moduleErrorMessage));
     });

@@ -1,5 +1,4 @@
-
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 /**
  * form.jsx
  *
@@ -8,12 +7,11 @@ import PropTypes from 'prop-types';
  * actions.
  **/
 
+import React from "react";
+import classNames from "classnames";
 
-import React from 'react';
-import classNames from 'classnames';
-
-import FormError from './form_error.jsx';
-import FormStore from '../../stores/form_store';
+import FormError from "./form_error.jsx";
+import FormStore from "../../stores/form_store";
 
 const propTypes = {
   action: PropTypes.string,
@@ -26,9 +24,9 @@ const propTypes = {
 };
 
 const defaultProps = {
-  action: '/',
+  action: "/",
   classes: [],
-  method: 'post'
+  method: "post"
 };
 
 function stateSetter(props) {
@@ -40,30 +38,29 @@ function stateSetter(props) {
   };
 }
 
-
 export default class Form extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = stateSetter(props);
 
-    this._onStoreChange = this._onStoreChange.bind(this);
-    this._onSubmit = this._onSubmit.bind(this);
+    this.handleStoreChange = this.handleStoreChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
-    FormStore.addChangeListener(this._onStoreChange);
+    FormStore.addChangeListener(this.handleStoreChange);
   }
 
   componentWillUnmount() {
-    FormStore.removeChangeListener(this._onStoreChange);
+    FormStore.removeChangeListener(this.handleStoreChange);
   }
 
-  _onStoreChange() {
+  handleStoreChange() {
     this.setState(stateSetter(this.props));
   }
 
-  _onSubmit(e) {
+  handleSubmit(e) {
     if (!this.props.onSubmit) {
       // Without an onSubmit, just default to normal form behavior
       return;
@@ -72,7 +69,7 @@ export default class Form extends React.Component {
     e.preventDefault();
     // Only show error message after form was submitted
     const model = this.state.model;
-    const errors = Object.keys(model && model.fields || {})
+    const errors = Object.keys((model && model.fields) || {})
       .map(fieldName => model.fields[fieldName].error)
       .filter(error => !!error);
 
@@ -87,19 +84,21 @@ export default class Form extends React.Component {
     const classes = classNames(...this.props.classes);
 
     if (this.props.errorOverride) {
-      errorMsg = <FormError message={ this.props.errorOverride } />;
+      errorMsg = <FormError message={this.props.errorOverride} />;
     } else if (this.state.errors.length) {
       errorMsg = <FormError message="There were errors submitting the form." />;
     }
 
     return (
-      <form id={ this.props.guid } action={ this.props.action } method={ this.props.method }
-        onSubmit={ this._onSubmit } className={ classes }
+      <form
+        id={this.props.guid}
+        action={this.props.action}
+        method={this.props.method}
+        onSubmit={this.handleSubmit}
+        className={classes}
       >
-        { errorMsg }
-        <fieldset>
-          { this.props.children }
-        </fieldset>
+        {errorMsg}
+        <fieldset>{this.props.children}</fieldset>
       </form>
     );
   }

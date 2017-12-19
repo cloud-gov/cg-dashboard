@@ -1,16 +1,18 @@
 {
-  "passes": [{
-    "recordNetwork": true,
-    "recordTrace": true,
-    "pauseBeforeTraceEndMs": 500,
-    "useThrottling": true,
-    "gatherers": [
-      "url",
-      "image-usage",
-      "content-width",
-      "dobetterweb/domstats"
+  "passes": [
+    {
+      "recordNetwork": true,
+      "recordTrace": true,
+      "pauseBeforeTraceEndMs": 500,
+      "useThrottling": true,
+      "gatherers": [
+        "url",
+        "image-usage",
+        "content-width",
+        "dobetterweb/domstats"
       ]
-  }],
+    }
+  ],
 
   "audits": [
     "speed-index-metric",
@@ -23,34 +25,38 @@
     "dobetterweb/dom-size"
   ],
 
-  "aggregations": [{
-    "name": "Speed",
-    "description": "",
-    "scored": false,
-    "categorizable": false,
-    "items": [{
-      "audits": {
-        "speed-index-metric": {
-          "expectedValue": 12000,
-          "weight": 1
-        },
-        "time-to-interactive": {
-          "expectedValue": 10000,
-          "weight": 1
-        },
-        "estimated-input-latency": {
-          "expectedValue": 30,
-          "weight": 1
-        },
-        "total-byte-weight": {
-          "expectedValue": 2000000,
-          "weight": 2
-        },
-        "dom-size": {
-          "expectedValue": 1500,
-          "weight": 2
+  "aggregations": [
+    {
+      "name": "Speed",
+      "description": "",
+      "scored": false,
+      "categorizable": false,
+      "items": [
+        {
+          "audits": {
+            "speed-index-metric": {
+              "expectedValue": 12000,
+              "weight": 1
+            },
+            "time-to-interactive": {
+              "expectedValue": 10000,
+              "weight": 1
+            },
+            "estimated-input-latency": {
+              "expectedValue": 30,
+              "weight": 1
+            },
+            "total-byte-weight": {
+              "expectedValue": 2000000,
+              "weight": 2
+            },
+            "dom-size": {
+              "expectedValue": 1500,
+              "weight": 2
+            }
+          }
         }
-      }
-    }]
-  }]
+      ]
+    }
+  ]
 }

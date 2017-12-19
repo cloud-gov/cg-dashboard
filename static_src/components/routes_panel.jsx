@@ -1,19 +1,18 @@
+import React from "react";
 
-import React from 'react';
-
-import AppStore from '../stores/app_store.js';
-import Action from './action.jsx';
-import ComplexList from './complex_list.jsx';
-import DomainStore from '../stores/domain_store.js';
-import OrgStore from '../stores/org_store.js';
-import PanelActions from './panel_actions.jsx';
-import routeActions from '../actions/route_actions.js';
-import Route from './route.jsx';
-import RouteForm from './route_form.jsx';
-import RouteStore from '../stores/route_store.js';
-import QuotaStore from '../stores/quota_store.js';
-import SpaceStore from '../stores/space_store.js';
-import { spaceHref } from '../util/url';
+import AppStore from "../stores/app_store.js";
+import Action from "./action.jsx";
+import ComplexList from "./complex_list.jsx";
+import DomainStore from "../stores/domain_store.js";
+import OrgStore from "../stores/org_store.js";
+import PanelActions from "./panel_actions.jsx";
+import routeActions from "../actions/route_actions.js";
+import Route from "./route.jsx";
+import RouteForm from "./route_form.jsx";
+import RouteStore from "../stores/route_store.js";
+import QuotaStore from "../stores/quota_store.js";
+import SpaceStore from "../stores/space_store.js";
+import { spaceHref } from "../util/url";
 
 function stateSetter() {
   const appGuid = AppStore.currentAppGuid;
@@ -22,23 +21,25 @@ function stateSetter() {
 
   const currentOrg = OrgStore.get(OrgStore.currentOrgGuid);
   const currentSpace = SpaceStore.get(SpaceStore.currentSpaceGuid);
-  const orgQuotaGuid = (currentOrg) ? currentOrg.quota_definition_guid : null;
-  const spaceQuotaGuid = (currentSpace) ? currentSpace.space_quota_definition_guid : null;
+  const orgQuotaGuid = currentOrg ? currentOrg.quota_definition_guid : null;
+  const spaceQuotaGuid = currentSpace
+    ? currentSpace.space_quota_definition_guid
+    : null;
 
-  const routes = RouteStore.getAllForSpace(spaceGuid).map((route) => {
+  const routes = RouteStore.getAllForSpace(spaceGuid).map(route => {
     let newRoute = Object.assign({}, route);
     const domain = DomainStore.get(route.domain_guid);
     if (domain) {
       newRoute = Object.assign({}, newRoute, { domain_name: domain.name });
     }
-    if (route.path && (route.path[0] === '/')) {
-      newRoute.path = route.path.replace('/', '');
+    if (route.path && route.path[0] === "/") {
+      newRoute.path = route.path.replace("/", "");
     }
     return newRoute;
   });
 
-  const boundRoutes = routes.filter((route) => route.app_guid === appGuid);
-  const unboundRoutes = routes.filter((route) => !route.app_guid);
+  const boundRoutes = routes.filter(route => route.app_guid === appGuid);
+  const unboundRoutes = routes.filter(route => !route.app_guid);
 
   return {
     appGuid,
@@ -61,16 +62,16 @@ export default class RoutesPanel extends React.Component {
 
     this.state = stateSetter();
 
-    this._onChange = this._onChange.bind(this);
-    this._createRouteAndAssociate = this._createRouteAndAssociate.bind(this);
-    this._addCreateRouteForm = this._addCreateRouteForm.bind(this);
-    this._removeCreateRouteForm = this._removeCreateRouteForm.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleShow = this.handleShow.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
   }
 
   componentDidMount() {
-    DomainStore.addChangeListener(this._onChange);
-    QuotaStore.addChangeListener(this._onChange);
-    RouteStore.addChangeListener(this._onChange);
+    DomainStore.addChangeListener(this.handleChange);
+    QuotaStore.addChangeListener(this.handleChange);
+    RouteStore.addChangeListener(this.handleChange);
   }
 
   componentWillReceiveProps() {
@@ -78,26 +79,26 @@ export default class RoutesPanel extends React.Component {
   }
 
   componentWillUnmount() {
-    DomainStore.removeChangeListener(this._onChange);
-    QuotaStore.removeChangeListener(this._onChange);
-    RouteStore.removeChangeListener(this._onChange);
+    DomainStore.removeChangeListener(this.handleChange);
+    QuotaStore.removeChangeListener(this.handleChange);
+    RouteStore.removeChangeListener(this.handleChange);
   }
 
-  _onChange() {
+  handleChange() {
     this.setState(stateSetter());
   }
 
-  _addCreateRouteForm(ev) {
+  handleShow(ev) {
     if (ev) ev.preventDefault();
     routeActions.showCreateForm();
   }
 
-  _removeCreateRouteForm(ev) {
+  handleCancel(ev) {
     if (ev) ev.preventDefault();
     routeActions.hideCreateForm();
   }
 
-  _createRouteAndAssociate(route, ev) {
+  handleSubmit(route, ev) {
     if (ev) ev.preventDefault();
     const { appGuid, spaceGuid } = this.state;
     const domainGuid = route.domain_guid;
@@ -107,8 +108,10 @@ export default class RoutesPanel extends React.Component {
   get addRouteAction() {
     if (this.state.showCreateForm) return null;
     return (
-      <Action clickHandler={ this._addCreateRouteForm }
-        label="Create a new route for this app" type="outline"
+      <Action
+        clickHandler={this.handleShow}
+        label="Create a new route for this app"
+        type="outline"
       >
         Create a new route for this app
       </Action>
@@ -124,14 +127,16 @@ export default class RoutesPanel extends React.Component {
     } else if (this.state.orgQuota) {
       routeTotal = this.state.orgQuota.total_routes;
     }
-    const routeLimit = routeTotal - (this.state.boundRoutes.length +
-                                     this.state.unboundRoutes.length);
+    const routeLimit =
+      routeTotal -
+      (this.state.boundRoutes.length + this.state.unboundRoutes.length);
     return (
-      <RouteForm domains={ DomainStore.getAll() }
-        routeLimit={ routeLimit }
-        error={ this.state.error }
-        cancelHandler={ () => this._removeCreateRouteForm() }
-        submitHandler={ this._createRouteAndAssociate }
+      <RouteForm
+        domains={DomainStore.getAll()}
+        routeLimit={routeLimit}
+        error={this.state.error}
+        cancelHandler={() => this.handleCancel()}
+        submitHandler={this.handleSubmit}
       />
     );
   }
@@ -142,10 +147,11 @@ export default class RoutesPanel extends React.Component {
     }
 
     return (
-      <a href={ spaceHref(this.state.orgGuid, this.state.spaceGuid) }
+      <a
+        href={spaceHref(this.state.orgGuid, this.state.spaceGuid)}
         className="space-link"
       >
-        { this.state.spaceName }
+        {this.state.spaceName}
       </a>
     );
   }
@@ -154,9 +160,9 @@ export default class RoutesPanel extends React.Component {
     let content = <h4>No routes</h4>;
 
     if (routes && routes.length) {
-      content = routes.map((route) =>
-        <Route key={ route.guid } route={ route } appGuid={ this.state.appGuid} />
-      );
+      content = routes.map(route => (
+        <Route key={route.guid} route={route} appGuid={this.state.appGuid} />
+      ));
     }
     return content;
   }
@@ -164,16 +170,14 @@ export default class RoutesPanel extends React.Component {
   render() {
     return (
       <div>
-        { this.createRouteForm }
+        {this.createRouteForm}
         <ComplexList title="Bound routes">
-          { this.renderRoutes(this.state.boundRoutes) }
+          {this.renderRoutes(this.state.boundRoutes)}
         </ComplexList>
         <ComplexList title="Routes available in space">
-          { this.renderRoutes(this.state.unboundRoutes) }
+          {this.renderRoutes(this.state.unboundRoutes)}
         </ComplexList>
-        <PanelActions>
-          { this.addRouteAction }
-        </PanelActions>
+        <PanelActions>{this.addRouteAction}</PanelActions>
       </div>
     );
   }

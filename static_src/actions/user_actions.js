@@ -1,19 +1,18 @@
-
 /*
  * Actions for user entities. Any actions such as fetching, creating, updating,
  * etc should go here.
  */
 
-import AppDispatcher from '../dispatcher.js';
-import cfApi from '../util/cf_api';
-import uaaApi from '../util/uaa_api';
-import { userActionTypes } from '../constants';
-import UserStore from '../stores/user_store';
-import OrgStore from '../stores/org_store';
-import SpaceStore from '../stores/space_store';
+import AppDispatcher from "../dispatcher.js";
+import cfApi from "../util/cf_api";
+import uaaApi from "../util/uaa_api";
+import { userActionTypes } from "../constants";
+import UserStore from "../stores/user_store";
+import OrgStore from "../stores/org_store";
+import SpaceStore from "../stores/space_store";
 
-const ORG_ENTITY = 'organization';
-const SPACE_ENTITY = 'space';
+const ORG_ENTITY = "organization";
+const SPACE_ENTITY = "space";
 const ORG_NAME = OrgStore.cfName;
 
 const userActions = {
@@ -22,7 +21,8 @@ const userActions = {
       type: userActionTypes.ORG_USERS_FETCH,
       orgGuid
     });
-    return cfApi.fetchOrgUsers(orgGuid)
+    return cfApi
+      .fetchOrgUsers(orgGuid)
       .then(users => userActions.receivedOrgUsers(users, orgGuid));
   },
 
@@ -31,7 +31,8 @@ const userActions = {
       type: userActionTypes.ORG_USER_ROLES_FETCH,
       orgGuid
     });
-    return cfApi.fetchOrgUserRoles(orgGuid)
+    return cfApi
+      .fetchOrgUserRoles(orgGuid)
       .then(orgUsers => userActions.receivedOrgUserRoles(orgUsers, orgGuid));
   },
 
@@ -41,8 +42,11 @@ const userActions = {
       spaceGuid
     });
 
-    return cfApi.fetchSpaceUserRoles(spaceGuid)
-      .then(spaceUsers => userActions.receivedSpaceUserRoles(spaceUsers, spaceGuid));
+    return cfApi
+      .fetchSpaceUserRoles(spaceGuid)
+      .then(spaceUsers =>
+        userActions.receivedSpaceUserRoles(spaceUsers, spaceGuid)
+      );
   },
 
   receivedOrgUsers(users, orgGuid) {
@@ -70,15 +74,16 @@ const userActions = {
   },
 
   receivedOrgSpacesToExtractSpaceUsers(orgSpaces) {
-    const orgSpaceUsers = orgSpaces.map((orgSpace) => Promise.resolve(
-      cfApi.fetchSpaceUserRoles(orgSpace.guid)
-    ));
+    const orgSpaceUsers = orgSpaces.map(orgSpace =>
+      Promise.resolve(cfApi.fetchSpaceUserRoles(orgSpace.guid))
+    );
     return Promise.all(orgSpaceUsers);
   },
 
   fetchUserAssociationsToOrgSpaces(userGuid, orgGuid) {
-    return Promise.resolve(cfApi.fetchAllOrgSpaces(orgGuid))
-      .then((orgSpaces) => userActions.receivedOrgSpacesToExtractSpaceUsers(orgSpaces));
+    return Promise.resolve(cfApi.fetchAllOrgSpaces(orgGuid)).then(orgSpaces =>
+      userActions.receivedOrgSpacesToExtractSpaceUsers(orgSpaces)
+    );
   },
 
   removeAllSpaceRoles(userGuid, spaceGuid) {
@@ -88,12 +93,15 @@ const userActions = {
       spaceGuid
     });
 
-    const spaceRoles = ['auditors', 'developers', 'managers'];
-    const spaceRemovalRequests = spaceRoles.map((role) =>
-      Promise.resolve(cfApi.deleteSpaceUserPermissions(userGuid, spaceGuid, role))
+    const spaceRoles = ["auditors", "developers", "managers"];
+    const spaceRemovalRequests = spaceRoles.map(role =>
+      Promise.resolve(
+        cfApi.deleteSpaceUserPermissions(userGuid, spaceGuid, role)
+      )
     );
-    return Promise.all(spaceRemovalRequests)
-      .then((responses) => userActions.handleSpaceRolesRemoved(responses, userGuid));
+    return Promise.all(spaceRemovalRequests).then(responses =>
+      userActions.handleSpaceRolesRemoved(responses, userGuid)
+    );
   },
 
   handleSpaceRolesRemoved(responses, userGuid) {
@@ -111,7 +119,8 @@ const userActions = {
       orgGuid
     });
 
-    return cfApi.deleteUser(userGuid, orgGuid)
+    return cfApi
+      .deleteUser(userGuid, orgGuid)
       .then(() => userActions.deletedUser(userGuid, orgGuid))
       .catch(error => this.errorRemoveUser(userGuid, error.response.data));
   },
@@ -139,17 +148,11 @@ const userActions = {
       entityType
     });
 
-    return api(
-      userGuid,
-      entityGuid,
-      resource
-    ).then(() => {
-      userActions.addedUserRoles(
-        role,
-        userGuid,
-        entityGuid,
-        entityType);
-    }).catch(error => this.errorChangeUserRole(error));
+    return api(userGuid, entityGuid, resource)
+      .then(() => {
+        userActions.addedUserRoles(role, userGuid, entityGuid, entityType);
+      })
+      .catch(error => this.errorChangeUserRole(error));
   },
 
   addedUserRoles(roles, userGuid, entityGuid, entityType) {
@@ -177,17 +180,11 @@ const userActions = {
       entityType
     });
 
-    return api(
-      userGuid,
-      entityGuid,
-      apiKey
-    ).then(() => {
-      userActions.deletedUserRoles(
-        roles,
-        userGuid,
-        entityGuid,
-        entityType);
-    }).catch(error => this.errorChangeUserRole(error));
+    return api(userGuid, entityGuid, apiKey)
+      .then(() => {
+        userActions.deletedUserRoles(roles, userGuid, entityGuid, entityType);
+      })
+      .catch(error => this.errorChangeUserRole(error));
   },
 
   deletedUserRoles(roles, userGuid, entityGuid, entityType) {
@@ -201,7 +198,7 @@ const userActions = {
   },
 
   errorChangeUserRole(error) {
-    const message = 'You don\'t have permission to perform that action';
+    const message = "You don't have permission to perform that action";
 
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_ROLE_CHANGE_ERROR,
@@ -224,10 +221,16 @@ const userActions = {
       email
     });
 
-    return uaaApi.inviteUaaUser(email)
+    return uaaApi
+      .inviteUaaUser(email)
       .then(invite => userActions.receivedInviteStatus(invite, email))
-      .catch(err => userActions.userInviteCreateError(err, `There was a problem
-        inviting ${email}`));
+      .catch(err =>
+        userActions.userInviteCreateError(
+          err,
+          `There was a problem
+        inviting ${email}`
+        )
+      );
   },
 
   receivedInviteStatus(invite, email) {
@@ -240,10 +243,16 @@ const userActions = {
       verified
     });
 
-    return userActions.createUserAndAssociate(userGuid)
+    return userActions
+      .createUserAndAssociate(userGuid)
       .then(() => userActions.createInviteNotification(verified, email))
-      .catch(err => userActions.userInviteCreateError(err, `There was a problem
-        inviting ${email}`));
+      .catch(err =>
+        userActions.userInviteCreateError(
+          err,
+          `There was a problem
+        inviting ${email}`
+        )
+      );
   },
 
   clearUserListNotifications() {
@@ -261,26 +270,29 @@ const userActions = {
   },
 
   createUserSpaceAssociationNotification(notification) {
-    userActions.createUserListNotification('error', notification);
+    userActions.createUserListNotification("error", notification);
   },
 
   createInviteNotification(verified, email) {
     let description;
-    const noticeType = 'finish';
+    const noticeType = "finish";
     const currentViewedType = UserStore.currentlyViewedType;
-    const viewTypeNouns = Object.assign({},
+    const viewTypeNouns = Object.assign(
+      {},
       { space_users: { singular: SPACE_ENTITY } },
       { org_users: { singular: ORG_ENTITY } }
     );
     const entity = viewTypeNouns[currentViewedType].singular;
 
     if (verified) {
-      description = `The cloud.gov account for ${email} is now associated to this ` +
+      description =
+        `The cloud.gov account for ${email} is now associated to this ` +
         `${entity}. Control their ${entity} roles below.`;
     } else {
-      description = `An email invite was sent to ${email}. Their account ` +
-      `has been associated to this ${entity}, and their ${entity} roles can ` +
-      'be controlled below.';
+      description =
+        `An email invite was sent to ${email}. Their account ` +
+        `has been associated to this ${entity}, and their ${entity} roles can ` +
+        "be controlled below.";
     }
 
     userActions.createUserListNotification(noticeType, description);
@@ -304,7 +316,11 @@ const userActions = {
 
     if (entityType === ORG_NAME) {
       entityGuid = orgGuid;
-      cfApiRequest = cfApi.putAssociateUserToOrganization.bind(cfApi, userGuid, entityGuid);
+      cfApiRequest = cfApi.putAssociateUserToOrganization.bind(
+        cfApi,
+        userGuid,
+        entityGuid
+      );
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.USER_ORG_ASSOCIATE,
@@ -314,7 +330,12 @@ const userActions = {
       });
     } else {
       entityGuid = SpaceStore.currentSpaceGuid;
-      cfApiRequest = cfApi.putAssociateUserToSpace.bind(cfApi, userGuid, orgGuid, entityGuid);
+      cfApiRequest = cfApi.putAssociateUserToSpace.bind(
+        cfApi,
+        userGuid,
+        orgGuid,
+        entityGuid
+      );
 
       AppDispatcher.handleViewAction({
         type: userActionTypes.USER_SPACE_ASSOCIATE,
@@ -327,20 +348,28 @@ const userActions = {
     return cfApiRequest()
       .then(() => userActions.fetchEntityUsers(entityGuid, entityType))
       .then(entityUsers => {
-        userActions.createdUserAndAssociated(userGuid, entityGuid, entityUsers, entityType);
+        userActions.createdUserAndAssociated(
+          userGuid,
+          entityGuid,
+          entityUsers,
+          entityType
+        );
       });
   },
 
   fetchEntityUsers(entityGuid, entityType) {
-    return cfApi[(entityType === ORG_NAME) ?
-      'fetchOrgUsers' : 'fetchSpaceUserRoles'](entityGuid);
+    return cfApi[
+      entityType === ORG_NAME ? "fetchOrgUsers" : "fetchSpaceUserRoles"
+    ](entityGuid);
   },
 
   createdUserAndAssociated(userGuid, entityGuid, entityUsers, entityType) {
-    const user = entityUsers.filter(entityUser => entityUser.guid === userGuid)[0];
+    const user = entityUsers.filter(
+      entityUser => entityUser.guid === userGuid
+    )[0];
 
     if (!user) {
-      const err = new Error('User was not associated');
+      const err = new Error("User was not associated");
       const message = `The user ${userGuid} was not associated in ${entityGuid}.`;
       return Promise.resolve(userActions.userInviteCreateError(err, message));
     }
@@ -386,7 +415,8 @@ const userActions = {
       type: userActionTypes.CURRENT_USER_INFO_FETCH
     });
 
-    return uaaApi.fetchUserInfo()
+    return uaaApi
+      .fetchUserInfo()
       .then(userInfo => userActions.receivedCurrentUserInfo(userInfo));
   },
 
@@ -401,14 +431,15 @@ const userActions = {
 
   fetchCurrentUserUaaInfo(guid) {
     if (!guid) {
-      return Promise.reject(new Error('guid is required'));
+      return Promise.reject(new Error("guid is required"));
     }
 
     AppDispatcher.handleViewAction({
       type: userActionTypes.CURRENT_UAA_INFO_FETCH
     });
 
-    return uaaApi.fetchUaaInfo(guid)
+    return uaaApi
+      .fetchUaaInfo(guid)
       .then(uaaInfo => userActions.receivedCurrentUserUaaInfo(uaaInfo));
   },
 
@@ -423,7 +454,7 @@ const userActions = {
 
   fetchUser(userGuid) {
     if (!userGuid) {
-      return Promise.reject(new Error('userGuid is required'));
+      return Promise.reject(new Error("userGuid is required"));
     }
 
     AppDispatcher.handleViewAction({
@@ -431,8 +462,7 @@ const userActions = {
       userGuid
     });
 
-    return cfApi.fetchUser(userGuid)
-      .then(userActions.receivedUser);
+    return cfApi.fetchUser(userGuid).then(userActions.receivedUser);
   },
 
   receivedUser(user) {
@@ -450,19 +480,21 @@ const userActions = {
     });
 
     // TODO add error action
-    return userActions
-      .fetchCurrentUserInfo()
-      .then(userInfo => {
-        const userId = userInfo.user_id;
+    return (
+      userActions
+        .fetchCurrentUserInfo()
+        .then(userInfo => {
+          const userId = userInfo.user_id;
 
-        return Promise.all([
-          userActions.fetchUser(userId),
-          userActions.fetchCurrentUserUaaInfo(userId)
-        ]);
-      })
-      // Grab user from store with all merged properties
-      .then(() => UserStore.currentUser)
-      .then(userActions.receivedCurrentUser);
+          return Promise.all([
+            userActions.fetchUser(userId),
+            userActions.fetchCurrentUserUaaInfo(userId)
+          ]);
+        })
+        // Grab user from store with all merged properties
+        .then(() => UserStore.currentUser)
+        .then(userActions.receivedCurrentUser)
+    );
   },
 
   // Meta action that the current user is completely loaded

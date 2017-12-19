@@ -1,5 +1,4 @@
-
-import BaseElement from './base.element';
+import BaseElement from "./base.element";
 
 // https://www.martinfowler.com/bliki/PageObject.html
 //
@@ -8,13 +7,12 @@ import BaseElement from './base.element';
 
 // TODO attach to class as static property
 const selectors = {
-  notificationMessage: '.test-notification-message',
-  notificationAction: '.test-notification-action',
-  notificationDismiss: '.test-notification-dismiss'
+  notificationMessage: ".test-notification-message",
+  notificationAction: ".test-notification-action",
+  notificationDismiss: ".test-notification-dismiss"
 };
 
 export default class NotificationElement extends BaseElement {
-
   message() {
     return this.element(selectors.notificationMessage).getText();
   }
@@ -27,9 +25,7 @@ export default class NotificationElement extends BaseElement {
     return this.element(selectors.notificationAction);
   }
 
-  notificationStatus() {
-
-  }
+  notificationStatus() {}
 
   exists() {
     return !!this.isVisible();

@@ -1,10 +1,9 @@
-
-import PropTypes from 'prop-types';
-import React from 'react';
-import CountStatus from './count_status.jsx';
-import ServiceInstanceStore from '../stores/service_instance_store.js';
-import { entityHealth } from '../constants.js';
-import { appInstanceHealth, worstAppInstanceState } from '../util/health';
+import PropTypes from "prop-types";
+import React from "react";
+import CountStatus from "./count_status.jsx";
+import ServiceInstanceStore from "../stores/service_instance_store.js";
+import { entityHealth } from "../constants.js";
+import { appInstanceHealth, worstAppInstanceState } from "../util/health";
 
 const propTypes = {
   serviceCount: PropTypes.number,
@@ -22,14 +21,19 @@ export default class ServiceCountStatus extends React.Component {
     let health = entityHealth.inactive;
 
     if (props.services.length) {
-      health = appInstanceHealth(worstAppInstanceState(
-	props.services.map(ServiceInstanceStore.getMappedAppState.bind(ServiceInstanceStore))
-      ));
+      health = appInstanceHealth(
+        worstAppInstanceState(
+          props.services.map(si => ServiceInstanceStore.getMappedAppState(si))
+        )
+      );
     }
 
     return (
-      <CountStatus count={ props.serviceCount } name="services"
-        health={ health } iconType="service"
+      <CountStatus
+        count={props.serviceCount}
+        name="services"
+        health={health}
+        iconType="service"
       />
     );
   }

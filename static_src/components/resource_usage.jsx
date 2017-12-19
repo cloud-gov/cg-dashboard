@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import formatBytes from '../util/format_bytes';
-import Stat from './stat.jsx';
+import PropTypes from "prop-types";
+import React from "react";
+import formatBytes from "../util/format_bytes";
+import Stat from "./stat.jsx";
 
 const propTypes = {
   formGuid: PropTypes.string,
@@ -28,8 +28,8 @@ export default class ResourceUsage extends React.Component {
   }
 
   statState(used, total) {
-    if (total - used < this.props.byteWarningThreshold) return 'warning';
-    return 'success';
+    if (total - used < this.props.byteWarningThreshold) return "warning";
+    return "success";
   }
 
   render() {
@@ -48,14 +48,15 @@ export default class ResourceUsage extends React.Component {
     };
 
     if (props.amountUsed && props.amountTotal) {
-      properties = { ...properties,
+      properties = {
+        ...properties,
         primaryStat: props.amountUsed,
         secondaryInfo: <span>{this.available()} available</span>,
         statState: this.statState(props.amountUsed, props.amountTotal)
       };
     }
 
-    return <Stat { ...properties } />;
+    return <Stat {...properties} />;
   }
 }
 

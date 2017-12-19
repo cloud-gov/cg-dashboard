@@ -1,48 +1,48 @@
-import '../../global_setup';
-import React from 'react';
-import { shallow } from 'enzyme';
-import ServicePlan from '../../../components/service_plan.jsx';
-import Action from '../../../components/action.jsx';
+import "../../global_setup";
+import React from "react";
+import { shallow } from "enzyme";
+import ServicePlan from "../../../components/service_plan.jsx";
+import Action from "../../../components/action.jsx";
 
-describe('<ServicePlan />', () => {
+describe("<ServicePlan />", () => {
   const props = {
-    cost: 'Free',
+    cost: "Free",
     onAddInstance: sinon.spy(),
     plan: {
-      guid: 'zgwefzexst4',
-      name: 'redis',
-      description: 'in-memory key value store'
+      guid: "zgwefzexst4",
+      name: "redis",
+      description: "in-memory key value store"
     }
   };
   const findPlanNodeByLabel = (wrapper, label) =>
-    wrapper.find('td').filterWhere(node => node.prop('label') === label);
+    wrapper.find("td").filterWhere(node => node.prop("label") === label);
 
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<ServicePlan { ...props } />);
+    wrapper = shallow(<ServicePlan {...props} />);
   });
 
-  it('renders an action button for service instance creation', () => {
+  it("renders an action button for service instance creation", () => {
     const button = wrapper.find(Action);
 
     expect(button.length).toBe(1);
-    expect(button.props().children).toBe('Create service instance');
+    expect(button.props().children).toBe("Create service instance");
   });
 
-  it('renders the name of the plan', () => {
-    const name = findPlanNodeByLabel(wrapper, 'Name');
+  it("renders the name of the plan", () => {
+    const name = findPlanNodeByLabel(wrapper, "Name");
 
     expect(name.text()).toBe(props.plan.name);
   });
 
-  it('renders the plan description', () => {
-    const description = findPlanNodeByLabel(wrapper, 'Description');
+  it("renders the plan description", () => {
+    const description = findPlanNodeByLabel(wrapper, "Description");
 
     expect(description.text()).toBe(props.plan.description);
   });
 
-  it('calls its `onAddInstance` prop passing the plan guid from handler', () => {
+  it("calls its `onAddInstance` prop passing the plan guid from handler", () => {
     wrapper.instance().handleClick();
 
     expect(props.onAddInstance.calledOnce).toBe(true);
@@ -50,33 +50,33 @@ describe('<ServicePlan />', () => {
   });
 });
 
-describe('with multi param plan', () => {
-  it('renders a link to documentation', () => {
+describe("with multi param plan", () => {
+  it("renders a link to documentation", () => {
     let updatedProp;
     let wrapper;
     let button;
     const plans = [
-      'cdn-route',
-      'space-auditor',
-      'space-deployer',
-      'oauth-client'
+      "cdn-route",
+      "space-auditor",
+      "space-deployer",
+      "oauth-client"
     ];
     const props = {
-      cost: 'Free',
+      cost: "Free",
       onAddInstance: sinon.spy(),
       plan: {
-        guid: 'zgwefzexst4',
-        description: 'in-memory key value store'
+        guid: "zgwefzexst4",
+        description: "in-memory key value store"
       }
     };
     for (let i = plans.length - 1; i >= 0; i--) {
       updatedProp = Object.assign(props);
       updatedProp.plan.name = plans[i];
-      wrapper = shallow(<ServicePlan { ...props } />);
+      wrapper = shallow(<ServicePlan {...props} />);
       button = wrapper.find(Action);
 
       expect(button.length).toBe(1);
-      expect(button.props().children).toBe('Display documentation link');
+      expect(button.props().children).toBe("Display documentation link");
     }
   });
 });

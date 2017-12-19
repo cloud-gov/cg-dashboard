@@ -1,4 +1,3 @@
-
 const appStats = [
   {
     guid: "2f684200-b9da-4ea6-a3c8-01a1df5ef2d3", // Fake
@@ -7,9 +6,7 @@ const appStats = [
       state: "RUNNING",
       stats: {
         name: "fake-adfake-node",
-        uris: [
-          "fake-adfake-node.apps.cloud.gov"
-        ],
+        uris: ["fake-adfake-node.apps.cloud.gov"],
         host: "10.10.2.101",
         port: 62853,
         uptime: 673981,
@@ -28,9 +25,7 @@ const appStats = [
       state: "RUNNING",
       stats: {
         name: "fake-adfake-node",
-        uris: [
-          "fake-adfake-node.apps.cloud.gov"
-        ],
+        uris: ["fake-adfake-node.apps.cloud.gov"],
         host: "10.10.1.116",
         port: 62946,
         uptime: 541975,

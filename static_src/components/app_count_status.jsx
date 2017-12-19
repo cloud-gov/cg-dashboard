@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
-import CountStatus from './count_status.jsx';
-import { entityHealth } from '../constants.js';
-import { appHealth, worstHealth } from '../util/health';
+import CountStatus from "./count_status.jsx";
+import { entityHealth } from "../constants.js";
+import { appHealth, worstHealth } from "../util/health";
 
 const propTypes = {
   appCount: PropTypes.number,
@@ -25,8 +25,11 @@ export default class AppCountStatus extends React.Component {
     }
 
     return (
-      <CountStatus count={ props.appCount } name="apps"
-        health={ health } iconType="app"
+      <CountStatus
+        count={props.appCount}
+        name="apps"
+        health={health}
+        iconType="app"
       />
     );
   }

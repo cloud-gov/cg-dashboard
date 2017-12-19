@@ -1,6 +1,6 @@
-import AppDispatcher from '../dispatcher';
-import { upsiActionTypes } from '../constants';
-import cfApi from '../util/cf_api';
+import AppDispatcher from "../dispatcher";
+import { upsiActionTypes } from "../constants";
+import cfApi from "../util/cf_api";
 
 export const fetchAllSuccess = items => {
   AppDispatcher.handleServerAction({
@@ -57,7 +57,7 @@ export default {
 
     return cfApi
       .fetchAllUPSI({
-        q: [{ filter: 'space_guid', op: ':', value: spaceGuid }]
+        q: [{ filter: "space_guid", op: ":", value: spaceGuid }]
       })
       .then(
         data => fetchAllForSpaceSuccess(spaceGuid, data),

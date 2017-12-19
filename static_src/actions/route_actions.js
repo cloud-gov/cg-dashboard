@@ -1,11 +1,10 @@
-
 /*
  * Actions for route entities. Any actions such as fetching, creating, updating,
  * etc should go here.
  */
 
-import AppDispatcher from '../dispatcher.js';
-import { routeActionTypes } from '../constants';
+import AppDispatcher from "../dispatcher.js";
+import { routeActionTypes } from "../constants";
 
 export default {
   associateApp(routeGuid, appGuid) {
