@@ -1,4 +1,5 @@
 npm-shrinkwrap.json
 package.json
+package-lock.json
 static
 vendor
