@@ -7,7 +7,7 @@ const PRODUCTION = process.env.NODE_ENV === 'prod';
 const TEST = process.env.NODE_ENV === 'test';
 const CG_STYLE_PATH = process.env.CG_STYLE_PATH;
 
-const SKIN_NAME = process.env.SKIN_NAME || 'cg';
+const SKIN_NAME = process.env.SKIN_NAME || 'default';
 
 // getSkinEnv looks in the skin module for an `env.js` file which is expected to
 // contain an array of additional environment variable names that should be
