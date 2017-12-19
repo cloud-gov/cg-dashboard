@@ -13,28 +13,22 @@
   "scripts": {
     "build": "npm run clean && webpack --config webpack.config.js",
     "build-prod": "npm run clean && webpack -p --config webpack.config.js",
-    "build-style":
-      "cd node_modules/cloudgov-style && npm install && npm run build",
-    "check-style":
-      "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"git://github.com\" ]] && npm run build-style || exit 0'",
+    "build-style": "cd node_modules/cloudgov-style && npm install && npm run build",
+    "check-style": "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"git://github.com\" ]] && npm run build-style || exit 0'",
     "clean": "rm -rf ./static/assets/*",
     "dev-start": "cf dev start && docker-compose up -d app frontend watch",
     "dev-stop": "cf dev stop && docker-compose stop",
     "lint": "eslint --ext .js --ext .jsx ./static_src",
     "format": "prettier --write \"**/*.{css,js,jsx,json,md}\"",
     "format-check": "prettier --list-different \"**/*.{css,js,jsx,json,md}\"",
-    "test":
-      "npm run format-check && npm run lint && npm run test-unit && npm run test-functional",
+    "test": "npm run format-check && npm run lint && npm run test-unit && npm run test-functional",
     "test-functional": "npm run testing-server-run -- wdio wdio.conf.js",
-    "test-performance":
-      "JASMINE_CONFIG_PATH=./static_src/test/perf/jasmine.json npm run testing-server-run -- jasmine",
+    "test-performance": "JASMINE_CONFIG_PATH=./static_src/test/perf/jasmine.json npm run testing-server-run -- jasmine",
     "test-unit": "TZ=UTC NODE_ENV=test karma start --single-run",
     "test-selenium-install": "selenium-standalone install",
     "testing-server": "PORT=8001 npm run testing-server-run",
-    "testing-server-run":
-      "TZ=UTC NODE_ENV=test node ./static_src/test/server/server.js",
-    "track-performance":
-      "PORT=8002 npm run testing-server-run -- lighthouse http://localhost:8002/#/ --config-path ./static_src/test/perf/audits.json --output 'json' --output-path '$CIRCLE_ARTIFACTS/perf-$CIRCLE_BUILD_NUM.json' --verbose",
+    "testing-server-run": "TZ=UTC NODE_ENV=test node ./static_src/test/server/server.js",
+    "track-performance": "PORT=8002 npm run testing-server-run -- lighthouse http://localhost:8002/#/ --config-path ./static_src/test/perf/audits.json --output 'json' --output-path '$CIRCLE_ARTIFACTS/perf-$CIRCLE_BUILD_NUM.json' --verbose",
     "watch-server": "npm run testing-server & npm run watch",
     "watch-test-unit": "TZ=UTC NODE_ENV=test karma start --browsers Chrome",
     "watch-test-functional": "npm run test-functional -- --watch",
@@ -95,6 +89,7 @@
     "moment-timezone": "^0.5.14",
     "node-libs-browser": "^0.5.2",
     "normalize.css": "^3.0.3",
+    "prop-types": "^15.6.0",
     "query-string": "^4.3.4",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
@@ -130,7 +125,6 @@
     "lighthouse": "^1.6.3",
     "moxios": "^0.4.0",
     "prettier": "^1.9.2",
-    "prop-types": "^15.6.0",
     "react-addons-test-utils": "^15.6.2",
     "selenium-standalone": "^5.11.0",
     "smocks": "^4.0.6",
