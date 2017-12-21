@@ -85,7 +85,7 @@
     "json-loader": "^0.5.7",
     "jsx-loader": "^0.13.2",
     "keymirror": "^0.1.1",
-    "moment": "^2.19.4",
+    "moment": "^2.20.1",
     "moment-timezone": "^0.5.14",
     "node-libs-browser": "^0.5.2",
     "normalize.css": "^3.0.3",
@@ -103,7 +103,7 @@
   "devDependencies": {
     "babel-eslint": "^7.1.1",
     "babel-register": "^6.26.0",
-    "enzyme": "^2.8.0",
+    "enzyme": "^2.9.1",
     "eslint": "3.14.1",
     "eslint-config-airbnb": "10.0.1",
     "eslint-config-prettier": "^2.7.0",
