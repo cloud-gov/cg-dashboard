@@ -116,8 +116,8 @@ In the event that you need to modify the styling of cg-dashboard, it will most
 likely occur in the `cg-style` repo. You can see your changes in real time by
 linking and watching for the changes there.
 
-First, have your test site up and running, e.g., with 
-`docker-compose up -d frontend_testing_server watch`. Then, start another 
+First, have your test site up and running, e.g., with
+`docker-compose up -d frontend_testing_server watch`. Then, start another
 container to watch `cg-style` and rebuild on changes:
 
 ```sh
