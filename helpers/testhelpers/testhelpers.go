@@ -134,7 +134,7 @@ func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars map
 	// mockery converts []byte to []uint8 thus having to check for that in the
 	// argument.
 	mockMailer.On("SendEmail", mock.AnythingOfType("string"),
-		mock.AnythingOfType("string"), mock.AnythingOfType("[]uint8")).Return(nil)
+		mock.AnythingOfType("string"), mock.AnythingOfType("[]uint8"), mock.AnythingOfType("[]uint8")).Return(nil)
 	router := controllers.InitRouter(&settings, templates, mockMailer)
 
 	return router, &store
