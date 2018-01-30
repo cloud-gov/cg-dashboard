@@ -156,7 +156,7 @@ export default class AppContainer extends React.Component {
     let loading;
 
     let handler = this.handleRestart;
-    let actionText = "Restart app";
+    let actionText = "Restage app";
     if (!AppStore.isRunning(this.state.app)) {
       handler = this.handleStart;
       actionText = "Start app";
@@ -167,7 +167,7 @@ export default class AppContainer extends React.Component {
     }
 
     if (AppStore.isRestarting(this.state.app)) {
-      loading = <Loading text="Restarting app" style="inline" />;
+      loading = <Loading text="Restaging app" style="inline" />;
     }
 
     const action = loading || (
