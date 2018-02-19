@@ -7,7 +7,7 @@ const ICON_TYPES = ["fill", "stroke"];
 
 const ICON_SIZE = ["small", "medium", "large"];
 
-const STYLE_TYPES = ["alt", "ok", "inactive", "error", "default"];
+const STYLE_TYPES = ["alt", "ok", "inactive", "warning", "error", "default"];
 
 const propTypes = {
   children: PropTypes.node,
