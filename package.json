@@ -81,7 +81,7 @@
     "immutable": "^3.8.2",
     "imports-loader": "^0.6.4",
     "inert": "^4.2.1",
-    "jasmine-core": "^2.8.0",
+    "jasmine-core": "^3.0.0",
     "json-loader": "^0.5.7",
     "jsx-loader": "^0.13.2",
     "keymirror": "^0.1.1",
