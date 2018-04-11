@@ -20,6 +20,7 @@ func InitSMTPMailer(settings helpers.Settings) (Mailer, error) {
 		smtpUser: settings.SMTPUser,
 		smtpPass: settings.SMTPPass,
 		smtpFrom: settings.SMTPFrom,
+		smtpCert: settings.SMTPCert,
 	}, nil
 }
 
@@ -29,12 +30,14 @@ type smtpMailer struct {
 	smtpUser string
 	smtpPass string
 	smtpFrom string
+	smtpCert string
 }
 
 func (s *smtpMailer) SendEmail(emailAddress, subject string, body []byte) error {
 	e := email.NewEmail()
 	e.From = s.smtpFrom
 	e.To = []string{" <" + emailAddress + ">"}
+
 	e.HTML = body
 	e.Subject = subject
 	return e.Send(s.smtpHost+":"+s.smtpPort, smtp.PlainAuth("", s.smtpUser, s.smtpPass, s.smtpHost))
