@@ -3,7 +3,6 @@ package helpers_test
 import (
 	"testing"
 
-	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/govau/cf-common/env"
 
 	"github.com/18F/cg-dashboard/helpers"
@@ -31,7 +30,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 			helpers.SMTPFromEnvVar:              "blah@blah.com",
 			helpers.SMTPHostEnvVar:              "localhost",
-			helpers.SMTPCertEnvVar:				 "-----BEGIN CERTIFICATE-----
+			helpers.SMTPCertEnvVar: `-----BEGIN CERTIFICATE-----
 			MIIDrjCCApYCCQDdihKIIO0hnTANBgkqhkiG9w0BAQUFADCBmDELMAkGA1UEBhMC
 			VVMxCzAJBgNVBAgTAkRDMRMwEQYDVQQHEwpXYXNoaW5ndG9uMQwwCgYDVQQKEwNH
 			U0ExEDAOBgNVBAsTB1RUUy0xOEYxGjAYBgNVBAMTEXNtdHAuZnIuY2xvdWQuZ292
@@ -52,9 +51,9 @@ var initSettingsTests = []initSettingsTest{
 			KpMer71/GuBE6mgdKOMAgyD7D0eoPxeks0sxzs6MqC+AcMeBrpbQWCKLHaOMhgZk
 			bGfWcTPRDkXJmVtA44UuNANU+Wc9aHD5ODMFU+LG3TOEK0GCcgxCrksXfwTYrNN2
 			81D90R6hWY2GDdOx+T2KPAWuAZT6IgABaI9rU4/OGvisRA==
-			-----END CERTIFICATE-----",
-			helpers.SecureCookiesEnvVar:         "1",
-			helpers.TICSecretEnvVar:             "tic",
+			-----END CERTIFICATE-----`,
+			helpers.SecureCookiesEnvVar: "1",
+			helpers.TICSecretEnvVar:     "tic",
 		},
 		wantNilError: true,
 	},
@@ -73,7 +72,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 			helpers.SMTPFromEnvVar:              "blah@blah.com",
 			helpers.SMTPHostEnvVar:              "localhost",
-			helpers.SMTPCertEnvVar:				 "-----BEGIN CERTIFICATE-----
+			helpers.SMTPCertEnvVar: `-----BEGIN CERTIFICATE-----
 			MIIDrjCCApYCCQDdihKIIO0hnTANBgkqhkiG9w0BAQUFADCBmDELMAkGA1UEBhMC
 			VVMxCzAJBgNVBAgTAkRDMRMwEQYDVQQHEwpXYXNoaW5ndG9uMQwwCgYDVQQKEwNH
 			U0ExEDAOBgNVBAsTB1RUUy0xOEYxGjAYBgNVBAMTEXNtdHAuZnIuY2xvdWQuZ292
@@ -94,10 +93,10 @@ var initSettingsTests = []initSettingsTest{
 			KpMer71/GuBE6mgdKOMAgyD7D0eoPxeks0sxzs6MqC+AcMeBrpbQWCKLHaOMhgZk
 			bGfWcTPRDkXJmVtA44UuNANU+Wc9aHD5ODMFU+LG3TOEK0GCcgxCrksXfwTYrNN2
 			81D90R6hWY2GDdOx+T2KPAWuAZT6IgABaI9rU4/OGvisRA==
-			-----END CERTIFICATE-----",
-			helpers.SecureCookiesEnvVar:         "0",
-			helpers.LocalCFEnvVar:               "1",
-			helpers.TICSecretEnvVar:             "tic",
+			-----END CERTIFICATE-----`,
+			helpers.SecureCookiesEnvVar: "0",
+			helpers.LocalCFEnvVar:       "1",
+			helpers.TICSecretEnvVar:     "tic",
 		},
 		wantNilError: true,
 	},
@@ -272,7 +271,7 @@ var initSettingsTests = []initSettingsTest{
 			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
 			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
 			helpers.SMTPFromEnvVar:              "blah@blah.com",
-			helpers.SMTPCertEnvVar: 			 "12345",
+			helpers.SMTPCertEnvVar:              "12345",
 		},
 		wantNilError: false,
 	},
