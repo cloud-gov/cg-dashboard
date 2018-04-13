@@ -3,7 +3,6 @@ package controllers_test
 import (
 	"testing"
 
-	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/govau/cf-common/env"
 
 	"github.com/18F/cg-dashboard/controllers"
@@ -39,10 +38,8 @@ var initAppTests = []initAppTest{
 
 func TestInitApp(t *testing.T) {
 	for _, test := range initAppTests {
-		app, _ := cfenv.Current()
 		router, settings, err := controllers.InitApp(
 			env.NewVarSet(env.WithMapLookup(test.envVars)),
-			app,
 		)
 		if (router == nil) != test.returnRouterNil {
 			t.Errorf("Test %s did not return correct router value. Expected %t, Actual %t", test.testName, test.returnRouterNil, (router == nil))

@@ -45,6 +45,8 @@ var (
 	SMTPPassEnvVar = "SMTP_PASS"
 	// SMTPFromEnvVar is SMTP from address for UAA invites
 	SMTPFromEnvVar = "SMTP_FROM"
+	// SMTPCertEnvVar is cert for TLS connection
+	SMTPCertEnvVar = "SMTP_CERT"
 	// TICSecretEnvVar is the shared secret with CF API proxy for forwarding client IPs
 	TICSecretEnvVar = "TIC_SECRET"
 	// CSRFKeyEnvVar is used for CSRF token. Must be 32 bytes, hex-encoded, e.g. openssl rand -hex 32

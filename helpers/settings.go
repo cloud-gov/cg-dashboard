@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gorilla/sessions"
 	"github.com/govau/cf-common/env"
 	"golang.org/x/net/context"
@@ -61,6 +60,8 @@ type Settings struct {
 	SMTPPass string
 	// SMTP from address for UAA invites
 	SMTPFrom string
+	// SMTPCert is x509 TLS cert
+	SMTPCert string
 	// Shared secret with CF API proxy
 	TICSecret string
 	// CSRFKey used for gorilla CSRF validation
@@ -84,7 +85,7 @@ func (s *Settings) CreateContext() context.Context {
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
 // otherwise it returns nil for success.
-func (s *Settings) InitSettings(envVars *env.VarSet, app *cfenv.App) (retErr error) {
+func (s *Settings) InitSettings(envVars *env.VarSet) (retErr error) {
 	defer func() {
 		// While .MustString() is convenient in readability below, we'd prefer
 		// to convert this to an error for upstream callers.
@@ -174,6 +175,7 @@ func (s *Settings) InitSettings(envVars *env.VarSet, app *cfenv.App) (retErr err
 	s.SMTPPass = envVars.String(SMTPPassEnvVar, "")
 	s.SMTPPort = envVars.String(SMTPPortEnvVar, "")
 	s.SMTPUser = envVars.String(SMTPUserEnvVar, "")
+	s.SMTPCert = envVars.String(SMTPCertEnvVar, "")
 	s.TICSecret = envVars.String(TICSecretEnvVar, "")
 	return nil
 }

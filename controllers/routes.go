@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gocraft/web"
 	"github.com/govau/cf-common/env"
 
@@ -71,10 +70,10 @@ func InitRouter(settings *helpers.Settings, templates *helpers.Templates, mailer
 }
 
 // InitApp takes in envars and sets up the router and settings that will be used for the unstarted server.
-func InitApp(envVars *env.VarSet, app *cfenv.App) (*web.Router, *helpers.Settings, error) {
+func InitApp(envVars *env.VarSet) (*web.Router, *helpers.Settings, error) {
 	// Initialize the settings.
 	settings := helpers.Settings{}
-	if err := settings.InitSettings(envVars, app); err != nil {
+	if err := settings.InitSettings(envVars); err != nil {
 		return nil, nil, err
 	}
 	mailer, err := mailer.InitSMTPMailer(settings)

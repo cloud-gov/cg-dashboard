@@ -14,7 +14,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gocraft/web"
 	"github.com/gorilla/sessions"
 	"github.com/govau/cf-common/env"
@@ -114,8 +113,7 @@ func EchoResponseHandler(rw http.ResponseWriter, response *http.Response) {
 func CreateRouterWithMockSession(sessionData map[string]interface{}, envVars map[string]string) (*web.Router, *MockSessionStore) {
 	// Initialize settings.
 	settings := helpers.Settings{}
-	app, _ := cfenv.Current()
-	settings.InitSettings(env.NewVarSet(env.WithMapLookup(envVars)), app)
+	settings.InitSettings(env.NewVarSet(env.WithMapLookup(envVars)))
 
 	// Initialize a new session store.
 	store := MockSessionStore{}
@@ -362,10 +360,8 @@ func PrepareExternalServerCall(t *testing.T, c *controllers.SecureContext, testS
 
 		// Assign settings to context
 		mockSettings := &helpers.Settings{}
-		app, _ := cfenv.Current()
 		mockSettings.InitSettings(
 			env.NewVarSet(env.WithMapLookup(test.EnvVars)),
-			app,
 		)
 		c.Settings = mockSettings
 
