@@ -276,6 +276,27 @@ var initSettingsTests = []initSettingsTest{
 		},
 		wantNilError: false,
 	},
+	{
+		testName: "Basic Valid Local CF Settings missing optional SMTP cert",
+		envVars: map[string]string{
+			helpers.ClientIDEnvVar:              "ID",
+			helpers.ClientSecretEnvVar:          "Secret",
+			helpers.HostnameEnvVar:              "hostname",
+			helpers.LoginURLEnvVar:              "loginurl",
+			helpers.UAAURLEnvVar:                "uaaurl",
+			helpers.APIURLEnvVar:                "apiurl",
+			helpers.LogURLEnvVar:                "logurl",
+			helpers.SessionEncryptionEnvVar:     "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
+			helpers.SessionAuthenticationEnvVar: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
+			helpers.CSRFKeyEnvVar:               "00112233445566778899aabbccddeeff",
+			helpers.SMTPFromEnvVar:              "blah@blah.com",
+			helpers.SMTPHostEnvVar:              "localhost",
+			helpers.SecureCookiesEnvVar:         "0",
+			helpers.LocalCFEnvVar:               "1",
+			helpers.TICSecretEnvVar:             "tic",
+		},
+		wantNilError: true,
+	},
 }
 
 func TestInitSettings(t *testing.T) {
