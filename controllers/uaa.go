@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 
 	"encoding/json"
 
@@ -133,9 +134,7 @@ type NewInvite struct {
 
 // InviteUAAuser tries to invite the user e-mail which will create the user in
 // the UAA database.
-func (c *UAAContext) InviteUAAuser(
-	inviteUserToOrgRequest InviteUserToOrgRequest) (
-	inviteResponse InviteUAAUserResponse, err *UaaError) {
+func (c *UAAContext) InviteUAAuser(inviteUserToOrgRequest InviteUserToOrgRequest) (inviteResponse InviteUAAUserResponse, err *UaaError) {
 	// Make request to UAA to invite user (which will create the user in the
 	// UAA database)
 	reqURL := fmt.Sprintf("/invite_users?%s", url.Values{
@@ -338,6 +337,7 @@ func (c *UAAContext) TriggerInvite(inviteReq inviteEmailRequest) *UaaError {
 	}
 	emailErr := c.mailer.SendEmail(inviteReq.Email, "Invitation to join cloud.gov", emailHTML.Bytes())
 	if emailErr != nil {
+		log.Printf("error sending mail: %s\n", emailErr)
 		return newUaaError(http.StatusInternalServerError, emailErr.Error())
 	}
 	return nil
