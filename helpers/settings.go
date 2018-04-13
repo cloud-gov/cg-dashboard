@@ -6,13 +6,13 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"net/http"
-
+	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gorilla/sessions"
 	"github.com/govau/cf-common/env"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
+	"net/http"
 )
 
 const (
