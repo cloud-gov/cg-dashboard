@@ -17,7 +17,7 @@ type Mailer interface {
 // InitSMTPMailer creates a new SMTP Mailer
 func InitSMTPMailer(settings helpers.Settings) (Mailer, error) {
 	var tlsConfig *tls.Config
-	if config.Cert != "" {
+	if settings.SMTPCert != "" {
 		pool := x509.NewCertPool()
 		pool.AppendCertsFromPEM([]byte(settings.SMTPCert))
 		tlsConfig = &tls.Config{
@@ -44,7 +44,7 @@ type smtpMailer struct {
 	smtpPass  string
 	smtpFrom  string
 	smtpCert  string
-	tlsConfig tlsConfig
+	tlsConfig *tls.Config
 }
 
 func (s *smtpMailer) SendEmail(emailAddress, subject string, body []byte) error {
