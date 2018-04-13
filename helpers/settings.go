@@ -6,13 +6,13 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/cloudfoundry-community/go-cfenv"
+	"net/http"
+
 	"github.com/gorilla/sessions"
 	"github.com/govau/cf-common/env"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
-	"net/http"
 )
 
 const (
@@ -85,7 +85,7 @@ func (s *Settings) CreateContext() context.Context {
 
 // InitSettings attempts to populate all the fields of the Settings struct. It will return an error if it fails,
 // otherwise it returns nil for success.
-func (s *Settings) InitSettings(envVars *env.VarSet, app *cfenv.App) (retErr error) {
+func (s *Settings) InitSettings(envVars *env.VarSet) (retErr error) {
 	defer func() {
 		// While .MustString() is convenient in readability below, we'd prefer
 		// to convert this to an error for upstream callers.

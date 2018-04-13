@@ -64,7 +64,7 @@ func startApp(port string, app *cfenv.App) {
 		envVars = makeDefaultEnvVarSet(app)
 	}
 
-	router, settings, err := controllers.InitApp(envVars, app)
+	router, settings, err := controllers.InitApp(envVars)
 	if err != nil {
 		fmt.Println(err.Error())
 		// Terminate the program with a non-zero value number.

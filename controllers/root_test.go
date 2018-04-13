@@ -4,7 +4,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/govau/cf-common/env"
 
 	"github.com/18F/cg-dashboard/controllers"
@@ -13,10 +12,8 @@ import (
 
 func TestPing(t *testing.T) {
 	response, request := NewTestRequest("GET", "/ping", nil)
-	app, _ := cfenv.Current()
 	router, _, err := controllers.InitApp(
 		env.NewVarSet(env.WithMapLookup(GetMockCompleteEnvVars())),
-		app,
 	)
 	if err != nil {
 		t.Fatal(err)

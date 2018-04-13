@@ -3,7 +3,6 @@ package helpers_test
 import (
 	"testing"
 
-	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/govau/cf-common/env"
 
 	"github.com/18F/cg-dashboard/helpers"
@@ -300,13 +299,11 @@ var initSettingsTests = []initSettingsTest{
 }
 
 func TestInitSettings(t *testing.T) {
-	app, _ := cfenv.Current()
 	for _, tt := range initSettingsTests {
 		t.Run(tt.testName, func(t *testing.T) {
 			s := helpers.Settings{}
 			err := s.InitSettings(
 				env.NewVarSet(env.WithMapLookup(tt.envVars)),
-				app,
 			)
 			if (err == nil) != tt.wantNilError {
 				t.Errorf("return value: got %t, want %t", (err == nil), tt.wantNilError)
