@@ -3,6 +3,7 @@ package helpers_test
 import (
 	"testing"
 
+	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/govau/cf-common/env"
 
 	"github.com/18F/cg-dashboard/helpers"
