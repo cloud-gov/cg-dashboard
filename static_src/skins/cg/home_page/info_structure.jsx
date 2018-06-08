@@ -37,7 +37,7 @@ const InfoStructure = ({ className }) => (
       <li>
         <strong>Marketplace:</strong> Use your org’s{" "}
         <a href="https://cloud.gov/docs/apps/managed-services/">marketplace</a>{" "}
-        to create <a href="https://cloud.gov/docs/services/">service</a>{" "}
+        to create <a href="https://cloud.gov/docs/services/intro/">service</a>{" "}
         instances for spaces in that org.
       </li>
     </ul>

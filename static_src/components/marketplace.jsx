@@ -64,7 +64,7 @@ export default class Marketplace extends React.Component {
         <p>
           Use this marketplace to create service instances for apps in this
           space. Then bind service instances to apps. See{" "}
-          <a href="https://cloud.gov/docs/services/">docs for these services</a>,
+          <a href="https://cloud.gov/docs/services/intro/">docs for these services</a>,
           and
           {config.docs.managed_services && (
             <span>

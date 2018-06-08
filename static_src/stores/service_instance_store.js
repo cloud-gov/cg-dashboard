@@ -40,7 +40,7 @@ const SERVICE_INSTANCE_CREATE_ERROR_MAP = {
   "CF-ServiceInstanceInvalid": "Invalid space selected.",
   "CF-ServiceBrokerBadResponse":
     "This service instance must be created using the CF CLI." +
-    " Please refer to https://cloud.gov/docs/services/ for more information.",
+    " Please refer to https://cloud.gov/docs/services/intro/ for more information.",
   "CF-MessageParseError": "One or more form fields are blank or invalid."
 };
 
