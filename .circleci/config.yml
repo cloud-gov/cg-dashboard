@@ -8,6 +8,15 @@
 # cases it should duplicate the execution of your original 1.0 config.
 version: 2
 jobs:
+  deploy:
+#    branch: [master, demo, pdb/circle-2]
+#    owner: 18F
+#    commands:
+    - run: NODE_ENV=prod npm run build-prod
+    - run: pip install --user ruamel.yaml
+    - run: export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
+    - run: cd $WS && ./deploy/circle_deploy.sh
+
   test:
     - run: if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
     # This is based on your 1.0 configuration file or project settings
