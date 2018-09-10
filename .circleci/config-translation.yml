@@ -48,7 +48,7 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run:
         working_directory: ~/18F/cg-dashboard
-        command: cd cg-dashboard && nvm install && nvm use && nvm alias default $(cat .nvmrc)
+        command: nvm install && nvm use && nvm alias default $(cat .nvmrc)
     - run:
         working_directory: ~/18F/cg-dashboard
         command: mkdir -p download
