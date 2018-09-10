@@ -116,7 +116,8 @@ jobs:
     - run: NODE_ENV=prod npm run build
     - run: sleep 5
     - run: cd $WS && npm run test-performance || true
-    - run: cd $WS && ./codecheck.sh
+
+    - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh
     # Deployment
     # Your existing circle.yml file contains deployment steps.
     # The config translation tool does not support translating deployment steps
