@@ -8,6 +8,28 @@
 # cases it should duplicate the execution of your original 1.0 config.
 version: 2
 jobs:
+  test:
+    - run: if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
+    # This is based on your 1.0 configuration file or project settings
+    - run: export DISPLAY=:99.0
+    - run: sh -e /etc/init.d/xvfb start || echo \"Unable to start virtual display.\"
+    - run: sleep 5
+    - run: cd $WS && npm test
+    - run: NODE_ENV=prod npm run build
+    - run: sleep 5
+    - run: cd $WS && npm run test-performance || true
+
+    - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh
+    # Save test results
+    - store_test_results:
+        path: /tmp/circleci-test-results
+    # Save artifacts
+    - store_artifacts:
+        path: /tmp/circleci-artifacts
+    - store_artifacts:
+        path: /tmp/circleci-test-results
+
+
   build:
     working_directory: ~/18F/cg-dashboard
     parallelism: 1
@@ -104,32 +126,11 @@ jobs:
         # These cache paths were specified in the 1.0 config
         - node_modules
         - ./node_modules
-    # Test
-    #   This would typically be a build job when using workflows, possibly combined with build
-    # This is based on your 1.0 configuration file or project settings
-    - run: if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
-    # This is based on your 1.0 configuration file or project settings
-    - run: export DISPLAY=:99.0
-    - run: sh -e /etc/init.d/xvfb start || echo \"Unable to start virtual display.\"
-    - run: sleep 5
-    - run: cd $WS && npm test
-    - run: NODE_ENV=prod npm run build
-    - run: sleep 5
-    - run: cd $WS && npm run test-performance || true
 
-    - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh
-    # Deployment
-    # Your existing circle.yml file contains deployment steps.
-    # The config translation tool does not support translating deployment steps
-    # since deployment in CircleCI 2.0 are better handled through workflows.
-    # See the documentation for more information https://circleci.com/docs/2.0/workflows/
-    # Teardown
-    #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
-    # Save test results
-    - store_test_results:
-        path: /tmp/circleci-test-results
-    # Save artifacts
-    - store_artifacts:
-        path: /tmp/circleci-artifacts
-    - store_artifacts:
-        path: /tmp/circleci-test-results
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires: [build]
