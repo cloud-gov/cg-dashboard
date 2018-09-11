@@ -8,7 +8,7 @@
 # cases it should duplicate the execution of your original 1.0 config.
 version: 2
 jobs:
-#  deploy:
+  deploy:
 #    branch: [master, demo, pdb/circle-2]
 #    owner: 18F
 #    commands:
@@ -25,7 +25,7 @@ jobs:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
       GODIST: go1.9.linux-amd64.tar.gz
-      WS: /home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard
+      WS: ~/.go_workspace/src/github.com/18F/cg-dashboard
       CF_ORGANIZATION: cloud-gov
     docker:
     - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
@@ -117,18 +117,10 @@ jobs:
     - save_cache:
         key: v1-dep-{{ .Branch }}-{{ epoch }}
         paths:
-        # This is a broad list of cache paths to include many possible development environments
-        # You can probably delete some of these entries
         - vendor/bundle
         - /usr/local/
-        - ~/virtualenvs
-        - ~/.m2
-        - ~/.ivy2
-        - ~/.bundle
         - ~/.go_workspace
-        - ~/.gradle
-        - ~/.cache/bower
-        # These cache paths were specified in the 1.0 config
+        - $WS
         - node_modules
         - ./node_modules
 
