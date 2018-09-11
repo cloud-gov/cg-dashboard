@@ -32,7 +32,7 @@ jobs:
       command: /sbin/init
     steps:
     - restore_cache:
-        key: v1-dep-{{ .Branch }}-{{ epoch }}
+        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
     - run: if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
     # This is based on your 1.0 configuration file or project settings
     - run: export DISPLAY=:99.0
@@ -98,7 +98,7 @@ jobs:
     - run: sudo cp chromedriver /usr/local/bin/chromedriver
     # Save dependency cache
     - save_cache:
-        key: v1-dep-{{ .Branch }}-{{ epoch }}
+        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
         paths:
         - vendor/bundle
         - /usr/local/
