@@ -52,7 +52,7 @@ jobs:
   setup_node:
     <<: *DEFAULTS
     docker:
-    - image: circleci/golang
+    - image: circleci/golang:latest-node
     steps:
     - restore_cache:
         key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
@@ -136,6 +136,9 @@ workflows:
     jobs:
         - checkout_code
         - setup_go:
+            requires: 
+            - checkout_code
+        - setup_node:
             requires: 
             - checkout_code
 #        - setup_node
