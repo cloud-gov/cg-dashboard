@@ -8,14 +8,13 @@ defaults: &DEFAULTS
       GODIST: go1.9.linux-amd64.tar.gz
       WS: ~/.go_workspace/src/github.com/18F/cg-dashboard
       CF_ORGANIZATION: cloud-gov
-    docker:
-    - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-      command: /sbin/init
 
 version: 2
 jobs:
   checkout_code:
     <<: *DEFAULTS
+    docker:
+    - image: circleci/golang
     steps:
     - checkout
     - save_cache:
@@ -23,10 +22,11 @@ jobs:
         paths:
         - ~/18F/cg-dashboard
 
-#    - run: sudo docker info >/dev/null 2>&1 || sudo service docker start
 
   setup_go:
     <<: *DEFAULTS
+    docker:
+    - image: circleci/golang
     steps:
     - restore_cache:
         key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
@@ -53,7 +53,8 @@ jobs:
 
   setup_node:
     <<: *DEFAULTS
-    steps:
+    docker:
+    - image: circleci/golang
     steps:
     - restore_cache:
         key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
@@ -74,6 +75,8 @@ jobs:
 
   build:
     <<: *DEFAULTS
+    docker:
+    - image: circleci/golang
     steps:
     - restore_cache:
         key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
@@ -94,6 +97,8 @@ jobs:
 
   test:
     <<: *DEFAULTS
+    docker:
+    - image: circleci/golang
     steps:
     - restore_cache:
         key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
@@ -132,10 +137,12 @@ workflows:
   setup:
     jobs:
         - checkout_code
-        - setup_go
-        - setup_node
+#        - setup_go
+#        - setup_node
 #  build_and_test:
 #    jobs:
 #      - build
 #      - test:
 #          requires: [build]
+
+#    - run: sudo docker info >/dev/null 2>&1 || sudo service docker start
