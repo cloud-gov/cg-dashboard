@@ -5,7 +5,7 @@ defaults: &DEFAULTS
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
       GODIST: go1.9.linux-amd64.tar.gz
-      WS: ~/.go_workspace/src/github.com/18F/cg-dashboard
+      WS: /go/src/github.com/18F/cg-dashboard
       CF_ORGANIZATION: cloud-gov
 
 version: 2
@@ -44,7 +44,6 @@ jobs:
     - save_cache:
         key: v1-go-{{ .Environment.GODIST }}
         paths:
-        - ~/.go_workspace
         - $WS
         - /usr/local/go
         - download
