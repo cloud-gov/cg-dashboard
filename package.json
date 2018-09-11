@@ -98,7 +98,7 @@
     "style-loader": "^0.13.0",
     "url-loader": "^0.6.2",
     "watch": "^0.16.0",
-    "webpack": "^3.10.0"
+    "webpack": "^4.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
