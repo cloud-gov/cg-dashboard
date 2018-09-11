@@ -43,14 +43,10 @@ jobs:
     - run: sleep 5
     - run: cd $WS && npm run test-performance || true
     - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh
-    # Save test results
     - store_test_results:
-        path: /tmp/circleci-test-results
-    # Save artifacts
+        path: $CIRCLE_TEST_REPORTS
     - store_artifacts:
-        path: /tmp/circleci-artifacts
-    - store_artifacts:
-        path: /tmp/circleci-test-results
+        path: $CIRCLE_ARTIFACTS
 
   build:
     working_directory: ~/18F/cg-dashboard
@@ -86,19 +82,6 @@ jobs:
     - run:
         working_directory: ~/18F/cg-dashboard
         command: sudo tar -C /usr/local -xzf download/$GODIST
-
-    # Dependencies
-    #   This would typically go in either a build or a build-and-test job when using workflows
-    # Restore the dependency cache
-    - restore_cache:
-        keys:
-        # This branch if available
-        - v1-dep-{{ .Branch }}-
-        # Default branch if not
-        - v1-dep-master-
-        # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
-        - v1-dep-
-    # This is based on your 1.0 configuration file or project settings
     - run: sudo apt-get update; sudo apt-get install libicu52
     - run: go version
     - run: go get -u github.com/golang/dep/cmd/dep
