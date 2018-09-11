@@ -56,6 +56,8 @@ jobs:
     steps:
     - restore_cache:
         key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+    - run: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+    - run: mkdir -p node_modules
     - restore_cache:
         key: v1-node-{{ checksum "package.json" }}
     - run: nvm install && nvm use && nvm alias default $(cat .nvmrc)
