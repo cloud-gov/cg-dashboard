@@ -137,7 +137,7 @@ workflows:
     jobs:
         - checkout_code
         - setup_go:
-          requires: 
+            requires: 
             - checkout_code
 #        - setup_node
 #  build_and_test:
