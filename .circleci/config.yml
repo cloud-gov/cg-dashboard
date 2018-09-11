@@ -57,6 +57,10 @@ jobs:
     - restore_cache:
         key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
     - run: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+    - run: |
+        echo BASH_ENV $BASH_ENV && 
+        echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV &&
+        echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
     - run: mkdir -p node_modules
     - restore_cache:
         key: v2-node-{{ checksum "package.json" }}
@@ -142,7 +146,6 @@ workflows:
         - setup_node:
             requires: 
             - checkout_code
-#        - setup_node
 #  build_and_test:
 #    jobs:
 #      - build
