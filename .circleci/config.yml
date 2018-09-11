@@ -132,6 +132,10 @@ workflows:
   validate_checkout:
     jobs:
         - checkout_code
+        - setup_go
+            requires: [checkout_code]
+        - setup_node
+            requires: [checkout_code]
 #  build_and_test:
 #    jobs:
 #      - build
