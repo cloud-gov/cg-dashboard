@@ -1,23 +1,4 @@
-# This configuration was automatically generated from a CircleCI 1.0 config.
-# It should include any build commands you had along with commands that CircleCI
-# inferred from your project structure. We strongly recommend you read all the
-# comments in this file to understand the structure of CircleCI 2.0, as the idiom
-# for configuration has changed substantially in 2.0 to allow arbitrary jobs rather
-# than the prescribed lifecycle of 1.0. In general, we recommend using this generated
-# configuration as a reference rather than using it in production, though in most
-# cases it should duplicate the execution of your original 1.0 config.
-version: 2
-jobs:
-#  deploy:
-#    branch: [master, demo, pdb/circle-2]
-#    owner: 18F
-#    commands:
-#    - run: NODE_ENV=prod npm run build-prod
-#    - run: pip install --user ruamel.yaml
-#    - run: export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
-#    - run: cd $WS && ./deploy/circle_deploy.sh
-
-  test:
+defaults: &DEFAULTS
     working_directory: ~/18F/cg-dashboard
     parallelism: 1
     shell: /bin/bash --login
@@ -30,9 +11,98 @@ jobs:
     docker:
     - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
       command: /sbin/init
+
+version: 2
+jobs:
+  checkout_code:
+    <<: *DEFAULTS
+    steps:
+    - checkout
+    - save_cache:
+        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+        paths:
+        - ~/18F/cg-dashboard
+
+#    - run: sudo docker info >/dev/null 2>&1 || sudo service docker start
+
+  setup_go:
+    <<: *DEFAULTS
     steps:
     - restore_cache:
         key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+    - restore_cache:
+        key: v1-go-{{ .Environment.GODIST }}
+    - run: mkdir -p download
+    - run: test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
+    - run: sudo rm -rf /usr/local/go
+    - run: sudo tar -C /usr/local -xzf download/$GODIST
+#    - run: sudo apt-get update; sudo apt-get install libicu52
+    - run: go version
+    - run: go get -u github.com/golang/dep/cmd/dep
+#    - run: rm -rf $WS
+    - run: mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
+    - run: cd $WS && dep ensure
+    - save_cache:
+        key: v1-go-{{ .Environment.GODIST }}
+        paths:
+        - ~/.go_workspace
+        - $WS
+        - /usr/local/go
+        - download
+
+
+  setup_node:
+    <<: *DEFAULTS
+    steps:
+    steps:
+    - restore_cache:
+        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+    - restore_cache:
+        key: v1-node-{{ checksum "package.json" }}
+    - run: nvm install && nvm use && nvm alias default $(cat .nvmrc)
+    - run: npm install
+    - run: npm run test-selenium-install
+    - run: wget https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip
+    - run: unzip chromedriver_linux64.zip
+    - run: sudo cp chromedriver /usr/local/bin/chromedriver
+    - save_cache:
+        key: v1-node-{{ checksum "package.json" }}
+        paths:
+        - /usr/local/bin
+        - node_modules
+        - ./node_modules
+
+  build:
+    <<: *DEFAULTS
+    steps:
+    - restore_cache:
+        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+    - restore_cache:
+        key: v1-node-{{ checksum "package.json" }}
+    - restore_cache:
+        key: v1-go-{{ .Environment.GODIST }}
+    - run: nvm install && nvm use && nvm alias default $(cat .nvmrc)
+    - run: cd $WS && go build
+    - run: npm run build
+    - save_cache:
+        key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
+        paths:
+        - $WS
+        - ~/.go_workspace
+        - node_modules
+        - ./node_modules
+
+  test:
+    <<: *DEFAULTS
+    steps:
+    - restore_cache:
+        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+    - restore_cache:
+        key: v1-node-{{ checksum "package.json" }}
+    - restore_cache:
+        key: v1-go-{{ .Environment.GODIST }}
+    - restore_cache:
+        key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
     - run: if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
     # This is based on your 1.0 configuration file or project settings
     - run: export DISPLAY=:99.0
@@ -48,69 +118,22 @@ jobs:
     - store_artifacts:
         path: $CIRCLE_ARTIFACTS
 
-  build:
-    working_directory: ~/18F/cg-dashboard
-    parallelism: 1
-    shell: /bin/bash --login
-    environment:
-      CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
-      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
-      GODIST: go1.9.linux-amd64.tar.gz
-      WS: /home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard
-      CF_ORGANIZATION: cloud-gov
-    docker:
-    - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-      command: /sbin/init
-    steps:
-    - checkout
-    - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: 'sudo docker info >/dev/null 2>&1 || sudo service docker start; '
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: nvm install && nvm use && nvm alias default $(cat .nvmrc)
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: mkdir -p download
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: sudo rm -rf /usr/local/go
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: sudo tar -C /usr/local -xzf download/$GODIST
-    - run: sudo apt-get update; sudo apt-get install libicu52
-    - run: go version
-    - run: go get -u github.com/golang/dep/cmd/dep
-    - run: rm -rf $WS
-    - run: mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
-    - run: cd $WS && dep ensure
-    - run: npm install
-    - run: npm run test-selenium-install
-    # This is based on your 1.0 configuration file or project settings
-    - run: cd $WS && go build
-    - run: npm run build
-    - run: wget https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip
-    - run: unzip chromedriver_linux64.zip
-    - run: sudo cp chromedriver /usr/local/bin/chromedriver
-    # Save dependency cache
-    - save_cache:
-        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
-        paths:
-        - vendor/bundle
-        - /usr/local/
-        - ~/.go_workspace
-        - $WS
-        - node_modules
-        - ./node_modules
+#  deploy:
+#    branch: [master, demo, pdb/circle-2]
+#    owner: 18F
+#    commands:
+#    - run: NODE_ENV=prod npm run build-prod
+#    - run: pip install --user ruamel.yaml
+#    - run: export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
+#    - run: cd $WS && ./deploy/circle_deploy.sh
 
 workflows:
   version: 2
-  build_and_test:
+  validate_checkout:
     jobs:
-      - build
-      - test:
-          requires: [build]
+        - checkout_code
+#  build_and_test:
+#    jobs:
+#      - build
+#      - test:
+#          requires: [build]
