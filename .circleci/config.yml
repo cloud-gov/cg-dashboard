@@ -8,7 +8,7 @@
 # cases it should duplicate the execution of your original 1.0 config.
 version: 2
 jobs:
-  deploy:
+#  deploy:
 #    branch: [master, demo, pdb/circle-2]
 #    owner: 18F
 #    commands:
