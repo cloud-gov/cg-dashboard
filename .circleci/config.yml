@@ -56,13 +56,13 @@ jobs:
         key: v3-build-{{ .Environment.CIRCLE_SHA1 }}
         paths:
         - ~
-        - ~/.go_workspace
-        - node_modules
-        - ./node_modules
+#        - ~/.go_workspace
+#        - node_modules
 
   test:
     <<: *DEFAULTS
     steps:
+    - checkout
     - restore_cache:
         key: v4-node-{{ checksum "package.json" }}
     - restore_cache:
