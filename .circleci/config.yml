@@ -23,7 +23,7 @@ jobs:
     - run: mkdir -p node_modules
     - restore_cache:
         keys: 
-            - v4-node-{{ checksum "package.json" }}
+            - v4-node-{{ checksum "npm-shrinkwrap.json" }}
 #            - v4-node-
     - run: nvm install && nvm use && nvm alias default $(cat .nvmrc)
     - run: npm install
@@ -32,7 +32,7 @@ jobs:
 #    - run: unzip chromedriver_linux64.zip
 #    - run: sudo cp chromedriver /usr/local/bin/chromedriver
     - save_cache:
-        key: v4-node-{{ checksum "package.json" }}
+        key: v4-node-{{ checksum "npm-shrinkwrap.json" }}
         paths:
 #        - /usr/local/bin/chromedriver
         - node_modules
@@ -42,7 +42,7 @@ jobs:
     steps:
     - checkout
     - restore_cache:
-        key: v4-node-{{ checksum "package.json" }}
+        key: v4-node-{{ checksum "npm-shrinkwrap.json" }}
     - run: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
     - run: |
         echo BASH_ENV $BASH_ENV && 
@@ -64,7 +64,7 @@ jobs:
     steps:
     - checkout
     - restore_cache:
-        key: v4-node-{{ checksum "package.json" }}
+        key: v4-node-{{ checksum "npm-shrinkwrap.json" }}
     - restore_cache:
         key: v3-build-{{ .Environment.CIRCLE_SHA1 }}
     - run: if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
