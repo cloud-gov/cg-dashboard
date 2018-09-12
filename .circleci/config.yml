@@ -62,15 +62,9 @@ jobs:
 
   test:
     <<: *DEFAULTS
-    docker:
-    - image: circleci/golang:1.9-stretch-node-browsers
     steps:
     - restore_cache:
-        key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
-    - restore_cache:
-        key: v3-node-{{ checksum "package.json" }}
-    - restore_cache:
-        key: v3-go-{{ .Environment.GODIST }}
+        key: v4-node-{{ checksum "package.json" }}
     - restore_cache:
         key: v3-build-{{ .Environment.CIRCLE_SHA1 }}
     - run: if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
@@ -99,12 +93,15 @@ jobs:
 
 workflows:
   version: 2
-  setup:
+  setup-build-test:
     jobs:
         - setup_node
         - build:
             requires: 
             - setup_node
+        - test:
+            requires:
+            - build
 #  build_and_test:
 #    jobs:
 #      - build
