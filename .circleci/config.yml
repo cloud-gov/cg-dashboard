@@ -31,13 +31,13 @@ jobs:
         key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
     - restore_cache:
         key: v3-go-{{ .Environment.GODIST }}
-    - run: mkdir -p download
-    - run: test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
-    - run: sudo rm -rf /usr/local/go
-    - run: sudo tar -C /usr/local -xzf download/$GODIST
+#    - run: mkdir -p download
+#    - run: test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
+#    - run: sudo rm -rf /usr/local/go
+#    - run: sudo tar -C /usr/local -xzf download/$GODIST
 #    - run: sudo apt-get update; sudo apt-get install libicu52
     - run: go version
-    - run: go get -u github.com/golang/dep/cmd/dep
+#    - run: go get -u github.com/golang/dep/cmd/dep
 #    - run: rm -rf $WS
     - run: mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
     - run: cd $WS && dep ensure
