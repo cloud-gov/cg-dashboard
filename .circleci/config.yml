@@ -1,11 +1,17 @@
 # This configuration was automatically generated from a CircleCI 1.0 config.
-# It should include any build commands you had along with commands that CircleCI
-# inferred from your project structure. We strongly recommend you read all the
-# comments in this file to understand the structure of CircleCI 2.0, as the idiom
-# for configuration has changed substantially in 2.0 to allow arbitrary jobs rather
-# than the prescribed lifecycle of 1.0. In general, we recommend using this generated
-# configuration as a reference rather than using it in production, though in most
-# cases it should duplicate the execution of your original 1.0 config.
+# And then modified to complete a build-and-test cycle.
+
+# The build uses the docker image, circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
+# that has all the tools from the v1.0 CircleCI world. That image is 22.9 Gb, and 
+# takes about 8 minutes to set up if it's not already cached on the CircleCI machine
+# that your job lands on.
+
+# TODO:
+#   - enable cachine for node_modules, to save abou 2m on builds
+#   - enable master builds to deploy to fr-stage
+#   - enable new tags to deploy to fr
+#   - enable Slack notifications
+
 version: 2
 jobs:
   build:
