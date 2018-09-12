@@ -2438,9 +2438,9 @@
       "resolved": "https://registry.npmjs.org/fd-slicer/-/fd-slicer-1.0.1.tgz"
     },
     "fibers": {
-      "version": "1.0.15",
-      "from": "fibers@https://registry.npmjs.org/fibers/-/fibers-1.0.15.tgz",
-      "resolved": "https://registry.npmjs.org/fibers/-/fibers-1.0.15.tgz"
+      "version": "2.0.2",
+      "from": "fibers@https://registry.npmjs.org/fibers/-/fibers-2.0.2.tgz",
+      "resolved": "https://registry.npmjs.org/fibers/-/fibers-2.0.2.tgz"
     },
     "figures": {
       "version": "1.7.0",
