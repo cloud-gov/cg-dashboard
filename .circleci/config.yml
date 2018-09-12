@@ -99,7 +99,7 @@ workflows:
   version: 2
   setup:
     jobs:
-        - setup_node:
+        - setup_node
         - build:
             requires: 
             - setup_node
