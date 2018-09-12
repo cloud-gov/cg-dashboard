@@ -13,11 +13,11 @@ jobs:
   checkout_code:
     <<: *DEFAULTS
     docker:
-    - image: circleci/golang
+    - image: circleci/golang:1.9-stretch-node-browsers
     steps:
     - checkout
     - save_cache:
-        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+        key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
         paths:
         - ~/18F/cg-dashboard
 
@@ -25,12 +25,12 @@ jobs:
   setup_go:
     <<: *DEFAULTS
     docker:
-    - image: circleci/golang
+    - image: circleci/golang:1.9-stretch-node-browsers
     steps:
     - restore_cache:
-        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+        key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
     - restore_cache:
-        key: v1-go-{{ .Environment.GODIST }}
+        key: v3-go-{{ .Environment.GODIST }}
     - run: mkdir -p download
     - run: test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
     - run: sudo rm -rf /usr/local/go
@@ -42,7 +42,7 @@ jobs:
     - run: mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
     - run: cd $WS && dep ensure
     - save_cache:
-        key: v1-go-{{ .Environment.GODIST }}
+        key: v3-go-{{ .Environment.GODIST }}
         paths:
         - $WS
         - /usr/local/go
@@ -52,10 +52,10 @@ jobs:
   setup_node:
     <<: *DEFAULTS
     docker:
-    - image: circleci/golang:latest-node
+    - image: circleci/golang:1.9-stretch-node-browsers
     steps:
     - restore_cache:
-        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+        key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
     - run: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
     - run: |
         echo BASH_ENV $BASH_ENV && 
@@ -63,7 +63,7 @@ jobs:
         echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
     - run: mkdir -p node_modules
     - restore_cache:
-        key: v2-node-{{ checksum "package.json" }}
+        key: v3-node-{{ checksum "package.json" }}
     - run: nvm install && nvm use && nvm alias default $(cat .nvmrc)
     - run: npm install
     - run: echo npm run test-selenium-install
@@ -71,7 +71,7 @@ jobs:
     - run: unzip chromedriver_linux64.zip
     - run: sudo cp chromedriver /usr/local/bin/chromedriver
     - save_cache:
-        key: v2-node-{{ checksum "package.json" }}
+        key: v3-node-{{ checksum "package.json" }}
         paths:
         - /usr/local/bin/chromedriver
         - node_modules
@@ -79,19 +79,19 @@ jobs:
   build:
     <<: *DEFAULTS
     docker:
-    - image: circleci/golang
+    - image: circleci/golang:1.9-stretch-node-browsers
     steps:
     - restore_cache:
-        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+        key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
     - restore_cache:
-        key: v1-node-{{ checksum "package.json" }}
+        key: v3-node-{{ checksum "package.json" }}
     - restore_cache:
-        key: v1-go-{{ .Environment.GODIST }}
+        key: v3-go-{{ .Environment.GODIST }}
     - run: nvm install && nvm use && nvm alias default $(cat .nvmrc)
     - run: cd $WS && go build
     - run: npm run build
     - save_cache:
-        key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
+        key: v3-build-{{ .Environment.CIRCLE_SHA1 }}
         paths:
         - $WS
         - ~/.go_workspace
@@ -101,16 +101,16 @@ jobs:
   test:
     <<: *DEFAULTS
     docker:
-    - image: circleci/golang
+    - image: circleci/golang:1.9-stretch-node-browsers
     steps:
     - restore_cache:
-        key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+        key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
     - restore_cache:
-        key: v1-node-{{ checksum "package.json" }}
+        key: v3-node-{{ checksum "package.json" }}
     - restore_cache:
-        key: v1-go-{{ .Environment.GODIST }}
+        key: v3-go-{{ .Environment.GODIST }}
     - restore_cache:
-        key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
+        key: v3-build-{{ .Environment.CIRCLE_SHA1 }}
     - run: if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
     # This is based on your 1.0 configuration file or project settings
     - run: export DISPLAY=:99.0
@@ -153,3 +153,4 @@ workflows:
 #          requires: [build]
 
 #    - run: sudo docker info >/dev/null 2>&1 || sudo service docker start
+# The fed policy of 90 days paid leave for an employee with a new child demonstrates its commitment to families in the workforce. J/K! It's 0 days
