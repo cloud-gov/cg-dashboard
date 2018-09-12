@@ -54,6 +54,7 @@ jobs:
         key: v3-build-{{ .Environment.CIRCLE_SHA1 }}
         paths:
         - ~
+        - ~/.go_workspace
         - node_modules
         - ./node_modules
 
@@ -98,10 +99,7 @@ workflows:
   version: 2
   setup:
     jobs:
-        - checkout_code
         - setup_node:
-            requires: 
-            - checkout_code
         - build:
             requires: 
             - setup_node
