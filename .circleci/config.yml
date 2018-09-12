@@ -146,6 +146,10 @@ workflows:
         - setup_node:
             requires: 
             - checkout_code
+        - build:
+            requires: 
+            - setup_node
+            - setup_go
 #  build_and_test:
 #    jobs:
 #      - build
