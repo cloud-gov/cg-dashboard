@@ -72,11 +72,11 @@ jobs:
     - run: export DISPLAY=:99.0
     - run: sh -e /etc/init.d/xvfb start || echo \"Unable to start virtual display.\"
     - run: sleep 5
-    - run: cd $WS && npm test
+    - run: npm test
     - run: NODE_ENV=prod npm run build
     - run: sleep 5
-    - run: cd $WS && npm run test-performance || true
-    - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh
+    - run: npm run test-performance || true
+    - run: SKIP_DOCKER=1 ./codecheck.sh
     - store_test_results:
         path: $CIRCLE_TEST_REPORTS
     - store_artifacts:
