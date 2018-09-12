@@ -11,22 +11,10 @@ defaults: &DEFAULTS
 
 version: 2
 jobs:
-  checkout_code:
+  setup_node:
     <<: *DEFAULTS
     steps:
     - checkout
-    - save_cache:
-        key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
-        paths:
-        - $WS
-
-  setup_node:
-    <<: *DEFAULTS
-    docker:
-    - image: circleci/golang:1.9-stretch-node-browsers
-    steps:
-    - restore_cache:
-        key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
     - run: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
     - run: |
         echo BASH_ENV $BASH_ENV && 
@@ -49,11 +37,8 @@ jobs:
 
   build:
     <<: *DEFAULTS
-    docker:
-    - image: circleci/golang:1.9-stretch-node-browsers
     steps:
-    - restore_cache:
-        key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
+    - checkout
     - restore_cache:
         key: v3-node-{{ checksum "package.json" }}
     - run: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
@@ -68,8 +53,7 @@ jobs:
     - save_cache:
         key: v3-build-{{ .Environment.CIRCLE_SHA1 }}
         paths:
-        - $WS
-        - ~/.go_workspace
+        - ~
         - node_modules
         - ./node_modules
 
