@@ -22,17 +22,19 @@ jobs:
         echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
     - run: mkdir -p node_modules
     - restore_cache:
-        key: v3-node-{{ checksum "package.json" }}
+        keys: 
+            - v4-node-{{ checksum "package.json" }}
+#            - v4-node-
     - run: nvm install && nvm use && nvm alias default $(cat .nvmrc)
     - run: npm install
     - run: echo npm run test-selenium-install
-    - run: wget https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip
-    - run: unzip chromedriver_linux64.zip
-    - run: sudo cp chromedriver /usr/local/bin/chromedriver
+#    - run: wget https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip
+#    - run: unzip chromedriver_linux64.zip
+#    - run: sudo cp chromedriver /usr/local/bin/chromedriver
     - save_cache:
-        key: v3-node-{{ checksum "package.json" }}
+        key: v4-node-{{ checksum "package.json" }}
         paths:
-        - /usr/local/bin/chromedriver
+#        - /usr/local/bin/chromedriver
         - node_modules
 
   build:
@@ -40,7 +42,7 @@ jobs:
     steps:
     - checkout
     - restore_cache:
-        key: v3-node-{{ checksum "package.json" }}
+        key: v4-node-{{ checksum "package.json" }}
     - run: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
     - run: |
         echo BASH_ENV $BASH_ENV && 
