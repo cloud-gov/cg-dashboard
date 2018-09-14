@@ -90,16 +90,32 @@ jobs:
     - store_artifacts:
         path: /tmp/circleci-test-results
 
+  deploy:
+    working_directory: ~/18F/cg-dashboard
+    parallelism: 1
+    shell: /bin/bash --login
+    environment:
+      CF_ORGANIZATION: cloud-gov
+      WS: /home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard
+    docker:
+    - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
+      command: /sbin/init
+    steps:
+    - checkout
+    - run: NODE_ENV=prod npm run build-prod
+    - run: pip install --user ruamel.yaml
+    - run: export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
+    - run: cd $WS && ./deploy/circle_deploy.sh
+
+
 workflows:
   version: 2
-  build:
+  build-deploy:
     jobs:
-        - build
-workflow:
-    # Deployment
-    # Your existing circle.yml file contains deployment steps.
-    # The config translation tool does not support translating deployment steps
-    # since deployment in CircleCI 2.0 are better handled through workflows.
-    # See the documentation for more information https://circleci.com/docs/2.0/workflows/
-    # Teardown
-    #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
+      - build
+      - deploy-stage:
+          requires:
+            - build
+          filters:
+            branches:
+              only: pdb-monoworkflow
