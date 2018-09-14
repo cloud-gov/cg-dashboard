@@ -82,7 +82,7 @@ jobs:
     - run: cd $WS && npm run test-performance || true
     - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh
     - save_cache:
-        key: v1-node_modules-{{ checksum "npm-shrinkwrap.json }}
+        key: v1-node_modules-{{ checksum "npm-shrinkwrap.json"}}
         paths: 
           - node_modules
     - save_cache:
