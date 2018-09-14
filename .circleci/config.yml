@@ -81,6 +81,15 @@ jobs:
     - run: sleep 5
     - run: cd $WS && npm run test-performance || true
     - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh
+    - save_cache:
+        key: v1-node_modules-{{ checksum "npm-shrinkwrap.json }}
+        paths: 
+          - node_modules
+    - save_cache:
+        key: v1-go-{{ .Environment.CIRCLE_SHA1 }}
+        paths: 
+          - /home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard
+    
     # Save test results
     - store_test_results:
         path: /tmp/circleci-test-results
@@ -102,6 +111,11 @@ jobs:
       command: /sbin/init
     steps:
     - checkout
+    - restore_cache:
+        key: v1-go-{{ .Environment.CIRCLE_SHA1 }}
+    - restore_cache:
+        key: v1-node-modules-{{ checksum "npm-shrinkwrap.json"}}
+    - run: nvm install && nvm use && nvm alias default $(cat .nvmrc)
     - run: NODE_ENV=prod npm run build-prod
     - run: pip install --user ruamel.yaml
     - run: export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
