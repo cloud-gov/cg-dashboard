@@ -8,8 +8,8 @@
 
 # TODO:
 #   - enable cachine for node_modules, to save abou 2m on builds
-#   - enable master builds to deploy to fr-stage
-#   - enable new tags to deploy to fr
+#   - enable master builds to deploy to fr-stage - DONE Managed in circle_deploy.sh
+#   - enable new tags to deploy to fr - DONE Managed in circle_deploy.sh
 #   - enable Slack notifications
 
 version: 2
@@ -81,12 +81,12 @@ jobs:
     - run: NODE_ENV=prod npm run build
     - run: sleep 5
     - run: cd $WS && npm run test-performance || true
-    - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh
+    - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh  # TODO: SKIP_DOCKER may not be needed anymore
     # Deploy:
     - run: NODE_ENV=prod npm run build-prod
     - run: pip install --user ruamel.yaml
     - run: export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
-    - run: cd $WS && CIRCLE_BRANCH=master ./deploy/circle_deploy.sh
+    - run: cd $WS && CIRCLE_BRANCH=master ./deploy/circle_deploy.sh # TODO: remove force set of CIRCLE_BRANCH
 
 
 workflows:
