@@ -15,6 +15,7 @@
 version: 2
 jobs:
   build:
+    # branches: TODO filter build by branches for release to fr-stage?
     working_directory: ~/18F/cg-dashboard
     parallelism: 1
     shell: /bin/bash --login
@@ -81,45 +82,7 @@ jobs:
     - run: sleep 5
     - run: cd $WS && npm run test-performance || true
     - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh
-    - save_cache:
-        key: v1-node_modules-{{ checksum "npm-shrinkwrap.json"}}
-        paths: 
-          - node_modules
-    - save_cache:
-        key: v1-go-{{ .Environment.CIRCLE_SHA1 }}
-        paths: 
-          - /home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard
-    
-    # Save test results
-    - store_test_results:
-        path: /tmp/circleci-test-results
-    # Save artifacts
-    - store_artifacts:
-        path: /tmp/circleci-artifacts
-    - store_artifacts:
-        path: /tmp/circleci-test-results
-
-  deploy:
-    working_directory: ~/18F/cg-dashboard
-    parallelism: 1
-    shell: /bin/bash --login
-    environment:
-      CF_ORGANIZATION: cloud-gov
-      WS: /home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard
-      BASH_ENV: ~/.bashrc
-    docker:
-    - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-      command: /sbin/init
-    steps:
-    - checkout
-    - run: rm -rf $WS
-    - run: mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
-    - restore_cache:
-        key: v1-go-{{ .Environment.CIRCLE_SHA1 }}
-    - restore_cache:
-        key: v1-node_modules-{{ checksum "npm-shrinkwrap.json"}}
-    - run: nvm install && nvm use && nvm alias default $(cat .nvmrc)
-    - run: echo 'export PATH=$PATH:./node_modules/.bin' >> $BASH_ENV
+    # Deploy:
     - run: NODE_ENV=prod npm run build-prod
     - run: pip install --user ruamel.yaml
     - run: export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
@@ -131,14 +94,3 @@ workflows:
   build-deploy:
     jobs:
       - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: 
-                - pdb-monoworkflow
-                - master
-                - demo
-            tags:
-              only: /[0-9]+(\.[0-9]+)*/
