@@ -106,6 +106,7 @@ jobs:
     environment:
       CF_ORGANIZATION: cloud-gov
       WS: /home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard
+      BASH_ENV: ~/.bashrc
     docker:
     - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
       command: /sbin/init
