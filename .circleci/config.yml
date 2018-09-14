@@ -115,7 +115,7 @@ jobs:
     - restore_cache:
         key: v1-go-{{ .Environment.CIRCLE_SHA1 }}
     - restore_cache:
-        key: v1-node-modules-{{ checksum "npm-shrinkwrap.json"}}
+        key: v1-node_modules-{{ checksum "npm-shrinkwrap.json"}}
     - run: nvm install && nvm use && nvm alias default $(cat .nvmrc)
     - run: echo 'export PATH=$PATH:./node_modules/.bin' >> $BASH_ENV
     - run: NODE_ENV=prod npm run build-prod
