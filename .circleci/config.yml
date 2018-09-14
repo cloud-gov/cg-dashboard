@@ -112,6 +112,8 @@ jobs:
       command: /sbin/init
     steps:
     - checkout
+    - run: rm -rf $WS
+    - run: mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
     - restore_cache:
         key: v1-go-{{ .Environment.CIRCLE_SHA1 }}
     - restore_cache:
