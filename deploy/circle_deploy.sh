@@ -39,7 +39,7 @@ then
 	CF_APP="cg-dashboard-demo"
 else
   echo Unknown environment, quitting. >&2
-  exit 1
+  exit 0
 fi
 
 echo manifest: $CF_MANIFEST
