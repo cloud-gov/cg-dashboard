@@ -60,7 +60,7 @@
   "license": "CC0-1.0",
   "dependencies": {
     "ajv": "^5.5.2",
-    "axios": "^0.15.3",
+    "axios": "^0.18.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
