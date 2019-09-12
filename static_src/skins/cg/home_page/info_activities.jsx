@@ -17,7 +17,7 @@ const InfoActivities = ({ className }) => (
       <li>Create and bind service instances for your apps.</li>
       <li>Create and bind routes for your apps.</li>
       <li>Change memory allocation and number of instances for your apps.</li>
-      <li>Restart your apps.</li>
+      <li>Start and restage your apps.</li>
       <li>Manage permissions for users of your orgs and spaces.</li>
     </ul>
   </section>
