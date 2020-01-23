@@ -97,7 +97,7 @@ const links = [
 ];
 
 const deprecation_notice = {
-  text: "Please join us on the new cloud.gov dashboard!",
+  text: "Please use the new cloud.gov dashboard here!",
   url: "https://dashboard-beta.cloud.gov/"
 };
 
