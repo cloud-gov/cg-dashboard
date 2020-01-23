@@ -100,9 +100,7 @@ export default class UsersSelector extends React.Component {
 
     return (
       <div className="test-users-selector">
-        <PanelDocumentation description>
-          <p>{this.invitationMessage}</p>
-        </PanelDocumentation>
+        {this.invitationMessage}
         <Form
           guid={USERS_SELECTOR_GUID}
           classes={["users_selector"]}

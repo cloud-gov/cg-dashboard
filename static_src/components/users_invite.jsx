@@ -75,8 +75,19 @@ export default class UsersInvite extends React.Component {
     const entity = this.props.inviteEntityType;
 
     return (
-      `Invite a new user to cloud.gov and this ${entity}` +
-      ` or add an existing user to this ${entity}.`
+      <PanelDocumentation description>
+        <p>
+          To add a new or existing user to cloud.gov and this
+          {entity} {" "}, please use {" "}
+          <a href="https://dashboard-beta.fr.cloud.gov/">
+            the new dashboard
+          </a> {" "}
+          - see our updated instructions on
+          <a href="https://cloud.gov/docs/orgs-spaces/roles/">
+            how to manage user access and roles
+          </a>.
+        </p>
+      </PanelDocumentation>
     );
   }
 
@@ -89,9 +100,7 @@ export default class UsersInvite extends React.Component {
 
     return (
       <div className="test-users-invite">
-        <PanelDocumentation description>
-          <p>{this.invitationMessage}</p>
-        </PanelDocumentation>
+        {this.invitationMessage}
         <Form
           guid={USERS_INVITE_FORM_GUID}
           classes={["users_invite_form"]}

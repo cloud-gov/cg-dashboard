@@ -96,10 +96,16 @@ const links = [
   }
 ];
 
+const deprecation_notice = {
+  text: "Please join us on the new cloud.gov dashboard!",
+  url: "https://dashboard-beta.cloud.gov/"
+};
+
 const header = {
   disclaimer,
   logo,
-  links
+  links,
+  deprecation_notice
 };
 
 export default header;
