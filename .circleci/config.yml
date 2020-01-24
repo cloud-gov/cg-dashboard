@@ -22,9 +22,9 @@ jobs:
 
       # The following run steps are pulled from old circle.yml
       # Machine:
-      - run:
-          command: |
-            nvm install && nvm use && nvm alias default $(cat .nvmrc)
+      # - run:
+      #     command: |
+      #       nvm install && nvm use && nvm alias default $(cat .nvmrc)
 #            mkdir -p download
 #            test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
 #            sudo rm -rf /usr/local/go
