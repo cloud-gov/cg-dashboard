@@ -31,7 +31,7 @@ jobs:
     # In CircleCI 2.0 you can now specify your own image, or use one of our pre-configured images.
     # The following image, at 22.9 Gb, is the old pre-configured image:
     docker:
-    - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
+    - image: circleci/buildpack-deps:trusty-scm-browsers
       # command: /sbin/init
     steps:
     - checkout
@@ -39,24 +39,18 @@ jobs:
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
     # This is based on your 1.0 configuration file or project settings
     - run:
-        working_directory: ~/18F/cg-dashboard
         command: 'sudo docker info >/dev/null 2>&1 || sudo service docker start; '
     # The following run steps are pulled from old circle.yml
     # Machine:
     - run:
-        working_directory: ~/18F/cg-dashboard
         command: nvm install && nvm use && nvm alias default $(cat .nvmrc)
     - run:
-        working_directory: ~/18F/cg-dashboard
         command: mkdir -p download
     - run:
-        working_directory: ~/18F/cg-dashboard
         command: test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
     - run:
-        working_directory: ~/18F/cg-dashboard
         command: sudo rm -rf /usr/local/go
     - run:
-        working_directory: ~/18F/cg-dashboard
         command: sudo tar -C /usr/local -xzf download/$GODIST
     # Dependencies:
     - run: sudo apt-get update; sudo apt-get install libicu52
