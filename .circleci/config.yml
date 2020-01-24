@@ -10,7 +10,7 @@ jobs:
     parallelism: 1
 
     docker:
-      - image: circleci/golang:1.9-node-browser
+      - image: circleci/golang:1.9-node-browsers
 
     working_directory: ~/18F/cg-dashboard
 
