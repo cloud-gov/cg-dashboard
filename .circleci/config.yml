@@ -31,15 +31,16 @@ jobs:
     # In CircleCI 2.0 you can now specify your own image, or use one of our pre-configured images.
     # The following image, at 22.9 Gb, is the old pre-configured image:
     docker:
-    - image: circleci/buildpack-deps:trusty-scm-browsers
+    - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
       # command: /sbin/init
     steps:
     - checkout
+    - run: /sbin/init
     # Compatibility step
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
     # This is based on your 1.0 configuration file or project settings
-    # - run:
-    #     command: 'sudo docker info >/dev/null 2>&1 || sudo service docker start; '
+    - run:
+        command: 'sudo docker info >/dev/null 2>&1 || sudo service docker start; '
     # The following run steps are pulled from old circle.yml
     # Machine:
     - run:
