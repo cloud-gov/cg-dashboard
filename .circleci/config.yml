@@ -35,7 +35,7 @@ jobs:
       # command: /sbin/init
     steps:
     - checkout
-    - run: /sbin/init
+    - run: sudo /sbin/init
     # Compatibility step
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
     # This is based on your 1.0 configuration file or project settings
