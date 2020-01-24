@@ -10,7 +10,7 @@ jobs:
     parallelism: 1
 
     docker:
-      - image: ubuntu:14.04
+      - image: circleci/classic:latest
 
     working_directory: ~/18F/cg-dashboard
 
