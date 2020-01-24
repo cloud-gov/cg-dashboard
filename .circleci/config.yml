@@ -1,92 +1,109 @@
-# This configuration was automatically generated from a CircleCI 1.0 config.
-# And then modified to complete a build-and-test cycle.
-
-# The build uses the docker image, circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-# that has all the tools from the v1.0 CircleCI world. That image is 22.9 Gb, and 
-# takes about 8 minutes to set up if it's not already cached on the CircleCI machine
-# that your job lands on.
-
-# TODO:
-#   - enable cachine for node_modules, to save abou 2m on builds
-#   - enable master builds to deploy to fr-stage - DONE Managed in circle_deploy.sh
-#   - enable new tags to deploy to fr - DONE Managed in circle_deploy.sh
-#   - enable Slack notifications
-
 version: 2
 jobs:
   build:
-    # branches: TODO filter build by branches for release to fr-stage?
-    working_directory: ~/18F/cg-dashboard
-    parallelism: 1
-    shell: /bin/bash --login
-    # CircleCI 2.0 does not support environment variables that refer to each other the same way as 1.0 did.
-    # If any of these refer to each other, rewrite them so that they don't or see https://circleci.com/docs/2.0/env-vars/#interpolating-environment-variables-to-set-other-environment-variables .
     environment:
-      CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
-      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+      TEST_REPORTS: /tmp/test-reports
       GODIST: go1.9.linux-amd64.tar.gz
-      WS: /home/ubuntu/.go_workspace/src/github.com/18F/cg-dashboard
+      WS: ~/.go_workspace/src/github.com/18F/cg-dashboard
       CF_ORGANIZATION: cloud-gov
-    # In CircleCI 1.0 we used a pre-configured image with a large number of languages and other packages.
-    # In CircleCI 2.0 you can now specify your own image, or use one of our pre-configured images.
-    # The following image, at 22.9 Gb, is the old pre-configured image:
+
+    parallelism: 1
+
     docker:
-    - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-      command: /sbin/init
+      - image: ubuntu:14.04
+
+    working_directory: ~/18F/cg-dashboard
+
     steps:
-    - checkout
-    # Compatibility step
-    - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
-    # This is based on your 1.0 configuration file or project settings
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: 'sudo docker info >/dev/null 2>&1 || sudo service docker start; '
-    # The following run steps are pulled from old circle.yml
-    # Machine:
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: nvm install && nvm use && nvm alias default $(cat .nvmrc)
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: mkdir -p download
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: sudo rm -rf /usr/local/go
-    - run:
-        working_directory: ~/18F/cg-dashboard
-        command: sudo tar -C /usr/local -xzf download/$GODIST
-    # Dependencies:
-    - run: sudo apt-get update; sudo apt-get install libicu52
-    - run: go version
-    - run: go get -u github.com/golang/dep/cmd/dep
-    - run: rm -rf $WS
-    - run: mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
-    - run: cd $WS && dep ensure
-    - run: npm install
-    - run: npm run test-selenium-install
-    - run: cd $WS && go build
-    - run: npm run build
-    - run: wget https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip
-    - run: unzip chromedriver_linux64.zip
-    - run: sudo cp chromedriver /usr/local/bin/chromedriver
-    # Test:
-    - run: if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
-    - run: export DISPLAY=:99.0
-    - run: sh -e /etc/init.d/xvfb start || echo \"Unable to start virtual display.\"
-    - run: sleep 5 # give xvfb spin pu time
-    - run: cd $WS && npm test
-    - run: NODE_ENV=prod npm run build
-    - run: sleep 5
-    - run: cd $WS && npm run test-performance || true
-    - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh  # TODO: SKIP_DOCKER may not be needed anymore
-    # Deploy:
-    - run: NODE_ENV=prod npm run build-prod
-    - run: pip install --user ruamel.yaml
-    - run: export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
-    - run: cd $WS && ./deploy/circle_deploy.sh 
+      - checkout
+
+      - run:
+          command: echo 127.0.0.1 devhost | sudo tee -a /etc/hosts
+
+      # The following run steps are pulled from old circle.yml
+      # Machine:
+      - run:
+          command: |
+            nvm install && nvm use && nvm alias default $(cat .nvmrc)
+            mkdir -p download
+            test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
+            sudo rm -rf /usr/local/go
+            sudo tar -C /usr/local -xzf download/$GODIST
+
+      # Create Postgres users and database
+      # Note the YAML heredoc '|' for nicer formatting
+      - run: |
+          sudo -u root createuser -h localhost --superuser ubuntu &&
+          sudo createdb -h localhost test_db
+
+      - restore_cache:
+          keys:
+            - v1-cg-dashboard-{{ checksum "project.clj" }}
+            - v1-cg-dashboard-
+
+      - run:
+          environment:
+            SSH_TARGET: "localhost"
+            TEST_ENV: "linux"
+          command: |
+            set -xu
+            mkdir -p ${TEST_REPORTS}
+            run-tests.sh
+            cp out/tests/*.xml ${TEST_REPORTS}
+
+      - run: |
+          set -xu
+          mkdir -p /tmp/artifacts
+          create_jars.sh ${CIRCLE_BUILD_NUM}
+          cp *.jar /tmp/artifacts
+
+      - save_cache:
+          key: v1-cg-dashboard-{{ checksum "project.clj" }}
+          paths:
+            - ~/.m2
+
+      # Save artifacts
+      - store_artifacts:
+          path: /tmp/artifacts
+          destination: build
+
+      # Upload test results
+      - store_test_results:
+          path: /tmp/test-reports
+
+      # Dependencies:
+      - run: |
+          sudo apt-get update; sudo apt-get install libicu52
+          go version
+          go get -u github.com/golang/dep/cmd/dep
+          rm -rf $WS
+          mkdir -p $(dirname $WS) && ln -s $(pwd) $WS
+          cd $WS && dep ensure
+          npm install
+          npm run test-selenium-install
+          cd $WS && go build
+          npm run build
+          wget https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo cp chromedriver /usr/local/bin/chromedriver
+      # Test:
+      # TODO: SKIP_DOCKER may not be needed anymore
+      - run: |
+            if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
+            export DISPLAY=:99.0
+            sh -e /etc/init.d/xvfb start || echo \"Unable to start virtual display.\"
+            sleep 5 # give xvfb spin pu time
+            cd $WS && npm test
+            NODE_ENV=prod npm run build
+            sleep 5
+            cd $WS && npm run test-performance || true
+            cd $WS && SKIP_DOCKER=1 ./codecheck.sh
+      # Deploy:
+      - run: |
+            NODE_ENV=prod npm run build-prod
+            pip install --user ruamel.yaml
+            export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
+            cd $WS && ./deploy/circle_deploy.sh
 
 
 workflows:
