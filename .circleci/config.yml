@@ -2,7 +2,7 @@
 # And then modified to complete a build-and-test cycle.
 
 # The build uses the docker image, circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-# that has all the tools from the v1.0 CircleCI world. That image is 22.9 Gb, and 
+# that has all the tools from the v1.0 CircleCI world. That image is 22.9 Gb, and
 # takes about 8 minutes to set up if it's not already cached on the CircleCI machine
 # that your job lands on.
 
@@ -32,7 +32,6 @@ jobs:
     # The following image, at 22.9 Gb, is the old pre-configured image:
     docker:
     - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-      command: /sbin/init
     steps:
     - checkout
     # Compatibility step
@@ -86,7 +85,7 @@ jobs:
     - run: NODE_ENV=prod npm run build-prod
     - run: pip install --user ruamel.yaml
     - run: export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
-    - run: cd $WS && ./deploy/circle_deploy.sh 
+    - run: cd $WS && ./deploy/circle_deploy.sh
 
 
 workflows:
