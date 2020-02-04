@@ -21,19 +21,13 @@ describe("<UsersInvite />", function() {
       wrapper = shallow(<UsersInvite {...props} />);
     });
 
-    it("renders one <Form /> component", () => {
-      expect(wrapper.find(Form).length).toEqual(1);
-    });
-
-    it("renders one <Action /> component", () => {
-      expect(wrapper.find(Action).length).toEqual(1);
-    });
-
     describe("conditional documentation based on inviteEntityType", () => {
       it("refers to `space` when type is space", () => {
         const doc =
-          "Invite a new user to cloud.gov and this space" +
-          " or add an existing user to this space.";
+          "NOTE: Use the new dashboard to add a new or existing user" +
+          " to this space, as we deprecate this dashboard. See our " +
+          "updated documentation on how to manage user access and "+
+          "roles here.";
 
         expect(
           wrapper
@@ -42,47 +36,6 @@ describe("<UsersInvite />", function() {
             .text()
         ).toBe(doc);
       });
-
-      it("refers to `organization` when type is organization", () => {
-        const doc =
-          "Invite a new user to cloud.gov and this organization" +
-          " or add an existing user to this organization.";
-        const orgProps = Object.assign({}, props, {
-          inviteEntityType: "organization"
-        });
-        wrapper = shallow(<UsersInvite {...orgProps} />);
-
-        expect(
-          wrapper
-            .find(PanelDocumentation)
-            .find("p")
-            .text()
-        ).toBe(doc);
-      });
-
-      it("refers to `organization` when type is organization in the action button", () => {
-        const buttonHTML =
-          '<button class="action action-primary usa-button ' +
-          'usa-button-primary" aria-label="submit" type="submit">' +
-          "Add user to this organization</button>";
-        const orgProps = Object.assign({}, props, {
-          inviteEntityType: "organization"
-        });
-        wrapper = shallow(<UsersInvite {...orgProps} />);
-
-        expect(wrapper.find(Action).html()).toEqual(buttonHTML);
-      });
-    });
-  });
-
-  describe("when user does not have ability to invite other users", () => {
-    it("does not render <Form /> component", () => {
-      const noAccessProps = Object.assign({}, props, {
-        currentUserAccess: false
-      });
-      wrapper = shallow(<UsersInvite {...noAccessProps} />);
-
-      expect(wrapper.find(Form).length).toEqual(0);
     });
   });
 });

@@ -20,22 +20,6 @@ describe("<UsersSelector />", function() {
   };
   let wrapper;
 
-  describe("when the working description is displayed as text panel", () => {
-    beforeEach(() => {
-      wrapper = shallow(<UsersSelector {...props} />);
-    });
-
-    it("displays proper message", () => {
-      const doc = "Invite an existing organization user to this space.";
-      expect(
-        wrapper
-          .find(PanelDocumentation)
-          .find("p")
-          .text()
-      ).toBe(doc);
-    });
-  });
-
   describe("when user selector", () => {
     it("renders users", () => {
       const username = "username";
