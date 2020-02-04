@@ -39,6 +39,7 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run:
         working_directory: ~/18F/cg-dashboard
+        command: 'echo this is where docker was'
     #    command: 'sudo docker info >/dev/null 2>&1 || sudo service docker start; '
     # The following run steps are pulled from old circle.yml
     # Machine:
