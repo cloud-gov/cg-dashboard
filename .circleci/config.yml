@@ -32,7 +32,6 @@ jobs:
     # The following image, at 22.9 Gb, is the old pre-configured image:
     docker:
     - image: circleci/build-image:ubuntu-14.04-XXL-1327-3401d20
-      command: /sbin/init
     steps:
     - checkout
     # Compatibility step
