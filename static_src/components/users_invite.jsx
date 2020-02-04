@@ -5,9 +5,7 @@
 
 import PropTypes from "prop-types";
 import React from "react";
-import Action from "./action.jsx";
 import FormStore from "../stores/form_store";
-import { Form, FormText } from "./form";
 import PanelDocumentation from "./panel_documentation.jsx";
 import userActions from "../actions/user_actions";
 import { validateEmail } from "../util/validators";
@@ -21,7 +19,6 @@ const propTypes = {
   error: PropTypes.object
 };
 const defaultProps = {
-  inviteDisabled: false,
   currentUserAccess: false,
   error: {}
 };
@@ -77,12 +74,10 @@ export default class UsersInvite extends React.Component {
     return (
       <PanelDocumentation description>
         <p>
-          NOTE: Use  {" "}
-          <a href="https://dashboard-beta.fr.cloud.gov/">
-            the new dashboard
-          </a> {" "}
-          to add a new or existing user to this {entity}, as we deprecate {" "}
-          this dashboard. See our {" "}
+          NOTE: Use{" "}
+          <a href="https://dashboard-beta.fr.cloud.gov/">the new dashboard</a>{" "}
+          to add a new or existing user to this {entity}, as we deprecate this
+          dashboard. See our{" "}
           <a href="https://cloud.gov/docs/orgs-spaces/roles/">
             updated documentation on how to manage user access and roles here
           </a>.
@@ -92,17 +87,11 @@ export default class UsersInvite extends React.Component {
   }
 
   render() {
-    const { inviteDisabled } = true;
-
     if (!this.props.currentUserAccess) {
       return null;
     }
 
-    return (
-      <div className="test-users-invite">
-        {this.invitationMessage}
-      </div>
-    );
+    return <div className="test-users-invite">{this.invitationMessage}</div>;
   }
 }
 

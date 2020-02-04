@@ -36,7 +36,11 @@ const Header = () => {
           </nav>
         </div>
         <div className="form-notification">
-          <h2 className="bg-lightestgray"><a href={header.deprecation_notice.url}>{header.deprecation_notice.text}</a></h2>
+          <h2 className="bg-lightestgray">
+            <a href={header.deprecation_notice.url}>
+              {header.deprecation_notice.text}
+            </a>
+          </h2>
         </div>
       </div>
     </header>
