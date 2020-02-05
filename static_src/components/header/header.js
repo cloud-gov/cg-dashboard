@@ -24,15 +24,24 @@ const Header = () => {
   return (
     <header className={classNames("header", "header-no_sidebar")}>
       <div className="header-wrap">
-        {header.logo.render()}
-        <nav className="header-side">
-          <ul className="nav">
-            {header.links.map((l, i) => (
-              <HeaderLink key={i} url={l.url} text={l.text} />
-            ))}
-            {loginLink}
-          </ul>
-        </nav>
+        <div>
+          {header.logo.render()}
+          <nav className="header-side">
+            <ul className="nav">
+              {header.links.map((l, i) => (
+                <HeaderLink key={i} url={l.url} text={l.text} />
+              ))}
+              {loginLink}
+            </ul>
+          </nav>
+        </div>
+        <div className="form-notification">
+          <h2 className="bg-lightestgray">
+            <a href={header.deprecation_notice.url}>
+              {header.deprecation_notice.text}
+            </a>
+          </h2>
+        </div>
       </div>
     </header>
   );

@@ -5,9 +5,7 @@
 
 import PropTypes from "prop-types";
 import React from "react";
-import Action from "./action.jsx";
 import FormStore from "../stores/form_store";
-import { Form, FormText } from "./form";
 import PanelDocumentation from "./panel_documentation.jsx";
 import userActions from "../actions/user_actions";
 import { validateEmail } from "../util/validators";
@@ -21,7 +19,6 @@ const propTypes = {
   error: PropTypes.object
 };
 const defaultProps = {
-  inviteDisabled: false,
   currentUserAccess: false,
   error: {}
 };
@@ -75,42 +72,26 @@ export default class UsersInvite extends React.Component {
     const entity = this.props.inviteEntityType;
 
     return (
-      `Invite a new user to cloud.gov and this ${entity}` +
-      ` or add an existing user to this ${entity}.`
+      <PanelDocumentation description>
+        <p>
+          NOTE: Use{" "}
+          <a href="https://dashboard-beta.fr.cloud.gov/">the new dashboard</a>{" "}
+          to add a new or existing user to this {entity}, as we deprecate this
+          dashboard. See our{" "}
+          <a href="https://cloud.gov/docs/orgs-spaces/roles/">
+            updated documentation on how to manage user access and roles here
+          </a>.
+        </p>
+      </PanelDocumentation>
     );
   }
 
   render() {
-    const { inviteDisabled } = this.props;
-
     if (!this.props.currentUserAccess) {
       return null;
     }
 
-    return (
-      <div className="test-users-invite">
-        <PanelDocumentation description>
-          <p>{this.invitationMessage}</p>
-        </PanelDocumentation>
-        <Form
-          guid={USERS_INVITE_FORM_GUID}
-          classes={["users_invite_form"]}
-          onSubmit={this.handleSubmit}
-          errorOverride={this.errorMessage}
-        >
-          <FormText
-            formGuid={USERS_INVITE_FORM_GUID}
-            classes={["test-users_invite_name"]}
-            label="User's email"
-            name="email"
-            validator={this.validateEmail}
-          />
-          <Action label="submit" type="submit" disabled={inviteDisabled}>
-            Add user to this {this.props.inviteEntityType}
-          </Action>
-        </Form>
-      </div>
-    );
+    return <div className="test-users-invite">{this.invitationMessage}</div>;
   }
 }
 

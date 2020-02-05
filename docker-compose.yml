@@ -61,7 +61,7 @@ services:
       - npm-cache:/root/.npm
       - node-modules:/cg-dashboard/node_modules
       - .:/cg-dashboard
-      - ./node_modules:/cg-dashboard/node_modules
+      #- ./node_modules:/cg-dashboard/node_modules
       - cg-style-node-modules:/cg-style/node_modules
       - ${CG_STYLE_PATH-../cg-style}:/cg-style
       - frontend-home:/headless

@@ -8,7 +8,6 @@ import React from "react";
 import Action from "./action.jsx";
 import FormStore from "../stores/form_store";
 import { Form, FormSelect } from "./form";
-import PanelDocumentation from "./panel_documentation.jsx";
 import userActions from "../actions/user_actions";
 import { validateString } from "../util/validators";
 
@@ -100,9 +99,7 @@ export default class UsersSelector extends React.Component {
 
     return (
       <div className="test-users-selector">
-        <PanelDocumentation description>
-          <p>{this.invitationMessage}</p>
-        </PanelDocumentation>
+        {this.invitationMessage}
         <Form
           guid={USERS_SELECTOR_GUID}
           classes={["users_selector"]}
