@@ -83,6 +83,7 @@ jobs:
     # - run: cd $WS && SKIP_DOCKER=1 ./codecheck.sh  # TODO: SKIP_DOCKER may not be needed anymore
     # Deploy:
     - run: NODE_ENV=prod npm run build-prod
+    - run: pip install --upgrade pip
     - run: pip install --user ruamel.yaml
     - run: export BUILD_INFO=build::$CIRCLE_BRANCH::$(date -u "+%Y-%m-%d-%H-%M-%S")::$CIRCLE_BUILD_NUM::$(deploy/npm-version.sh) && python deploy/vars-to-manifest.py
     - run: cd $WS && ./deploy/circle_deploy.sh
