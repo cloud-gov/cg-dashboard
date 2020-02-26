@@ -6,5 +6,5 @@ services:
 env:
   SECURE_COOKIES: true
   GA_TRACKING_ID: UA-48605964-34
-  GOVERSION: go1.9
+  GOVERSION: go1.12
   GOPACKAGENAME: github.com/18F/cg-dashboard
