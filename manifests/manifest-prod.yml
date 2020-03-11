@@ -2,11 +2,11 @@
 inherit: manifest-base.yml
 domain: fr.cloud.gov
 applications:
-- name: cg-dashboard-old
-  host: dashboard-old
+- name: cg-dashboard-deprecated
+  host: dashboard-deprecated
   instances: 3
   env:
-    CONSOLE_HOSTNAME: https://dashboard-old.fr.cloud.gov
+    CONSOLE_HOSTNAME: https://dashboard-deprecated.fr.cloud.gov
     CONSOLE_LOGIN_URL: https://login.fr.cloud.gov
     CONSOLE_UAA_URL: https://uaa.fr.cloud.gov
     CONSOLE_API_URL: https://api.fr.cloud.gov
