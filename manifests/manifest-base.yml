@@ -1,5 +1,7 @@
 ---
-buildpack: go_buildpack
+buildpacks: 
+- go_buildpack
+stack: cflinuxfs3
 memory: 256M
 services:
 - dashboard-ups
