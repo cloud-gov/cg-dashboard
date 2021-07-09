@@ -261,7 +261,7 @@ export default class UsageAndLimits extends React.Component {
     if (this.state.editing) {
       controls = (
         <div>
-          <Action style="finish" type="button" label="OK">
+          <Action style="finish" type="submit" label="OK">
             <span>OK</span>
           </Action>
           <Action
